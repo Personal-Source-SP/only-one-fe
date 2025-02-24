@@ -21,6 +21,10 @@ body {
   background: linear-gradient(to bottom, transparent, rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb));
 }
 
+.layout {
+  background-image: url(/images/background.jpg) !important;
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;

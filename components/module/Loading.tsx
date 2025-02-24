@@ -1,7 +1,7 @@
 "use client";
 
 import { Spin } from "antd";
-import React from "react";
+import React, { memo } from "react";
 
 const Loading: React.FC = () => (
   <div className="h-screen flex items-center justify-center flex-col bg-gradient-to-r from-purple-500 to-red-500">
@@ -17,4 +17,4 @@ const Loading: React.FC = () => (
   </div>
 );
 
-export default Loading;
+export default memo(Loading);

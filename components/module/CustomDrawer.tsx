@@ -1,5 +1,5 @@
 import { Drawer, DrawerProps } from "antd";
-import React, { ReactNode } from "react";
+import React, { memo, ReactNode } from "react";
 
 interface CustomDrawerProps extends DrawerProps {
   title: string;
@@ -29,4 +29,4 @@ const CustomDrawer: React.FC<CustomDrawerProps> = ({
   );
 };
 
-export default CustomDrawer;
+export default memo(CustomDrawer);

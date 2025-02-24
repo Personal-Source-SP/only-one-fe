@@ -1,5 +1,5 @@
+import AppFooter from "@/components/layout/Footer";
 import AppHeader from "@/components/layout/Header";
-import AppSider from "@/components/layout/Sider";
 import { AlbumProvider } from "@/contexts/AlbumContext";
 import { MainProvider } from "@/contexts/MainContext";
 import { Layout } from "antd";
@@ -23,16 +23,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <main className="min-h-screen">
+        <main className="min-h-screen max-w-[100vw] w-full">
           <MainProvider>
             <AlbumProvider>
               <Layout className="min-h-screen max-h-[100vh]">
-                <AppHeader />
-                <Layout>
-                  <AppSider />
-                  <Content className="m-4 bg-white border-2 border-gray-200 rounded-md">
-                    {children}
-                  </Content>
+                <Layout className="layout">
+                  <AppHeader />
+                  <Content className="m-4">{children}</Content>
+                  <AppFooter />
                 </Layout>
               </Layout>
             </AlbumProvider>
