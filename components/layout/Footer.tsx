@@ -4,9 +4,11 @@ import { FOOTER_BUTTONS } from "@/constants/footer";
 import { IFooterButton } from "@/interfaces/footer.interface";
 import { Image } from "antd";
 import { Footer } from "antd/es/layout/layout";
+import { useRouter } from "next/navigation";
 import { FC, memo, MutableRefObject, useRef } from "react";
 
 const AppFooter: FC = () => {
+  const router = useRouter();
   const dockButtonsWrapper =
     useRef<HTMLDivElement>() as MutableRefObject<HTMLDivElement>;
 
@@ -47,6 +49,12 @@ const AppFooter: FC = () => {
     updateWidth(itemIndex + 2);
   };
 
+  const handleClickButton = (path?: string) => {
+    if (path) {
+      router.push(path);
+    }
+  };
+
   return (
     <Footer className="p-0">
       <div
@@ -58,13 +66,14 @@ const AppFooter: FC = () => {
             key={item.title}
             style={{ transition: "all ease .2s" }}
             className="w-16 align-bottom dock-item p-2"
+            onClick={() => handleClickButton(item.path)}
             onMouseEnter={() => handleItemsMouseEnter(i)}
             onMouseLeave={() => handleItemsMouseLeave(i)}
           >
             <Image
-              alt="dock icon"
               src={item.logo}
               preview={false}
+              alt={item.title}
               className="select-none w-full"
             />
           </button>

@@ -23,6 +23,7 @@ export const FOOTER_BUTTONS: IFooterButton[] = [
   },
   {
     title: "Photos",
+    path: "/album",
     logo: "images/photos-logo.png",
   },
   {
