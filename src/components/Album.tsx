@@ -14,6 +14,7 @@ import "yet-another-react-lightbox/plugins/thumbnails.css";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import "yet-another-react-lightbox/styles.css";
 import FolderTags from "./FolderTag";
+// import FolderItem from "@/components/core-mac-os/folder/folderItem";
 
 const AlbumComponent: FC = () => {
   const {
@@ -38,6 +39,8 @@ const AlbumComponent: FC = () => {
 
   return (
     <section className="p-4">
+      {/* <FolderItem name="Album ảnh" /> */}
+
       <FolderTags
         folders={folders}
         selectedFolder={selectedFolder}

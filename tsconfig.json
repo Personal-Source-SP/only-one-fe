@@ -18,11 +18,9 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"]
-    },
-    "baseUrl": "."
+      "@/*": ["./src/*"]
+    }
   },
-  "transpilePackages": ["antd"],
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]
 }
