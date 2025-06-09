@@ -5,6 +5,9 @@ import NotificationsPanel from '@/components/layout/notifications-panel';
 import Search from '@/components/layout/search';
 import Sidebar from '@/components/layout/sidebar';
 import QuickActions from '@/components/module/quick-actions';
+import { Refine, ResourceProps } from '@refinedev/core';
+import * as routerProvider from '@refinedev/nextjs-router';
+import dataProvider from '@refinedev/simple-rest';
 import { usePathname } from 'next/navigation';
 import { FC, memo, ReactNode, useState } from 'react';
 
@@ -18,6 +21,17 @@ const MainLayout: FC<MainLayoutProps> = ({ children }) => {
     const [showSearch, setShowSearch] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [showNotifications, setShowNotifications] = useState(false);
+
+    const resources: ResourceProps[] = [
+        {
+            name: 'blog_posts',
+            list: '/blog-posts',
+            create: '/blog-posts/create',
+            edit: '/blog-posts/edit/:id',
+            show: '/blog-posts/show/:id',
+            meta: { canDelete: true },
+        },
+    ];
 
     // Mock notifications data
     const notifications = [
@@ -92,40 +106,46 @@ const MainLayout: FC<MainLayoutProps> = ({ children }) => {
     // Mobile sidebar toggle
 
     return (
-        <div className="flex h-screen bg-background">
-            {/* Sidebar */}
-            <Sidebar />
+        <Refine
+            resources={resources}
+            routerProvider={routerProvider.default as any}
+            dataProvider={dataProvider('https://api.fake-rest.refine.dev')}
+        >
+            <div className="flex h-screen bg-background">
+                {/* Sidebar */}
+                <Sidebar />
 
-            <div className="flex-1 flex flex-col overflow-hidden">
-                {/* Header */}
-                <Header
-                    showSearch={showSearch}
-                    mobileMenuOpen={mobileMenuOpen}
-                    showNotifications={showNotifications}
-                    getPageTitle={getPageTitle}
-                    setShowSearch={setShowSearch}
-                    setMobileMenuOpen={setMobileMenuOpen}
-                    setShowNotifications={setShowNotifications}
-                />
-
-                {/* Notifications Panel */}
-                {showNotifications && (
-                    <NotificationsPanel
-                        notifications={notifications as any}
-                        onClose={() => setShowNotifications(false)}
+                <div className="flex-1 flex flex-col overflow-hidden">
+                    {/* Header */}
+                    <Header
+                        showSearch={showSearch}
+                        mobileMenuOpen={mobileMenuOpen}
+                        showNotifications={showNotifications}
+                        getPageTitle={getPageTitle}
+                        setShowSearch={setShowSearch}
+                        setMobileMenuOpen={setMobileMenuOpen}
+                        setShowNotifications={setShowNotifications}
                     />
-                )}
 
-                {/* Mobile search bar */}
-                <Search showSearch={showSearch} setShowSearch={setShowSearch} />
+                    {/* Notifications Panel */}
+                    {showNotifications && (
+                        <NotificationsPanel
+                            notifications={notifications as any}
+                            onClose={() => setShowNotifications(false)}
+                        />
+                    )}
 
-                {/* Page Content */}
-                <main className="flex-1 overflow-y-auto p-3 md:p-6">{children}</main>
+                    {/* Mobile search bar */}
+                    <Search showSearch={showSearch} setShowSearch={setShowSearch} />
 
-                {/* Quick Actions FAB */}
-                <QuickActions />
+                    {/* Page Content */}
+                    <main className="flex-1 overflow-y-auto p-3 md:p-6">{children}</main>
+
+                    {/* Quick Actions FAB */}
+                    <QuickActions />
+                </div>
             </div>
-        </div>
+        </Refine>
     );
 };
 

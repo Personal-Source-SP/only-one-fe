@@ -12,7 +12,7 @@ interface SidebarItem {
 
 const sidebarItems: SidebarItem[] = [
     {
-        href: '/dashboard',
+        href: '/',
         label: 'Dashboard',
         icon: 'lucide:layout-dashboard',
     },

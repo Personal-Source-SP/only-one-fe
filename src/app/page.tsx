@@ -1,7 +1,9 @@
-import dynamic from "next/dynamic";
+import dynamic from 'next/dynamic';
 
-const HomeClient = dynamic(() => import("@/components/Home"), { ssr: false });
+const DashboardComponent = dynamic(() => import('@/pages/dashboard'), {
+    ssr: false,
+});
 
-export default function Home() {
-  return <HomeClient />;
+export default function DashboardPage() {
+    return <DashboardComponent />;
 }
