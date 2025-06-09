@@ -111,8 +111,9 @@ const Sidebar: FC = () => {
                 <div className="p-4 flex items-center justify-between border-b border-divider">
                     {!collapsed && (
                         <div className="flex items-center gap-2">
-                            <Icon icon="logos:google" className="text-2xl" />
+                            <Icon icon="cil:arrow-circle-top" className="text-2xl" />
                             <span className="font-medium text-lg">Hub</span>
+                            <Icon icon="cil:arrow-circle-bottom" className="text-2xl" />
                         </div>
                     )}
                     {collapsed && <Icon icon="logos:google" className="text-2xl mx-auto" />}
