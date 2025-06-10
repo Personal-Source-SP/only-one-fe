@@ -1,7 +1,12 @@
+import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
+import { RefineContext } from '@/contexts/RefineContext';
 import { HeroUIProvider } from '@heroui/react';
 import type { Metadata } from 'next';
+import { getServerSession } from 'next-auth';
+import { NavigationGuardProvider } from 'next-navigation-guard';
 import dynamic from 'next/dynamic';
 import { Inter } from 'next/font/google';
+import { ReactNode } from 'react';
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -15,7 +20,9 @@ export const metadata: Metadata = {
     description: 'Only One Hub',
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: ReactNode }) {
+    const session = await getServerSession(authOptions);
+
     return (
         <html lang="en">
             <head>
@@ -25,10 +32,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <main className="min-h-screen max-w-[100vw] w-full">
                     {/* <MainProvider> */}
                     {/* <AlbumProvider> */}
-                    {/* <MacOsLayout>{children}</MacOsLayout> */}
-                    <HeroUIProvider>
-                        <MainLayout>{children}</MainLayout>
-                    </HeroUIProvider>
+                    <NavigationGuardProvider>
+                        <RefineContext session={session}>
+                            <HeroUIProvider>
+                                <MainLayout>{children}</MainLayout>
+                            </HeroUIProvider>
+                        </RefineContext>
+                    </NavigationGuardProvider>
                     {/* </AlbumProvider> */}
                     {/* </MainProvider> */}
                 </main>
