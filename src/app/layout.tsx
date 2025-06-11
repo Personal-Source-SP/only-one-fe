@@ -4,7 +4,8 @@ import type { Metadata } from 'next';
 import { NavigationGuardProvider } from 'next-navigation-guard';
 import { Inter } from 'next/font/google';
 import { ReactNode, Suspense } from 'react';
-import './globals.css';
+
+import '@/styles/globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
 

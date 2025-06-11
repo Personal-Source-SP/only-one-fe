@@ -1,4 +1,5 @@
 import { Icon } from '@iconify/react';
+import { signOut } from 'next-auth/react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { FC, memo, useEffect, useState } from 'react';
@@ -91,6 +92,12 @@ const Sidebar: FC = () => {
         );
     };
 
+    const handleLogout = () => {
+        signOut({
+            callbackUrl: '/login',
+        });
+    };
+
     return (
         <>
             {/* Mobile overlay */}
@@ -109,14 +116,18 @@ const Sidebar: FC = () => {
             >
                 {/* Logo */}
                 <div className="p-4 flex items-center justify-between border-b border-divider">
-                    {!collapsed && (
-                        <div className="flex items-center gap-2">
+                    {!collapsed ? (
+                        <div className="flex items-center gap-2 h-[32px]">
                             <Icon icon="cil:arrow-circle-top" className="text-2xl" />
                             <span className="font-medium text-lg">Hub</span>
                             <Icon icon="cil:arrow-circle-bottom" className="text-2xl" />
                         </div>
+                    ) : (
+                        <div className="flex items-center gap-1 h-[32px]">
+                            <Icon icon="cil:arrow-circle-top" className="text-sm" />
+                            <Icon icon="cil:arrow-circle-bottom" className="text-sm" />
+                        </div>
                     )}
-                    {collapsed && <Icon icon="logos:google" className="text-2xl mx-auto" />}
 
                     <button
                         onClick={toggleSidebar}
@@ -144,7 +155,8 @@ const Sidebar: FC = () => {
                 {/* Logout */}
                 <div className="p-2 mt-auto border-t border-divider">
                     <Link
-                        href="/login"
+                        href="#"
+                        onClick={handleLogout}
                         className="sidebar-item text-foreground-600 hover:text-danger"
                     >
                         <Icon icon="lucide:log-out" className="icon" />
