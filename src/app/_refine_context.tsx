@@ -1,6 +1,6 @@
 'use client';
 
-import Loading from '@/components/common/loading';
+import { Loading } from '@/components/common';
 import { AuthProvider, Refine, ResourceProps } from '@refinedev/core';
 import routerProvider from '@refinedev/nextjs-router';
 import { SessionProvider, signIn, signOut, useSession } from 'next-auth/react';

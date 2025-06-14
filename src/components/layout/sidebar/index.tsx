@@ -1,3 +1,4 @@
+import { Logo } from '@/components/common';
 import { Icon } from '@iconify/react';
 import { signOut } from 'next-auth/react';
 import Link from 'next/link';
@@ -13,7 +14,7 @@ interface SidebarItem {
 
 const sidebarItems: SidebarItem[] = [
     {
-        href: '/',
+        href: '/dashboard',
         label: 'Dashboard',
         icon: 'lucide:layout-dashboard',
     },
@@ -118,14 +119,11 @@ const Sidebar: FC = () => {
                 <div className="p-4 flex items-center justify-between border-b border-divider">
                     {!collapsed ? (
                         <div className="flex items-center gap-2 h-[32px]">
-                            <Icon icon="cil:arrow-circle-top" className="text-2xl" />
-                            <span className="font-medium text-lg">Hub</span>
-                            <Icon icon="cil:arrow-circle-bottom" className="text-2xl" />
+                            <Logo iconSize="2xl" textSize="lg" />
                         </div>
                     ) : (
                         <div className="flex items-center gap-1 h-[32px]">
-                            <Icon icon="cil:arrow-circle-top" className="text-sm" />
-                            <Icon icon="cil:arrow-circle-bottom" className="text-sm" />
+                            <Logo iconSize="sm" />
                         </div>
                     )}
 

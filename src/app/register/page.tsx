@@ -1,60 +1,64 @@
 'use client';
 
 import { Logo } from '@/components/common';
-import { Button, Card, Checkbox, Input } from '@heroui/react';
+import { Button, Card, Input, Link } from '@heroui/react';
 import { Icon } from '@iconify/react';
 import { motion } from 'framer-motion';
-import Link from 'next/link';
 import { FC, memo, useState } from 'react';
 
-const LoginPage: FC = () => {
+const RegisterPage: FC = () => {
+    const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [rememberMe, setRememberMe] = useState(false);
+    const [confirmPassword, setConfirmPassword] = useState('');
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-content2 p-4">
             <motion.div
-                className="w-full max-w-md"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
+                className="w-full max-w-md"
             >
                 <Card className="p-8 flex flex-col items-center gap-6">
                     <div className="flex flex-col items-center gap-2 mb-4">
                         <div className="flex items-center gap-2">
                             <Logo iconSize="3xl" textSize="2xl" />
                         </div>
-                        <p className="text-foreground-600 text-center">
-                            Không gian làm việc tập trung của bạn
-                        </p>
+                        <p className="text-foreground-600 text-center">Tạo tài khoản mới</p>
                     </div>
 
                     <form className="w-full space-y-4">
                         <Input
+                            type="text"
+                            label="Họ và tên"
+                            placeholder="Nhập họ và tên của bạn"
+                            value={name}
+                            onValueChange={setName}
+                        />
+                        <Input
                             type="email"
                             label="Email"
+                            placeholder="Nhập email của bạn"
                             value={email}
                             onValueChange={setEmail}
-                            placeholder="Nhập email của bạn"
                         />
                         <Input
                             type="password"
                             label="Mật khẩu"
+                            placeholder="Tạo mật khẩu mới"
                             value={password}
                             onValueChange={setPassword}
-                            placeholder="Nhập mật khẩu của bạn"
                         />
-                        <div className="flex items-center justify-between">
-                            <Checkbox isSelected={rememberMe} onValueChange={setRememberMe}>
-                                Ghi nhớ đăng nhập
-                            </Checkbox>
-                            <Link href="/forget-password" color="primary">
-                                Quên mật khẩu?
-                            </Link>
-                        </div>
+                        <Input
+                            type="password"
+                            label="Xác nhận mật khẩu"
+                            placeholder="Nhập lại mật khẩu"
+                            value={confirmPassword}
+                            onValueChange={setConfirmPassword}
+                        />
                         <Button color="primary" size="lg" className="w-full" type="submit">
-                            Đăng nhập
+                            Đăng ký
                         </Button>
                     </form>
 
@@ -65,19 +69,19 @@ const LoginPage: FC = () => {
                     </div>
 
                     <Button
-                        size="lg"
                         color="default"
                         variant="flat"
+                        size="lg"
                         className="w-full"
                         startContent={<Icon icon="logos:google-icon" />}
                     >
-                        Đăng nhập với Google
+                        Đăng ký với Google
                     </Button>
 
                     <p className="text-foreground-600 text-center mt-4">
-                        <span>Chưa có tài khoản? </span>
-                        <Link href="/register" color="primary">
-                            Đăng ký ngay
+                        Đã có tài khoản?{' '}
+                        <Link href="/login" color="primary">
+                            Đăng nhập
                         </Link>
                     </p>
                 </Card>
@@ -86,4 +90,4 @@ const LoginPage: FC = () => {
     );
 };
 
-export default memo(LoginPage);
+export default memo(RegisterPage);
