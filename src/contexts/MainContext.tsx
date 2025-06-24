@@ -1,11 +1,21 @@
 'use client';
 
-import Loading from '@/components/module/Loading';
+import { Loading } from '@/components/common';
+import MainLayout from '@/components/layout';
+import { PATH_NOT_AUTH } from '@/constants';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { auth } from '@/libs/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { useRouter } from 'next/navigation';
-import { createContext, FC, PropsWithChildren, useContext, useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
+import {
+    createContext,
+    FC,
+    PropsWithChildren,
+    useCallback,
+    useContext,
+    useEffect,
+    useState,
+} from 'react';
 
 interface MainContextType {
     token: string | undefined;
@@ -16,35 +26,47 @@ interface MainContextType {
 const MainContext = createContext<MainContextType | undefined>(undefined);
 
 export const MainProvider: FC<PropsWithChildren> = ({ children }) => {
-    const router = useRouter();
+    const pathname = usePathname();
 
     const [isLoading, setIsLoading] = useState(true);
     const [token, setToken] = useLocalStorage<string | undefined>('token');
 
     useEffect(() => {
-        getUserDetail();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+        if (!PATH_NOT_AUTH.includes(pathname)) {
+            getUserDetail();
+        } else if (token) {
+            setIsLoading(false);
+            window.location.href = '/dashboard';
+        } else {
+            setIsLoading(false);
+        }
+    }, [pathname, token]);
 
-    const getUserDetail = async () => {
+    const renderChildren = () => {
+        if (PATH_NOT_AUTH.includes(pathname)) {
+            return <>{children}</>;
+        }
+
+        return <MainLayout>{children}</MainLayout>;
+    };
+
+    const getUserDetail = useCallback(async () => {
+        setIsLoading(true);
+
         try {
-            setIsLoading(true);
-
             await auth.onAuthStateChanged((user) => {
-                if (user) {
-                    router.push('/album');
-                } else {
-                    router.push('/');
+                if (!user) {
+                    window.location.href = '/login';
                 }
             });
         } catch (error) {
-            router.push('/');
+            window.location.href = '/login';
         } finally {
             setIsLoading(false);
         }
-    };
+    }, []);
 
-    const handleLogin = async (email: string, password: string): Promise<boolean> => {
+    const handleLogin = useCallback(async (email: string, password: string): Promise<boolean> => {
         try {
             setIsLoading(true);
 
@@ -63,25 +85,27 @@ export const MainProvider: FC<PropsWithChildren> = ({ children }) => {
         } finally {
             setIsLoading(false);
         }
-    };
+    }, []);
 
-    const handleLogout = async () => {
+    const handleLogout = useCallback(async () => {
         await auth.signOut();
 
         setToken(undefined);
-        router.push('/');
-    };
+        window.location.href = '/login';
+    }, []);
 
-    const value = {
-        token,
-        handleLogout,
-        handleLogin,
-    };
+    if (isLoading) return <Loading />;
 
-    return isLoading ? (
-        <Loading />
-    ) : (
-        <MainContext.Provider value={value}>{children}</MainContext.Provider>
+    return (
+        <MainContext.Provider
+            value={{
+                token,
+                handleLogout,
+                handleLogin,
+            }}
+        >
+            {renderChildren()}
+        </MainContext.Provider>
     );
 };
 

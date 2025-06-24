@@ -1,43 +1,29 @@
-import router, { useRouter } from "next/router";
-import { createStore } from "zustand";
+import { createStore } from 'zustand';
+import { persist } from 'zustand/middleware';
+import { immer } from 'zustand/middleware/immer';
 
 type AuthStore = {
-  token: string;
-  setToken: (token: string) => void;
+    token: string;
+    clearToken: () => void;
+    setToken: (token: string) => void;
 };
 
-export const useAuthStore = createStore<AuthStore>((set) => ({
-  token: "",
-  setToken: (token: string) => set({ token }),
-  handleLogout: async () => {
-    const router = useRouter();
-
-    await auth.signOut();
-    set({ token: "" });
-    router.push("/");
-  },
-  handleLogin: async (email: string, password: string) => {
-    try {
-      setIsLoading(true);
-
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-
-      if (userCredential?.user) {
-        const tokenFirebase = await userCredential.user.getIdToken();
-        setToken(tokenFirebase);
-
-        return true;
-      }
-
-      return false;
-    } catch (error) {
-      return false;
-    } finally {
-      setIsLoading(false);
-    }
-  },
-}));
+export const useAuthStore = createStore<AuthStore>()(
+    persist(
+        immer((set) => ({
+            token: '',
+            setToken: (token: string) =>
+                set((state) => {
+                    state.token = token;
+                }),
+            clearToken: () =>
+                set((state) => {
+                    state.token = '';
+                }),
+        })),
+        {
+            name: 'auth_token',
+            partialize: (state) => ({ token: state.token }),
+        },
+    ),
+);

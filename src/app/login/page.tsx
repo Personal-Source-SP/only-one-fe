@@ -1,6 +1,7 @@
 'use client';
 
 import { Logo } from '@/components/common';
+import { useMainContext } from '@/contexts/MainContext';
 import { Button, Card, Checkbox, Input } from '@heroui/react';
 import { Icon } from '@iconify/react';
 import { motion } from 'framer-motion';
@@ -8,6 +9,8 @@ import Link from 'next/link';
 import { FC, memo, useState } from 'react';
 
 const LoginPage: FC = () => {
+    const { handleLogin } = useMainContext();
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [rememberMe, setRememberMe] = useState(false);
@@ -53,7 +56,13 @@ const LoginPage: FC = () => {
                                 Quên mật khẩu?
                             </Link>
                         </div>
-                        <Button color="primary" size="lg" className="w-full" type="submit">
+                        <Button
+                            size="lg"
+                            type="submit"
+                            color="primary"
+                            className="w-full"
+                            onPress={() => handleLogin(email, password)}
+                        >
                             Đăng nhập
                         </Button>
                     </form>

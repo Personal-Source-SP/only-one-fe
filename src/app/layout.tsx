@@ -1,10 +1,10 @@
-import { RefineContext } from '@/app/_refine_context';
 import { HeroUIProvider } from '@heroui/react';
 import type { Metadata } from 'next';
 import { NavigationGuardProvider } from 'next-navigation-guard';
 import { Inter } from 'next/font/google';
 import { ReactNode, Suspense } from 'react';
 
+import { MainProvider } from '@/contexts/MainContext';
 import '@/styles/globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -24,11 +24,11 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
                 <Suspense>
                     <NavigationGuardProvider>
                         <HeroUIProvider>
-                            <RefineContext>
+                            <MainProvider>
                                 <main className="min-h-screen max-w-[100vw] w-full">
                                     {children}
                                 </main>
-                            </RefineContext>
+                            </MainProvider>
                         </HeroUIProvider>
                     </NavigationGuardProvider>
                 </Suspense>
