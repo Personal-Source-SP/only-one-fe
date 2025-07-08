@@ -5,8 +5,12 @@ import MainLayout from '@/components/layout';
 import { PATH_NOT_AUTH } from '@/constants';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { auth } from '@/libs/firebase';
+import { queryClient } from '@/libs/react-query';
+import { GoogleAuthService } from '@/services';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import {
     createContext,
     FC,
@@ -19,39 +23,77 @@ import {
 
 interface MainContextType {
     token: string | undefined;
+    googleToken: string | undefined;
+
     handleLogout: () => Promise<void>;
     handleLogin: (email: string, password: string) => Promise<boolean>;
+
+    loading: boolean;
+    handleLoading: (loading: boolean) => void;
 }
 
 const MainContext = createContext<MainContextType | undefined>(undefined);
 
+const googleAuthService = new GoogleAuthService();
+
 export const MainProvider: FC<PropsWithChildren> = ({ children }) => {
     const pathname = usePathname();
+    const params = useSearchParams();
+    const googleCode = params.get('code');
 
-    const [isLoading, setIsLoading] = useState(true);
+    const [loading, setLoading] = useState(true);
     const [token, setToken] = useLocalStorage<string | undefined>('token');
+    const [googleToken, setGoogleToken] = useLocalStorage<string | undefined>('google_token');
 
     useEffect(() => {
         if (!PATH_NOT_AUTH.includes(pathname)) {
             getUserDetail();
         } else if (token) {
-            setIsLoading(false);
+            setLoading(false);
             window.location.href = '/dashboard';
         } else {
-            setIsLoading(false);
+            setLoading(false);
         }
     }, [pathname, token]);
+
+    useEffect(() => {
+        if (googleCode) {
+            getGoogleTokens(googleCode);
+        }
+    }, [googleCode]);
 
     const renderChildren = () => {
         if (PATH_NOT_AUTH.includes(pathname)) {
             return <>{children}</>;
         }
 
-        return <MainLayout>{children}</MainLayout>;
+        return (
+            <QueryClientProvider client={queryClient}>
+                <MainLayout>{children}</MainLayout>;
+                <ReactQueryDevtools initialIsOpen={false} />
+            </QueryClientProvider>
+        );
     };
 
+    const getGoogleTokens = useCallback(async (googleCode: string) => {
+        try {
+            const response = await googleAuthService.getGoogleTokens(googleCode);
+
+            if (response.data) {
+                setGoogleToken(response.data.access_token);
+            } else {
+                setGoogleToken(undefined);
+            }
+        } catch (error: unknown) {
+            console.log(`get google tokens error: ${error}`);
+            setGoogleToken(undefined);
+        } finally {
+            window.location.href = '/dashboard';
+        }
+    }, []);
+
     const getUserDetail = useCallback(async () => {
-        setIsLoading(true);
+        setLoading(true);
 
         try {
             await auth.onAuthStateChanged((user) => {
@@ -62,14 +104,14 @@ export const MainProvider: FC<PropsWithChildren> = ({ children }) => {
         } catch (error) {
             window.location.href = '/login';
         } finally {
-            setIsLoading(false);
+            setLoading(false);
         }
     }, []);
 
     const handleLogin = useCallback(async (email: string, password: string): Promise<boolean> => {
-        try {
-            setIsLoading(true);
+        setLoading(true);
 
+        try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
 
             if (userCredential?.user) {
@@ -83,7 +125,7 @@ export const MainProvider: FC<PropsWithChildren> = ({ children }) => {
         } catch (error) {
             return false;
         } finally {
-            setIsLoading(false);
+            setLoading(false);
         }
     }, []);
 
@@ -94,13 +136,20 @@ export const MainProvider: FC<PropsWithChildren> = ({ children }) => {
         window.location.href = '/login';
     }, []);
 
-    if (isLoading) return <Loading />;
+    const handleLoading = useCallback((loading: boolean) => {
+        setLoading(loading);
+    }, []);
+
+    if (loading) return <Loading />;
 
     return (
         <MainContext.Provider
             value={{
                 token,
+                googleToken,
                 handleLogout,
+                handleLoading,
+                loading,
                 handleLogin,
             }}
         >

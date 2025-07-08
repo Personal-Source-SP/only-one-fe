@@ -23,7 +23,7 @@ export const ITEMS_PER_PAGE_OPTIONS = [
     { value: 100, label: '100 ảnh' },
 ];
 
-export const PATH_NOT_AUTH = ['/login', '/register', '/forgot-password'];
+export const PATH_NOT_AUTH = ['/login', '/register', '/forgot-password', '/connection'];
 
 export const IMAGE_WIDTH_DEFAULT = 1500;
 export const IMAGE_HEIGHT_DEFAULT = 1200;
