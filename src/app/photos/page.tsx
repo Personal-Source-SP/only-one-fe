@@ -16,9 +16,56 @@ import { FC, useEffect, useMemo, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
 const PhotosPage: FC = () => {
-    // Responsive grid columns (local only)
+    // ==== State ====
     const [columns, setColumns] = useState(4);
+    const { googleToken } = useMainContext();
 
+    const {
+        viewMode,
+        sortOrder,
+        currentPage,
+        isSlideshow,
+        searchQuery,
+        filterFolder,
+        itemsPerPage,
+        currentIndex,
+        selectedPhoto,
+        isLightboxOpen,
+        slideshowPaused,
+        slideshowInterval,
+    } = usePhotosStore(
+        useShallow((s) => ({
+            viewMode: s.viewMode,
+            sortOrder: s.sortOrder,
+            currentPage: s.currentPage,
+            isSlideshow: s.isSlideshow,
+            searchQuery: s.searchQuery,
+            filterFolder: s.filterFolder,
+            itemsPerPage: s.itemsPerPage,
+            currentIndex: s.currentIndex,
+            selectedPhoto: s.selectedPhoto,
+            isLightboxOpen: s.isLightboxOpen,
+            slideshowPaused: s.slideshowPaused,
+            slideshowInterval: s.slideshowInterval,
+        })),
+    );
+
+    const setViewMode = usePhotosStore((s) => s.setViewMode);
+    const setSortOrder = usePhotosStore((s) => s.setSortOrder);
+    const setCurrentPage = usePhotosStore((s) => s.setCurrentPage);
+    const startSlideshow = usePhotosStore((s) => s.startSlideshow);
+    const stopSlideshow = usePhotosStore((s) => s.stopSlideshow);
+    const setSearchQuery = usePhotosStore((s) => s.setSearchQuery);
+    const setFilterFolder = usePhotosStore((s) => s.setFilterFolder);
+    const setItemsPerPage = usePhotosStore((s) => s.setItemsPerPage);
+    const setCurrentIndexInStore = usePhotosStore((s) => s.setCurrentIndex);
+    const setSelectedPhotoInStore = usePhotosStore((s) => s.setSelectedPhoto);
+    const toggleSlideshowPause = usePhotosStore((s) => s.toggleSlideshowPause);
+    const setSlideshowInterval = usePhotosStore((s) => s.setSlideshowInterval);
+    const openLightbox = usePhotosStore((s) => s.openLightbox);
+    const closeLightbox = usePhotosStore((s) => s.closeLightbox);
+
+    // ==== useEffect ====
     useEffect(() => {
         const updateColumns = () => {
             const width = window.innerWidth;
@@ -37,8 +84,24 @@ const PhotosPage: FC = () => {
         return () => window.removeEventListener('resize', updateColumns);
     }, []);
 
-    // Fetch image files from Google Drive
-    const { googleToken } = useMainContext();
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [itemsPerPage, setCurrentPage]);
+
+    useEffect(() => {
+        let timer: ReturnType<typeof setTimeout> | undefined;
+        if (isSlideshow && !slideshowPaused) {
+            timer = setTimeout(() => {
+                handleNext();
+            }, slideshowInterval * 1000);
+        }
+        return () => {
+            if (timer) clearTimeout(timer);
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isSlideshow, slideshowPaused, slideshowInterval, currentIndex]);
+
+    // ==== useMemo / Data ====
     const listFilesRequest = useMemo<NGoogleDrive.ListFilesRequest>(
         () => ({
             q: "mimeType contains 'image/' and trashed=false",
@@ -49,6 +112,7 @@ const PhotosPage: FC = () => {
         }),
         [],
     );
+
     const {
         data: filesResponse,
         isError,
@@ -62,7 +126,6 @@ const PhotosPage: FC = () => {
 
     const driveFiles: NGoogleDrive.DriveFileResponse[] = filesResponse?.data?.files ?? [];
 
-    // Map Drive files to Photo[]
     const allPhotos: Photo[] = useMemo(() => {
         return (driveFiles || []).map((file, index) => ({
             id: index + 1,
@@ -71,78 +134,20 @@ const PhotosPage: FC = () => {
         }));
     }, [driveFiles]);
 
-    const {
-        searchQuery,
-        filterFolder,
-        sortOrder,
-        currentPage,
-        itemsPerPage,
-        viewMode,
-        selectedPhoto,
-        currentIndex,
-        isSlideshow,
-        slideshowInterval,
-        slideshowPaused,
-        isLightboxOpen,
-    } = usePhotosStore(
-        useShallow((s) => ({
-            searchQuery: s.searchQuery,
-            filterFolder: s.filterFolder,
-            sortOrder: s.sortOrder,
-            currentPage: s.currentPage,
-            itemsPerPage: s.itemsPerPage,
-            viewMode: s.viewMode,
-            selectedPhoto: s.selectedPhoto,
-            currentIndex: s.currentIndex,
-            isSlideshow: s.isSlideshow,
-            slideshowInterval: s.slideshowInterval,
-            slideshowPaused: s.slideshowPaused,
-            isLightboxOpen: s.isLightboxOpen,
-        })),
-    );
-
-    const setSearchQuery = usePhotosStore((s) => s.setSearchQuery);
-    const setFilterFolder = usePhotosStore((s) => s.setFilterFolder);
-    const setSortOrder = usePhotosStore((s) => s.setSortOrder);
-    const setCurrentPage = usePhotosStore((s) => s.setCurrentPage);
-    const setItemsPerPage = usePhotosStore((s) => s.setItemsPerPage);
-    const setViewMode = usePhotosStore((s) => s.setViewMode);
-    const openLightbox = usePhotosStore((s) => s.openLightbox);
-    const closeLightbox = usePhotosStore((s) => s.closeLightbox);
-    const setSelectedPhotoInStore = usePhotosStore((s) => s.setSelectedPhoto);
-    const setCurrentIndexInStore = usePhotosStore((s) => s.setCurrentIndex);
-    const startSlideshow = usePhotosStore((s) => s.startSlideshow);
-    const stopSlideshow = usePhotosStore((s) => s.stopSlideshow);
-    const toggleSlideshowPause = usePhotosStore((s) => s.toggleSlideshowPause);
-    const setSlideshowInterval = usePhotosStore((s) => s.setSlideshowInterval);
-
-    // Derived lists
     const filteredAndSortedPhotos = useMemo(() => {
         let result = allPhotos;
-
-        if (filterFolder) {
-            result = result.filter((photo) => photo.folder === filterFolder);
-        }
-
-        if (searchQuery) {
+        if (filterFolder) result = result.filter((photo) => photo.folder === filterFolder);
+        if (searchQuery)
             result = result.filter((photo) =>
                 photo.id.toString().includes(searchQuery.toLowerCase()),
             );
-        }
-
         result.sort((a, b) =>
             sortOrder === 'newest'
                 ? b.date.getTime() - a.date.getTime()
                 : a.date.getTime() - b.date.getTime(),
         );
-
         return result;
     }, [allPhotos, filterFolder, searchQuery, sortOrder]);
-
-    useEffect(() => {
-        // Reset to first page when items per page changes
-        setCurrentPage(1);
-    }, [itemsPerPage, setCurrentPage]);
 
     const paginatedPhotos = useMemo(() => {
         const startIndex = (currentPage - 1) * itemsPerPage;
@@ -150,10 +155,7 @@ const PhotosPage: FC = () => {
     }, [filteredAndSortedPhotos, currentPage, itemsPerPage]);
 
     const groupedPhotos = useMemo(() => {
-        if (viewMode === 'all') {
-            return [{ date: 'Tất cả ảnh', photos: paginatedPhotos }];
-        }
-
+        if (viewMode === 'all') return [{ date: 'Tất cả ảnh', photos: paginatedPhotos }];
         const groups: { [key: string]: typeof paginatedPhotos } = {};
         paginatedPhotos.forEach((photo) => {
             const dateKey = photo.date.toLocaleDateString('vi-VN', {
@@ -167,7 +169,7 @@ const PhotosPage: FC = () => {
         return Object.entries(groups).map(([date, photos]) => ({ date, photos }));
     }, [paginatedPhotos, viewMode]);
 
-    // Handlers
+    // ==== Handlers ====
     const handlePhotoClick = (url: string) => {
         const index = allPhotos.findIndex((photo) => photo.url === url);
         openLightbox(url, index);
@@ -184,19 +186,6 @@ const PhotosPage: FC = () => {
         setCurrentIndexInStore(newIndex);
         setSelectedPhotoInStore(allPhotos[newIndex].url);
     };
-
-    useEffect(() => {
-        let timer: ReturnType<typeof setTimeout> | undefined;
-        if (isSlideshow && !slideshowPaused) {
-            timer = setTimeout(() => {
-                handleNext();
-            }, slideshowInterval * 1000);
-        }
-        return () => {
-            if (timer) clearTimeout(timer);
-        };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isSlideshow, slideshowPaused, slideshowInterval, currentIndex]);
 
     if (!isLoading && (isError || driveFiles.length === 0)) {
         return <PhotosNotFound onRetry={() => refetch()} loading={isLoading} />;
