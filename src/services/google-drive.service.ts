@@ -16,7 +16,7 @@ export class GoogleDriveService extends BaseApi {
     ): Promise<NBaseApi.IResponse<NGoogleDrive.ListFilesResponse | null>> {
         const params = this.generateSearchParams(request);
         const response = await this.get<NGoogleDrive.ListFilesResponse>({
-            endPoint: `/files?${params.toString()}`,
+            endPoint: `/files`,
             params,
         });
 

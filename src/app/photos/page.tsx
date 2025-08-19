@@ -1,181 +1,122 @@
 'use client';
 
-import { useDisclosure } from '@heroui/react';
-import { FC, useEffect, useMemo, useState } from 'react';
+import LightboxModal from '@/components/module/photos/LightboxModal';
+import PhotosNotFound from '@/components/module/photos/NotFound';
+import PaginationControls from '@/components/module/photos/PaginationControls';
+import PhotoGroups from '@/components/module/photos/PhotoGroups';
+import SlideshowModal from '@/components/module/photos/SlideshowModal';
 import PhotosToolbar from '@/components/module/photos/Toolbar';
 import ViewModeToggle from '@/components/module/photos/ViewModeToggle';
-import PhotoGroups from '@/components/module/photos/PhotoGroups';
-import PaginationControls from '@/components/module/photos/PaginationControls';
-import SlideshowModal from '@/components/module/photos/SlideshowModal';
-import LightboxModal from '@/components/module/photos/LightboxModal';
+import { useMainContext } from '@/contexts/MainContext';
+import type { NGoogleDrive } from '@/interfaces';
 import type { Photo } from '@/interfaces/photo';
-
-type FilterOption = { id: string; name: string; preview: string | null };
+import { useListFiles } from '@/query/google-drive.query';
+import { usePhotosStore } from '@/stores/photos.store';
+import { FC, useEffect, useMemo, useState } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 
 const PhotosPage: FC = () => {
-    const { isOpen, onOpen, onOpenChange } = useDisclosure();
-    const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
-    const [currentIndex, setCurrentIndex] = useState(0);
-
-    // Responsive grid columns
+    // Responsive grid columns (local only)
     const [columns, setColumns] = useState(4);
 
     useEffect(() => {
         const updateColumns = () => {
             const width = window.innerWidth;
             if (width < 640) {
-                setColumns(2); // Mobile: 2 columns
+                setColumns(2);
             } else if (width < 1024) {
-                setColumns(3); // Tablet: 3 columns
+                setColumns(3);
             } else {
-                setColumns(4); // Desktop: 4+ columns
+                setColumns(4);
             }
         };
 
         window.addEventListener('resize', updateColumns);
-        updateColumns(); // Initial check
+        updateColumns();
 
         return () => window.removeEventListener('resize', updateColumns);
     }, []);
 
-    // Updated mock data with date property
-    const photoGroups: { date: string; photos: Photo[] }[] = [
-        {
-            date: 'Hôm nay',
-            photos: [
-                {
-                    id: 1,
-                    url: 'https://img.heroui.chat/image/landscape?w=600&h=400&u=1',
-                    date: new Date(),
-                },
-                {
-                    id: 2,
-                    url: 'https://img.heroui.chat/image/landscape?w=600&h=400&u=2',
-                    date: new Date(),
-                },
-                {
-                    id: 3,
-                    url: 'https://img.heroui.chat/image/landscape?w=600&h=400&u=3',
-                    date: new Date(),
-                },
-                {
-                    id: 4,
-                    url: 'https://img.heroui.chat/image/landscape?w=600&h=400&u=4',
-                    date: new Date(),
-                },
-            ],
-        },
-        {
-            date: 'Tuần trước',
-            photos: [
-                {
-                    id: 5,
-                    url: 'https://img.heroui.chat/image/landscape?w=600&h=400&u=5',
-                    date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
-                },
-                {
-                    id: 6,
-                    url: 'https://img.heroui.chat/image/landscape?w=600&h=400&u=6',
-                    date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
-                },
-                {
-                    id: 7,
-                    url: 'https://img.heroui.chat/image/landscape?w=600&h=400&u=7',
-                    date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
-                },
-                {
-                    id: 8,
-                    url: 'https://img.heroui.chat/image/landscape?w=600&h=400&u=8',
-                    date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
-                },
-                {
-                    id: 9,
-                    url: 'https://img.heroui.chat/image/landscape?w=600&h=400&u=9',
-                    date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
-                },
-                {
-                    id: 10,
-                    url: 'https://img.heroui.chat/image/landscape?w=600&h=400&u=10',
-                    date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
-                },
-            ],
-        },
-        {
-            date: 'Tháng trước',
-            photos: [
-                {
-                    id: 11,
-                    url: 'https://img.heroui.chat/image/landscape?w=600&h=400&u=11',
-                    date: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
-                },
-                {
-                    id: 12,
-                    url: 'https://img.heroui.chat/image/landscape?w=600&h=400&u=12',
-                    date: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
-                },
-                {
-                    id: 13,
-                    url: 'https://img.heroui.chat/image/landscape?w=600&h=400&u=13',
-                    date: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
-                },
-                {
-                    id: 14,
-                    url: 'https://img.heroui.chat/image/landscape?w=600&h=400&u=14',
-                    date: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
-                },
-                {
-                    id: 15,
-                    url: 'https://img.heroui.chat/image/landscape?w=600&h=400&u=15',
-                    date: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
-                },
-                {
-                    id: 16,
-                    url: 'https://img.heroui.chat/image/landscape?w=600&h=400&u=16',
-                    date: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
-                },
-                {
-                    id: 17,
-                    url: 'https://img.heroui.chat/image/landscape?w=600&h=400&u=17',
-                    date: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
-                },
-                {
-                    id: 18,
-                    url: 'https://img.heroui.chat/image/landscape?w=600&h=400&u=18',
-                    date: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
-                },
-            ],
-        },
-    ];
+    // Fetch image files from Google Drive
+    const { googleToken } = useMainContext();
+    const listFilesRequest = useMemo<NGoogleDrive.ListFilesRequest>(
+        () => ({
+            q: "mimeType contains 'image/' and trashed=false",
+            pageSize: 200,
+            fields: 'files(id,name,mimeType,thumbnailLink,webContentLink,createdTime),nextPageToken',
+            orderBy: 'createdTime desc',
+            spaces: 'drive',
+        }),
+        [],
+    );
+    const {
+        data: filesResponse,
+        isError,
+        isLoading,
+        refetch,
+    } = useListFiles(listFilesRequest, {
+        retry: false,
+        enabled: !!googleToken,
+        refetchOnWindowFocus: false,
+    });
 
-    // Flatten photos for navigation in lightbox
-    const allPhotos = photoGroups.flatMap((group) => group.photos);
+    const driveFiles: NGoogleDrive.DriveFileResponse[] = filesResponse?.data?.files ?? [];
 
-    // New state variables for enhanced features
-    const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest');
-    const [filterFolder, setFilterFolder] = useState<string | null>(null);
-    const [searchQuery, setSearchQuery] = useState('');
-    const [currentPage, setCurrentPage] = useState(1);
-    const [viewMode, setViewMode] = useState<'time' | 'all'>('time');
+    // Map Drive files to Photo[]
+    const allPhotos: Photo[] = useMemo(() => {
+        return (driveFiles || []).map((file, index) => ({
+            id: index + 1,
+            url: (file.thumbnailLink || file.webContentLink || '').toString(),
+            date: new Date(file.createdTime || Date.now()),
+        }));
+    }, [driveFiles]);
 
-    // Mock folders for filtering
-    const folders = ['Gia đình', 'Du lịch', 'Công việc', 'Sự kiện'];
-    const folderItems = useMemo(
-        () => [
-            { key: 'all', label: 'Tất cả thư mục', value: null as string | null },
-            ...folders.map((folder) => ({ key: folder, label: folder, value: folder })),
-        ],
-        [folders],
+    const {
+        searchQuery,
+        filterFolder,
+        sortOrder,
+        currentPage,
+        itemsPerPage,
+        viewMode,
+        selectedPhoto,
+        currentIndex,
+        isSlideshow,
+        slideshowInterval,
+        slideshowPaused,
+        isLightboxOpen,
+    } = usePhotosStore(
+        useShallow((s) => ({
+            searchQuery: s.searchQuery,
+            filterFolder: s.filterFolder,
+            sortOrder: s.sortOrder,
+            currentPage: s.currentPage,
+            itemsPerPage: s.itemsPerPage,
+            viewMode: s.viewMode,
+            selectedPhoto: s.selectedPhoto,
+            currentIndex: s.currentIndex,
+            isSlideshow: s.isSlideshow,
+            slideshowInterval: s.slideshowInterval,
+            slideshowPaused: s.slideshowPaused,
+            isLightboxOpen: s.isLightboxOpen,
+        })),
     );
 
-    // New state variables for slideshow
-    const [isSlideshow, setIsSlideshow] = useState(false);
-    const [slideshowInterval, setSlideshowInterval] = useState(5);
-    const [slideshowPaused, setSlideshowPaused] = useState(false);
+    const setSearchQuery = usePhotosStore((s) => s.setSearchQuery);
+    const setFilterFolder = usePhotosStore((s) => s.setFilterFolder);
+    const setSortOrder = usePhotosStore((s) => s.setSortOrder);
+    const setCurrentPage = usePhotosStore((s) => s.setCurrentPage);
+    const setItemsPerPage = usePhotosStore((s) => s.setItemsPerPage);
+    const setViewMode = usePhotosStore((s) => s.setViewMode);
+    const openLightbox = usePhotosStore((s) => s.openLightbox);
+    const closeLightbox = usePhotosStore((s) => s.closeLightbox);
+    const setSelectedPhotoInStore = usePhotosStore((s) => s.setSelectedPhoto);
+    const setCurrentIndexInStore = usePhotosStore((s) => s.setCurrentIndex);
+    const startSlideshow = usePhotosStore((s) => s.startSlideshow);
+    const stopSlideshow = usePhotosStore((s) => s.stopSlideshow);
+    const toggleSlideshowPause = usePhotosStore((s) => s.toggleSlideshowPause);
+    const setSlideshowInterval = usePhotosStore((s) => s.setSlideshowInterval);
 
-    // New state variable for items per page
-    const [itemsPerPage, setItemsPerPage] = useState(12);
-
-    // Filter and sort photos
+    // Derived lists
     const filteredAndSortedPhotos = useMemo(() => {
         let result = allPhotos;
 
@@ -189,47 +130,19 @@ const PhotosPage: FC = () => {
             );
         }
 
-        result.sort((a, b) => {
-            if (sortOrder === 'newest') {
-                return b.date.getTime() - a.date.getTime();
-            } else {
-                return a.date.getTime() - b.date.getTime();
-            }
-        });
+        result.sort((a, b) =>
+            sortOrder === 'newest'
+                ? b.date.getTime() - a.date.getTime()
+                : a.date.getTime() - b.date.getTime(),
+        );
 
         return result;
     }, [allPhotos, filterFolder, searchQuery, sortOrder]);
 
-    const startSlideshow = () => {
-        setIsSlideshow(true);
-        setSlideshowPaused(false);
-        onOpen();
-    };
-
-    const stopSlideshow = () => {
-        setIsSlideshow(false);
-        setSlideshowPaused(false);
-    };
-
-    const toggleSlideshowPause = () => {
-        setSlideshowPaused(!slideshowPaused);
-    };
-
     useEffect(() => {
-        let timer: ReturnType<typeof setTimeout> | undefined;
-        if (isSlideshow && !slideshowPaused) {
-            timer = setTimeout(() => {
-                handleNext();
-            }, slideshowInterval * 1000);
-        }
-        return () => {
-            if (timer) clearTimeout(timer);
-        };
-    }, [isSlideshow, slideshowPaused, slideshowInterval, currentIndex]);
-
-    useEffect(() => {
+        // Reset to first page when items per page changes
         setCurrentPage(1);
-    }, [itemsPerPage]);
+    }, [itemsPerPage, setCurrentPage]);
 
     const paginatedPhotos = useMemo(() => {
         const startIndex = (currentPage - 1) * itemsPerPage;
@@ -248,32 +161,46 @@ const PhotosPage: FC = () => {
                 month: 'long',
                 day: 'numeric',
             });
-            if (!groups[dateKey]) {
-                groups[dateKey] = [];
-            }
+            if (!groups[dateKey]) groups[dateKey] = [];
             groups[dateKey].push(photo);
         });
         return Object.entries(groups).map(([date, photos]) => ({ date, photos }));
     }, [paginatedPhotos, viewMode]);
 
+    // Handlers
     const handlePhotoClick = (url: string) => {
-        setSelectedPhoto(url);
         const index = allPhotos.findIndex((photo) => photo.url === url);
-        setCurrentIndex(index);
-        onOpen();
+        openLightbox(url, index);
     };
 
     const handlePrevious = () => {
         const newIndex = (currentIndex - 1 + allPhotos.length) % allPhotos.length;
-        setCurrentIndex(newIndex);
-        setSelectedPhoto(allPhotos[newIndex].url);
+        setCurrentIndexInStore(newIndex);
+        setSelectedPhotoInStore(allPhotos[newIndex].url);
     };
 
     const handleNext = () => {
         const newIndex = (currentIndex + 1) % allPhotos.length;
-        setCurrentIndex(newIndex);
-        setSelectedPhoto(allPhotos[newIndex].url);
+        setCurrentIndexInStore(newIndex);
+        setSelectedPhotoInStore(allPhotos[newIndex].url);
     };
+
+    useEffect(() => {
+        let timer: ReturnType<typeof setTimeout> | undefined;
+        if (isSlideshow && !slideshowPaused) {
+            timer = setTimeout(() => {
+                handleNext();
+            }, slideshowInterval * 1000);
+        }
+        return () => {
+            if (timer) clearTimeout(timer);
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isSlideshow, slideshowPaused, slideshowInterval, currentIndex]);
+
+    if (!isLoading && (isError || driveFiles.length === 0)) {
+        return <PhotosNotFound onRetry={() => refetch()} loading={isLoading} />;
+    }
 
     return (
         <div className="space-y-6">
@@ -284,7 +211,7 @@ const PhotosPage: FC = () => {
                 onFilterFolderChange={setFilterFolder}
                 sortOrder={sortOrder}
                 onSortOrderChange={setSortOrder}
-                folderItems={folderItems}
+                folderItems={[{ key: 'all', label: 'Tất cả thư mục', value: null }]}
                 onStartSlideshow={startSlideshow}
             />
 
@@ -322,10 +249,10 @@ const PhotosPage: FC = () => {
             />
 
             <LightboxModal
-                isOpen={isOpen}
-                onOpenChange={onOpenChange}
+                isOpen={isLightboxOpen}
+                onOpenChange={(open) => (open ? undefined : closeLightbox())}
                 selectedPhoto={selectedPhoto}
-                onRequestClose={() => onOpenChange()}
+                onRequestClose={closeLightbox}
                 onPrevious={handlePrevious}
                 onNext={handleNext}
             />

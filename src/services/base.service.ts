@@ -19,8 +19,16 @@ export default class BaseApi {
 
         // Request interceptor
         this.httpClient.interceptors.request.use((request) => {
-            if (request.headers && !request.headers['Authorization'] && accessToken) {
-                request.headers['Authorization'] = `Bearer ${accessToken}`;
+            // Always try to read latest token from storage on client
+            let runtimeToken: string | null = null;
+            if (typeof window !== 'undefined') {
+                runtimeToken =
+                    localStorage.getItem('google_token') || localStorage.getItem('token') || null;
+            }
+
+            const bearer = runtimeToken || accessToken;
+            if (request.headers && !request.headers['Authorization'] && bearer) {
+                request.headers['Authorization'] = `Bearer ${bearer}`;
             }
 
             return request;

@@ -1,12 +1,28 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient, UseQueryOptions } from '@tanstack/react-query';
 import { GoogleDriveService } from '@/services/google-drive.service';
 import { NGoogleDrive, NBaseApi } from '@/interfaces';
 
 const googleDriveService = new GoogleDriveService();
 
 // Danh sách file
-export function useListFiles(request?: NGoogleDrive.ListFilesRequest, options?: any) {
-    return useQuery({
+export function useListFiles(
+    request?: NGoogleDrive.ListFilesRequest,
+    options?: Omit<
+        UseQueryOptions<
+            NBaseApi.IResponse<NGoogleDrive.ListFilesResponse | null>,
+            Error,
+            NBaseApi.IResponse<NGoogleDrive.ListFilesResponse | null>,
+            [string, string, NGoogleDrive.ListFilesRequest | undefined]
+        >,
+        'queryKey' | 'queryFn'
+    >,
+) {
+    return useQuery<
+        NBaseApi.IResponse<NGoogleDrive.ListFilesResponse | null>,
+        Error,
+        NBaseApi.IResponse<NGoogleDrive.ListFilesResponse | null>,
+        [string, string, NGoogleDrive.ListFilesRequest | undefined]
+    >({
         queryKey: ['googleDrive', 'listFiles', request],
         queryFn: () => googleDriveService.listFiles(request),
         ...options,
