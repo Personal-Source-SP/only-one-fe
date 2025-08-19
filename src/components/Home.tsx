@@ -1,91 +1,79 @@
-"use client";
+'use client';
 
-import { useMainContext } from "@/contexts/MainContext";
-import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import { Button, Form, Image, Input, message } from "antd";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useMainContext } from '@/contexts/MainContext';
+import { Button, Input } from '@heroui/react';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 export default function HomeClient() {
-  const router = useRouter();
-  const { token, handleLogin } = useMainContext();
+    const router = useRouter();
+    const { token, handleLogin } = useMainContext();
 
-  useEffect(() => {
-    if (token) {
-      router.push("/album");
-    }
-  }, [token, router]);
+    useEffect(() => {
+        if (token) {
+            router.push('/album');
+        }
+    }, [token, router]);
 
-  const handleSubmit = async (values: { email: string; password: string }) => {
-    try {
-      const result = await handleLogin(values.email, values.password);
+    const handleSubmit = async (values: { email: string; password: string }) => {
+        try {
+            const result = await handleLogin(values.email, values.password);
 
-      if (result) {
-        router.push("/album");
-      } else {
-        message.error("Đăng nhập thất bại");
-      }
-    } catch (error) {
-      message.error("Có lỗi xảy ra khi đăng nhập");
-    }
-  };
+            if (result) {
+                router.push('/album');
+            } else {
+                console.error('Đăng nhập thất bại');
+            }
+        } catch (error) {
+            console.error('Có lỗi xảy ra khi đăng nhập');
+        }
+    };
 
-  return (
-    <div className="flex items-center justify-center h-screen bg-gradient-to-r from-purple-500 to-red-500">
-      <div className="text-center">
-        <div className="mb-6">
-          <Image
-            width={60}
-            height={60}
-            alt="Profile"
-            preview={false}
-            src="/assets/logo.webp"
-            className="rounded-full mx-auto"
-          />
+    return (
+        <div className="flex items-center justify-center h-screen bg-gradient-to-r from-purple-500 to-red-500">
+            <div className="text-center">
+                <div className="mb-6">
+                    <img
+                        width={60}
+                        height={60}
+                        alt="Profile"
+                        src="/assets/logo.webp"
+                        className="rounded-full mx-auto"
+                    />
+                </div>
+
+                <form
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        const form = e.currentTarget as HTMLFormElement & {
+                            email: HTMLInputElement;
+                            password: HTMLInputElement;
+                        };
+                        handleSubmit({ email: form.email.value, password: form.password.value });
+                    }}
+                    className="flex flex-col items-center gap-3"
+                >
+                    <Input
+                        name="email"
+                        size="lg"
+                        placeholder="Email"
+                        className="w-72"
+                        type="email"
+                        isRequired
+                    />
+                    <Input
+                        name="password"
+                        size="lg"
+                        className="w-72"
+                        placeholder="Mật khẩu"
+                        type="password"
+                        isRequired
+                    />
+                    <Button size="lg" color="primary" className="w-72" type="submit">
+                        Đăng nhập
+                    </Button>
+                </form>
+            </div>
         </div>
-
-        <Form onFinish={handleSubmit}>
-          <Form.Item
-            name="email"
-            rules={[
-              { required: true, message: "Vui lòng nhập email!" },
-              {
-                type: "email",
-                message: "Email không đúng định dạng!",
-              },
-            ]}
-          >
-            <Input
-              size="large"
-              placeholder="Email"
-              prefix={<UserOutlined />}
-              className="w-72 focus:border-none focus:outline-none"
-            />
-          </Form.Item>
-
-          <Form.Item
-            name="password"
-            rules={[{ required: true, message: "Vui lòng nhập mật khẩu!" }]}
-          >
-            <Input.Password
-              size="large"
-              className="w-72"
-              placeholder="Mật khẩu"
-              prefix={<LockOutlined />}
-            />
-          </Form.Item>
-
-          <Button
-            size="large"
-            type="primary"
-            className="w-72"
-            htmlType="submit"
-            style={{ backgroundColor: "#000", borderColor: "#000" }}
-          >
-            Đăng nhập
-          </Button>
-        </Form>
-      </div>
-    </div>
-  );
+    );
 }

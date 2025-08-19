@@ -11,7 +11,7 @@ import {
 } from '@/constants';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { Folder, Photo, SortField, SortOrder } from '@/interfaces/album';
-import { Button, message } from 'antd';
+import { Button } from '@heroui/react';
 import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 import AddFolder from '../components/AddFolder';
 
@@ -122,7 +122,7 @@ export const AlbumProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
         const updatedFolders = folders.filter((folder) => folder.path !== path);
         setFolders(updatedFolders);
-        message.success('Xóa thư mục thành công');
+        // Optionally add a toast here using your preferred library
 
         if (selectedFolder === path) {
             setSelectedFolder(updatedFolders.length ? updatedFolders[0].path : undefined);
@@ -207,9 +207,9 @@ export const AlbumProvider: React.FC<{ children: ReactNode }> = ({ children }) =
                     />
 
                     <Button
-                        type="primary"
+                        color="primary"
                         className="w-full mt-4"
-                        onClick={() => setOpenAlbumFilters(false)}
+                        onPress={() => setOpenAlbumFilters(false)}
                     >
                         Áp dụng
                     </Button>

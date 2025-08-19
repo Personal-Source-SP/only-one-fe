@@ -1,0 +1,62 @@
+'use client';
+
+import {
+    Button,
+    Dropdown,
+    DropdownItem,
+    DropdownMenu,
+    DropdownTrigger,
+    Pagination,
+} from '@heroui/react';
+import { memo, FC } from 'react';
+
+export type PaginationControlsProps = {
+    itemsPerPage: number;
+    onItemsPerPageChange: (value: number) => void;
+    totalItems: number;
+    currentPage: number;
+    onPageChange: (page: number) => void;
+};
+
+const PaginationControls: FC<PaginationControlsProps> = ({
+    itemsPerPage,
+    onItemsPerPageChange,
+    totalItems,
+    currentPage,
+    onPageChange,
+}) => {
+    return (
+        <div className="flex flex-col sm:flex-row justify-between items-center mt-8 gap-4">
+            <Dropdown>
+                <DropdownTrigger>
+                    <Button variant="flat" size="sm">
+                        {itemsPerPage} ảnh/trang
+                    </Button>
+                </DropdownTrigger>
+                <DropdownMenu
+                    selectedKeys={new Set([itemsPerPage.toString()])}
+                    selectionMode="single"
+                    onSelectionChange={(keys) => {
+                        const key = Array.from(keys).at(0) as string | undefined;
+                        if (key) onItemsPerPageChange(Number(key));
+                    }}
+                >
+                    <DropdownItem key="10">10 ảnh/trang</DropdownItem>
+                    <DropdownItem key="20">20 ảnh/trang</DropdownItem>
+                    <DropdownItem key="50">50 ảnh/trang</DropdownItem>
+                    <DropdownItem key="100">100 ảnh/trang</DropdownItem>
+                </DropdownMenu>
+            </Dropdown>
+
+            <Pagination
+                total={Math.ceil(totalItems / itemsPerPage)}
+                page={currentPage}
+                onChange={onPageChange}
+                showControls
+                color="primary"
+            />
+        </div>
+    );
+};
+
+export default memo(PaginationControls);
