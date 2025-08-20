@@ -89,8 +89,6 @@ const MainLayout: FC<MainLayoutProps> = ({ children }) => {
         }
     };
 
-    // Mobile sidebar toggle
-
     return (
         <div className="flex h-screen bg-background">
             {/* Sidebar */}
