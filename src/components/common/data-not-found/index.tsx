@@ -5,17 +5,17 @@ import { Icon } from '@iconify/react';
 import { FC, memo } from 'react';
 
 type DataNotFoundProps = {
+    icon?: string;
     title?: string;
     message?: string;
-    icon?: string;
     loading?: boolean;
     onRetry?: () => void;
 };
 
 const DataNotFound: FC<DataNotFoundProps> = ({
+    icon = 'lucide:circle-off',
     title = 'Không có dữ liệu',
     message = 'Vui lòng kiểm tra kết nối hoặc thử lại sau.',
-    icon = 'lucide:circle-off',
     loading,
     onRetry,
 }) => {
@@ -26,13 +26,14 @@ const DataNotFound: FC<DataNotFoundProps> = ({
                     <Icon icon={icon} className="text-5xl text-foreground-400" />
                     <h2 className="text-xl font-semibold">{title}</h2>
                     <p className="text-foreground-500 text-center">{message}</p>
+
                     {onRetry ? (
                         <div className="flex gap-3">
                             <Button
-                                color="primary"
                                 variant="flat"
-                                isLoading={!!loading}
+                                color="primary"
                                 onPress={onRetry}
+                                isLoading={!!loading}
                                 startContent={<Icon icon="lucide:refresh-ccw" />}
                             >
                                 Thử lại

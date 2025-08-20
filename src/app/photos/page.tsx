@@ -16,7 +16,6 @@ import { FC, useEffect, useMemo, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
 const PhotosPage: FC = () => {
-    // ==== State ====
     const [columns, setColumns] = useState(4);
     const { googleToken } = useMainContext();
 
@@ -65,7 +64,6 @@ const PhotosPage: FC = () => {
     const openLightbox = usePhotosStore((s) => s.openLightbox);
     const closeLightbox = usePhotosStore((s) => s.closeLightbox);
 
-    // ==== useEffect ====
     useEffect(() => {
         const updateColumns = () => {
             const width = window.innerWidth;
@@ -101,7 +99,6 @@ const PhotosPage: FC = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isSlideshow, slideshowPaused, slideshowInterval, currentIndex]);
 
-    // ==== useMemo / Data ====
     const listFilesRequest = useMemo<NGoogleDrive.ListFilesRequest>(
         () => ({
             q: "mimeType contains 'image/' and trashed=false",
@@ -169,7 +166,6 @@ const PhotosPage: FC = () => {
         return Object.entries(groups).map(([date, photos]) => ({ date, photos }));
     }, [paginatedPhotos, viewMode]);
 
-    // ==== Handlers ====
     const handlePhotoClick = (url: string) => {
         const index = allPhotos.findIndex((photo) => photo.url === url);
         openLightbox(url, index);
@@ -194,14 +190,14 @@ const PhotosPage: FC = () => {
     return (
         <div className="space-y-6">
             <PhotosToolbar
-                searchQuery={searchQuery}
-                onSearchChange={setSearchQuery}
-                filterFolder={filterFolder}
-                onFilterFolderChange={setFilterFolder}
                 sortOrder={sortOrder}
+                searchQuery={searchQuery}
+                filterFolder={filterFolder}
+                onSearchChange={setSearchQuery}
                 onSortOrderChange={setSortOrder}
-                folderItems={[{ key: 'all', label: 'Tất cả thư mục', value: null }]}
                 onStartSlideshow={startSlideshow}
+                onFilterFolderChange={setFilterFolder}
+                folderItems={[{ key: 'all', label: 'Tất cả thư mục', value: null }]}
             />
 
             <ViewModeToggle
@@ -210,40 +206,40 @@ const PhotosPage: FC = () => {
             />
 
             <PhotoGroups
-                groupedPhotos={groupedPhotos}
                 columns={columns}
+                groupedPhotos={groupedPhotos}
                 onPhotoClick={handlePhotoClick}
             />
 
             <PaginationControls
-                itemsPerPage={itemsPerPage}
-                onItemsPerPageChange={setItemsPerPage}
-                totalItems={filteredAndSortedPhotos.length}
                 currentPage={currentPage}
+                itemsPerPage={itemsPerPage}
+                totalItems={filteredAndSortedPhotos.length}
                 onPageChange={setCurrentPage}
+                onItemsPerPageChange={setItemsPerPage}
             />
 
             <SlideshowModal
                 isOpen={isSlideshow}
-                selectedPhoto={selectedPhoto}
-                currentIndex={currentIndex}
                 total={allPhotos.length}
-                onPrevious={handlePrevious}
-                onNext={handleNext}
-                stopSlideshow={stopSlideshow}
-                slideshowInterval={slideshowInterval}
-                onSetInterval={setSlideshowInterval}
                 paused={slideshowPaused}
+                currentIndex={currentIndex}
+                selectedPhoto={selectedPhoto}
+                slideshowInterval={slideshowInterval}
+                onNext={handleNext}
+                onPrevious={handlePrevious}
+                stopSlideshow={stopSlideshow}
+                onSetInterval={setSlideshowInterval}
                 onTogglePause={toggleSlideshowPause}
             />
 
             <LightboxModal
                 isOpen={isLightboxOpen}
-                onOpenChange={(open) => (open ? undefined : closeLightbox())}
                 selectedPhoto={selectedPhoto}
-                onRequestClose={closeLightbox}
-                onPrevious={handlePrevious}
+                onOpenChange={(open) => (open ? undefined : closeLightbox())}
                 onNext={handleNext}
+                onPrevious={handlePrevious}
+                onRequestClose={closeLightbox}
             />
         </div>
     );
