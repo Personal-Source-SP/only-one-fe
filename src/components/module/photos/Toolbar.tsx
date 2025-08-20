@@ -2,14 +2,16 @@
 
 import {
     Button,
-    Dropdown,
-    DropdownItem,
-    DropdownMenu,
-    DropdownTrigger,
     Input,
+    Modal,
+    ModalBody,
+    ModalContent,
+    ModalHeader,
+    Select,
+    SelectItem,
 } from '@heroui/react';
 import { Icon } from '@iconify/react';
-import { FC, memo } from 'react';
+import { FC, memo, useEffect, useState } from 'react';
 
 export type ToolbarProps = {
     searchQuery: string;
@@ -36,103 +38,147 @@ const PhotosToolbar: FC<ToolbarProps> = ({
     onFilterFolderChange,
     onSortOrderChange,
 }) => {
-    return (
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
-            <Input
-                size="sm"
-                value={searchQuery}
-                className="w-full sm:w-64"
-                onValueChange={onSearchChange}
-                placeholder="Tìm kiếm ảnh của bạn..."
-                startContent={<Icon icon="lucide:search" className="text-foreground-500" />}
-            />
+    const [isOpen, setIsOpen] = useState(false);
+    const [pendingFolder, setPendingFolder] = useState<string | 'all'>(filterFolder ?? 'all');
+    const [pendingSort, setPendingSort] = useState<'newest' | 'oldest'>(sortOrder);
+    const [pendingView, setPendingView] = useState<'all' | 'time'>(viewMode);
 
-            <div className="flex flex-wrap gap-2 mt-2 sm:mt-0">
-                <Button color="primary" startContent={<Icon icon="lucide:upload" />} size="sm">
-                    Tải ảnh lên
-                </Button>
-                <Dropdown>
-                    <DropdownTrigger>
-                        <Button
-                            size="sm"
-                            variant="flat"
-                            color="primary"
-                            startContent={<Icon icon="lucide:filter" />}
-                        >
-                            Lọc
-                        </Button>
-                    </DropdownTrigger>
-                    <DropdownMenu
-                        items={folderItems}
-                        selectionMode="single"
-                        selectedKeys={new Set([filterFolder ?? 'all'])}
-                        onSelectionChange={(keys) => {
-                            const key = Array.from(keys).at(0) as string | undefined;
-                            if (key === 'all') onFilterFolderChange(null);
-                            else if (key) onFilterFolderChange(key);
-                        }}
+    useEffect(() => {
+        if (isOpen) {
+            setPendingFolder(filterFolder ?? 'all');
+            setPendingSort(sortOrder);
+            setPendingView(viewMode);
+        }
+    }, [isOpen, filterFolder, sortOrder, viewMode]);
+
+    return (
+        <>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                <Input
+                    size="sm"
+                    value={searchQuery}
+                    className="w-full sm:w-64"
+                    onValueChange={onSearchChange}
+                    placeholder="Tìm kiếm ảnh của bạn..."
+                    startContent={<Icon icon="lucide:search" className="text-foreground-500" />}
+                />
+
+                <div className="flex justify-between items-center w-full gap-2">
+                    <Button
+                        size="sm"
+                        variant="flat"
+                        color="primary"
+                        className="w-full"
+                        onPress={() => setIsOpen(true)}
+                        startContent={<Icon icon="lucide:settings-2" />}
                     >
-                        {(item) => <DropdownItem key={item.key}>{item.label}</DropdownItem>}
-                    </DropdownMenu>
-                </Dropdown>
-                <Dropdown>
-                    <DropdownTrigger>
-                        <Button
-                            size="sm"
-                            variant="flat"
-                            color="primary"
-                            startContent={<Icon icon="lucide:sort" />}
-                        >
-                            Sắp xếp
-                        </Button>
-                    </DropdownTrigger>
-                    <DropdownMenu
-                        selectionMode="single"
-                        selectedKeys={new Set([sortOrder])}
-                        onSelectionChange={(keys) => {
-                            const key = Array.from(keys).at(0) as 'newest' | 'oldest' | undefined;
-                            if (key) onSortOrderChange(key);
-                        }}
+                        Bộ lọc
+                    </Button>
+                    <Button
+                        size="sm"
+                        variant="flat"
+                        color="primary"
+                        className="w-full"
+                        onPress={onStartSlideshow}
+                        startContent={<Icon icon="lucide:play" />}
                     >
-                        <DropdownItem key="newest">Mới nhất trước</DropdownItem>
-                        <DropdownItem key="oldest">Cũ nhất trước</DropdownItem>
-                    </DropdownMenu>
-                </Dropdown>
-                <Dropdown>
-                    <DropdownTrigger>
-                        <Button
-                            size="sm"
-                            variant="flat"
-                            color="primary"
-                            startContent={<Icon icon="lucide:view" />}
-                        >
-                            Xem
-                        </Button>
-                    </DropdownTrigger>
-                    <DropdownMenu
-                        selectionMode="single"
-                        selectedKeys={new Set([viewMode])}
-                        onSelectionChange={(keys) => {
-                            const key = Array.from(keys).at(0) as 'all' | 'time' | undefined;
-                            if (key) onToggle();
-                        }}
-                    >
-                        <DropdownItem key="all">Xem tất cả</DropdownItem>
-                        <DropdownItem key="time">Xem theo thời gian</DropdownItem>
-                    </DropdownMenu>
-                </Dropdown>
+                        Trình chiếu
+                    </Button>
+                </div>
             </div>
 
-            <Button
-                size="sm"
-                variant="flat"
-                color="primary"
-                onPress={onStartSlideshow}
-                startContent={<Icon icon="lucide:play" />}
+            <Modal
+                size="lg"
+                isOpen={isOpen}
+                backdrop="opaque"
+                placement="center"
+                scrollBehavior="inside"
+                onOpenChange={setIsOpen}
             >
-                Trình chiếu
-            </Button>
-        </div>
+                <ModalContent>
+                    {() => (
+                        <>
+                            <ModalHeader className="pb-0">Công cụ</ModalHeader>
+                            <ModalBody className="p-4 space-y-4">
+                                <div className="space-y-3">
+                                    <Select
+                                        size="sm"
+                                        label="Thư mục"
+                                        selectedKeys={new Set([pendingFolder])}
+                                        items={[
+                                            { key: 'all', label: 'Tất cả thư mục' },
+                                            ...folderItems.filter((f) => f.key !== 'all'),
+                                        ]}
+                                        onSelectionChange={(keys) => {
+                                            const key = Array.from(keys).at(0) as
+                                                | string
+                                                | undefined;
+                                            if (key) setPendingFolder(key as string);
+                                        }}
+                                    >
+                                        {(item) => (
+                                            <SelectItem key={item.key}>{item.label}</SelectItem>
+                                        )}
+                                    </Select>
+
+                                    <Select
+                                        size="sm"
+                                        label="Sắp xếp"
+                                        selectedKeys={new Set([pendingSort])}
+                                        onSelectionChange={(keys) => {
+                                            const key = Array.from(keys).at(0) as
+                                                | 'newest'
+                                                | 'oldest'
+                                                | undefined;
+                                            if (key) setPendingSort(key);
+                                        }}
+                                    >
+                                        <SelectItem key="newest">Mới nhất trước</SelectItem>
+                                        <SelectItem key="oldest">Cũ nhất trước</SelectItem>
+                                    </Select>
+
+                                    <Select
+                                        size="sm"
+                                        label="Chế độ xem"
+                                        selectedKeys={new Set([pendingView])}
+                                        onSelectionChange={(keys) => {
+                                            const key = Array.from(keys).at(0) as
+                                                | 'all'
+                                                | 'time'
+                                                | undefined;
+                                            if (key) setPendingView(key);
+                                        }}
+                                    >
+                                        <SelectItem key="all">Xem tất cả</SelectItem>
+                                        <SelectItem key="time">Xem theo thời gian</SelectItem>
+                                    </Select>
+
+                                    <div className="pt-2">
+                                        <Button
+                                            color="primary"
+                                            fullWidth
+                                            startContent={<Icon icon="lucide:filter" />}
+                                            onPress={() => {
+                                                if (pendingSort !== sortOrder)
+                                                    onSortOrderChange(pendingSort);
+                                                const nextFolder =
+                                                    pendingFolder === 'all' ? null : pendingFolder;
+                                                if (nextFolder !== filterFolder)
+                                                    onFilterFolderChange(nextFolder);
+                                                if (pendingView !== viewMode) onToggle();
+                                                setIsOpen(false);
+                                            }}
+                                        >
+                                            Lọc
+                                        </Button>
+                                    </div>
+                                </div>
+                            </ModalBody>
+                        </>
+                    )}
+                </ModalContent>
+            </Modal>
+        </>
     );
 };
 

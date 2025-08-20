@@ -1,4 +1,3 @@
-import { useMainContext } from '@/contexts/MainContext';
 import { GoogleAuthService } from '@/services';
 import {
     Avatar,
@@ -43,22 +42,11 @@ const Header: FC<HeaderProps> = ({
     setMobileMenuOpen,
     setShowNotifications,
 }) => {
-    const { googleToken } = useMainContext();
-
     const settingItem: SettingItem[] = [
         {
             label: 'Thông tin tài khoản',
             icon: 'lucide:user',
             onClick: () => {},
-        },
-        {
-            label: googleToken ? 'Đã kết nối Google' : 'Kết nối Google',
-            icon: 'logos:google-icon',
-            disabled: Boolean(googleToken),
-            onClick: () => {
-                const url = googleAuthService.getGoogleAuthUrl();
-                window.location.href = url;
-            },
         },
         {
             label: 'Cài đặt',

@@ -265,18 +265,9 @@ export class UserAuthService {
 
             const { access_token, refresh_token, expires_in } = tokensResult.data;
 
-            // Lấy thông tin user từ Google
-            const userProfile = await this.googleAuthService.getUserProfile(access_token);
-            if (!userProfile) {
-                return {
-                    success: false,
-                    error: 'Không thể lấy thông tin user từ Google',
-                };
-            }
-
             // Tìm user trong database
             const users = await FirebaseDBService.getDocuments<NUser.IUser>('users', {
-                where: [{ field: 'email', operator: '==', value: userProfile.email }],
+                where: [{ field: 'googleId', operator: '==', value: googleCode }],
                 limit: 1,
             });
 
@@ -295,8 +286,7 @@ export class UserAuthService {
 
                 // Cập nhật Google tokens và thông tin
                 await FirebaseDBService.updateDocument('users', user.id, {
-                    picture: userProfile.picture,
-                    googleId: userProfile.id,
+                    googleId: googleCode,
                     googleTokenExpiry: new Date(Date.now() + expires_in * 1000),
                     googleRefreshToken: refresh_token,
                     lastLoginAt: new Date(),
@@ -315,13 +305,13 @@ export class UserAuthService {
             } else {
                 // Tạo user mới
                 const newUserId = await this.createUserWithPassword({
-                    email: userProfile.email,
-                    name: userProfile.name,
-                    picture: userProfile.picture,
+                    email: '',
+                    name: '',
+                    picture: '',
                     role: 'user',
                     isActive: true,
-                    googleId: userProfile.id,
                     loginMethod: 'google',
+                    googleId: googleCode,
                 });
 
                 // Cập nhật Google tokens cho user mới
