@@ -39,8 +39,8 @@ const PhotosPage: FC = () => {
         isLoading,
     } = useListFiles(
         {
-            pageSize: itemsPerPage,
             spaces: 'drive',
+            pageSize: itemsPerPage,
             orderBy: sortOrder === 'newest' ? 'createdTime desc' : 'createdTime asc',
             q: [
                 "mimeType contains 'image/'",
@@ -190,7 +190,7 @@ const PhotosPage: FC = () => {
                 folderItems={[{ key: 'all', label: 'Tất cả thư mục', value: null }]}
             />
 
-            {!isLoading && isError ? (
+            {!isAuthenticated ? (
                 <DataNotFound
                     loading={isLoading}
                     onRetry={() => login()}
