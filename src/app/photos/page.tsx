@@ -1,7 +1,7 @@
 'use client';
 
+import DataNotFound from '@/components/common/data-not-found';
 import LightboxModal from '@/components/module/photos/LightboxModal';
-import PhotosNotFound from '@/components/module/photos/NotFound';
 import PaginationControls from '@/components/module/photos/PaginationControls';
 import PhotoGroups from '@/components/module/photos/PhotoGroups';
 import SlideshowModal from '@/components/module/photos/SlideshowModal';
@@ -184,7 +184,7 @@ const PhotosPage: FC = () => {
     };
 
     if (!isLoading && (isError || driveFiles.length === 0)) {
-        return <PhotosNotFound onRetry={() => refetch()} loading={isLoading} />;
+        return <DataNotFound onRetry={() => refetch()} loading={isLoading} />;
     }
 
     return (
