@@ -193,7 +193,7 @@ const PhotosPage: FC = () => {
             {!isAuthenticated ? (
                 <DataNotFound
                     loading={isLoading}
-                    onRetry={() => login()}
+                    onRetry={() => login('/photos')}
                     message="Vui lòng kiểm tra kết nối hoặc thử lại sau."
                 />
             ) : (

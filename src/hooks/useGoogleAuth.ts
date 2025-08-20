@@ -126,8 +126,8 @@ export function useGoogleAuth() {
         }
     };
 
-    const login = () => {
-        const authUrl = googleAuthService.getGoogleAuthUrl();
+    const login = (path?: string) => {
+        const authUrl = googleAuthService.getGoogleAuthUrl(path);
         window.location.href = authUrl;
     };
 

@@ -2,8 +2,8 @@ import { NBaseApi, NGoogleAuth } from '@/interfaces';
 import BaseApi from '@/services/base.service';
 
 export class GoogleAuthService extends BaseApi {
+    private readonly REDIRECT_URI = `${process.env.NEXT_PUBLIC_APP_URL}`;
     private readonly GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
-    private readonly REDIRECT_URI = `${process.env.NEXT_PUBLIC_APP_URL}/dashboard`;
     private readonly GOOGLE_CLIENT_SECRET = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET;
 
     constructor() {
@@ -12,7 +12,7 @@ export class GoogleAuthService extends BaseApi {
         });
     }
 
-    getGoogleAuthUrl(redirectUri?: string): string {
+    getGoogleAuthUrl(path?: string): string {
         const scopes = [
             'https://www.googleapis.com/auth/drive',
             'https://www.googleapis.com/auth/userinfo.profile',
@@ -25,7 +25,7 @@ export class GoogleAuthService extends BaseApi {
             access_type: 'offline',
             scope: scopes.join(' '),
             client_id: this.GOOGLE_CLIENT_ID,
-            redirect_uri: redirectUri || this.REDIRECT_URI,
+            redirect_uri: `${this.REDIRECT_URI}/${path ?? 'dashboard'}`,
         });
 
         const url = `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
@@ -34,12 +34,13 @@ export class GoogleAuthService extends BaseApi {
 
     async getGoogleTokens(
         code: string,
+        path?: string,
     ): Promise<NBaseApi.IResponse<NGoogleAuth.IGoogleTokens | null>> {
         const params = this.generateSearchParams({
             code,
             grant_type: 'authorization_code',
-            redirect_uri: this.REDIRECT_URI,
             client_id: this.GOOGLE_CLIENT_ID,
+            redirect_uri: `${this.REDIRECT_URI}/${path ?? 'dashboard'}`,
         });
 
         const response = await this.post<NGoogleAuth.IGoogleTokens>({
@@ -82,15 +83,14 @@ export class GoogleAuthService extends BaseApi {
     }
 
     async validateToken(accessToken: string): Promise<boolean> {
-        const params = this.generateSearchParams({
-            access_token: accessToken,
-        });
-
-        const response = await this.get<any>({
-            endPoint: 'tokeninfo',
-            params,
-        });
-
-        return response ? true : false;
+        try {
+            const response = await fetch(
+                `https://oauth2.googleapis.com/tokeninfo?access_token=${accessToken}`,
+            );
+            return response.ok;
+        } catch (error) {
+            console.error('Error validating token:', error);
+            return false;
+        }
     }
 }
