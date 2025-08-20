@@ -4,7 +4,7 @@ import { GoogleLoginButton, UserProfile, ProtectedRoute } from '@/components/aut
 
 // Component hiển thị thông tin user và permissions
 function UserInfo() {
-    const { user, permissions, checkPermissions } = useGoogleAuth();
+    const { user, permissions } = useGoogleAuth();
 
     if (!user) return null;
 
@@ -68,12 +68,6 @@ function UserInfo() {
                 <div className="space-y-4">
                     <div className="flex items-center justify-between">
                         <h3 className="text-lg font-semibold text-gray-900">Quyền truy cập</h3>
-                        <button
-                            onClick={checkPermissions}
-                            className="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors"
-                        >
-                            Làm mới
-                        </button>
                     </div>
 
                     {permissions ? (

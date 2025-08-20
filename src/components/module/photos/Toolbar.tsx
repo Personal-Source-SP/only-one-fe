@@ -9,13 +9,15 @@ import {
     Input,
 } from '@heroui/react';
 import { Icon } from '@iconify/react';
-import { memo, FC } from 'react';
+import { FC, memo } from 'react';
 
 export type ToolbarProps = {
     searchQuery: string;
+    viewMode: 'time' | 'all';
     filterFolder: string | null;
     sortOrder: 'newest' | 'oldest';
     folderItems: { key: string; label: string; value: string | null }[];
+    onToggle: () => void;
     onStartSlideshow: () => void;
     onSearchChange: (value: string) => void;
     onFilterFolderChange: (value: string | null) => void;
@@ -24,9 +26,11 @@ export type ToolbarProps = {
 
 const PhotosToolbar: FC<ToolbarProps> = ({
     searchQuery,
+    viewMode,
     filterFolder,
     sortOrder,
     folderItems,
+    onToggle,
     onStartSlideshow,
     onSearchChange,
     onFilterFolderChange,
@@ -92,6 +96,29 @@ const PhotosToolbar: FC<ToolbarProps> = ({
                     >
                         <DropdownItem key="newest">Mới nhất trước</DropdownItem>
                         <DropdownItem key="oldest">Cũ nhất trước</DropdownItem>
+                    </DropdownMenu>
+                </Dropdown>
+                <Dropdown>
+                    <DropdownTrigger>
+                        <Button
+                            size="sm"
+                            variant="flat"
+                            color="primary"
+                            startContent={<Icon icon="lucide:view" />}
+                        >
+                            Xem
+                        </Button>
+                    </DropdownTrigger>
+                    <DropdownMenu
+                        selectionMode="single"
+                        selectedKeys={new Set([viewMode])}
+                        onSelectionChange={(keys) => {
+                            const key = Array.from(keys).at(0) as 'all' | 'time' | undefined;
+                            if (key) onToggle();
+                        }}
+                    >
+                        <DropdownItem key="all">Xem tất cả</DropdownItem>
+                        <DropdownItem key="time">Xem theo thời gian</DropdownItem>
                     </DropdownMenu>
                 </Dropdown>
             </div>

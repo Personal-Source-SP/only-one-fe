@@ -3,7 +3,7 @@ import { Icon } from '@iconify/react';
 import { signOut } from 'next-auth/react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { FC, memo, useEffect, useState } from 'react';
+import { FC, memo, useCallback, useEffect, useState } from 'react';
 
 interface SidebarItem {
     href: string;
@@ -41,19 +41,17 @@ const sidebarItems: SidebarItem[] = [
     },
 ];
 
-const Sidebar: FC = () => {
-    const [collapsed, setCollapsed] = useState(false);
-    const [mobileOpen, setMobileOpen] = useState(false);
+type SidebarProps = {
+    mobileOpen: boolean;
+    setMobileOpen: (open: boolean) => void;
+};
 
-    // Mock user role - in a real app, this would come from authentication
+const Sidebar: FC<SidebarProps> = ({ mobileOpen, setMobileOpen }) => {
     const isAdmin = true;
+    const pathname = usePathname();
 
-    useEffect(() => {
-        // Close mobile sidebar when location changes
-        setMobileOpen(false);
-    }, []);
+    const [collapsed, setCollapsed] = useState(false);
 
-    // Handle resize events to toggle between mobile and desktop view
     useEffect(() => {
         const handleResize = () => {
             if (window.innerWidth >= 768) {
@@ -65,39 +63,36 @@ const Sidebar: FC = () => {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    const toggleSidebar = () => {
+    useEffect(() => {
+        setMobileOpen(false);
+    }, [pathname]);
+
+    const toggleSidebar = useCallback(() => {
         setCollapsed(!collapsed);
-    };
+    }, [collapsed]);
 
-    const toggleMobileSidebar = () => {
-        setMobileOpen(!mobileOpen);
-    };
-
-    const renderNavigation = (item: SidebarItem) => {
-        if (item.checkAdmin && !isAdmin) return <></>;
-
-        const pathname = usePathname();
-        const isActive = pathname === item.href;
-
-        return (
-            <li>
-                <Link
-                    key={item.href}
-                    href={item.href}
-                    className={`sidebar-item ${isActive ? 'active' : ''}`}
-                >
-                    <Icon icon={item.icon} className="icon" />
-                    {!collapsed && <span>{item.label}</span>}
-                </Link>
-            </li>
-        );
-    };
-
-    const handleLogout = () => {
+    const handleLogout = useCallback(() => {
         signOut({
             callbackUrl: '/login',
         });
-    };
+    }, []);
+
+    const renderNavigation = useCallback(
+        (item: SidebarItem) => {
+            if (item.checkAdmin && !isAdmin) return <></>;
+            const isActive = pathname === item.href;
+
+            return (
+                <li key={item.href}>
+                    <Link href={item.href} className={`sidebar-item ${isActive ? 'active' : ''}`}>
+                        <Icon icon={item.icon} className="icon" />
+                        {!collapsed && <span>{item.label}</span>}
+                    </Link>
+                </li>
+            );
+        },
+        [collapsed, isAdmin, pathname],
+    );
 
     return (
         <>

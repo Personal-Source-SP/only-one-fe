@@ -6,8 +6,7 @@ import PaginationControls from '@/components/module/photos/PaginationControls';
 import PhotoGroups from '@/components/module/photos/PhotoGroups';
 import SlideshowModal from '@/components/module/photos/SlideshowModal';
 import PhotosToolbar from '@/components/module/photos/Toolbar';
-import ViewModeToggle from '@/components/module/photos/ViewModeToggle';
-import { useMainContext } from '@/contexts/MainContext';
+import { useGoogleAuth } from '@/hooks/useGoogleAuth';
 import type { NGoogleDrive } from '@/interfaces';
 import type { Photo } from '@/interfaces/photo';
 import { useListFiles } from '@/query/google-drive.query';
@@ -17,7 +16,8 @@ import { useShallow } from 'zustand/react/shallow';
 
 const PhotosPage: FC = () => {
     const [columns, setColumns] = useState(4);
-    const { googleToken } = useMainContext();
+
+    const { isAuthenticated, tokens, login, logout, loading } = useGoogleAuth();
 
     const {
         viewMode,
@@ -64,6 +64,26 @@ const PhotosPage: FC = () => {
     const openLightbox = usePhotosStore((s) => s.openLightbox);
     const closeLightbox = usePhotosStore((s) => s.closeLightbox);
 
+    const {
+        data: filesResponse,
+        isError,
+        isLoading,
+        refetch,
+    } = useListFiles(
+        {
+            pageSize: 200,
+            spaces: 'drive',
+            orderBy: 'createdTime desc',
+            q: "mimeType contains 'image/' and trashed=false",
+            fields: 'files(id,name,mimeType,thumbnailLink,webContentLink,createdTime),nextPageToken',
+        },
+        {
+            retry: false,
+            enabled: isAuthenticated,
+            refetchOnWindowFocus: false,
+        },
+    );
+
     useEffect(() => {
         const updateColumns = () => {
             const width = window.innerWidth;
@@ -98,28 +118,6 @@ const PhotosPage: FC = () => {
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isSlideshow, slideshowPaused, slideshowInterval, currentIndex]);
-
-    const listFilesRequest = useMemo<NGoogleDrive.ListFilesRequest>(
-        () => ({
-            q: "mimeType contains 'image/' and trashed=false",
-            pageSize: 200,
-            fields: 'files(id,name,mimeType,thumbnailLink,webContentLink,createdTime),nextPageToken',
-            orderBy: 'createdTime desc',
-            spaces: 'drive',
-        }),
-        [],
-    );
-
-    const {
-        data: filesResponse,
-        isError,
-        isLoading,
-        refetch,
-    } = useListFiles(listFilesRequest, {
-        retry: false,
-        enabled: !!googleToken,
-        refetchOnWindowFocus: false,
-    });
 
     const driveFiles: NGoogleDrive.DriveFileResponse[] = filesResponse?.data?.files ?? [];
 
@@ -183,13 +181,10 @@ const PhotosPage: FC = () => {
         setSelectedPhotoInStore(allPhotos[newIndex].url);
     };
 
-    if (!isLoading && (isError || driveFiles.length === 0)) {
-        return <DataNotFound onRetry={() => refetch()} loading={isLoading} />;
-    }
-
     return (
         <div className="space-y-6">
             <PhotosToolbar
+                viewMode={viewMode}
                 sortOrder={sortOrder}
                 searchQuery={searchQuery}
                 filterFolder={filterFolder}
@@ -197,27 +192,33 @@ const PhotosPage: FC = () => {
                 onSortOrderChange={setSortOrder}
                 onStartSlideshow={startSlideshow}
                 onFilterFolderChange={setFilterFolder}
+                onToggle={() => setViewMode(viewMode === 'time' ? 'all' : 'time')}
                 folderItems={[{ key: 'all', label: 'Tất cả thư mục', value: null }]}
             />
 
-            <ViewModeToggle
-                viewMode={viewMode}
-                onToggle={() => setViewMode(viewMode === 'time' ? 'all' : 'time')}
-            />
+            {!isLoading && (isError || driveFiles.length === 0) ? (
+                <DataNotFound
+                    loading={isLoading}
+                    onRetry={() => login()}
+                    message="Vui lòng kiểm tra kết nối hoặc thử lại sau."
+                />
+            ) : (
+                <>
+                    <PhotoGroups
+                        columns={columns}
+                        groupedPhotos={groupedPhotos}
+                        onPhotoClick={handlePhotoClick}
+                    />
 
-            <PhotoGroups
-                columns={columns}
-                groupedPhotos={groupedPhotos}
-                onPhotoClick={handlePhotoClick}
-            />
-
-            <PaginationControls
-                currentPage={currentPage}
-                itemsPerPage={itemsPerPage}
-                totalItems={filteredAndSortedPhotos.length}
-                onPageChange={setCurrentPage}
-                onItemsPerPageChange={setItemsPerPage}
-            />
+                    <PaginationControls
+                        currentPage={currentPage}
+                        itemsPerPage={itemsPerPage}
+                        totalItems={filteredAndSortedPhotos.length}
+                        onPageChange={setCurrentPage}
+                        onItemsPerPageChange={setItemsPerPage}
+                    />
+                </>
+            )}
 
             <SlideshowModal
                 isOpen={isSlideshow}

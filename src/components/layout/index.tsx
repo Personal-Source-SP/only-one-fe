@@ -4,7 +4,6 @@ import Header from '@/components/layout/header';
 import NotificationsPanel from '@/components/layout/notifications-panel';
 import Search from '@/components/layout/search';
 import Sidebar from '@/components/layout/sidebar';
-import QuickActions from '@/components/module/quick-actions';
 import { usePathname } from 'next/navigation';
 import { FC, memo, ReactNode, useState } from 'react';
 
@@ -19,7 +18,6 @@ const MainLayout: FC<MainLayoutProps> = ({ children }) => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [showNotifications, setShowNotifications] = useState(false);
 
-    // Mock notifications data
     const notifications = [
         {
             id: 1,
@@ -71,7 +69,6 @@ const MainLayout: FC<MainLayoutProps> = ({ children }) => {
         },
     ];
 
-    // Get current page title based on path
     const getPageTitle = () => {
         switch (pathname) {
             case '/':
@@ -92,9 +89,9 @@ const MainLayout: FC<MainLayoutProps> = ({ children }) => {
     return (
         <div className="flex h-screen bg-background">
             {/* Sidebar */}
-            <Sidebar />
+            <Sidebar mobileOpen={mobileMenuOpen} setMobileOpen={setMobileMenuOpen} />
 
-            <div className="flex-1 flex flex-col overflow-hidden">
+            <div className="flex-1 flex flex-col">
                 {/* Header */}
                 <Header
                     showSearch={showSearch}
@@ -118,10 +115,12 @@ const MainLayout: FC<MainLayoutProps> = ({ children }) => {
                 <Search showSearch={showSearch} setShowSearch={setShowSearch} />
 
                 {/* Page Content */}
-                <main className="flex-1 overflow-y-auto p-3 md:p-6">{children}</main>
+                <main className="flex-1 bg-gray-200 p-0 md:p-4">
+                    <section className="bg-white md:rounded-xl p-4">{children}</section>
+                </main>
 
                 {/* Quick Actions FAB */}
-                <QuickActions />
+                {/* {!mobileMenuOpen && <QuickActions />} */}
             </div>
         </div>
     );

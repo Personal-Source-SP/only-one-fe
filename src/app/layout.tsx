@@ -20,12 +20,12 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: { children: ReactNode }) {
     return (
         <html lang="en">
-            <body className={inter.className}>
+            <body className={`${inter.className} overflow-x-hidden`}>
                 <Suspense>
                     <NavigationGuardProvider>
                         <HeroUIProvider>
                             <MainProvider>
-                                <main className="min-h-screen max-w-[100vw] w-full">
+                                <main className="min-h-screen max-h-screen max-w-[100vw] w-full">
                                     {children}
                                 </main>
                             </MainProvider>

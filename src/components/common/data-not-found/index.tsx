@@ -20,8 +20,8 @@ const DataNotFound: FC<DataNotFoundProps> = ({
     onRetry,
 }) => {
     return (
-        <div className="fixed inset-0 flex items-center justify-center bg-transparent">
-            <Card className="max-w-xl w-full">
+        <div className="flex items-center justify-center bg-transparent">
+            <Card className="max-w-xl w-full mx-4">
                 <CardBody className="flex flex-col items-center gap-4 py-10">
                     <Icon icon={icon} className="text-5xl text-foreground-400" />
                     <h2 className="text-xl font-semibold">{title}</h2>
