@@ -104,15 +104,15 @@ const PhotosPage: FC = () => {
         };
     }, [isSlideshow, slideshowPaused, slideshowInterval, currentIndex]);
 
-    const driveFiles: NGoogleDrive.DriveFileResponse[] = filesResponse?.data?.files ?? [];
-
     const allPhotos: Photo[] = useMemo(() => {
+        const driveFiles: NGoogleDrive.DriveFileResponse[] = filesResponse?.data?.files ?? [];
+
         return (driveFiles || []).map((file, index) => ({
             id: index + 1,
             url: (file.thumbnailLink || file.webContentLink || '').toString(),
             date: new Date(file.createdTime || Date.now()),
         }));
-    }, [driveFiles]);
+    }, [filesResponse?.data?.files]);
 
     const hasNextPage = Boolean(filesResponse?.data?.nextPageToken);
     const totalPages = currentPage + (hasNextPage ? 1 : 0);
@@ -190,7 +190,7 @@ const PhotosPage: FC = () => {
                 folderItems={[{ key: 'all', label: 'Tất cả thư mục', value: null }]}
             />
 
-            {!isLoading && (isError || driveFiles.length === 0) ? (
+            {!isLoading && isError ? (
                 <DataNotFound
                     loading={isLoading}
                     onRetry={() => login()}
