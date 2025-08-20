@@ -12,43 +12,43 @@ import {
     Tooltip,
 } from '@heroui/react';
 import { Icon } from '@iconify/react';
-import { memo, FC } from 'react';
+import { FC, memo } from 'react';
 
 export type SlideshowModalProps = {
-    isOpen: boolean;
-    selectedPhoto: string | null;
-    currentIndex: number;
     total: number;
-    onPrevious: () => void;
-    onNext: () => void;
-    stopSlideshow: () => void;
-    slideshowInterval: number;
-    onSetInterval: (seconds: number) => void;
+    isOpen: boolean;
     paused: boolean;
+    currentIndex: number;
+    slideshowInterval: number;
+    selectedPhoto: string | null;
+    onNext: () => void;
+    onPrevious: () => void;
     onTogglePause: () => void;
+    stopSlideshow: () => void;
+    onSetInterval: (seconds: number) => void;
 };
 
 const SlideshowModal: FC<SlideshowModalProps> = ({
-    isOpen,
-    selectedPhoto,
-    currentIndex,
     total,
-    onPrevious,
-    onNext,
-    stopSlideshow,
-    slideshowInterval,
-    onSetInterval,
+    isOpen,
     paused,
+    currentIndex,
+    slideshowInterval,
+    selectedPhoto,
+    onNext,
+    onPrevious,
     onTogglePause,
+    stopSlideshow,
+    onSetInterval,
 }) => {
     return (
         <Modal
+            size="full"
+            hideCloseButton
             isOpen={isOpen}
             onOpenChange={(open) => {
                 if (!open) stopSlideshow();
             }}
-            size="full"
-            hideCloseButton
         >
             <ModalContent>
                 {() => (
@@ -56,8 +56,8 @@ const SlideshowModal: FC<SlideshowModalProps> = ({
                         {selectedPhoto && (
                             <div className="relative h-screen flex items-center justify-center bg-black">
                                 <img
-                                    src={selectedPhoto}
                                     alt="Slideshow"
+                                    src={selectedPhoto}
                                     className="max-h-full max-w-full object-contain"
                                 />
 
@@ -72,8 +72,8 @@ const SlideshowModal: FC<SlideshowModalProps> = ({
                                                     <DropdownTrigger>
                                                         <Button
                                                             isIconOnly
-                                                            variant="flat"
                                                             radius="full"
+                                                            variant="flat"
                                                             className="bg-black/30 text-white"
                                                         >
                                                             <Icon icon="lucide:settings" />
@@ -104,10 +104,10 @@ const SlideshowModal: FC<SlideshowModalProps> = ({
                                             <Tooltip content="Thoát trình chiếu">
                                                 <Button
                                                     isIconOnly
-                                                    variant="flat"
                                                     radius="full"
-                                                    className="bg-black/30 text-white"
+                                                    variant="flat"
                                                     onPress={stopSlideshow}
+                                                    className="bg-black/30 text-white"
                                                 >
                                                     <Icon icon="lucide:x" />
                                                 </Button>
@@ -118,33 +118,33 @@ const SlideshowModal: FC<SlideshowModalProps> = ({
                                     <div className="flex-1 flex items-center justify-between p-4">
                                         <Button
                                             isIconOnly
-                                            variant="flat"
                                             radius="full"
-                                            className="bg-black/30 text-white"
+                                            variant="flat"
                                             onPress={onPrevious}
+                                            className="bg-black/30 text-white"
                                         >
                                             <Icon icon="lucide:chevron-left" className="text-2xl" />
                                         </Button>
                                         <Button
                                             isIconOnly
-                                            variant="flat"
                                             radius="full"
-                                            className="bg-black/30 text-white"
+                                            variant="flat"
                                             onPress={onNext}
+                                            className="bg-black/30 text-white"
                                         >
                                             <Icon
-                                                icon="lucide:chevron-right"
                                                 className="text-2xl"
+                                                icon="lucide:chevron-right"
                                             />
                                         </Button>
                                     </div>
 
                                     <div className="p-4 flex justify-center bg-gradient-to-t from-black/50 to-transparent">
                                         <Button
-                                            variant="flat"
                                             radius="full"
-                                            className="bg-black/30 text-white"
+                                            variant="flat"
                                             onPress={onTogglePause}
+                                            className="bg-black/30 text-white"
                                             startContent={
                                                 <Icon
                                                     icon={paused ? 'lucide:play' : 'lucide:pause'}

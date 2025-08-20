@@ -5,11 +5,11 @@ import { Icon } from '@iconify/react';
 import { FC, memo } from 'react';
 
 export type PhotosNotFoundProps = {
-    onRetry?: () => void;
     loading?: boolean;
+    onRetry?: () => void;
 };
 
-const PhotosNotFound: FC<PhotosNotFoundProps> = ({ onRetry, loading }) => {
+const PhotosNotFound: FC<PhotosNotFoundProps> = ({ loading, onRetry }) => {
     return (
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-transparent">
             <Card className="max-w-xl w-full">
@@ -21,10 +21,10 @@ const PhotosNotFound: FC<PhotosNotFoundProps> = ({ onRetry, loading }) => {
                     </p>
                     <div className="flex gap-3">
                         <Button
-                            color="primary"
                             variant="flat"
-                            isLoading={!!loading}
+                            color="primary"
                             onPress={onRetry}
+                            isLoading={!!loading}
                             startContent={<Icon icon="lucide:refresh-ccw" />}
                         >
                             Thử lại

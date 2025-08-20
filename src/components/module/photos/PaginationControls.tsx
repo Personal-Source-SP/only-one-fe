@@ -8,22 +8,22 @@ import {
     DropdownTrigger,
     Pagination,
 } from '@heroui/react';
-import { memo, FC } from 'react';
+import { FC, memo } from 'react';
 
 export type PaginationControlsProps = {
-    itemsPerPage: number;
-    onItemsPerPageChange: (value: number) => void;
     totalItems: number;
     currentPage: number;
+    itemsPerPage: number;
     onPageChange: (page: number) => void;
+    onItemsPerPageChange: (value: number) => void;
 };
 
 const PaginationControls: FC<PaginationControlsProps> = ({
-    itemsPerPage,
-    onItemsPerPageChange,
     totalItems,
     currentPage,
+    itemsPerPage,
     onPageChange,
+    onItemsPerPageChange,
 }) => {
     return (
         <div className="flex flex-col sm:flex-row justify-between items-center mt-8 gap-4">
@@ -49,11 +49,11 @@ const PaginationControls: FC<PaginationControlsProps> = ({
             </Dropdown>
 
             <Pagination
-                total={Math.ceil(totalItems / itemsPerPage)}
-                page={currentPage}
-                onChange={onPageChange}
                 showControls
                 color="primary"
+                page={currentPage}
+                onChange={onPageChange}
+                total={Math.ceil(totalItems / itemsPerPage)}
             />
         </div>
     );
