@@ -29,6 +29,9 @@ const PhotosPage: FC = () => {
     const [isLightboxOpen, setIsLightboxOpen] = useState<boolean>(false);
     const [slideshowPaused, setSlideshowPaused] = useState<boolean>(false);
     const [slideshowInterval, setSlideshowInterval] = useState<number>(5);
+    const [pageTokens, setPageTokens] = useState<Record<number, string | undefined>>({
+        1: undefined,
+    });
 
     const {
         data: filesResponse,
@@ -36,10 +39,18 @@ const PhotosPage: FC = () => {
         isLoading,
     } = useListFiles(
         {
-            pageSize: 200,
+            pageSize: itemsPerPage,
             spaces: 'drive',
-            orderBy: 'createdTime desc',
-            q: "mimeType contains 'image/' and trashed=false",
+            orderBy: sortOrder === 'newest' ? 'createdTime desc' : 'createdTime asc',
+            q: [
+                "mimeType contains 'image/'",
+                'trashed=false',
+                searchQuery ? `name contains '${searchQuery.replace(/'/g, "\\'")}'` : null,
+                filterFolder ? `'${filterFolder}' in parents` : null,
+            ]
+                .filter(Boolean)
+                .join(' and '),
+            pageToken: pageTokens[currentPage],
             fields: 'files(id,name,mimeType,thumbnailLink,webContentLink,createdTime),nextPageToken',
         },
         {
@@ -69,7 +80,16 @@ const PhotosPage: FC = () => {
 
     useEffect(() => {
         setCurrentPage(1);
-    }, [itemsPerPage]);
+        setPageTokens({ 1: undefined });
+    }, [itemsPerPage, sortOrder, searchQuery, filterFolder]);
+
+    useEffect(() => {
+        const nextToken = filesResponse?.data?.nextPageToken;
+        if (nextToken && pageTokens[currentPage + 1] !== nextToken) {
+            setPageTokens((prev) => ({ ...prev, [currentPage + 1]: nextToken }));
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [filesResponse?.data?.nextPageToken, currentPage]);
 
     useEffect(() => {
         let timer: ReturnType<typeof setTimeout> | undefined;
@@ -94,30 +114,13 @@ const PhotosPage: FC = () => {
         }));
     }, [driveFiles]);
 
-    const filteredAndSortedPhotos = useMemo(() => {
-        let result = allPhotos;
-        if (filterFolder) result = result.filter((photo) => photo.folder === filterFolder);
-        if (searchQuery)
-            result = result.filter((photo) =>
-                photo.id.toString().includes(searchQuery.toLowerCase()),
-            );
-        result.sort((a, b) =>
-            sortOrder === 'newest'
-                ? b.date.getTime() - a.date.getTime()
-                : a.date.getTime() - b.date.getTime(),
-        );
-        return result;
-    }, [allPhotos, filterFolder, searchQuery, sortOrder]);
-
-    const paginatedPhotos = useMemo(() => {
-        const startIndex = (currentPage - 1) * itemsPerPage;
-        return filteredAndSortedPhotos.slice(startIndex, startIndex + itemsPerPage);
-    }, [filteredAndSortedPhotos, currentPage, itemsPerPage]);
+    const hasNextPage = Boolean(filesResponse?.data?.nextPageToken);
+    const totalPages = currentPage + (hasNextPage ? 1 : 0);
 
     const groupedPhotos = useMemo(() => {
-        if (viewMode === 'all') return [{ date: 'Tất cả ảnh', photos: paginatedPhotos }];
-        const groups: { [key: string]: typeof paginatedPhotos } = {};
-        paginatedPhotos.forEach((photo) => {
+        if (viewMode === 'all') return [{ date: 'Tất cả ảnh', photos: allPhotos }];
+        const groups: { [key: string]: Photo[] } = {};
+        allPhotos.forEach((photo) => {
             const dateKey = photo.date.toLocaleDateString('vi-VN', {
                 year: 'numeric',
                 month: 'long',
@@ -127,7 +130,7 @@ const PhotosPage: FC = () => {
             groups[dateKey].push(photo);
         });
         return Object.entries(groups).map(([date, photos]) => ({ date, photos }));
-    }, [paginatedPhotos, viewMode]);
+    }, [allPhotos, viewMode]);
 
     const startSlideshow = () => {
         setIsSlideshow(true);
@@ -204,9 +207,19 @@ const PhotosPage: FC = () => {
                     <PaginationControls
                         currentPage={currentPage}
                         itemsPerPage={itemsPerPage}
-                        totalItems={filteredAndSortedPhotos.length}
-                        onPageChange={setCurrentPage}
-                        onItemsPerPageChange={setItemsPerPage}
+                        totalItems={totalPages * itemsPerPage}
+                        onPageChange={(page) => {
+                            if (page === currentPage) return;
+                            // Only allow navigating to discovered pages
+                            if (page < currentPage || (page === currentPage + 1 && hasNextPage)) {
+                                setCurrentPage(page);
+                            }
+                        }}
+                        onItemsPerPageChange={(n) => {
+                            setItemsPerPage(n);
+                            setCurrentPage(1);
+                            setPageTokens({ 1: undefined });
+                        }}
                     />
                 </>
             )}
