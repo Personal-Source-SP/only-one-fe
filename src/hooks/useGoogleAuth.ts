@@ -36,7 +36,7 @@ export function useGoogleAuth() {
     useEffect(() => {
         const code = searchParams.get('code');
         if (code) {
-            handleOAuthCallback(code);
+            handleOAuthCallback(code, 'photos');
         }
     }, [searchParams]);
 
@@ -104,11 +104,11 @@ export function useGoogleAuth() {
         }
     };
 
-    const handleOAuthCallback = async (code: string) => {
+    const handleOAuthCallback = async (code: string, path?: string) => {
         setAuthState((prev) => ({ ...prev, loading: true, error: null }));
 
         try {
-            const tokensResult = await googleAuthService.getGoogleTokens(code);
+            const tokensResult = await googleAuthService.getGoogleTokens(code, path);
 
             if (!tokensResult || !tokensResult.data) {
                 throw new Error('Failed to get tokens');
@@ -116,7 +116,7 @@ export function useGoogleAuth() {
 
             await saveAuthState(tokensResult.data);
 
-            router.push('/dashboard');
+            router.push(path ? `/${path}` : '/dashboard');
         } catch (error) {
             setAuthState((prev) => ({
                 ...prev,

@@ -40,6 +40,7 @@ export class GoogleAuthService extends BaseApi {
             code,
             grant_type: 'authorization_code',
             client_id: this.GOOGLE_CLIENT_ID,
+            client_secret: this.GOOGLE_CLIENT_SECRET,
             redirect_uri: `${this.REDIRECT_URI}/${path ?? 'dashboard'}`,
         });
 
