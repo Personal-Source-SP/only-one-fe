@@ -1,3 +1,4 @@
+import { KEY_LOCAL_STORAGE } from '@/constants';
 import { NBaseApi } from '@/interfaces';
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
 import { isEmpty } from 'lodash';
@@ -23,8 +24,7 @@ export default class BaseApi {
             // Always try to read latest token from storage on client
             let runtimeToken: string | null = null;
             if (typeof window !== 'undefined') {
-                runtimeToken =
-                    localStorage.getItem('google_token') || localStorage.getItem('token') || null;
+                runtimeToken = localStorage.getItem(KEY_LOCAL_STORAGE.GOOGLE_ACCESS_TOKEN) || null;
             }
 
             const bearer = runtimeToken || accessToken;

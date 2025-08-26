@@ -1,11 +1,9 @@
-import { KEY_LOCAL_STORAGE } from '@/constants';
 import { NBaseApi, NGoogleDrive } from '@/interfaces';
 import BaseApi from './base.service';
 
 export class GoogleDriveService extends BaseApi {
     constructor() {
         super({
-            accessToken: localStorage.getItem(KEY_LOCAL_STORAGE.GOOGLE_ACCESS_TOKEN) || undefined,
             baseURL:
                 process.env.NEXT_PUBLIC_GOOGLE_DRIVE_API_URL ||
                 'https://www.googleapis.com/drive/v3',
