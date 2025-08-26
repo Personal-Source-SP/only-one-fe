@@ -110,13 +110,6 @@ const PhotosPage: FC = () => {
         }));
     }, [filesResponse?.data?.files]);
 
-    const hasNextPage = Boolean(filesResponse?.data?.nextPageToken);
-    const discoveredMaxPage = useMemo(
-        () => Math.max(...Object.keys(pageTokens).map((k) => Number(k))),
-        [pageTokens],
-    );
-    const totalPages = discoveredMaxPage + (hasNextPage ? 1 : 0);
-
     const groupedPhotos = useMemo(() => {
         if (viewMode === ViewMode.ALL) return [{ photos: allPhotos }];
 
@@ -136,6 +129,18 @@ const PhotosPage: FC = () => {
 
         return Object.entries(groups).map(([date, photos]) => ({ date, photos }));
     }, [allPhotos, viewMode]);
+
+    const { totalPages, hasNextPage } = useMemo(() => {
+        const hasNextPage = Boolean(filesResponse?.data?.nextPageToken);
+        const totalPages = discoveredMaxPage + (hasNextPage ? 1 : 0);
+
+        return { totalPages, hasNextPage };
+    }, [filesResponse?.data?.nextPageToken]);
+
+    const discoveredMaxPage = useMemo(
+        () => Math.max(...Object.keys(pageTokens).map((k) => Number(k))),
+        [pageTokens],
+    );
 
     const startSlideshow = () => {
         setIsLightboxOpen(true);
