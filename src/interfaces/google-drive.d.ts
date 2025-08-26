@@ -31,11 +31,6 @@ export declare namespace NGoogleDrive {
         content?: Blob | File;
     }
 
-    interface CopyFileRequest {
-        fileId: string;
-        options: CreateFileOptions;
-    }
-
     interface ExportFileRequest {
         fileId: string;
         mimeType: string;
@@ -103,6 +98,12 @@ export declare namespace NGoogleDrive {
         parents?: string[];
         createdTime?: string;
         modifiedTime?: string;
+    }
+
+    interface ListDriveFolderResponse {
+        files: DriveFolderResponse[];
+        nextPageToken?: string;
+        incompleteSearch?: boolean;
     }
 
     interface DriveResponse {

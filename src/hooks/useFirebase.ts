@@ -2,7 +2,10 @@ import { useState, useEffect, useCallback } from 'react';
 import { FirebaseDBService, QueryOptions } from '@/services/firebase-db.service';
 import { FirebaseStorageService, UploadProgress } from '@/services/firebase-storage.service';
 import { auth } from '@/libs/firebase';
-import { onAuthStateChanged, User } from 'firebase/auth';
+import { onAuthStateChanged, signInWithEmailAndPassword, User } from 'firebase/auth';
+import { useLocalStorage } from '@/hooks/useLocalStorage';
+import { KEY_LOCAL_STORAGE } from '@/constants';
+import { isEmpty } from 'lodash';
 
 export interface UseFirebaseOptions {
     collectionName?: string;
@@ -233,21 +236,57 @@ export function useFirebaseStorage() {
 }
 
 export function useFirebaseAuth() {
-    const [loading, setLoading] = useState(true);
     const [user, setUser] = useState<User | null>(null);
+    const [firebaseLoading, setFirebaseLoading] = useState(true);
+    const [token, setToken] = useLocalStorage<string | undefined>(KEY_LOCAL_STORAGE.FIREBASE_TOKEN);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             setUser(user);
-            setLoading(false);
+            setFirebaseLoading(false);
         });
 
         return () => unsubscribe();
     }, []);
 
+    const handleLogin = async (email: string, password: string): Promise<boolean> => {
+        setFirebaseLoading(true);
+
+        try {
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+
+            if (userCredential?.user) {
+                const tokenFirebase = await userCredential.user.getIdToken();
+                setToken(tokenFirebase);
+
+                window.location.href = '/dashboard';
+
+                return true;
+            }
+
+            return false;
+        } catch (error) {
+            return false;
+        } finally {
+            setFirebaseLoading(false);
+        }
+    };
+
+    const handleLogout = async () => {
+        await auth.signOut();
+
+        setUser(null);
+        setToken(undefined);
+
+        window.location.href = '/login';
+    };
+
     return {
         user,
-        loading,
-        isAuthenticated: !!user,
+        token,
+        firebaseLoading,
+        isAuthenticated: !isEmpty(user) && token,
+        handleLogin,
+        handleLogout,
     };
 }

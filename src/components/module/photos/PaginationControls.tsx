@@ -1,5 +1,6 @@
 'use client';
 
+import { PhotoItemsPerPage } from '@/enums';
 import {
     Button,
     Dropdown,
@@ -10,7 +11,7 @@ import {
 } from '@heroui/react';
 import { FC, memo } from 'react';
 
-export type PaginationControlsProps = {
+type PaginationControlsProps = {
     totalItems: number;
     currentPage: number;
     itemsPerPage: number;
@@ -34,17 +35,17 @@ const PaginationControls: FC<PaginationControlsProps> = ({
                     </Button>
                 </DropdownTrigger>
                 <DropdownMenu
-                    selectedKeys={new Set([itemsPerPage.toString()])}
                     selectionMode="single"
+                    selectedKeys={new Set([itemsPerPage.toString()])}
                     onSelectionChange={(keys) => {
                         const key = Array.from(keys).at(0) as string | undefined;
                         if (key) onItemsPerPageChange(Number(key));
                     }}
                 >
-                    <DropdownItem key="10">10 ảnh/trang</DropdownItem>
-                    <DropdownItem key="20">20 ảnh/trang</DropdownItem>
-                    <DropdownItem key="50">50 ảnh/trang</DropdownItem>
-                    <DropdownItem key="100">100 ảnh/trang</DropdownItem>
+                    <DropdownItem key={PhotoItemsPerPage.TEN}>10 ảnh/trang</DropdownItem>
+                    <DropdownItem key={PhotoItemsPerPage.TWENTY}>20 ảnh/trang</DropdownItem>
+                    <DropdownItem key={PhotoItemsPerPage.FIFTY}>50 ảnh/trang</DropdownItem>
+                    <DropdownItem key={PhotoItemsPerPage.HUNDRED}>100 ảnh/trang</DropdownItem>
                 </DropdownMenu>
             </Dropdown>
 

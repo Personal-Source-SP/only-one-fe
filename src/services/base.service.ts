@@ -1,6 +1,7 @@
 import { NBaseApi } from '@/interfaces';
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
 import { isEmpty } from 'lodash';
+import { stringify } from 'querystring';
 
 export default class BaseApi {
     private httpClient: AxiosInstance;
@@ -240,13 +241,11 @@ export default class BaseApi {
         return urlParams;
     }
 
-    generateQueryString(params?: Record<string, any>): string {
+    generateQueryString = (params?: Record<string, any>): string => {
         if (isEmpty(params)) return '';
 
-        return Object.entries(params)
-            .map(([key, value]) => `${key}=${value}`)
-            .join('&');
-    }
+        return stringify(params);
+    };
 
     handleAxiosError(error: unknown): string {
         if (axios.isAxiosError(error)) {

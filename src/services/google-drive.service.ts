@@ -1,9 +1,11 @@
+import { KEY_LOCAL_STORAGE } from '@/constants';
 import { NBaseApi, NGoogleDrive } from '@/interfaces';
 import BaseApi from './base.service';
 
 export class GoogleDriveService extends BaseApi {
     constructor() {
         super({
+            accessToken: localStorage.getItem(KEY_LOCAL_STORAGE.GOOGLE_ACCESS_TOKEN) || undefined,
             baseURL:
                 process.env.NEXT_PUBLIC_GOOGLE_DRIVE_API_URL ||
                 'https://www.googleapis.com/drive/v3',
@@ -105,17 +107,6 @@ export class GoogleDriveService extends BaseApi {
         return response;
     }
 
-    async copyFile(
-        request: NGoogleDrive.CopyFileRequest,
-    ): Promise<NBaseApi.IResponse<NGoogleDrive.DriveFileResponse | null>> {
-        const response = await this.post<NGoogleDrive.DriveFileResponse>({
-            endPoint: `/files/${request.fileId}/copy`,
-            data: request.options,
-        });
-
-        return response;
-    }
-
     async downloadFile(fileId: string): Promise<NBaseApi.IResponse<Blob | null>> {
         const response = await this.get<Blob>({
             endPoint: `/files/${fileId}?alt=media`,
@@ -158,67 +149,14 @@ export class GoogleDriveService extends BaseApi {
 
     async listFolders(
         parentId?: string,
-    ): Promise<NBaseApi.IResponse<NGoogleDrive.DriveFolderResponse[] | null>> {
+    ): Promise<NBaseApi.IResponse<NGoogleDrive.ListDriveFolderResponse | null>> {
         let query = "mimeType='application/vnd.google-apps.folder'";
         if (parentId) {
             query += ` and '${parentId}' in parents`;
         }
 
-        const response = await this.get<NGoogleDrive.DriveFolderResponse[]>({
+        const response = await this.get<NGoogleDrive.ListDriveFolderResponse>({
             endPoint: `/files?q=${query}`,
-        });
-
-        return response;
-    }
-
-    // **********Drives API**********
-    async listDrives(): Promise<NBaseApi.IResponse<NGoogleDrive.DriveResponse[] | null>> {
-        const response = await this.get<NGoogleDrive.DriveResponse[]>({
-            endPoint: '/drives',
-        });
-
-        return response;
-    }
-
-    async getDrive(
-        driveId: string,
-    ): Promise<NBaseApi.IResponse<NGoogleDrive.DriveResponse | null>> {
-        const response = await this.get<NGoogleDrive.DriveResponse>({
-            endPoint: `/drives/${driveId}`,
-        });
-
-        return response;
-    }
-
-    async createDrive(
-        request: NGoogleDrive.CreateDriveRequest,
-    ): Promise<NBaseApi.IResponse<NGoogleDrive.DriveResponse | null>> {
-        const { name, requestId } = request;
-
-        const response = await this.post<NGoogleDrive.DriveResponse>({
-            endPoint: `/drives?requestId=${requestId}`,
-            data: { name, requestId },
-        });
-
-        return response;
-    }
-
-    async updateDrive(
-        request: NGoogleDrive.UpdateDriveRequest,
-    ): Promise<NBaseApi.IResponse<NGoogleDrive.DriveResponse | null>> {
-        const { driveId, updates } = request;
-
-        const response = await this.patch<NGoogleDrive.DriveResponse>({
-            endPoint: `/drives/${driveId}`,
-            data: updates,
-        });
-
-        return response;
-    }
-
-    async deleteDrive(driveId: string): Promise<NBaseApi.IResponse<null>> {
-        const response = await this.delete<null>({
-            endPoint: `/drives/${driveId}`,
         });
 
         return response;

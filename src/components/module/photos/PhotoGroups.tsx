@@ -1,12 +1,12 @@
 'use client';
 
-import type { Photo } from '@/interfaces/photo';
+import { NPhoto } from '@/interfaces';
 import { motion } from 'framer-motion';
 import { FC, memo } from 'react';
 
 export type PhotoGroupsProps = {
     columns: number;
-    groupedPhotos: { date: string; photos: Photo[] }[];
+    groupedPhotos: { date: string; photos: NPhoto.Photo[] }[];
     onPhotoClick: (url: string) => void;
 };
 
