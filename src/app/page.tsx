@@ -1,14 +1,14 @@
 'use client';
 
 import Loading from '@/components/common/loading';
-import { useMainContext } from '@/contexts/MainContext';
+import { useFirebaseAuth } from '@/hooks/useFirebase';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
 export default function HomePage() {
     const router = useRouter();
 
-    const { token } = useMainContext();
+    const { token } = useFirebaseAuth();
 
     useEffect(() => {
         if (token) {

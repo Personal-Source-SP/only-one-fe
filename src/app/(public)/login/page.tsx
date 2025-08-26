@@ -1,7 +1,7 @@
 'use client';
 
 import { Logo } from '@/components/common';
-import { useMainContext } from '@/contexts/MainContext';
+import { useFirebaseAuth } from '@/hooks/useFirebase';
 import { Button, Card, Checkbox, Input } from '@heroui/react';
 import { Icon } from '@iconify/react';
 import { motion } from 'framer-motion';
@@ -9,7 +9,7 @@ import Link from 'next/link';
 import { FC, memo, useState } from 'react';
 
 const LoginPage: FC = () => {
-    const { handleLogin } = useMainContext();
+    const { handleLogin } = useFirebaseAuth();
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
