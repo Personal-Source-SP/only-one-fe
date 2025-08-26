@@ -4,7 +4,6 @@ import { NavigationGuardProvider } from 'next-navigation-guard';
 import { Inter } from 'next/font/google';
 import { ReactNode, Suspense } from 'react';
 
-import { MainProvider } from '@/contexts/MainContext';
 import '@/styles/globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -23,13 +22,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
             <body className={`${inter.className} overflow-x-hidden`}>
                 <Suspense>
                     <NavigationGuardProvider>
-                        <HeroUIProvider>
-                            <MainProvider>
-                                <main className="min-h-screen max-h-screen max-w-[100vw] w-full">
-                                    {children}
-                                </main>
-                            </MainProvider>
-                        </HeroUIProvider>
+                        <HeroUIProvider>{children}</HeroUIProvider>
                     </NavigationGuardProvider>
                 </Suspense>
             </body>

@@ -3,23 +3,22 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { GoogleAuthService } from '@/services/google-auth.service';
 import { NGoogleAuth } from '@/interfaces';
 import { useLocalStorage } from './useLocalStorage';
+import { KEY_LOCAL_STORAGE } from '@/constants';
 
 const googleAuthService = new GoogleAuthService();
-
-const STORAGE_KEYS = {
-    ACCESS_TOKEN: 'google_access_token',
-    TOKEN_EXPIRY: 'google_token_expiry',
-    REFRESH_TOKEN: 'google_refresh_token',
-};
 
 export function useGoogleAuth() {
     const router = useRouter();
     const searchParams = useSearchParams();
 
-    const [accessToken, setAccessToken] = useLocalStorage<string | null>(STORAGE_KEYS.ACCESS_TOKEN);
-    const [tokenExpiry, setTokenExpiry] = useLocalStorage<string | null>(STORAGE_KEYS.TOKEN_EXPIRY);
+    const [accessToken, setAccessToken] = useLocalStorage<string | null>(
+        KEY_LOCAL_STORAGE.GOOGLE_ACCESS_TOKEN,
+    );
+    const [tokenExpiry, setTokenExpiry] = useLocalStorage<string | null>(
+        KEY_LOCAL_STORAGE.GOOGLE_TOKEN_EXPIRY,
+    );
     const [refreshToken, setRefreshToken] = useLocalStorage<string | null>(
-        STORAGE_KEYS.REFRESH_TOKEN,
+        KEY_LOCAL_STORAGE.GOOGLE_REFRESH_TOKEN,
     );
 
     const [authState, setAuthState] = useState<NGoogleAuth.IAuthState>({

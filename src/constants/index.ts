@@ -23,7 +23,12 @@ export const ITEMS_PER_PAGE_OPTIONS = [
     { value: 100, label: '100 ảnh' },
 ];
 
-export const PATH_NOT_AUTH = ['/login', '/register', '/forgot-password', '/connection'];
+export const KEY_LOCAL_STORAGE = {
+    FIREBASE_TOKEN: 'firebase_token',
+    GOOGLE_ACCESS_TOKEN: 'google_access_token',
+    GOOGLE_TOKEN_EXPIRY: 'google_token_expiry',
+    GOOGLE_REFRESH_TOKEN: 'google_refresh_token',
+};
 
 export const IMAGE_WIDTH_DEFAULT = 1500;
 export const IMAGE_HEIGHT_DEFAULT = 1200;

@@ -2,7 +2,8 @@
 
 import { Loading } from '@/components/common';
 import MainLayout from '@/components/layout';
-import { PATH_NOT_AUTH } from '@/constants';
+import { KEY_LOCAL_STORAGE } from '@/constants';
+import { useFirebaseAuth } from '@/hooks/useFirebase';
 
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 
@@ -13,7 +14,7 @@ import { queryClient } from '@/libs/react-query';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { createContext, FC, PropsWithChildren, useContext, useEffect, useState } from 'react';
 
 interface MainContextType {
@@ -26,27 +27,33 @@ interface MainContextType {
     handleLoading: (loading: boolean) => void;
 }
 
+type MainProviderProps = PropsWithChildren<{
+    isPublic?: boolean;
+}>;
+
 const MainContext = createContext<MainContextType | undefined>(undefined);
 
-export const MainProvider: FC<PropsWithChildren> = ({ children }) => {
+export const MainProvider: FC<MainProviderProps> = ({ children, isPublic = false }) => {
+    const router = useRouter();
     const pathname = usePathname();
 
+    const { loading: firebaseLoading, isAuthenticated } = useFirebaseAuth();
+
     const [loading, setLoading] = useState(true);
-    const [token, setToken] = useLocalStorage<string | undefined>('token');
+    const [token, setToken] = useLocalStorage<string | undefined>(KEY_LOCAL_STORAGE.FIREBASE_TOKEN);
 
     useEffect(() => {
-        if (!PATH_NOT_AUTH.includes(pathname)) {
-            getUserDetail();
-        } else if (token) {
-            setLoading(false);
-            window.location.href = '/dashboard';
-        } else {
-            setLoading(false);
+        if (firebaseLoading) return;
+
+        if (!isPublic && (!isAuthenticated || !token)) {
+            router.push('/login');
         }
-    }, [pathname, token]);
+
+        setLoading(false);
+    }, [isPublic, isAuthenticated, firebaseLoading, pathname, token]);
 
     const renderChildren = () => {
-        if (PATH_NOT_AUTH.includes(pathname)) {
+        if (isPublic) {
             return <>{children}</>;
         }
 
@@ -56,22 +63,6 @@ export const MainProvider: FC<PropsWithChildren> = ({ children }) => {
                 <ReactQueryDevtools initialIsOpen={false} />
             </QueryClientProvider>
         );
-    };
-
-    const getUserDetail = async () => {
-        setLoading(true);
-
-        try {
-            await auth.onAuthStateChanged((user) => {
-                if (!user) {
-                    window.location.href = '/login';
-                }
-            });
-        } catch (error) {
-            window.location.href = '/login';
-        } finally {
-            setLoading(false);
-        }
     };
 
     const handleLogin = async (email: string, password: string): Promise<boolean> => {
@@ -84,7 +75,7 @@ export const MainProvider: FC<PropsWithChildren> = ({ children }) => {
                 const tokenFirebase = await userCredential.user.getIdToken();
                 setToken(tokenFirebase);
 
-                window.location.href = '/dashboard';
+                router.push('/dashboard');
 
                 return true;
             }
@@ -108,7 +99,7 @@ export const MainProvider: FC<PropsWithChildren> = ({ children }) => {
         setLoading(loading);
     };
 
-    if (loading) return <Loading />;
+    if (loading || firebaseLoading) return <Loading />;
 
     return (
         <MainContext.Provider
