@@ -14,6 +14,11 @@ export declare namespace NPhoto {
         folder?: string;
     }
 
+    interface PhotoGroup {
+        photos: Photo[];
+        date?: string;
+    }
+
     interface Filter {
         viewMode: ViewMode;
         sortOrder: SortOrder;

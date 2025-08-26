@@ -27,14 +27,14 @@ const PhotosPage: FC = () => {
 
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [currentIndex, setCurrentIndex] = useState<number>(0);
-    const [itemsPerPage, setItemsPerPage] = useState<PhotoItemsPerPage>(PhotoItemsPerPage.TWENTY);
+    const [itemsPerPage, setItemsPerPage] = useState<PhotoItemsPerPage>(PhotoItemsPerPage.FIFTY);
     const [pageTokens, setPageTokens] = useState<Record<number, string | undefined>>({
         1: undefined,
     });
 
     const [isOpenFilter, setIsOpenFilter] = useState(false);
     const [searchQuery, setSearchQuery] = useState<string>();
-    const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.TIME);
+    const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.ALL);
     const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.NEWEST);
     const [filterFolder, setFilterFolder] = useState<string | undefined>(undefined);
 
@@ -91,7 +91,7 @@ const PhotosPage: FC = () => {
     useEffect(() => {
         setCurrentPage(1);
         setPageTokens({ 1: undefined });
-    }, [itemsPerPage, searchQuery]);
+    }, [itemsPerPage, searchQuery, sortOrder, filterFolder]);
 
     useEffect(() => {
         const nextToken = filesResponse?.data?.nextPageToken;
@@ -100,23 +100,25 @@ const PhotosPage: FC = () => {
         }
     }, [filesResponse?.data?.nextPageToken, currentPage]);
 
-    const [allPhotos, hasNextPage, totalPages] = useMemo(() => {
+    const allPhotos = useMemo(() => {
         const driveFiles: NGoogleDrive.DriveFileResponse[] = filesResponse?.data?.files ?? [];
 
-        const allPhotos: NPhoto.Photo[] = (driveFiles || []).map((file, index) => ({
+        return (driveFiles || []).map((file, index) => ({
             id: index + 1,
             date: new Date(file?.createdTime || Date.now()),
             url: (file?.thumbnailLink || file?.webContentLink || '').toString(),
         }));
-
-        const hasNextPage = Boolean(filesResponse?.data?.nextPageToken);
-        const totalPages = currentPage + (hasNextPage ? 1 : 0);
-
-        return [allPhotos, hasNextPage, totalPages];
     }, [filesResponse?.data?.files]);
 
+    const hasNextPage = Boolean(filesResponse?.data?.nextPageToken);
+    const discoveredMaxPage = useMemo(
+        () => Math.max(...Object.keys(pageTokens).map((k) => Number(k))),
+        [pageTokens],
+    );
+    const totalPages = discoveredMaxPage + (hasNextPage ? 1 : 0);
+
     const groupedPhotos = useMemo(() => {
-        if (viewMode === ViewMode.ALL) return [{ date: 'Tất cả ảnh', photos: allPhotos }];
+        if (viewMode === ViewMode.ALL) return [{ photos: allPhotos }];
 
         const groups = allPhotos.reduce<{ [key: string]: NPhoto.Photo[] }>((acc, photo) => {
             const dateKey = photo.date.toLocaleDateString('vi-VN', {
@@ -170,7 +172,7 @@ const PhotosPage: FC = () => {
     }
 
     return (
-        <div className="space-y-6">
+        <section className="w-full h-full">
             <PhotoButton
                 searchQuery={searchQuery}
                 startSlideshow={startSlideshow}
@@ -195,11 +197,13 @@ const PhotosPage: FC = () => {
                 }}
             />
 
-            <PhotoGroups
-                columns={columns}
-                groupedPhotos={groupedPhotos}
-                onPhotoClick={handlePhotoClick}
-            />
+            <div className="max-h-[80vh] overflow-y-auto">
+                <PhotoGroups
+                    columns={columns}
+                    groupedPhotos={groupedPhotos}
+                    onPhotoClick={handlePhotoClick}
+                />
+            </div>
 
             <PaginationControls
                 currentPage={currentPage}
@@ -208,7 +212,11 @@ const PhotosPage: FC = () => {
                 onPageChange={(page) => {
                     if (page === currentPage) return;
 
-                    if (page < currentPage || (page === currentPage + 1 && hasNextPage)) {
+                    // Allow navigating to any discovered page, or the next undiscovered page if available
+                    if (
+                        page <= discoveredMaxPage ||
+                        (page === discoveredMaxPage + 1 && hasNextPage)
+                    ) {
                         setCurrentPage(page);
                     }
                 }}
@@ -232,7 +240,7 @@ const PhotosPage: FC = () => {
                     delay: slideshowInterval * 1000,
                 }}
             />
-        </div>
+        </section>
     );
 };
 

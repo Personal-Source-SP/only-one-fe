@@ -27,7 +27,7 @@ const PaginationControls: FC<PaginationControlsProps> = ({
     onItemsPerPageChange,
 }) => {
     return (
-        <div className="flex flex-col sm:flex-row justify-between items-center mt-8 gap-4">
+        <div className="flex justify-between items-center mt-8 gap-4">
             <Dropdown>
                 <DropdownTrigger>
                     <Button variant="flat" size="sm">

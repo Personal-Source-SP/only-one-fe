@@ -6,7 +6,7 @@ import { FC, memo } from 'react';
 
 export type PhotoGroupsProps = {
     columns: number;
-    groupedPhotos: { date: string; photos: NPhoto.Photo[] }[];
+    groupedPhotos: NPhoto.PhotoGroup[];
     onPhotoClick: (url: string) => void;
 };
 
@@ -30,7 +30,7 @@ const PhotoGroups: FC<PhotoGroupsProps> = ({ columns, groupedPhotos, onPhotoClic
         <div className="space-y-8">
             {groupedPhotos.map((group, groupIndex) => (
                 <div key={groupIndex} className="space-y-2">
-                    <h2 className="text-lg font-medium">{group.date}</h2>
+                    {group.date && <h2 className="text-lg font-medium">{group.date}</h2>}
                     <motion.div
                         animate="show"
                         initial="hidden"
