@@ -4,9 +4,7 @@ import BaseApi from './base.service';
 export class GoogleDriveService extends BaseApi {
     constructor() {
         super({
-            baseURL:
-                process.env.NEXT_PUBLIC_GOOGLE_DRIVE_API_URL ||
-                'https://www.googleapis.com/drive/v3',
+            baseURL: '/api/drive',
         });
     }
 
@@ -46,11 +44,8 @@ export class GoogleDriveService extends BaseApi {
             });
 
             const response = await this.post<NGoogleDrive.DriveFileResponse>({
-                endPoint: '/upload/files?uploadType=multipart',
+                endPoint: '/files',
                 data: formData,
-                headers: {
-                    'Content-Type': 'multipart/related',
-                },
             });
 
             return response;
@@ -78,11 +73,8 @@ export class GoogleDriveService extends BaseApi {
             });
 
             const response = await this.patch<NGoogleDrive.DriveFileResponse>({
-                endPoint: `/upload/files/${fileId}?uploadType=multipart`,
+                endPoint: `/files/${fileId}`,
                 data: formData,
-                headers: {
-                    'Content-Type': 'multipart/related',
-                },
             });
 
             return response;
@@ -107,7 +99,8 @@ export class GoogleDriveService extends BaseApi {
 
     async downloadFile(fileId: string): Promise<NBaseApi.IResponse<Blob | null>> {
         const response = await this.get<Blob>({
-            endPoint: `/files/${fileId}?alt=media`,
+            endPoint: `/files/${fileId}`,
+            params: this.generateSearchParams({ alt: 'media' } as any),
         });
 
         return response;
@@ -119,7 +112,8 @@ export class GoogleDriveService extends BaseApi {
         const { fileId, mimeType } = request;
 
         const response = await this.get<Blob>({
-            endPoint: `/files/${fileId}/export?mimeType=${mimeType}`,
+            endPoint: `/files/${fileId}/export`,
+            params: this.generateSearchParams({ mimeType } as any),
         });
 
         return response;
@@ -154,7 +148,8 @@ export class GoogleDriveService extends BaseApi {
         }
 
         const response = await this.get<NGoogleDrive.ListDriveFolderResponse>({
-            endPoint: `/files?q=${query}`,
+            endPoint: `/folders`,
+            params: this.generateSearchParams({ parentId } as any),
         });
 
         return response;
@@ -167,8 +162,8 @@ export class GoogleDriveService extends BaseApi {
         const { query, options } = request;
 
         const response = await this.get<NGoogleDrive.DriveFileResponse[]>({
-            endPoint: `/files?q=${query}`,
-            params: this.generateSearchParams(options as any),
+            endPoint: `/files`,
+            params: this.generateSearchParams({ q: query, ...(options as any) }),
         });
 
         return response;
