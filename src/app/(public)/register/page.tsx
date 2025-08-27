@@ -1,7 +1,8 @@
 'use client';
 
 import { Logo } from '@/components/common';
-import { Button, Card, Input, Link } from '@heroui/react';
+import { Button, Card, Input } from 'antd';
+import Link from 'next/link';
 import { Icon } from '@iconify/react';
 import { motion } from 'framer-motion';
 import { FC, memo, useState } from 'react';
@@ -31,33 +32,27 @@ const RegisterPage: FC = () => {
                     <form className="w-full space-y-4">
                         <Input
                             type="text"
-                            label="Họ và tên"
                             placeholder="Nhập họ và tên của bạn"
                             value={name}
-                            onValueChange={setName}
+                            onChange={(e) => setName(e.target.value)}
                         />
                         <Input
                             type="email"
-                            label="Email"
                             placeholder="Nhập email của bạn"
                             value={email}
-                            onValueChange={setEmail}
+                            onChange={(e) => setEmail(e.target.value)}
                         />
-                        <Input
-                            type="password"
-                            label="Mật khẩu"
+                        <Input.Password
                             placeholder="Tạo mật khẩu mới"
                             value={password}
-                            onValueChange={setPassword}
+                            onChange={(e) => setPassword(e.target.value)}
                         />
-                        <Input
-                            type="password"
-                            label="Xác nhận mật khẩu"
+                        <Input.Password
                             placeholder="Nhập lại mật khẩu"
                             value={confirmPassword}
-                            onValueChange={setConfirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
                         />
-                        <Button color="primary" size="lg" className="w-full" type="submit">
+                        <Button type="primary" size="large" className="w-full" htmlType="submit">
                             Đăng ký
                         </Button>
                     </form>
@@ -68,21 +63,12 @@ const RegisterPage: FC = () => {
                         <div className="flex-1 h-px bg-divider"></div>
                     </div>
 
-                    <Button
-                        color="default"
-                        variant="flat"
-                        size="lg"
-                        className="w-full"
-                        startContent={<Icon icon="logos:google-icon" />}
-                    >
-                        Đăng ký với Google
+                    <Button size="large" className="w-full">
+                        <Icon icon="logos:google-icon" className="mr-2" /> Đăng ký với Google
                     </Button>
 
                     <p className="text-foreground-600 text-center mt-4">
-                        Đã có tài khoản?{' '}
-                        <Link href="/login" color="primary">
-                            Đăng nhập
-                        </Link>
+                        Đã có tài khoản? <Link href="/login">Đăng nhập</Link>
                     </p>
                 </Card>
             </motion.div>

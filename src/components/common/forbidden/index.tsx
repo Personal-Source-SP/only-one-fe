@@ -1,4 +1,4 @@
-import { Button, Link as HeroUILink } from '@heroui/react';
+import { Button } from 'antd';
 import { Icon } from '@iconify/react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
@@ -98,33 +98,28 @@ const Forbidden: FC = () => {
                     variants={itemVariants}
                     className="flex flex-col sm:flex-row gap-3 mb-8 w-full max-w-md"
                 >
-                    <Button
-                        color="primary"
-                        size="lg"
-                        startContent={<Icon icon="lucide:log-in" />}
-                        fullWidth
-                    >
-                        <Link href="/login">Đăng nhập</Link>
-                    </Button>
-                    <Button
-                        variant="flat"
-                        size="lg"
-                        startContent={<Icon icon="lucide:home" />}
-                        fullWidth
-                    >
-                        <Link href="/">Quay về Trang chủ</Link>
-                    </Button>
+                    <Link href="/login" className="w-full">
+                        <Button type="primary" size="large" className="w-full">
+                            <span className="inline-flex items-center">
+                                <Icon icon="lucide:log-in" className="mr-2" /> Đăng nhập
+                            </span>
+                        </Button>
+                    </Link>
+                    <Link href="/" className="w-full">
+                        <Button size="large" className="w-full">
+                            <span className="inline-flex items-center">
+                                <Icon icon="lucide:home" className="mr-2" /> Quay về Trang chủ
+                            </span>
+                        </Button>
+                    </Link>
                 </motion.div>
 
                 {/* Contact support button */}
                 <motion.div variants={itemVariants} className="mb-8 w-full max-w-md">
-                    <Button
-                        color="danger"
-                        variant="flat"
-                        startContent={<Icon icon="lucide:help-circle" />}
-                        fullWidth
-                    >
-                        Liên hệ hỗ trợ
+                    <Button danger size="large" className="w-full">
+                        <span className="inline-flex items-center">
+                            <Icon icon="lucide:help-circle" className="mr-2" /> Liên hệ hỗ trợ
+                        </span>
                     </Button>
                 </motion.div>
 
@@ -132,14 +127,13 @@ const Forbidden: FC = () => {
                 <motion.div variants={itemVariants} className="text-center">
                     <div className="flex flex-wrap justify-center gap-x-6 gap-y-2">
                         {supportLinks.map((link, index) => (
-                            <HeroUILink
+                            <Link
                                 key={index}
-                                color="primary"
-                                underline="hover"
-                                className="text-sm"
+                                href={link.path}
+                                className="text-sm text-primary hover:underline"
                             >
-                                <Link href={link.path}>{link.name}</Link>
-                            </HeroUILink>
+                                {link.name}
+                            </Link>
                         ))}
                     </div>
                 </motion.div>

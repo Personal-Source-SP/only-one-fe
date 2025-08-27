@@ -2,13 +2,13 @@
 
 import ActivityChart from '@/components/module/activity-chart';
 import StorageChart from '@/components/module/storage-chart';
-import { Card, CardBody, CardHeader, Link } from '@heroui/react';
+import { Card, Button } from 'antd';
 import { Icon } from '@iconify/react';
 import { motion } from 'framer-motion';
 import { FC } from 'react';
+import Link from 'next/link';
 
 const DashboardPage: FC = () => {
-    // Mock data
     const recentFiles = [
         {
             id: 1,
@@ -82,7 +82,6 @@ const DashboardPage: FC = () => {
         },
     ];
 
-    // New mock data for charts
     const storageData = [
         { name: 'Google Drive', value: 2.8, color: '#4285F4' },
         { name: 'Google Photos', value: 1.2, color: '#34A853' },
@@ -122,32 +121,32 @@ const DashboardPage: FC = () => {
                 <p className="text-foreground-600">Đây là tổng quan hoạt động của bạn.</p>
             </motion.div>
 
-            {/* Activity Chart - New */}
             <motion.div variants={item}>
                 <Card>
-                    <CardHeader>
+                    <div className="p-4 border-b">
                         <h2 className="text-lg font-medium">Hoạt động 7 ngày qua</h2>
-                    </CardHeader>
-                    <CardBody>
+                    </div>
+                    <div className="p-4">
                         <ActivityChart data={activityData} />
-                    </CardBody>
+                    </div>
                 </Card>
             </motion.div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-                {/* Recent Drive Files */}
                 <motion.div variants={item} className="lg:col-span-2">
                     <Card className="h-full">
-                        <CardHeader className="flex justify-between items-center">
+                        <div className="flex justify-between items-center p-4 border-b">
                             <div className="flex items-center gap-2">
                                 <Icon icon="logos:google-drive" className="text-xl" />
                                 <h2 className="text-lg font-medium">Tệp Drive truy cập gần đây</h2>
                             </div>
-                            <Link href="/drive" color="primary" underline="hover" size="sm">
-                                Xem tất cả
+                            <Link href="/drive">
+                                <Button type="link" size="small">
+                                    Xem tất cả
+                                </Button>
                             </Link>
-                        </CardHeader>
-                        <CardBody>
+                        </div>
+                        <div className="p-4">
                             <div className="space-y-2">
                                 {recentFiles.map((file) => (
                                     <div
@@ -166,45 +165,56 @@ const DashboardPage: FC = () => {
                                             </p>
                                         </div>
                                         <div className="flex gap-1">
-                                            <button className="p-1 rounded-full hover:bg-content3 text-foreground-600">
-                                                <Icon icon="lucide:eye" className="text-lg" />
-                                            </button>
-                                            <button className="p-1 rounded-full hover:bg-content3 text-foreground-600">
-                                                <Icon icon="lucide:download" className="text-lg" />
-                                            </button>
+                                            <Button
+                                                type="text"
+                                                shape="circle"
+                                                icon={
+                                                    <Icon icon="lucide:eye" className="text-lg" />
+                                                }
+                                            />
+                                            <Button
+                                                type="text"
+                                                shape="circle"
+                                                icon={
+                                                    <Icon
+                                                        icon="lucide:download"
+                                                        className="text-lg"
+                                                    />
+                                                }
+                                            />
                                         </div>
                                     </div>
                                 ))}
                             </div>
-                        </CardBody>
+                        </div>
                     </Card>
                 </motion.div>
 
-                {/* Storage Chart - Replacing Stats */}
                 <motion.div variants={item}>
                     <Card className="h-full">
-                        <CardHeader>
+                        <div className="p-4 border-b">
                             <h2 className="text-lg font-medium">Dung lượng lưu trữ</h2>
-                        </CardHeader>
-                        <CardBody>
+                        </div>
+                        <div className="p-4">
                             <StorageChart data={storageData} total="16 GB" />
-                        </CardBody>
+                        </div>
                     </Card>
                 </motion.div>
 
-                {/* Recent Notes */}
                 <motion.div variants={item} className="lg:col-span-2">
                     <Card>
-                        <CardHeader className="flex justify-between items-center">
+                        <div className="flex justify-between items-center p-4 border-b">
                             <div className="flex items-center gap-2">
                                 <Icon icon="logos:google-keep" className="text-xl" />
                                 <h2 className="text-lg font-medium">Ghi chú Keep gần đây</h2>
                             </div>
-                            <Link href="/keep" color="primary" underline="hover" size="sm">
-                                Xem tất cả
+                            <Link href="/keep">
+                                <Button type="link" size="small">
+                                    Xem tất cả
+                                </Button>
                             </Link>
-                        </CardHeader>
-                        <CardBody>
+                        </div>
+                        <div className="p-4">
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                                 {recentNotes.map((note) => (
                                     <div
@@ -224,23 +234,24 @@ const DashboardPage: FC = () => {
                                     </div>
                                 ))}
                             </div>
-                        </CardBody>
+                        </div>
                     </Card>
                 </motion.div>
 
-                {/* Recent Photos */}
                 <motion.div variants={item} className="lg:col-span-3">
                     <Card>
-                        <CardHeader className="flex justify-between items-center">
+                        <div className="flex justify-between items-center p-4 border-b">
                             <div className="flex items-center gap-2">
                                 <Icon icon="logos:google-photos" className="text-xl" />
                                 <h2 className="text-lg font-medium">Ảnh mới nhất trên Photos</h2>
                             </div>
-                            <Link href="/photos" color="primary" underline="hover" size="sm">
-                                Xem tất cả
+                            <Link href="/photos">
+                                <Button type="link" size="small">
+                                    Xem tất cả
+                                </Button>
                             </Link>
-                        </CardHeader>
-                        <CardBody>
+                        </div>
+                        <div className="p-4">
                             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
                                 {recentPhotos.map((photo) => (
                                     <div
@@ -255,7 +266,7 @@ const DashboardPage: FC = () => {
                                     </div>
                                 ))}
                             </div>
-                        </CardBody>
+                        </div>
                     </Card>
                 </motion.div>
             </div>

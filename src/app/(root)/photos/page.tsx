@@ -10,6 +10,7 @@ import { PhotoItemsPerPage, SortOrder, ViewMode } from '@/enums';
 import { useGoogleAuth } from '@/hooks/useGoogleAuth';
 import type { NGoogleDrive, NPhoto } from '@/interfaces';
 import { useListFiles, useListFolders } from '@/query/google-drive.query';
+import { Layout } from 'antd';
 import { FC, useEffect, useMemo, useState } from 'react';
 import Lightbox from 'yet-another-react-lightbox';
 import Fullscreen from 'yet-another-react-lightbox/plugins/fullscreen';
@@ -132,15 +133,10 @@ const PhotosPage: FC = () => {
 
     const { totalPages, hasNextPage } = useMemo(() => {
         const hasNextPage = Boolean(filesResponse?.data?.nextPageToken);
-        const totalPages = discoveredMaxPage + (hasNextPage ? 1 : 0);
+        const totalPages = currentPage + (hasNextPage ? 1 : 0);
 
         return { totalPages, hasNextPage };
     }, [filesResponse?.data?.nextPageToken]);
-
-    const discoveredMaxPage = useMemo(
-        () => Math.max(...Object.keys(pageTokens).map((k) => Number(k))),
-        [pageTokens],
-    );
 
     const startSlideshow = () => {
         setIsLightboxOpen(true);
@@ -178,59 +174,63 @@ const PhotosPage: FC = () => {
 
     return (
         <section className="w-full h-full">
-            <PhotoButton
-                searchQuery={searchQuery}
-                startSlideshow={startSlideshow}
-                setSearchQuery={setSearchQuery}
-                setIsOpenFilter={setIsOpenFilter}
-            />
+            <section className="flex-1 flex flex-col h-[calc(100vh-100px)] w-full overflow-hidden">
+                {/* Header fixed at the top */}
+                <div className="sticky top-0 left-0 right-0 z-20 bg-white">
+                    <PhotoButton
+                        searchQuery={searchQuery}
+                        startSlideshow={startSlideshow}
+                        setSearchQuery={setSearchQuery}
+                        setIsOpenFilter={setIsOpenFilter}
+                    />
 
-            <PhotoFilter
-                viewMode={viewMode}
-                isOpen={isOpenFilter}
-                sortOrder={sortOrder}
-                onClose={setIsOpenFilter}
-                filterFolder={filterFolder}
-                folders={foldersData?.data?.files ?? []}
-                onApplyFilters={(filter: NPhoto.Filter) => {
-                    setCurrentPage(1);
-                    setPageTokens({ 1: undefined });
+                    <PhotoFilter
+                        viewMode={viewMode}
+                        isOpen={isOpenFilter}
+                        sortOrder={sortOrder}
+                        onClose={setIsOpenFilter}
+                        filterFolder={filterFolder}
+                        folders={foldersData?.data?.files ?? []}
+                        onApplyFilters={(filter: NPhoto.Filter) => {
+                            setCurrentPage(1);
+                            setPageTokens({ 1: undefined });
 
-                    setViewMode(filter.viewMode);
-                    setSortOrder(filter.sortOrder);
-                    setFilterFolder(filter.folderId);
-                }}
-            />
+                            setViewMode(filter.viewMode);
+                            setSortOrder(filter.sortOrder);
+                            setFilterFolder(filter.folderId);
+                        }}
+                    />
+                </div>
 
-            <div className="max-h-[80vh] overflow-y-auto">
-                <PhotoGroups
-                    columns={columns}
-                    groupedPhotos={groupedPhotos}
-                    onPhotoClick={handlePhotoClick}
-                />
-            </div>
+                {/* Scrollable content */}
+                <div className="flex-1 overflow-y-auto">
+                    <PhotoGroups
+                        columns={columns}
+                        groupedPhotos={groupedPhotos}
+                        onPhotoClick={handlePhotoClick}
+                    />
+                </div>
 
-            <PaginationControls
-                currentPage={currentPage}
-                itemsPerPage={itemsPerPage}
-                totalItems={totalPages * itemsPerPage}
-                onPageChange={(page) => {
-                    if (page === currentPage) return;
-
-                    // Allow navigating to any discovered page, or the next undiscovered page if available
-                    if (
-                        page <= discoveredMaxPage ||
-                        (page === discoveredMaxPage + 1 && hasNextPage)
-                    ) {
-                        setCurrentPage(page);
-                    }
-                }}
-                onItemsPerPageChange={(n) => {
-                    setItemsPerPage(n);
-                    setCurrentPage(1);
-                    setPageTokens({ 1: undefined });
-                }}
-            />
+                {/* Footer fixed at the bottom */}
+                <div className="sticky bottom-0 left-0 right-0 z-20 bg-white mb-3">
+                    <PaginationControls
+                        currentPage={currentPage}
+                        itemsPerPage={itemsPerPage}
+                        totalItems={totalPages * itemsPerPage}
+                        onPageChange={(page) => {
+                            if (page === currentPage) return;
+                            if (page <= totalPages || (page === totalPages + 1 && hasNextPage)) {
+                                setCurrentPage(page);
+                            }
+                        }}
+                        onItemsPerPageChange={(n) => {
+                            setItemsPerPage(n);
+                            setCurrentPage(1);
+                            setPageTokens({ 1: undefined });
+                        }}
+                    />
+                </div>
+            </section>
 
             <Lightbox
                 index={currentIndex}

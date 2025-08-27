@@ -1,7 +1,8 @@
 'use client';
 
 import { Logo } from '@/components/common';
-import { Button, Card, Input, Link } from '@heroui/react';
+import { Button, Card, Input } from 'antd';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { FC, memo, useState } from 'react';
 
@@ -27,21 +28,17 @@ const ForgetPasswordPage: FC = () => {
                     <form className="w-full space-y-4">
                         <Input
                             type="email"
-                            label="Email"
                             placeholder="Nhập email của bạn"
                             value={email}
-                            onValueChange={setEmail}
+                            onChange={(e) => setEmail(e.target.value)}
                         />
-                        <Button color="primary" size="lg" className="w-full" type="submit">
+                        <Button type="primary" size="large" className="w-full" htmlType="submit">
                             Gửi liên kết khôi phục
                         </Button>
                     </form>
 
                     <p className="text-foreground-600 text-center mt-4">
-                        Nhớ mật khẩu?{' '}
-                        <Link href="/login" color="primary">
-                            Đăng nhập
-                        </Link>
+                        Nhớ mật khẩu? <Link href="/login">Đăng nhập</Link>
                     </p>
                 </Card>
             </motion.div>

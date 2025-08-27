@@ -31,15 +31,15 @@ body {
 }
 
 .sidebar-item {
-  @apply flex items-center gap-3 px-4 py-3 rounded-md text-foreground-600 transition-colors duration-150;
+  @apply flex items-center gap-3 px-4 py-3 rounded-md text-gray-600 transition-colors duration-150;
 }
 
 .sidebar-item:hover {
-  @apply bg-content2 text-foreground-700;
+  @apply bg-gray-100 text-gray-700;
 }
 
 .sidebar-item.active {
-  @apply bg-primary-100 text-primary font-medium;
+  @apply bg-blue-100 text-blue-600 font-medium;
 }
 
 .sidebar-item .icon {
@@ -47,20 +47,20 @@ body {
 }
 
 .card-hover {
-  @apply transition-all duration-200 hover:shadow-md hover:bg-content1;
+  @apply transition-all duration-200 hover:shadow-md hover:bg-gray-50;
 }
 
 .breadcrumb-item {
-  @apply flex items-center text-sm text-foreground-500;
+  @apply flex items-center text-sm text-gray-500;
 }
 
 .breadcrumb-item:not(:last-child)::after {
   content: '/';
-  @apply mx-2 text-foreground-400;
+  @apply mx-2 text-gray-400;
 }
 
 .breadcrumb-item:last-child {
-  @apply text-foreground-700 font-medium;
+  @apply text-gray-700 font-medium;
 }
 
 /* Responsive utilities */

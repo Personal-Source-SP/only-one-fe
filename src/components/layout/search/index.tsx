@@ -1,4 +1,4 @@
-import { Button, Input } from '@heroui/react';
+import { Button, Input } from 'antd';
 import { Icon } from '@iconify/react';
 import { FC, memo } from 'react';
 
@@ -12,22 +12,20 @@ const Search: FC<SearchProps> = ({ showSearch, setShowSearch }) => {
 
     return (
         <div className="p-2 border-b border-divider md:hidden">
-            <Input
-                fullWidth
-                placeholder="Tìm kiếm..."
-                startContent={<Icon icon="lucide:search" className="text-foreground-500" />}
-                endContent={
-                    <Button
-                        isIconOnly
-                        size="sm"
-                        variant="light"
-                        onPress={() => setShowSearch(false)}
-                    >
-                        <Icon icon="lucide:x" />
-                    </Button>
-                }
-                autoFocus
-            />
+            <div className="relative">
+                <Input
+                    placeholder="Tìm kiếm..."
+                    prefix={<Icon icon="lucide:search" className="text-foreground-500" />}
+                    autoFocus
+                />
+                <Button
+                    size="small"
+                    type="text"
+                    className="absolute right-1 top-1/2 -translate-y-1/2"
+                    onClick={() => setShowSearch(false)}
+                    icon={<Icon icon="lucide:x" />}
+                />
+            </div>
         </div>
     );
 };

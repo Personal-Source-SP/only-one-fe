@@ -1,14 +1,7 @@
 'use client';
 
 import { PhotoItemsPerPage } from '@/enums';
-import {
-    Button,
-    Dropdown,
-    DropdownItem,
-    DropdownMenu,
-    DropdownTrigger,
-    Pagination,
-} from '@heroui/react';
+import { Button, Dropdown, MenuProps, Pagination } from 'antd';
 import { FC, memo } from 'react';
 
 type PaginationControlsProps = {
@@ -26,35 +19,32 @@ const PaginationControls: FC<PaginationControlsProps> = ({
     onPageChange,
     onItemsPerPageChange,
 }) => {
+    const items: MenuProps['items'] = [
+        { key: PhotoItemsPerPage.TEN.toString(), label: '10 ảnh/trang' },
+        { key: PhotoItemsPerPage.TWENTY.toString(), label: '20 ảnh/trang' },
+        { key: PhotoItemsPerPage.FIFTY.toString(), label: '50 ảnh/trang' },
+        { key: PhotoItemsPerPage.HUNDRED.toString(), label: '100 ảnh/trang' },
+    ];
+
     return (
         <div className="flex justify-between items-center mt-8 gap-4">
-            <Dropdown>
-                <DropdownTrigger>
-                    <Button variant="flat" size="sm">
-                        {itemsPerPage} ảnh/trang
-                    </Button>
-                </DropdownTrigger>
-                <DropdownMenu
-                    selectionMode="single"
-                    selectedKeys={new Set([itemsPerPage.toString()])}
-                    onSelectionChange={(keys) => {
-                        const key = Array.from(keys).at(0) as string | undefined;
-                        if (key) onItemsPerPageChange(Number(key));
-                    }}
-                >
-                    <DropdownItem key={PhotoItemsPerPage.TEN}>10 ảnh/trang</DropdownItem>
-                    <DropdownItem key={PhotoItemsPerPage.TWENTY}>20 ảnh/trang</DropdownItem>
-                    <DropdownItem key={PhotoItemsPerPage.FIFTY}>50 ảnh/trang</DropdownItem>
-                    <DropdownItem key={PhotoItemsPerPage.HUNDRED}>100 ảnh/trang</DropdownItem>
-                </DropdownMenu>
+            <Dropdown
+                menu={{
+                    items,
+                    selectable: true,
+                    selectedKeys: [itemsPerPage.toString()],
+                    onClick: ({ key }) => onItemsPerPageChange(Number(key)),
+                }}
+            >
+                <Button>{itemsPerPage} ảnh/trang</Button>
             </Dropdown>
 
             <Pagination
-                showControls
-                color="primary"
-                page={currentPage}
+                current={currentPage}
                 onChange={onPageChange}
-                total={Math.ceil(totalItems / itemsPerPage)}
+                total={totalItems}
+                pageSize={itemsPerPage}
+                showSizeChanger={false}
             />
         </div>
     );

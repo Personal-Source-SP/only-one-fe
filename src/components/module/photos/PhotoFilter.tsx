@@ -2,15 +2,7 @@
 
 import { SortOrder, ViewMode } from '@/enums';
 import { NGoogleDrive, NPhoto } from '@/interfaces';
-import {
-    Button,
-    Modal,
-    ModalBody,
-    ModalContent,
-    ModalHeader,
-    Select,
-    SelectItem,
-} from '@heroui/react';
+import { Button, Modal, Select } from 'antd';
 import { Icon } from '@iconify/react';
 import { FC, memo, useEffect, useMemo, useState } from 'react';
 
@@ -59,83 +51,74 @@ const PhotoFilter: FC<PhotoFilterProps> = ({
 
     const renderFilter = () => {
         return (
-            <>
-                <ModalHeader className="pb-0">Công cụ</ModalHeader>
-                <ModalBody className="p-4 space-y-4">
-                    <div className="space-y-3">
-                        <Select
-                            size="sm"
-                            label="Thư mục"
-                            items={folderOptions}
-                            selectedKeys={pendingFolder ? new Set([pendingFolder]) : undefined}
-                            onSelectionChange={(keys) => {
-                                const key = Array.from(keys).at(0) as string | undefined;
-                                if (key) setPendingFolder(key as string);
+            <div className="p-4 space-y-4">
+                <div className="space-y-3">
+                    <Select
+                        size="small"
+                        className="w-full"
+                        placeholder="Thư mục"
+                        value={pendingFolder}
+                        onChange={(val) => setPendingFolder(val as string | undefined)}
+                        options={folderOptions.map((i) => ({ value: i.value, label: i.label }))}
+                    />
+
+                    <Select
+                        size="small"
+                        className="w-full"
+                        placeholder="Sắp xếp"
+                        value={pendingSort}
+                        onChange={(val) => setPendingSort(val as SortOrder)}
+                        options={[
+                            { value: SortOrder.NEWEST, label: 'Mới nhất trước' },
+                            { value: SortOrder.OLDEST, label: 'Cũ nhất trước' },
+                        ]}
+                    />
+
+                    <Select
+                        size="small"
+                        className="w-full"
+                        placeholder="Chế độ xem"
+                        value={pendingView}
+                        onChange={(val) => setPendingView(val as ViewMode)}
+                        options={[
+                            { value: ViewMode.ALL, label: 'Xem tất cả' },
+                            { value: ViewMode.TIME, label: 'Xem theo thời gian' },
+                        ]}
+                    />
+
+                    <div className="pt-2">
+                        <Button
+                            type="primary"
+                            className="w-full"
+                            onClick={() => {
+                                onApplyFilters({
+                                    viewMode: pendingView,
+                                    sortOrder: pendingSort,
+                                    folderId: pendingFolder,
+                                });
+                                onClose(false);
                             }}
                         >
-                            {(item) => <SelectItem key={item.key}>{item.label}</SelectItem>}
-                        </Select>
-
-                        <Select
-                            size="sm"
-                            label="Sắp xếp"
-                            selectedKeys={new Set([pendingSort])}
-                            onSelectionChange={(keys) => {
-                                const key = Array.from(keys).at(0) as SortOrder | undefined;
-                                if (key) setPendingSort(key);
-                            }}
-                        >
-                            <SelectItem key={SortOrder.NEWEST}>Mới nhất trước</SelectItem>
-                            <SelectItem key={SortOrder.OLDEST}>Cũ nhất trước</SelectItem>
-                        </Select>
-
-                        <Select
-                            size="sm"
-                            label="Chế độ xem"
-                            selectedKeys={new Set([pendingView])}
-                            onSelectionChange={(keys) => {
-                                const key = Array.from(keys).at(0) as ViewMode | undefined;
-                                if (key) setPendingView(key);
-                            }}
-                        >
-                            <SelectItem key={ViewMode.ALL}>Xem tất cả</SelectItem>
-                            <SelectItem key={ViewMode.TIME}>Xem theo thời gian</SelectItem>
-                        </Select>
-
-                        <div className="pt-2">
-                            <Button
-                                fullWidth
-                                color="primary"
-                                startContent={<Icon icon="lucide:filter" />}
-                                onPress={() => {
-                                    onApplyFilters({
-                                        viewMode: pendingView,
-                                        sortOrder: pendingSort,
-                                        folderId: pendingFolder,
-                                    });
-
-                                    onClose(false);
-                                }}
-                            >
-                                Lọc
-                            </Button>
-                        </div>
+                            <span className="inline-flex items-center">
+                                <Icon icon="lucide:filter" className="mr-2" /> Lọc
+                            </span>
+                        </Button>
                     </div>
-                </ModalBody>
-            </>
+                </div>
+            </div>
         );
     };
 
     return (
         <Modal
-            size="lg"
-            isOpen={isOpen}
-            backdrop="opaque"
-            placement="center"
-            scrollBehavior="inside"
-            onOpenChange={onClose}
+            width={720}
+            open={isOpen}
+            centered
+            onCancel={() => onClose(false)}
+            footer={null}
+            title={<div className="pb-0">Công cụ</div>}
         >
-            <ModalContent>{renderFilter()}</ModalContent>
+            {renderFilter()}
         </Modal>
     );
 };

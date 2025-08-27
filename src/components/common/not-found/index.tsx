@@ -1,4 +1,4 @@
-import { Button, Input } from '@heroui/react';
+import { Button, Input } from 'antd';
 import { Icon } from '@iconify/react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
@@ -92,16 +92,17 @@ const NotFound: FC = () => {
                     variants={itemVariants}
                     className="flex flex-col sm:flex-row gap-3 mb-8"
                 >
-                    <Button color="primary" size="lg" startContent={<Icon icon="lucide:home" />}>
-                        <Link href="/">Quay về Trang chủ</Link>
+                    <Button type="primary" size="large">
+                        <Link href="/">
+                            <span className="inline-flex items-center">
+                                <Icon icon="lucide:home" className="mr-2" /> Quay về Trang chủ
+                            </span>
+                        </Link>
                     </Button>
-                    <Button
-                        variant="flat"
-                        size="lg"
-                        startContent={<Icon icon="lucide:arrow-left" />}
-                        onPress={handleGoBack}
-                    >
-                        Quay lại trang trước
+                    <Button size="large" onClick={handleGoBack}>
+                        <span className="inline-flex items-center">
+                            <Icon icon="lucide:arrow-left" className="mr-2" /> Quay lại trang trước
+                        </span>
                     </Button>
                 </motion.div>
 
@@ -112,16 +113,9 @@ const NotFound: FC = () => {
                     </h2>
                     <div className="flex flex-wrap justify-center gap-3">
                         {popularLinks.map((link, index) => (
-                            <Button
-                                key={index}
-                                as={Link}
-                                href={link.path}
-                                variant="flat"
-                                color="default"
-                                className="transition-all hover:bg-primary-100"
-                            >
-                                {link.name}
-                            </Button>
+                            <Link key={index} href={link.path} className="transition-all">
+                                <Button>{link.name}</Button>
+                            </Link>
                         ))}
                     </div>
                 </motion.div>
