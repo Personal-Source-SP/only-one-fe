@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Input } from '@heroui/react';
+import { Button, Input } from 'antd';
 import { Icon } from '@iconify/react';
 import { FC, memo } from 'react';
 
@@ -20,34 +20,29 @@ const PhotoButton: FC<PhotoButtonProps> = ({
     return (
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
             <Input
-                size="sm"
+                size="small"
                 value={searchQuery}
                 className="w-full sm:w-64"
                 placeholder="Tìm kiếm ảnh của bạn..."
-                onValueChange={(value) => setSearchQuery(value.trim())}
-                startContent={<Icon icon="lucide:search" className="text-foreground-500" />}
+                onChange={(e) => setSearchQuery(e.target.value.trim())}
+                prefix={<Icon icon="lucide:search" className="text-foreground-500" />}
             />
 
             <div className="flex justify-between items-center w-full gap-2">
                 <Button
-                    size="sm"
-                    variant="flat"
-                    color="primary"
+                    size="small"
+                    type="primary"
                     className="w-full"
-                    onPress={() => setIsOpenFilter(true)}
-                    startContent={<Icon icon="lucide:settings-2" />}
+                    onClick={() => setIsOpenFilter(true)}
                 >
-                    Bộ lọc
+                    <span className="inline-flex items-center">
+                        <Icon icon="lucide:settings-2" className="mr-2" /> Bộ lọc
+                    </span>
                 </Button>
-                <Button
-                    size="sm"
-                    variant="flat"
-                    color="primary"
-                    className="w-full"
-                    onPress={startSlideshow}
-                    startContent={<Icon icon="lucide:play" />}
-                >
-                    Trình chiếu
+                <Button size="small" type="primary" className="w-full" onClick={startSlideshow}>
+                    <span className="inline-flex items-center">
+                        <Icon icon="lucide:play" className="mr-2" /> Trình chiếu
+                    </span>
                 </Button>
             </div>
         </div>

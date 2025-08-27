@@ -1,16 +1,5 @@
 import { GoogleAuthService } from '@/services';
-import {
-    Avatar,
-    Badge,
-    Button,
-    Dropdown,
-    DropdownItem,
-    DropdownMenu,
-    DropdownTrigger,
-    Navbar,
-    NavbarBrand,
-    NavbarContent,
-} from '@heroui/react';
+import { Avatar, Badge, Button, Dropdown, MenuProps } from 'antd';
 import { Icon } from '@iconify/react';
 import { FC, memo } from 'react';
 
@@ -62,35 +51,40 @@ const Header: FC<HeaderProps> = ({
 
     const renderNavbarLeft = () => {
         return (
-            <NavbarBrand>
+            <div className="flex items-center">
                 <Button
-                    isIconOnly
-                    variant="light"
                     className="mr-2 md:hidden"
-                    onPress={() => setMobileMenuOpen(!mobileMenuOpen)}
-                >
-                    <Icon icon="lucide:menu" className="text-xl" />
-                </Button>
+                    type="text"
+                    shape="circle"
+                    onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                    icon={<Icon icon="lucide:menu" className="text-xl" />}
+                />
                 <h1 className="text-xl font-medium">{getPageTitle()}</h1>
-            </NavbarBrand>
+            </div>
         );
     };
 
     const renderNavbarRight = () => {
+        const menuItems: MenuProps['items'] = settingItem.map((item) => ({
+            key: item.label,
+            disabled: item.disabled,
+            label: (
+                <div className="flex items-center gap-2" onClick={item.onClick}>
+                    <Icon icon={item.icon} />
+                    <span>{item.label}</span>
+                </div>
+            ),
+        }));
         return (
-            <NavbarContent justify="end" className="gap-2 md:gap-4">
-                {/* Mobile search toggle */}
+            <div className="flex items-center gap-2 md:gap-4">
                 <Button
-                    isIconOnly
-                    radius="full"
-                    variant="light"
                     className="md:hidden"
-                    onPress={() => setShowSearch(!showSearch)}
-                >
-                    <Icon icon="lucide:search" className="text-xl text-foreground-600" />
-                </Button>
+                    type="text"
+                    shape="circle"
+                    onClick={() => setShowSearch(!showSearch)}
+                    icon={<Icon icon="lucide:search" className="text-xl text-foreground-600" />}
+                />
 
-                {/* Desktop search */}
                 <div className="relative hidden md:block">
                     <input
                         type="text"
@@ -103,47 +97,31 @@ const Header: FC<HeaderProps> = ({
                     />
                 </div>
 
-                <Badge content="" color="danger" shape="circle" placement="top-right">
+                <Badge dot>
                     <Button
-                        isIconOnly
-                        radius="full"
-                        variant="light"
-                        onPress={() => setShowNotifications(!showNotifications)}
-                    >
-                        <Icon icon="lucide:bell" className="text-xl text-foreground-600" />
-                    </Button>
+                        type="text"
+                        shape="circle"
+                        onClick={() => setShowNotifications(!showNotifications)}
+                        icon={<Icon icon="lucide:bell" className="text-xl text-foreground-600" />}
+                    />
                 </Badge>
 
-                <Dropdown placement="bottom-end">
-                    <DropdownTrigger>
-                        <Avatar
-                            size="sm"
-                            className="cursor-pointer"
-                            src="https://img.heroui.chat/image/avatar?w=200&h=200&u=1"
-                        />
-                    </DropdownTrigger>
-                    <DropdownMenu aria-label="User Actions">
-                        {settingItem.map((item) => (
-                            <DropdownItem
-                                key={item.label}
-                                onPress={item.onClick}
-                                isDisabled={item.disabled}
-                                startContent={<Icon icon={item.icon} />}
-                            >
-                                {item.label}
-                            </DropdownItem>
-                        ))}
-                    </DropdownMenu>
+                <Dropdown menu={{ items: menuItems }} placement="bottomRight" trigger={['click']}>
+                    <Avatar
+                        size={32}
+                        className="cursor-pointer"
+                        src="https://img.heroui.chat/image/avatar?w=200&h=200&u=1"
+                    />
                 </Dropdown>
-            </NavbarContent>
+            </div>
         );
     };
 
     return (
-        <Navbar maxWidth="full" className="border-b border-divider">
+        <div className="w-full border-b border-divider flex items-center justify-between px-4 py-2">
             {renderNavbarLeft()}
             {renderNavbarRight()}
-        </Navbar>
+        </div>
     );
 };
 

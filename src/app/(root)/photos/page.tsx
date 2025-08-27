@@ -132,15 +132,10 @@ const PhotosPage: FC = () => {
 
     const { totalPages, hasNextPage } = useMemo(() => {
         const hasNextPage = Boolean(filesResponse?.data?.nextPageToken);
-        const totalPages = discoveredMaxPage + (hasNextPage ? 1 : 0);
+        const totalPages = currentPage + (hasNextPage ? 1 : 0);
 
         return { totalPages, hasNextPage };
     }, [filesResponse?.data?.nextPageToken]);
-
-    const discoveredMaxPage = useMemo(
-        () => Math.max(...Object.keys(pageTokens).map((k) => Number(k))),
-        [pageTokens],
-    );
 
     const startSlideshow = () => {
         setIsLightboxOpen(true);
@@ -218,10 +213,7 @@ const PhotosPage: FC = () => {
                     if (page === currentPage) return;
 
                     // Allow navigating to any discovered page, or the next undiscovered page if available
-                    if (
-                        page <= discoveredMaxPage ||
-                        (page === discoveredMaxPage + 1 && hasNextPage)
-                    ) {
+                    if (page <= totalPages || (page === totalPages + 1 && hasNextPage)) {
                         setCurrentPage(page);
                     }
                 }}

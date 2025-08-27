@@ -1,18 +1,6 @@
 'use client';
 
-import {
-    Avatar,
-    Button,
-    Card,
-    Chip,
-    Input,
-    Table,
-    TableBody,
-    TableCell,
-    TableColumn,
-    TableHeader,
-    TableRow,
-} from '@heroui/react';
+import { Avatar, Button, Card, Input, Table, Tag } from 'antd';
 import { Icon } from '@iconify/react';
 import { motion } from 'framer-motion';
 import { FC, useEffect, useState } from 'react';
@@ -120,10 +108,7 @@ const UsersPage: FC = () => {
             case 'name':
                 return (
                     <div className="flex items-center gap-3">
-                        <Avatar
-                            src={`https://img.heroui.chat/image/avatar?w=200&h=200&u=${user.avatarId}`}
-                            size="sm"
-                        />
+                        <Avatar src={`https://img.heroui.chat/image/avatar?w=200&h=200&u=${user.avatarId}`} size="small" />
                         <span className="font-medium">{user.name}</span>
                     </div>
                 );
@@ -131,23 +116,17 @@ const UsersPage: FC = () => {
                 return user.email;
             case 'role':
                 return (
-                    <Chip
-                        color={user.role === 'Admin' ? 'primary' : 'default'}
-                        variant="flat"
-                        size="sm"
-                    >
-                        {user.role}
-                    </Chip>
+                    <Tag color={user.role === 'Admin' ? 'blue' : undefined}>{user.role}</Tag>
                 );
             case 'joinDate':
                 return user.joinDate;
             case 'actions':
                 return (
                     <div className="flex justify-end gap-2">
-                        <Button isIconOnly variant="light" size="sm">
+                        <Button type="text" shape="circle" size="small">
                             <Icon icon="lucide:mail" className="text-lg text-foreground-600" />
                         </Button>
-                        <Button isIconOnly variant="light" size="sm">
+                        <Button type="text" shape="circle" size="small">
                             <Icon
                                 icon="lucide:more-vertical"
                                 className="text-lg text-foreground-600"
@@ -181,25 +160,21 @@ const UsersPage: FC = () => {
                 </div>
 
                 <div className="flex gap-2 mt-2 sm:mt-0">
-                    <Button
-                        color="primary"
-                        startContent={<Icon icon="lucide:user-plus" />}
-                        size="sm"
-                    >
+                    <Button type="primary" icon={<Icon icon="lucide:user-plus" />} size="small">
                         Thêm người dùng
                     </Button>
 
                     {/* View toggle */}
                     <Button
-                        variant="flat"
-                        size="sm"
-                        startContent={
+                        type="default"
+                        size="small"
+                        icon={
                             <Icon
                                 icon={viewMode === 'table' ? 'lucide:grid' : 'lucide:list'}
                                 className="text-foreground-600"
                             />
                         }
-                        onPress={() => setViewMode(viewMode === 'table' ? 'card' : 'table')}
+                        onClick={() => setViewMode(viewMode === 'table' ? 'card' : 'table')}
                     >
                         {!isMobile && (viewMode === 'table' ? 'Dạng thẻ' : 'Dạng bảng')}
                     </Button>
@@ -210,18 +185,18 @@ const UsersPage: FC = () => {
             <div className="flex flex-wrap gap-2">
                 <Input
                     placeholder="Tìm theo tên hoặc email..."
-                    startContent={<Icon icon="lucide:search" className="text-foreground-500" />}
+                    prefix={<Icon icon="lucide:search" className="text-foreground-500" />}
                     value={searchQuery}
-                    onValueChange={setSearchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
                     className="w-full sm:w-64"
-                    size="sm"
+                    size="small"
                 />
 
-                <Button variant="flat" size="sm" endContent={<Icon icon="lucide:chevron-down" />}>
+                <Button type="default" size="small" icon={<Icon icon="lucide:chevron-down" />}>
                     Vai trò
                 </Button>
 
-                <Button variant="flat" size="sm" endContent={<Icon icon="lucide:chevron-down" />}>
+                <Button type="default" size="small" icon={<Icon icon="lucide:chevron-down" />}>
                     Ngày tham gia
                 </Button>
             </div>
@@ -230,43 +205,20 @@ const UsersPage: FC = () => {
             {viewMode === 'table' ? (
                 <div className="overflow-x-auto">
                     <Table
-                        removeWrapper
-                        aria-label="Users Table"
-                        shadow="sm"
-                        className="rounded-lg border border-divider min-w-full"
+                      dataSource={filteredUsers}
+                      rowKey="id"
+                      pagination={false}
+                      className="rounded-lg border border-divider min-w-full"
                     >
-                        <TableHeader>
-                            <TableColumn key="name">HỌ VÀ TÊN</TableColumn>
-                            {!isMobile ? <TableColumn key="email">EMAIL</TableColumn> : <></>}
-                            <TableColumn key="role">VAI TRÒ</TableColumn>
-                            {!isMobile ? (
-                                <TableColumn key="joinDate">NGÀY THAM GIA</TableColumn>
-                            ) : (
-                                <></>
-                            )}
-                            <TableColumn key="actions" align="end">
-                                <></>
-                            </TableColumn>
-                        </TableHeader>
-                        <TableBody emptyContent="Không tìm thấy người dùng nào">
-                            {filteredUsers.map((user) => (
-                                <TableRow key={user.id}>
-                                    <TableCell>{renderCell(user, 'name')}</TableCell>
-                                    {!isMobile ? (
-                                        <TableCell>{renderCell(user, 'email')}</TableCell>
-                                    ) : (
-                                        <></>
-                                    )}
-                                    <TableCell>{renderCell(user, 'role')}</TableCell>
-                                    {!isMobile ? (
-                                        <TableCell>{renderCell(user, 'joinDate')}</TableCell>
-                                    ) : (
-                                        <></>
-                                    )}
-                                    <TableCell>{renderCell(user, 'actions')}</TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
+                      <Table.Column dataIndex="name" title="HỌ VÀ TÊN" key="name" render={(_, r) => renderCell(r, 'name')} />
+                      {!isMobile ? (
+                        <Table.Column dataIndex="email" title="EMAIL" key="email" render={(_, r) => renderCell(r, 'email')} />
+                      ) : null}
+                      <Table.Column dataIndex="role" title="VAI TRÒ" key="role" render={(_, r) => renderCell(r, 'role')} />
+                      {!isMobile ? (
+                        <Table.Column dataIndex="joinDate" title="NGÀY THAM GIA" key="joinDate" render={(_, r) => renderCell(r, 'joinDate')} />
+                      ) : null}
+                      <Table.Column key="actions" render={(_, r) => renderCell(r, 'actions')} align="right" />
                     </Table>
                 </div>
             ) : (
@@ -274,21 +226,12 @@ const UsersPage: FC = () => {
                     {filteredUsers.map((user) => (
                         <Card key={user.id} className="p-4">
                             <div className="flex items-center gap-3">
-                                <Avatar
-                                    src={`https://img.heroui.chat/image/avatar?w=200&h=200&u=${user.avatarId}`}
-                                    size="lg"
-                                />
+                                <Avatar src={`https://img.heroui.chat/image/avatar?w=200&h=200&u=${user.avatarId}`} size={64} />
                                 <div className="flex-1">
                                     <h3 className="font-medium">{user.name}</h3>
                                     <p className="text-sm text-foreground-500">{user.email}</p>
                                     <div className="flex items-center justify-between mt-2">
-                                        <Chip
-                                            color={user.role === 'Admin' ? 'primary' : 'default'}
-                                            variant="flat"
-                                            size="sm"
-                                        >
-                                            {user.role}
-                                        </Chip>
+                                        <Tag color={user.role === 'Admin' ? 'blue' : undefined}>{user.role}</Tag>
                                         <p className="text-xs text-foreground-500">
                                             Tham gia: {user.joinDate}
                                         </p>
@@ -296,16 +239,10 @@ const UsersPage: FC = () => {
                                 </div>
                             </div>
                             <div className="flex justify-end gap-2 mt-3">
-                                <Button
-                                    size="sm"
-                                    variant="flat"
-                                    startContent={<Icon icon="lucide:mail" />}
-                                >
+                                <Button size="small" type="default" icon={<Icon icon="lucide:mail" />}>
                                     Liên hệ
                                 </Button>
-                                <Button size="sm" variant="light" isIconOnly>
-                                    <Icon icon="lucide:more-vertical" />
-                                </Button>
+                                <Button size="small" type="text" shape="circle" icon={<Icon icon="lucide:more-vertical" />} />
                             </div>
                         </Card>
                     ))}

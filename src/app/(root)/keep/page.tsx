@@ -1,22 +1,18 @@
 'use client';
 
 import {
-    Button,
-    Card,
-    Dropdown,
-    DropdownItem,
-    DropdownMenu,
-    DropdownTrigger,
-    Input,
-    Modal,
-    ModalBody,
-    ModalContent,
-    ModalFooter,
-    ModalHeader,
-    useDisclosure,
-} from '@heroui/react';
-import { Icon } from '@iconify/react';
-import { motion } from 'framer-motion';
+    AppstoreOutlined,
+    BgColorsOutlined,
+    CheckOutlined,
+    CheckSquareOutlined,
+    DeleteOutlined,
+    FilterOutlined,
+    PushpinFilled,
+    PushpinOutlined,
+    SearchOutlined,
+    TagOutlined,
+} from '@ant-design/icons';
+import { Button, Card, Dropdown, Input, Menu, Modal, Select, Space, Tag, Tooltip } from 'antd';
 import { FC, useEffect, useState } from 'react';
 
 interface Note {
@@ -30,7 +26,7 @@ interface Note {
 }
 
 const KeepPage: FC = () => {
-    const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedNote, setSelectedNote] = useState<Note | null>(null);
     const [newNoteExpanded, setNewNoteExpanded] = useState(false);
@@ -121,7 +117,7 @@ const KeepPage: FC = () => {
 
     const handleNoteClick = (note: Note) => {
         setSelectedNote(note);
-        onOpen();
+        setIsModalOpen(true);
     };
 
     // Add new state for note color picker
@@ -206,7 +202,7 @@ const KeepPage: FC = () => {
     const handleDeleteNote = (id: number) => {
         setNotes(notes.filter((note) => note.id !== id));
         if (selectedNote?.id === id) {
-            onClose();
+            setIsModalOpen(false);
         }
     };
 
@@ -255,149 +251,191 @@ const KeepPage: FC = () => {
         return columnNotes;
     };
 
-    const pinnedColumnNotes = getColumnNotes(pinnedNotes);
-    const unpinnedColumnNotes = getColumnNotes(unpinnedNotes);
+    // For antd, we will use grid system instead of custom masonry
+    // But keep the columns state for possible future use
 
-    const container = {
-        hidden: { opacity: 0 },
-        show: {
-            opacity: 1,
-            transition: {
-                staggerChildren: 0.05,
-            },
-        },
-    };
+    // Dropdown menu for sorting
+    const sortMenu = (
+        <Menu
+            items={[
+                { key: 'date', label: 'Ngày chỉnh sửa' },
+                { key: 'title', label: 'Tiêu đề' },
+                { key: 'color', label: 'Màu sắc' },
+            ]}
+        />
+    );
 
-    const item = {
-        hidden: { opacity: 0, y: 20 },
-        show: { opacity: 1, y: 0 },
-    };
+    // Color picker popover
+    const ColorPicker = ({
+        value,
+        onSelect,
+        noteColor,
+    }: {
+        value: string;
+        onSelect: (color: string) => void;
+        noteColor?: string;
+    }) => (
+        <div
+            style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(4, 1fr)',
+                gap: 8,
+                padding: 8,
+                background: '#fff',
+                borderRadius: 8,
+                boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                zIndex: 1000,
+            }}
+        >
+            {colorOptions.map((color) => (
+                <div
+                    key={color.value}
+                    style={{
+                        width: 28,
+                        height: 28,
+                        borderRadius: '50%',
+                        border: '1px solid #eee',
+                        background: color.value,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        cursor: 'pointer',
+                        position: 'relative',
+                    }}
+                    title={color.label}
+                    onClick={() => onSelect(color.value)}
+                >
+                    {(value === color.value || noteColor === color.value) && (
+                        <CheckOutlined style={{ color: '#333', fontSize: 16 }} />
+                    )}
+                </div>
+            ))}
+        </div>
+    );
 
     return (
-        <div className="space-y-6">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
             {/* Toolbar */}
-            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
-                <Input
-                    placeholder="Tìm kiếm ghi chú..."
-                    startContent={<Icon icon="lucide:search" className="text-foreground-500" />}
-                    value={searchQuery}
-                    onValueChange={setSearchQuery}
-                    className="w-full sm:w-64"
-                    size="sm"
-                />
-
-                <div className="flex gap-2 mt-2 sm:mt-0">
-                    <Button
-                        color="primary"
-                        variant="flat"
-                        startContent={<Icon icon="lucide:filter" />}
-                        size="sm"
-                    >
-                        Lọc
-                    </Button>
-                    <Dropdown>
-                        <DropdownTrigger>
-                            <Button
-                                color="primary"
-                                variant="flat"
-                                startContent={<Icon icon="lucide:layout-grid" />}
-                                size="sm"
-                            >
+            <div
+                style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 8,
+                }}
+            >
+                <div
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        gap: 8,
+                        justifyContent: 'space-between',
+                        flexWrap: 'wrap',
+                    }}
+                >
+                    <Input
+                        placeholder="Tìm kiếm ghi chú..."
+                        prefix={<SearchOutlined />}
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        style={{ width: 260, maxWidth: '100%' }}
+                        size="middle"
+                    />
+                    <Space>
+                        <Button icon={<FilterOutlined />} type="default">
+                            Lọc
+                        </Button>
+                        <Dropdown overlay={sortMenu} trigger={['click']}>
+                            <Button icon={<AppstoreOutlined />} type="default">
                                 Sắp xếp
                             </Button>
-                        </DropdownTrigger>
-                        <DropdownMenu>
-                            <DropdownItem key="date">Ngày chỉnh sửa</DropdownItem>
-                            <DropdownItem key="title">Tiêu đề</DropdownItem>
-                            <DropdownItem key="color">Màu sắc</DropdownItem>
-                        </DropdownMenu>
-                    </Dropdown>
+                        </Dropdown>
+                    </Space>
                 </div>
             </div>
 
             {/* Create Note */}
-            <Card className="w-full sm:w-3/4 md:w-2/3 lg:w-1/2 mx-auto">
+            <Card
+                style={{
+                    width: '100%',
+                    maxWidth: 600,
+                    margin: '0 auto',
+                    background: newNoteExpanded ? selectedColor : undefined,
+                }}
+                bodyStyle={{ padding: 16 }}
+            >
                 {!newNoteExpanded ? (
-                    <div className="p-4 cursor-text" onClick={() => setNewNoteExpanded(true)}>
-                        <p className="text-foreground-500">Tạo một ghi chú...</p>
+                    <div
+                        style={{ cursor: 'text', color: '#888' }}
+                        onClick={() => setNewNoteExpanded(true)}
+                    >
+                        Tạo một ghi chú...
                     </div>
                 ) : (
-                    <div className="p-4" style={{ backgroundColor: selectedColor }}>
+                    <div>
                         <Input
                             placeholder="Tiêu đề"
                             value={newNoteTitle}
-                            onValueChange={setNewNoteTitle}
-                            variant="underlined"
-                            className="mb-2"
+                            onChange={(e) => setNewNoteTitle(e.target.value)}
+                            style={{ marginBottom: 8 }}
                             autoFocus
                         />
-                        <textarea
+                        <Input.TextArea
                             placeholder="Nội dung ghi chú"
                             value={newNoteContent}
                             onChange={(e) => setNewNoteContent(e.target.value)}
-                            className="w-full min-h-[100px] p-2 text-sm focus:outline-none resize-none bg-transparent"
+                            autoSize={{ minRows: 4 }}
+                            style={{
+                                background: 'transparent',
+                                marginBottom: 8,
+                                resize: 'none',
+                            }}
                         />
-                        <div className="flex justify-between items-center mt-2">
-                            <div className="flex gap-1">
-                                <div className="relative">
+                        <div
+                            style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                marginTop: 8,
+                            }}
+                        >
+                            <Space>
+                                <Tooltip title="Chọn màu">
                                     <Button
-                                        isIconOnly
-                                        variant="light"
-                                        size="sm"
-                                        onPress={() => setShowColorPicker(!showColorPicker)}
-                                    >
-                                        <Icon
-                                            icon="lucide:palette"
-                                            className="text-foreground-500"
-                                        />
-                                    </Button>
-
-                                    {showColorPicker && (
-                                        <div className="absolute bottom-full left-0 mb-2 p-2 bg-content1 rounded-md shadow-lg z-10 grid grid-cols-4 gap-1">
-                                            {colorOptions.map((color) => (
-                                                <div
-                                                    key={color.value}
-                                                    className="w-8 h-8 rounded-full cursor-pointer border border-divider flex items-center justify-center"
-                                                    style={{ backgroundColor: color.value }}
-                                                    onClick={() => handleColorSelect(color.value)}
-                                                    title={color.label}
-                                                >
-                                                    {selectedColor === color.value && (
-                                                        <Icon
-                                                            icon="lucide:check"
-                                                            className="text-foreground-600"
-                                                        />
-                                                    )}
-                                                </div>
-                                            ))}
-                                        </div>
-                                    )}
-                                </div>
-                                <Button isIconOnly variant="light" size="sm">
-                                    <Icon
-                                        icon="lucide:check-square"
-                                        className="text-foreground-500"
+                                        icon={<BgColorsOutlined />}
+                                        type="text"
+                                        onClick={() => setShowColorPicker((v) => !v)}
                                     />
-                                </Button>
-                                <Button isIconOnly variant="light" size="sm">
-                                    <Icon icon="lucide:tag" className="text-foreground-500" />
-                                </Button>
-                            </div>
-                            <div className="flex gap-2">
+                                </Tooltip>
+                                {showColorPicker && (
+                                    <div style={{ position: 'absolute', zIndex: 100 }}>
+                                        <ColorPicker
+                                            value={selectedColor}
+                                            onSelect={handleColorSelect}
+                                        />
+                                    </div>
+                                )}
+                                <Tooltip title="Checklist">
+                                    <Button icon={<CheckSquareOutlined />} type="text" />
+                                </Tooltip>
+                                <Tooltip title="Nhãn">
+                                    <Button icon={<TagOutlined />} type="text" />
+                                </Tooltip>
+                            </Space>
+                            <Space>
                                 <Button
-                                    variant="light"
-                                    size="sm"
-                                    onPress={() => {
+                                    type="text"
+                                    onClick={() => {
                                         setNewNoteExpanded(false);
                                         setSelectedColor('#FFFFFF');
                                     }}
                                 >
                                     Đóng
                                 </Button>
-                                <Button color="primary" size="sm" onPress={handleCreateNote}>
+                                <Button type="primary" onClick={handleCreateNote}>
                                     Tạo
                                 </Button>
-                            </div>
+                            </Space>
                         </div>
                     </div>
                 )}
@@ -405,320 +443,328 @@ const KeepPage: FC = () => {
 
             {/* Pinned Notes */}
             {pinnedNotes.length > 0 && (
-                <div className="mt-8">
-                    <h2 className="text-sm font-medium text-foreground-500 mb-2">GHIM</h2>
-                    <motion.div
-                        variants={container}
-                        initial="hidden"
-                        animate="show"
-                        className="flex flex-wrap gap-4"
+                <div style={{ marginTop: 32 }}>
+                    <h2 style={{ fontSize: 14, color: '#888', marginBottom: 8 }}>GHIM</h2>
+                    <div
+                        style={{
+                            display: 'grid',
+                            gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+                            gap: 16,
+                        }}
                     >
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full">
-                            {pinnedNotes.map((note) => (
-                                <motion.div key={note.id} variants={item}>
-                                    <Card
-                                        className="cursor-pointer hover:shadow-md transition-shadow"
-                                        style={{ backgroundColor: note.color }}
-                                        isPressable
-                                        onPress={() => handleNoteClick(note)}
-                                    >
-                                        <div className="p-4">
-                                            {note.title && (
-                                                <h3 className="font-medium mb-2">{note.title}</h3>
-                                            )}
-                                            <p className="text-sm text-foreground-700 whitespace-pre-line line-clamp-6">
-                                                {note.content}
-                                            </p>
-
-                                            {/* Display labels if any */}
-                                            {noteLabels[note.id] &&
-                                                noteLabels[note.id].length > 0 && (
-                                                    <div className="flex flex-wrap gap-1 mt-3">
-                                                        {noteLabels[note.id].map((label, idx) => (
-                                                            <span
-                                                                key={idx}
-                                                                className="text-xs px-2 py-0.5 rounded-full bg-black/10 text-foreground-700"
-                                                            >
-                                                                {label}
-                                                            </span>
-                                                        ))}
-                                                    </div>
-                                                )}
-
-                                            <div className="flex justify-between items-center mt-4">
-                                                <p className="text-xs text-foreground-500">
-                                                    {note.modified}
-                                                </p>
-                                                <div className="flex gap-1">
-                                                    <Button
-                                                        isIconOnly
-                                                        variant="light"
-                                                        size="sm"
-                                                        onPress={(e: any) => {
-                                                            e.stopPropagation();
-                                                            handleTogglePin(note.id);
-                                                        }}
-                                                    >
-                                                        <Icon
-                                                            icon="lucide:pin"
-                                                            className="text-foreground-600 fill-foreground-600"
+                        {pinnedNotes.map((note) => (
+                            <Card
+                                key={note.id}
+                                style={{
+                                    background: note.color,
+                                    cursor: 'pointer',
+                                    transition: 'box-shadow 0.2s',
+                                }}
+                                bodyStyle={{ padding: 16 }}
+                                onClick={() => handleNoteClick(note)}
+                                hoverable
+                            >
+                                {note.title && (
+                                    <h3 style={{ fontWeight: 500, marginBottom: 8 }}>
+                                        {note.title}
+                                    </h3>
+                                )}
+                                <div
+                                    style={{
+                                        color: '#333',
+                                        fontSize: 14,
+                                        whiteSpace: 'pre-line',
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis',
+                                        display: '-webkit-box',
+                                        WebkitLineClamp: 6,
+                                        WebkitBoxOrient: 'vertical',
+                                    }}
+                                >
+                                    {note.content}
+                                </div>
+                                {/* Display labels if any */}
+                                {noteLabels[note.id] && noteLabels[note.id].length > 0 && (
+                                    <div style={{ marginTop: 12 }}>
+                                        {noteLabels[note.id].map((label, idx) => (
+                                            <Tag
+                                                key={idx}
+                                                color="default"
+                                                style={{ marginBottom: 4 }}
+                                            >
+                                                {label}
+                                            </Tag>
+                                        ))}
+                                    </div>
+                                )}
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'center',
+                                        marginTop: 16,
+                                    }}
+                                >
+                                    <span style={{ fontSize: 12, color: '#888' }}>
+                                        {note.modified}
+                                    </span>
+                                    <Space>
+                                        <Tooltip title={note.isPinned ? 'Bỏ ghim' : 'Ghim'}>
+                                            <Button
+                                                icon={
+                                                    note.isPinned ? (
+                                                        <PushpinFilled
+                                                            style={{ color: '#faad14' }}
                                                         />
-                                                    </Button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </Card>
-                                </motion.div>
-                            ))}
-                        </div>
-                    </motion.div>
+                                                    ) : (
+                                                        <PushpinOutlined />
+                                                    )
+                                                }
+                                                type="text"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleTogglePin(note.id);
+                                                }}
+                                            />
+                                        </Tooltip>
+                                    </Space>
+                                </div>
+                            </Card>
+                        ))}
+                    </div>
                 </div>
             )}
 
             {/* Other Notes */}
-            <div className="mt-4">
+            <div style={{ marginTop: 16 }}>
                 {pinnedNotes.length > 0 && (
-                    <h2 className="text-sm font-medium text-foreground-500 mb-2">KHÁC</h2>
+                    <h2 style={{ fontSize: 14, color: '#888', marginBottom: 8 }}>KHÁC</h2>
                 )}
-                <motion.div
-                    variants={container}
-                    initial="hidden"
-                    animate="show"
-                    className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
+                <div
+                    style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+                        gap: 16,
+                    }}
                 >
                     {unpinnedNotes.map((note) => (
-                        <motion.div key={note.id} variants={item}>
-                            <Card
-                                className="cursor-pointer hover:shadow-md transition-shadow"
-                                style={{ backgroundColor: note.color }}
-                                isPressable
-                                onPress={() => handleNoteClick(note)}
+                        <Card
+                            key={note.id}
+                            style={{
+                                background: note.color,
+                                cursor: 'pointer',
+                                transition: 'box-shadow 0.2s',
+                            }}
+                            bodyStyle={{ padding: 16 }}
+                            onClick={() => handleNoteClick(note)}
+                            hoverable
+                        >
+                            {note.title && (
+                                <h3 style={{ fontWeight: 500, marginBottom: 8 }}>{note.title}</h3>
+                            )}
+                            <div
+                                style={{
+                                    color: '#333',
+                                    fontSize: 14,
+                                    whiteSpace: 'pre-line',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    display: '-webkit-box',
+                                    WebkitLineClamp: 6,
+                                    WebkitBoxOrient: 'vertical',
+                                }}
                             >
-                                <div className="p-4">
-                                    {note.title && (
-                                        <h3 className="font-medium mb-2">{note.title}</h3>
-                                    )}
-                                    <p className="text-sm text-foreground-700 whitespace-pre-line line-clamp-6">
-                                        {note.content}
-                                    </p>
-
-                                    {/* Display labels if any */}
-                                    {noteLabels[note.id] && noteLabels[note.id].length > 0 && (
-                                        <div className="flex flex-wrap gap-1 mt-3">
-                                            {noteLabels[note.id].map((label, idx) => (
-                                                <span
-                                                    key={idx}
-                                                    className="text-xs px-2 py-0.5 rounded-full bg-black/10 text-foreground-700"
-                                                >
-                                                    {label}
-                                                </span>
-                                            ))}
-                                        </div>
-                                    )}
-
-                                    <div className="flex justify-between items-center mt-4">
-                                        <p className="text-xs text-foreground-500">
-                                            {note.modified}
-                                        </p>
-                                        <div className="flex gap-1">
-                                            <Button
-                                                isIconOnly
-                                                variant="light"
-                                                size="sm"
-                                                onPress={(e: any) => {
-                                                    e.stopPropagation();
-                                                    handleTogglePin(note.id);
-                                                }}
-                                            >
-                                                <Icon
-                                                    icon="lucide:pin"
-                                                    className="text-foreground-600"
-                                                />
-                                            </Button>
-                                        </div>
-                                    </div>
+                                {note.content}
+                            </div>
+                            {/* Display labels if any */}
+                            {noteLabels[note.id] && noteLabels[note.id].length > 0 && (
+                                <div style={{ marginTop: 12 }}>
+                                    {noteLabels[note.id].map((label, idx) => (
+                                        <Tag key={idx} color="default" style={{ marginBottom: 4 }}>
+                                            {label}
+                                        </Tag>
+                                    ))}
                                 </div>
-                            </Card>
-                        </motion.div>
+                            )}
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    marginTop: 16,
+                                }}
+                            >
+                                <span style={{ fontSize: 12, color: '#888' }}>{note.modified}</span>
+                                <Space>
+                                    <Tooltip title={note.isPinned ? 'Bỏ ghim' : 'Ghim'}>
+                                        <Button
+                                            icon={
+                                                note.isPinned ? (
+                                                    <PushpinFilled style={{ color: '#faad14' }} />
+                                                ) : (
+                                                    <PushpinOutlined />
+                                                )
+                                            }
+                                            type="text"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleTogglePin(note.id);
+                                            }}
+                                        />
+                                    </Tooltip>
+                                </Space>
+                            </div>
+                        </Card>
                     ))}
-                </motion.div>
+                </div>
             </div>
 
             {/* Note Detail Modal */}
-            <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="lg">
-                <ModalContent style={{ backgroundColor: selectedNote?.color }}>
-                    {(onClose) => (
-                        <>
-                            {selectedNote && (
-                                <>
-                                    <ModalHeader className="border-b border-divider">
-                                        <Input
-                                            placeholder="Tiêu đề"
-                                            value={selectedNote.title}
-                                            variant="underlined"
-                                            className="text-lg"
-                                            readOnly
+            <Modal
+                open={isModalOpen}
+                onCancel={() => setIsModalOpen(false)}
+                footer={null}
+                width={600}
+                bodyStyle={{
+                    background: selectedNote?.color,
+                    padding: 0,
+                }}
+                destroyOnClose
+            >
+                {selectedNote && (
+                    <div>
+                        <div
+                            style={{
+                                borderBottom: '1px solid #f0f0f0',
+                                padding: 16,
+                                background: 'rgba(255,255,255,0.7)',
+                            }}
+                        >
+                            <Input
+                                placeholder="Tiêu đề"
+                                value={selectedNote.title}
+                                readOnly
+                                style={{
+                                    fontSize: 18,
+                                    fontWeight: 500,
+                                    background: 'transparent',
+                                    border: 'none',
+                                    padding: 0,
+                                }}
+                            />
+                        </div>
+                        <div style={{ padding: 16, minHeight: 200 }}>
+                            <div
+                                style={{
+                                    whiteSpace: 'pre-line',
+                                    minHeight: 120,
+                                    fontSize: 15,
+                                    marginBottom: 12,
+                                }}
+                            >
+                                {selectedNote.content}
+                            </div>
+                            {/* Display labels */}
+                            {noteLabels[selectedNote.id] &&
+                                noteLabels[selectedNote.id].length > 0 && (
+                                    <div style={{ marginBottom: 12 }}>
+                                        {noteLabels[selectedNote.id].map((label, idx) => (
+                                            <Tag
+                                                key={idx}
+                                                closable
+                                                onClose={() =>
+                                                    handleRemoveLabel(selectedNote.id, label)
+                                                }
+                                                style={{ marginBottom: 4 }}
+                                            >
+                                                {label}
+                                            </Tag>
+                                        ))}
+                                    </div>
+                                )}
+                            {/* Add label dropdown */}
+                            <div style={{ marginBottom: 12 }}>
+                                <Select
+                                    mode="multiple"
+                                    placeholder="Thêm nhãn"
+                                    value={noteLabels[selectedNote.id] || []}
+                                    onChange={(labels) => {
+                                        setNoteLabels({
+                                            ...noteLabels,
+                                            [selectedNote.id]: labels,
+                                        });
+                                    }}
+                                    style={{ minWidth: 180 }}
+                                    options={labelOptions.map((label) => ({
+                                        value: label,
+                                        label,
+                                    }))}
+                                />
+                            </div>
+                            <div style={{ fontSize: 12, color: '#888', marginTop: 16 }}>
+                                Chỉnh sửa lần cuối: {selectedNote.modified}
+                            </div>
+                        </div>
+                        <div
+                            style={{
+                                borderTop: '1px solid #f0f0f0',
+                                padding: 12,
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                background: 'rgba(255,255,255,0.7)',
+                            }}
+                        >
+                            <Space>
+                                <Tooltip title={selectedNote.isPinned ? 'Bỏ ghim' : 'Ghim'}>
+                                    <Button
+                                        icon={
+                                            selectedNote.isPinned ? (
+                                                <PushpinFilled style={{ color: '#faad14' }} />
+                                            ) : (
+                                                <PushpinOutlined />
+                                            )
+                                        }
+                                        type="text"
+                                        onClick={() => handleTogglePin(selectedNote.id)}
+                                    />
+                                </Tooltip>
+                                <Tooltip title="Chọn màu">
+                                    <Button
+                                        icon={<BgColorsOutlined />}
+                                        type="text"
+                                        onClick={() => setShowColorPicker((v) => !v)}
+                                    />
+                                </Tooltip>
+                                {showColorPicker && (
+                                    <div style={{ position: 'absolute', zIndex: 100 }}>
+                                        <ColorPicker
+                                            value={selectedNote.color}
+                                            onSelect={handleColorSelect}
+                                            noteColor={selectedNote.color}
                                         />
-                                    </ModalHeader>
-                                    <ModalBody>
-                                        <div
-                                            className="whitespace-pre-line py-2"
-                                            style={{ minHeight: '200px' }}
-                                        >
-                                            {selectedNote.content}
-                                        </div>
-
-                                        {/* Display labels */}
-                                        {noteLabels[selectedNote.id] &&
-                                            noteLabels[selectedNote.id].length > 0 && (
-                                                <div className="flex flex-wrap gap-1 mt-3">
-                                                    {noteLabels[selectedNote.id].map(
-                                                        (label, idx) => (
-                                                            <span
-                                                                key={idx}
-                                                                className="text-xs px-2 py-0.5 rounded-full bg-black/10 text-foreground-700 flex items-center gap-1"
-                                                            >
-                                                                {label}
-                                                                <button
-                                                                    className="text-foreground-500 hover:text-foreground-700"
-                                                                    onClick={() =>
-                                                                        handleRemoveLabel(
-                                                                            selectedNote.id,
-                                                                            label,
-                                                                        )
-                                                                    }
-                                                                >
-                                                                    <Icon
-                                                                        icon="lucide:x"
-                                                                        className="text-xs"
-                                                                    />
-                                                                </button>
-                                                            </span>
-                                                        ),
-                                                    )}
-                                                </div>
-                                            )}
-
-                                        {/* Add label dropdown */}
-                                        <div className="mt-3">
-                                            <Dropdown>
-                                                <DropdownTrigger>
-                                                    <Button
-                                                        variant="flat"
-                                                        size="sm"
-                                                        startContent={<Icon icon="lucide:tag" />}
-                                                    >
-                                                        Thêm nhãn
-                                                    </Button>
-                                                </DropdownTrigger>
-                                                <DropdownMenu>
-                                                    {labelOptions.map((label) => (
-                                                        <DropdownItem
-                                                            key={label}
-                                                            onPress={() =>
-                                                                handleAddLabel(
-                                                                    selectedNote.id,
-                                                                    label,
-                                                                )
-                                                            }
-                                                            isDisabled={noteLabels[
-                                                                selectedNote.id
-                                                            ]?.includes(label)}
-                                                        >
-                                                            {label}
-                                                        </DropdownItem>
-                                                    ))}
-                                                </DropdownMenu>
-                                            </Dropdown>
-                                        </div>
-
-                                        <p className="text-xs text-foreground-500 mt-4">
-                                            Chỉnh sửa lần cuối: {selectedNote.modified}
-                                        </p>
-                                    </ModalBody>
-                                    <ModalFooter className="border-t border-divider">
-                                        <div className="flex justify-between w-full">
-                                            <div className="flex gap-2">
-                                                <Button
-                                                    isIconOnly
-                                                    variant="light"
-                                                    onPress={() => handleTogglePin(selectedNote.id)}
-                                                >
-                                                    <Icon
-                                                        icon="lucide:pin"
-                                                        className={`text-foreground-600 ${
-                                                            selectedNote.isPinned
-                                                                ? 'fill-foreground-600'
-                                                                : ''
-                                                        }`}
-                                                    />
-                                                </Button>
-                                                <div className="relative">
-                                                    <Button
-                                                        isIconOnly
-                                                        variant="light"
-                                                        onPress={() =>
-                                                            setShowColorPicker(!showColorPicker)
-                                                        }
-                                                    >
-                                                        <Icon
-                                                            icon="lucide:palette"
-                                                            className="text-foreground-600"
-                                                        />
-                                                    </Button>
-
-                                                    {showColorPicker && (
-                                                        <div className="absolute bottom-full left-0 mb-2 p-2 bg-content1 rounded-md shadow-lg z-10 grid grid-cols-4 gap-1">
-                                                            {colorOptions.map((color) => (
-                                                                <div
-                                                                    key={color.value}
-                                                                    className="w-8 h-8 rounded-full cursor-pointer border border-divider flex items-center justify-center"
-                                                                    style={{
-                                                                        backgroundColor:
-                                                                            color.value,
-                                                                    }}
-                                                                    onClick={() =>
-                                                                        handleColorSelect(
-                                                                            color.value,
-                                                                        )
-                                                                    }
-                                                                    title={color.label}
-                                                                >
-                                                                    {selectedNote.color ===
-                                                                        color.value && (
-                                                                        <Icon
-                                                                            icon="lucide:check"
-                                                                            className="text-foreground-600"
-                                                                        />
-                                                                    )}
-                                                                </div>
-                                                            ))}
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            </div>
-                                            <div className="flex gap-2">
-                                                <Button
-                                                    color="danger"
-                                                    variant="light"
-                                                    onPress={() => {
-                                                        handleDeleteNote(selectedNote.id);
-                                                        onClose();
-                                                    }}
-                                                >
-                                                    Xóa
-                                                </Button>
-                                                <Button color="primary" onPress={onClose}>
-                                                    Đóng
-                                                </Button>
-                                            </div>
-                                        </div>
-                                    </ModalFooter>
-                                </>
-                            )}
-                        </>
-                    )}
-                </ModalContent>
+                                    </div>
+                                )}
+                            </Space>
+                            <Space>
+                                <Button
+                                    icon={<DeleteOutlined />}
+                                    danger
+                                    type="text"
+                                    onClick={() => {
+                                        handleDeleteNote(selectedNote.id);
+                                        setIsModalOpen(false);
+                                    }}
+                                >
+                                    Xóa
+                                </Button>
+                                <Button type="primary" onClick={() => setIsModalOpen(false)}>
+                                    Đóng
+                                </Button>
+                            </Space>
+                        </div>
+                    </div>
+                )}
             </Modal>
         </div>
     );

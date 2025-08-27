@@ -1,4 +1,4 @@
-import { Button, Tooltip } from '@heroui/react';
+import { Button, Tooltip } from 'antd';
 import { Icon } from '@iconify/react';
 import { motion } from 'framer-motion';
 import { FC, memo } from 'react';
@@ -24,13 +24,7 @@ const QuickActions: FC = () => {
         >
             <div className="relative">
                 <div className="absolute bottom-0 right-0">
-                    <Button
-                        isIconOnly
-                        color="primary"
-                        size="lg"
-                        radius="full"
-                        className="shadow-lg"
-                    >
+                    <Button type="primary" shape="circle" size="large" className="shadow-lg">
                         <Icon icon="lucide:plus" className="text-2xl" />
                     </Button>
                 </div>
@@ -43,11 +37,10 @@ const QuickActions: FC = () => {
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             transition={{ delay: index * 0.05 }}
                         >
-                            <Tooltip content={action.label} placement="left">
+                            <Tooltip title={action.label} placement="left">
                                 <Button
-                                    isIconOnly
-                                    size="lg"
-                                    radius="full"
+                                    shape="circle"
+                                    size="large"
                                     className="shadow-md"
                                     style={{ backgroundColor: action.color, color: 'white' }}
                                 >

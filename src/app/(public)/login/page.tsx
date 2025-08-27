@@ -2,7 +2,7 @@
 
 import { Logo } from '@/components/common';
 import { useFirebaseAuth } from '@/hooks/useFirebase';
-import { Button, Card, Checkbox, Input } from '@heroui/react';
+import { Button, Card, Checkbox, Input } from 'antd';
 import { Icon } from '@iconify/react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
@@ -36,32 +36,30 @@ const LoginPage: FC = () => {
                     <form className="w-full space-y-4">
                         <Input
                             type="email"
-                            label="Email"
                             value={email}
-                            onValueChange={setEmail}
+                            onChange={(e) => setEmail(e.target.value)}
                             placeholder="Nhập email của bạn"
                         />
-                        <Input
-                            type="password"
-                            label="Mật khẩu"
+                        <Input.Password
                             value={password}
-                            onValueChange={setPassword}
+                            onChange={(e) => setPassword(e.target.value)}
                             placeholder="Nhập mật khẩu của bạn"
                         />
                         <div className="flex items-center justify-between">
-                            <Checkbox isSelected={rememberMe} onValueChange={setRememberMe}>
+                            <Checkbox
+                                checked={rememberMe}
+                                onChange={(e) => setRememberMe(e.target.checked)}
+                            >
                                 Ghi nhớ đăng nhập
                             </Checkbox>
-                            <Link href="/forget-password" color="primary">
-                                Quên mật khẩu?
-                            </Link>
+                            <Link href="/forget-password">Quên mật khẩu?</Link>
                         </div>
                         <Button
-                            size="lg"
-                            type="submit"
-                            color="primary"
+                            size="large"
+                            type="primary"
                             className="w-full"
-                            onPress={() => handleLogin(email, password)}
+                            htmlType="submit"
+                            onClick={() => handleLogin(email, password)}
                         >
                             Đăng nhập
                         </Button>
@@ -73,21 +71,13 @@ const LoginPage: FC = () => {
                         <div className="flex-1 h-px bg-divider"></div>
                     </div>
 
-                    <Button
-                        size="lg"
-                        color="default"
-                        variant="flat"
-                        className="w-full"
-                        startContent={<Icon icon="logos:google-icon" />}
-                    >
-                        Đăng nhập với Google
+                    <Button size="large" className="w-full">
+                        <Icon icon="logos:google-icon" className="mr-2" /> Đăng nhập với Google
                     </Button>
 
                     <p className="text-foreground-600 text-center mt-4">
                         <span>Chưa có tài khoản? </span>
-                        <Link href="/register" color="primary">
-                            Đăng ký ngay
-                        </Link>
+                        <Link href="/register">Đăng ký ngay</Link>
                     </p>
                 </Card>
             </motion.div>
