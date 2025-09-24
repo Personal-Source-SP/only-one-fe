@@ -35,3 +35,5 @@ export const IMAGE_HEIGHT_DEFAULT = 1200;
 export const ITEMS_PER_PAGE_DEFAULT = 50;
 export const SLIDESHOW_DELAY_DEFAULT = 1000;
 export const ALLOWED_IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.gif'];
+
+export const SERVER_IS_NOT_READY_MESSAGE = 'Server is not ready';
