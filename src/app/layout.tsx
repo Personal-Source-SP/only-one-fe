@@ -1,5 +1,5 @@
-import { RefineContext } from '@/app/_refine_context';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
+import RefineContext from '@/contexts/RefineContext';
 import { AntdRegistry } from '@ant-design/nextjs-registry';
 import type { Metadata } from 'next';
 import { getServerSession } from 'next-auth';

@@ -1,19 +1,35 @@
 'use client';
 
 import { Logo } from '@/components/common';
-import { useFirebaseAuth } from '@/hooks/useFirebase';
-import { Button, Card, Checkbox, Input } from 'antd';
+import { Button, Card, Checkbox, Input, notification } from 'antd';
 import { Icon } from '@iconify/react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { FC, memo, useState } from 'react';
+import { useLogin } from '@refinedev/core';
 
 const LoginPage: FC = () => {
-    const { handleLogin } = useFirebaseAuth();
+    const { mutate: login, isPending } = useLogin();
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [rememberMe, setRememberMe] = useState(false);
+
+    const handleLogin = async () => {
+        login(
+            {
+                email,
+                password,
+            },
+            {
+                onError: (error) => {
+                    notification.error({
+                        message: error?.message || 'Login failed. Please check your credentials.',
+                    });
+                },
+            },
+        );
+    };
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-content2 p-4">
@@ -57,9 +73,10 @@ const LoginPage: FC = () => {
                         <Button
                             size="large"
                             type="primary"
-                            className="w-full"
                             htmlType="submit"
-                            onClick={() => handleLogin(email, password)}
+                            className="w-full"
+                            loading={isPending}
+                            onClick={() => handleLogin()}
                         >
                             Đăng nhập
                         </Button>

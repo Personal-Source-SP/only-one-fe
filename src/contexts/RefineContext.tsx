@@ -206,10 +206,12 @@ const App = ({ children, defaultMode, locale }: PropsWithChildren<AppProps>) => 
     );
 };
 
-export const RefineContext = (props: PropsWithChildren<RefineContextProps>) => {
+const RefineContext = (props: PropsWithChildren<RefineContextProps>) => {
     return (
         <SessionProvider session={props?.session} refetchInterval={120} refetchOnWindowFocus={true}>
             <App {...props} />
         </SessionProvider>
     );
 };
+
+export default RefineContext;

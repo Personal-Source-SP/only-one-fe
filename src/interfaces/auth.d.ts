@@ -1,4 +1,9 @@
 export declare namespace IAuth {
+    interface ILoginRequest {
+        email: string;
+        password: string;
+    }
+
     interface IPayload {
         id: string;
         email: string;
@@ -11,16 +16,12 @@ export declare namespace IAuth {
     }
 
     interface ILoginResponse {
+        id: string;
+        email: string;
+        firstName: string;
+        lastName: string;
         accessToken: string;
         refreshToken: string;
-        user: {
-            id: string;
-            email: string;
-            firstName: string;
-            lastName: string;
-            avatar?: string;
-            role: string;
-        };
     }
 
     interface IRefreshResponse {

@@ -2,14 +2,12 @@
 
 import { Loading } from '@/components/common';
 import MainLayout from '@/components/layout';
-import { useFirebaseAuth } from '@/hooks/useFirebase';
 
 import { queryClient } from '@/libs/react-query';
 
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { usePathname, useRouter } from 'next/navigation';
-import { createContext, FC, PropsWithChildren, useContext, useEffect, useState } from 'react';
+import { createContext, FC, PropsWithChildren, useContext, useState } from 'react';
 
 interface MainContextType {
     loading: boolean;
@@ -23,22 +21,7 @@ type MainProviderProps = PropsWithChildren<{
 const MainContext = createContext<MainContextType | undefined>(undefined);
 
 export const MainProvider: FC<MainProviderProps> = ({ children, isPublic = false }) => {
-    const router = useRouter();
-    const pathname = usePathname();
-
     const [loading, setLoading] = useState(true);
-
-    const { firebaseLoading, isAuthenticated } = useFirebaseAuth();
-
-    useEffect(() => {
-        if (firebaseLoading) return;
-
-        if (!isPublic && !isAuthenticated) {
-            router.push('/login');
-        }
-
-        setLoading(false);
-    }, [isPublic, isAuthenticated, firebaseLoading, pathname]);
 
     const renderChildren = () => {
         if (isPublic) {
@@ -57,7 +40,7 @@ export const MainProvider: FC<MainProviderProps> = ({ children, isPublic = false
         setLoading(loading);
     };
 
-    if (loading || firebaseLoading) return <Loading />;
+    if (loading) return <Loading />;
 
     return (
         <MainContext.Provider

@@ -37,6 +37,10 @@ const authOptions: NextAuthOptions = {
                         password: credentials.password,
                     });
 
+                    if (!response) {
+                        throw new Error('error.auth.invalidCredentials');
+                    }
+
                     const { accessToken, refreshToken } = response;
 
                     const decodedAccessToken = jwtDecode<IAuth.IPayload>(accessToken);
@@ -113,13 +117,7 @@ const authOptions: NextAuthOptions = {
     },
     events: {
         async signOut({ token }) {
-            if (token?.refreshToken) {
-                try {
-                    await authService.logout(token.refreshToken as string);
-                } catch (error) {
-                    console.error('Error during signout:', error);
-                }
-            }
+            console.log('signOut', token);
         },
     },
     secret: process.env.NEXTAUTH_SECRET as string,
