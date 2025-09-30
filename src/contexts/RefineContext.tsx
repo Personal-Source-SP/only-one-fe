@@ -6,14 +6,13 @@ import accessControlProvider from '@/providers/access-control-provider';
 import RestServer, { createSessionAxiosInstance } from '@/providers/data-provider';
 import { DashboardOutlined } from '@ant-design/icons';
 import { useNotificationProvider } from '@refinedev/antd';
-import { AuthProvider, I18nProvider, Refine } from '@refinedev/core';
+import { AuthProvider, Refine } from '@refinedev/core';
 import routerProvider from '@refinedev/nextjs-router';
 import dayjs from 'dayjs';
 import { Session } from 'next-auth';
 import { SessionProvider, signIn, signOut, useSession } from 'next-auth/react';
-import { TranslationValues, useTranslations } from 'next-intl';
 import { env } from 'next-runtime-env';
-import { usePathname } from 'next/navigation';
+import { redirect, usePathname } from 'next/navigation';
 import { PropsWithChildren, useEffect } from 'react';
 
 type RefineContextProps = {
@@ -31,27 +30,29 @@ const App = ({ children, defaultMode, locale }: PropsWithChildren<AppProps>) => 
     const { data: session, status } = useSession();
 
     const to = usePathname();
-    const t = useTranslations();
-
     const apiUrl = env('NEXT_PUBLIC_API_URL') || '';
-    const refineLocale = locale === 'en' ? '' : locale;
 
     useEffect(() => {
-        if (dayjs(session?.expires).isBefore(dayjs())) {
-            signOut();
+        if (session?.expires && dayjs(session?.expires).isBefore(dayjs())) {
+            signOut({
+                redirect: true,
+                callbackUrl: '/login',
+            });
+        }
+
+        switch (status) {
+            case 'authenticated': {
+                window.location.href = '/dashboard';
+                break;
+            }
+            case 'unauthenticated': {
+                window.location.href = '/login';
+                break;
+            }
+            default:
+                break;
         }
     }, [session]);
-
-    const i18nProvider: I18nProvider = {
-        getLocale: () => locale || 'en',
-        translate: (key: string, options?: TranslationValues, defaultMessage?: string) => {
-            const translated = t(key, options);
-            return translated || defaultMessage || key;
-        },
-        changeLocale: (lang: string, options?: TranslationValues) => {
-            return Promise.resolve();
-        },
-    };
 
     if (status === 'loading') {
         return <Loading />;
@@ -123,7 +124,7 @@ const App = ({ children, defaultMode, locale }: PropsWithChildren<AppProps>) => 
             if (errorMessage) {
                 return {
                     success: false,
-                    error: new Error(t(errorMessage)),
+                    error: new Error(errorMessage),
                 };
             }
 
@@ -178,7 +179,6 @@ const App = ({ children, defaultMode, locale }: PropsWithChildren<AppProps>) => 
         <ColorModeContextProvider defaultMode={defaultMode}>
             <Refine
                 authProvider={authProvider}
-                i18nProvider={i18nProvider}
                 routerProvider={routerProvider}
                 accessControlProvider={accessControlProvider}
                 notificationProvider={useNotificationProvider}
@@ -186,7 +186,7 @@ const App = ({ children, defaultMode, locale }: PropsWithChildren<AppProps>) => 
                 resources={[
                     {
                         name: 'dashboard',
-                        list: `${refineLocale}/dashboard`,
+                        list: '/dashboard',
                         meta: {
                             icon: <DashboardOutlined />,
                             label: 'Dashboard',

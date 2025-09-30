@@ -1,6 +1,5 @@
-import { GoogleAuthService } from '@/services';
-import { Avatar, Badge, Button, Dropdown, MenuProps } from 'antd';
 import { Icon } from '@iconify/react';
+import { Avatar, Badge, Button, Dropdown, MenuProps } from 'antd';
 import { FC, memo } from 'react';
 
 type HeaderProps = {
@@ -19,8 +18,6 @@ interface SettingItem {
     disabled?: boolean;
     onClick: () => void;
 }
-
-const googleAuthService = new GoogleAuthService();
 
 const Header: FC<HeaderProps> = ({
     showSearch,
