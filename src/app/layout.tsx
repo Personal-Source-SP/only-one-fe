@@ -6,7 +6,7 @@ import { getServerSession } from 'next-auth';
 import { NavigationGuardProvider } from 'next-navigation-guard';
 import { Inter } from 'next/font/google';
 import { cookies } from 'next/headers';
-import { ReactNode, Suspense } from 'react';
+import { PropsWithChildren, Suspense } from 'react';
 
 import '@/styles/globals.css';
 import 'antd/dist/reset.css';
@@ -21,13 +21,7 @@ export const metadata: Metadata = {
     },
 };
 
-export default async function RootLayout({
-    children,
-    params: { locale },
-}: {
-    children: ReactNode;
-    params: { locale: string };
-}) {
+export default async function RootLayout({ children }: PropsWithChildren) {
     const cookieStore = cookies();
     const theme = cookieStore.get('theme');
 
@@ -39,11 +33,7 @@ export default async function RootLayout({
                 <Suspense>
                     <NavigationGuardProvider>
                         <AntdRegistry>
-                            <RefineContext
-                                locale={locale}
-                                session={session}
-                                defaultMode={theme?.value}
-                            >
+                            <RefineContext session={session} defaultMode={theme?.value}>
                                 {children}
                             </RefineContext>
                         </AntdRegistry>

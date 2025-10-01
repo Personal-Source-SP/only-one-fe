@@ -12,32 +12,37 @@ import dayjs from 'dayjs';
 import { Session } from 'next-auth';
 import { SessionProvider, signIn, signOut, useSession } from 'next-auth/react';
 import { env } from 'next-runtime-env';
-import { redirect, usePathname } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { PropsWithChildren, useEffect } from 'react';
 
 type RefineContextProps = {
-    locale?: string;
     defaultMode?: string;
     session?: Session | null;
 };
 
 type AppProps = {
-    locale?: string;
     defaultMode?: string;
 };
 
-const App = ({ children, defaultMode, locale }: PropsWithChildren<AppProps>) => {
+const App = ({ children, defaultMode }: PropsWithChildren<AppProps>) => {
     const { data: session, status } = useSession();
 
     const to = usePathname();
     const apiUrl = env('NEXT_PUBLIC_API_URL') || '';
+    const isLoginPage = to === '/login' || to?.startsWith('/login');
 
     useEffect(() => {
         if (session?.expires && dayjs(session?.expires).isBefore(dayjs())) {
-            signOut({
-                redirect: true,
-                callbackUrl: '/login',
-            });
+            if (isLoginPage) {
+                signOut({ redirect: false });
+            } else {
+                signOut({
+                    redirect: true,
+                    callbackUrl: '/login',
+                });
+            }
+
+            return;
         }
 
         switch (status) {
@@ -45,14 +50,16 @@ const App = ({ children, defaultMode, locale }: PropsWithChildren<AppProps>) => 
                 window.location.href = '/dashboard';
                 break;
             }
+
             case 'unauthenticated': {
-                window.location.href = '/login';
+                if (to !== '/login') {
+                    window.location.href = '/login';
+                }
+
                 break;
             }
-            default:
-                break;
         }
-    }, [session]);
+    }, [session, status, isLoginPage]);
 
     if (status === 'loading') {
         return <Loading />;
@@ -191,6 +198,18 @@ const App = ({ children, defaultMode, locale }: PropsWithChildren<AppProps>) => 
                             icon: <DashboardOutlined />,
                             label: 'Dashboard',
                         },
+                    },
+                    {
+                        name: 'login',
+                        list: '/login',
+                    },
+                    {
+                        name: 'register',
+                        list: '/register',
+                    },
+                    {
+                        name: 'forgot-password',
+                        list: '/forgot-password',
                     },
                 ]}
                 options={{

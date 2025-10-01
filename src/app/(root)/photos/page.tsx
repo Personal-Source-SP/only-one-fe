@@ -1,4 +1,8 @@
-// 'use client';
+'use client';
+
+export default function PhotosPage() {
+    return <div>PhotosPage</div>;
+}
 
 // import DataNotFound from '@/components/common/data-not-found';
 // import PaginationControls from '@/components/module/photos/PaginationControls';

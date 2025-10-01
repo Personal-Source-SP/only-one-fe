@@ -3,10 +3,6 @@
 import { Loading } from '@/components/common';
 import MainLayout from '@/components/layout';
 
-import { queryClient } from '@/libs/react-query';
-
-import { QueryClientProvider } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { createContext, FC, PropsWithChildren, useContext, useState } from 'react';
 
 interface MainContextType {
@@ -21,20 +17,7 @@ type MainProviderProps = PropsWithChildren<{
 const MainContext = createContext<MainContextType | undefined>(undefined);
 
 export const MainProvider: FC<MainProviderProps> = ({ children, isPublic = false }) => {
-    const [loading, setLoading] = useState(true);
-
-    const renderChildren = () => {
-        if (isPublic) {
-            return <>{children}</>;
-        }
-
-        return (
-            <QueryClientProvider client={queryClient}>
-                <MainLayout>{children}</MainLayout>
-                <ReactQueryDevtools initialIsOpen={false} />
-            </QueryClientProvider>
-        );
-    };
+    const [loading, setLoading] = useState(false);
 
     const handleLoading = (loading: boolean) => {
         setLoading(loading);
@@ -49,7 +32,7 @@ export const MainProvider: FC<MainProviderProps> = ({ children, isPublic = false
                 handleLoading,
             }}
         >
-            {renderChildren()}
+            {isPublic ? children : <MainLayout>{children}</MainLayout>}
         </MainContext.Provider>
     );
 };
