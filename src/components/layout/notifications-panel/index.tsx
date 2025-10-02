@@ -1,6 +1,5 @@
-import { Avatar, Button, Card } from 'antd';
+import { Avatar, Button, Card, Space } from 'antd';
 import { Icon } from '@iconify/react';
-import { motion } from 'framer-motion';
 import { FC, memo, useState } from 'react';
 
 interface Notification {
@@ -43,12 +42,7 @@ const NotificationsPanel: FC<NotificationsPanelProps> = ({ notifications, onClos
     };
 
     return (
-        <motion.div
-            exit={{ opacity: 0, y: 10 }}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="fixed top-16 right-4 z-50 w-full max-w-sm"
-        >
+        <Space direction="vertical" className="fixed top-16 right-4 z-50 w-full max-w-sm">
             <Card className="shadow-lg">
                 <div className="p-4 border-b border-divider flex justify-between items-center">
                     <h3 className="text-lg font-medium">Thông báo</h3>
@@ -139,7 +133,7 @@ const NotificationsPanel: FC<NotificationsPanelProps> = ({ notifications, onClos
                     </Button>
                 </div>
             </Card>
-        </motion.div>
+        </Space>
     );
 };
 

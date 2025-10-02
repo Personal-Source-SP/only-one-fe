@@ -1,6 +1,5 @@
-import { Button } from 'antd';
+import { Button, Space } from 'antd';
 import { Icon } from '@iconify/react';
-import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { FC } from 'react';
 
@@ -9,35 +8,7 @@ const Forbidden: FC = () => {
         window.history.back();
     };
 
-    // Animation variants
-    const containerVariants = {
-        hidden: { opacity: 0 },
-        visible: {
-            opacity: 1,
-            transition: {
-                staggerChildren: 0.1,
-            },
-        },
-    };
-
-    const itemVariants = {
-        hidden: { opacity: 0, y: 20 },
-        visible: { opacity: 1, y: 0 },
-    };
-
-    const lockVariants = {
-        initial: { scale: 1 },
-        animate: {
-            scale: [1, 1.03, 1],
-            rotate: [0, -2, 2, -2, 0],
-            transition: {
-                duration: 1.5,
-                repeat: Infinity,
-                repeatType: 'reverse' as const,
-                ease: 'easeInOut',
-            },
-        },
-    };
+    // Note: Removed framer-motion animations
 
     const supportLinks = [
         { name: 'Trung tâm trợ giúp', path: '/' },
@@ -55,20 +26,9 @@ const Forbidden: FC = () => {
                 </div>
             </div>
 
-            <motion.div
-                variants={containerVariants}
-                initial="hidden"
-                animate="visible"
-                className="w-full max-w-3xl flex flex-col items-center"
-            >
+            <Space direction="vertical" className="w-full max-w-3xl flex flex-col items-center">
                 {/* Illustration */}
-                <motion.div
-                    variants={lockVariants}
-                    initial="initial"
-                    animate="animate"
-                    className="mb-8 text-danger"
-                    aria-hidden="true"
-                >
+                <div className="mb-8 text-danger" aria-hidden="true">
                     <div className="relative">
                         <div className="bg-danger-100 p-8 rounded-full">
                             <Icon
@@ -80,10 +40,10 @@ const Forbidden: FC = () => {
                             <span className="text-3xl md:text-5xl font-bold text-danger">403</span>
                         </div>
                     </div>
-                </motion.div>
+                </div>
 
                 {/* Main content */}
-                <motion.div variants={itemVariants} className="text-center mb-8">
+                <div className="text-center mb-8">
                     <h1 className="text-3xl md:text-4xl font-bold mb-4 text-foreground-800">
                         Truy cập bị từ chối
                     </h1>
@@ -91,13 +51,10 @@ const Forbidden: FC = () => {
                         Bạn không có quyền truy cập vào trang này. Vui lòng đăng nhập hoặc liên hệ
                         quản trị viên để được hỗ trợ.
                     </p>
-                </motion.div>
+                </div>
 
                 {/* CTA buttons */}
-                <motion.div
-                    variants={itemVariants}
-                    className="flex flex-col sm:flex-row gap-3 mb-8 w-full max-w-md"
-                >
+                <div className="flex flex-col sm:flex-row gap-3 mb-8 w-full max-w-md">
                     <Link href="/login" className="w-full">
                         <Button type="primary" size="large" className="w-full">
                             <span className="inline-flex items-center">
@@ -112,19 +69,19 @@ const Forbidden: FC = () => {
                             </span>
                         </Button>
                     </Link>
-                </motion.div>
+                </div>
 
                 {/* Contact support button */}
-                <motion.div variants={itemVariants} className="mb-8 w-full max-w-md">
+                <div className="mb-8 w-full max-w-md">
                     <Button danger size="large" className="w-full">
                         <span className="inline-flex items-center">
                             <Icon icon="lucide:help-circle" className="mr-2" /> Liên hệ hỗ trợ
                         </span>
                     </Button>
-                </motion.div>
+                </div>
 
                 {/* Support links */}
-                <motion.div variants={itemVariants} className="text-center">
+                <div className="text-center">
                     <div className="flex flex-wrap justify-center gap-x-6 gap-y-2">
                         {supportLinks.map((link, index) => (
                             <Link
@@ -136,13 +93,10 @@ const Forbidden: FC = () => {
                             </Link>
                         ))}
                     </div>
-                </motion.div>
+                </div>
 
                 {/* Footer links */}
-                <motion.div
-                    variants={itemVariants}
-                    className="mt-12 pt-6 border-t border-divider w-full flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-foreground-500"
-                >
+                <div className="mt-12 pt-6 border-t border-divider w-full flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-foreground-500">
                     <Link href="/" className="hover:text-primary hover:underline">
                         Giới thiệu
                     </Link>
@@ -158,8 +112,8 @@ const Forbidden: FC = () => {
                     <Link href="/" className="hover:text-primary hover:underline">
                         Chính sách bảo mật
                     </Link>
-                </motion.div>
-            </motion.div>
+                </div>
+            </Space>
         </div>
     );
 };

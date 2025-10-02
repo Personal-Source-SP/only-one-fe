@@ -1,9 +1,8 @@
 'use client';
 
 import { Logo } from '@/components/common';
-import { Button, Card, Input } from 'antd';
+import { Button, Card, Input, Space } from 'antd';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
 import { FC, memo, useState } from 'react';
 
 const ForgetPasswordPage: FC = () => {
@@ -11,12 +10,7 @@ const ForgetPasswordPage: FC = () => {
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-content2 p-4">
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-                className="w-full max-w-md"
-            >
+            <Space direction="vertical" className="w-full max-w-md">
                 <Card className="p-8 flex flex-col items-center gap-6">
                     <div className="flex flex-col items-center gap-2 mb-4">
                         <div className="flex items-center gap-2">
@@ -41,7 +35,7 @@ const ForgetPasswordPage: FC = () => {
                         Nhớ mật khẩu? <Link href="/login">Đăng nhập</Link>
                     </p>
                 </Card>
-            </motion.div>
+            </Space>
         </div>
     );
 };

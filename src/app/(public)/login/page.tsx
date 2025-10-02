@@ -1,9 +1,8 @@
 'use client';
 
 import { Logo } from '@/components/common';
-import { Button, Card, Checkbox, Input, notification } from 'antd';
+import { Button, Card, Checkbox, Input, Space, notification } from 'antd';
 import { Icon } from '@iconify/react';
-import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { FC, memo, useState } from 'react';
 import { useLogin } from '@refinedev/core';
@@ -33,12 +32,7 @@ const LoginPage: FC = () => {
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-content2 p-4">
-            <motion.div
-                className="w-full max-w-md"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-            >
+            <Space direction="vertical" className="w-full max-w-md">
                 <Card className="p-8 flex flex-col items-center gap-6">
                     <div className="flex flex-col items-center gap-2 mb-4">
                         <div className="flex items-center gap-2">
@@ -51,15 +45,14 @@ const LoginPage: FC = () => {
 
                     <form className="w-full space-y-4">
                         <Input
-                            type="email"
                             value={email}
-                            onChange={(e) => setEmail(e.target.value)}
                             placeholder="Nhập email của bạn"
+                            onChange={(e) => setEmail(e.target.value)}
                         />
                         <Input.Password
                             value={password}
-                            onChange={(e) => setPassword(e.target.value)}
                             placeholder="Nhập mật khẩu của bạn"
+                            onChange={(e) => setPassword(e.target.value)}
                         />
                         <div className="flex items-center justify-between">
                             <Checkbox
@@ -97,7 +90,7 @@ const LoginPage: FC = () => {
                         <Link href="/register">Đăng ký ngay</Link>
                     </p>
                 </Card>
-            </motion.div>
+            </Space>
         </div>
     );
 };

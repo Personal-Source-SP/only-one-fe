@@ -1,8 +1,7 @@
 'use client';
 
-import { Avatar, Button, Card, Input, Table, Tag } from 'antd';
+import { Avatar, Button, Card, Input, Table, Tag, Space } from 'antd';
 import { Icon } from '@iconify/react';
-import { motion } from 'framer-motion';
 import { FC, useEffect, useState } from 'react';
 import DataNotFound from '@/components/common/data-not-found';
 
@@ -150,7 +149,7 @@ const UsersPage: FC = () => {
     }
 
     return (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
+        <Space direction="vertical" className="space-y-6 w-full">
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
                 <div>
                     <h1 className="text-2xl font-medium mb-1">Danh sách người dùng</h1>
@@ -285,7 +284,7 @@ const UsersPage: FC = () => {
                     </div>
                 </div>
             </div>
-        </motion.div>
+        </Space>
     );
 };
 

@@ -1,6 +1,5 @@
-import { Button, Tooltip } from 'antd';
+import { Button, Space, Tooltip } from 'antd';
 import { Icon } from '@iconify/react';
-import { motion } from 'framer-motion';
 import { FC, memo } from 'react';
 
 const QuickActions: FC = () => {
@@ -17,11 +16,7 @@ const QuickActions: FC = () => {
     ];
 
     return (
-        <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="fixed bottom-6 right-6 z-40 md:bottom-8 md:right-8"
-        >
+        <Space direction="vertical" className="fixed bottom-6 right-6 z-40 md:bottom-8 md:right-8">
             <div className="relative">
                 <div className="absolute bottom-0 right-0">
                     <Button type="primary" shape="circle" size="large" className="shadow-lg">
@@ -31,12 +26,7 @@ const QuickActions: FC = () => {
 
                 <div className="absolute bottom-16 right-1 flex flex-col-reverse gap-2">
                     {actions.map((action, index) => (
-                        <motion.div
-                            key={index}
-                            initial={{ opacity: 0, y: 10, scale: 0.8 }}
-                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                            transition={{ delay: index * 0.05 }}
-                        >
+                        <div key={index}>
                             <Tooltip title={action.label} placement="left">
                                 <Button
                                     shape="circle"
@@ -47,11 +37,11 @@ const QuickActions: FC = () => {
                                     <Icon icon={action.icon} className="text-xl" />
                                 </Button>
                             </Tooltip>
-                        </motion.div>
+                        </div>
                     ))}
                 </div>
             </div>
-        </motion.div>
+        </Space>
     );
 };
 

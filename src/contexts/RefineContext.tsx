@@ -28,36 +28,20 @@ const App = ({ children, defaultMode }: PropsWithChildren<AppProps>) => {
     const { data: session, status } = useSession();
 
     const to = usePathname();
+    const isLoginPage = to === '/login';
+
     const apiUrl = env('NEXT_PUBLIC_API_URL') || '';
-    const isLoginPage = to === '/login' || to?.startsWith('/login');
 
     useEffect(() => {
-        if (session?.expires && dayjs(session?.expires).isBefore(dayjs())) {
-            if (isLoginPage) {
-                signOut({ redirect: false });
-            } else {
-                signOut({
-                    redirect: true,
-                    callbackUrl: '/login',
-                });
-            }
-
+        if (!session?.expires && !status) {
             return;
         }
 
-        switch (status) {
-            case 'authenticated': {
-                window.location.href = '/dashboard';
-                break;
-            }
-
-            case 'unauthenticated': {
-                if (to !== '/login') {
-                    window.location.href = '/login';
-                }
-
-                break;
-            }
+        if (dayjs(session?.expires).isBefore(dayjs()) || status === 'unauthenticated') {
+            signOut({
+                callbackUrl: '/login',
+                redirect: isLoginPage ? false : true,
+            });
         }
     }, [session, status, isLoginPage]);
 
@@ -72,7 +56,7 @@ const App = ({ children, defaultMode }: PropsWithChildren<AppProps>) => {
                 password,
                 recaptchaToken,
                 redirect: true,
-                callbackUrl: to ? to.toString() : '/',
+                callbackUrl: to ? to.toString() : '/dashboard',
             });
 
             if (!signUpResponse) {
@@ -97,7 +81,7 @@ const App = ({ children, defaultMode }: PropsWithChildren<AppProps>) => {
             if (providerName) {
                 signIn(providerName, {
                     redirect: true,
-                    callbackUrl: to ? to.toString() : '/',
+                    callbackUrl: to ? to.toString() : '/dashboard',
                 });
 
                 return { success: true };
@@ -108,7 +92,7 @@ const App = ({ children, defaultMode }: PropsWithChildren<AppProps>) => {
                 password,
                 recaptchaToken,
                 redirect: false,
-                callbackUrl: to ? to.toString() : '/',
+                callbackUrl: to ? to.toString() : '/dashboard',
             });
 
             if (!signInResponse) {
@@ -123,7 +107,7 @@ const App = ({ children, defaultMode }: PropsWithChildren<AppProps>) => {
             if (ok) {
                 return {
                     success: true,
-                    redirectTo: '/',
+                    redirectTo: '/dashboard',
                 };
             }
 

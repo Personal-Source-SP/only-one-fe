@@ -2,9 +2,8 @@
 
 import ActivityChart from '@/components/module/activity-chart';
 import StorageChart from '@/components/module/storage-chart';
-import { Card, Button } from 'antd';
+import { Card, Button, Space } from 'antd';
 import { Icon } from '@iconify/react';
-import { motion } from 'framer-motion';
 import { FC } from 'react';
 import Link from 'next/link';
 
@@ -99,29 +98,16 @@ const DashboardPage: FC = () => {
         { date: '07/06', files: 4, photos: 9, notes: 5 },
     ];
 
-    const container = {
-        hidden: { opacity: 0 },
-        show: {
-            opacity: 1,
-            transition: {
-                staggerChildren: 0.1,
-            },
-        },
-    };
-
-    const item = {
-        hidden: { opacity: 0, y: 20 },
-        show: { opacity: 1, y: 0 },
-    };
+    // Note: Removed framer-motion variants
 
     return (
-        <motion.div variants={container} initial="hidden" animate="show" className="space-y-6">
-            <motion.div variants={item}>
+        <Space direction="vertical" className="space-y-6 w-full">
+            <div>
                 <h1 className="text-2xl font-medium mb-2">Chào buổi sáng, Minh Nguyễn!</h1>
                 <p className="text-foreground-600">Đây là tổng quan hoạt động của bạn.</p>
-            </motion.div>
+            </div>
 
-            <motion.div variants={item}>
+            <div>
                 <Card>
                     <div className="p-4 border-b">
                         <h2 className="text-lg font-medium">Hoạt động 7 ngày qua</h2>
@@ -130,10 +116,10 @@ const DashboardPage: FC = () => {
                         <ActivityChart data={activityData} />
                     </div>
                 </Card>
-            </motion.div>
+            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-                <motion.div variants={item} className="lg:col-span-2">
+                <div className="lg:col-span-2">
                     <Card className="h-full">
                         <div className="flex justify-between items-center p-4 border-b">
                             <div className="flex items-center gap-2">
@@ -188,9 +174,9 @@ const DashboardPage: FC = () => {
                             </div>
                         </div>
                     </Card>
-                </motion.div>
+                </div>
 
-                <motion.div variants={item}>
+                <div>
                     <Card className="h-full">
                         <div className="p-4 border-b">
                             <h2 className="text-lg font-medium">Dung lượng lưu trữ</h2>
@@ -199,9 +185,9 @@ const DashboardPage: FC = () => {
                             <StorageChart data={storageData} total="16 GB" />
                         </div>
                     </Card>
-                </motion.div>
+                </div>
 
-                <motion.div variants={item} className="lg:col-span-2">
+                <div className="lg:col-span-2">
                     <Card>
                         <div className="flex justify-between items-center p-4 border-b">
                             <div className="flex items-center gap-2">
@@ -236,9 +222,9 @@ const DashboardPage: FC = () => {
                             </div>
                         </div>
                     </Card>
-                </motion.div>
+                </div>
 
-                <motion.div variants={item} className="lg:col-span-3">
+                <div className="lg:col-span-3">
                     <Card>
                         <div className="flex justify-between items-center p-4 border-b">
                             <div className="flex items-center gap-2">
@@ -268,9 +254,9 @@ const DashboardPage: FC = () => {
                             </div>
                         </div>
                     </Card>
-                </motion.div>
+                </div>
             </div>
-        </motion.div>
+        </Space>
     );
 };
 

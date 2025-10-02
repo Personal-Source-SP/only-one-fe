@@ -1,6 +1,5 @@
-import { Avatar, Button, Card } from 'antd';
+import { Avatar, Button, Card, Space } from 'antd';
 import { Icon } from '@iconify/react';
-import { motion } from 'framer-motion';
 import { FC, memo, useState } from 'react';
 
 type FileDetailsProps = {
@@ -55,12 +54,7 @@ const FileDetails: FC<FileDetailsProps> = ({ file, onClose, isMobile = false }) 
     ];
 
     return (
-        <motion.div
-            initial={{ opacity: 0, x: isMobile ? 0 : 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: isMobile ? 0 : 20 }}
-            className="h-full"
-        >
+        <Space direction="vertical" className="h-full w-full">
             <Card
                 className="h-full rounded-none shadow-none"
                 title={<h3 className="text-lg font-medium">Chi tiết</h3>}
@@ -265,7 +259,7 @@ const FileDetails: FC<FileDetailsProps> = ({ file, onClose, isMobile = false }) 
                     </div>
                 </div>
             </Card>
-        </motion.div>
+        </Space>
     );
 };
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { NPhoto } from '@/interfaces';
-import { motion } from 'framer-motion';
+import { Space } from 'antd';
 import { FC, memo } from 'react';
 
 export type PhotoGroupsProps = {
@@ -10,31 +10,13 @@ export type PhotoGroupsProps = {
     onPhotoClick: (url: string) => void;
 };
 
-const container = {
-    hidden: { opacity: 0 },
-    show: {
-        opacity: 1,
-        transition: {
-            staggerChildren: 0.05,
-        },
-    },
-};
-
-const item = {
-    show: { opacity: 1, scale: 1 },
-    hidden: { opacity: 0, scale: 0.9 },
-};
-
 const PhotoGroups: FC<PhotoGroupsProps> = ({ columns, groupedPhotos, onPhotoClick }) => {
     return (
-        <div className="space-y-8">
+        <Space direction="vertical" size="large" className="w-full">
             {groupedPhotos.map((group, groupIndex) => (
                 <div key={groupIndex} className="space-y-2">
                     {group.date && <h2 className="text-lg font-medium">{group.date}</h2>}
-                    <motion.div
-                        animate="show"
-                        initial="hidden"
-                        variants={container}
+                    <div
                         className={`grid grid-cols-${columns} gap-2`}
                         style={{
                             display: 'grid',
@@ -42,9 +24,8 @@ const PhotoGroups: FC<PhotoGroupsProps> = ({ columns, groupedPhotos, onPhotoClic
                         }}
                     >
                         {group.photos.map((photo) => (
-                            <motion.div
+                            <div
                                 key={photo.id}
-                                variants={item}
                                 onClick={() => onPhotoClick(photo.url)}
                                 className="aspect-[4/3] rounded-md overflow-hidden cursor-pointer hover:opacity-90 transition-all hover:shadow-md"
                             >
@@ -54,12 +35,12 @@ const PhotoGroups: FC<PhotoGroupsProps> = ({ columns, groupedPhotos, onPhotoClic
                                     alt={`Photo ${photo.id}`}
                                     className="w-full h-full object-cover"
                                 />
-                            </motion.div>
+                            </div>
                         ))}
-                    </motion.div>
+                    </div>
                 </div>
             ))}
-        </div>
+        </Space>
     );
 };
 

@@ -1,10 +1,10 @@
 'use client';
 
 import FileDetails from '@/components/module/file-details';
-import { Button, Card, Dropdown, Input, Table, Tooltip } from 'antd';
+import { Button, Card, Dropdown, Input, Table, Tooltip, Space } from 'antd';
 import type { MenuProps } from 'antd';
 import { Icon } from '@iconify/react';
-import { motion } from 'framer-motion';
+import { Space } from 'antd';
 import { FC, useEffect, useState } from 'react';
 
 const DrivePage: FC = () => {
@@ -181,7 +181,7 @@ const DrivePage: FC = () => {
     };
 
     return (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
+        <Space direction="vertical" className="space-y-4 w-full">
             {/* Breadcrumbs */}
             <div className="flex items-center overflow-x-auto whitespace-nowrap pb-2">
                 {currentPath.map((path, index) => (
@@ -326,7 +326,7 @@ const DrivePage: FC = () => {
                     </div>
                 )}
             </div>
-        </motion.div>
+        </Space>
     );
 };
 
