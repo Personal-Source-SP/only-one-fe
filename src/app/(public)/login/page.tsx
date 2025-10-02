@@ -1,11 +1,11 @@
 'use client';
 
 import { Logo } from '@/components/common';
-import { Button, Card, Checkbox, Input, Space, notification } from 'antd';
 import { Icon } from '@iconify/react';
+import { useLogin } from '@refinedev/core';
+import { Button, Checkbox, Form, Input, Space, notification } from 'antd';
 import Link from 'next/link';
 import { FC, memo, useState } from 'react';
-import { useLogin } from '@refinedev/core';
 
 const LoginPage: FC = () => {
     const { mutate: login, isPending } = useLogin();
@@ -31,72 +31,75 @@ const LoginPage: FC = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-content2 p-4">
-            <Space direction="vertical" className="w-full max-w-md">
-                <Card className="p-8 flex flex-col items-center gap-6">
-                    <div className="flex flex-col items-center gap-2 mb-4">
-                        <div className="flex items-center gap-2">
-                            <Logo iconSize="3xl" textSize="2xl" />
-                        </div>
-                        <p className="text-foreground-600 text-center">
-                            Không gian làm việc tập trung của bạn
-                        </p>
-                    </div>
+        <Space
+            direction="vertical"
+            className="min-h-screen flex items-center justify-center bg-white"
+        >
+            <div className="flex flex-col items-center gap-2 mb-4">
+                <div className="flex items-center gap-2">
+                    <Logo iconSize="3xl" textSize="2xl" />
+                </div>
+                <p className="text-foreground-600 text-center">
+                    Không gian làm việc tập trung của bạn
+                </p>
+            </div>
 
-                    <form
-                        className="w-full space-y-4"
-                        onSubmit={(e) => {
-                            e.preventDefault();
-                            handleLogin();
-                        }}
+            <Form className="w-full space-y-4" onFinish={handleLogin}>
+                <Form.Item
+                    name="email"
+                    rules={[{ required: true, message: 'Vui lòng nhập email' }]}
+                >
+                    <Input
+                        value={email}
+                        placeholder="Nhập email của bạn"
+                        onChange={(e) => setEmail(e.target.value)}
+                    />
+                </Form.Item>
+                <Form.Item
+                    name="password"
+                    rules={[{ required: true, message: 'Vui lòng nhập mật khẩu' }]}
+                >
+                    <Input.Password
+                        value={password}
+                        placeholder="Nhập mật khẩu của bạn"
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
+                </Form.Item>
+                <div className="flex items-center justify-between">
+                    <Checkbox
+                        checked={rememberMe}
+                        onChange={(e) => setRememberMe(e.target.checked)}
                     >
-                        <Input
-                            value={email}
-                            placeholder="Nhập email của bạn"
-                            onChange={(e) => setEmail(e.target.value)}
-                        />
-                        <Input.Password
-                            value={password}
-                            placeholder="Nhập mật khẩu của bạn"
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
-                        <div className="flex items-center justify-between">
-                            <Checkbox
-                                checked={rememberMe}
-                                onChange={(e) => setRememberMe(e.target.checked)}
-                            >
-                                Ghi nhớ đăng nhập
-                            </Checkbox>
-                            <Link href="/forget-password">Quên mật khẩu?</Link>
-                        </div>
-                        <Button
-                            size="large"
-                            type="primary"
-                            htmlType="submit"
-                            className="w-full"
-                            loading={isPending}
-                        >
-                            Đăng nhập
-                        </Button>
-                    </form>
+                        Ghi nhớ đăng nhập
+                    </Checkbox>
+                    <Link href="/forget-password">Quên mật khẩu?</Link>
+                </div>
+                <Button
+                    size="large"
+                    type="primary"
+                    htmlType="submit"
+                    className="w-full"
+                    loading={isPending}
+                >
+                    Đăng nhập
+                </Button>
+            </Form>
 
-                    <div className="w-full flex items-center gap-2 my-4">
-                        <div className="flex-1 h-px bg-divider"></div>
-                        <span className="text-foreground-500 text-sm">Hoặc</span>
-                        <div className="flex-1 h-px bg-divider"></div>
-                    </div>
+            <div className="w-full flex items-center gap-2 my-4">
+                <div className="flex-1 h-px bg-divider"></div>
+                <span className="text-foreground-500 text-sm">Hoặc</span>
+                <div className="flex-1 h-px bg-divider"></div>
+            </div>
 
-                    <Button size="large" className="w-full">
-                        <Icon icon="logos:google-icon" className="mr-2" /> Đăng nhập với Google
-                    </Button>
+            <Button size="large" className="w-full">
+                <Icon icon="logos:google-icon" className="mr-2" /> Đăng nhập với Google
+            </Button>
 
-                    <p className="text-foreground-600 text-center mt-4">
-                        <span>Chưa có tài khoản? </span>
-                        <Link href="/register">Đăng ký ngay</Link>
-                    </p>
-                </Card>
-            </Space>
-        </div>
+            <p className="text-foreground-600 text-center mt-4">
+                <span>Chưa có tài khoản? </span>
+                <Link href="/register">Đăng ký ngay</Link>
+            </p>
+        </Space>
     );
 };
 

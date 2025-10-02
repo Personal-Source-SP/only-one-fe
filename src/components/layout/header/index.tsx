@@ -1,5 +1,8 @@
+'use client';
+
 import { Icon } from '@iconify/react';
 import { Avatar, Badge, Button, Dropdown, MenuProps } from 'antd';
+import { signOut } from 'next-auth/react';
 import { FC, memo } from 'react';
 
 type HeaderProps = {
@@ -42,7 +45,12 @@ const Header: FC<HeaderProps> = ({
         {
             label: 'Đăng xuất',
             icon: 'lucide:log-out',
-            onClick: () => {},
+            onClick: () => {
+                signOut({
+                    redirect: true,
+                    callbackUrl: '/login',
+                });
+            },
         },
     ];
 
@@ -50,13 +58,13 @@ const Header: FC<HeaderProps> = ({
         return (
             <div className="flex items-center">
                 <Button
-                    className="mr-2 md:hidden"
                     type="text"
                     shape="circle"
+                    className="mr-2 md:hidden"
                     onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                     icon={<Icon icon="lucide:menu" className="text-xl" />}
                 />
-                <h1 className="text-xl font-medium">{getPageTitle()}</h1>
+                <h1 className="text-xl font-medium m-0">{getPageTitle()}</h1>
             </div>
         );
     };
@@ -72,12 +80,13 @@ const Header: FC<HeaderProps> = ({
                 </div>
             ),
         }));
+
         return (
             <div className="flex items-center gap-2 md:gap-4">
                 <Button
-                    className="md:hidden"
                     type="text"
                     shape="circle"
+                    className="md:hidden"
                     onClick={() => setShowSearch(!showSearch)}
                     icon={<Icon icon="lucide:search" className="text-xl text-foreground-600" />}
                 />
@@ -115,10 +124,10 @@ const Header: FC<HeaderProps> = ({
     };
 
     return (
-        <div className="w-full border-b border-divider flex items-center justify-between px-4 py-2">
+        <section className="w-full border-b border-divider flex items-center justify-between px-4 py-2 bg-white">
             {renderNavbarLeft()}
             {renderNavbarRight()}
-        </div>
+        </section>
     );
 };
 
