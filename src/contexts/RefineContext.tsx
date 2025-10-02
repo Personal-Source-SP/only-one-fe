@@ -1,6 +1,7 @@
 'use client';
 
 import { Loading, UnsavedChangesNotifierAppRouter } from '@/components/common';
+import { AUTH_PUBLIC_PAGES } from '@/constants';
 import { ColorModeContextProvider } from '@/contexts/ColorModeContext';
 import accessControlProvider from '@/providers/access-control-provider';
 import RestServer, { createSessionAxiosInstance } from '@/providers/data-provider';
@@ -8,12 +9,11 @@ import { DashboardOutlined } from '@ant-design/icons';
 import { useNotificationProvider } from '@refinedev/antd';
 import { AuthProvider, Refine } from '@refinedev/core';
 import routerProvider from '@refinedev/nextjs-router';
-import dayjs from 'dayjs';
 import { Session } from 'next-auth';
 import { SessionProvider, signIn, signOut, useSession } from 'next-auth/react';
 import { env } from 'next-runtime-env';
-import { usePathname } from 'next/navigation';
-import { PropsWithChildren, useEffect } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { PropsWithChildren, useEffect, useState } from 'react';
 
 type RefineContextProps = {
     defaultMode?: string;
@@ -28,24 +28,27 @@ const App = ({ children, defaultMode }: PropsWithChildren<AppProps>) => {
     const { data: session, status } = useSession();
 
     const to = usePathname();
-    const isLoginPage = to === '/login';
-
+    const router = useRouter();
     const apiUrl = env('NEXT_PUBLIC_API_URL') || '';
+    const isAuthPublicPage = AUTH_PUBLIC_PAGES.includes(to);
+
+    const [isDomLoaded, setIsDomLoaded] = useState(false);
 
     useEffect(() => {
-        if (!session?.expires && !status) {
+        if (status === 'authenticated' && isAuthPublicPage) {
+            router.replace('/dashboard');
             return;
         }
 
-        if (dayjs(session?.expires).isBefore(dayjs()) || status === 'unauthenticated') {
-            signOut({
-                callbackUrl: '/login',
-                redirect: isLoginPage ? false : true,
-            });
+        if (status === 'unauthenticated' && !isAuthPublicPage) {
+            router.replace('/login');
+            return;
         }
-    }, [session, status, isLoginPage]);
 
-    if (status === 'loading') {
+        setIsDomLoaded(true);
+    }, [status, isAuthPublicPage, router]);
+
+    if (status === 'loading' || !isDomLoaded) {
         return <Loading />;
     }
 
@@ -77,7 +80,7 @@ const App = ({ children, defaultMode }: PropsWithChildren<AppProps>) => {
                 error: new Error(error?.toString()),
             };
         },
-        login: async ({ providerName, email, password, recaptchaToken }) => {
+        login: async ({ providerName, email, password }) => {
             if (providerName) {
                 signIn(providerName, {
                     redirect: true,
@@ -90,7 +93,6 @@ const App = ({ children, defaultMode }: PropsWithChildren<AppProps>) => {
             const signInResponse = await signIn('credentials', {
                 email,
                 password,
-                recaptchaToken,
                 redirect: false,
                 callbackUrl: to ? to.toString() : '/dashboard',
             });

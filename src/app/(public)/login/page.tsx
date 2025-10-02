@@ -43,7 +43,13 @@ const LoginPage: FC = () => {
                         </p>
                     </div>
 
-                    <form className="w-full space-y-4">
+                    <form
+                        className="w-full space-y-4"
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            handleLogin();
+                        }}
+                    >
                         <Input
                             value={email}
                             placeholder="Nhập email của bạn"
@@ -69,7 +75,6 @@ const LoginPage: FC = () => {
                             htmlType="submit"
                             className="w-full"
                             loading={isPending}
-                            onClick={() => handleLogin()}
                         >
                             Đăng nhập
                         </Button>

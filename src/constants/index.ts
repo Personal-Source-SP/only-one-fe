@@ -30,6 +30,8 @@ export const KEY_LOCAL_STORAGE = {
     GOOGLE_REFRESH_TOKEN: 'google_refresh_token',
 };
 
+export const AUTH_PUBLIC_PAGES = ['/login', '/register', '/forget-password'];
+
 export const IMAGE_WIDTH_DEFAULT = 1500;
 export const IMAGE_HEIGHT_DEFAULT = 1200;
 export const ITEMS_PER_PAGE_DEFAULT = 50;

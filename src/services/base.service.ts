@@ -79,7 +79,7 @@ export default class BaseApi {
 
         return this.httpClient
             .get<T>(endPoint, { params, headers })
-            .then((response: AxiosResponse<T>) => {
+            .then((response: AxiosResponse<any>) => {
                 if (response.status !== 200) {
                     return {
                         data: null,
@@ -87,7 +87,7 @@ export default class BaseApi {
                     };
                 }
 
-                return { data: response.data };
+                return { data: response.data.data as T, status: 200 };
             })
             .catch((error: AxiosError<T>) => {
                 console.log(`API Error - ${endPoint}: ${error.message}`);
@@ -105,7 +105,7 @@ export default class BaseApi {
 
         return this.httpClient
             .delete<T>(endPoint, { params, headers })
-            .then((response: AxiosResponse<T>) => {
+            .then((response: AxiosResponse<any>) => {
                 if (response.status !== 200) {
                     return {
                         data: null,
@@ -113,7 +113,7 @@ export default class BaseApi {
                     };
                 }
 
-                return { data: response.data };
+                return { data: response.data.data as T, status: 200 };
             })
             .catch((error: AxiosError<T>) => {
                 console.log(`API Error - ${endPoint}: ${error.message}`);
@@ -131,7 +131,7 @@ export default class BaseApi {
 
         return this.httpClient
             .post<T>(endPoint, data, { params, headers })
-            .then((response: AxiosResponse<T>) => {
+            .then((response: AxiosResponse<any>) => {
                 if (response.status !== 200) {
                     return {
                         data: null,
@@ -139,7 +139,7 @@ export default class BaseApi {
                     };
                 }
 
-                return { data: response.data };
+                return { data: response.data.data as T, status: 200 };
             })
             .catch((error: AxiosError<T>) => {
                 console.log(`API Error - ${endPoint}: ${error.message}`);
@@ -157,7 +157,7 @@ export default class BaseApi {
 
         return this.httpClient
             .put<T>(endPoint, data, { params })
-            .then((response: AxiosResponse<T>) => {
+            .then((response: AxiosResponse<any>) => {
                 if (response.status !== 200) {
                     return {
                         data: null,
@@ -165,7 +165,7 @@ export default class BaseApi {
                     };
                 }
 
-                return { data: response.data };
+                return { data: response.data.data as T, status: 200 };
             })
             .catch((error: AxiosError<T>) => {
                 console.log(`API Error - ${endPoint}: ${error.message}`);
@@ -183,7 +183,7 @@ export default class BaseApi {
 
         return this.httpClient
             .patch<T>(endPoint, data, { params, headers })
-            .then((response: AxiosResponse<T>) => {
+            .then((response: AxiosResponse<any>) => {
                 if (response.status !== 200) {
                     return {
                         data: null,
@@ -191,7 +191,7 @@ export default class BaseApi {
                     };
                 }
 
-                return { data: response.data };
+                return { data: response.data.data as T, status: 200 };
             })
             .catch((error: AxiosError<T>) => {
                 console.log(`API Error - ${endPoint}: ${error.message}`);

@@ -4,14 +4,14 @@ import BaseApi from './base.service';
 class AuthService extends BaseApi {
     constructor() {
         super({
-            baseURL: process.env.NEXT_PUBLIC_API_URL || '/api',
+            baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003',
         });
     }
 
     async login(request: IAuth.ILoginRequest): Promise<IAuth.ILoginResponse | null> {
         const result = await this.post<IAuth.ILoginResponse>({
             data: request,
-            endPoint: '/auth/login',
+            endPoint: 'http://localhost:3003/api/v1/auth/login',
         });
 
         return result?.data || null;
