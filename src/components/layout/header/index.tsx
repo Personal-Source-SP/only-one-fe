@@ -103,7 +103,7 @@ const Header: FC<HeaderProps> = ({
                     />
                 </div>
 
-                <Badge dot>
+                <Badge size="small" count={7}>
                     <Button
                         type="text"
                         shape="circle"
