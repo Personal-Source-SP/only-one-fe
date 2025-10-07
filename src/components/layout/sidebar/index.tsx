@@ -3,8 +3,7 @@
 import { Logo } from '@/components/common';
 import { Icon } from '@iconify/react';
 import { Button, Drawer, Menu } from 'antd';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { FC, memo } from 'react';
 
 interface SidebarItem {
@@ -50,6 +49,7 @@ type SidebarProps = {
 
 const Sidebar: FC<SidebarProps> = ({ mobileOpen, setMobileOpen }) => {
     const isAdmin = true;
+    const router = useRouter();
     const pathname = usePathname();
 
     const menuItems = sidebarItems
@@ -58,13 +58,15 @@ const Sidebar: FC<SidebarProps> = ({ mobileOpen, setMobileOpen }) => {
             key: item.href,
             icon: <Icon icon={item.icon} className="text-xl" />,
             label: (
-                <Link
-                    href={item.href}
+                <p
                     className="flex items-center gap-3"
-                    onClick={() => setMobileOpen(false)}
+                    onClick={() => {
+                        setMobileOpen(false);
+                        router.replace(item.href);
+                    }}
                 >
                     {item.label}
-                </Link>
+                </p>
             ),
         }));
 

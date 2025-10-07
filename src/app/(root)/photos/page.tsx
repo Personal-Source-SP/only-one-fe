@@ -1,253 +1,177 @@
 'use client';
 
-export default function PhotosPage() {
-    return <div>PhotosPage</div>;
-}
+import PaginationControls from '@/components/module/photos/PaginationControls';
+import PhotoButton from '@/components/module/photos/PhotoButton';
+import PhotoFilter from '@/components/module/photos/PhotoFilter';
+import PhotoGroups from '@/components/module/photos/PhotoGroups';
+import { useMainContext } from '@/contexts/MainContext';
+import { SortOrder, ViewMode } from '@/enums';
+import type { NGoogle } from '@/interfaces';
+import { useTable } from '@refinedev/antd';
+import { HttpError, useList } from '@refinedev/core';
+import { isNumber } from 'lodash';
+import { FC, useEffect, useMemo, useState } from 'react';
 
-// import DataNotFound from '@/components/common/data-not-found';
-// import PaginationControls from '@/components/module/photos/PaginationControls';
-// import PhotoButton from '@/components/module/photos/PhotoButton';
-// import PhotoFilter from '@/components/module/photos/PhotoFilter';
-// import PhotoGroups from '@/components/module/photos/PhotoGroups';
-// import { useMainContext } from '@/contexts/MainContext';
-// import { PhotoItemsPerPage, SortOrder, ViewMode } from '@/enums';
-// import type { NGoogleDrive, NPhoto } from '@/interfaces';
-// import { useListFiles, useListFolders } from '@/query/google-drive.query';
-// import { FC, useEffect, useMemo, useState } from 'react';
-// import Lightbox from 'yet-another-react-lightbox';
-// import Fullscreen from 'yet-another-react-lightbox/plugins/fullscreen';
-// import Slideshow from 'yet-another-react-lightbox/plugins/slideshow';
-// import Thumbnails from 'yet-another-react-lightbox/plugins/thumbnails';
-// import 'yet-another-react-lightbox/plugins/thumbnails.css';
-// import Zoom from 'yet-another-react-lightbox/plugins/zoom';
-// import 'yet-another-react-lightbox/styles.css';
+import Lightbox from 'yet-another-react-lightbox';
+import Fullscreen from 'yet-another-react-lightbox/plugins/fullscreen';
+import Slideshow from 'yet-another-react-lightbox/plugins/slideshow';
+import Thumbnails from 'yet-another-react-lightbox/plugins/thumbnails';
+import 'yet-another-react-lightbox/plugins/thumbnails.css';
+import Zoom from 'yet-another-react-lightbox/plugins/zoom';
+import 'yet-another-react-lightbox/styles.css';
 
-// const PhotosPage: FC = () => {
-//     const [columns, setColumns] = useState(4);
+const PhotosPage: FC = () => {
+    const [columns, setColumns] = useState(4);
 
-//     const { handleLoading } = useMainContext();
+    const { handleLoading } = useMainContext();
 
-//     const [currentPage, setCurrentPage] = useState<number>(1);
-//     const [currentIndex, setCurrentIndex] = useState<number>(0);
-//     const [itemsPerPage, setItemsPerPage] = useState<PhotoItemsPerPage>(PhotoItemsPerPage.FIFTY);
-//     const [pageTokens, setPageTokens] = useState<Record<number, string | undefined>>({
-//         1: undefined,
-//     });
+    const [isOpenFilter, setIsOpenFilter] = useState(false);
+    const [searchQuery, setSearchQuery] = useState<string>();
+    const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.ALL);
+    const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.NEWEST);
+    const [filterFolder, setFilterFolder] = useState<string | undefined>(undefined);
 
-//     const [isOpenFilter, setIsOpenFilter] = useState(false);
-//     const [searchQuery, setSearchQuery] = useState<string>();
-//     const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.ALL);
-//     const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.NEWEST);
-//     const [filterFolder, setFilterFolder] = useState<string | undefined>(undefined);
+    const [isLightboxOpen, setIsLightboxOpen] = useState<boolean>(false);
+    const [slideshowInterval, setSlideshowInterval] = useState<number>(5);
 
-//     const [isLightboxOpen, setIsLightboxOpen] = useState<boolean>(false);
-//     const [slideshowInterval, setSlideshowInterval] = useState<number>(5);
+    const { currentPage, setCurrentPage, pageSize, setPageSize, tableQuery } = useTable<
+        NGoogle.IGoogleDriveFile,
+        HttpError,
+        Partial<NGoogle.IGoogleDriveFile>
+    >({
+        resource: 'google-drive',
+        syncWithLocation: false,
+        pagination: {
+            pageSize: 10,
+            mode: 'server',
+        },
+        sorters: {
+            mode: 'server',
+            initial: [{ field: 'createdAt', order: 'desc' }],
+        },
+    });
 
-//     const { data: filesResponse } = useListFiles(
-//         {
-//             spaces: 'drive',
-//             pageSize: itemsPerPage,
-//             orderBy: sortOrder === 'newest' ? 'createdTime desc' : 'createdTime asc',
-//             q: [
-//                 "mimeType contains 'image/'",
-//                 'trashed=false',
-//                 searchQuery ? `name contains '${searchQuery.replace(/'/g, "\\'")}'` : null,
-//                 filterFolder ? `'${filterFolder}' in parents` : null,
-//             ]
-//                 .filter(Boolean)
-//                 .join(' and '),
-//             pageToken: pageTokens[currentPage],
-//             fields: 'files(id,name,mimeType,thumbnailLink,webContentLink,createdTime),nextPageToken',
-//         },
-//         {
-//             retry: false,
-//             enabled: isAuthenticated,
-//             refetchOnWindowFocus: false,
-//         },
-//     );
+    const { result: googleDriveFolders } = useList<NGoogle.IGoogleDriveFolder>({
+        resource: 'googleDriveFolders',
+        queryOptions: {
+            enabled: true,
+        },
+        pagination: {
+            mode: 'off' as const,
+        },
+    });
 
-//     const { data: foldersData } = useListFolders(undefined, {
-//         retry: false,
-//         enabled: isAuthenticated,
-//         refetchOnWindowFocus: false,
-//     });
+    const allPhotos = useMemo(() => {
+        return tableQuery?.data?.data ?? [];
+    }, [tableQuery?.data?.data]);
 
-//     useEffect(() => {
-//         const updateColumns = () => {
-//             const width = window.innerWidth;
-//             if (width < 640) {
-//                 setColumns(2);
-//             } else if (width < 1024) {
-//                 setColumns(3);
-//             } else {
-//                 setColumns(4);
-//             }
-//         };
+    useEffect(() => {
+        const updateColumns = () => {
+            const width = window.innerWidth;
+            if (width < 640) {
+                setColumns(2);
+            } else if (width < 1024) {
+                setColumns(3);
+            } else {
+                setColumns(4);
+            }
+        };
 
-//         window.addEventListener('resize', updateColumns);
-//         updateColumns();
+        window.addEventListener('resize', updateColumns);
+        updateColumns();
+    }, []);
 
-//         return () => window.removeEventListener('resize', updateColumns);
-//     }, []);
+    const startSlideshow = () => {
+        setIsLightboxOpen(true);
+    };
 
-//     useEffect(() => {
-//         setCurrentPage(1);
-//         setPageTokens({ 1: undefined });
-//     }, [itemsPerPage, searchQuery, sortOrder, filterFolder]);
+    const stopSlideshow = () => {
+        setIsLightboxOpen(false);
+    };
 
-//     useEffect(() => {
-//         const nextToken = filesResponse?.data?.nextPageToken;
-//         if (nextToken && pageTokens[currentPage + 1] !== nextToken) {
-//             setPageTokens((prev) => ({ ...prev, [currentPage + 1]: nextToken }));
-//         }
-//     }, [filesResponse?.data?.nextPageToken, currentPage]);
+    const openLightbox = (index: number) => {
+        setCurrentPage(index);
+        setIsLightboxOpen(true);
+    };
 
-//     const allPhotos = useMemo(() => {
-//         const driveFiles: NGoogleDrive.DriveFileResponse[] = filesResponse?.data?.files ?? [];
+    const closeLightbox = () => {
+        setIsLightboxOpen(false);
+    };
 
-//         return (driveFiles || []).map((file, index) => ({
-//             id: index + 1,
-//             date: new Date(file?.createdTime || Date.now()),
-//             url: (file?.thumbnailLink || file?.webContentLink || '').toString(),
-//         }));
-//     }, [filesResponse?.data?.files]);
+    const handlePhotoClick = (url: string) => {
+        const index = tableQuery?.data?.data?.findIndex((photo) => photo.webContentLink === url);
+        if (isNumber(index)) {
+            openLightbox(index ?? 0);
+        }
+    };
 
-//     const groupedPhotos = useMemo(() => {
-//         if (viewMode === ViewMode.ALL) return [{ photos: allPhotos }];
+    return (
+        <section className="w-full h-full">
+            <section className="flex-1 flex flex-col h-[calc(100vh-100px)] w-full overflow-hidden">
+                {/* Header fixed at the top */}
+                <div className="sticky top-0 left-0 right-0 z-20 bg-white">
+                    <PhotoButton
+                        searchQuery={searchQuery}
+                        startSlideshow={startSlideshow}
+                        setSearchQuery={setSearchQuery}
+                        setIsOpenFilter={setIsOpenFilter}
+                    />
 
-//         const groups = allPhotos.reduce<{ [key: string]: NPhoto.Photo[] }>((acc, photo) => {
-//             const dateKey = photo.date.toLocaleDateString('vi-VN', {
-//                 year: 'numeric',
-//                 month: 'long',
-//                 day: 'numeric',
-//             });
+                    <PhotoFilter
+                        viewMode={viewMode}
+                        isOpen={isOpenFilter}
+                        sortOrder={sortOrder}
+                        onClose={setIsOpenFilter}
+                        filterFolder={filterFolder}
+                        folders={tableQuery?.data?.data ?? []}
+                        onApplyFilters={(filter: NGoogle.IGoogleDriveFile) => {
+                            setCurrentPage(1);
+                            // setViewMode(filter.viewMode);
+                            // setSortOrder(filter.sortOrder);
+                            // setFilterFolder(filter.folderId);
+                        }}
+                    />
+                </div>
 
-//             if (!acc[dateKey]) acc[dateKey] = [];
+                {/* Scrollable content */}
+                <div className="flex-1 overflow-y-auto">
+                    <PhotoGroups
+                        columns={columns}
+                        onPhotoClick={handlePhotoClick}
+                        groupedPhotos={googleDriveFolders?.data ?? []}
+                    />
+                </div>
 
-//             acc[dateKey].push(photo);
+                {/* Footer fixed at the bottom */}
+                <div className="sticky bottom-0 left-0 right-0 z-20 bg-white mb-3">
+                    <PaginationControls
+                        itemsPerPage={pageSize}
+                        currentPage={currentPage}
+                        totalItems={allPhotos.length}
+                        onPageChange={(page) => setCurrentPage(page)}
+                        onItemsPerPageChange={(pageSize) => {
+                            setCurrentPage(1);
+                            setPageSize(pageSize);
+                        }}
+                    />
+                </div>
+            </section>
 
-//             return acc;
-//         }, {});
+            <Lightbox
+                index={currentPage}
+                open={isLightboxOpen}
+                plugins={[Fullscreen, Slideshow, Thumbnails, Zoom]}
+                slides={allPhotos.map((p) => ({ src: p.webContentLink ?? '' }))}
+                close={() => {
+                    closeLightbox();
+                    stopSlideshow();
+                }}
+                slideshow={{
+                    delay: slideshowInterval * 1000,
+                }}
+            />
+        </section>
+    );
+};
 
-//         return Object.entries(groups).map(([date, photos]) => ({ date, photos }));
-//     }, [allPhotos, viewMode]);
-
-//     const { totalPages, hasNextPage } = useMemo(() => {
-//         const hasNextPage = Boolean(filesResponse?.data?.nextPageToken);
-//         const totalPages = currentPage + (hasNextPage ? 1 : 0);
-
-//         return { totalPages, hasNextPage };
-//     }, [filesResponse?.data?.nextPageToken]);
-
-//     const startSlideshow = () => {
-//         setIsLightboxOpen(true);
-//     };
-
-//     const stopSlideshow = () => {
-//         setIsLightboxOpen(false);
-//     };
-
-//     const openLightbox = (index: number) => {
-//         setCurrentIndex(index);
-//         setIsLightboxOpen(true);
-//     };
-
-//     const closeLightbox = () => {
-//         setIsLightboxOpen(false);
-//     };
-
-//     const handlePhotoClick = (url: string) => {
-//         const index = allPhotos.findIndex((photo) => photo.url === url);
-//         openLightbox(index);
-//     };
-
-//     if (!isAuthenticated) {
-//         return (
-//             <div className="space-y-6">
-//                 <DataNotFound
-//                     loading
-//                     onRetry={() => login('photos')}
-//                     message="Vui lòng kiểm tra kết nối hoặc thử lại sau."
-//                 />
-//             </div>
-//         );
-//     }
-
-//     return (
-//         <section className="w-full h-full">
-//             <section className="flex-1 flex flex-col h-[calc(100vh-100px)] w-full overflow-hidden">
-//                 {/* Header fixed at the top */}
-//                 <div className="sticky top-0 left-0 right-0 z-20 bg-white">
-//                     <PhotoButton
-//                         searchQuery={searchQuery}
-//                         startSlideshow={startSlideshow}
-//                         setSearchQuery={setSearchQuery}
-//                         setIsOpenFilter={setIsOpenFilter}
-//                     />
-
-//                     <PhotoFilter
-//                         viewMode={viewMode}
-//                         isOpen={isOpenFilter}
-//                         sortOrder={sortOrder}
-//                         onClose={setIsOpenFilter}
-//                         filterFolder={filterFolder}
-//                         folders={foldersData?.data?.files ?? []}
-//                         onApplyFilters={(filter: NPhoto.Filter) => {
-//                             setCurrentPage(1);
-//                             setPageTokens({ 1: undefined });
-
-//                             setViewMode(filter.viewMode);
-//                             setSortOrder(filter.sortOrder);
-//                             setFilterFolder(filter.folderId);
-//                         }}
-//                     />
-//                 </div>
-
-//                 {/* Scrollable content */}
-//                 <div className="flex-1 overflow-y-auto">
-//                     <PhotoGroups
-//                         columns={columns}
-//                         groupedPhotos={groupedPhotos}
-//                         onPhotoClick={handlePhotoClick}
-//                     />
-//                 </div>
-
-//                 {/* Footer fixed at the bottom */}
-//                 <div className="sticky bottom-0 left-0 right-0 z-20 bg-white mb-3">
-//                     <PaginationControls
-//                         currentPage={currentPage}
-//                         itemsPerPage={itemsPerPage}
-//                         totalItems={totalPages * itemsPerPage}
-//                         onPageChange={(page) => {
-//                             if (page === currentPage) return;
-//                             if (page <= totalPages || (page === totalPages + 1 && hasNextPage)) {
-//                                 setCurrentPage(page);
-//                             }
-//                         }}
-//                         onItemsPerPageChange={(n) => {
-//                             setItemsPerPage(n);
-//                             setCurrentPage(1);
-//                             setPageTokens({ 1: undefined });
-//                         }}
-//                     />
-//                 </div>
-//             </section>
-
-//             <Lightbox
-//                 index={currentIndex}
-//                 open={isLightboxOpen}
-//                 slides={allPhotos.map((p) => ({ src: p.url }))}
-//                 plugins={[Fullscreen, Slideshow, Thumbnails, Zoom]}
-//                 close={() => {
-//                     closeLightbox();
-//                     stopSlideshow();
-//                 }}
-//                 slideshow={{
-//                     delay: slideshowInterval * 1000,
-//                 }}
-//             />
-//         </section>
-//     );
-// };
-
-// export default PhotosPage;
+export default PhotosPage;

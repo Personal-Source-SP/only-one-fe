@@ -1,5 +1,7 @@
-import { Button, Space, Tooltip } from 'antd';
+'use client';
+
 import { Icon } from '@iconify/react';
+import { Button, Space, Tooltip } from 'antd';
 import { FC, memo } from 'react';
 
 const QuickActions: FC = () => {

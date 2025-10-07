@@ -1,5 +1,7 @@
-import { Avatar, Button, Card, Space } from 'antd';
+'use client';
+
 import { Icon } from '@iconify/react';
+import { Avatar, Button, Card, Space } from 'antd';
 import { FC, memo, useState } from 'react';
 
 interface Notification {

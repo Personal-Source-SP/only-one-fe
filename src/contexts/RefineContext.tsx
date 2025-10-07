@@ -5,7 +5,7 @@ import { AUTH_PUBLIC_PAGES } from '@/constants';
 import { ColorModeContextProvider } from '@/contexts/ColorModeContext';
 import accessControlProvider from '@/providers/access-control-provider';
 import RestServer, { createSessionAxiosInstance } from '@/providers/data-provider';
-import { DashboardOutlined } from '@ant-design/icons';
+import { DashboardOutlined, PictureOutlined } from '@ant-design/icons';
 import { useNotificationProvider } from '@refinedev/antd';
 import { AuthProvider, Refine } from '@refinedev/core';
 import routerProvider from '@refinedev/nextjs-router';
@@ -27,9 +27,10 @@ type AppProps = {
 const App = ({ children, defaultMode }: PropsWithChildren<AppProps>) => {
     const { data: session, status } = useSession();
 
+    const apiUrl = env('NEXT_PUBLIC_API_URL') || 'http://localhost:3003/api/v1';
+
     const to = usePathname();
     const router = useRouter();
-    const apiUrl = env('NEXT_PUBLIC_API_URL') || '';
     const isAuthPublicPage = AUTH_PUBLIC_PAGES.includes(to);
 
     const [isDomLoaded, setIsDomLoaded] = useState(false);
@@ -196,6 +197,14 @@ const App = ({ children, defaultMode }: PropsWithChildren<AppProps>) => {
                     {
                         name: 'forgot-password',
                         list: '/forgot-password',
+                    },
+                    {
+                        name: 'photos',
+                        list: '/photos',
+                        meta: {
+                            label: 'Photos',
+                            icon: <PictureOutlined />,
+                        },
                     },
                 ]}
                 options={{

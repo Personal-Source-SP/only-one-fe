@@ -1,5 +1,7 @@
-import { Button, Input } from 'antd';
+'use client';
+
 import { Icon } from '@iconify/react';
+import { Button, Input } from 'antd';
 import { FC, memo } from 'react';
 
 type SearchProps = {
