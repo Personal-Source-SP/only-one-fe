@@ -45,32 +45,95 @@ const sidebarItems: SidebarItem[] = [
 type SidebarProps = {
     mobileOpen: boolean;
     setMobileOpen: (open: boolean) => void;
+    collapsed: boolean;
+    setCollapsed: (collapsed: boolean) => void;
 };
 
-const Sidebar: FC<SidebarProps> = ({ mobileOpen, setMobileOpen }) => {
+const Sidebar: FC<SidebarProps> = ({ mobileOpen, setMobileOpen, collapsed, setCollapsed }) => {
     const isAdmin = true;
     const router = useRouter();
     const pathname = usePathname();
+
+    const handleNavigation = (href: string) => {
+        setMobileOpen(false);
+        router.replace(href);
+    };
 
     const menuItems = sidebarItems
         .filter((item) => !(item.checkAdmin && !isAdmin))
         .map((item) => ({
             key: item.href,
             icon: <Icon icon={item.icon} className="text-xl" />,
-            label: (
-                <p
-                    className="flex items-center gap-3"
-                    onClick={() => {
-                        setMobileOpen(false);
-                        router.replace(item.href);
-                    }}
+            label: collapsed ? (
+                <span
+                    title={item.label}
+                    onClick={() => handleNavigation(item.href)}
+                    className="flex items-center justify-center cursor-pointer w-full"
                 >
                     {item.label}
-                </p>
+                </span>
+            ) : (
+                <span
+                    onClick={() => handleNavigation(item.href)}
+                    className="flex items-center gap-3 cursor-pointer"
+                >
+                    {item.label}
+                </span>
             ),
         }));
 
-    return (
+    // Desktop Sidebar Content
+    const DesktopSidebar = () => (
+        <div
+            className={`hidden md:flex md:flex-col md:fixed md:inset-y-0 bg-white border-r transition-all duration-300 ${
+                collapsed ? 'md:w-16' : 'md:w-64'
+            }`}
+        >
+            {/* Header */}
+            <div
+                className={`flex items-center h-16 border-b border-divider ${
+                    collapsed ? 'justify-center px-2' : 'justify-center px-4'
+                }`}
+            >
+                {collapsed ? (
+                    <Logo iconSize="2xl" textSize="sm" showText={false} />
+                ) : (
+                    <Logo iconSize="2xl" textSize="lg" />
+                )}
+            </div>
+
+            {/* Navigation */}
+            <nav className="flex-1 py-4 overflow-y-auto overflow-x-hidden">
+                <Menu
+                    mode="inline"
+                    items={menuItems}
+                    selectedKeys={[pathname]}
+                    inlineCollapsed={collapsed}
+                    className={`border-none ${collapsed ? '[&_.ant-menu-item]:!justify-center [&_.ant-menu-item]:!px-2 [&_.ant-menu-item]:!w-full [&_.ant-menu-item]:!min-w-0' : ''}`}
+                />
+            </nav>
+
+            {/* Toggle Button */}
+            <div className="flex justify-center py-2 border-t border-divider">
+                <Button
+                    type="text"
+                    size="small"
+                    shape="circle"
+                    className="hover:bg-gray-100"
+                    onClick={() => setCollapsed(!collapsed)}
+                    icon={
+                        <Icon
+                            icon={collapsed ? 'lucide:chevron-right' : 'lucide:chevron-left'}
+                            className="text-sm"
+                        />
+                    }
+                />
+            </div>
+        </div>
+    );
+
+    // Mobile Drawer
+    const MobileDrawer = () => (
         <Drawer
             width={300}
             zIndex={1050}
@@ -101,6 +164,13 @@ const Sidebar: FC<SidebarProps> = ({ mobileOpen, setMobileOpen }) => {
                 <Menu mode="inline" items={menuItems} selectedKeys={[pathname]} />
             </nav>
         </Drawer>
+    );
+
+    return (
+        <>
+            <DesktopSidebar />
+            <MobileDrawer />
+        </>
     );
 };
 

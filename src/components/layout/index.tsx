@@ -16,6 +16,7 @@ const MainLayout: FC<MainLayoutProps> = ({ children }) => {
 
     const [showSearch, setShowSearch] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
     const [showNotifications, setShowNotifications] = useState(false);
 
     const notifications = [
@@ -87,15 +88,25 @@ const MainLayout: FC<MainLayoutProps> = ({ children }) => {
     };
 
     return (
-        <div className="flex h-screen bg-background">
+        <div className="flex h-screen bg-background overflow-hidden">
             {/* Sidebar */}
-            <Sidebar mobileOpen={mobileMenuOpen} setMobileOpen={setMobileMenuOpen} />
+            <Sidebar
+                mobileOpen={mobileMenuOpen}
+                setMobileOpen={setMobileMenuOpen}
+                collapsed={sidebarCollapsed}
+                setCollapsed={setSidebarCollapsed}
+            />
 
-            <div className="flex-1 flex flex-col">
+            <div
+                className={`flex-1 flex flex-col transition-all duration-300 overflow-hidden ${
+                    sidebarCollapsed ? 'md:ml-16' : 'md:ml-64'
+                }`}
+            >
                 {/* Header */}
                 <Header
                     showSearch={showSearch}
                     mobileMenuOpen={mobileMenuOpen}
+                    sidebarCollapsed={sidebarCollapsed}
                     showNotifications={showNotifications}
                     getPageTitle={getPageTitle}
                     setShowSearch={setShowSearch}
@@ -115,7 +126,7 @@ const MainLayout: FC<MainLayoutProps> = ({ children }) => {
                 <Search showSearch={showSearch} setShowSearch={setShowSearch} />
 
                 {/* Page Content */}
-                <main className="flex-1 bg-gray-200 p-0 md:p-4">
+                <main className="flex-1 bg-gray-200 p-0 md:p-4 !pt-20 max-h-screen overflow-y-auto">
                     <section className="bg-white md:rounded-xl p-4">{children}</section>
                 </main>
 
