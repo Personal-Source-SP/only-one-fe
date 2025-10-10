@@ -27,7 +27,7 @@ const PaginationControls: FC<PaginationControlsProps> = ({
     ];
 
     return (
-        <div className="flex justify-between items-center mt-8 gap-4">
+        <div className="flex justify-between items-center mt-8 gap-4 px-2">
             <Dropdown
                 menu={{
                     items,
@@ -40,11 +40,11 @@ const PaginationControls: FC<PaginationControlsProps> = ({
             </Dropdown>
 
             <Pagination
-                current={currentPage}
-                onChange={onPageChange}
-                total={totalItems}
-                pageSize={itemsPerPage}
                 showSizeChanger={false}
+                total={totalItems}
+                current={currentPage}
+                pageSize={itemsPerPage}
+                onChange={onPageChange}
             />
         </div>
     );

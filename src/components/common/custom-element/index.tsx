@@ -33,7 +33,8 @@ const CustomElement: FC<CustomElementProps> = ({
                     {Boolean(description) && <p className="text-gray-500 text-sm">{description}</p>}
                     <Flex justify="space-between" align="center" className="mt-0">
                         <h2 className="text-2xl font-semibold mb-0">{title}</h2>
-                        {Boolean(actions?.length) && <Space size="middle">{actions}</Space>}
+                        {Boolean(actions?.length) && <Space size="small">{actions}</Space>}
+                        {Boolean(children) && children}
                     </Flex>
                 </Card>
             );
@@ -54,7 +55,6 @@ const CustomElement: FC<CustomElementProps> = ({
         case ElementType.CARD: {
             return (
                 <Card
-                    variant="outlined"
                     title={header}
                     loading={loading}
                     actions={actions}

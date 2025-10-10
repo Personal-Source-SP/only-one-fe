@@ -6,7 +6,9 @@ import type { Awaitable, User } from 'next-auth';
 import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
-const isTokenExpired = (token: string) => {
+export const checkTokenExpired = (token: string): boolean => {
+    if (!token) return true;
+
     try {
         const decoded = jwtDecode<{ exp: number }>(token);
 
@@ -80,7 +82,7 @@ const authOptions: NextAuthOptions = {
                 };
             }
 
-            if (token.accessToken && isTokenExpired(token.accessToken as string)) {
+            if (token.accessToken && checkTokenExpired(token.accessToken as string)) {
                 const refreshResult = await authService.refreshToken(token.refreshToken as string);
 
                 if (!refreshResult) {

@@ -1,5 +1,6 @@
 'use client';
 
+import { checkTokenExpired } from '@/app/api/auth/[...nextauth]/auth-options';
 import { Loading, UnsavedChangesNotifierAppRouter } from '@/components/common';
 import { AUTH_PUBLIC_PAGES } from '@/constants';
 import { ColorModeContextProvider } from '@/contexts/ColorModeContext';
@@ -44,6 +45,14 @@ const App = ({ children, defaultMode }: PropsWithChildren<AppProps>) => {
         if (status === 'unauthenticated' && !isAuthPublicPage) {
             router.replace('/login');
             return;
+        }
+
+        const isTokenExpired = checkTokenExpired(session?.user?.accessToken as string);
+        if (isTokenExpired && !isAuthPublicPage) {
+            signOut({
+                redirect: true,
+                callbackUrl: '/login',
+            });
         }
 
         setIsDomLoaded(true);

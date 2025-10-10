@@ -2,12 +2,12 @@
 
 import { ElementType, SortOrder, ViewMode } from '@/enums';
 import type { NGoogle } from '@/interfaces';
+import { Icon } from '@iconify/react';
 import { useTable } from '@refinedev/antd';
 import { HttpError, useList } from '@refinedev/core';
+import { Button, Input, Space } from 'antd';
 import { isNumber } from 'lodash';
 import { FC, useEffect, useMemo, useState } from 'react';
-import { Button, Space } from 'antd';
-import { Icon } from '@iconify/react';
 
 import Lightbox from 'yet-another-react-lightbox';
 import Fullscreen from 'yet-another-react-lightbox/plugins/fullscreen';
@@ -18,17 +18,13 @@ import Zoom from 'yet-another-react-lightbox/plugins/zoom';
 import 'yet-another-react-lightbox/styles.css';
 
 import { CustomElement } from '@/components/common';
-import { useMainContext } from '@/contexts/MainContext';
 
 import PaginationControls from '@/components/module/photos/PaginationControls';
-import PhotoButton from '@/components/module/photos/PhotoButton';
 import PhotoFilter from '@/components/module/photos/PhotoFilter';
 import PhotoGroups from '@/components/module/photos/PhotoGroups';
 
 const PhotosPage: FC = () => {
     const [columns, setColumns] = useState(4);
-
-    const { handleLoading } = useMainContext();
 
     const [isOpenFilter, setIsOpenFilter] = useState(false);
     const [searchQuery, setSearchQuery] = useState<string>();
@@ -83,6 +79,7 @@ const PhotosPage: FC = () => {
         };
 
         window.addEventListener('resize', updateColumns);
+
         updateColumns();
     }, []);
 
@@ -116,6 +113,22 @@ const PhotosPage: FC = () => {
                 title="Photos"
                 elementType={ElementType.TITLE}
                 actions={[
+                    <Button
+                        key="filter"
+                        type="primary"
+                        onClick={() => setIsOpenFilter(true)}
+                        icon={<Icon icon="lucide:settings-2" />}
+                    >
+                        Bộ lọc
+                    </Button>,
+                    <Button
+                        key="slideshow"
+                        type="primary"
+                        onClick={startSlideshow}
+                        icon={<Icon icon="lucide:play" />}
+                    >
+                        Trình chiếu
+                    </Button>,
                     <Button key="sync" type="primary" icon={<Icon icon="mdi:sync" />}>
                         Đồng bộ hoá
                     </Button>,
@@ -127,35 +140,18 @@ const PhotosPage: FC = () => {
                     loading={false}
                     elementType={ElementType.CARD}
                     header={
-                        <>
-                            <PhotoButton
-                                searchQuery={searchQuery}
-                                startSlideshow={startSlideshow}
-                                setSearchQuery={setSearchQuery}
-                                setIsOpenFilter={setIsOpenFilter}
-                            />
-
-                            <PhotoFilter
-                                viewMode={viewMode}
-                                isOpen={isOpenFilter}
-                                sortOrder={sortOrder}
-                                onClose={setIsOpenFilter}
-                                filterFolder={filterFolder}
-                                folders={tableQuery?.data?.data ?? []}
-                                onApplyFilters={(filter: NGoogle.IGoogleDriveFolder) => {
-                                    setCurrentPage(1);
-                                    // setViewMode(filter.viewMode);
-                                    // setSortOrder(filter.sortOrder);
-                                    // setFilterFolder(filter.folderId);
-                                }}
-                            />
-                        </>
+                        <Input
+                            value={searchQuery}
+                            placeholder="Tìm kiếm ảnh của bạn..."
+                            onChange={(e) => setSearchQuery(e.target.value.trim())}
+                            prefix={<Icon icon="lucide:search" className="text-foreground-500" />}
+                        />
                     }
                     actions={[
                         <PaginationControls
                             itemsPerPage={pageSize}
                             currentPage={currentPage}
-                            totalItems={allPhotos.length}
+                            totalItems={allPhotos?.length}
                             onPageChange={(page) => setCurrentPage(page)}
                             onItemsPerPageChange={(pageSize) => {
                                 setCurrentPage(1);
@@ -172,11 +168,26 @@ const PhotosPage: FC = () => {
                 </CustomElement>
             </CustomElement>
 
+            <PhotoFilter
+                viewMode={viewMode}
+                isOpen={isOpenFilter}
+                sortOrder={sortOrder}
+                onClose={setIsOpenFilter}
+                filterFolder={filterFolder}
+                folders={tableQuery?.data?.data ?? []}
+                onApplyFilters={(filter: NGoogle.IGoogleDriveFolder) => {
+                    setCurrentPage(1);
+                    // setViewMode(filter.viewMode);
+                    // setSortOrder(filter.sortOrder);
+                    // setFilterFolder(filter.folderId);
+                }}
+            />
+
             <Lightbox
                 index={currentPage}
                 open={isLightboxOpen}
                 plugins={[Fullscreen, Slideshow, Thumbnails, Zoom]}
-                slides={allPhotos.map((p) => ({ src: p.webContentLink ?? '' }))}
+                // slides={allPhotos?.map((p) => ({ src: p.webContentLink ?? '' }))}
                 close={() => {
                     closeLightbox();
                     stopSlideshow();

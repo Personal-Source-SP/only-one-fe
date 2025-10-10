@@ -2,7 +2,7 @@
 
 import { CustomModal } from '@/components/common';
 import { SortOrder, ViewMode } from '@/enums';
-import { NGoogle } from '@/interfaces';
+import { NGoogle, Option } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { Button, Select } from 'antd';
 import { FC, memo, useEffect, useMemo, useState } from 'react';
@@ -38,13 +38,13 @@ const PhotoFilter: FC<PhotoFilterProps> = ({
         }
     }, [isOpen, filterFolder, sortOrder, viewMode]);
 
-    const folderOptions: NGoogle.IGoogleDriveFolder[] = useMemo(() => {
+    const folderOptions: Option[] = useMemo(() => {
         if (!folders.length) return [];
 
-        const options: NGoogle.IGoogleDriveFolder[] = folders.map((f) => ({
+        const options: Option[] = folders.map((f) => ({
+            label: f.name,
             key: f.googleDriveId,
             value: f.googleDriveId,
-            label: f.name,
         }));
 
         return [{ key: ViewMode.ALL, label: 'Tất cả thư mục', value: undefined }, ...options];
@@ -59,8 +59,8 @@ const PhotoFilter: FC<PhotoFilterProps> = ({
                         className="w-full"
                         placeholder="Thư mục"
                         value={pendingFolder}
+                        options={folderOptions}
                         onChange={(val) => setPendingFolder(val as string | undefined)}
-                        options={folderOptions.map((i) => ({ value: i.googleDriveId, label: i.name }))}
                     />
 
                     <Select
@@ -92,11 +92,11 @@ const PhotoFilter: FC<PhotoFilterProps> = ({
                             type="primary"
                             className="w-full"
                             onClick={() => {
-                                onApplyFilters({
-                                    viewMode: pendingView,
-                                    sortOrder: pendingSort,
-                                    folderId: pendingFolder,
-                                });
+                                // onApplyFilters({
+                                //     viewMode: pendingView,
+                                //     sortOrder: pendingSort,
+                                //     folderId: pendingFolder,
+                                // });
                                 onClose(false);
                             }}
                         >

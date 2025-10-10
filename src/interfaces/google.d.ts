@@ -52,10 +52,7 @@ export declare namespace NGoogle {
     }
 
     interface IGoogleDriveFileTag {
-        googleDriveFileId: string;
         fileTagId: string;
-
-        googleDriveFile: IGoogleDriveFile;
-        fileTag: IFileTag;
+        googleDriveFileId: string;
     }
 }
