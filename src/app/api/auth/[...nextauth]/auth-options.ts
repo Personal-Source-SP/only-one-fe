@@ -2,7 +2,7 @@ import { IAuth } from '@/interfaces/auth';
 import { authService } from '@/services/auth.service';
 import { AxiosError } from 'axios';
 import { jwtDecode } from 'jwt-decode';
-import type { Awaitable, User } from 'next-auth';
+import type { Awaitable, Session, User } from 'next-auth';
 import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
@@ -102,18 +102,24 @@ const authOptions: NextAuthOptions = {
             return token;
         },
 
-        async session({ session, token }) {
+        async session({ session, token }): Promise<Session> {
             if (token.error === 'RefreshAccessTokenError') {
                 return {
                     ...session,
-                    error: 'RefreshAccessTokenError',
+                    user: {
+                        ...session.user,
+                        error: 'RefreshAccessTokenError',
+                    },
                 };
             }
 
             return {
                 ...session,
-                accessToken: token.accessToken,
-                refreshToken: token.refreshToken,
+                user: {
+                    ...session.user,
+                    accessToken: token.accessToken,
+                    refreshToken: token.refreshToken,
+                },
             };
         },
     },

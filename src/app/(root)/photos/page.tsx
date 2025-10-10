@@ -53,7 +53,7 @@ const PhotosPage: FC = () => {
     });
 
     const { result: googleDriveFolders } = useList<NGoogle.IGoogleDriveFolder>({
-        resource: 'googleDriveFolders',
+        resource: 'google-drive/folders',
         queryOptions: {
             enabled: true,
         },

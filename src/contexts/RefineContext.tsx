@@ -10,6 +10,7 @@ import { DashboardOutlined, PictureOutlined } from '@ant-design/icons';
 import { useNotificationProvider } from '@refinedev/antd';
 import { AuthProvider, Refine } from '@refinedev/core';
 import routerProvider from '@refinedev/nextjs-router';
+import dayjs from 'dayjs';
 import { Session } from 'next-auth';
 import { SessionProvider, signIn, signOut, useSession } from 'next-auth/react';
 import { env } from 'next-runtime-env';
@@ -47,7 +48,7 @@ const App = ({ children, defaultMode }: PropsWithChildren<AppProps>) => {
             return;
         }
 
-        const isTokenExpired = checkTokenExpired(session?.user?.accessToken as string);
+        const isTokenExpired = session?.expires ? dayjs(session?.expires).isBefore(dayjs()) : false;
         if (isTokenExpired && !isAuthPublicPage) {
             signOut({
                 redirect: true,
@@ -56,7 +57,7 @@ const App = ({ children, defaultMode }: PropsWithChildren<AppProps>) => {
         }
 
         setIsDomLoaded(true);
-    }, [status, isAuthPublicPage, router]);
+    }, [status, isAuthPublicPage, router, session]);
 
     if (status === 'loading' || !isDomLoaded) {
         return <Loading />;
