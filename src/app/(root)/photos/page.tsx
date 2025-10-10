@@ -1,16 +1,13 @@
 'use client';
 
-import PaginationControls from '@/components/module/photos/PaginationControls';
-import PhotoButton from '@/components/module/photos/PhotoButton';
-import PhotoFilter from '@/components/module/photos/PhotoFilter';
-import PhotoGroups from '@/components/module/photos/PhotoGroups';
-import { useMainContext } from '@/contexts/MainContext';
-import { SortOrder, ViewMode } from '@/enums';
+import { ElementType, SortOrder, ViewMode } from '@/enums';
 import type { NGoogle } from '@/interfaces';
 import { useTable } from '@refinedev/antd';
 import { HttpError, useList } from '@refinedev/core';
 import { isNumber } from 'lodash';
 import { FC, useEffect, useMemo, useState } from 'react';
+import { Button, Space } from 'antd';
+import { Icon } from '@iconify/react';
 
 import Lightbox from 'yet-another-react-lightbox';
 import Fullscreen from 'yet-another-react-lightbox/plugins/fullscreen';
@@ -19,6 +16,14 @@ import Thumbnails from 'yet-another-react-lightbox/plugins/thumbnails';
 import 'yet-another-react-lightbox/plugins/thumbnails.css';
 import Zoom from 'yet-another-react-lightbox/plugins/zoom';
 import 'yet-another-react-lightbox/styles.css';
+
+import { CustomElement } from '@/components/common';
+import { useMainContext } from '@/contexts/MainContext';
+
+import PaginationControls from '@/components/module/photos/PaginationControls';
+import PhotoButton from '@/components/module/photos/PhotoButton';
+import PhotoFilter from '@/components/module/photos/PhotoFilter';
+import PhotoGroups from '@/components/module/photos/PhotoGroups';
 
 const PhotosPage: FC = () => {
     const [columns, setColumns] = useState(4);
@@ -106,56 +111,66 @@ const PhotosPage: FC = () => {
     };
 
     return (
-        <section className="w-full h-full">
-            <section className="flex-1 flex flex-col h-[calc(100vh-100px)] w-full overflow-hidden">
-                {/* Header fixed at the top */}
-                <div className="sticky top-0 left-0 right-0 z-20 bg-white">
-                    <PhotoButton
-                        searchQuery={searchQuery}
-                        startSlideshow={startSlideshow}
-                        setSearchQuery={setSearchQuery}
-                        setIsOpenFilter={setIsOpenFilter}
-                    />
+        <Space size="middle" direction="vertical" className="w-full h-full">
+            <CustomElement
+                title="Photos"
+                elementType={ElementType.TITLE}
+                actions={[
+                    <Button key="sync" type="primary" icon={<Icon icon="mdi:sync" />}>
+                        Đồng bộ hoá
+                    </Button>,
+                ]}
+            />
 
-                    <PhotoFilter
-                        viewMode={viewMode}
-                        isOpen={isOpenFilter}
-                        sortOrder={sortOrder}
-                        onClose={setIsOpenFilter}
-                        filterFolder={filterFolder}
-                        folders={tableQuery?.data?.data ?? []}
-                        onApplyFilters={(filter: NGoogle.IGoogleDriveFile) => {
-                            setCurrentPage(1);
-                            // setViewMode(filter.viewMode);
-                            // setSortOrder(filter.sortOrder);
-                            // setFilterFolder(filter.folderId);
-                        }}
-                    />
-                </div>
+            <CustomElement elementType={ElementType.CONTAINER}>
+                <CustomElement
+                    loading={false}
+                    elementType={ElementType.CARD}
+                    header={
+                        <>
+                            <PhotoButton
+                                searchQuery={searchQuery}
+                                startSlideshow={startSlideshow}
+                                setSearchQuery={setSearchQuery}
+                                setIsOpenFilter={setIsOpenFilter}
+                            />
 
-                {/* Scrollable content */}
-                <div className="flex-1 overflow-y-auto">
+                            <PhotoFilter
+                                viewMode={viewMode}
+                                isOpen={isOpenFilter}
+                                sortOrder={sortOrder}
+                                onClose={setIsOpenFilter}
+                                filterFolder={filterFolder}
+                                folders={tableQuery?.data?.data ?? []}
+                                onApplyFilters={(filter: NGoogle.IGoogleDriveFolder) => {
+                                    setCurrentPage(1);
+                                    // setViewMode(filter.viewMode);
+                                    // setSortOrder(filter.sortOrder);
+                                    // setFilterFolder(filter.folderId);
+                                }}
+                            />
+                        </>
+                    }
+                    actions={[
+                        <PaginationControls
+                            itemsPerPage={pageSize}
+                            currentPage={currentPage}
+                            totalItems={allPhotos.length}
+                            onPageChange={(page) => setCurrentPage(page)}
+                            onItemsPerPageChange={(pageSize) => {
+                                setCurrentPage(1);
+                                setPageSize(pageSize);
+                            }}
+                        />,
+                    ]}
+                >
                     <PhotoGroups
                         columns={columns}
+                        groupedPhotos={[]}
                         onPhotoClick={handlePhotoClick}
-                        groupedPhotos={googleDriveFolders?.data ?? []}
                     />
-                </div>
-
-                {/* Footer fixed at the bottom */}
-                <div className="sticky bottom-0 left-0 right-0 z-20 bg-white mb-3">
-                    <PaginationControls
-                        itemsPerPage={pageSize}
-                        currentPage={currentPage}
-                        totalItems={allPhotos.length}
-                        onPageChange={(page) => setCurrentPage(page)}
-                        onItemsPerPageChange={(pageSize) => {
-                            setCurrentPage(1);
-                            setPageSize(pageSize);
-                        }}
-                    />
-                </div>
-            </section>
+                </CustomElement>
+            </CustomElement>
 
             <Lightbox
                 index={currentPage}
@@ -170,7 +185,7 @@ const PhotosPage: FC = () => {
                     delay: slideshowInterval * 1000,
                 }}
             />
-        </section>
+        </Space>
     );
 };
 

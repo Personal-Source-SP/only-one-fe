@@ -1,46 +1,85 @@
 'use client';
 
-import { NPhoto } from '@/interfaces';
-import { Space } from 'antd';
+import { List, Space } from 'antd';
 import { FC, memo } from 'react';
+import InfiniteScroll from 'react-infinite-scroll-component';
+
+type Photo = {
+    id: string;
+    url: string;
+};
+
+type PhotoGroup = {
+    date?: string;
+    photos: Photo[];
+};
 
 export type PhotoGroupsProps = {
     columns: number;
-    groupedPhotos: NPhoto.PhotoGroup[];
+    groupedPhotos: PhotoGroup[];
     onPhotoClick: (url: string) => void;
 };
 
 const PhotoGroups: FC<PhotoGroupsProps> = ({ columns, groupedPhotos, onPhotoClick }) => {
+    // Flatten all groups for InfiniteScroll usage for demo.
+    const allPhotos = groupedPhotos.flatMap((group, groupIndex) =>
+        group.photos.map((photo) => ({
+            ...photo,
+            date: group.date,
+            groupIndex,
+        })),
+    );
+
     return (
-        <Space direction="vertical" size="large" className="w-full">
-            {groupedPhotos.map((group, groupIndex) => (
-                <div key={groupIndex} className="space-y-2">
-                    {group.date && <h2 className="text-lg font-medium">{group.date}</h2>}
-                    <div
-                        className={`grid grid-cols-${columns} gap-2`}
-                        style={{
-                            display: 'grid',
-                            gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
-                        }}
-                    >
-                        {group.photos.map((photo) => (
+        <section
+            id="scrollablePhotoGroups"
+            style={{
+                width: '100%',
+                height: 600,
+                overflow: 'auto',
+                padding: '0 16px',
+                border: '1px solid #e0e0e0',
+            }}
+        >
+            <InfiniteScroll
+                dataLength={allPhotos.length}
+                next={() => {}}
+                hasMore={false} // Replace with your logic for more data
+                loader={null}
+                scrollableTarget="scrollablePhotoGroups"
+            >
+                <List
+                    dataSource={groupedPhotos}
+                    renderItem={(group, groupIdx) => (
+                        <div key={groupIdx} style={{ marginBottom: 24 }}>
+                            {group.date && <h2 className="text-lg font-medium">{group.date}</h2>}
                             <div
-                                key={photo.id}
-                                onClick={() => onPhotoClick(photo.url)}
-                                className="aspect-[4/3] rounded-md overflow-hidden cursor-pointer hover:opacity-90 transition-all hover:shadow-md"
+                                className={`grid grid-cols-${columns} gap-2`}
+                                style={{
+                                    display: 'grid',
+                                    gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
+                                }}
                             >
-                                <img
-                                    loading="lazy"
-                                    src={photo.url}
-                                    alt={`Photo ${photo.id}`}
-                                    className="w-full h-full object-cover"
-                                />
+                                {group.photos.map((photo) => (
+                                    <div
+                                        key={photo.id}
+                                        onClick={() => onPhotoClick(photo.url)}
+                                        className="aspect-[4/3] rounded-md overflow-hidden cursor-pointer hover:opacity-90 transition-all hover:shadow-md"
+                                    >
+                                        <img
+                                            loading="lazy"
+                                            src={photo.url}
+                                            alt={`Photo ${photo.id}`}
+                                            className="w-full h-full object-cover"
+                                        />
+                                    </div>
+                                ))}
                             </div>
-                        ))}
-                    </div>
-                </div>
-            ))}
-        </Space>
+                        </div>
+                    )}
+                />
+            </InfiniteScroll>
+        </section>
     );
 };
 

@@ -1,19 +1,20 @@
 'use client';
 
+import { CustomModal } from '@/components/common';
 import { SortOrder, ViewMode } from '@/enums';
-import { NGoogleDrive, NPhoto } from '@/interfaces';
-import { Button, Modal, Select } from 'antd';
+import { NGoogle } from '@/interfaces';
 import { Icon } from '@iconify/react';
+import { Button, Select } from 'antd';
 import { FC, memo, useEffect, useMemo, useState } from 'react';
 
 export type PhotoFilterProps = {
     isOpen: boolean;
     viewMode: ViewMode;
     sortOrder: SortOrder;
-    folders: NGoogleDrive.DriveFolderResponse[];
+    folders: NGoogle.IGoogleDriveFolder[];
     filterFolder?: string;
     onClose: (isOpen: boolean) => void;
-    onApplyFilters: (filter: NPhoto.Filter) => void;
+    onApplyFilters: (filter: NGoogle.IGoogleDriveFolder) => void;
 };
 
 const PhotoFilter: FC<PhotoFilterProps> = ({
@@ -37,12 +38,12 @@ const PhotoFilter: FC<PhotoFilterProps> = ({
         }
     }, [isOpen, filterFolder, sortOrder, viewMode]);
 
-    const folderOptions: NPhoto.Folder[] = useMemo(() => {
+    const folderOptions: NGoogle.IGoogleDriveFolder[] = useMemo(() => {
         if (!folders.length) return [];
 
-        const options: NPhoto.Folder[] = folders.map((f) => ({
-            key: f.id,
-            value: f.id,
+        const options: NGoogle.IGoogleDriveFolder[] = folders.map((f) => ({
+            key: f.googleDriveId,
+            value: f.googleDriveId,
             label: f.name,
         }));
 
@@ -59,7 +60,7 @@ const PhotoFilter: FC<PhotoFilterProps> = ({
                         placeholder="Thư mục"
                         value={pendingFolder}
                         onChange={(val) => setPendingFolder(val as string | undefined)}
-                        options={folderOptions.map((i) => ({ value: i.value, label: i.label }))}
+                        options={folderOptions.map((i) => ({ value: i.googleDriveId, label: i.name }))}
                     />
 
                     <Select
@@ -110,16 +111,17 @@ const PhotoFilter: FC<PhotoFilterProps> = ({
     };
 
     return (
-        <Modal
-            width={720}
-            open={isOpen}
-            centered
-            onCancel={() => onClose(false)}
-            footer={null}
-            title={<div className="pb-0">Công cụ</div>}
+        <CustomModal
+            modalProps={{
+                width: 720,
+                open: isOpen,
+                centered: true,
+                onCancel: () => onClose(false),
+                title: <div className="pb-0">Công cụ</div>,
+            }}
         >
             {renderFilter()}
-        </Modal>
+        </CustomModal>
     );
 };
 

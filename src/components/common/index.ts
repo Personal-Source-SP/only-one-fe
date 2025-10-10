@@ -1,3 +1,4 @@
+export { default as CustomElement } from './custom-element';
 export { default as CustomModal } from './custom-modal';
 export { default as DataNotFound } from './data-not-found';
 export { default as Forbidden } from './forbidden';

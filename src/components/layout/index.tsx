@@ -4,6 +4,8 @@ import Header from '@/components/layout/header';
 import NotificationsPanel from '@/components/layout/notifications-panel';
 import Search from '@/components/layout/search';
 import Sidebar from '@/components/layout/sidebar';
+
+import { Space } from 'antd';
 import { usePathname } from 'next/navigation';
 import { FC, memo, ReactNode, useState } from 'react';
 
@@ -16,7 +18,7 @@ const MainLayout: FC<MainLayoutProps> = ({ children }) => {
 
     const [showSearch, setShowSearch] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+    const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
     const [showNotifications, setShowNotifications] = useState(false);
 
     const notifications = [
@@ -88,7 +90,7 @@ const MainLayout: FC<MainLayoutProps> = ({ children }) => {
     };
 
     return (
-        <div className="flex h-screen bg-background overflow-hidden">
+        <main className="flex h-screen bg-background overflow-hidden">
             {/* Sidebar */}
             <Sidebar
                 mobileOpen={mobileMenuOpen}
@@ -126,14 +128,16 @@ const MainLayout: FC<MainLayoutProps> = ({ children }) => {
                 <Search showSearch={showSearch} setShowSearch={setShowSearch} />
 
                 {/* Page Content */}
-                <main className="flex-1 bg-gray-200 p-0 md:p-4 !pt-20 max-h-screen overflow-y-auto">
-                    <section className="bg-white md:rounded-xl p-4">{children}</section>
+                <main className="flex-1 p-0 md:p-4 !pt-20 min-h-screen max-w-[100vw] w-full overflow-y-auto">
+                    <Space size="middle" direction="vertical" className="p-4 mb-4 w-full h-full">
+                        {children}
+                    </Space>
                 </main>
 
                 {/* Quick Actions FAB */}
                 {/* {!mobileMenuOpen && <QuickActions />} */}
             </div>
-        </div>
+        </main>
     );
 };
 
