@@ -6,22 +6,28 @@ import { NBaseApi, NGoogle } from '@/interfaces';
 import { exchangeCodeForTokens, getGoogleAuthUrl, isExpiredToken } from '@/libs';
 import { Icon } from '@iconify/react';
 import { useApiUrl, useCustomMutation } from '@refinedev/core';
-import { Button, Flex, message, Select, Space } from 'antd';
+import { Button, Flex, message, Select, Space, Tabs } from 'antd';
 import { useSearchParams } from 'next/navigation';
 import { FC, memo, useEffect, useState } from 'react';
 
-export type SyncFileProps = {
+export type SyncFileGoogleDriveProps = {
     isOpen: boolean;
     onClose: (isOpen: boolean) => void;
     isLoadingGoogleAuth?: boolean;
     googleAuth?: NGoogle.IGoogleAuth;
 };
 
-const SyncFile: FC<SyncFileProps> = ({ isOpen, onClose, googleAuth, isLoadingGoogleAuth }) => {
+const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
+    isOpen,
+    onClose,
+    googleAuth,
+    isLoadingGoogleAuth,
+}) => {
     const apiUrl = useApiUrl();
     const searchParams = useSearchParams();
 
     const { mutate: syncGoogleAuth } = useCustomMutation<NBaseApi.IResponse<boolean>>();
+    const { mutate: syncGoogleDrive } = useCustomMutation<NBaseApi.IResponse<boolean>>();
 
     const [loading, setLoading] = useState(false);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -126,6 +132,41 @@ const SyncFile: FC<SyncFileProps> = ({ isOpen, onClose, googleAuth, isLoadingGoo
         }
     };
 
+    const handleSyncGoogleDriveFolders = async () => {
+        setLoading(true);
+
+        try {
+            syncGoogleDrive({
+                method: 'post',
+                url: `${apiUrl}/google-drive/sync/folders`,
+                values: {},
+                successNotification: (data) => {
+                    if (!data?.data?.data) {
+                        return {
+                            type: 'error',
+                            message: 'Đồng bộ Google Drive thất bại',
+                        };
+                    }
+
+                    return {
+                        type: 'success',
+                        message: 'Đồng bộ Google Drive thành công',
+                    };
+                },
+                errorNotification: () => {
+                    return {
+                        type: 'error',
+                        message: 'Đồng bộ Google Drive thất bại',
+                    };
+                },
+            });
+        } catch (e) {
+            message.error('Lỗi khi đồng bộ Google Drive');
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const renderFooter = () => {
         if (!isAuthenticated) {
             return (
@@ -166,18 +207,45 @@ const SyncFile: FC<SyncFileProps> = ({ isOpen, onClose, googleAuth, isLoadingGoo
                     className="w-full"
                     loading={loading}
                     icon={<Icon icon="lucide:sync" />}
-                    onClick={() => {
-                        // onApplyFilters({
-                        //     viewMode: pendingView,
-                        //     sortOrder: pendingSort,
-                        //     folderId: pendingFolder,
-                        // });
-                        onClose(false);
-                    }}
+                    onClick={handleSyncGoogleDriveFolders}
                 >
                     <span>Đồng bộ</span>
                 </Button>
             </Flex>
+        );
+    };
+
+    const renderSyncFile = () => {
+        return (
+            <Space direction="vertical" size="middle" className="!w-full h-full">
+                {/* <Select
+                                        placeholder="Thư mục"
+                                        value={pendingFolder}
+                                        options={folderOptions}
+                                        onChange={(val) => setPendingFolder(val as string | undefined)}
+                                    /> */}
+                {isAuthenticated ? (
+                    <Select
+                        placeholder="Sắp xếp"
+                        // onChange={(val) => setPendingSort(val as SortOrder)}
+                        options={[
+                            {
+                                value: SortOrder.NEWEST,
+                                label: 'Mới nhất trước',
+                            },
+                            { value: SortOrder.OLDEST, label: 'Cũ nhất trước' },
+                        ]}
+                    />
+                ) : null}
+            </Space>
+        );
+    };
+
+    const renderSyncFolder = () => {
+        return (
+            <Space direction="vertical" size="middle" className="!w-full h-full">
+                <p>Chức năng đồng bộ thư mục sẽ sớm được hỗ trợ.</p>
+            </Space>
         );
     };
 
@@ -193,26 +261,27 @@ const SyncFile: FC<SyncFileProps> = ({ isOpen, onClose, googleAuth, isLoadingGoo
             }}
         >
             <Space direction="vertical" size="middle" className="!w-full h-full">
-                {/* <Select
-                    placeholder="Thư mục"
-                    value={pendingFolder}
-                    options={folderOptions}
-                    onChange={(val) => setPendingFolder(val as string | undefined)}
-                /> */}
-
-                {isAuthenticated ? (
-                    <Select
-                        placeholder="Sắp xếp"
-                        // onChange={(val) => setPendingSort(val as SortOrder)}
-                        options={[
-                            { value: SortOrder.NEWEST, label: 'Mới nhất trước' },
-                            { value: SortOrder.OLDEST, label: 'Cũ nhất trước' },
+                {isAuthenticated && (
+                    <Tabs
+                        type="card"
+                        defaultActiveKey="file"
+                        items={[
+                            {
+                                key: 'file',
+                                label: 'Đồng bộ file',
+                                children: renderSyncFile(),
+                            },
+                            {
+                                key: 'folder',
+                                label: 'Đồng bộ thư mục',
+                                children: renderSyncFolder(),
+                            },
                         ]}
                     />
-                ) : null}
+                )}
             </Space>
         </CustomModal>
     );
 };
 
-export default memo(SyncFile);
+export default memo(SyncFileGoogleDrive);

@@ -21,7 +21,7 @@ import { CustomElement, PaginationControls } from '@/components/common';
 
 import PhotoFilter from '@/components/module/photos/PhotoFilter';
 import PhotoGroups from '@/components/module/photos/PhotoGroups';
-import SyncFile from '@/components/module/photos/SyncFile';
+import SyncFileGoogleDrive from '@/components/module/photos/SyncGoogleDrive';
 
 const PhotosPage: FC = () => {
     const apiUrl = useApiUrl();
@@ -213,7 +213,7 @@ const PhotosPage: FC = () => {
                 }}
             />
 
-            <SyncFile
+            <SyncFileGoogleDrive
                 isOpen={isOpenSyncFile}
                 isLoadingGoogleAuth={query?.isLoading}
                 onClose={() => setIsOpenSyncFile(false)}
