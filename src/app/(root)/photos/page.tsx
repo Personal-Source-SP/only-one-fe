@@ -1,10 +1,10 @@
 'use client';
 
 import { ElementType, SortOrder, ViewMode } from '@/enums';
-import type { NGoogle } from '@/interfaces';
+import type { NBaseApi, NGoogle } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { useTable } from '@refinedev/antd';
-import { HttpError, useList } from '@refinedev/core';
+import { HttpError, useApiUrl, useCustom, useList } from '@refinedev/core';
 import { Button, Input, Space } from 'antd';
 import { isNumber } from 'lodash';
 import { FC, useEffect, useMemo, useState } from 'react';
@@ -24,6 +24,8 @@ import PhotoGroups from '@/components/module/photos/PhotoGroups';
 import SyncFile from '@/components/module/photos/SyncFile';
 
 const PhotosPage: FC = () => {
+    const apiUrl = useApiUrl();
+
     const [columns, setColumns] = useState(4);
 
     const [isOpenFilter, setIsOpenFilter] = useState(false);
@@ -61,6 +63,14 @@ const PhotosPage: FC = () => {
         },
         pagination: {
             mode: 'off' as const,
+        },
+    });
+
+    const { result: googleAuth, query } = useCustom<NBaseApi.IResponse<NGoogle.IGoogleAuth>>({
+        url: `${apiUrl}/google-auth`,
+        method: 'get',
+        queryOptions: {
+            enabled: isOpenSyncFile,
         },
     });
 
@@ -203,7 +213,12 @@ const PhotosPage: FC = () => {
                 }}
             />
 
-            <SyncFile isOpen={isOpenSyncFile} onClose={() => setIsOpenSyncFile(false)} />
+            <SyncFile
+                isOpen={isOpenSyncFile}
+                isLoadingGoogleAuth={query?.isLoading}
+                onClose={() => setIsOpenSyncFile(false)}
+                googleAuth={googleAuth?.data?.data ?? undefined}
+            />
         </Space>
     );
 };

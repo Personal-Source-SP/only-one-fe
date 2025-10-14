@@ -5,7 +5,7 @@ import { SortOrder } from '@/enums';
 import { NBaseApi, NGoogle } from '@/interfaces';
 import { exchangeCodeForTokens, getGoogleAuthUrl, isExpiredToken } from '@/libs';
 import { Icon } from '@iconify/react';
-import { useApiUrl, useCustom, useCustomMutation } from '@refinedev/core';
+import { useApiUrl, useCustomMutation } from '@refinedev/core';
 import { Button, Flex, message, Select, Space } from 'antd';
 import { useSearchParams } from 'next/navigation';
 import { FC, memo, useEffect, useState } from 'react';
@@ -13,16 +13,13 @@ import { FC, memo, useEffect, useState } from 'react';
 export type SyncFileProps = {
     isOpen: boolean;
     onClose: (isOpen: boolean) => void;
+    isLoadingGoogleAuth?: boolean;
+    googleAuth?: NGoogle.IGoogleAuth;
 };
 
-const SyncFile: FC<SyncFileProps> = ({ isOpen, onClose }) => {
+const SyncFile: FC<SyncFileProps> = ({ isOpen, onClose, googleAuth, isLoadingGoogleAuth }) => {
     const apiUrl = useApiUrl();
     const searchParams = useSearchParams();
-
-    const { result: googleAuth, query } = useCustom<NBaseApi.IResponse<NGoogle.IGoogleAuth>>({
-        url: `${apiUrl}/google-auth`,
-        method: 'get',
-    });
 
     const { mutate: syncGoogleAuth } = useCustomMutation<NBaseApi.IResponse<boolean>>();
 
@@ -30,8 +27,8 @@ const SyncFile: FC<SyncFileProps> = ({ isOpen, onClose }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     useEffect(() => {
-        const googleToken = googleAuth?.data?.data?.googleAccessToken;
-        const googleExpiresAt = googleAuth?.data?.data?.googleExpiresAt;
+        const googleToken = googleAuth?.googleAccessToken;
+        const googleExpiresAt = googleAuth?.googleExpiresAt;
 
         if (googleToken && googleExpiresAt) {
             const expiryDate = new Date(googleExpiresAt as unknown as string);
@@ -40,7 +37,7 @@ const SyncFile: FC<SyncFileProps> = ({ isOpen, onClose }) => {
         } else {
             setIsAuthenticated(false);
         }
-    }, [googleAuth?.data]);
+    }, [googleAuth]);
 
     useEffect(() => {
         if (!searchParams) return;
@@ -48,12 +45,14 @@ const SyncFile: FC<SyncFileProps> = ({ isOpen, onClose }) => {
         const code = searchParams.get('code');
         const error = searchParams.get('error');
 
-        if (error || !code) {
+        if (error) {
             message.error('Kết nối Google thất bại');
             return;
         }
 
-        getGoogleAuthTokens(code as string);
+        if (code) {
+            getGoogleAuthTokens(code as string);
+        }
     }, [searchParams]);
 
     const handleGoogleAuth = async () => {
@@ -190,7 +189,7 @@ const SyncFile: FC<SyncFileProps> = ({ isOpen, onClose }) => {
                 centered: true,
                 title: 'Đồng bộ file',
                 footer: renderFooter(),
-                loading: query?.isLoading,
+                loading: isLoadingGoogleAuth,
             }}
         >
             <Space direction="vertical" size="middle" className="!w-full h-full">
