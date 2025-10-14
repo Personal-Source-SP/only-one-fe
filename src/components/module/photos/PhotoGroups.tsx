@@ -1,6 +1,6 @@
 'use client';
 
-import { List, Space } from 'antd';
+import { List } from 'antd';
 import { FC, memo } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
@@ -33,22 +33,23 @@ const PhotoGroups: FC<PhotoGroupsProps> = ({ columns, groupedPhotos, onPhotoClic
     return (
         <section
             id="scrollablePhotoGroups"
+            className="rounded-md"
             style={{
                 width: '100%',
                 height: 600,
                 overflow: 'auto',
                 padding: '0 16px',
-                border: '1px solid #e0e0e0',
             }}
         >
             <InfiniteScroll
-                dataLength={allPhotos.length}
+                loader={null}
                 next={() => {}}
                 hasMore={false} // Replace with your logic for more data
-                loader={null}
+                dataLength={allPhotos.length}
                 scrollableTarget="scrollablePhotoGroups"
             >
                 <List
+                    loading={false}
                     dataSource={groupedPhotos}
                     renderItem={(group, groupIdx) => (
                         <div key={groupIdx} style={{ marginBottom: 24 }}>

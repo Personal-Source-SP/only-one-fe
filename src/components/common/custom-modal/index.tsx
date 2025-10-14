@@ -20,9 +20,7 @@ const CustomModal: FC<CustomModalProps> = ({ children, modalProps }) => {
             wrapClassName="fixed-modal"
             {...modalProps}
         >
-            <section className="!max-h-[calc(100vh-200px)] !overflow-y-auto !pr-4">
-                {children}
-            </section>
+            <section className="!max-h-[calc(100vh-200px)] !overflow-y-auto">{children}</section>
         </Modal>
     );
 };

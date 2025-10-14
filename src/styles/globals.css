@@ -63,6 +63,15 @@ body {
   @apply text-gray-700 font-medium;
 }
 
+.ant-select {
+  @apply !w-full;
+
+}
+
+.ant-modal-header .ant-modal-title {
+  @apply !font-bold !text-lg;
+}
+
 /* Responsive utilities */
 @media (max-width: 640px) {
   .line-clamp-6 {

@@ -101,7 +101,7 @@ const PhotosPage: FC = () => {
     };
 
     const handlePhotoClick = (url: string) => {
-        const index = tableQuery?.data?.data?.findIndex((photo) => photo.webContentLink === url);
+        const index = allPhotos?.findIndex((photo) => photo.webContentLink === url);
         if (isNumber(index)) {
             openLightbox(index ?? 0);
         }
@@ -137,7 +137,6 @@ const PhotosPage: FC = () => {
 
             <CustomElement elementType={ElementType.CONTAINER}>
                 <CustomElement
-                    loading={false}
                     elementType={ElementType.CARD}
                     header={
                         <Input

@@ -4,7 +4,7 @@ import { CustomModal } from '@/components/common';
 import { SortOrder, ViewMode } from '@/enums';
 import { NGoogle, Option } from '@/interfaces';
 import { Icon } from '@iconify/react';
-import { Button, Select } from 'antd';
+import { Button, Flex, Select, Space } from 'antd';
 import { FC, memo, useEffect, useMemo, useState } from 'react';
 
 export type PhotoFilterProps = {
@@ -50,47 +50,26 @@ const PhotoFilter: FC<PhotoFilterProps> = ({
         return [{ key: ViewMode.ALL, label: 'Tất cả thư mục', value: undefined }, ...options];
     }, [folders]);
 
-    const renderFilter = () => {
-        return (
-            <div className="p-4 space-y-4">
-                <div className="space-y-3">
-                    <Select
-                        size="small"
-                        className="w-full"
-                        placeholder="Thư mục"
-                        value={pendingFolder}
-                        options={folderOptions}
-                        onChange={(val) => setPendingFolder(val as string | undefined)}
-                    />
-
-                    <Select
-                        size="small"
-                        className="w-full"
-                        placeholder="Sắp xếp"
-                        value={pendingSort}
-                        onChange={(val) => setPendingSort(val as SortOrder)}
-                        options={[
-                            { value: SortOrder.NEWEST, label: 'Mới nhất trước' },
-                            { value: SortOrder.OLDEST, label: 'Cũ nhất trước' },
-                        ]}
-                    />
-
-                    <Select
-                        size="small"
-                        className="w-full"
-                        placeholder="Chế độ xem"
-                        value={pendingView}
-                        onChange={(val) => setPendingView(val as ViewMode)}
-                        options={[
-                            { value: ViewMode.ALL, label: 'Xem tất cả' },
-                            { value: ViewMode.TIME, label: 'Xem theo thời gian' },
-                        ]}
-                    />
-
-                    <div className="pt-2">
+    return (
+        <CustomModal
+            modalProps={{
+                width: 560,
+                open: isOpen,
+                centered: true,
+                title: 'Công cụ',
+                footer: (
+                    <Flex justify="space-between" align="center" gap={16}>
+                        <Button
+                            className="w-full"
+                            icon={<Icon icon="lucide:x" />}
+                            onClick={() => onClose(false)}
+                        >
+                            <span>Đóng</span>
+                        </Button>
                         <Button
                             type="primary"
                             className="w-full"
+                            icon={<Icon icon="lucide:filter" />}
                             onClick={() => {
                                 // onApplyFilters({
                                 //     viewMode: pendingView,
@@ -100,27 +79,40 @@ const PhotoFilter: FC<PhotoFilterProps> = ({
                                 onClose(false);
                             }}
                         >
-                            <span className="inline-flex items-center">
-                                <Icon icon="lucide:filter" className="mr-2" /> Lọc
-                            </span>
+                            <span>Lọc</span>
                         </Button>
-                    </div>
-                </div>
-            </div>
-        );
-    };
-
-    return (
-        <CustomModal
-            modalProps={{
-                width: 720,
-                open: isOpen,
-                centered: true,
-                onCancel: () => onClose(false),
-                title: <div className="pb-0">Công cụ</div>,
+                    </Flex>
+                ),
             }}
         >
-            {renderFilter()}
+            <Space direction="vertical" size="middle" className="!w-full h-full">
+                <Select
+                    placeholder="Thư mục"
+                    value={pendingFolder}
+                    options={folderOptions}
+                    onChange={(val) => setPendingFolder(val as string | undefined)}
+                />
+
+                <Select
+                    value={pendingSort}
+                    placeholder="Sắp xếp"
+                    onChange={(val) => setPendingSort(val as SortOrder)}
+                    options={[
+                        { value: SortOrder.NEWEST, label: 'Mới nhất trước' },
+                        { value: SortOrder.OLDEST, label: 'Cũ nhất trước' },
+                    ]}
+                />
+
+                <Select
+                    value={pendingView}
+                    placeholder="Chế độ xem"
+                    onChange={(val) => setPendingView(val as ViewMode)}
+                    options={[
+                        { value: ViewMode.ALL, label: 'Xem tất cả' },
+                        { value: ViewMode.TIME, label: 'Xem theo thời gian' },
+                    ]}
+                />
+            </Space>
         </CustomModal>
     );
 };

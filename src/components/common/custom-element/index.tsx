@@ -14,17 +14,19 @@ type CustomElementProps = {
     header?: React.ReactNode;
     children?: React.ReactNode;
     actions?: React.ReactNode[];
+    variant?: 'borderless' | 'outlined';
 };
 
 const CustomElement: FC<CustomElementProps> = ({
     elementType,
     title,
-    loading,
+    loading = false,
     className,
     description,
     header,
     children,
     actions,
+    variant = 'borderless',
 }) => {
     switch (elementType) {
         case ElementType.TITLE: {
@@ -45,7 +47,7 @@ const CustomElement: FC<CustomElementProps> = ({
                 <Space
                     size="middle"
                     direction="vertical"
-                    className={`${className ? className : 'bg-white'} w-full p-4 md:rounded-xl`}
+                    className={`${className ? className : 'bg-white'} w-full p-3 md:rounded-xl`}
                 >
                     <Spin spinning={loading}>{children}</Spin>
                 </Space>
@@ -58,7 +60,8 @@ const CustomElement: FC<CustomElementProps> = ({
                     title={header}
                     loading={loading}
                     actions={actions}
-                    className={`${className ? className : 'bg-white'} md:rounded-xl`}
+                    variant={variant}
+                    className={`${className ? className : 'bg-white'} p-0 md:rounded-xl`}
                 >
                     {children}
                 </Card>
