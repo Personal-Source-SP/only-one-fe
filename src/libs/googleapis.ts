@@ -54,10 +54,12 @@ export const refreshAccessToken = async (
     refreshToken: string,
 ): Promise<NGoogle.IGoogleExchangeCodeRequest | null> => {
     const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '';
+    const clientSecret = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET || '';
 
     const body = new URLSearchParams({
         refresh_token: refreshToken,
         client_id: clientId,
+        client_secret: clientSecret,
         grant_type: 'refresh_token',
     });
 

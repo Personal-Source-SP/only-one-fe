@@ -5,7 +5,7 @@ import { SortOrder } from '@/enums';
 import { NBaseApi, NGoogle } from '@/interfaces';
 import { exchangeCodeForTokens, getGoogleAuthUrl, isExpiredToken } from '@/libs';
 import { Icon } from '@iconify/react';
-import { useApiUrl, useCustom, useUpdate } from '@refinedev/core';
+import { useApiUrl, useCustom, useCustomMutation } from '@refinedev/core';
 import { Button, Flex, message, Select, Space } from 'antd';
 import { useSearchParams } from 'next/navigation';
 import { FC, memo, useEffect, useState } from 'react';
@@ -24,7 +24,7 @@ const SyncFile: FC<SyncFileProps> = ({ isOpen, onClose }) => {
         method: 'get',
     });
 
-    const { mutate: syncGoogleAuth } = useUpdate<NBaseApi.IResponse<boolean>>();
+    const { mutate: syncGoogleAuth } = useCustomMutation<NBaseApi.IResponse<boolean>>();
 
     const [loading, setLoading] = useState(false);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -90,7 +90,8 @@ const SyncFile: FC<SyncFileProps> = ({ isOpen, onClose }) => {
             }
 
             syncGoogleAuth({
-                resource: 'google-auth',
+                method: 'put',
+                url: `${apiUrl}/google-auth`,
                 values: {
                     accessToken: tokens.access_token,
                     expiresIn: tokens.expires_in,
