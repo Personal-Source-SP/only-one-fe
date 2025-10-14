@@ -1,7 +1,7 @@
 'use client';
 
 import { PhotoItemsPerPage } from '@/enums';
-import { Button, Dropdown, MenuProps, Pagination } from 'antd';
+import { Button, Dropdown, Flex, MenuProps, Pagination } from 'antd';
 import { FC, memo } from 'react';
 
 type PaginationControlsProps = {
@@ -27,7 +27,7 @@ const PaginationControls: FC<PaginationControlsProps> = ({
     ];
 
     return (
-        <div className="flex justify-between items-center mt-8 gap-4 px-2">
+        <Flex justify="space-between" align="center" gap={16}>
             <Dropdown
                 menu={{
                     items,
@@ -46,7 +46,7 @@ const PaginationControls: FC<PaginationControlsProps> = ({
                 pageSize={itemsPerPage}
                 onChange={onPageChange}
             />
-        </div>
+        </Flex>
     );
 };
 

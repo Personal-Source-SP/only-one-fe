@@ -28,7 +28,13 @@ export const KEY_LOCAL_STORAGE = {
     GOOGLE_ACCESS_TOKEN: 'google_access_token',
     GOOGLE_TOKEN_EXPIRY: 'google_token_expiry',
     GOOGLE_REFRESH_TOKEN: 'google_refresh_token',
+    GOOGLE_CODE_VERIFIER: 'google_code_verifier',
 };
+
+export const GOOGLE_SCOPES = [
+    'https://www.googleapis.com/auth/drive.metadata.readonly', // Đọc metadata file & thư mục
+    'https://www.googleapis.com/auth/drive.readonly', // Truy cập chỉ-đọc vào tất cả file, thư mục
+];
 
 export const AUTH_PUBLIC_PAGES = ['/login', '/register', '/forget-password'];
 

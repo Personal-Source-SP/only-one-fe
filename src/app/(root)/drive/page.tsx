@@ -1,10 +1,8 @@
 'use client';
 
 import FileDetails from '@/components/module/file-details';
-import { Button, Card, Dropdown, Input, Table, Tooltip, Space } from 'antd';
-import type { MenuProps } from 'antd';
 import { Icon } from '@iconify/react';
-import { Space } from 'antd';
+import { Button, Card, Dropdown, Input, Space, Table } from 'antd';
 import { FC, useEffect, useState } from 'react';
 
 const DrivePage: FC = () => {
@@ -149,29 +147,46 @@ const DrivePage: FC = () => {
                 return (
                     <div className="flex justify-end">
                         <Dropdown
-                          menu={{
-                            items: [
-                              { key: 'view', label: 'Xem', icon: <Icon icon="lucide:eye" /> },
-                              { key: 'download', label: 'Tải xuống', icon: <Icon icon="lucide:download" /> },
-                              {
-                                key: 'view-details',
-                                label: 'Xem chi tiết',
-                                icon: <Icon icon="lucide:info" />,
-                              },
-                              { type: 'divider' as const },
-                              { key: 'open-in-drive', label: 'Mở trong Drive', icon: <Icon icon="lucide:external-link" /> },
-                              { key: 'delete', label: 'Xóa', icon: <Icon icon="lucide:trash-2" />, danger: true },
-                            ],
-                            onClick: ({ key }) => {
-                              if (key === 'view-details') {
-                                setSelectedFile(file);
-                                setShowDetails(true);
-                              }
-                            },
-                          }}
-                          trigger={["click"]}
+                            menu={{
+                                items: [
+                                    { key: 'view', label: 'Xem', icon: <Icon icon="lucide:eye" /> },
+                                    {
+                                        key: 'download',
+                                        label: 'Tải xuống',
+                                        icon: <Icon icon="lucide:download" />,
+                                    },
+                                    {
+                                        key: 'view-details',
+                                        label: 'Xem chi tiết',
+                                        icon: <Icon icon="lucide:info" />,
+                                    },
+                                    { type: 'divider' as const },
+                                    {
+                                        key: 'open-in-drive',
+                                        label: 'Mở trong Drive',
+                                        icon: <Icon icon="lucide:external-link" />,
+                                    },
+                                    {
+                                        key: 'delete',
+                                        label: 'Xóa',
+                                        icon: <Icon icon="lucide:trash-2" />,
+                                        danger: true,
+                                    },
+                                ],
+                                onClick: ({ key }) => {
+                                    if (key === 'view-details') {
+                                        setSelectedFile(file);
+                                        setShowDetails(true);
+                                    }
+                                },
+                            }}
+                            trigger={['click']}
                         >
-                          <Button type="text" shape="circle" icon={<Icon icon="lucide:more-vertical" className="text-lg" />} />
+                            <Button
+                                type="text"
+                                shape="circle"
+                                icon={<Icon icon="lucide:more-vertical" className="text-lg" />}
+                            />
                         </Dropdown>
                     </div>
                 );
@@ -208,20 +223,20 @@ const DrivePage: FC = () => {
                         size="small"
                     />
                     <Dropdown
-                      menu={{
-                        items: [
-                          { key: 'all', label: 'Tất cả các tệp' },
-                          { key: 'doc', label: 'Tài liệu' },
-                          { key: 'sheet', label: 'Bảng tính' },
-                          { key: 'slide', label: 'Thuyết trình' },
-                          { key: 'pdf', label: 'PDF' },
-                          { key: 'folder', label: 'Thư mục' },
-                        ],
-                      }}
+                        menu={{
+                            items: [
+                                { key: 'all', label: 'Tất cả các tệp' },
+                                { key: 'doc', label: 'Tài liệu' },
+                                { key: 'sheet', label: 'Bảng tính' },
+                                { key: 'slide', label: 'Thuyết trình' },
+                                { key: 'pdf', label: 'PDF' },
+                                { key: 'folder', label: 'Thư mục' },
+                            ],
+                        }}
                     >
-                      <Button type="default" size="small">
-                        Lọc <Icon icon="lucide:chevron-down" />
-                      </Button>
+                        <Button type="default" size="small">
+                            Lọc <Icon icon="lucide:chevron-down" />
+                        </Button>
                     </Dropdown>
 
                     {/* View toggle */}
@@ -244,7 +259,12 @@ const DrivePage: FC = () => {
                     <Button type="primary" icon={<Icon icon="lucide:upload" />} size="small">
                         Tải lên
                     </Button>
-                    <Button type="primary" ghost icon={<Icon icon="lucide:folder-plus" />} size="small">
+                    <Button
+                        type="primary"
+                        ghost
+                        icon={<Icon icon="lucide:folder-plus" />}
+                        size="small"
+                    >
                         Thư mục mới
                     </Button>
                 </div>
@@ -256,27 +276,52 @@ const DrivePage: FC = () => {
                     {viewMode === 'table' ? (
                         <div className="overflow-x-auto">
                             <Table
-                              rowSelection={{
-                                selectedRowKeys: selectedKeys,
-                                onChange: (keys) => setSelectedKeys(keys),
-                              }}
-                              pagination={false}
-                              className="rounded-lg border border-divider min-w-full"
-                              dataSource={files}
-                              rowKey="id"
-                              onRow={(record) => ({
-                                onClick: () => handleRowAction(record as any),
-                              })}
+                                rowSelection={{
+                                    selectedRowKeys: selectedKeys,
+                                    onChange: (keys) => setSelectedKeys(keys),
+                                }}
+                                pagination={false}
+                                className="rounded-lg border border-divider min-w-full"
+                                dataSource={files}
+                                rowKey="id"
+                                onRow={(record) => ({
+                                    onClick: () => handleRowAction(record as any),
+                                })}
                             >
-                              <Table.Column dataIndex="name" title="TÊN" key="name" render={(_, r) => renderCell(r, 'name')} />
-                              {!isMobile ? (
-                                <Table.Column dataIndex="owner" title="CHỦ SỞ HỮU" key="owner" render={(_, r) => renderCell(r, 'owner')} />
-                              ) : null}
-                              <Table.Column dataIndex="modified" title="NGÀY SỬA ĐỔI" key="modified" render={(_, r) => renderCell(r, 'modified')} />
-                              {!isMobile ? (
-                                <Table.Column dataIndex="size" title="KÍCH THƯỚC" key="size" render={(_, r) => renderCell(r, 'size')} />
-                              ) : null}
-                              <Table.Column dataIndex="actions" key="actions" render={(_, r) => renderCell(r, 'actions')} align="right" />
+                                <Table.Column
+                                    dataIndex="name"
+                                    title="TÊN"
+                                    key="name"
+                                    render={(_, r) => renderCell(r, 'name')}
+                                />
+                                {!isMobile ? (
+                                    <Table.Column
+                                        dataIndex="owner"
+                                        title="CHỦ SỞ HỮU"
+                                        key="owner"
+                                        render={(_, r) => renderCell(r, 'owner')}
+                                    />
+                                ) : null}
+                                <Table.Column
+                                    dataIndex="modified"
+                                    title="NGÀY SỬA ĐỔI"
+                                    key="modified"
+                                    render={(_, r) => renderCell(r, 'modified')}
+                                />
+                                {!isMobile ? (
+                                    <Table.Column
+                                        dataIndex="size"
+                                        title="KÍCH THƯỚC"
+                                        key="size"
+                                        render={(_, r) => renderCell(r, 'size')}
+                                    />
+                                ) : null}
+                                <Table.Column
+                                    dataIndex="actions"
+                                    key="actions"
+                                    render={(_, r) => renderCell(r, 'actions')}
+                                    align="right"
+                                />
                             </Table>
                         </div>
                     ) : (

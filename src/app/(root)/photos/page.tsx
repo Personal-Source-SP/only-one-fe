@@ -17,11 +17,11 @@ import 'yet-another-react-lightbox/plugins/thumbnails.css';
 import Zoom from 'yet-another-react-lightbox/plugins/zoom';
 import 'yet-another-react-lightbox/styles.css';
 
-import { CustomElement } from '@/components/common';
+import { CustomElement, PaginationControls } from '@/components/common';
 
-import PaginationControls from '@/components/module/photos/PaginationControls';
 import PhotoFilter from '@/components/module/photos/PhotoFilter';
 import PhotoGroups from '@/components/module/photos/PhotoGroups';
+import SyncFile from '@/components/module/photos/SyncFile';
 
 const PhotosPage: FC = () => {
     const [columns, setColumns] = useState(4);
@@ -31,6 +31,8 @@ const PhotosPage: FC = () => {
     const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.ALL);
     const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.NEWEST);
     const [filterFolder, setFilterFolder] = useState<string | undefined>(undefined);
+
+    const [isOpenSyncFile, setIsOpenSyncFile] = useState(false);
 
     const [isLightboxOpen, setIsLightboxOpen] = useState<boolean>(false);
     const [slideshowInterval, setSlideshowInterval] = useState<number>(5);
@@ -129,7 +131,12 @@ const PhotosPage: FC = () => {
                     >
                         Trình chiếu
                     </Button>,
-                    <Button key="sync" type="primary" icon={<Icon icon="mdi:sync" />}>
+                    <Button
+                        key="sync"
+                        type="primary"
+                        icon={<Icon icon="mdi:sync" />}
+                        onClick={() => setIsOpenSyncFile(true)}
+                    >
                         Đồng bộ hoá
                     </Button>,
                 ]}
@@ -195,6 +202,8 @@ const PhotosPage: FC = () => {
                     delay: slideshowInterval * 1000,
                 }}
             />
+
+            <SyncFile isOpen={isOpenSyncFile} onClose={() => setIsOpenSyncFile(false)} />
         </Space>
     );
 };

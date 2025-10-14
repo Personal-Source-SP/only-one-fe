@@ -5,4 +5,5 @@ export { default as Forbidden } from './forbidden';
 export { default as Loading } from './loading';
 export { default as Logo } from './logo';
 export { default as NotFound } from './not-found';
+export { default as PaginationControls } from './pagination-controls';
 export { default as UnsavedChangesNotifierAppRouter } from './unsaved-changes-notifier-app-router';

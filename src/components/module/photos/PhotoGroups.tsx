@@ -33,13 +33,7 @@ const PhotoGroups: FC<PhotoGroupsProps> = ({ columns, groupedPhotos, onPhotoClic
     return (
         <section
             id="scrollablePhotoGroups"
-            className="rounded-md"
-            style={{
-                width: '100%',
-                height: 600,
-                overflow: 'auto',
-                padding: '0 16px',
-            }}
+            className="rounded-lg !overflow-auto !w-full !min-h-[500px]"
         >
             <InfiniteScroll
                 loader={null}

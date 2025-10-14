@@ -1,6 +1,13 @@
-import { NUser } from '@/interfaces/user';
-
 export declare namespace NGoogle {
+    interface IGoogleExchangeCodeRequest {
+        access_token: string;
+        expires_in: number;
+        scope: string;
+        token_type: string;
+        refresh_token?: string;
+        refresh_token_expires_in?: number;
+    }
+
     interface IGoogleAuth {
         userId: string;
         googleAccessToken: string;
@@ -10,8 +17,6 @@ export declare namespace NGoogle {
         googleRefreshToken?: string;
         googleScope?: string;
         googleTokenType?: string;
-
-        user: NUser.IReq;
     }
 
     interface IGoogleDriveFile {

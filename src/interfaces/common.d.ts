@@ -3,3 +3,10 @@ export interface Option {
     label: string;
     value?: string;
 }
+
+export interface PaginationRequest {
+    page?: number;
+    limit?: number;
+    filter?: string;
+    sortBy?: string[];
+}
