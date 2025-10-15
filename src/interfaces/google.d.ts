@@ -24,12 +24,14 @@ export declare namespace NGoogle {
 
     interface IPreviewGoogleDriveData {
         data: IGoogleDrivePreviewItem[];
+        totalSize: number;
         totalCount: number;
         hasMore: boolean;
         nextPageToken?: string;
     }
 
     interface IGoogleAuth {
+        id: string;
         userId: string;
         googleAccessToken: string;
         googleExpiresAt: Date;
