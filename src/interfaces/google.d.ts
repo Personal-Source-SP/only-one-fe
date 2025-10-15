@@ -8,6 +8,27 @@ export declare namespace NGoogle {
         refresh_token_expires_in?: number;
     }
 
+    interface IGoogleDrivePreviewItem {
+        name: string;
+        googleDriveId: string;
+        mimeType?: string;
+        size?: number;
+        webViewLink?: string;
+        webContentLink?: string;
+        thumbnailLink?: string;
+        parentFolderId?: string;
+        lastModified?: Date;
+        isTrashed?: boolean;
+        isStarred?: boolean;
+    }
+
+    interface IPreviewGoogleDriveData {
+        data: IGoogleDrivePreviewItem[];
+        totalCount: number;
+        hasMore: boolean;
+        nextPageToken?: string;
+    }
+
     interface IGoogleAuth {
         userId: string;
         googleAccessToken: string;

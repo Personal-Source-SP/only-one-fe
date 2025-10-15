@@ -213,12 +213,13 @@ const PhotosPage: FC = () => {
                 }}
             />
 
-            <SyncFileGoogleDrive
-                isOpen={isOpenSyncFile}
-                isLoadingGoogleAuth={query?.isLoading}
-                onClose={() => setIsOpenSyncFile(false)}
-                googleAuth={googleAuth?.data?.data ?? undefined}
-            />
+            {isOpenSyncFile && (
+                <SyncFileGoogleDrive
+                    isLoadingGoogleAuth={query?.isLoading}
+                    onClose={() => setIsOpenSyncFile(false)}
+                    googleAuth={googleAuth?.data?.data ?? undefined}
+                />
+            )}
         </Space>
     );
 };
