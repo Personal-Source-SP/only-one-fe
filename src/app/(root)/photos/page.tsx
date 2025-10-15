@@ -18,6 +18,7 @@ import Zoom from 'yet-another-react-lightbox/plugins/zoom';
 import 'yet-another-react-lightbox/styles.css';
 
 import { CustomElement, PaginationControls } from '@/components/common';
+import { Option } from '@/interfaces';
 
 import PhotoFilter from '@/components/module/photos/PhotoFilter';
 import PhotoGroups from '@/components/module/photos/PhotoGroups';
@@ -60,12 +61,13 @@ const PhotosPage: FC = () => {
         },
     });
 
-    const { result: googleDriveFolders } = useList<NGoogle.IGoogleDriveFolder>({
-        resource: 'google-drive/folders',
+    const { result: googleDriveFolders } = useList({
+        resource: 'google-drive/folders/all',
         queryOptions: {
             enabled: true,
         },
         pagination: {
+            pageSize: 1000,
             mode: 'off' as const,
         },
     });
@@ -83,6 +85,19 @@ const PhotosPage: FC = () => {
     const allPhotos = useMemo(() => {
         return tableQuery?.data?.data ?? [];
     }, [tableQuery?.data?.data]);
+
+    const folderOptions = useMemo(() => {
+        if (!googleDriveFolders?.data?.length) return [];
+
+        const options: Option[] = googleDriveFolders?.data?.map((folder) => ({
+            value: folder.googleDriveId,
+            label: folder.name,
+        }));
+
+        return [{ key: ViewMode.ALL, label: 'Tất cả thư mục', value: undefined }, ...options];
+    }, [googleDriveFolders?.data]);
+
+    console.log(folderOptions);
 
     useEffect(() => {
         const updateColumns = () => {

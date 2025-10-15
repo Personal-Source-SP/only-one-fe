@@ -194,7 +194,7 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
     const rowSelection: TableProps<NGoogle.IGoogleDrivePreviewItem>['rowSelection'] = {
         type: 'checkbox',
         onChange: (_: Key[], selectedRows: NGoogle.IGoogleDrivePreviewItem[]) => {
-            setSelectedRows(selectedRows);
+            setSelectedRows([...selectedRows]);
         },
         getCheckboxProps: (record: NGoogle.IGoogleDrivePreviewItem) => ({
             name: record.name,
@@ -418,7 +418,7 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
 
     const renderPreviewStep = () => {
         return (
-            <Spin spinning={loading}>
+            <Space direction="vertical" className="w-full h-full">
                 <Card className="shadow-sm" variant="borderless">
                     <div className="grid grid-cols-4 gap-6">
                         <Card className="text-center bg-blue-50 border-blue-200">
@@ -452,12 +452,13 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
                 <Table
                     bordered
                     size="small"
+                    rowKey="googleDriveId"
                     rowSelection={rowSelection}
                     dataSource={previewData || []}
                     pagination={{ pageSize: 50, showSizeChanger: true }}
                     columns={columns as ColumnType<NGoogle.IGoogleDrivePreviewItem>[]}
                 />
-            </Spin>
+            </Space>
         );
     };
 
@@ -467,7 +468,6 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
                 <Flex justify="space-between" align="center" gap={16}>
                     <Button
                         className="w-full"
-                        loading={loading}
                         onClick={() => onClose(false)}
                         icon={<Icon icon="lucide:x" />}
                     >
@@ -475,7 +475,6 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
                     </Button>
                     <Button
                         type="primary"
-                        loading={loading}
                         className="w-full"
                         onClick={handleGoogleAuth}
                         icon={<Icon icon="lucide:google" />}
@@ -490,7 +489,6 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
             <Flex justify="space-between" align="center" gap={16}>
                 <Button
                     className="w-full"
-                    loading={loading}
                     icon={<Icon icon="lucide:x" />}
                     onClick={() => onClose(false)}
                 >
@@ -501,7 +499,6 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
                     <Button
                         type="primary"
                         className="w-full"
-                        loading={loading}
                         onClick={handleSyncData}
                         icon={<Icon icon="lucide:sync" />}
                     >
@@ -513,7 +510,6 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
                     <Button
                         type="primary"
                         className="w-full"
-                        loading={loading}
                         icon={<Icon icon="lucide:arrow-left" />}
                         onClick={() => handleChangeStep(currentStep - 1)}
                     >
@@ -525,7 +521,6 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
                     <Button
                         type="primary"
                         className="w-full"
-                        loading={loading}
                         icon={<Icon icon="lucide:arrow-right" />}
                         onClick={() => {
                             setCurrentStep(StepEnum.Preview);
@@ -566,45 +561,47 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
                 width: 1200,
                 centered: true,
                 footer: renderFooter(),
+                loading: isLoadingGoogleAuth,
                 title: 'Đồng bộ Google Drive',
-                loading: isLoadingGoogleAuth || loading,
             }}
         >
-            {Boolean(googleAuthId) && (
-                <Space direction="vertical" className="w-full h-full px-3 overflow-x-hidden">
-                    <Card className="mb-4 bg-amber-50 border-amber-200" size="small">
-                        <Flex justify="space-between" align="center">
-                            <Space size="small">
-                                <Icon icon="lucide:timer" />
-                                <span>Token hết hạn sau</span>
-                            </Space>
-                            <Statistic.Countdown
-                                value={new Date(
-                                    (googleAuth?.googleExpiresAt as unknown as string) || '',
-                                ).getTime()}
-                                format="HH:mm:ss"
-                                onFinish={() => {
-                                    message.info('Token đã hết hạn. Vui lòng kết nối lại.');
-                                    setGoogleAuthId(undefined);
-                                }}
+            <Spin spinning={loading}>
+                {Boolean(googleAuthId) && (
+                    <Space direction="vertical" className="w-full h-full px-3 overflow-x-hidden">
+                        <Card className="mb-4 bg-amber-50 border-amber-200" size="small">
+                            <Flex justify="space-between" align="center">
+                                <Space size="small">
+                                    <Icon icon="lucide:timer" />
+                                    <span>Token hết hạn sau</span>
+                                </Space>
+                                <Statistic.Countdown
+                                    value={new Date(
+                                        (googleAuth?.googleExpiresAt as unknown as string) || '',
+                                    ).getTime()}
+                                    format="HH:mm:ss"
+                                    onFinish={() => {
+                                        message.info('Token đã hết hạn. Vui lòng kết nối lại.');
+                                        setGoogleAuthId(undefined);
+                                    }}
+                                />
+                            </Flex>
+                        </Card>
+
+                        <Card className="mb-4 bg-green-50 border-green-200" size="small">
+                            <Steps
+                                items={steps}
+                                size="default"
+                                current={currentStep}
+                                onChange={handleChangeStep}
                             />
-                        </Flex>
-                    </Card>
+                        </Card>
 
-                    <Card className="mb-4 bg-green-50 border-green-200" size="small">
-                        <Steps
-                            items={steps}
-                            size="default"
-                            current={currentStep}
-                            onChange={handleChangeStep}
-                        />
-                    </Card>
-
-                    <Space size="middle" direction="vertical" className="w-full h-full">
-                        {renderContent()}
+                        <Space size="middle" direction="vertical" className="w-full h-full">
+                            {renderContent()}
+                        </Space>
                     </Space>
-                </Space>
-            )}
+                )}
+            </Spin>
         </CustomModal>
     );
 };
