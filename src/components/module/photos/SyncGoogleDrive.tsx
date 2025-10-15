@@ -10,6 +10,7 @@ import {
     Button,
     Card,
     Col,
+    DatePicker,
     Flex,
     Form,
     Input,
@@ -27,6 +28,7 @@ import {
     Tag,
 } from 'antd';
 import { ColumnType, TableProps } from 'antd/es/table';
+import dayjs from 'dayjs';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { FC, memo, useEffect, useState, type Key } from 'react';
@@ -142,13 +144,19 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
             key: 'name',
             ellipsis: true,
             width: '25%',
+            sorter: (a, b) => a.name.localeCompare(b.name),
         },
         {
-            title: 'ID Drive',
-            dataIndex: 'googleDriveId',
-            key: 'googleDriveId',
+            key: 'lastModified',
+            title: 'Ngày chỉnh sửa',
+            dataIndex: 'lastModified',
             ellipsis: true,
             width: '15%',
+            render: (lastModified?: Date) =>
+                lastModified ? dayjs(lastModified).format('DD/MM/YYYY HH:mm:ss') : '---',
+            sorter: (a, b) =>
+                (a.lastModified ? new Date(a.lastModified as unknown as string).getTime() : 0) -
+                (b.lastModified ? new Date(b.lastModified as unknown as string).getTime() : 0),
         },
         {
             title: 'Loại tệp',
@@ -156,6 +164,7 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
             key: 'mimeType',
             ellipsis: true,
             width: '15%',
+            sorter: (a, b) => (a.mimeType || '').localeCompare(b.mimeType || ''),
         },
         {
             title: 'Kích thước (bytes)',
@@ -164,6 +173,7 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
             ellipsis: true,
             width: '15%',
             render: (size?: number) => (size ? size.toLocaleString() : '---'),
+            sorter: (a, b) => (a.size || 0) - (b.size || 0),
         },
         {
             title: 'Đường dẫn',
@@ -192,6 +202,7 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
                 ) : (
                     <Icon icon="lucide:x" className="w-full" />
                 ),
+            sorter: (a, b) => Number(Boolean(a.isTrashed)) - Number(Boolean(b.isTrashed)),
         },
         {
             title: 'Gắn sao?',
@@ -205,6 +216,7 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
                 ) : (
                     <Icon icon="lucide:x" className="w-full" />
                 ),
+            sorter: (a, b) => Number(Boolean(a.isStarred)) - Number(Boolean(b.isStarred)),
         },
     ];
 
@@ -409,6 +421,131 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
         setCurrentStep(step);
     };
 
+    const renderSettingStep = () => {
+        return (
+            <Form
+                form={form}
+                layout="vertical"
+                initialValues={{ type: GoogleDriveType.FILE, maxResults: 100 }}
+            >
+                <Form.Item
+                    name="type"
+                    label="Loại đồng bộ"
+                    rules={[{ required: true, message: 'Vui lòng chọn loại đồng bộ' }]}
+                >
+                    <Select
+                        placeholder="Loại đồng bộ"
+                        defaultValue={GoogleDriveType.FILE}
+                        onChange={(value) => setType(value as GoogleDriveType)}
+                        options={Object.values(GoogleDriveType).map((type) => ({
+                            value: type,
+                            label: type?.toUpperCase(),
+                        }))}
+                    />
+                </Form.Item>
+                <Form.Item
+                    name="folderId"
+                    label="Thư mục"
+                    required={type === GoogleDriveType.FILE}
+                    rules={[
+                        {
+                            message: 'Vui lòng chọn thư mục',
+                            required: type === GoogleDriveType.FILE,
+                        },
+                    ]}
+                >
+                    <Select
+                        placeholder="Thư mục"
+                        onChange={(value) => setFolderId(value as string)}
+                    />
+                </Form.Item>
+                <Row gutter={16}>
+                    <Col span={12}>
+                        <Form.Item name="maxResults" label="Số lượng">
+                            <InputNumber min={1} placeholder="Số lượng" />
+                        </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                        <Form.Item name="pageSize" label="Kích thước trang">
+                            <InputNumber min={1} placeholder="Kích thước trang" />
+                        </Form.Item>
+                    </Col>
+                </Row>
+                <Form.Item name="fileTypes" label="Loại tệp">
+                    <Select
+                        mode="multiple"
+                        placeholder="Loại tệp"
+                        onChange={(value) => setFileTypes(value as GoogleDriveFileType[])}
+                        options={Object.values(GoogleDriveFileType).map((type) => ({
+                            value: type,
+                            label: type?.toUpperCase(),
+                        }))}
+                    />
+                </Form.Item>
+                <Row gutter={16}>
+                    <Col span={12}>
+                        <Form.Item name="modifiedTimeFrom" label="Từ ngày">
+                            <DatePicker placeholder="Chọn ngày bắt đầu" />
+                        </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                        <Form.Item name="modifiedTimeTo" label="Đến ngày">
+                            <DatePicker placeholder="Chọn ngày kết thúc" />
+                        </Form.Item>
+                    </Col>
+                </Row>
+                <Form.Item name="customQuery" label="Chỉnh sửa tìm kiếm">
+                    <Input.TextArea placeholder="Chỉnh sửa tìm kiếm" rows={4} />
+                </Form.Item>
+            </Form>
+        );
+    };
+
+    const renderPreviewStep = () => {
+        return (
+            <Spin spinning={loading}>
+                <Card className="shadow-sm" variant="borderless">
+                    <div className="grid grid-cols-4 gap-6">
+                        <Card className="text-center bg-blue-50 border-blue-200">
+                            <p className="text-sm text-gray-600 font-bold mt-1">Tổng số lượng</p>
+                            <div className="text-blue-600 text-2xl font-bold">
+                                {totalCount ?? 0}
+                            </div>
+                        </Card>
+                        <Card className="text-center bg-blue-50 border-blue-200">
+                            <p className="text-sm text-gray-600 font-bold mt-1">Tổng kích thước</p>
+                            <div className="text-blue-600 text-2xl font-bold">{totalSize ?? 0}</div>
+                        </Card>
+                        <Card className="text-center bg-green-50 border-green-200">
+                            <p className="text-sm text-gray-600 font-bold mt-1">Có thêm dữ liệu</p>
+                            <div className="text-green-600 text-2xl flex items-center justify-center">
+                                {hasMore ? <Icon icon="lucide:check" /> : <Icon icon="lucide:x" />}
+                            </div>
+                        </Card>
+                        <Card className="text-center bg-purple-50 border-purple-200">
+                            <p className="text-sm text-gray-600 font-bold mt-1">Loại file</p>
+                            <div className="flex flex-wrap justify-center gap-2 my-2">
+                                {fileTypes?.map((mime) => (
+                                    <Tag color="blue" key={mime}>
+                                        {mime?.toUpperCase()}
+                                    </Tag>
+                                ))}
+                            </div>
+                        </Card>
+                    </div>
+                </Card>
+                <Table
+                    bordered
+                    size="small"
+                    rowSelection={rowSelection}
+                    dataSource={previewData || []}
+                    pagination={{ pageSize: 50, showSizeChanger: true }}
+                    columns={columns as ColumnType<NGoogle.IGoogleDrivePreviewItem>[]}
+                />
+            </Spin>
+        );
+    };
+
     const renderFooter = () => {
         if (!googleAuthId) {
             return (
@@ -487,137 +624,22 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
         );
     };
 
+    const renderDoneStep = () => {
+        return <Result status="success" title="Đồng bộ dữ liệu thành công" />;
+    };
+
     const renderContent = () => {
         switch (currentStep) {
             case StepEnum.Settings: {
-                return (
-                    <Form
-                        form={form}
-                        layout="vertical"
-                        initialValues={{ type: GoogleDriveType.FILE, maxResults: 100 }}
-                    >
-                        <Form.Item
-                            name="type"
-                            label="Loại đồng bộ"
-                            rules={[{ required: true, message: 'Vui lòng chọn loại đồng bộ' }]}
-                        >
-                            <Select
-                                placeholder="Loại đồng bộ"
-                                defaultValue={GoogleDriveType.FILE}
-                                onChange={(value) => setType(value as GoogleDriveType)}
-                                options={Object.values(GoogleDriveType).map((type) => ({
-                                    value: type,
-                                    label: type?.toUpperCase(),
-                                }))}
-                            />
-                        </Form.Item>
-                        <Form.Item
-                            name="folderId"
-                            label="Thư mục"
-                            required={type === GoogleDriveType.FILE}
-                            rules={[
-                                {
-                                    message: 'Vui lòng chọn thư mục',
-                                    required: type === GoogleDriveType.FILE,
-                                },
-                            ]}
-                        >
-                            <Select
-                                placeholder="Thư mục"
-                                onChange={(value) => setFolderId(value as string)}
-                            />
-                        </Form.Item>
-                        <Row gutter={16}>
-                            <Col span={12}>
-                                <Form.Item name="maxResults" label="Số lượng">
-                                    <InputNumber min={1} placeholder="Số lượng" />
-                                </Form.Item>
-                            </Col>
-                            <Col span={12}>
-                                <Form.Item name="pageSize" label="Kích thước trang">
-                                    <InputNumber min={1} placeholder="Kích thước trang" />
-                                </Form.Item>
-                            </Col>
-                        </Row>
-                        <Form.Item name="fileTypes" label="Loại tệp">
-                            <Select
-                                mode="multiple"
-                                placeholder="Loại tệp"
-                                onChange={(value) => setFileTypes(value as GoogleDriveFileType[])}
-                                options={Object.values(GoogleDriveFileType).map((type) => ({
-                                    value: type,
-                                    label: type?.toUpperCase(),
-                                }))}
-                            />
-                        </Form.Item>
-                        <Form.Item name="customQuery" label="Chỉnh sửa tìm kiếm">
-                            <Input.TextArea placeholder="Chỉnh sửa tìm kiếm" rows={4} />
-                        </Form.Item>
-                    </Form>
-                );
+                return renderSettingStep();
             }
 
             case StepEnum.Preview: {
-                return (
-                    <Spin spinning={loading}>
-                        <Card className="shadow-sm" variant="borderless">
-                            <div className="grid grid-cols-4 gap-6">
-                                <Card className="text-center bg-blue-50 border-blue-200">
-                                    <p className="text-sm text-gray-600 font-bold mt-1">
-                                        Tổng số lượng
-                                    </p>
-                                    <div className="text-blue-600 text-2xl font-bold">
-                                        {totalCount ?? 0}
-                                    </div>
-                                </Card>
-                                <Card className="text-center bg-blue-50 border-blue-200">
-                                    <p className="text-sm text-gray-600 font-bold mt-1">
-                                        Tổng kích thước
-                                    </p>
-                                    <div className="text-blue-600 text-2xl font-bold">
-                                        {totalSize ?? 0}
-                                    </div>
-                                </Card>
-                                <Card className="text-center bg-green-50 border-green-200">
-                                    <p className="text-sm text-gray-600 font-bold mt-1">
-                                        Có thêm dữ liệu
-                                    </p>
-                                    <div className="text-green-600 text-2xl flex items-center justify-center">
-                                        {hasMore ? (
-                                            <Icon icon="lucide:check" />
-                                        ) : (
-                                            <Icon icon="lucide:x" />
-                                        )}
-                                    </div>
-                                </Card>
-                                <Card className="text-center bg-purple-50 border-purple-200">
-                                    <p className="text-sm text-gray-600 font-bold mt-1">
-                                        Loại file
-                                    </p>
-                                    <div className="flex flex-wrap justify-center gap-2 my-2">
-                                        {fileTypes?.map((mime) => (
-                                            <Tag color="blue" key={mime}>
-                                                {mime?.toUpperCase()}
-                                            </Tag>
-                                        ))}
-                                    </div>
-                                </Card>
-                            </div>
-                        </Card>
-                        <Table
-                            bordered
-                            size="small"
-                            rowSelection={rowSelection}
-                            dataSource={previewData || []}
-                            pagination={{ pageSize: 50, showSizeChanger: true }}
-                            columns={columns as ColumnType<NGoogle.IGoogleDrivePreviewItem>[]}
-                        />
-                    </Spin>
-                );
+                return renderPreviewStep();
             }
 
             case StepEnum.Done: {
-                return <Result status="success" title="Đồng bộ dữ liệu thành công" />;
+                return renderDoneStep();
             }
         }
     };
@@ -663,7 +685,7 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
                         />
                     </Card>
 
-                    <Space size="small" direction="vertical" className="w-full h-full">
+                    <Space size="middle" direction="vertical" className="w-full h-full">
                         {renderContent()}
                     </Space>
                 </Space>

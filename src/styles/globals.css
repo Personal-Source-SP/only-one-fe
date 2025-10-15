@@ -63,13 +63,17 @@ body {
   @apply text-gray-700 font-medium;
 }
 
-.ant-select, .ant-input-number {
+.ant-select, .ant-input-number, .ant-picker {
   @apply !w-full;
 
 }
 
 .ant-modal-header .ant-modal-title {
   @apply !font-bold !text-lg;
+}
+
+.ant-form-item {
+  @apply !mb-3;
 }
 
 /* Responsive utilities */
