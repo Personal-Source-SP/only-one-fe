@@ -263,21 +263,35 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
         }
     };
 
+    const handleResetPreviewData = () => {
+        setPreviewData([]);
+        setHasMore(false);
+        setTotalSize(0);
+        setTotalCount(0);
+    };
+
     const handlePreviewData = async () => {
         setLoading(true);
+        handleResetPreviewData();
+
+        let values;
+        try {
+            values = await form.validateFields();
+        } catch (e) {
+            setLoading(false);
+            return;
+        }
 
         try {
-            const values = form.getFieldsValue();
-
             previewGoogleDrive({
                 method: 'post',
                 url: `${apiUrl}/google-drive/preview-data-sync`,
                 values: {
                     type,
                     googleAuthId,
-                    query: values.query,
                     folderId: values.folderId,
                     pageSize: values.pageSize,
+                    query: values.customQuery,
                     maxResults: values.maxResults,
                 },
                 successNotification: (data) => {
@@ -473,6 +487,7 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
                         <Form.Item
                             name="folderId"
                             label="Thư mục"
+                            required={type === GoogleDriveType.FILE}
                             rules={[
                                 {
                                     message: 'Vui lòng chọn thư mục',
@@ -497,7 +512,7 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
                                 </Form.Item>
                             </Col>
                         </Row>
-                        <Form.Item name="query" label="Chỉnh sửa tìm kiếm">
+                        <Form.Item name="customQuery" label="Chỉnh sửa tìm kiếm">
                             <Input.TextArea placeholder="Chỉnh sửa tìm kiếm" rows={4} />
                         </Form.Item>
                     </Form>
