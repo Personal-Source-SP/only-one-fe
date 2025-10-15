@@ -25,10 +25,10 @@ import {
     Steps,
     Table,
 } from 'antd';
-import { ColumnType } from 'antd/es/table';
+import { ColumnType, TableProps } from 'antd/es/table';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { FC, memo, useEffect, useState } from 'react';
+import { FC, memo, useEffect, useState, type Key } from 'react';
 
 const StepEnum = {
     Settings: 0,
@@ -68,6 +68,9 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
     const [totalCount, setTotalCount] = useState(0);
     const [previewData, setPreviewData] = useState<NGoogle.IGoogleDrivePreviewItem[]>([]);
 
+    const [selectedRowKeys, setSelectedRowKeys] = useState<Key[]>([]);
+    const [selectedRows, setSelectedRows] = useState<NGoogle.IGoogleDrivePreviewItem[]>([]);
+
     useEffect(() => {
         const googleAuthId = googleAuth?.id;
         const googleToken = googleAuth?.googleAccessToken;
@@ -98,6 +101,11 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
             handleSaveToken(code as string);
         }
     }, [searchParams]);
+
+    useEffect(() => {
+        setSelectedRowKeys([]);
+        setSelectedRows([]);
+    }, [previewData]);
 
     const steps: StepProps[] = [
         {
@@ -148,7 +156,7 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
             render: (size?: number) => (size ? size.toLocaleString() : '---'),
         },
         {
-            title: 'Đường dẫn xem',
+            title: 'Đường dẫn',
             dataIndex: 'webViewLink',
             key: 'webViewLink',
             ellipsis: true,
@@ -189,6 +197,17 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
                 ),
         },
     ];
+
+    const rowSelection: TableProps<NGoogle.IGoogleDrivePreviewItem>['rowSelection'] = {
+        type: 'checkbox',
+        onChange: (selectedRowKeys: Key[], selectedRows: NGoogle.IGoogleDrivePreviewItem[]) => {
+            setSelectedRows(selectedRows);
+            setSelectedRowKeys(selectedRowKeys);
+        },
+        getCheckboxProps: (record: NGoogle.IGoogleDrivePreviewItem) => ({
+            name: record.name,
+        }),
+    };
 
     const handleGoogleAuth = async () => {
         setLoading(true);
@@ -330,7 +349,7 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
     };
 
     const handleSyncData = async () => {
-        if (!previewData?.length) {
+        if (!selectedRows?.length) {
             message.error('Không có dữ liệu để đồng bộ');
             return;
         }
@@ -345,7 +364,7 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
                     type,
                     folderId,
                     googleAuthId,
-                    data: previewData,
+                    data: selectedRows,
                 },
                 successNotification: (data) => {
                     setLoading(false);
@@ -467,7 +486,7 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
                     <Form
                         form={form}
                         layout="vertical"
-                        initialValues={{ type: GoogleDriveType.FILE }}
+                        initialValues={{ type: GoogleDriveType.FILE, maxResults: 100 }}
                     >
                         <Form.Item
                             name="type"
@@ -555,12 +574,10 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
                         <Table
                             bordered
                             size="small"
+                            rowSelection={rowSelection}
                             dataSource={previewData || []}
                             pagination={{ pageSize: 50, showSizeChanger: true }}
                             columns={columns as ColumnType<NGoogle.IGoogleDrivePreviewItem>[]}
-                            rowKey={(record: NGoogle.IGoogleDrivePreviewItem, index) =>
-                                `${record.googleDriveId}-${index}`
-                            }
                         />
                     </Spin>
                 );
