@@ -3,7 +3,7 @@
 import { CustomModal } from '@/components/common';
 import { GoogleDriveFileType, GoogleDriveType } from '@/enums';
 import { NBaseApi, NGoogle } from '@/interfaces';
-import { exchangeCodeForTokens, getGoogleAuthUrl, isExpiredToken } from '@/libs';
+import { getGoogleAuthUrl, isExpiredToken } from '@/libs';
 import { Icon } from '@iconify/react';
 import { useApiUrl, useCustomMutation } from '@refinedev/core';
 import {
@@ -30,7 +30,6 @@ import {
 import { ColumnType, TableProps } from 'antd/es/table';
 import dayjs from 'dayjs';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
 import { FC, memo, useEffect, useState, type Key } from 'react';
 
 const StepEnum = {
@@ -51,16 +50,13 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
     isLoadingGoogleAuth,
 }) => {
     const apiUrl = useApiUrl();
-    const searchParams = useSearchParams();
 
-    const { mutate: syncGoogleAuth } = useCustomMutation<NBaseApi.IResponse<boolean>>();
     const { mutate: syncGoogleDrive } = useCustomMutation<NBaseApi.IResponse<boolean>>();
     const { mutate: previewGoogleDrive } =
         useCustomMutation<NBaseApi.IResponse<NGoogle.IPreviewGoogleDriveData>>();
 
     const [form] = Form.useForm();
 
-    const [dom, setDom] = useState(false);
     const [loading, setLoading] = useState(false);
 
     const [type, setType] = useState(GoogleDriveType.FILE);
@@ -88,32 +84,7 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
         } else {
             setGoogleAuthId(undefined);
         }
-
-        setDom(true);
     }, [googleAuth]);
-
-    useEffect(() => {
-        if (!searchParams) {
-            setDom(true);
-            return;
-        }
-
-        const code = searchParams.get('code');
-        const error = searchParams.get('error');
-
-        if (error) {
-            setDom(true);
-            message.error('Kết nối Google thất bại');
-
-            return;
-        }
-
-        setDom(false);
-
-        if (code) {
-            handleSaveToken(code as string);
-        }
-    }, [searchParams]);
 
     useEffect(() => {
         setSelectedRows([]);
@@ -244,62 +215,6 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
             window.location.href = url;
         } catch (e) {
             message.error('Lỗi khi tạo URL kết nối Google');
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleSaveToken = async (code: string) => {
-        setLoading(true);
-
-        try {
-            const tokens = await exchangeCodeForTokens(
-                code,
-                process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URI as string,
-            );
-
-            if (!tokens) {
-                message.error('Lỗi khi lấy token Google');
-                return;
-            }
-
-            syncGoogleAuth({
-                method: 'put',
-                url: `${apiUrl}/google-auth`,
-                values: {
-                    accessToken: tokens.access_token,
-                    expiresIn: tokens.expires_in,
-                    scope: tokens.scope,
-                    tokenType: tokens.token_type,
-                    refreshToken: tokens.refresh_token,
-                    refreshTokenExpiresIn: tokens.refresh_token_expires_in,
-                },
-                successNotification: (data) => {
-                    if (!data?.data?.data) {
-                        return {
-                            type: 'error',
-                            message: 'Kết nối Google thất bại',
-                        };
-                    }
-
-                    window.location.href = '/photos';
-
-                    return {
-                        type: 'success',
-                        message: 'Kết nối Google thành công',
-                    };
-                },
-                errorNotification: () => {
-                    setDom(true);
-
-                    return {
-                        type: 'error',
-                        message: 'Kết nối Google thất bại',
-                    };
-                },
-            });
-        } catch (e) {
-            message.error('Lỗi khi kết nối Google');
         } finally {
             setLoading(false);
         }
@@ -652,7 +567,7 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
                 centered: true,
                 footer: renderFooter(),
                 title: 'Đồng bộ Google Drive',
-                loading: isLoadingGoogleAuth || !dom,
+                loading: isLoadingGoogleAuth || loading,
             }}
         >
             {Boolean(googleAuthId) && (

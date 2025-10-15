@@ -4,8 +4,8 @@ import { ElementType, SortOrder, ViewMode } from '@/enums';
 import type { NBaseApi, NGoogle } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { useTable } from '@refinedev/antd';
-import { HttpError, useApiUrl, useCustom, useList } from '@refinedev/core';
-import { Button, Input, Space } from 'antd';
+import { HttpError, useApiUrl, useCustom, useCustomMutation, useList } from '@refinedev/core';
+import { Button, Input, message, Space } from 'antd';
 import { isNumber } from 'lodash';
 import { FC, useEffect, useMemo, useState } from 'react';
 
@@ -22,19 +22,23 @@ import { CustomElement, PaginationControls } from '@/components/common';
 import PhotoFilter from '@/components/module/photos/PhotoFilter';
 import PhotoGroups from '@/components/module/photos/PhotoGroups';
 import SyncFileGoogleDrive from '@/components/module/photos/SyncGoogleDrive';
+import { useMainContext } from '@/contexts/MainContext';
+import { exchangeCodeForTokens } from '@/libs/googleapis';
+import { useSearchParams } from 'next/navigation';
 
 const PhotosPage: FC = () => {
     const apiUrl = useApiUrl();
+    const searchParams = useSearchParams();
+
+    const { handleLoading } = useMainContext();
 
     const [columns, setColumns] = useState(4);
-
     const [isOpenFilter, setIsOpenFilter] = useState(false);
     const [searchQuery, setSearchQuery] = useState<string>();
+    const [isOpenSyncFile, setIsOpenSyncFile] = useState(false);
     const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.ALL);
     const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.NEWEST);
     const [filterFolder, setFilterFolder] = useState<string | undefined>(undefined);
-
-    const [isOpenSyncFile, setIsOpenSyncFile] = useState(false);
 
     const [isLightboxOpen, setIsLightboxOpen] = useState<boolean>(false);
     const [slideshowInterval, setSlideshowInterval] = useState<number>(5);
@@ -74,6 +78,8 @@ const PhotosPage: FC = () => {
         },
     });
 
+    const { mutate: syncGoogleAuth } = useCustomMutation<NBaseApi.IResponse<boolean>>();
+
     const allPhotos = useMemo(() => {
         return tableQuery?.data?.data ?? [];
     }, [tableQuery?.data?.data]);
@@ -94,6 +100,76 @@ const PhotosPage: FC = () => {
 
         updateColumns();
     }, []);
+
+    useEffect(() => {
+        if (!searchParams) return;
+
+        const code = searchParams.get('code');
+        const error = searchParams.get('error');
+
+        if (error) {
+            message.error('Kết nối Google thất bại');
+            return;
+        }
+
+        if (code) {
+            handleSaveToken(code as string);
+        }
+    }, [searchParams]);
+
+    const handleSaveToken = async (code: string) => {
+        handleLoading(true);
+
+        try {
+            const tokens = await exchangeCodeForTokens(
+                code,
+                process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URI as string,
+            );
+
+            if (!tokens) {
+                message.error('Lỗi khi lấy token Google');
+                return;
+            }
+
+            syncGoogleAuth({
+                method: 'put',
+                url: `${apiUrl}/google-auth`,
+                values: {
+                    accessToken: tokens.access_token,
+                    expiresIn: tokens.expires_in,
+                    scope: tokens.scope,
+                    tokenType: tokens.token_type,
+                    refreshToken: tokens.refresh_token,
+                    refreshTokenExpiresIn: tokens.refresh_token_expires_in,
+                },
+                successNotification: (data) => {
+                    if (!data?.data?.data) {
+                        return {
+                            type: 'error',
+                            message: 'Kết nối Google thất bại',
+                        };
+                    }
+
+                    window.location.href = '/photos';
+
+                    return {
+                        type: 'success',
+                        message: 'Kết nối Google thành công',
+                    };
+                },
+                errorNotification: () => {
+                    return {
+                        type: 'error',
+                        message: 'Kết nối Google thất bại',
+                    };
+                },
+            });
+        } catch (e) {
+            message.error('Lỗi khi kết nối Google');
+        } finally {
+            handleLoading(false);
+        }
+    };
 
     const startSlideshow = () => {
         setIsLightboxOpen(true);
