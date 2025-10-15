@@ -44,7 +44,7 @@ const PhotosPage: FC = () => {
         HttpError,
         Partial<NGoogle.IGoogleDriveFile>
     >({
-        resource: 'google-drive',
+        resource: 'google-drive/files',
         syncWithLocation: false,
         pagination: {
             pageSize: 10,

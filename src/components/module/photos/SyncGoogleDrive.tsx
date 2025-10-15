@@ -1,7 +1,7 @@
 'use client';
 
 import { CustomModal } from '@/components/common';
-import { GoogleDriveType } from '@/enums';
+import { GoogleDriveFileType, GoogleDriveType } from '@/enums';
 import { NBaseApi, NGoogle } from '@/interfaces';
 import { exchangeCodeForTokens, getGoogleAuthUrl, isExpiredToken } from '@/libs';
 import { Icon } from '@iconify/react';
@@ -24,6 +24,7 @@ import {
     StepProps,
     Steps,
     Table,
+    Tag,
 } from 'antd';
 import { ColumnType, TableProps } from 'antd/es/table';
 import Link from 'next/link';
@@ -57,9 +58,12 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
 
     const [form] = Form.useForm();
 
+    const [dom, setDom] = useState(false);
     const [loading, setLoading] = useState(false);
+
     const [type, setType] = useState(GoogleDriveType.FILE);
     const [currentStep, setCurrentStep] = useState(StepEnum.Settings);
+    const [fileTypes, setFileTypes] = useState<GoogleDriveFileType[]>([]);
     const [folderId, setFolderId] = useState<string | undefined>(undefined);
     const [googleAuthId, setGoogleAuthId] = useState<string | undefined>(undefined);
 
@@ -67,8 +71,6 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
     const [totalSize, setTotalSize] = useState(0);
     const [totalCount, setTotalCount] = useState(0);
     const [previewData, setPreviewData] = useState<NGoogle.IGoogleDrivePreviewItem[]>([]);
-
-    const [selectedRowKeys, setSelectedRowKeys] = useState<Key[]>([]);
     const [selectedRows, setSelectedRows] = useState<NGoogle.IGoogleDrivePreviewItem[]>([]);
 
     useEffect(() => {
@@ -84,18 +86,27 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
         } else {
             setGoogleAuthId(undefined);
         }
+
+        setDom(true);
     }, [googleAuth]);
 
     useEffect(() => {
-        if (!searchParams) return;
+        if (!searchParams) {
+            setDom(true);
+            return;
+        }
 
         const code = searchParams.get('code');
         const error = searchParams.get('error');
 
         if (error) {
+            setDom(true);
             message.error('Kết nối Google thất bại');
+
             return;
         }
+
+        setDom(false);
 
         if (code) {
             handleSaveToken(code as string);
@@ -103,7 +114,6 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
     }, [searchParams]);
 
     useEffect(() => {
-        setSelectedRowKeys([]);
         setSelectedRows([]);
     }, [previewData]);
 
@@ -200,9 +210,8 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
 
     const rowSelection: TableProps<NGoogle.IGoogleDrivePreviewItem>['rowSelection'] = {
         type: 'checkbox',
-        onChange: (selectedRowKeys: Key[], selectedRows: NGoogle.IGoogleDrivePreviewItem[]) => {
+        onChange: (_: Key[], selectedRows: NGoogle.IGoogleDrivePreviewItem[]) => {
             setSelectedRows(selectedRows);
-            setSelectedRowKeys(selectedRowKeys);
         },
         getCheckboxProps: (record: NGoogle.IGoogleDrivePreviewItem) => ({
             name: record.name,
@@ -269,6 +278,8 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
                     };
                 },
                 errorNotification: () => {
+                    setDom(true);
+
                     return {
                         type: 'error',
                         message: 'Kết nối Google thất bại',
@@ -306,12 +317,9 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
                 method: 'post',
                 url: `${apiUrl}/google-drive/preview-data-sync`,
                 values: {
+                    ...values,
                     type,
                     googleAuthId,
-                    folderId: values.folderId,
-                    pageSize: values.pageSize,
-                    query: values.customQuery,
-                    maxResults: values.maxResults,
                 },
                 successNotification: (data) => {
                     setLoading(false);
@@ -499,7 +507,7 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
                                 onChange={(value) => setType(value as GoogleDriveType)}
                                 options={Object.values(GoogleDriveType).map((type) => ({
                                     value: type,
-                                    label: type?.toLocaleUpperCase(),
+                                    label: type?.toUpperCase(),
                                 }))}
                             />
                         </Form.Item>
@@ -531,6 +539,17 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
                                 </Form.Item>
                             </Col>
                         </Row>
+                        <Form.Item name="fileTypes" label="Loại tệp">
+                            <Select
+                                mode="multiple"
+                                placeholder="Loại tệp"
+                                onChange={(value) => setFileTypes(value as GoogleDriveFileType[])}
+                                options={Object.values(GoogleDriveFileType).map((type) => ({
+                                    value: type,
+                                    label: type?.toUpperCase(),
+                                }))}
+                            />
+                        </Form.Item>
                         <Form.Item name="customQuery" label="Chỉnh sửa tìm kiếm">
                             <Input.TextArea placeholder="Chỉnh sửa tìm kiếm" rows={4} />
                         </Form.Item>
@@ -542,22 +561,27 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
                 return (
                     <Spin spinning={loading}>
                         <Card className="shadow-sm" variant="borderless">
-                            <div className="grid grid-cols-3 gap-6">
+                            <div className="grid grid-cols-4 gap-6">
                                 <Card className="text-center bg-blue-50 border-blue-200">
+                                    <p className="text-sm text-gray-600 font-bold mt-1">
+                                        Tổng số lượng
+                                    </p>
                                     <div className="text-blue-600 text-2xl font-bold">
                                         {totalCount ?? 0}
                                     </div>
-                                    <div className="text-sm text-gray-600 mt-1">Tổng số lượng</div>
                                 </Card>
                                 <Card className="text-center bg-blue-50 border-blue-200">
+                                    <p className="text-sm text-gray-600 font-bold mt-1">
+                                        Tổng kích thước
+                                    </p>
                                     <div className="text-blue-600 text-2xl font-bold">
                                         {totalSize ?? 0}
                                     </div>
-                                    <div className="text-sm text-gray-600 mt-1">
-                                        Tổng kích thước
-                                    </div>
                                 </Card>
                                 <Card className="text-center bg-green-50 border-green-200">
+                                    <p className="text-sm text-gray-600 font-bold mt-1">
+                                        Có thêm dữ liệu
+                                    </p>
                                     <div className="text-green-600 text-2xl flex items-center justify-center">
                                         {hasMore ? (
                                             <Icon icon="lucide:check" />
@@ -565,8 +589,17 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
                                             <Icon icon="lucide:x" />
                                         )}
                                     </div>
-                                    <div className="text-sm text-gray-600 mt-1">
-                                        Có thêm dữ liệu
+                                </Card>
+                                <Card className="text-center bg-purple-50 border-purple-200">
+                                    <p className="text-sm text-gray-600 font-bold mt-1">
+                                        Loại file
+                                    </p>
+                                    <div className="flex flex-wrap justify-center gap-2 my-2">
+                                        {fileTypes?.map((mime) => (
+                                            <Tag color="blue" key={mime}>
+                                                {mime?.toUpperCase()}
+                                            </Tag>
+                                        ))}
                                     </div>
                                 </Card>
                             </div>
@@ -596,8 +629,8 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
                 width: 1200,
                 centered: true,
                 footer: renderFooter(),
-                loading: isLoadingGoogleAuth,
                 title: 'Đồng bộ Google Drive',
+                loading: isLoadingGoogleAuth || !dom,
             }}
         >
             {Boolean(googleAuthId) && (
