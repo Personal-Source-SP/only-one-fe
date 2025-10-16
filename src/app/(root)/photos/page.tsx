@@ -1,6 +1,6 @@
 'use client';
 
-import { ElementType, GoogleDriveFileType, ViewMode } from '@/enums';
+import { ElementType, GoogleDriveFileType, QualityMode, ViewMode } from '@/enums';
 import type { NBaseApi, NGoogle } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { useTable } from '@refinedev/antd';
@@ -24,7 +24,12 @@ import SyncFileGoogleDrive from '@/components/module/photos/SyncGoogleDrive';
 
 import { useMainContext } from '@/contexts/MainContext';
 import { useDebounceSearch } from '@/hooks/useDebounceSearch';
-import { exchangeCodeForTokens, getProxyUrl, getUserInfoFromGoogle, isExpiredToken } from '@/libs';
+import {
+    exchangeCodeForTokens,
+    getDriveImageUrl,
+    getUserInfoFromGoogle,
+    isExpiredToken,
+} from '@/libs';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 const PhotosPage: FC = () => {
@@ -38,10 +43,12 @@ const PhotosPage: FC = () => {
 
     const [columns, setColumns] = useState(4);
     const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.ALL);
+    const [qualityMode, setQualityMode] = useState<QualityMode>(QualityMode.LOW);
 
     const [isOpenSyncFile, setIsOpenSyncFile] = useState(false);
     const [isLightboxOpen, setIsLightboxOpen] = useState<boolean>(false);
     const [slideshowInterval, setSlideshowInterval] = useState<number>(5);
+    const [currentPhotoIndex, setCurrentPhotoIndex] = useState<number>(0);
 
     const { currentPage, setCurrentPage, pageSize, setPageSize, setFilters, tableQuery } = useTable<
         NGoogle.IGoogleDriveFile,
@@ -230,16 +237,16 @@ const PhotosPage: FC = () => {
     };
 
     const openLightbox = (index: number) => {
-        setCurrentPage(index);
         setIsLightboxOpen(true);
+        setCurrentPhotoIndex(index);
     };
 
     const closeLightbox = () => {
         setIsLightboxOpen(false);
     };
 
-    const handlePhotoClick = (url: string) => {
-        const index = googleDriveFiles?.findIndex((photo) => photo.thumbnailLink === url);
+    const handlePhotoClick = (googleDriveFileId: string) => {
+        const index = googleDriveFiles?.findIndex((photo) => photo.id === googleDriveFileId);
         if (isNumber(index)) {
             openLightbox(index ?? 0);
         }
@@ -248,7 +255,7 @@ const PhotosPage: FC = () => {
     const renderSectionFilters = () => {
         return (
             <Row gutter={[16, 8]} className="py-3">
-                <Col span={18}>
+                <Col span={14}>
                     <Input
                         placeholder="Tìm kiếm ảnh của bạn..."
                         onChange={(e) => debouncedSearch(e.target.value.trim())}
@@ -275,6 +282,17 @@ const PhotosPage: FC = () => {
                             { value: ViewMode.ALL, label: 'Xem tất cả' },
                             { value: ViewMode.DATE, label: 'Xem theo ngày' },
                             { value: ViewMode.FOLDER, label: 'Xem theo thư mục' },
+                        ]}
+                    />
+                </Col>
+                <Col span={4}>
+                    <Select
+                        value={qualityMode}
+                        placeholder="Độ nét"
+                        onChange={(value) => setQualityMode(value)}
+                        options={[
+                            { value: QualityMode.HIGH, label: 'Nét' },
+                            { value: QualityMode.LOW, label: 'Thường' },
                         ]}
                     />
                 </Col>
@@ -353,6 +371,7 @@ const PhotosPage: FC = () => {
                     <PhotoGroups
                         columns={columns}
                         displayMode={viewMode}
+                        qualityMode={qualityMode}
                         onPhotoClick={handlePhotoClick}
                         googleDriveFiles={googleDriveFiles}
                     />
@@ -360,12 +379,12 @@ const PhotosPage: FC = () => {
             </CustomElement>
 
             <Lightbox
-                index={currentPage}
                 open={isLightboxOpen}
+                index={currentPhotoIndex}
                 slideshow={{ delay: slideshowInterval * 1000 }}
                 plugins={[Fullscreen, Slideshow, Thumbnails, Zoom]}
                 slides={(googleDriveFiles || [])?.map((p) => ({
-                    src: getProxyUrl(p.webContentLink || p.thumbnailLink || ''),
+                    src: getDriveImageUrl(p, qualityMode),
                 }))}
                 close={() => {
                     closeLightbox();

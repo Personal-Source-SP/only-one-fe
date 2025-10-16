@@ -15,3 +15,8 @@ export enum PhotoItemsPerPage {
     FIFTY = 50,
     HUNDRED = 100,
 }
+
+export enum QualityMode {
+    HIGH = 'high',
+    LOW = 'low',
+}

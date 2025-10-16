@@ -1,9 +1,9 @@
 'use client';
 
-import { GoogleDriveFileType } from '@/enums';
+import { GoogleDriveFileType, QualityMode } from '@/enums';
 import { ViewMode } from '@/enums/photo.enum';
 import { NGoogle } from '@/interfaces';
-import { getProxyUrl } from '@/libs';
+import { getDriveImageUrl } from '@/libs';
 import { List, Spin, Tag } from 'antd';
 import Image from 'next/image';
 import { FC, memo, useMemo, useState } from 'react';
@@ -25,13 +25,15 @@ type PhotoGroup = {
 type PhotoGroupsProps = {
     columns: number;
     displayMode: ViewMode;
+    qualityMode: QualityMode;
     googleDriveFiles: NGoogle.IGoogleDriveFile[];
-    onPhotoClick: (url: string) => void;
+    onPhotoClick: (googleDriveFileId: string) => void;
 };
 
 const PhotoGroups: FC<PhotoGroupsProps> = ({
     columns,
     displayMode,
+    qualityMode,
     googleDriveFiles,
     onPhotoClick,
 }) => {
@@ -52,8 +54,7 @@ const PhotoGroups: FC<PhotoGroupsProps> = ({
                     {
                         photos: photoFiles.map((file) => ({
                             id: file.id,
-                            url:
-                                file.thumbnailLink || file.webContentLink || file.webViewLink || '',
+                            url: getDriveImageUrl(file, qualityMode),
                         })),
                     },
                 ];
@@ -71,8 +72,7 @@ const PhotoGroups: FC<PhotoGroupsProps> = ({
 
                         groups[date].push({
                             id: file.id,
-                            url:
-                                file.thumbnailLink || file.webContentLink || file.webViewLink || '',
+                            url: getDriveImageUrl(file, qualityMode),
                         });
 
                         return groups;
@@ -96,8 +96,7 @@ const PhotoGroups: FC<PhotoGroupsProps> = ({
 
                         groups[folderName].push({
                             id: file.id,
-                            url:
-                                file.thumbnailLink || file.webContentLink || file.webViewLink || '',
+                            url: getDriveImageUrl(file, qualityMode),
                         });
 
                         return groups;
@@ -113,7 +112,7 @@ const PhotoGroups: FC<PhotoGroupsProps> = ({
             default:
                 return [];
         }
-    }, [displayMode, googleDriveFiles]);
+    }, [displayMode, googleDriveFiles, qualityMode]);
 
     const allPhotos = useMemo(
         () =>
@@ -176,7 +175,7 @@ const PhotoGroups: FC<PhotoGroupsProps> = ({
                     {allPhotos.map((photo) => (
                         <div
                             key={photo.id}
-                            onClick={() => onPhotoClick(photo.url)}
+                            onClick={() => onPhotoClick(photo.id)}
                             className="relative aspect-[4/3] rounded-md overflow-hidden cursor-pointer hover:opacity-90 transition-all hover:shadow-md bg-gray-100"
                         >
                             {loadingImages.has(photo.id) && (
@@ -189,9 +188,9 @@ const PhotoGroups: FC<PhotoGroupsProps> = ({
                                 fill
                                 priority
                                 unoptimized
+                                src={photo.url}
                                 className="object-cover"
                                 alt={`Photo ${photo.id}`}
-                                src={getProxyUrl(photo.url)}
                                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                 onLoadStart={() => {
                                     setLoadingImages((prev) => new Set(prev).add(photo.id));
@@ -234,7 +233,7 @@ const PhotoGroups: FC<PhotoGroupsProps> = ({
                             {group.photos.map((photo) => (
                                 <div
                                     key={photo.id}
-                                    onClick={() => onPhotoClick(photo.url)}
+                                    onClick={() => onPhotoClick(photo.id)}
                                     className="relative aspect-[4/3] rounded-md overflow-hidden cursor-pointer hover:opacity-90 transition-all hover:shadow-md bg-gray-100"
                                 >
                                     {loadingImages.has(photo.id) && (
@@ -246,9 +245,9 @@ const PhotoGroups: FC<PhotoGroupsProps> = ({
                                         fill
                                         priority
                                         unoptimized
+                                        src={photo.url}
                                         className="object-cover"
                                         alt={`Photo ${photo.id}`}
-                                        src={getProxyUrl(photo.url)}
                                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                         onLoadStart={() => {
                                             setLoadingImages((prev) => new Set(prev).add(photo.id));
