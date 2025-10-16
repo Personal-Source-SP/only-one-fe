@@ -51,7 +51,7 @@ const PhotosPage: FC = () => {
         resource: 'google-drive/files',
         syncWithLocation: false,
         pagination: {
-            pageSize: 10,
+            pageSize: 30,
             mode: 'server',
         },
         sorters: {
@@ -293,6 +293,7 @@ const PhotosPage: FC = () => {
                 <SyncFileGoogleDrive
                     folderOptions={folderOptions}
                     isLoadingGoogleAuth={query?.isLoading}
+                    onSuccess={() => tableQuery?.refetch()}
                     onClose={() => setIsOpenSyncFile(false)}
                     googleAuth={googleAuth?.data?.data ?? undefined}
                 />

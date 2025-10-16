@@ -40,18 +40,20 @@ const StepEnum = {
     Done: 2,
 };
 
-export type SyncFileGoogleDriveProps = {
-    onClose: (isOpen: boolean) => void;
+type SyncFileGoogleDriveProps = {
     folderOptions?: Option[];
     isLoadingGoogleAuth?: boolean;
     googleAuth?: NGoogle.IGoogleAuth;
+    onClose: () => void;
+    onSuccess: () => void;
 };
 
 const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
-    onClose,
     folderOptions,
-    googleAuth,
     isLoadingGoogleAuth,
+    googleAuth,
+    onSuccess,
+    onClose,
 }) => {
     const apiUrl = useApiUrl();
 
@@ -497,11 +499,7 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
         if (!googleAuthId) {
             return (
                 <Flex justify="space-between" align="center" gap={16}>
-                    <Button
-                        className="w-full"
-                        onClick={() => onClose(false)}
-                        icon={<Icon icon="lucide:x" />}
-                    >
+                    <Button onClick={onClose} className="w-full" icon={<Icon icon="lucide:x" />}>
                         <span>Đóng</span>
                     </Button>
                     <Button
@@ -521,7 +519,13 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
                 <Button
                     className="w-full"
                     icon={<Icon icon="lucide:x" />}
-                    onClick={() => onClose(false)}
+                    onClick={() => {
+                        onClose();
+
+                        if (currentStep === StepEnum.Done) {
+                            onSuccess();
+                        }
+                    }}
                 >
                     <span>Đóng</span>
                 </Button>
