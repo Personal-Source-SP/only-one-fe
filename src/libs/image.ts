@@ -14,7 +14,7 @@ export const getDriveImageUrl = (
 
     switch (qualityMode) {
         case QualityMode.HIGH: {
-            url = googleDriveFile.webContentLink || '';
+            url = googleDriveFile.webViewLink || '';
             break;
         }
         case QualityMode.LOW: {

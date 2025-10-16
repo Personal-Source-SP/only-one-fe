@@ -47,7 +47,7 @@ const PhotosPage: FC = () => {
 
     const [isOpenSyncFile, setIsOpenSyncFile] = useState(false);
     const [isLightboxOpen, setIsLightboxOpen] = useState<boolean>(false);
-    const [slideshowInterval, setSlideshowInterval] = useState<number>(5);
+    const [slideshowInterval, setSlideshowInterval] = useState<number>(3);
     const [currentPhotoIndex, setCurrentPhotoIndex] = useState<number>(0);
 
     const { currentPage, setCurrentPage, pageSize, setPageSize, setFilters, tableQuery } = useTable<
@@ -384,7 +384,7 @@ const PhotosPage: FC = () => {
                 slideshow={{ delay: slideshowInterval * 1000 }}
                 plugins={[Fullscreen, Slideshow, Thumbnails, Zoom]}
                 slides={(googleDriveFiles || [])?.map((p) => ({
-                    src: getDriveImageUrl(p, qualityMode),
+                    src: getDriveImageUrl(p, QualityMode.LOW),
                 }))}
                 close={() => {
                     closeLightbox();
