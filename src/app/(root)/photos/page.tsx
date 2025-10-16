@@ -4,7 +4,7 @@ import { ElementType, SortOrder, ViewMode } from '@/enums';
 import type { NBaseApi, NGoogle } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { useTable } from '@refinedev/antd';
-import { HttpError, useApiUrl, useCustom, useCustomMutation, useList } from '@refinedev/core';
+import { HttpError, useApiUrl, useCustom, useCustomMutation, useSelect } from '@refinedev/core';
 import { Button, Input, message, Space } from 'antd';
 import { isNumber } from 'lodash';
 import { FC, useEffect, useMemo, useState } from 'react';
@@ -18,7 +18,6 @@ import Zoom from 'yet-another-react-lightbox/plugins/zoom';
 import 'yet-another-react-lightbox/styles.css';
 
 import { CustomElement, PaginationControls } from '@/components/common';
-import { Option } from '@/interfaces';
 
 import PhotoFilter from '@/components/module/photos/PhotoFilter';
 import PhotoGroups from '@/components/module/photos/PhotoGroups';
@@ -61,16 +60,15 @@ const PhotosPage: FC = () => {
         },
     });
 
-    const { result: googleDriveFolders } = useList({
-        resource: 'google-drive/folders/all',
-        queryOptions: {
-            enabled: true,
-        },
-        pagination: {
-            pageSize: 1000,
-            mode: 'off' as const,
-        },
-    });
+    const { options: folderOptions, query: queryFolderOptions } =
+        useSelect<NGoogle.IGoogleDriveFolder>({
+            resource: 'google-drive/folders/all',
+            optionValue: (item: NGoogle.IGoogleDriveFolder) => item.id,
+            optionLabel: (item: NGoogle.IGoogleDriveFolder) => item.name,
+            queryOptions: {
+                enabled: false,
+            },
+        });
 
     const { result: googleAuth, query } = useCustom<NBaseApi.IResponse<NGoogle.IGoogleAuth>>({
         url: `${apiUrl}/google-auth`,
@@ -85,19 +83,6 @@ const PhotosPage: FC = () => {
     const allPhotos = useMemo(() => {
         return tableQuery?.data?.data ?? [];
     }, [tableQuery?.data?.data]);
-
-    const folderOptions = useMemo(() => {
-        if (!googleDriveFolders?.data?.length) return [];
-
-        const options: Option[] = googleDriveFolders?.data?.map((folder) => ({
-            value: folder.googleDriveId,
-            label: folder.name,
-        }));
-
-        return [{ key: ViewMode.ALL, label: 'Tất cả thư mục', value: undefined }, ...options];
-    }, [googleDriveFolders?.data]);
-
-    console.log(folderOptions);
 
     useEffect(() => {
         const updateColumns = () => {
@@ -114,6 +99,7 @@ const PhotosPage: FC = () => {
         window.addEventListener('resize', updateColumns);
 
         updateColumns();
+        queryFolderOptions?.refetch();
     }, []);
 
     useEffect(() => {
@@ -293,19 +279,18 @@ const PhotosPage: FC = () => {
             <Lightbox
                 index={currentPage}
                 open={isLightboxOpen}
+                slideshow={{ delay: slideshowInterval * 1000 }}
                 plugins={[Fullscreen, Slideshow, Thumbnails, Zoom]}
                 // slides={allPhotos?.map((p) => ({ src: p.webContentLink ?? '' }))}
                 close={() => {
                     closeLightbox();
                     stopSlideshow();
                 }}
-                slideshow={{
-                    delay: slideshowInterval * 1000,
-                }}
             />
 
             {isOpenSyncFile && (
                 <SyncFileGoogleDrive
+                    folderOptions={folderOptions}
                     isLoadingGoogleAuth={query?.isLoading}
                     onClose={() => setIsOpenSyncFile(false)}
                     googleAuth={googleAuth?.data?.data ?? undefined}

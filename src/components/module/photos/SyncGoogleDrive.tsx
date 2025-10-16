@@ -2,7 +2,7 @@
 
 import { CustomModal } from '@/components/common';
 import { GoogleDriveFileType, GoogleDriveType } from '@/enums';
-import { NBaseApi, NGoogle } from '@/interfaces';
+import { NBaseApi, NGoogle, Option } from '@/interfaces';
 import { getGoogleAuthUrl, isExpiredToken } from '@/libs';
 import { Icon } from '@iconify/react';
 import { useApiUrl, useCustomMutation } from '@refinedev/core';
@@ -40,12 +40,14 @@ const StepEnum = {
 
 export type SyncFileGoogleDriveProps = {
     onClose: (isOpen: boolean) => void;
+    folderOptions?: Option[];
     isLoadingGoogleAuth?: boolean;
     googleAuth?: NGoogle.IGoogleAuth;
 };
 
 const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
     onClose,
+    folderOptions,
     googleAuth,
     isLoadingGoogleAuth,
 }) => {
@@ -65,6 +67,7 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
     const [folderId, setFolderId] = useState<string | undefined>(undefined);
     const [googleAuthId, setGoogleAuthId] = useState<string | undefined>(undefined);
 
+    const [pageSize, setPageSize] = useState(50);
     const [hasMore, setHasMore] = useState(false);
     const [totalSize, setTotalSize] = useState(0);
     const [totalCount, setTotalCount] = useState(0);
@@ -225,6 +228,7 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
         setHasMore(false);
         setTotalSize(0);
         setTotalCount(0);
+        setPageSize(50);
     };
 
     const handlePreviewData = async () => {
@@ -370,8 +374,14 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
                     ]}
                 >
                     <Select
+                        allowClear
+                        showSearch
                         placeholder="Thư mục"
+                        options={folderOptions}
                         onChange={(value) => setFolderId(value as string)}
+                        filterOption={(input, option) =>
+                            (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                        }
                     />
                 </Form.Item>
                 <Row gutter={16}>
@@ -455,8 +465,15 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
                     rowKey="googleDriveId"
                     rowSelection={rowSelection}
                     dataSource={previewData || []}
-                    pagination={{ pageSize: 50, showSizeChanger: true }}
                     columns={columns as ColumnType<NGoogle.IGoogleDrivePreviewItem>[]}
+                    pagination={{
+                        pageSize,
+                        showSizeChanger: true,
+                        pageSizeOptions: ['10', '20', '50', '100', '200', '500'],
+                        onChange: (_, pageSize) => {
+                            setPageSize(pageSize);
+                        },
+                    }}
                 />
             </Space>
         );

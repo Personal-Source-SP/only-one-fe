@@ -64,9 +64,10 @@ export declare namespace NGoogle {
     }
 
     interface IGoogleDriveFolder {
+        id: string;
+        name: string;
         googleAuthId: string;
         googleDriveId: string;
-        name: string;
 
         parentFolderId?: string;
         lastModified?: Date;

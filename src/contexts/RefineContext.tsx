@@ -1,6 +1,5 @@
 'use client';
 
-import { checkTokenExpired } from '@/app/api/auth/[...nextauth]/auth-options';
 import { Loading, UnsavedChangesNotifierAppRouter } from '@/components/common';
 import { AUTH_PUBLIC_PAGES } from '@/constants';
 import { ColorModeContextProvider } from '@/contexts/ColorModeContext';
@@ -13,7 +12,6 @@ import routerProvider from '@refinedev/nextjs-router';
 import dayjs from 'dayjs';
 import { Session } from 'next-auth';
 import { SessionProvider, signIn, signOut, useSession } from 'next-auth/react';
-import { env } from 'next-runtime-env';
 import { usePathname, useRouter } from 'next/navigation';
 import { PropsWithChildren, useEffect, useState } from 'react';
 
@@ -29,11 +27,10 @@ type AppProps = {
 const App = ({ children, defaultMode }: PropsWithChildren<AppProps>) => {
     const { data: session, status } = useSession();
 
-    const apiUrl = env('NEXT_PUBLIC_API_URL') || 'http://localhost:3003/api/v1';
-
     const to = usePathname();
     const router = useRouter();
     const isAuthPublicPage = AUTH_PUBLIC_PAGES.includes(to);
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL as string;
 
     const [isDomLoaded, setIsDomLoaded] = useState(false);
 
