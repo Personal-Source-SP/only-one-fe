@@ -4,7 +4,7 @@ import { ElementType, GoogleDriveFileType, SortOrder, ViewMode } from '@/enums';
 import type { NBaseApi, NGoogle } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { useTable } from '@refinedev/antd';
-import { HttpError, useApiUrl, useCustom, useCustomMutation, useSelect } from '@refinedev/core';
+import { HttpError, useApiUrl, useCustomMutation } from '@refinedev/core';
 import { Button, Input, message, Space } from 'antd';
 import { isNumber } from 'lodash';
 import { FC, useEffect, useMemo, useRef, useState } from 'react';
@@ -68,24 +68,6 @@ const PhotosPage: FC = () => {
         },
     });
 
-    const { options: folderOptions, query: queryFolderOptions } =
-        useSelect<NGoogle.IGoogleDriveFolder>({
-            resource: 'google-drive/folders/all',
-            optionValue: (item: NGoogle.IGoogleDriveFolder) => item.id,
-            optionLabel: (item: NGoogle.IGoogleDriveFolder) => item.name,
-            queryOptions: {
-                enabled: false,
-            },
-        });
-
-    const { result: googleAuths, query } = useCustom<NBaseApi.IResponse<NGoogle.IGoogleAuth[]>>({
-        url: `${apiUrl}/google-auth`,
-        method: 'get',
-        queryOptions: {
-            enabled: isOpenSyncFile,
-        },
-    });
-
     const { mutate: syncGoogleAuth } = useCustomMutation<NBaseApi.IResponse<boolean>>();
 
     const allPhotos = useMemo(() => {
@@ -107,7 +89,6 @@ const PhotosPage: FC = () => {
         window.addEventListener('resize', updateColumns);
 
         updateColumns();
-        queryFolderOptions?.refetch();
     }, []);
 
     useEffect(() => {
@@ -312,11 +293,8 @@ const PhotosPage: FC = () => {
 
             {isOpenSyncFile && (
                 <SyncFileGoogleDrive
-                    folderOptions={folderOptions}
-                    isLoadingGoogleAuth={query?.isLoading}
                     onSuccess={() => tableQuery?.refetch()}
                     onClose={() => setIsOpenSyncFile(false)}
-                    googleAuths={googleAuths?.data?.data ?? undefined}
                 />
             )}
         </Space>

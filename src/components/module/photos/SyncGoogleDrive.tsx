@@ -2,10 +2,10 @@
 
 import { CustomModal } from '@/components/common';
 import { GoogleDriveFileType, GoogleDriveType } from '@/enums';
-import { NBaseApi, NGoogle, Option } from '@/interfaces';
+import { NBaseApi, NGoogle } from '@/interfaces';
 import { getGoogleAuthUrl } from '@/libs';
 import { Icon } from '@iconify/react';
-import { useApiUrl, useCustomMutation } from '@refinedev/core';
+import { useApiUrl, useCustom, useCustomMutation, useSelect } from '@refinedev/core';
 import {
     Button,
     Card,
@@ -32,7 +32,7 @@ import {
 import { ColumnType, TableProps } from 'antd/es/table';
 import dayjs from 'dayjs';
 import Link from 'next/link';
-import { FC, memo, useEffect, useState, type Key } from 'react';
+import { FC, memo, useEffect, useMemo, useState, type Key } from 'react';
 
 const StepEnum = {
     Settings: 0,
@@ -52,21 +52,32 @@ const FieldsEnum = {
 };
 
 type SyncFileGoogleDriveProps = {
-    folderOptions?: Option[];
-    isLoadingGoogleAuth?: boolean;
-    googleAuths?: NGoogle.IGoogleAuth[];
     onClose: () => void;
     onSuccess: () => void;
 };
 
-const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
-    folderOptions,
-    isLoadingGoogleAuth,
-    googleAuths,
-    onSuccess,
-    onClose,
-}) => {
+const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({ onSuccess, onClose }) => {
     const apiUrl = useApiUrl();
+
+    const { result: googleAuthsResult, query: queryGoogleAuths } = useCustom<
+        NBaseApi.IResponse<NGoogle.IGoogleAuth[]>
+    >({
+        url: `${apiUrl}/google-auth`,
+        method: 'get',
+        queryOptions: {
+            enabled: false,
+        },
+    });
+
+    const { options: folderOptions, query: queryFolderOptions } =
+        useSelect<NGoogle.IGoogleDriveFolder>({
+            resource: 'google-drive/folders/all',
+            optionValue: (item: NGoogle.IGoogleDriveFolder) => item.id,
+            optionLabel: (item: NGoogle.IGoogleDriveFolder) => item.name,
+            queryOptions: {
+                enabled: false,
+            },
+        });
 
     const { mutate: syncGoogleDrive } = useCustomMutation<NBaseApi.IResponse<boolean>>();
     const { mutate: previewGoogleDrive } =
@@ -93,11 +104,24 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
     const [previewData, setPreviewData] = useState<NGoogle.IGoogleDrivePreviewItem[]>([]);
     const [selectedRows, setSelectedRows] = useState<NGoogle.IGoogleDrivePreviewItem[]>([]);
 
+    const googleAuths = useMemo(
+        () => googleAuthsResult?.data?.data ?? [],
+        [googleAuthsResult?.data?.data],
+    );
+
+    useEffect(() => {
+        queryGoogleAuths?.refetch();
+        queryFolderOptions?.refetch();
+    }, []);
+
     useEffect(() => {
         if (!googleAuths?.length) {
             setIsActiveGoogleAuth(false);
         } else {
             setIsActiveGoogleAuth(true);
+            setGoogleAuthId(googleAuths?.[0]?.id);
+            setSelectedEmail(googleAuths?.[0]?.email);
+            setGoogleExpiresAt(googleAuths?.[0]?.googleExpiresAt);
         }
     }, [googleAuths]);
 
@@ -257,13 +281,9 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
 
         try {
             previewGoogleDrive({
+                values,
                 method: 'post',
                 url: `${apiUrl}/google-drive/preview-data-sync`,
-                values: {
-                    ...values,
-                    type,
-                    googleAuthId,
-                },
                 successNotification: (data) => {
                     setLoading(false);
 
@@ -648,15 +668,25 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
                 width: 1200,
                 centered: true,
                 footer: renderFooter(),
-                loading: isLoadingGoogleAuth,
                 title: 'Đồng bộ Google Drive',
+                loading: queryGoogleAuths?.isLoading || queryFolderOptions?.isLoading,
             }}
         >
             <Spin spinning={loading}>
                 {isActiveGoogleAuth && (
                     <Space direction="vertical" className="w-full h-full px-3 overflow-x-hidden">
                         {Boolean(googleExpiresAt && selectedEmail) && (
-                            <Card className="mb-4 bg-amber-50 border-amber-200" size="small">
+                            <Card
+                                size="small"
+                                className="mb-4 bg-amber-50 border-amber-200 text-md font-bold"
+                            >
+                                <Flex justify="space-between" align="center">
+                                    <Space size="small">
+                                        <Icon icon="lucide:mail" />
+                                        <span>Email được chọn:</span>
+                                    </Space>
+                                    <span className="text-blue-600">{selectedEmail}</span>
+                                </Flex>
                                 <Flex justify="space-between" align="center">
                                     <Space size="small">
                                         <Icon icon="lucide:timer" />
@@ -664,7 +694,7 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
                                     </Space>
                                     <Statistic.Countdown
                                         format="HH:mm:ss"
-                                        value={dayjs(googleExpiresAt).diff(dayjs(), 'seconds')}
+                                        value={new Date(googleExpiresAt as Date).getTime()}
                                         onFinish={() => {
                                             setGoogleAuthId(undefined);
                                             setSelectedEmail(undefined);
@@ -674,15 +704,6 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
                                             message.info('Token đã hết hạn. Vui lòng kết nối lại.');
                                         }}
                                     />
-                                </Flex>
-                                <Flex justify="space-between" align="center">
-                                    <Space size="small">
-                                        <Icon icon="lucide:mail" />
-                                        <span>Email được chọn:</span>
-                                    </Space>
-                                    <span className="font-semibold text-blue-600">
-                                        {selectedEmail}
-                                    </span>
                                 </Flex>
                             </Card>
                         )}
