@@ -34,6 +34,8 @@ export const KEY_LOCAL_STORAGE = {
 export const GOOGLE_SCOPES = [
     'https://www.googleapis.com/auth/drive.metadata.readonly', // Đọc metadata file & thư mục
     'https://www.googleapis.com/auth/drive.readonly', // Truy cập chỉ-đọc vào tất cả file, thư mục
+    'email', // Lấy địa chỉ email của người dùng
+    'profile', // Lấy thông tin profile cơ bản của người dùng (tên, avatar, ...)
 ];
 
 export const AUTH_PUBLIC_PAGES = ['/login', '/register', '/forget-password'];

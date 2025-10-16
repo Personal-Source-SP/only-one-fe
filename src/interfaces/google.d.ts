@@ -8,6 +8,16 @@ export declare namespace NGoogle {
         refresh_token_expires_in?: number;
     }
 
+    interface IGoogleUserInfo {
+        id: string;
+        email: string;
+        verified_email: boolean;
+        name: string;
+        given_name: string;
+        family_name: string;
+        picture: string;
+    }
+
     interface IGoogleDrivePreviewItem {
         name: string;
         googleDriveId: string;
@@ -32,14 +42,15 @@ export declare namespace NGoogle {
 
     interface IGoogleAuth {
         id: string;
+        email: string;
         userId: string;
-        googleAccessToken: string;
-        googleExpiresAt: Date;
         isActive: boolean;
+        googleExpiresAt: Date;
+        googleAccessToken: string;
 
-        googleRefreshToken?: string;
         googleScope?: string;
         googleTokenType?: string;
+        googleRefreshToken?: string;
     }
 
     interface IGoogleDriveFile {

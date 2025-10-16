@@ -7,7 +7,7 @@ import { useTable } from '@refinedev/antd';
 import { HttpError, useApiUrl, useCustom, useCustomMutation, useSelect } from '@refinedev/core';
 import { Button, Input, message, Space } from 'antd';
 import { isNumber } from 'lodash';
-import { FC, useEffect, useMemo, useState } from 'react';
+import { FC, useEffect, useMemo, useRef, useState } from 'react';
 
 import Lightbox from 'yet-another-react-lightbox';
 import Fullscreen from 'yet-another-react-lightbox/plugins/fullscreen';
@@ -23,11 +23,14 @@ import PhotoFilter from '@/components/module/photos/PhotoFilter';
 import PhotoGroups from '@/components/module/photos/PhotoGroups';
 import SyncFileGoogleDrive from '@/components/module/photos/SyncGoogleDrive';
 import { useMainContext } from '@/contexts/MainContext';
-import { exchangeCodeForTokens } from '@/libs/googleapis';
-import { useSearchParams } from 'next/navigation';
+import { exchangeCodeForTokens, getUserInfoFromGoogle } from '@/libs/googleapis';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 const PhotosPage: FC = () => {
     const apiUrl = useApiUrl();
+    const router = useRouter();
+    const pathname = usePathname();
+    const handledAuthRef = useRef(false);
     const searchParams = useSearchParams();
 
     const { handleLoading } = useMainContext();
@@ -75,7 +78,7 @@ const PhotosPage: FC = () => {
             },
         });
 
-    const { result: googleAuth, query } = useCustom<NBaseApi.IResponse<NGoogle.IGoogleAuth>>({
+    const { result: googleAuths, query } = useCustom<NBaseApi.IResponse<NGoogle.IGoogleAuth[]>>({
         url: `${apiUrl}/google-auth`,
         method: 'get',
         queryOptions: {
@@ -108,20 +111,26 @@ const PhotosPage: FC = () => {
     }, []);
 
     useEffect(() => {
-        if (!searchParams) return;
+        const code = searchParams?.get('code');
+        const error = searchParams?.get('error');
 
-        const code = searchParams.get('code');
-        const error = searchParams.get('error');
+        if (!code && !error) return;
+        if (handledAuthRef.current) return;
+
+        handledAuthRef.current = true;
 
         if (error) {
             message.error('Kết nối Google thất bại');
+            router.replace(pathname);
             return;
         }
 
         if (code) {
-            handleSaveToken(code as string);
+            Promise.resolve(handleSaveToken(code as string)).finally(() => {
+                router.replace(pathname);
+            });
         }
-    }, [searchParams]);
+    }, [searchParams?.toString(), pathname, router]);
 
     const handleSaveToken = async (code: string) => {
         handleLoading(true);
@@ -137,10 +146,17 @@ const PhotosPage: FC = () => {
                 return;
             }
 
+            const userInfo = await getUserInfoFromGoogle(tokens.access_token);
+            if (!userInfo) {
+                message.error('Lỗi khi lấy thông tin người dùng Google');
+                return;
+            }
+
             syncGoogleAuth({
                 method: 'put',
                 url: `${apiUrl}/google-auth`,
                 values: {
+                    email: userInfo.email,
                     accessToken: tokens.access_token,
                     expiresIn: tokens.expires_in,
                     scope: tokens.scope,
@@ -300,7 +316,7 @@ const PhotosPage: FC = () => {
                     isLoadingGoogleAuth={query?.isLoading}
                     onSuccess={() => tableQuery?.refetch()}
                     onClose={() => setIsOpenSyncFile(false)}
-                    googleAuth={googleAuth?.data?.data ?? undefined}
+                    googleAuths={googleAuths?.data?.data ?? undefined}
                 />
             )}
         </Space>

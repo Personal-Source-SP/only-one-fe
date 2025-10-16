@@ -73,3 +73,24 @@ export const refreshAccessToken = async (
 
     return res.data as NGoogle.IGoogleExchangeCodeRequest;
 };
+
+export const getUserInfoFromGoogle = async (
+    accessToken: string,
+): Promise<NGoogle.IGoogleUserInfo | null> => {
+    try {
+        const res = await axios.get('https://www.googleapis.com/oauth2/v2/userinfo', {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (res.status !== 200) {
+            return null;
+        }
+
+        return res.data as NGoogle.IGoogleUserInfo;
+    } catch (error) {
+        return null;
+    }
+};

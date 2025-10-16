@@ -3,7 +3,7 @@
 import { CustomModal } from '@/components/common';
 import { GoogleDriveFileType, GoogleDriveType } from '@/enums';
 import { NBaseApi, NGoogle, Option } from '@/interfaces';
-import { getGoogleAuthUrl, isExpiredToken } from '@/libs';
+import { getGoogleAuthUrl } from '@/libs';
 import { Icon } from '@iconify/react';
 import { useApiUrl, useCustomMutation } from '@refinedev/core';
 import {
@@ -40,10 +40,21 @@ const StepEnum = {
     Done: 2,
 };
 
+const FieldsEnum = {
+    GoogleAuthId: 'googleAuthId',
+    Type: 'type',
+    FolderId: 'folderId',
+    MaxResults: 'maxResults',
+    FileTypes: 'fileTypes',
+    ModifiedTimeFrom: 'modifiedTimeFrom',
+    ModifiedTimeTo: 'modifiedTimeTo',
+    CustomQuery: 'customQuery',
+};
+
 type SyncFileGoogleDriveProps = {
     folderOptions?: Option[];
     isLoadingGoogleAuth?: boolean;
-    googleAuth?: NGoogle.IGoogleAuth;
+    googleAuths?: NGoogle.IGoogleAuth[];
     onClose: () => void;
     onSuccess: () => void;
 };
@@ -51,7 +62,7 @@ type SyncFileGoogleDriveProps = {
 const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
     folderOptions,
     isLoadingGoogleAuth,
-    googleAuth,
+    googleAuths,
     onSuccess,
     onClose,
 }) => {
@@ -64,12 +75,15 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
     const [form] = Form.useForm();
 
     const [loading, setLoading] = useState(false);
+    const [isActiveGoogleAuth, setIsActiveGoogleAuth] = useState(false);
+    const [googleAuthId, setGoogleAuthId] = useState<string | undefined>(undefined);
+    const [selectedEmail, setSelectedEmail] = useState<string | undefined>(undefined);
+    const [googleExpiresAt, setGoogleExpiresAt] = useState<Date | undefined>(undefined);
 
     const [type, setType] = useState(GoogleDriveType.FILE);
     const [currentStep, setCurrentStep] = useState(StepEnum.Settings);
     const [fileTypes, setFileTypes] = useState<GoogleDriveFileType[]>([]);
     const [folderId, setFolderId] = useState<string | undefined>(undefined);
-    const [googleAuthId, setGoogleAuthId] = useState<string | undefined>(undefined);
 
     const [pageSize, setPageSize] = useState(50);
     const [hasMore, setHasMore] = useState(false);
@@ -80,19 +94,12 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
     const [selectedRows, setSelectedRows] = useState<NGoogle.IGoogleDrivePreviewItem[]>([]);
 
     useEffect(() => {
-        const googleAuthId = googleAuth?.id;
-        const googleToken = googleAuth?.googleAccessToken;
-        const googleExpiresAt = googleAuth?.googleExpiresAt;
-
-        if (googleToken && googleExpiresAt) {
-            const expiryDate = new Date(googleExpiresAt as unknown as string);
-            const isExpired = isExpiredToken(expiryDate);
-
-            setGoogleAuthId(isExpired ? undefined : googleAuthId);
+        if (!googleAuths?.length) {
+            setIsActiveGoogleAuth(false);
         } else {
-            setGoogleAuthId(undefined);
+            setIsActiveGoogleAuth(true);
         }
-    }, [googleAuth]);
+    }, [googleAuths]);
 
     useEffect(() => {
         setSelectedRows([]);
@@ -350,78 +357,120 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
             <Form
                 form={form}
                 layout="vertical"
-                initialValues={{ type: GoogleDriveType.FILE, maxResults: 100, folderId: '' }}
+                initialValues={{
+                    folderId: '',
+                    maxResults: 100,
+                    type: GoogleDriveType.FILE,
+                    googleAuthId: googleAuths?.[0]?.id,
+                }}
             >
-                <Form.Item
-                    name="type"
-                    label="Loại đồng bộ"
-                    rules={[{ required: true, message: 'Vui lòng chọn loại đồng bộ' }]}
-                >
-                    <Select
-                        placeholder="Loại đồng bộ"
-                        defaultValue={GoogleDriveType.FILE}
-                        onChange={(value) => setType(value as GoogleDriveType)}
-                        options={Object.values(GoogleDriveType).map((type) => ({
-                            value: type,
-                            label: type?.toUpperCase(),
-                        }))}
-                    />
-                </Form.Item>
-                <Form.Item
-                    name="folderId"
-                    label="Thư mục"
-                    rules={[{ required: true, message: 'Vui lòng chọn thư mục' }]}
-                >
-                    <Select
-                        allowClear
-                        showSearch
-                        placeholder="Thư mục"
-                        defaultValue={''}
-                        onChange={(value) => setFolderId(value === '' ? undefined : value)}
-                        options={[{ value: '', label: 'Tất cả thư mục' }, ...(folderOptions ?? [])]}
-                        filterOption={(input, option) =>
-                            (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-                        }
-                    />
-                </Form.Item>
-                <Row gutter={16}>
+                <Row gutter={[16, 0]}>
                     <Col span={12}>
-                        <Form.Item name="maxResults" label="Số lượng">
+                        <Form.Item
+                            label="Kết nối Google"
+                            name={FieldsEnum.GoogleAuthId}
+                            rules={[{ required: true, message: 'Vui lòng chọn kết nối Google' }]}
+                        >
+                            <Select
+                                placeholder="Chọn kết nối Google"
+                                options={googleAuths?.map((auth) => ({
+                                    value: auth.id,
+                                    label: auth.email,
+                                }))}
+                                onChange={(value) => {
+                                    const selectedGoogleAuth = googleAuths?.find(
+                                        (auth) => auth.id === value,
+                                    );
+
+                                    setGoogleAuthId(value);
+                                    setSelectedEmail(selectedGoogleAuth?.email);
+                                    setGoogleExpiresAt(selectedGoogleAuth?.googleExpiresAt);
+                                }}
+                            />
+                        </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                        <Form.Item
+                            label="Loại đồng bộ"
+                            name={FieldsEnum.Type}
+                            rules={[{ required: true, message: 'Vui lòng chọn loại đồng bộ' }]}
+                        >
+                            <Select
+                                placeholder="Loại đồng bộ"
+                                defaultValue={GoogleDriveType.FILE}
+                                onChange={(value) => {
+                                    setType(value as GoogleDriveType);
+
+                                    if (value === GoogleDriveType.FOLDER) {
+                                        form.setFieldValue(FieldsEnum.FileTypes, undefined);
+                                    }
+                                }}
+                                options={Object.values(GoogleDriveType).map((type) => ({
+                                    value: type,
+                                    label: type?.toUpperCase(),
+                                }))}
+                            />
+                        </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                        <Form.Item
+                            label="Thư mục"
+                            name={FieldsEnum.FolderId}
+                            rules={[{ required: true, message: 'Vui lòng chọn thư mục' }]}
+                        >
+                            <Select
+                                allowClear
+                                showSearch
+                                placeholder="Thư mục"
+                                defaultValue={''}
+                                onChange={(value) => setFolderId(value === '' ? undefined : value)}
+                                options={[
+                                    { value: '', label: 'Tất cả thư mục' },
+                                    ...(folderOptions ?? []),
+                                ]}
+                                filterOption={(input, option) =>
+                                    (option?.label ?? '')
+                                        .toLowerCase()
+                                        .includes(input.toLowerCase())
+                                }
+                            />
+                        </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                        <Form.Item name={FieldsEnum.MaxResults} label="Số lượng">
                             <InputNumber min={1} placeholder="Số lượng" />
                         </Form.Item>
                     </Col>
-                    <Col span={12}>
-                        <Form.Item name="pageSize" label="Kích thước trang">
-                            <InputNumber min={1} placeholder="Kích thước trang" />
+                    <Col span={24}>
+                        <Form.Item name={FieldsEnum.FileTypes} label="Loại tệp">
+                            <Select
+                                mode="multiple"
+                                placeholder="Loại tệp"
+                                disabled={type === GoogleDriveType.FOLDER}
+                                onChange={(value) => setFileTypes(value as GoogleDriveFileType[])}
+                                options={Object.values(GoogleDriveFileType).map((type) => ({
+                                    value: type,
+                                    label: type?.toUpperCase(),
+                                }))}
+                            />
                         </Form.Item>
                     </Col>
-                </Row>
-                <Form.Item name="fileTypes" label="Loại tệp">
-                    <Select
-                        mode="multiple"
-                        placeholder="Loại tệp"
-                        onChange={(value) => setFileTypes(value as GoogleDriveFileType[])}
-                        options={Object.values(GoogleDriveFileType).map((type) => ({
-                            value: type,
-                            label: type?.toUpperCase(),
-                        }))}
-                    />
-                </Form.Item>
-                <Row gutter={16}>
                     <Col span={12}>
-                        <Form.Item name="modifiedTimeFrom" label="Từ ngày">
+                        <Form.Item name={FieldsEnum.ModifiedTimeFrom} label="Từ ngày">
                             <DatePicker placeholder="Chọn ngày bắt đầu" />
                         </Form.Item>
                     </Col>
                     <Col span={12}>
-                        <Form.Item name="modifiedTimeTo" label="Đến ngày">
+                        <Form.Item name={FieldsEnum.ModifiedTimeTo} label="Đến ngày">
                             <DatePicker placeholder="Chọn ngày kết thúc" />
                         </Form.Item>
                     </Col>
+                    <Col span={24}>
+                        <Form.Item name={FieldsEnum.CustomQuery} label="Tùy chọn tìm kiếm">
+                            <Input.TextArea placeholder="Tùy chọn tìm kiếm" rows={4} />
+                        </Form.Item>
+                    </Col>
                 </Row>
-                <Form.Item name="customQuery" label="Chỉnh sửa tìm kiếm">
-                    <Input.TextArea placeholder="Chỉnh sửa tìm kiếm" rows={4} />
-                </Form.Item>
             </Form>
         );
     };
@@ -430,7 +479,9 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
         return (
             <Space direction="vertical" className="w-full h-full">
                 <Card className="shadow-sm" variant="borderless">
-                    <div className="grid grid-cols-4 gap-6">
+                    <div
+                        className={`grid gap-6 ${type === GoogleDriveType.FOLDER ? 'grid-cols-3' : 'grid-cols-4'}`}
+                    >
                         <Card className="text-center bg-blue-50 border-blue-200">
                             <p className="text-sm text-gray-600 font-bold mt-1">Tổng số lượng</p>
                             <div className="text-blue-600 text-2xl font-bold">
@@ -447,16 +498,18 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
                                 {hasMore ? <Icon icon="lucide:check" /> : <Icon icon="lucide:x" />}
                             </div>
                         </Card>
-                        <Card className="text-center bg-purple-50 border-purple-200">
-                            <p className="text-sm text-gray-600 font-bold mt-1">Loại file</p>
-                            <div className="flex flex-wrap justify-center gap-2 my-2">
-                                {fileTypes?.map((mime) => (
-                                    <Tag color="blue" key={mime}>
-                                        {mime?.toUpperCase()}
-                                    </Tag>
-                                ))}
-                            </div>
-                        </Card>
+                        {type !== GoogleDriveType.FOLDER && (
+                            <Card className="text-center bg-purple-50 border-purple-200">
+                                <p className="text-sm text-gray-600 font-bold mt-1">Loại file</p>
+                                <div className="flex flex-wrap justify-center gap-2 my-2">
+                                    {fileTypes?.map((mime) => (
+                                        <Tag color="blue" key={mime}>
+                                            {mime?.toUpperCase()}
+                                        </Tag>
+                                    ))}
+                                </div>
+                            </Card>
+                        )}
                     </div>
                 </Card>
                 <div className="flex items-center mb-2">
@@ -496,7 +549,7 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
     };
 
     const renderFooter = () => {
-        if (!googleAuthId) {
+        if (!isActiveGoogleAuth) {
             return (
                 <Flex justify="space-between" align="center" gap={16}>
                     <Button onClick={onClose} className="w-full" icon={<Icon icon="lucide:x" />}>
@@ -600,26 +653,39 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
             }}
         >
             <Spin spinning={loading}>
-                {Boolean(googleAuthId) && (
+                {isActiveGoogleAuth && (
                     <Space direction="vertical" className="w-full h-full px-3 overflow-x-hidden">
-                        <Card className="mb-4 bg-amber-50 border-amber-200" size="small">
-                            <Flex justify="space-between" align="center">
-                                <Space size="small">
-                                    <Icon icon="lucide:timer" />
-                                    <span>Token hết hạn sau</span>
-                                </Space>
-                                <Statistic.Countdown
-                                    value={new Date(
-                                        (googleAuth?.googleExpiresAt as unknown as string) || '',
-                                    ).getTime()}
-                                    format="HH:mm:ss"
-                                    onFinish={() => {
-                                        message.info('Token đã hết hạn. Vui lòng kết nối lại.');
-                                        setGoogleAuthId(undefined);
-                                    }}
-                                />
-                            </Flex>
-                        </Card>
+                        {Boolean(googleExpiresAt && selectedEmail) && (
+                            <Card className="mb-4 bg-amber-50 border-amber-200" size="small">
+                                <Flex justify="space-between" align="center">
+                                    <Space size="small">
+                                        <Icon icon="lucide:timer" />
+                                        <span>Token hết hạn sau</span>
+                                    </Space>
+                                    <Statistic.Countdown
+                                        format="HH:mm:ss"
+                                        value={dayjs(googleExpiresAt).diff(dayjs(), 'seconds')}
+                                        onFinish={() => {
+                                            setGoogleAuthId(undefined);
+                                            setSelectedEmail(undefined);
+                                            setIsActiveGoogleAuth(false);
+                                            setGoogleExpiresAt(undefined);
+
+                                            message.info('Token đã hết hạn. Vui lòng kết nối lại.');
+                                        }}
+                                    />
+                                </Flex>
+                                <Flex justify="space-between" align="center">
+                                    <Space size="small">
+                                        <Icon icon="lucide:mail" />
+                                        <span>Email được chọn:</span>
+                                    </Space>
+                                    <span className="font-semibold text-blue-600">
+                                        {selectedEmail}
+                                    </span>
+                                </Flex>
+                            </Card>
+                        )}
 
                         <Card className="mb-4 bg-green-50 border-green-200" size="small">
                             <Steps
