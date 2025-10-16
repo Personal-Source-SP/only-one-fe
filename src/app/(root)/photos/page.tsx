@@ -1,11 +1,11 @@
 'use client';
 
-import { ElementType, GoogleDriveFileType, SortOrder, ViewMode } from '@/enums';
+import { ElementType, GoogleDriveFileType, ViewMode } from '@/enums';
 import type { NBaseApi, NGoogle } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { useTable } from '@refinedev/antd';
 import { HttpError, useApiUrl, useCustom, useCustomMutation, useSelect } from '@refinedev/core';
-import { Button, Col, Flex, Input, message, Row, Select, Space } from 'antd';
+import { Button, Col, Input, message, Row, Select, Space } from 'antd';
 import { isNumber } from 'lodash';
 import { FC, useEffect, useMemo, useRef, useState } from 'react';
 
@@ -21,9 +21,10 @@ import { CustomElement, PaginationControls } from '@/components/common';
 
 import PhotoGroups from '@/components/module/photos/PhotoGroups';
 import SyncFileGoogleDrive from '@/components/module/photos/SyncGoogleDrive';
+
 import { useMainContext } from '@/contexts/MainContext';
 import { useDebounceSearch } from '@/hooks/useDebounceSearch';
-import { exchangeCodeForTokens, getUserInfoFromGoogle, isExpiredToken } from '@/libs/googleapis';
+import { exchangeCodeForTokens, getProxyUrl, getUserInfoFromGoogle, isExpiredToken } from '@/libs';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 const PhotosPage: FC = () => {
@@ -238,7 +239,7 @@ const PhotosPage: FC = () => {
     };
 
     const handlePhotoClick = (url: string) => {
-        const index = googleDriveFiles?.findIndex((photo) => photo.webContentLink === url);
+        const index = googleDriveFiles?.findIndex((photo) => photo.thumbnailLink === url);
         if (isNumber(index)) {
             openLightbox(index ?? 0);
         }
@@ -307,8 +308,6 @@ const PhotosPage: FC = () => {
         );
     };
 
-    console.log(googleAuthsResult?.data?.data);
-
     return (
         <Space size="middle" direction="vertical" className="w-full h-full">
             <CustomElement
@@ -365,9 +364,9 @@ const PhotosPage: FC = () => {
                 open={isLightboxOpen}
                 slideshow={{ delay: slideshowInterval * 1000 }}
                 plugins={[Fullscreen, Slideshow, Thumbnails, Zoom]}
-                // slides={(googleDriveFiles || [])?.map((p) => ({
-                //     src: p.webContentLink || p.thumbnailLink || '',
-                // }))}
+                slides={(googleDriveFiles || [])?.map((p) => ({
+                    src: getProxyUrl(p.webContentLink || p.thumbnailLink || ''),
+                }))}
                 close={() => {
                     closeLightbox();
                     stopSlideshow();
