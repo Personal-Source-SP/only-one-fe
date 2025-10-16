@@ -4,8 +4,8 @@ import { ElementType, GoogleDriveFileType, SortOrder, ViewMode } from '@/enums';
 import type { NBaseApi, NGoogle } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { useTable } from '@refinedev/antd';
-import { HttpError, useApiUrl, useCustomMutation } from '@refinedev/core';
-import { Button, Input, message, Space } from 'antd';
+import { HttpError, useApiUrl, useCustom, useCustomMutation, useSelect } from '@refinedev/core';
+import { Button, Col, Flex, Input, message, Row, Select, Space } from 'antd';
 import { isNumber } from 'lodash';
 import { FC, useEffect, useMemo, useRef, useState } from 'react';
 
@@ -19,10 +19,10 @@ import 'yet-another-react-lightbox/styles.css';
 
 import { CustomElement, PaginationControls } from '@/components/common';
 
-import PhotoFilter from '@/components/module/photos/PhotoFilter';
 import PhotoGroups from '@/components/module/photos/PhotoGroups';
 import SyncFileGoogleDrive from '@/components/module/photos/SyncGoogleDrive';
 import { useMainContext } from '@/contexts/MainContext';
+import { useDebounceSearch } from '@/hooks/useDebounceSearch';
 import { exchangeCodeForTokens, getUserInfoFromGoogle } from '@/libs/googleapis';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
@@ -36,17 +36,13 @@ const PhotosPage: FC = () => {
     const { handleLoading } = useMainContext();
 
     const [columns, setColumns] = useState(4);
-    const [isOpenFilter, setIsOpenFilter] = useState(false);
-    const [searchQuery, setSearchQuery] = useState<string>();
-    const [isOpenSyncFile, setIsOpenSyncFile] = useState(false);
     const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.ALL);
-    const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.NEWEST);
-    const [filterFolder, setFilterFolder] = useState<string | undefined>(undefined);
 
+    const [isOpenSyncFile, setIsOpenSyncFile] = useState(false);
     const [isLightboxOpen, setIsLightboxOpen] = useState<boolean>(false);
     const [slideshowInterval, setSlideshowInterval] = useState<number>(5);
 
-    const { currentPage, setCurrentPage, pageSize, setPageSize, tableQuery } = useTable<
+    const { currentPage, setCurrentPage, pageSize, setPageSize, setFilters, tableQuery } = useTable<
         NGoogle.IGoogleDriveFile,
         HttpError,
         Partial<NGoogle.IGoogleDriveFile>
@@ -54,7 +50,7 @@ const PhotosPage: FC = () => {
         resource: 'google-drive/files',
         syncWithLocation: false,
         pagination: {
-            pageSize: 30,
+            pageSize: 10,
             mode: 'server',
         },
         sorters: {
@@ -68,11 +64,47 @@ const PhotosPage: FC = () => {
         },
     });
 
+    const { result: googleAuthsResult, query: queryGoogleAuths } = useCustom<
+        NBaseApi.IResponse<NGoogle.IGoogleAuth[]>
+    >({
+        url: `${apiUrl}/google-auth`,
+        method: 'get',
+        queryOptions: {
+            enabled: false,
+        },
+    });
+
+    const { options: folderOptions, query: queryFolderOptions } =
+        useSelect<NGoogle.IGoogleDriveFolder>({
+            resource: 'google-drive/folders/all',
+            optionValue: (item: NGoogle.IGoogleDriveFolder) => item.id,
+            optionLabel: (item: NGoogle.IGoogleDriveFolder) => item.name,
+            queryOptions: {
+                enabled: false,
+            },
+        });
+
     const { mutate: syncGoogleAuth } = useCustomMutation<NBaseApi.IResponse<boolean>>();
 
-    const allPhotos = useMemo(() => {
+    const googleDriveFiles = useMemo(() => {
         return tableQuery?.data?.data ?? [];
     }, [tableQuery?.data?.data]);
+
+    const googleAuthOptions = useMemo(() => {
+        if (googleAuthsResult?.data?.data?.length) return [];
+
+        const options = googleAuthsResult?.data?.data?.map((item) => ({
+            value: item.id,
+            label: item.email,
+        }));
+
+        return options;
+    }, [googleAuthsResult?.data?.data]);
+
+    useEffect(() => {
+        queryGoogleAuths?.refetch();
+        queryFolderOptions?.refetch();
+    }, []);
 
     useEffect(() => {
         const updateColumns = () => {
@@ -112,6 +144,12 @@ const PhotosPage: FC = () => {
             });
         }
     }, [searchParams?.toString(), pathname, router]);
+
+    const debouncedSearch = useDebounceSearch({
+        setFilters,
+        setCurrentPage,
+        fieldName: 'name',
+    });
 
     const handleSaveToken = async (code: string) => {
         handleLoading(true);
@@ -192,10 +230,73 @@ const PhotosPage: FC = () => {
     };
 
     const handlePhotoClick = (url: string) => {
-        const index = allPhotos?.findIndex((photo) => photo.webContentLink === url);
+        const index = googleDriveFiles?.findIndex((photo) => photo.webContentLink === url);
         if (isNumber(index)) {
             openLightbox(index ?? 0);
         }
+    };
+
+    const renderSectionFilters = () => {
+        return (
+            <Row gutter={[16, 8]} className="py-3">
+                <Col span={18}>
+                    <Input
+                        placeholder="Tìm kiếm ảnh của bạn..."
+                        onChange={(e) => debouncedSearch(e.target.value.trim())}
+                        prefix={<Icon icon="lucide:search" className="text-foreground-500" />}
+                    />
+                </Col>
+                <Col span={2}>
+                    <Select
+                        value={columns}
+                        placeholder="Số cột"
+                        onChange={(value) => setColumns(value)}
+                        options={[1, 2, 3, 4, 8].map((item) => ({
+                            value: item,
+                            label: item,
+                        }))}
+                    />
+                </Col>
+                <Col span={4}>
+                    <Select
+                        value={viewMode}
+                        placeholder="Chế độ xem"
+                        onChange={(value) => setViewMode(value)}
+                        options={[
+                            { value: ViewMode.ALL, label: 'Xem tất cả' },
+                            { value: ViewMode.DATE, label: 'Xem theo ngày' },
+                            { value: ViewMode.FOLDER, label: 'Xem theo thư mục' },
+                        ]}
+                    />
+                </Col>
+                <Col span={12}>
+                    <Select
+                        allowClear
+                        showSearch
+                        mode="multiple"
+                        placeholder="Thư mục"
+                        options={folderOptions}
+                        onChange={(value) => {
+                            setFilters([{ field: 'folderId', operator: 'eq', value }]);
+                            setCurrentPage(1);
+                        }}
+                    />
+                </Col>
+                <Col span={12}>
+                    <Select
+                        allowClear
+                        showSearch
+                        mode="multiple"
+                        placeholder="Email"
+                        options={googleAuthOptions}
+                        onChange={(value) => {
+                            setFilters([{ field: 'googleAuthId', operator: 'eq', value }]);
+                            setCurrentPage(1);
+                        }}
+                    />
+                </Col>
+            </Row>
+        );
     };
 
     return (
@@ -204,14 +305,6 @@ const PhotosPage: FC = () => {
                 title="Photos"
                 elementType={ElementType.TITLE}
                 actions={[
-                    <Button
-                        key="filter"
-                        type="primary"
-                        onClick={() => setIsOpenFilter(true)}
-                        icon={<Icon icon="lucide:settings-2" />}
-                    >
-                        Bộ lọc
-                    </Button>,
                     <Button
                         key="slideshow"
                         type="primary"
@@ -231,22 +324,15 @@ const PhotosPage: FC = () => {
                 ]}
             />
 
-            <CustomElement elementType={ElementType.CONTAINER}>
+            <CustomElement elementType={ElementType.CONTAINER} loading={tableQuery?.isLoading}>
                 <CustomElement
                     elementType={ElementType.CARD}
-                    header={
-                        <Input
-                            value={searchQuery}
-                            placeholder="Tìm kiếm ảnh của bạn..."
-                            onChange={(e) => setSearchQuery(e.target.value.trim())}
-                            prefix={<Icon icon="lucide:search" className="text-foreground-500" />}
-                        />
-                    }
+                    header={renderSectionFilters()}
                     actions={[
                         <PaginationControls
                             itemsPerPage={pageSize}
                             currentPage={currentPage}
-                            totalItems={allPhotos?.length}
+                            totalItems={googleDriveFiles?.length}
                             onPageChange={(page) => setCurrentPage(page)}
                             onItemsPerPageChange={(pageSize) => {
                                 setCurrentPage(1);
@@ -258,33 +344,20 @@ const PhotosPage: FC = () => {
                     <PhotoGroups
                         columns={columns}
                         displayMode={viewMode}
-                        googleDriveFiles={allPhotos}
                         onPhotoClick={handlePhotoClick}
+                        googleDriveFiles={googleDriveFiles}
                     />
                 </CustomElement>
             </CustomElement>
-
-            <PhotoFilter
-                viewMode={viewMode}
-                isOpen={isOpenFilter}
-                sortOrder={sortOrder}
-                onClose={setIsOpenFilter}
-                filterFolder={filterFolder}
-                folders={tableQuery?.data?.data ?? []}
-                onApplyFilters={(filter: NGoogle.IGoogleDriveFolder) => {
-                    setCurrentPage(1);
-                    // setViewMode(filter.viewMode);
-                    // setSortOrder(filter.sortOrder);
-                    // setFilterFolder(filter.folderId);
-                }}
-            />
 
             <Lightbox
                 index={currentPage}
                 open={isLightboxOpen}
                 slideshow={{ delay: slideshowInterval * 1000 }}
                 plugins={[Fullscreen, Slideshow, Thumbnails, Zoom]}
-                // slides={allPhotos?.map((p) => ({ src: p.webContentLink ?? '' }))}
+                // slides={(googleDriveFiles || [])?.map((p) => ({
+                //     src: p.webContentLink || p.thumbnailLink || '',
+                // }))}
                 close={() => {
                     closeLightbox();
                     stopSlideshow();
@@ -293,8 +366,11 @@ const PhotosPage: FC = () => {
 
             {isOpenSyncFile && (
                 <SyncFileGoogleDrive
+                    folderOptions={folderOptions || []}
                     onSuccess={() => tableQuery?.refetch()}
                     onClose={() => setIsOpenSyncFile(false)}
+                    googleAuths={googleAuthsResult?.data?.data ?? []}
+                    queryLoading={queryGoogleAuths?.isLoading || queryFolderOptions?.isLoading}
                 />
             )}
         </Space>

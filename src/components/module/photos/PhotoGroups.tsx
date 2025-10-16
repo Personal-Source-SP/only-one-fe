@@ -4,7 +4,7 @@ import { GoogleDriveFileType } from '@/enums';
 import { ViewMode } from '@/enums/photo.enum';
 import { NGoogle } from '@/interfaces';
 import { getProxyUrl } from '@/libs';
-import { List, Spin } from 'antd';
+import { List, Spin, Tag } from 'antd';
 import Image from 'next/image';
 import { FC, memo, useMemo, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -41,7 +41,7 @@ const PhotoGroups: FC<PhotoGroupsProps> = ({
         if (!googleDriveFiles?.length) return [];
 
         const photoFiles = googleDriveFiles?.filter(
-            (file) => file.mimeType?.startsWith(GoogleDriveFileType.IMAGE) && file.webContentLink,
+            (file) => file.mimeType?.startsWith(GoogleDriveFileType.IMAGE) && file.thumbnailLink,
         );
 
         if (!photoFiles?.length) return [];
@@ -53,7 +53,7 @@ const PhotoGroups: FC<PhotoGroupsProps> = ({
                         photos: photoFiles.map((file) => ({
                             id: file.id,
                             url:
-                                file.webContentLink || file.thumbnailLink || file.webViewLink || '',
+                                file.thumbnailLink || file.webContentLink || file.webViewLink || '',
                         })),
                     },
                 ];
@@ -68,11 +68,13 @@ const PhotoGroups: FC<PhotoGroupsProps> = ({
                         if (!groups[date]) {
                             groups[date] = [];
                         }
+
                         groups[date].push({
                             id: file.id,
                             url:
-                                file.webContentLink || file.thumbnailLink || file.webViewLink || '',
+                                file.thumbnailLink || file.webContentLink || file.webViewLink || '',
                         });
+
                         return groups;
                     },
                     {} as Record<string, Photo[]>,
@@ -91,11 +93,13 @@ const PhotoGroups: FC<PhotoGroupsProps> = ({
                         if (!groups[folderName]) {
                             groups[folderName] = [];
                         }
+
                         groups[folderName].push({
                             id: file.id,
                             url:
-                                file.webContentLink || file.thumbnailLink || file.webViewLink || '',
+                                file.thumbnailLink || file.webContentLink || file.webViewLink || '',
                         });
+
                         return groups;
                     },
                     {} as Record<string, Photo[]>,
@@ -129,14 +133,28 @@ const PhotoGroups: FC<PhotoGroupsProps> = ({
             case ViewMode.DATE: {
                 return (
                     'date' in group &&
-                    group.date && <h2 className="text-lg font-medium mb-4">{group.date}</h2>
+                    group.date && (
+                        <Tag
+                            color="blue"
+                            className="text-base font-medium mb-4 px-4 py-1 rounded-full"
+                        >
+                            {group.date}
+                        </Tag>
+                    )
                 );
             }
 
             case ViewMode.FOLDER: {
                 return (
                     'folder' in group &&
-                    group.folder && <h2 className="text-lg font-medium mb-4">{group.folder}</h2>
+                    group.folder && (
+                        <Tag
+                            color="green"
+                            className="text-base font-medium mb-4 px-4 py-1 rounded-full"
+                        >
+                            {group.folder}
+                        </Tag>
+                    )
                 );
             }
 
