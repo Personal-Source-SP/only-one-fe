@@ -21,7 +21,7 @@ export const getGoogleAuthUrl = (): string => {
 
 export const isExpiredToken = (expiresAt: Date): boolean => {
     const now = Date.now();
-    return expiresAt.getTime() <= now + 30 * 1000;
+    return new Date(expiresAt).getTime() <= now + 30 * 1000;
 };
 
 export const exchangeCodeForTokens = async (

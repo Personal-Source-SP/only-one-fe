@@ -23,7 +23,7 @@ import PhotoGroups from '@/components/module/photos/PhotoGroups';
 import SyncFileGoogleDrive from '@/components/module/photos/SyncGoogleDrive';
 import { useMainContext } from '@/contexts/MainContext';
 import { useDebounceSearch } from '@/hooks/useDebounceSearch';
-import { exchangeCodeForTokens, getUserInfoFromGoogle } from '@/libs/googleapis';
+import { exchangeCodeForTokens, getUserInfoFromGoogle, isExpiredToken } from '@/libs/googleapis';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 const PhotosPage: FC = () => {
@@ -91,7 +91,7 @@ const PhotosPage: FC = () => {
     }, [tableQuery?.data?.data]);
 
     const googleAuthOptions = useMemo(() => {
-        if (googleAuthsResult?.data?.data?.length) return [];
+        if (!googleAuthsResult?.data?.data?.length) return [];
 
         const options = googleAuthsResult?.data?.data?.map((item) => ({
             value: item.id,
@@ -99,6 +99,14 @@ const PhotosPage: FC = () => {
         }));
 
         return options;
+    }, [googleAuthsResult?.data?.data]);
+
+    const googleAuthNotExpired = useMemo(() => {
+        if (!googleAuthsResult?.data?.data?.length) return [];
+
+        return googleAuthsResult?.data?.data?.filter(
+            (item) => !isExpiredToken(item.googleExpiresAt),
+        );
     }, [googleAuthsResult?.data?.data]);
 
     useEffect(() => {
@@ -299,6 +307,8 @@ const PhotosPage: FC = () => {
         );
     };
 
+    console.log(googleAuthsResult?.data?.data);
+
     return (
         <Space size="middle" direction="vertical" className="w-full h-full">
             <CustomElement
@@ -369,7 +379,7 @@ const PhotosPage: FC = () => {
                     folderOptions={folderOptions || []}
                     onSuccess={() => tableQuery?.refetch()}
                     onClose={() => setIsOpenSyncFile(false)}
-                    googleAuths={googleAuthsResult?.data?.data ?? []}
+                    googleAuths={googleAuthNotExpired ?? []}
                     queryLoading={queryGoogleAuths?.isLoading || queryFolderOptions?.isLoading}
                 />
             )}
