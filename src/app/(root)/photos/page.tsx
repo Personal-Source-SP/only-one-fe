@@ -255,7 +255,8 @@ const PhotosPage: FC = () => {
                 >
                     <PhotoGroups
                         columns={columns}
-                        groupedPhotos={[]}
+                        displayMode={viewMode}
+                        googleDriveFiles={allPhotos}
                         onPhotoClick={handlePhotoClick}
                     />
                 </CustomElement>

@@ -1,6 +1,7 @@
 export enum ViewMode {
-    TIME = 'time',
     ALL = 'all',
+    DATE = 'date',
+    FOLDER = 'folder',
 }
 
 export enum SortOrder {
