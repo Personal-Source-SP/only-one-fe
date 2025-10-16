@@ -1,6 +1,6 @@
 'use client';
 
-import { ElementType, SortOrder, ViewMode } from '@/enums';
+import { ElementType, GoogleDriveFileType, SortOrder, ViewMode } from '@/enums';
 import type { NBaseApi, NGoogle } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { useTable } from '@refinedev/antd';
@@ -57,6 +57,11 @@ const PhotosPage: FC = () => {
         sorters: {
             mode: 'server',
             initial: [{ field: 'createdAt', order: 'desc' }],
+        },
+        filters: {
+            initial: [
+                { field: 'mimeType', operator: 'contains', value: GoogleDriveFileType.IMAGE },
+            ],
         },
     });
 

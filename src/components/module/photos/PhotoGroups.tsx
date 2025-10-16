@@ -1,5 +1,6 @@
 'use client';
 
+import { GoogleDriveFileType } from '@/enums';
 import { ViewMode } from '@/enums/photo.enum';
 import { NGoogle } from '@/interfaces';
 import { getProxyUrl } from '@/libs';
@@ -40,7 +41,7 @@ const PhotoGroups: FC<PhotoGroupsProps> = ({
         if (!googleDriveFiles?.length) return [];
 
         const photoFiles = googleDriveFiles?.filter(
-            (file) => file.mimeType?.startsWith('image/') && file.thumbnailLink,
+            (file) => file.mimeType?.startsWith(GoogleDriveFileType.IMAGE) && file.webContentLink,
         );
 
         if (!photoFiles?.length) return [];
