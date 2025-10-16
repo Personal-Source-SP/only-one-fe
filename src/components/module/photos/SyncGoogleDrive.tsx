@@ -527,25 +527,24 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
                 </Button>
 
                 {currentStep === StepEnum.Preview && (
-                    <Button
-                        type="primary"
-                        className="w-full"
-                        onClick={handleSyncData}
-                        icon={<Icon icon="lucide:sync" />}
-                    >
-                        <span>Đồng bộ</span>
-                    </Button>
-                )}
-
-                {currentStep !== StepEnum.Settings && (
-                    <Button
-                        type="primary"
-                        className="w-full"
-                        icon={<Icon icon="lucide:arrow-left" />}
-                        onClick={() => handleChangeStep(currentStep - 1)}
-                    >
-                        <span>Quay lại</span>
-                    </Button>
+                    <>
+                        <Button
+                            type="primary"
+                            className="w-full"
+                            onClick={handleSyncData}
+                            icon={<Icon icon="lucide:sync" />}
+                        >
+                            <span>Đồng bộ</span>
+                        </Button>
+                        <Button
+                            type="primary"
+                            className="w-full"
+                            icon={<Icon icon="lucide:arrow-left" />}
+                            onClick={() => handleChangeStep(currentStep - 1)}
+                        >
+                            <span>Quay lại</span>
+                        </Button>
+                    </>
                 )}
 
                 {currentStep === StepEnum.Settings && (
