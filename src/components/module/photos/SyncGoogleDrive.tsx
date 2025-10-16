@@ -9,6 +9,8 @@ import { useApiUrl, useCustomMutation } from '@refinedev/core';
 import {
     Button,
     Card,
+    Checkbox,
+    CheckboxChangeEvent,
     Col,
     DatePicker,
     Flex,
@@ -71,6 +73,7 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
     const [hasMore, setHasMore] = useState(false);
     const [totalSize, setTotalSize] = useState(0);
     const [totalCount, setTotalCount] = useState(0);
+    const [updateAll, setUpdateAll] = useState(false);
     const [previewData, setPreviewData] = useState<NGoogle.IGoogleDrivePreviewItem[]>([]);
     const [selectedRows, setSelectedRows] = useState<NGoogle.IGoogleDrivePreviewItem[]>([]);
 
@@ -345,7 +348,7 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
             <Form
                 form={form}
                 layout="vertical"
-                initialValues={{ type: GoogleDriveType.FILE, maxResults: 100 }}
+                initialValues={{ type: GoogleDriveType.FILE, maxResults: 100, folderId: '' }}
             >
                 <Form.Item
                     name="type"
@@ -365,20 +368,15 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
                 <Form.Item
                     name="folderId"
                     label="Thư mục"
-                    required={type === GoogleDriveType.FILE}
-                    rules={[
-                        {
-                            message: 'Vui lòng chọn thư mục',
-                            required: type === GoogleDriveType.FILE,
-                        },
-                    ]}
+                    rules={[{ required: true, message: 'Vui lòng chọn thư mục' }]}
                 >
                     <Select
                         allowClear
                         showSearch
                         placeholder="Thư mục"
-                        options={folderOptions}
-                        onChange={(value) => setFolderId(value as string)}
+                        defaultValue={''}
+                        onChange={(value) => setFolderId(value === '' ? undefined : value)}
+                        options={[{ value: '', label: 'Tất cả thư mục' }, ...(folderOptions ?? [])]}
                         filterOption={(input, option) =>
                             (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
                         }
@@ -459,6 +457,22 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
                         </Card>
                     </div>
                 </Card>
+                <div className="flex items-center mb-2">
+                    <Checkbox
+                        checked={updateAll}
+                        onChange={(e: CheckboxChangeEvent) => {
+                            setUpdateAll(e.target.checked);
+
+                            if (e.target.checked) {
+                                setSelectedRows(previewData);
+                            } else {
+                                setSelectedRows([]);
+                            }
+                        }}
+                    >
+                        Đồng bộ tất cả
+                    </Checkbox>
+                </div>
                 <Table
                     bordered
                     size="small"
