@@ -1,10 +1,12 @@
 'use client';
 
-import { List } from 'antd';
-import { FC, memo, useMemo } from 'react';
-import InfiniteScroll from 'react-infinite-scroll-component';
 import { ViewMode } from '@/enums/photo.enum';
 import { NGoogle } from '@/interfaces';
+import { getProxyUrl } from '@/libs';
+import { List, Spin } from 'antd';
+import Image from 'next/image';
+import { FC, memo, useMemo, useState } from 'react';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 type Photo = {
     id: string;
@@ -19,7 +21,7 @@ type PhotoGroup = {
     | { date?: never; folder?: never }
 );
 
-export type PhotoGroupsProps = {
+type PhotoGroupsProps = {
     columns: number;
     displayMode: ViewMode;
     googleDriveFiles: NGoogle.IGoogleDriveFile[];
@@ -32,6 +34,8 @@ const PhotoGroups: FC<PhotoGroupsProps> = ({
     googleDriveFiles,
     onPhotoClick,
 }) => {
+    const [loadingImages, setLoadingImages] = useState<Set<string>>(new Set());
+
     const groupedPhotos = useMemo(() => {
         if (!googleDriveFiles?.length) return [];
 
@@ -47,7 +51,8 @@ const PhotoGroups: FC<PhotoGroupsProps> = ({
                     {
                         photos: photoFiles.map((file) => ({
                             id: file.id,
-                            url: file.thumbnailLink || file.webContentLink || '',
+                            url:
+                                file.webContentLink || file.thumbnailLink || file.webViewLink || '',
                         })),
                     },
                 ];
@@ -64,7 +69,8 @@ const PhotoGroups: FC<PhotoGroupsProps> = ({
                         }
                         groups[date].push({
                             id: file.id,
-                            url: file.thumbnailLink || file.webContentLink || '',
+                            url:
+                                file.webContentLink || file.thumbnailLink || file.webViewLink || '',
                         });
                         return groups;
                     },
@@ -86,7 +92,8 @@ const PhotoGroups: FC<PhotoGroupsProps> = ({
                         }
                         groups[folderName].push({
                             id: file.id,
-                            url: file.thumbnailLink || file.webContentLink || '',
+                            url:
+                                file.webContentLink || file.thumbnailLink || file.webViewLink || '',
                         });
                         return groups;
                     },
@@ -108,9 +115,9 @@ const PhotoGroups: FC<PhotoGroupsProps> = ({
             groupedPhotos.flatMap((group, groupIndex) =>
                 group.photos.map((photo) => ({
                     ...photo,
+                    groupIndex,
                     date: 'date' in group ? group.date : undefined,
                     folder: 'folder' in group ? group.folder : undefined,
-                    groupIndex,
                 })),
             ),
         [groupedPhotos],
@@ -151,13 +158,39 @@ const PhotoGroups: FC<PhotoGroupsProps> = ({
                         <div
                             key={photo.id}
                             onClick={() => onPhotoClick(photo.url)}
-                            className="aspect-[4/3] rounded-md overflow-hidden cursor-pointer hover:opacity-90 transition-all hover:shadow-md"
+                            className="relative aspect-[4/3] rounded-md overflow-hidden cursor-pointer hover:opacity-90 transition-all hover:shadow-md bg-gray-100"
                         >
-                            <img
-                                loading="lazy"
-                                src={photo.url}
+                            {loadingImages.has(photo.id) && (
+                                <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
+                                    <Spin size="small" />
+                                </div>
+                            )}
+
+                            <Image
+                                fill
+                                priority
+                                unoptimized
+                                className="object-cover"
                                 alt={`Photo ${photo.id}`}
-                                className="w-full h-full object-cover"
+                                src={getProxyUrl(photo.url)}
+                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                onLoadStart={() => {
+                                    setLoadingImages((prev) => new Set(prev).add(photo.id));
+                                }}
+                                onLoad={() => {
+                                    setLoadingImages((prev) => {
+                                        const newSet = new Set(prev);
+                                        newSet.delete(photo.id);
+                                        return newSet;
+                                    });
+                                }}
+                                onError={() => {
+                                    setLoadingImages((prev) => {
+                                        const newSet = new Set(prev);
+                                        newSet.delete(photo.id);
+                                        return newSet;
+                                    });
+                                }}
                             />
                         </div>
                     ))}
@@ -183,13 +216,38 @@ const PhotoGroups: FC<PhotoGroupsProps> = ({
                                 <div
                                     key={photo.id}
                                     onClick={() => onPhotoClick(photo.url)}
-                                    className="aspect-[4/3] rounded-md overflow-hidden cursor-pointer hover:opacity-90 transition-all hover:shadow-md"
+                                    className="relative aspect-[4/3] rounded-md overflow-hidden cursor-pointer hover:opacity-90 transition-all hover:shadow-md bg-gray-100"
                                 >
-                                    <img
-                                        loading="lazy"
-                                        src={photo.url}
+                                    {loadingImages.has(photo.id) && (
+                                        <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
+                                            <Spin size="small" />
+                                        </div>
+                                    )}
+                                    <Image
+                                        fill
+                                        priority
+                                        unoptimized
+                                        className="object-cover"
                                         alt={`Photo ${photo.id}`}
-                                        className="w-full h-full object-cover"
+                                        src={getProxyUrl(photo.url)}
+                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                        onLoadStart={() => {
+                                            setLoadingImages((prev) => new Set(prev).add(photo.id));
+                                        }}
+                                        onLoad={() => {
+                                            setLoadingImages((prev) => {
+                                                const newSet = new Set(prev);
+                                                newSet.delete(photo.id);
+                                                return newSet;
+                                            });
+                                        }}
+                                        onError={() => {
+                                            setLoadingImages((prev) => {
+                                                const newSet = new Set(prev);
+                                                newSet.delete(photo.id);
+                                                return newSet;
+                                            });
+                                        }}
                                     />
                                 </div>
                             ))}
