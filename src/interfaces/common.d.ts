@@ -26,3 +26,10 @@ export interface FilterItem {
     mode?: 'multiple' | 'tags';
     onChange?: (value: any) => void;
 }
+
+export interface ActionTableItem {
+    key: string;
+    label: string;
+    icon: React.ReactNode;
+    onClick: (record: any) => void;
+}
