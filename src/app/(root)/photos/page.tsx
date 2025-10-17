@@ -57,7 +57,7 @@ const PhotosPage: FC = () => {
         HttpError,
         Partial<NGoogle.IGoogleDriveFile>
     >({
-        resource: 'google-drive/files',
+        resource: 'google-file',
         syncWithLocation: false,
         pagination: {
             pageSize: 10,
@@ -86,7 +86,7 @@ const PhotosPage: FC = () => {
 
     const { options: folderOptions, query: queryFolderOptions } =
         useSelect<NGoogle.IGoogleDriveFolder>({
-            resource: 'google-drive/folders/all',
+            resource: 'google-folder/all',
             optionValue: (item: NGoogle.IGoogleDriveFolder) => item.id,
             optionLabel: (item: NGoogle.IGoogleDriveFolder) => item.name,
             queryOptions: {

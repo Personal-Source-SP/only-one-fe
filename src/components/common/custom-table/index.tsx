@@ -1,11 +1,11 @@
 'use client';
 
 import { SortOrder } from '@/enums';
-import { ActionTableItem } from '@/interfaces';
+import { ActionTableItem, NBaseApi } from '@/interfaces';
 import { DeleteOutlined } from '@ant-design/icons';
 import { Icon } from '@iconify/react';
-import { CrudSort } from '@refinedev/core';
-import { Button, Dropdown, Table } from 'antd';
+import { CrudSort, useDelete } from '@refinedev/core';
+import { Button, Dropdown, message, Modal, Table } from 'antd';
 import { ColumnsType, TablePaginationConfig, TableProps } from 'antd/es/table';
 import { FilterValue, SorterResult, TableCurrentDataSource } from 'antd/es/table/interface';
 import { FC, memo } from 'react';
@@ -14,23 +14,64 @@ type CustomTableProps = {
     loading: boolean;
     columns: ColumnsType<any>;
     tableProps: TableProps<any>;
+    resource?: string;
+    currentPage?: number;
     actionItems?: ActionTableItem[];
     setCurrentPage: (page: number) => void;
     setPageSize: (pageSize: number) => void;
     setSorters: (sorter: CrudSort[]) => void;
-    handleDelete?: (record: any) => void;
+    onRefetch?: () => void;
 };
 
 const CustomTable: FC<CustomTableProps> = ({
     columns,
     loading,
     tableProps,
+    resource,
+    currentPage,
     actionItems,
     setCurrentPage,
     setPageSize,
     setSorters,
-    handleDelete,
+    onRefetch,
 }) => {
+    const { mutate: deleteRecord } = useDelete<NBaseApi.IResponse<boolean>>();
+
+    const handleDelete = (record: any) => {
+        Modal.confirm({
+            okText: 'Xóa',
+            okType: 'danger',
+            cancelText: 'Hủy',
+            title: 'Xóa dữ liệu',
+            icon: <Icon icon="lucide:trash" />,
+            content: 'Bạn có chắc chắn muốn xóa dữ liệu này không?',
+            onOk: () => {
+                deleteRecord(
+                    {
+                        id: record.id,
+                        resource: resource || '',
+                    },
+                    {
+                        onSuccess: () => {
+                            if (
+                                currentPage &&
+                                currentPage > 1 &&
+                                tableProps.dataSource?.length === 1
+                            ) {
+                                setCurrentPage(currentPage - 1);
+                            } else {
+                                onRefetch?.();
+                            }
+                        },
+                        onError: (error) => {
+                            message.error(error?.message || 'Lỗi xóa dữ liệu không thành công');
+                        },
+                    },
+                );
+            },
+        });
+    };
+
     const renderAction = (record: any) => {
         return (
             <>
@@ -44,7 +85,7 @@ const CustomTable: FC<CustomTableProps> = ({
                     />
                 ))}
 
-                {Boolean(handleDelete) && (
+                {Boolean(onRefetch && resource) && (
                     <Dropdown
                         trigger={['click']}
                         menu={{
