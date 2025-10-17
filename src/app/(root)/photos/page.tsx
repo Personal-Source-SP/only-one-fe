@@ -4,10 +4,10 @@ import { CustomFilterType, ElementType, GoogleDriveFileType, QualityMode, ViewMo
 import type { FilterItem, NBaseApi, NGoogle } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { useTable } from '@refinedev/antd';
-import { HttpError, useApiUrl, useCustom, useCustomMutation, useSelect } from '@refinedev/core';
-import { Button, message, Space } from 'antd';
+import { HttpError, useApiUrl, useCustom, useSelect } from '@refinedev/core';
+import { Button, Space } from 'antd';
 import { isNumber } from 'lodash';
-import { FC, useEffect, useMemo, useRef, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 
 import Lightbox from 'yet-another-react-lightbox';
 import Fullscreen from 'yet-another-react-lightbox/plugins/fullscreen';
@@ -20,27 +20,14 @@ import 'yet-another-react-lightbox/styles.css';
 import { CustomElement, CustomFilter, PaginationControls } from '@/components/common';
 
 import PhotoGroups from '@/components/module/photos/PhotoGroups';
-import SyncFileGoogleDrive from '@/components/module/photos/SyncGoogleDrive';
-import SyncLocal from '@/components/module/photos/SyncLocal';
+import SyncGoogleDrive from '@/components/module/sync-google-drive';
+import SyncLocal from '@/components/module/sync-local';
 
-import { useMainContext } from '@/contexts/MainContext';
 import { useDebounceSearch } from '@/hooks/useDebounceSearch';
-import {
-    exchangeCodeForTokens,
-    getDriveImageUrl,
-    getUserInfoFromGoogle,
-    isExpiredToken,
-} from '@/libs';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { getDriveImageUrl, isExpiredToken } from '@/libs';
 
 const PhotosPage: FC = () => {
     const apiUrl = useApiUrl();
-    const router = useRouter();
-    const pathname = usePathname();
-    const handledAuthRef = useRef(false);
-    const searchParams = useSearchParams();
-
-    const { handleLoading } = useMainContext();
 
     const [columns, setColumns] = useState(4);
     const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.ALL);
@@ -94,8 +81,6 @@ const PhotosPage: FC = () => {
             },
         });
 
-    const { mutate: syncGoogleAuth } = useCustomMutation<NBaseApi.IResponse<boolean>>();
-
     const googleDriveFiles = useMemo(() => {
         return tableQuery?.data?.data ?? [];
     }, [tableQuery?.data?.data]);
@@ -141,94 +126,11 @@ const PhotosPage: FC = () => {
         updateColumns();
     }, []);
 
-    useEffect(() => {
-        const code = searchParams?.get('code');
-        const error = searchParams?.get('error');
-
-        if (!code && !error) return;
-        if (handledAuthRef.current) return;
-
-        handledAuthRef.current = true;
-
-        if (error) {
-            message.error('Kết nối Google thất bại');
-            router.replace(pathname);
-            return;
-        }
-
-        if (code) {
-            Promise.resolve(handleSaveToken(code as string)).finally(() => {
-                router.replace(pathname);
-            });
-        }
-    }, [searchParams?.toString(), pathname, router]);
-
     const debouncedSearch = useDebounceSearch({
         setFilters,
         setCurrentPage,
         fieldName: 'name',
     });
-
-    const handleSaveToken = async (code: string) => {
-        handleLoading(true);
-
-        try {
-            const tokens = await exchangeCodeForTokens(
-                code,
-                process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URI as string,
-            );
-
-            if (!tokens) {
-                message.error('Lỗi khi lấy token Google');
-                return;
-            }
-
-            const userInfo = await getUserInfoFromGoogle(tokens.access_token);
-            if (!userInfo) {
-                message.error('Lỗi khi lấy thông tin người dùng Google');
-                return;
-            }
-
-            syncGoogleAuth({
-                method: 'put',
-                url: `${apiUrl}/google-auth`,
-                values: {
-                    email: userInfo.email,
-                    accessToken: tokens.access_token,
-                    expiresIn: tokens.expires_in,
-                    scope: tokens.scope,
-                    tokenType: tokens.token_type,
-                    refreshToken: tokens.refresh_token,
-                    refreshTokenExpiresIn: tokens.refresh_token_expires_in,
-                },
-                successNotification: (data) => {
-                    if (!data?.data?.data) {
-                        return {
-                            type: 'error',
-                            message: 'Kết nối Google thất bại',
-                        };
-                    }
-
-                    window.location.href = '/photos';
-
-                    return {
-                        type: 'success',
-                        message: 'Kết nối Google thành công',
-                    };
-                },
-                errorNotification: () => {
-                    return {
-                        type: 'error',
-                        message: 'Kết nối Google thất bại',
-                    };
-                },
-            });
-        } catch (e) {
-            message.error('Lỗi khi kết nối Google');
-        } finally {
-            handleLoading(false);
-        }
-    };
 
     const startSlideshow = () => {
         setIsLightboxOpen(true);
@@ -398,7 +300,7 @@ const PhotosPage: FC = () => {
             />
 
             {isOpenSyncFile && (
-                <SyncFileGoogleDrive
+                <SyncGoogleDrive
                     folderOptions={folderOptions || []}
                     onSuccess={() => tableQuery?.refetch()}
                     onClose={() => setIsOpenSyncFile(false)}

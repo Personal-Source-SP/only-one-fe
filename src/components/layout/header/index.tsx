@@ -3,6 +3,7 @@
 import { Icon } from '@iconify/react';
 import { Avatar, Badge, Button, Dropdown, Input, MenuProps } from 'antd';
 import { signOut } from 'next-auth/react';
+import { usePathname } from 'next/navigation';
 import { FC, memo } from 'react';
 
 type HeaderProps = {
@@ -10,8 +11,8 @@ type HeaderProps = {
     mobileMenuOpen: boolean;
     showNotifications: boolean;
     sidebarCollapsed?: boolean;
-    getPageTitle: () => string;
     setShowSearch: (show: boolean) => void;
+    getPageTitle: (pathname: string) => string;
     setMobileMenuOpen: (open: boolean) => void;
     setShowNotifications: (show: boolean) => void;
 };
@@ -28,11 +29,13 @@ const Header: FC<HeaderProps> = ({
     mobileMenuOpen,
     showNotifications,
     sidebarCollapsed = false,
-    getPageTitle,
     setShowSearch,
+    getPageTitle,
     setMobileMenuOpen,
     setShowNotifications,
 }) => {
+    const pathname = usePathname();
+
     const settingItem: SettingItem[] = [
         {
             label: 'Thông tin tài khoản',
@@ -66,7 +69,7 @@ const Header: FC<HeaderProps> = ({
                     onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                     icon={<Icon icon="lucide:menu" className="text-xl" />}
                 />
-                <h1 className="text-xl font-medium m-0">{getPageTitle()}</h1>
+                <h1 className="text-xl font-medium m-0">{getPageTitle(pathname)}</h1>
             </div>
         );
     };

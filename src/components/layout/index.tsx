@@ -5,87 +5,186 @@ import NotificationsPanel from '@/components/layout/notifications-panel';
 import Search from '@/components/layout/search';
 import Sidebar from '@/components/layout/sidebar';
 
-import { Space } from 'antd';
-import { usePathname } from 'next/navigation';
-import { FC, memo, ReactNode, useState } from 'react';
+import { useMainContext } from '@/contexts/MainContext';
+import { useSearchParamsString } from '@/hooks/useSearchParamsString';
+import { exchangeCodeForTokens, getUserInfoFromGoogle } from '@/libs';
+import { useApiUrl, useCustomMutation } from '@refinedev/core';
+
+import { message, Space } from 'antd';
+import { usePathname, useRouter } from 'next/navigation';
+import { FC, memo, ReactNode, useEffect, useRef, useState } from 'react';
 
 type MainLayoutProps = {
     children: ReactNode;
 };
 
+const notifications = [
+    {
+        id: 1,
+        type: 'share',
+        title: 'Hương Trần đã chia sẻ một tệp với bạn',
+        message: 'Báo cáo doanh thu Q2 2023.xlsx',
+        time: '5 phút trước',
+        read: false,
+        user: {
+            name: 'Hương Trần',
+            avatar: 'https://img.heroui.chat/image/avatar?w=200&h=200&u=2',
+        },
+    },
+    {
+        id: 2,
+        type: 'comment',
+        title: 'Tuấn Nguyễn đã bình luận về tài liệu của bạn',
+        message: 'Tôi đã xem qua và có một vài ý kiến...',
+        time: '30 phút trước',
+        read: false,
+        user: {
+            name: 'Tuấn Nguyễn',
+            avatar: 'https://img.heroui.chat/image/avatar?w=200&h=200&u=3',
+        },
+    },
+    {
+        id: 3,
+        type: 'mention',
+        title: 'Linh Đỗ đã nhắc đến bạn trong một bình luận',
+        message: '@Minh Nguyễn bạn có thể kiểm tra lại số liệu này không?',
+        time: '2 giờ trước',
+        read: true,
+        user: {
+            name: 'Linh Đỗ',
+            avatar: 'https://img.heroui.chat/image/avatar?w=200&h=200&u=4',
+        },
+    },
+    {
+        id: 4,
+        type: 'update',
+        title: 'Cập nhật hệ thống',
+        message: 'Google Hub đã được cập nhật lên phiên bản mới nhất.',
+        time: '1 ngày trước',
+        read: true,
+        user: {
+            name: 'Hệ thống',
+            avatar: 'https://img.heroui.chat/image/avatar?w=200&h=200&u=10',
+        },
+    },
+];
+
+const getPageTitle = (pathname: string) => {
+    switch (pathname) {
+        case '/':
+            return 'Bảng điều khiển';
+        case '/drive':
+            return 'Google Drive';
+        case '/photos':
+            return 'Google Photos';
+        case '/keep':
+            return 'Google Keep';
+        case '/users':
+            return 'Quản lý người dùng';
+        default:
+            return 'Google Hub';
+    }
+};
+
 const MainLayout: FC<MainLayoutProps> = ({ children }) => {
+    const apiUrl = useApiUrl();
+    const router = useRouter();
     const pathname = usePathname();
+    const handledAuthRef = useRef(false);
+    const searchParamsString = useSearchParamsString();
 
     const [showSearch, setShowSearch] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
     const [showNotifications, setShowNotifications] = useState(false);
 
-    const notifications = [
-        {
-            id: 1,
-            type: 'share',
-            title: 'Hương Trần đã chia sẻ một tệp với bạn',
-            message: 'Báo cáo doanh thu Q2 2023.xlsx',
-            time: '5 phút trước',
-            read: false,
-            user: {
-                name: 'Hương Trần',
-                avatar: 'https://img.heroui.chat/image/avatar?w=200&h=200&u=2',
-            },
-        },
-        {
-            id: 2,
-            type: 'comment',
-            title: 'Tuấn Nguyễn đã bình luận về tài liệu của bạn',
-            message: 'Tôi đã xem qua và có một vài ý kiến...',
-            time: '30 phút trước',
-            read: false,
-            user: {
-                name: 'Tuấn Nguyễn',
-                avatar: 'https://img.heroui.chat/image/avatar?w=200&h=200&u=3',
-            },
-        },
-        {
-            id: 3,
-            type: 'mention',
-            title: 'Linh Đỗ đã nhắc đến bạn trong một bình luận',
-            message: '@Minh Nguyễn bạn có thể kiểm tra lại số liệu này không?',
-            time: '2 giờ trước',
-            read: true,
-            user: {
-                name: 'Linh Đỗ',
-                avatar: 'https://img.heroui.chat/image/avatar?w=200&h=200&u=4',
-            },
-        },
-        {
-            id: 4,
-            type: 'update',
-            title: 'Cập nhật hệ thống',
-            message: 'Google Hub đã được cập nhật lên phiên bản mới nhất.',
-            time: '1 ngày trước',
-            read: true,
-            user: {
-                name: 'Hệ thống',
-                avatar: 'https://img.heroui.chat/image/avatar?w=200&h=200&u=10',
-            },
-        },
-    ];
+    const { handleLoading } = useMainContext();
 
-    const getPageTitle = () => {
-        switch (pathname) {
-            case '/':
-                return 'Bảng điều khiển';
-            case '/drive':
-                return 'Google Drive';
-            case '/photos':
-                return 'Google Photos';
-            case '/keep':
-                return 'Google Keep';
-            case '/users':
-                return 'Quản lý người dùng';
-            default:
-                return 'Google Hub';
+    const { mutate: syncGoogleAuth } = useCustomMutation();
+
+    useEffect(() => {
+        const params = new URLSearchParams(searchParamsString);
+
+        const code = params.get('code');
+        const error = params.get('error');
+
+        if (!code && !error) return;
+        if (handledAuthRef.current) return;
+
+        handledAuthRef.current = true;
+
+        if (error) {
+            message.error('Kết nối Google thất bại');
+            router.replace(pathname);
+            return;
+        }
+
+        if (code) {
+            Promise.resolve(handleSaveToken(code as string)).finally(() => {
+                router.replace(pathname);
+            });
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [searchParamsString, pathname, router]);
+
+    const handleSaveToken = async (code: string) => {
+        handleLoading(true);
+
+        try {
+            const tokens = await exchangeCodeForTokens(
+                code,
+                process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URI as string,
+            );
+
+            if (!tokens) {
+                message.error('Lỗi khi lấy token Google');
+                return;
+            }
+
+            const userInfo = await getUserInfoFromGoogle(tokens.access_token);
+            if (!userInfo) {
+                message.error('Lỗi khi lấy thông tin người dùng Google');
+                return;
+            }
+
+            syncGoogleAuth({
+                method: 'put',
+                url: `${apiUrl}/google-auth`,
+                values: {
+                    email: userInfo.email,
+                    accessToken: tokens.access_token,
+                    expiresIn: tokens.expires_in,
+                    scope: tokens.scope,
+                    tokenType: tokens.token_type,
+                    refreshToken: tokens.refresh_token,
+                    refreshTokenExpiresIn: tokens.refresh_token_expires_in,
+                },
+                successNotification: (data) => {
+                    if (!data?.data?.data) {
+                        return {
+                            type: 'error',
+                            message: 'Kết nối Google thất bại',
+                        } as const;
+                    }
+
+                    window.location.href = '/photos';
+
+                    return {
+                        type: 'success',
+                        message: 'Kết nối Google thành công',
+                    } as const;
+                },
+                errorNotification: () => {
+                    return {
+                        type: 'error',
+                        message: 'Kết nối Google thất bại',
+                    } as const;
+                },
+            });
+        } catch (e) {
+            message.error('Lỗi khi kết nối Google');
+        } finally {
+            handleLoading(false);
         }
     };
 

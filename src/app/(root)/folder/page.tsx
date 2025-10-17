@@ -3,18 +3,24 @@
 import { CustomElement, CustomFilter, PaginationControls } from '@/components/common';
 import CustomTable from '@/components/common/custom-table';
 import FolderModal from '@/components/module/folders/FolderModal';
-import { CustomFilterType, ElementType } from '@/enums';
+import SyncGoogleDrive from '@/components/module/sync-google-drive';
+import { CustomFilterType, ElementType, GoogleDriveType } from '@/enums';
 import { useDebounceSearch } from '@/hooks/useDebounceSearch';
-import { ActionTableItem, FilterItem, NGoogle } from '@/interfaces';
+import { ActionTableItem, FilterItem, NBaseApi, NGoogle } from '@/interfaces';
+import { isExpiredToken } from '@/libs';
 import { Icon } from '@iconify/react';
 import { useModalForm, useTable } from '@refinedev/antd';
-import { HttpError, useSelect } from '@refinedev/core';
+import { HttpError, useApiUrl, useCustom, useSelect } from '@refinedev/core';
 import { Button, Space } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
-import { FC, useEffect, useMemo } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 
 const FolderPage: FC = () => {
+    const apiUrl = useApiUrl();
+
+    const [isOpenSyncFile, setIsOpenSyncFile] = useState(false);
+
     const {
         currentPage,
         setCurrentPage,
@@ -64,6 +70,16 @@ const FolderPage: FC = () => {
             },
         });
 
+    const { result: googleAuthsResult, query: queryGoogleAuths } = useCustom<
+        NBaseApi.IResponse<NGoogle.IGoogleAuth[]>
+    >({
+        url: `${apiUrl}/google-auth`,
+        method: 'get',
+        queryOptions: {
+            enabled: false,
+        },
+    });
+
     useEffect(() => {
         queryFolderOptions?.refetch();
     }, []);
@@ -71,6 +87,14 @@ const FolderPage: FC = () => {
     const googleDriveFolders = useMemo(() => {
         return tableQuery?.data?.data ?? [];
     }, [tableQuery?.data?.data]);
+
+    const googleAuthNotExpired = useMemo(() => {
+        if (!googleAuthsResult?.data?.data?.length) return [];
+
+        return googleAuthsResult?.data?.data?.filter(
+            (item) => !isExpiredToken(item.googleExpiresAt),
+        );
+    }, [googleAuthsResult?.data?.data]);
 
     const debouncedSearch = useDebounceSearch({
         setFilters,
@@ -148,17 +172,9 @@ const FolderPage: FC = () => {
                         type="primary"
                         key="sync google drive"
                         icon={<Icon icon="ic:baseline-sync" />}
-                        // onClick={() => setIsOpenSyncFile(true)}
+                        onClick={() => setIsOpenSyncFile(true)}
                     >
                         Đồng bộ từ Google Drive
-                    </Button>,
-                    <Button
-                        type="primary"
-                        key="sync-local"
-                        icon={<Icon icon="lucide:folder-plus" />}
-                        // onClick={() => setIsOpenSyncLocal(true)}
-                    >
-                        Đồng bộ từ máy tính
                     </Button>,
                 ]}
             />
@@ -203,6 +219,17 @@ const FolderPage: FC = () => {
                 folderOptions={folderOptions ?? []}
                 onSubmit={() => {}}
             />
+
+            {isOpenSyncFile && (
+                <SyncGoogleDrive
+                    folderOptions={folderOptions || []}
+                    defaultType={GoogleDriveType.FOLDER}
+                    onSuccess={() => tableQuery?.refetch()}
+                    onClose={() => setIsOpenSyncFile(false)}
+                    googleAuths={googleAuthNotExpired ?? []}
+                    queryLoading={queryGoogleAuths?.isLoading || queryFolderOptions?.isLoading}
+                />
+            )}
         </Space>
     );
 };

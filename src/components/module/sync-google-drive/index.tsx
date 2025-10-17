@@ -51,18 +51,20 @@ const FieldsEnum = {
     CustomQuery: 'customQuery',
 };
 
-type SyncFileGoogleDriveProps = {
+type SyncGoogleDriveProps = {
     queryLoading: boolean;
     folderOptions: Option[];
     googleAuths: NGoogle.IGoogleAuth[];
+    defaultType?: GoogleDriveType;
     onClose: () => void;
     onSuccess: () => void;
 };
 
-const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
+const SyncGoogleDrive: FC<SyncGoogleDriveProps> = ({
     queryLoading,
     googleAuths,
     folderOptions,
+    defaultType,
     onSuccess,
     onClose,
 }) => {
@@ -359,8 +361,8 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
                 initialValues={{
                     folderId: '',
                     maxResults: 100,
-                    type: GoogleDriveType.FILE,
                     googleAuthId: googleAuths?.[0]?.id,
+                    type: defaultType ?? GoogleDriveType.FILE,
                 }}
             >
                 <Row gutter={[16, 0]}>
@@ -395,8 +397,9 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
                             rules={[{ required: true, message: 'Vui lòng chọn loại đồng bộ' }]}
                         >
                             <Select
+                                disabled={!!defaultType}
                                 placeholder="Loại đồng bộ"
-                                defaultValue={GoogleDriveType.FILE}
+                                defaultValue={defaultType ?? GoogleDriveType.FILE}
                                 onChange={(value) => {
                                     setType(value as GoogleDriveType);
 
@@ -706,4 +709,4 @@ const SyncFileGoogleDrive: FC<SyncFileGoogleDriveProps> = ({
     );
 };
 
-export default memo(SyncFileGoogleDrive);
+export default memo(SyncGoogleDrive);
