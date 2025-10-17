@@ -32,6 +32,15 @@ export declare namespace NGoogle {
         isStarred?: boolean;
     }
 
+    interface ILocalFilePreviewItem {
+        name: string;
+        file?: File;
+        handle?: any;
+        size?: number;
+        mimeType?: string;
+        lastModified?: Date;
+    }
+
     interface IPreviewGoogleDriveData {
         data: IGoogleDrivePreviewItem[];
         totalSize: number;

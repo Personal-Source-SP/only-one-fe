@@ -1,9 +1,14 @@
 'use client';
 
+import { CustomElement, CustomFilter, PaginationControls } from '@/components/common';
 import FileDetails from '@/components/module/file-details';
+import { CustomFilterType, ElementType } from '@/enums';
+import { useDebounceSearch } from '@/hooks/useDebounceSearch';
+import { FilterItem, NGoogle } from '@/interfaces';
 import { Icon } from '@iconify/react';
-import { Button, Card, Dropdown, Input, Space, Table } from 'antd';
-import { FC, useEffect, useState } from 'react';
+import { HttpError, useTable } from '@refinedev/core';
+import { Button, Card, Dropdown, Space, Table } from 'antd';
+import { FC, useEffect, useMemo, useState } from 'react';
 
 const DrivePage: FC = () => {
     const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
@@ -14,6 +19,27 @@ const DrivePage: FC = () => {
 
     // Check if we're on mobile
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+    const { currentPage, setCurrentPage, pageSize, setPageSize, setFilters, tableQuery } = useTable<
+        NGoogle.IGoogleDriveFolder,
+        HttpError,
+        Partial<NGoogle.IGoogleDriveFolder>
+    >({
+        resource: 'google-drive/folders',
+        syncWithLocation: false,
+        pagination: {
+            pageSize: 10,
+            mode: 'server',
+        },
+        sorters: {
+            mode: 'server',
+            initial: [{ field: 'createdAt', order: 'desc' }],
+        },
+    });
+
+    const googleDriveFolders = useMemo(() => {
+        return tableQuery?.data?.data ?? [];
+    }, [tableQuery?.data?.data]);
 
     useEffect(() => {
         const handleResize = () => {
@@ -98,6 +124,12 @@ const DrivePage: FC = () => {
         },
     ];
 
+    const debouncedSearch = useDebounceSearch({
+        setFilters,
+        setCurrentPage,
+        fieldName: 'name',
+    });
+
     const getFileIcon = (type: string) => {
         switch (type) {
             case 'folder':
@@ -122,10 +154,6 @@ const DrivePage: FC = () => {
             setSelectedFile(file);
             setShowDetails(true);
         }
-    };
-
-    const handlePathClick = (index: number) => {
-        setCurrentPath(currentPath.slice(0, index + 1));
     };
 
     const renderCell = (file: any, columnKey: React.Key) => {
@@ -195,182 +223,185 @@ const DrivePage: FC = () => {
         }
     };
 
+    const filterItems: FilterItem[] = [
+        {
+            span: 16,
+            type: CustomFilterType.SEARCH,
+            placeholder: 'Tìm kiếm thư mục',
+            onChange: (value) => debouncedSearch(value as string),
+        },
+        {
+            span: 4,
+            value: viewMode,
+            placeholder: 'Chế độ xem',
+            type: CustomFilterType.SELECT,
+            onChange: (value) => setViewMode(value as 'card' | 'table'),
+            options: [
+                { value: 'card', label: 'Dạng thẻ' },
+                { value: 'table', label: 'Dạng bảng' },
+            ],
+        },
+        {
+            span: 4,
+            value: viewMode,
+            placeholder: 'Dạng xem',
+            type: CustomFilterType.SELECT,
+            onChange: (value) => setViewMode(value as 'card' | 'table'),
+            options: [
+                { value: 'card', label: 'Dạng thẻ' },
+                { value: 'table', label: 'Dạng bảng' },
+            ],
+        },
+    ];
+
     return (
-        <Space direction="vertical" className="space-y-4 w-full">
-            {/* Breadcrumbs */}
-            <div className="flex items-center overflow-x-auto whitespace-nowrap pb-2">
-                {currentPath.map((path, index) => (
-                    <div key={index} className="breadcrumb-item">
-                        <span
-                            className={`cursor-pointer hover:text-primary ${
-                                index === currentPath.length - 1 ? '' : 'hover:underline'
-                            }`}
-                            onClick={() => handlePathClick(index)}
-                        >
-                            {path}
-                        </span>
-                    </div>
-                ))}
-            </div>
-
-            {/* Toolbar */}
-            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
-                <div className="flex gap-2 flex-wrap">
-                    <Input
-                        placeholder="Tìm kiếm trong Drive..."
-                        prefix={<Icon icon="lucide:search" className="text-foreground-500" />}
-                        className="w-full sm:w-64"
-                        size="small"
-                    />
-                    <Dropdown
-                        menu={{
-                            items: [
-                                { key: 'all', label: 'Tất cả các tệp' },
-                                { key: 'doc', label: 'Tài liệu' },
-                                { key: 'sheet', label: 'Bảng tính' },
-                                { key: 'slide', label: 'Thuyết trình' },
-                                { key: 'pdf', label: 'PDF' },
-                                { key: 'folder', label: 'Thư mục' },
-                            ],
-                        }}
-                    >
-                        <Button type="default" size="small">
-                            Lọc <Icon icon="lucide:chevron-down" />
-                        </Button>
-                    </Dropdown>
-
-                    {/* View toggle */}
-                    <Button
-                        type="default"
-                        size="small"
-                        icon={
-                            <Icon
-                                icon={viewMode === 'table' ? 'lucide:grid' : 'lucide:list'}
-                                className="text-foreground-600"
-                            />
-                        }
-                        onClick={() => setViewMode(viewMode === 'table' ? 'card' : 'table')}
-                    >
-                        {viewMode === 'table' ? 'Dạng thẻ' : 'Dạng bảng'}
-                    </Button>
-                </div>
-
-                <div className="flex gap-2 mt-2 sm:mt-0">
-                    <Button type="primary" icon={<Icon icon="lucide:upload" />} size="small">
-                        Tải lên
-                    </Button>
+        <Space size="middle" direction="vertical" className="w-full h-full">
+            <CustomElement
+                title="Danh sách thư mục"
+                elementType={ElementType.TITLE}
+                actions={[
                     <Button
                         type="primary"
-                        ghost
-                        icon={<Icon icon="lucide:folder-plus" />}
-                        size="small"
+                        key="sync google drive"
+                        icon={<Icon icon="ic:baseline-sync" />}
+                        // onClick={() => setIsOpenSyncFile(true)}
                     >
-                        Thư mục mới
-                    </Button>
-                </div>
-            </div>
+                        Đồng bộ từ Google Drive
+                    </Button>,
+                    <Button
+                        type="primary"
+                        key="sync-local"
+                        icon={<Icon icon="lucide:folder-plus" />}
+                        // onClick={() => setIsOpenSyncLocal(true)}
+                    >
+                        Đồng bộ từ máy tính
+                    </Button>,
+                ]}
+            />
 
-            {/* Files Table or Card View */}
-            <div className="flex">
-                <div className={`flex-1 transition-all ${showDetails ? 'pr-0 md:pr-4' : ''}`}>
-                    {viewMode === 'table' ? (
-                        <div className="overflow-x-auto">
-                            <Table
-                                rowSelection={{
-                                    selectedRowKeys: selectedKeys,
-                                    onChange: (keys) => setSelectedKeys(keys),
-                                }}
-                                pagination={false}
-                                className="rounded-lg border border-divider min-w-full"
-                                dataSource={files}
-                                rowKey="id"
-                                onRow={(record) => ({
-                                    onClick: () => handleRowAction(record as any),
-                                })}
-                            >
-                                <Table.Column
-                                    dataIndex="name"
-                                    title="TÊN"
-                                    key="name"
-                                    render={(_, r) => renderCell(r, 'name')}
-                                />
-                                {!isMobile ? (
-                                    <Table.Column
-                                        dataIndex="owner"
-                                        title="CHỦ SỞ HỮU"
-                                        key="owner"
-                                        render={(_, r) => renderCell(r, 'owner')}
-                                    />
-                                ) : null}
-                                <Table.Column
-                                    dataIndex="modified"
-                                    title="NGÀY SỬA ĐỔI"
-                                    key="modified"
-                                    render={(_, r) => renderCell(r, 'modified')}
-                                />
-                                {!isMobile ? (
-                                    <Table.Column
-                                        dataIndex="size"
-                                        title="KÍCH THƯỚC"
-                                        key="size"
-                                        render={(_, r) => renderCell(r, 'size')}
-                                    />
-                                ) : null}
-                                <Table.Column
-                                    dataIndex="actions"
-                                    key="actions"
-                                    render={(_, r) => renderCell(r, 'actions')}
-                                    align="right"
-                                />
-                            </Table>
-                        </div>
-                    ) : (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                            {files.map((file) => (
-                                <Card
-                                    key={file.id}
-                                    className="hover:shadow-md transition-shadow"
-                                    onClick={() => handleRowAction(file)}
-                                >
-                                    <div className="p-3">
-                                        <div className="flex items-center gap-3">
-                                            {getFileIcon(file.type)}
-                                            <div className="flex-1 min-w-0">
-                                                <p className="font-medium truncate">{file.name}</p>
-                                                <div className="flex items-center justify-between mt-2">
-                                                    <p className="text-xs text-foreground-500">
-                                                        {file.modified}
-                                                    </p>
-                                                    <p className="text-xs text-foreground-500">
-                                                        {file.size}
-                                                    </p>
+            <CustomElement elementType={ElementType.CONTAINER} loading={tableQuery?.isLoading}>
+                <CustomElement
+                    elementType={ElementType.CARD}
+                    header={<CustomFilter filters={filterItems} />}
+                    actions={[
+                        <PaginationControls
+                            itemsPerPage={pageSize}
+                            currentPage={currentPage}
+                            totalItems={googleDriveFolders?.length}
+                            onPageChange={(page) => setCurrentPage(page)}
+                            onItemsPerPageChange={(pageSize) => {
+                                setCurrentPage(1);
+                                setPageSize(pageSize);
+                            }}
+                        />,
+                    ]}
+                >
+                    <div className="flex">
+                        <div
+                            className={`flex-1 transition-all ${showDetails ? 'pr-0 md:pr-4' : ''}`}
+                        >
+                            {viewMode === 'table' ? (
+                                <div className="overflow-x-auto">
+                                    <Table
+                                        rowSelection={{
+                                            selectedRowKeys: selectedKeys,
+                                            onChange: (keys) => setSelectedKeys(keys),
+                                        }}
+                                        pagination={false}
+                                        className="rounded-lg border border-divider min-w-full"
+                                        dataSource={files}
+                                        rowKey="id"
+                                        onRow={(record) => ({
+                                            onClick: () => handleRowAction(record as any),
+                                        })}
+                                    >
+                                        <Table.Column
+                                            dataIndex="name"
+                                            title="TÊN"
+                                            key="name"
+                                            render={(_, r) => renderCell(r, 'name')}
+                                        />
+                                        {!isMobile ? (
+                                            <Table.Column
+                                                dataIndex="owner"
+                                                title="CHỦ SỞ HỮU"
+                                                key="owner"
+                                                render={(_, r) => renderCell(r, 'owner')}
+                                            />
+                                        ) : null}
+                                        <Table.Column
+                                            dataIndex="modified"
+                                            title="NGÀY SỬA ĐỔI"
+                                            key="modified"
+                                            render={(_, r) => renderCell(r, 'modified')}
+                                        />
+                                        {!isMobile ? (
+                                            <Table.Column
+                                                dataIndex="size"
+                                                title="KÍCH THƯỚC"
+                                                key="size"
+                                                render={(_, r) => renderCell(r, 'size')}
+                                            />
+                                        ) : null}
+                                        <Table.Column
+                                            dataIndex="actions"
+                                            key="actions"
+                                            render={(_, r) => renderCell(r, 'actions')}
+                                            align="right"
+                                        />
+                                    </Table>
+                                </div>
+                            ) : (
+                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                                    {files.map((file) => (
+                                        <Card
+                                            key={file.id}
+                                            className="hover:shadow-md transition-shadow"
+                                            onClick={() => handleRowAction(file)}
+                                        >
+                                            <div className="p-3">
+                                                <div className="flex items-center gap-3">
+                                                    {getFileIcon(file.type)}
+                                                    <div className="flex-1 min-w-0">
+                                                        <p className="font-medium truncate">
+                                                            {file.name}
+                                                        </p>
+                                                        <div className="flex items-center justify-between mt-2">
+                                                            <p className="text-xs text-foreground-500">
+                                                                {file.modified}
+                                                            </p>
+                                                            <p className="text-xs text-foreground-500">
+                                                                {file.size}
+                                                            </p>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                </Card>
-                            ))}
+                                        </Card>
+                                    ))}
+                                </div>
+                            )}
                         </div>
-                    )}
-                </div>
 
-                {/* File Details Sidebar */}
-                {showDetails && (
-                    <div
-                        className={`${
-                            isMobile
-                                ? 'fixed inset-0 z-50 bg-background'
-                                : 'w-80 border-l border-divider'
-                        }`}
-                    >
-                        <FileDetails
-                            file={selectedFile}
-                            onClose={() => setShowDetails(false)}
-                            isMobile={isMobile}
-                        />
+                        {/* File Details Sidebar */}
+                        {showDetails && (
+                            <div
+                                className={`${
+                                    isMobile
+                                        ? 'fixed inset-0 z-50 bg-background'
+                                        : 'w-80 border-l border-divider'
+                                }`}
+                            >
+                                <FileDetails
+                                    file={selectedFile}
+                                    onClose={() => setShowDetails(false)}
+                                    isMobile={isMobile}
+                                />
+                            </div>
+                        )}
                     </div>
-                )}
-            </div>
+                </CustomElement>
+            </CustomElement>
         </Space>
     );
 };

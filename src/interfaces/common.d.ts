@@ -1,7 +1,9 @@
+import { CustomFilterType } from '@/enums';
+
 export interface Option {
     label: string;
-    value?: string;
     key?: string;
+    value?: string | number;
 }
 
 export interface PaginationRequest {
@@ -9,4 +11,18 @@ export interface PaginationRequest {
     limit?: number;
     filter?: string;
     sortBy?: string[];
+}
+
+export interface FilterItem {
+    span: number;
+    type: CustomFilterType;
+
+    value?: any;
+    title?: string;
+    options?: Option[];
+    placeholder?: string;
+    showSearch?: boolean;
+    allowClear?: boolean;
+    mode?: 'multiple' | 'tags';
+    onChange?: (value: any) => void;
 }

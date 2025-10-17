@@ -1,11 +1,11 @@
 'use client';
 
-import { ElementType, GoogleDriveFileType, QualityMode, ViewMode } from '@/enums';
-import type { NBaseApi, NGoogle } from '@/interfaces';
+import { CustomFilterType, ElementType, GoogleDriveFileType, QualityMode, ViewMode } from '@/enums';
+import type { FilterItem, NBaseApi, NGoogle } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { useTable } from '@refinedev/antd';
 import { HttpError, useApiUrl, useCustom, useCustomMutation, useSelect } from '@refinedev/core';
-import { Button, Col, Input, message, Row, Select, Space } from 'antd';
+import { Button, message, Space } from 'antd';
 import { isNumber } from 'lodash';
 import { FC, useEffect, useMemo, useRef, useState } from 'react';
 
@@ -17,10 +17,11 @@ import 'yet-another-react-lightbox/plugins/thumbnails.css';
 import Zoom from 'yet-another-react-lightbox/plugins/zoom';
 import 'yet-another-react-lightbox/styles.css';
 
-import { CustomElement, PaginationControls } from '@/components/common';
+import { CustomElement, CustomFilter, PaginationControls } from '@/components/common';
 
 import PhotoGroups from '@/components/module/photos/PhotoGroups';
 import SyncFileGoogleDrive from '@/components/module/photos/SyncGoogleDrive';
+import SyncLocal from '@/components/module/photos/SyncLocal';
 
 import { useMainContext } from '@/contexts/MainContext';
 import { useDebounceSearch } from '@/hooks/useDebounceSearch';
@@ -46,6 +47,7 @@ const PhotosPage: FC = () => {
     const [qualityMode, setQualityMode] = useState<QualityMode>(QualityMode.LOW);
 
     const [isOpenSyncFile, setIsOpenSyncFile] = useState(false);
+    const [isOpenSyncLocal, setIsOpenSyncLocal] = useState(false);
     const [isLightboxOpen, setIsLightboxOpen] = useState<boolean>(false);
     const [slideshowInterval, setSlideshowInterval] = useState<number>(3);
     const [currentPhotoIndex, setCurrentPhotoIndex] = useState<number>(0);
@@ -252,79 +254,74 @@ const PhotosPage: FC = () => {
         }
     };
 
-    const renderSectionFilters = () => {
-        return (
-            <Row gutter={[16, 8]} className="py-3">
-                <Col span={14}>
-                    <Input
-                        placeholder="Tìm kiếm ảnh của bạn..."
-                        onChange={(e) => debouncedSearch(e.target.value.trim())}
-                        prefix={<Icon icon="lucide:search" className="text-foreground-500" />}
-                    />
-                </Col>
-                <Col span={2}>
-                    <Select
-                        value={columns}
-                        placeholder="Số cột"
-                        onChange={(value) => setColumns(value)}
-                        options={[1, 2, 3, 4, 8].map((item) => ({
-                            value: item,
-                            label: item,
-                        }))}
-                    />
-                </Col>
-                <Col span={4}>
-                    <Select
-                        value={viewMode}
-                        placeholder="Chế độ xem"
-                        onChange={(value) => setViewMode(value)}
-                        options={[
-                            { value: ViewMode.ALL, label: 'Xem tất cả' },
-                            { value: ViewMode.DATE, label: 'Xem theo ngày' },
-                            { value: ViewMode.FOLDER, label: 'Xem theo thư mục' },
-                        ]}
-                    />
-                </Col>
-                <Col span={4}>
-                    <Select
-                        value={qualityMode}
-                        placeholder="Độ nét"
-                        onChange={(value) => setQualityMode(value)}
-                        options={[
-                            { value: QualityMode.HIGH, label: 'Nét' },
-                            { value: QualityMode.LOW, label: 'Thường' },
-                        ]}
-                    />
-                </Col>
-                <Col span={12}>
-                    <Select
-                        allowClear
-                        showSearch
-                        mode="multiple"
-                        placeholder="Thư mục"
-                        options={folderOptions}
-                        onChange={(value) => {
-                            setFilters([{ field: 'folderId', operator: 'eq', value }]);
-                            setCurrentPage(1);
-                        }}
-                    />
-                </Col>
-                <Col span={12}>
-                    <Select
-                        allowClear
-                        showSearch
-                        mode="multiple"
-                        placeholder="Email"
-                        options={googleAuthOptions}
-                        onChange={(value) => {
-                            setFilters([{ field: 'googleAuthId', operator: 'eq', value }]);
-                            setCurrentPage(1);
-                        }}
-                    />
-                </Col>
-            </Row>
-        );
-    };
+    const filterItems: FilterItem[] = [
+        {
+            span: 14,
+            type: CustomFilterType.SEARCH,
+            placeholder: 'Tìm kiếm ảnh của bạn...',
+            onChange: (value: string) => debouncedSearch(value),
+        },
+        {
+            span: 4,
+            value: viewMode,
+            placeholder: 'Chế độ xem',
+            type: CustomFilterType.SELECT,
+            onChange: (value: ViewMode) => setViewMode(value),
+            options: [
+                { value: ViewMode.ALL, label: 'Xem tất cả' },
+                { value: ViewMode.DATE, label: 'Xem theo ngày' },
+                { value: ViewMode.FOLDER, label: 'Xem theo thư mục' },
+            ],
+        },
+        {
+            span: 4,
+            value: qualityMode,
+            placeholder: 'Độ nét',
+            type: CustomFilterType.SELECT,
+            onChange: (value: QualityMode) => setQualityMode(value),
+            options: [
+                { value: QualityMode.HIGH, label: 'Nét' },
+                { value: QualityMode.LOW, label: 'Thường' },
+            ],
+        },
+        {
+            span: 2,
+            value: columns,
+            placeholder: 'Số cột',
+            type: CustomFilterType.SELECT,
+            onChange: (value: number) => setColumns(value),
+            options: [1, 2, 3, 4, 8].map((item) => ({
+                value: item,
+                label: item.toString(),
+            })),
+        },
+        {
+            span: 12,
+            mode: 'multiple',
+            allowClear: true,
+            showSearch: true,
+            value: folderOptions,
+            placeholder: 'Thư mục',
+            type: CustomFilterType.SELECT,
+            onChange: (value: string[]) => {
+                setFilters([{ field: 'folderId', operator: 'eq', value }]);
+                setCurrentPage(1);
+            },
+        },
+        {
+            span: 12,
+            mode: 'multiple',
+            allowClear: true,
+            showSearch: true,
+            placeholder: 'Email',
+            value: googleAuthOptions,
+            type: CustomFilterType.SELECT,
+            onChange: (value: string[]) => {
+                setFilters([{ field: 'googleAuthId', operator: 'eq', value }]);
+                setCurrentPage(1);
+            },
+        },
+    ];
 
     return (
         <Space size="middle" direction="vertical" className="w-full h-full">
@@ -341,12 +338,20 @@ const PhotosPage: FC = () => {
                         Trình chiếu
                     </Button>,
                     <Button
-                        key="sync"
                         type="primary"
-                        icon={<Icon icon="mdi:sync" />}
+                        key="sync google drive"
+                        icon={<Icon icon="ic:baseline-sync" />}
                         onClick={() => setIsOpenSyncFile(true)}
                     >
-                        Đồng bộ hoá
+                        Đồng bộ từ Google Drive
+                    </Button>,
+                    <Button
+                        type="primary"
+                        key="sync-local"
+                        icon={<Icon icon="lucide:folder-plus" />}
+                        onClick={() => setIsOpenSyncLocal(true)}
+                    >
+                        Đồng bộ từ máy tính
                     </Button>,
                 ]}
             />
@@ -354,7 +359,7 @@ const PhotosPage: FC = () => {
             <CustomElement elementType={ElementType.CONTAINER} loading={tableQuery?.isLoading}>
                 <CustomElement
                     elementType={ElementType.CARD}
-                    header={renderSectionFilters()}
+                    header={<CustomFilter filters={filterItems} />}
                     actions={[
                         <PaginationControls
                             itemsPerPage={pageSize}
@@ -398,6 +403,15 @@ const PhotosPage: FC = () => {
                     onSuccess={() => tableQuery?.refetch()}
                     onClose={() => setIsOpenSyncFile(false)}
                     googleAuths={googleAuthNotExpired ?? []}
+                    queryLoading={queryGoogleAuths?.isLoading || queryFolderOptions?.isLoading}
+                />
+            )}
+
+            {isOpenSyncLocal && (
+                <SyncLocal
+                    folderOptions={folderOptions || []}
+                    onSuccess={() => tableQuery?.refetch()}
+                    onClose={() => setIsOpenSyncLocal(false)}
                     queryLoading={queryGoogleAuths?.isLoading || queryFolderOptions?.isLoading}
                 />
             )}
