@@ -1,3 +1,5 @@
+import { SidebarItem } from '@/interfaces';
+
 export const SLIDESHOW_DELAY_OPTIONS = [
     { value: 1000, label: '1 giây' },
     { value: 2000, label: '2 giây' },
@@ -32,10 +34,39 @@ export const KEY_LOCAL_STORAGE = {
 };
 
 export const GOOGLE_SCOPES = [
-    'https://www.googleapis.com/auth/drive.metadata.readonly', // Đọc metadata file & thư mục
-    'https://www.googleapis.com/auth/drive.readonly', // Truy cập chỉ-đọc vào tất cả file, thư mục
     'email', // Lấy địa chỉ email của người dùng
     'profile', // Lấy thông tin profile cơ bản của người dùng (tên, avatar, ...)
+    'https://www.googleapis.com/auth/drive.metadata.readonly', // Đọc metadata file & thư mục
+    'https://www.googleapis.com/auth/drive.readonly', // Truy cập chỉ-đọc vào tất cả file, thư mục
+];
+
+export const SIDEBAR_ITEMS: SidebarItem[] = [
+    {
+        href: '/dashboard',
+        label: 'Tổng quan',
+        icon: 'lucide:layout-dashboard',
+    },
+    {
+        href: '/folder',
+        label: 'Thư mục',
+        icon: 'lucide:folder',
+    },
+    {
+        href: '/photos',
+        label: 'Ảnh',
+        icon: 'lucide:image',
+    },
+    {
+        href: '/keep',
+        label: 'Lưu trữ',
+        icon: 'lucide:archive',
+    },
+    {
+        href: '/users',
+        label: 'Người dùng',
+        icon: 'lucide:users',
+        checkAdmin: true,
+    },
 ];
 
 export const AUTH_PUBLIC_PAGES = ['/login', '/register', '/forget-password'];

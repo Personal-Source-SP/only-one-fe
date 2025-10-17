@@ -13,7 +13,7 @@ import { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
 import { FC, useMemo } from 'react';
 
-const DrivePage: FC = () => {
+const FolderPage: FC = () => {
     const {
         currentPage,
         setCurrentPage,
@@ -174,4 +174,4 @@ const DrivePage: FC = () => {
     );
 };
 
-export default DrivePage;
+export default FolderPage;

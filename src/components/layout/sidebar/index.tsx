@@ -1,46 +1,11 @@
 'use client';
 
 import { Logo } from '@/components/common';
+import { SIDEBAR_ITEMS } from '@/constants';
 import { Icon } from '@iconify/react';
 import { Button, Drawer, Menu, Tooltip } from 'antd';
 import { usePathname, useRouter } from 'next/navigation';
 import { FC, memo, useMemo } from 'react';
-
-interface SidebarItem {
-    href: string;
-    label: string;
-    icon: string;
-    checkAdmin?: boolean;
-}
-
-const sidebarItems: SidebarItem[] = [
-    {
-        href: '/dashboard',
-        label: 'Dashboard',
-        icon: 'lucide:layout-dashboard',
-    },
-    {
-        href: '/drive',
-        label: 'Google Drive',
-        icon: 'logos:google-drive',
-    },
-    {
-        href: '/photos',
-        label: 'Google Photos',
-        icon: 'logos:google-photos',
-    },
-    {
-        href: '/keep',
-        label: 'Google Keep',
-        icon: 'logos:google-keep',
-    },
-    {
-        href: '/users',
-        label: 'Users',
-        icon: 'lucide:users',
-        checkAdmin: true,
-    },
-];
 
 type SidebarProps = {
     mobileOpen: boolean;
@@ -61,55 +26,51 @@ const Sidebar: FC<SidebarProps> = ({ mobileOpen, setMobileOpen, collapsed, setCo
 
     const menuItems = useMemo(
         () =>
-            sidebarItems
-                .filter((item) => !(item.checkAdmin && !isAdmin))
-                .map((item) => ({
-                    key: item.href,
-                    icon: <Icon icon={item.icon} className="text-xl" />,
-                    label: collapsed ? (
-                        <span
-                            title={item.label}
-                            onClick={() => handleNavigation(item.href)}
-                            className="flex items-center justify-center cursor-pointer w-full"
-                        >
-                            {item.label}
-                        </span>
-                    ) : (
-                        <span
-                            onClick={() => handleNavigation(item.href)}
-                            className="flex items-center gap-3 cursor-pointer"
-                        >
-                            {item.label}
-                        </span>
-                    ),
-                })),
-        [collapsed, handleNavigation, isAdmin, sidebarItems],
+            SIDEBAR_ITEMS.filter((item) => !(item.checkAdmin && !isAdmin)).map((item) => ({
+                key: item.href,
+                icon: <Icon icon={item.icon} className="text-xl" />,
+                label: collapsed ? (
+                    <span
+                        title={item.label}
+                        onClick={() => handleNavigation(item.href)}
+                        className="flex items-center justify-center cursor-pointer w-full"
+                    >
+                        {item.label}
+                    </span>
+                ) : (
+                    <span
+                        onClick={() => handleNavigation(item.href)}
+                        className="flex items-center gap-3 cursor-pointer"
+                    >
+                        {item.label}
+                    </span>
+                ),
+            })),
+        [collapsed, handleNavigation, isAdmin],
     );
 
     const menuItemsDesktop = useMemo(
         () =>
-            sidebarItems
-                .filter((item) => !(item.checkAdmin && !isAdmin))
-                .map((item) => (
-                    <li key={item.href}>
-                        <Tooltip title={item.label} placement="right">
-                            <Button
-                                type="text"
-                                shape="circle"
-                                title={item.label}
-                                onClick={() => handleNavigation(item.href)}
-                                className={`w-10 h-10 flex items-center justify-center rounded-xl transition-colors duration-200 ${
-                                    pathname === item.href
-                                        ? 'bg-blue-100 text-blue-600'
-                                        : 'text-foreground-500 hover:bg-gray-100'
-                                }`}
-                            >
-                                <Icon icon={item.icon} className="text-xl" />
-                            </Button>
-                        </Tooltip>
-                    </li>
-                )),
-        [isAdmin, sidebarItems, pathname, handleNavigation],
+            SIDEBAR_ITEMS.filter((item) => !(item.checkAdmin && !isAdmin)).map((item) => (
+                <li key={item.href}>
+                    <Tooltip title={item.label} placement="right">
+                        <Button
+                            type="text"
+                            shape="circle"
+                            title={item.label}
+                            onClick={() => handleNavigation(item.href)}
+                            className={`w-10 h-10 flex items-center justify-center rounded-xl transition-colors duration-200 ${
+                                pathname === item.href
+                                    ? 'bg-blue-100 text-blue-600'
+                                    : 'text-foreground-500 hover:bg-gray-100'
+                            }`}
+                        >
+                            <Icon icon={item.icon} className="text-xl" />
+                        </Button>
+                    </Tooltip>
+                </li>
+            )),
+        [isAdmin, pathname, handleNavigation],
     );
 
     const DesktopSidebar = () => (
