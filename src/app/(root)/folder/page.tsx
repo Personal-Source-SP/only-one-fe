@@ -141,7 +141,11 @@ const FolderPage: FC = () => {
             align: 'center',
             dataIndex: 'isTrashed',
             render: (isTrashed: boolean) =>
-                isTrashed ? <Icon icon="lucide:check" /> : <Icon icon="lucide:x" />,
+                isTrashed ? (
+                    <Icon icon="lucide:check" className="w-full" />
+                ) : (
+                    <Icon icon="lucide:x" className="w-full" />
+                ),
         },
         {
             key: 'isStarred',
@@ -149,7 +153,11 @@ const FolderPage: FC = () => {
             align: 'center',
             dataIndex: 'isStarred',
             render: (isStarred: boolean) =>
-                isStarred ? <Icon icon="lucide:check" /> : <Icon icon="lucide:x" />,
+                isStarred ? (
+                    <Icon icon="lucide:check" className="w-full" />
+                ) : (
+                    <Icon icon="lucide:x" className="w-full" />
+                ),
         },
     ];
 

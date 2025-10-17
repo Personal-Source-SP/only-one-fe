@@ -101,7 +101,11 @@ const UsersPage: FC = () => {
             align: 'center',
             dataIndex: 'isActive',
             render: (isActive: boolean) =>
-                isActive ? <Icon icon="lucide:check" /> : <Icon icon="lucide:x" />,
+                isActive ? (
+                    <Icon icon="lucide:check" className="w-full" />
+                ) : (
+                    <Icon icon="lucide:x" className="w-full" />
+                ),
         },
         {
             key: 'googleAuth',
@@ -109,7 +113,11 @@ const UsersPage: FC = () => {
             dataIndex: 'googleAuths',
             align: 'center',
             render: (googleAuths: NGoogle.IGoogleAuth[]) =>
-                googleAuths?.length > 0 ? <Icon icon="lucide:check" /> : <Icon icon="lucide:x" />,
+                googleAuths?.length > 0 ? (
+                    <Icon icon="lucide:check" className="w-full" />
+                ) : (
+                    <Icon icon="lucide:x" className="w-full" />
+                ),
         },
         {
             title: 'Ngày tạo',
