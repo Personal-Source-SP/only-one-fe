@@ -94,10 +94,15 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
         ],
     },
     {
-        href: '/users',
-        label: 'Người dùng',
-        icon: 'noto:people-holding-hands',
-        checkAdmin: true,
+        label: 'Quản lý',
+        icon: 'flat-color-icons:settings',
+        children: [
+            {
+                href: '/users',
+                label: 'Người dùng',
+                icon: 'noto:people-holding-hands',
+            },
+        ],
     },
 ];
 
