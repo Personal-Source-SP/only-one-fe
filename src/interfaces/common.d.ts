@@ -1,10 +1,11 @@
 import { CustomFilterType } from '@/enums';
 
 export interface SidebarItem {
-    href: string;
     label: string;
     icon: string;
+    href?: string;
     checkAdmin?: boolean;
+    children?: SidebarItem[];
 }
 
 export interface Option {

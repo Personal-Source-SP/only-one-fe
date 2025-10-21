@@ -44,27 +44,33 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
     {
         href: '/dashboard',
         label: 'Tổng quan',
-        icon: 'lucide:layout-dashboard',
+        icon: 'emojione:bar-chart',
     },
     {
-        href: '/folder',
-        label: 'Thư mục',
-        icon: 'lucide:folder',
-    },
-    {
-        href: '/photos',
-        label: 'Ảnh',
-        icon: 'lucide:image',
-    },
-    {
-        href: '/keep',
-        label: 'Lưu trữ',
-        icon: 'lucide:archive',
+        label: 'Google Drive',
+        icon: 'flat-color-icons:google',
+        children: [
+            {
+                href: '/folder',
+                label: 'Thư mục',
+                icon: 'emojione:open-file-folder',
+            },
+            {
+                href: '/photos',
+                label: 'Ảnh',
+                icon: 'noto:framed-picture',
+            },
+            {
+                href: '/keep',
+                label: 'Lưu trữ',
+                icon: 'noto-v1:package',
+            },
+        ],
     },
     {
         href: '/users',
         label: 'Người dùng',
-        icon: 'lucide:users',
+        icon: 'noto:people-holding-hands',
         checkAdmin: true,
     },
 ];
