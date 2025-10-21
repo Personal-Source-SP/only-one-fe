@@ -68,6 +68,32 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
         ],
     },
     {
+        label: 'Dữ liệu',
+        icon: 'noto:package',
+        children: [
+            {
+                href: '/items',
+                label: 'Đối tượng',
+                icon: 'noto:page-facing-up',
+            },
+            {
+                href: '/data-provider',
+                label: 'Nhà cung cấp',
+                icon: 'noto:factory',
+            },
+            {
+                href: '/data-provider-item',
+                label: 'Đối tượng nhà cung cấp',
+                icon: 'noto:package',
+            },
+            {
+                href: '/item-data',
+                label: 'Dữ liệu đối tượng',
+                icon: 'noto:file-folder',
+            },
+        ],
+    },
+    {
         href: '/users',
         label: 'Người dùng',
         icon: 'noto:people-holding-hands',
