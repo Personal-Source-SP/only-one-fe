@@ -41,3 +41,9 @@ export interface ActionTableItem {
     icon: React.ReactNode;
     onClick: (record: any) => void;
 }
+
+export interface SearchFilterItem {
+    name?: string;
+    span?: number;
+    placeholder?: string;
+}

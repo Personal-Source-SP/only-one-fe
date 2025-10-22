@@ -1,0 +1,125 @@
+'use client';
+
+import { CustomElement, CustomFilter, CustomTable, PaginationControls } from '@/components/common';
+import { CustomFilterType, ElementType } from '@/enums';
+import { useDebounceSearch } from '@/hooks/useDebounceSearch';
+import { ActionTableItem, FilterItem, SearchFilterItem } from '@/interfaces';
+import { useTable } from '@refinedev/antd';
+import { HttpError } from '@refinedev/core';
+import { ColumnsType } from 'antd/es/table';
+import { FC, memo, useEffect, useMemo } from 'react';
+
+type CustomTableContainerProps = {
+    resource: string;
+    columns: ColumnsType<any>;
+    quantityRefetch?: number;
+    filterSearch?: SearchFilterItem;
+    actionItems?: ActionTableItem[];
+    customFilterItems?: FilterItem[];
+    childrenTop?: React.ReactNode;
+    childrenBottom?: React.ReactNode;
+};
+
+const CustomTableContainer: FC<CustomTableContainerProps> = ({
+    resource,
+    columns,
+    quantityRefetch,
+    filterSearch,
+    customFilterItems,
+    actionItems,
+    childrenTop,
+    childrenBottom,
+}) => {
+    const {
+        currentPage,
+        setCurrentPage,
+        pageSize,
+        setPageSize,
+        setFilters,
+        setSorters,
+        tableQuery,
+        tableProps,
+    } = useTable<any, HttpError, Partial<any>>({
+        resource,
+        syncWithLocation: false,
+        pagination: {
+            pageSize: 10,
+            mode: 'server',
+        },
+        sorters: {
+            mode: 'server',
+            initial: [{ field: 'createdAt', order: 'desc' }],
+        },
+    });
+
+    const data = useMemo(() => {
+        return tableQuery?.data?.data ?? [];
+    }, [tableQuery?.data?.data]);
+
+    const filterItems = useMemo(() => {
+        return [
+            ...(filterSearch
+                ? [
+                      {
+                          type: CustomFilterType.SEARCH,
+                          span: filterSearch?.span ?? 24,
+                          placeholder: filterSearch?.placeholder ?? 'Tìm kiếm',
+                          onChange: (value: string) => debouncedSearch(value),
+                      },
+                  ]
+                : []),
+            ...(customFilterItems ?? []),
+        ];
+    }, [customFilterItems, filterSearch]);
+
+    useEffect(() => {
+        if (quantityRefetch) {
+            tableQuery?.refetch();
+        }
+    }, [quantityRefetch]);
+
+    const debouncedSearch = useDebounceSearch({
+        setFilters,
+        setCurrentPage,
+        fieldName: filterSearch?.name ?? 'name',
+    });
+
+    return (
+        <CustomElement elementType={ElementType.CONTAINER}>
+            <CustomElement
+                elementType={ElementType.CARD}
+                header={<CustomFilter filters={filterItems} />}
+                actions={[
+                    <PaginationControls
+                        itemsPerPage={pageSize}
+                        currentPage={currentPage}
+                        totalItems={data?.length}
+                        onPageChange={(page) => setCurrentPage(page)}
+                        onItemsPerPageChange={(pageSize) => {
+                            setCurrentPage(1);
+                            setPageSize(pageSize);
+                        }}
+                    />,
+                ]}
+            >
+                {childrenTop && childrenTop}
+
+                <CustomTable
+                    columns={columns}
+                    resource="google-folder"
+                    tableProps={tableProps}
+                    setSorters={setSorters}
+                    setPageSize={setPageSize}
+                    actionItems={actionItems}
+                    setCurrentPage={setCurrentPage}
+                    loading={tableQuery?.isLoading}
+                    onRefetch={tableQuery?.refetch}
+                />
+
+                {childrenBottom && childrenBottom}
+            </CustomElement>
+        </CustomElement>
+    );
+};
+
+export default memo(CustomTableContainer);

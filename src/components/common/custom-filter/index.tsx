@@ -62,6 +62,8 @@ const CustomFilter: FC<CustomFilterProps> = ({ filters }) => {
         }
     };
 
+    if (!filters?.length) return null;
+
     return (
         <Row gutter={[16, 8]} className="py-3">
             {filters.map((filter, index) => renderFilterItem(filter, index))}

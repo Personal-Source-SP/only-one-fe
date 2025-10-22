@@ -8,3 +8,8 @@ export enum CustomFilterType {
     SEARCH = 'search',
     SELECT = 'select',
 }
+
+export enum CustomContainerType {
+    TABLE = 'table',
+    HEADER = 'header',
+}
