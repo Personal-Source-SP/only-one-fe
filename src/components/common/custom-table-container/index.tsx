@@ -14,8 +14,8 @@ type CustomTableContainerProps = {
     columns?: ColumnsType<any>;
     quantityRefetch?: number;
     filterSearch?: SearchFilterItem;
-    actionItems?: ActionTableItem[];
     customFilterItems?: FilterItem[];
+    actionItems?: ActionTableItem[];
     childrenTop?: React.ReactNode;
     childrenBottom?: React.ReactNode;
 };

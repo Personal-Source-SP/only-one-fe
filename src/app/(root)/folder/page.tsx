@@ -4,19 +4,16 @@ import { CustomElement, CustomTableContainer } from '@/components/common';
 import FolderModal from '@/components/module/folders/FolderModal';
 import SyncGoogleDrive from '@/components/module/sync-google-drive';
 import { ElementType, GoogleDriveType } from '@/enums';
-import { ActionTableItem, NBaseApi, NGoogle } from '@/interfaces';
-import { isExpiredToken } from '@/libs';
+import { NGoogle } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { useModalForm } from '@refinedev/antd';
-import { HttpError, useApiUrl, useCustom, useSelect } from '@refinedev/core';
+import { HttpError, useSelect } from '@refinedev/core';
 import { Button, Space } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
-import { FC, useEffect, useMemo, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 const FolderPage: FC = () => {
-    const apiUrl = useApiUrl();
-
     const [quantityRefetch, setQuantityRefetch] = useState(0);
     const [isOpenSyncFile, setIsOpenSyncFile] = useState(false);
 
@@ -47,27 +44,9 @@ const FolderPage: FC = () => {
             },
         });
 
-    const { result: googleAuthsResult, query: queryGoogleAuths } = useCustom<
-        NBaseApi.IResponse<NGoogle.IGoogleAuth[]>
-    >({
-        url: `${apiUrl}/google-auth`,
-        method: 'get',
-        queryOptions: {
-            enabled: false,
-        },
-    });
-
     useEffect(() => {
         queryFolderOptions?.refetch();
     }, []);
-
-    const googleAuthNotExpired = useMemo(() => {
-        if (!googleAuthsResult?.data?.data?.length) return [];
-
-        return googleAuthsResult?.data?.data?.filter(
-            (item) => !isExpiredToken(item.googleExpiresAt),
-        );
-    }, [googleAuthsResult?.data?.data]);
 
     const columns: ColumnsType<NGoogle.IGoogleDriveFolder> = [
         {
@@ -119,15 +98,6 @@ const FolderPage: FC = () => {
         },
     ];
 
-    const actionItems: ActionTableItem[] = [
-        {
-            key: 'edit',
-            label: 'Chỉnh sửa',
-            icon: <Icon icon="lucide:edit" />,
-            onClick: (record) => showFolderModal(record?.id),
-        },
-    ];
-
     return (
         <Space size="middle" direction="vertical" className="w-full h-full">
             <CustomElement
@@ -148,8 +118,15 @@ const FolderPage: FC = () => {
             <CustomTableContainer
                 columns={columns}
                 resource="google-folder"
-                actionItems={actionItems}
                 quantityRefetch={quantityRefetch}
+                actionItems={[
+                    {
+                        key: 'edit',
+                        label: 'Chỉnh sửa',
+                        icon: <Icon icon="lucide:edit" />,
+                        onClick: (record) => showFolderModal(record?.id),
+                    },
+                ]}
                 filterSearch={{
                     placeholder: 'Tìm kiếm thư mục',
                 }}
@@ -170,9 +147,8 @@ const FolderPage: FC = () => {
                 defaultType={GoogleDriveType.FOLDER}
                 onClose={() => setIsOpenSyncFile(false)}
                 defaultFolderOptions={folderOptions || []}
-                defaultGoogleAuths={googleAuthNotExpired ?? []}
+                queryLoading={queryFolderOptions?.isLoading}
                 onSuccess={() => setQuantityRefetch(quantityRefetch + 1)}
-                queryLoading={queryGoogleAuths?.isLoading || queryFolderOptions?.isLoading}
             />
         </Space>
     );
