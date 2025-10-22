@@ -10,8 +10,8 @@ import { ColumnsType } from 'antd/es/table';
 import { FC, memo, useEffect, useMemo } from 'react';
 
 type CustomTableContainerProps = {
-    resource: string;
-    columns: ColumnsType<any>;
+    resource?: string;
+    columns?: ColumnsType<any>;
     quantityRefetch?: number;
     filterSearch?: SearchFilterItem;
     actionItems?: ActionTableItem[];
@@ -50,6 +50,9 @@ const CustomTableContainer: FC<CustomTableContainerProps> = ({
             mode: 'server',
             initial: [{ field: 'createdAt', order: 'desc' }],
         },
+        queryOptions: {
+            enabled: !!columns?.length && !!resource,
+        },
     });
 
     const data = useMemo(() => {
@@ -85,7 +88,7 @@ const CustomTableContainer: FC<CustomTableContainerProps> = ({
     });
 
     return (
-        <CustomElement elementType={ElementType.CONTAINER}>
+        <CustomElement elementType={ElementType.CONTAINER} loading={tableQuery?.isLoading}>
             <CustomElement
                 elementType={ElementType.CARD}
                 header={<CustomFilter filters={filterItems} />}
@@ -104,17 +107,19 @@ const CustomTableContainer: FC<CustomTableContainerProps> = ({
             >
                 {childrenTop && childrenTop}
 
-                <CustomTable
-                    columns={columns}
-                    resource="google-folder"
-                    tableProps={tableProps}
-                    setSorters={setSorters}
-                    setPageSize={setPageSize}
-                    actionItems={actionItems}
-                    setCurrentPage={setCurrentPage}
-                    loading={tableQuery?.isLoading}
-                    onRefetch={tableQuery?.refetch}
-                />
+                {!!columns?.length && (
+                    <CustomTable
+                        columns={columns}
+                        resource="google-folder"
+                        tableProps={tableProps}
+                        setSorters={setSorters}
+                        setPageSize={setPageSize}
+                        actionItems={actionItems}
+                        setCurrentPage={setCurrentPage}
+                        loading={tableQuery?.isLoading}
+                        onRefetch={tableQuery?.refetch}
+                    />
+                )}
 
                 {childrenBottom && childrenBottom}
             </CustomElement>

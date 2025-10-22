@@ -24,13 +24,12 @@ import 'yet-another-react-lightbox/plugins/thumbnails.css';
 import Zoom from 'yet-another-react-lightbox/plugins/zoom';
 import 'yet-another-react-lightbox/styles.css';
 
-import { CustomElement, CustomFilter, PaginationControls } from '@/components/common';
+import { CustomElement, CustomTableContainer } from '@/components/common';
 
 import PhotoGroups from '@/components/module/photos/PhotoGroups';
 import SyncGoogleDrive from '@/components/module/sync-google-drive';
 import SyncLocal from '@/components/module/sync-local';
 
-import { useDebounceSearch } from '@/hooks/useDebounceSearch';
 import { getDriveImageUrl, isExpiredToken } from '@/libs';
 
 const PhotosPage: FC = () => {
@@ -46,7 +45,7 @@ const PhotosPage: FC = () => {
     const [slideshowInterval, setSlideshowInterval] = useState<number>(3);
     const [currentPhotoIndex, setCurrentPhotoIndex] = useState<number>(0);
 
-    const { currentPage, setCurrentPage, pageSize, setPageSize, setFilters, tableQuery } = useTable<
+    const { setCurrentPage, setFilters, tableQuery } = useTable<
         NGoogle.IGoogleDriveFile,
         HttpError,
         Partial<NGoogle.IGoogleDriveFile>
@@ -133,12 +132,6 @@ const PhotosPage: FC = () => {
         updateColumns();
     }, []);
 
-    const debouncedSearch = useDebounceSearch({
-        setFilters,
-        setCurrentPage,
-        fieldName: 'name',
-    });
-
     const startSlideshow = () => {
         setIsLightboxOpen(true);
     };
@@ -164,12 +157,6 @@ const PhotosPage: FC = () => {
     };
 
     const filterItems: FilterItem[] = [
-        {
-            span: 14,
-            type: CustomFilterType.SEARCH,
-            placeholder: 'Tìm kiếm ảnh của bạn...',
-            onChange: (value: string) => debouncedSearch(value),
-        },
         {
             span: 4,
             value: viewMode,
@@ -265,23 +252,15 @@ const PhotosPage: FC = () => {
                 ]}
             />
 
-            <CustomElement elementType={ElementType.CONTAINER} loading={tableQuery?.isLoading}>
-                <CustomElement
-                    elementType={ElementType.CARD}
-                    header={<CustomFilter filters={filterItems} />}
-                    actions={[
-                        <PaginationControls
-                            itemsPerPage={pageSize}
-                            currentPage={currentPage}
-                            totalItems={googleDriveFiles?.length}
-                            onPageChange={(page) => setCurrentPage(page)}
-                            onItemsPerPageChange={(pageSize) => {
-                                setCurrentPage(1);
-                                setPageSize(pageSize);
-                            }}
-                        />,
-                    ]}
-                >
+            <CustomTableContainer
+                resource="google-folder"
+                customFilterItems={filterItems}
+                filterSearch={{
+                    span: 14,
+                    name: 'name',
+                    placeholder: 'Tìm kiếm ảnh',
+                }}
+                childrenTop={
                     <PhotoGroups
                         columns={columns}
                         displayMode={viewMode}
@@ -289,8 +268,8 @@ const PhotosPage: FC = () => {
                         onPhotoClick={handlePhotoClick}
                         googleDriveFiles={googleDriveFiles}
                     />
-                </CustomElement>
-            </CustomElement>
+                }
+            />
 
             <Lightbox
                 open={isLightboxOpen}
@@ -311,6 +290,8 @@ const PhotosPage: FC = () => {
                 defaultType={GoogleDriveType.FILE}
                 onSuccess={() => tableQuery?.refetch()}
                 onClose={() => setIsOpenSyncFile(false)}
+                defaultFolderOptions={folderOptions ?? []}
+                defaultGoogleAuths={googleAuthNotExpired ?? []}
                 queryLoading={queryGoogleAuths?.isLoading || queryFolderOptions?.isLoading}
             />
 
