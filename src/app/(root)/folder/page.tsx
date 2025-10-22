@@ -128,10 +128,6 @@ const FolderPage: FC = () => {
         },
     ];
 
-    const handleRefetch = () => {
-        setQuantityRefetch(quantityRefetch + 1);
-    };
-
     return (
         <Space size="middle" direction="vertical" className="w-full h-full">
             <CustomElement
@@ -171,11 +167,11 @@ const FolderPage: FC = () => {
 
             {isOpenSyncFile && (
                 <SyncGoogleDrive
-                    onSuccess={() => handleRefetch()}
                     folderOptions={folderOptions || []}
                     defaultType={GoogleDriveType.FOLDER}
                     onClose={() => setIsOpenSyncFile(false)}
                     googleAuths={googleAuthNotExpired ?? []}
+                    onSuccess={() => setQuantityRefetch(quantityRefetch + 1)}
                     queryLoading={queryGoogleAuths?.isLoading || queryFolderOptions?.isLoading}
                 />
             )}
