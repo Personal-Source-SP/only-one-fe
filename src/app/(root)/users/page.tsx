@@ -1,42 +1,19 @@
 'use client';
 
-import { CustomElement, CustomFilter, PaginationControls } from '@/components/common';
-import CustomTable from '@/components/common/custom-table';
-import { CustomFilterType, ElementType } from '@/enums';
-import { useDebounceSearch } from '@/hooks/useDebounceSearch';
-import { ActionTableItem, FilterItem, NGoogle, NUser } from '@/interfaces';
+import { CustomElement, CustomTableContainer } from '@/components/common';
+import { ElementType } from '@/enums';
+import { NGoogle, NUser } from '@/interfaces';
 import { Icon } from '@iconify/react';
-import { useModalForm, useTable } from '@refinedev/antd';
+import { useModalForm } from '@refinedev/antd';
 import { HttpError } from '@refinedev/core';
 import { Space } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
-import { FC, useMemo, useState } from 'react';
+import { FC, useState } from 'react';
 
 const UsersPage: FC = () => {
+    const [quantityRefetch, setQuantityRefetch] = useState(0);
     const [isOpenSyncFile, setIsOpenSyncFile] = useState(false);
-
-    const {
-        currentPage,
-        setCurrentPage,
-        pageSize,
-        setPageSize,
-        setFilters,
-        setSorters,
-        tableQuery,
-        tableProps,
-    } = useTable<NUser.IUser, HttpError, Partial<NUser.IUser>>({
-        resource: 'users',
-        syncWithLocation: false,
-        pagination: {
-            pageSize: 10,
-            mode: 'server',
-        },
-        sorters: {
-            mode: 'server',
-            initial: [{ field: 'createdAt', order: 'desc' }],
-        },
-    });
 
     const {
         open: openFolderModal,
@@ -51,34 +28,6 @@ const UsersPage: FC = () => {
         autoResetForm: true,
         warnWhenUnsavedChanges: false,
     });
-
-    const users = useMemo(() => {
-        return tableQuery?.data?.data ?? [];
-    }, [tableQuery?.data?.data]);
-
-    const debouncedSearch = useDebounceSearch({
-        setFilters,
-        setCurrentPage,
-        fieldName: 'userName',
-    });
-
-    const actionItems: ActionTableItem[] = [
-        {
-            key: 'edit',
-            label: 'Chỉnh sửa',
-            icon: <Icon icon="lucide:edit" />,
-            onClick: (record) => showFolderModal(record?.id),
-        },
-    ];
-
-    const filterItems: FilterItem[] = [
-        {
-            span: 24,
-            type: CustomFilterType.SEARCH,
-            placeholder: 'Tìm kiếm người dùng',
-            onChange: (value) => debouncedSearch(value as string),
-        },
-    ];
 
     const columns: ColumnsType<NUser.IUser> = [
         {
@@ -148,36 +97,23 @@ const UsersPage: FC = () => {
                 }
             />
 
-            <CustomElement elementType={ElementType.CONTAINER}>
-                <CustomElement
-                    elementType={ElementType.CARD}
-                    header={<CustomFilter filters={filterItems} />}
-                    actions={[
-                        <PaginationControls
-                            itemsPerPage={pageSize}
-                            currentPage={currentPage}
-                            totalItems={users?.length}
-                            onPageChange={(page) => setCurrentPage(page)}
-                            onItemsPerPageChange={(pageSize) => {
-                                setCurrentPage(1);
-                                setPageSize(pageSize);
-                            }}
-                        />,
-                    ]}
-                >
-                    <CustomTable
-                        columns={columns}
-                        resource="google-folder"
-                        tableProps={tableProps}
-                        setSorters={setSorters}
-                        setPageSize={setPageSize}
-                        actionItems={actionItems}
-                        setCurrentPage={setCurrentPage}
-                        loading={tableQuery?.isLoading}
-                        onRefetch={tableQuery?.refetch}
-                    />
-                </CustomElement>
-            </CustomElement>
+            <CustomTableContainer
+                columns={columns}
+                resource="users"
+                quantityRefetch={quantityRefetch}
+                actionItems={[
+                    {
+                        key: 'edit',
+                        label: 'Chỉnh sửa',
+                        icon: <Icon icon="lucide:edit" />,
+                        onClick: (record) => showFolderModal(record?.id),
+                    },
+                ]}
+                filterSearch={{
+                    name: 'userName',
+                    placeholder: 'Tìm kiếm người dùng',
+                }}
+            />
 
             {/* <FolderModal
                 open={openFolderModal}
