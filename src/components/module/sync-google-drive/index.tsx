@@ -3,9 +3,9 @@
 import { CustomModal } from '@/components/common';
 import { GoogleDriveFileType, GoogleDriveType } from '@/enums';
 import { NBaseApi, NGoogle, Option } from '@/interfaces';
-import { getGoogleAuthUrl } from '@/libs';
+import { getGoogleAuthUrl, isExpiredToken } from '@/libs';
 import { Icon } from '@iconify/react';
-import { useApiUrl, useCustomMutation } from '@refinedev/core';
+import { useApiUrl, useCustom, useCustomMutation, useSelect } from '@refinedev/core';
 import {
     Button,
     Card,
@@ -32,7 +32,7 @@ import {
 import { ColumnType, TableProps } from 'antd/es/table';
 import dayjs from 'dayjs';
 import Link from 'next/link';
-import { FC, memo, useEffect, useState, type Key } from 'react';
+import { FC, memo, useEffect, useMemo, useState, type Key } from 'react';
 
 const StepEnum = {
     Settings: 0,
@@ -52,23 +52,48 @@ const FieldsEnum = {
 };
 
 type SyncGoogleDriveProps = {
+    isOpen: boolean;
     queryLoading: boolean;
-    folderOptions: Option[];
-    googleAuths: NGoogle.IGoogleAuth[];
     defaultType?: GoogleDriveType;
+    defaultFolderOptions?: Option[];
+    defaultGoogleAuths?: NGoogle.IGoogleAuth[];
     onClose: () => void;
     onSuccess: () => void;
 };
 
 const SyncGoogleDrive: FC<SyncGoogleDriveProps> = ({
+    isOpen,
     queryLoading,
-    googleAuths,
-    folderOptions,
     defaultType,
+    defaultGoogleAuths,
+    defaultFolderOptions,
     onSuccess,
     onClose,
 }) => {
     const apiUrl = useApiUrl();
+
+    const { options: folderOptionResult, query: queryFolderOptions } =
+        useSelect<NGoogle.IGoogleDriveFolder>({
+            resource: 'google-folder/all',
+            optionValue: (item: NGoogle.IGoogleDriveFolder) => item.id,
+            optionLabel: (item: NGoogle.IGoogleDriveFolder) => item.name,
+            pagination: {
+                mode: 'off',
+            },
+            queryOptions: {
+                enabled: typeof defaultFolderOptions !== 'object',
+            },
+        });
+
+    const { result: googleAuthsResult, query: queryGoogleAuths } = useCustom<
+        NBaseApi.IResponse<NGoogle.IGoogleAuth[]>
+    >({
+        url: `${apiUrl}/google-auth`,
+        method: 'get',
+        queryOptions: {
+            enabled: typeof defaultGoogleAuths !== 'object',
+        },
+    });
 
     const { mutate: syncGoogleDrive } = useCustomMutation<NBaseApi.IResponse<boolean>>();
     const { mutate: previewGoogleDrive } =
@@ -94,6 +119,24 @@ const SyncGoogleDrive: FC<SyncGoogleDriveProps> = ({
     const [updateAll, setUpdateAll] = useState(false);
     const [previewData, setPreviewData] = useState<NGoogle.IGoogleDrivePreviewItem[]>([]);
     const [selectedRows, setSelectedRows] = useState<NGoogle.IGoogleDrivePreviewItem[]>([]);
+
+    const googleAuths = useMemo(() => {
+        if (defaultGoogleAuths?.length) return defaultGoogleAuths;
+
+        if (!googleAuthsResult?.data?.data?.length) return [];
+
+        return googleAuthsResult?.data?.data?.filter(
+            (item) => !isExpiredToken(item.googleExpiresAt),
+        );
+    }, [googleAuthsResult?.data?.data, defaultGoogleAuths]);
+
+    const folderOptions = useMemo(() => {
+        if (defaultFolderOptions?.length) return defaultFolderOptions;
+
+        if (!folderOptionResult?.length) return [];
+
+        return folderOptionResult;
+    }, [folderOptionResult, defaultFolderOptions]);
 
     useEffect(() => {
         if (!googleAuths?.length) {
@@ -646,12 +689,13 @@ const SyncGoogleDrive: FC<SyncGoogleDriveProps> = ({
     return (
         <CustomModal
             modalProps={{
-                open: true,
                 width: 1200,
+                open: isOpen,
                 centered: true,
-                loading: queryLoading,
                 footer: renderFooter(),
                 title: 'Đồng bộ Google Drive',
+                loading:
+                    queryLoading || queryFolderOptions?.isLoading || queryGoogleAuths?.isLoading,
             }}
         >
             <Spin spinning={loading}>

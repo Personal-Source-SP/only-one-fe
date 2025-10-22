@@ -46,13 +46,20 @@ const FieldsEnum = {
 };
 
 type SyncLocalProps = {
+    isOpen: boolean;
     queryLoading: boolean;
     folderOptions: Option[];
     onClose: () => void;
     onSuccess: () => void;
 };
 
-const SyncLocal: FC<SyncLocalProps> = ({ queryLoading, folderOptions, onSuccess, onClose }) => {
+const SyncLocal: FC<SyncLocalProps> = ({
+    isOpen,
+    queryLoading,
+    folderOptions,
+    onSuccess,
+    onClose,
+}) => {
     const apiUrl = useApiUrl();
 
     const { mutate: syncGoogleDrive } = useCustomMutation<NBaseApi.IResponse<boolean>>();
@@ -564,8 +571,8 @@ const SyncLocal: FC<SyncLocalProps> = ({ queryLoading, folderOptions, onSuccess,
     return (
         <CustomModal
             modalProps={{
-                open: true,
                 width: 1200,
+                open: isOpen,
                 centered: true,
                 loading: queryLoading,
                 footer: renderFooter(),

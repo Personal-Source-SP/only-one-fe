@@ -9,6 +9,8 @@ type CustomModalProps = {
 };
 
 const CustomModal: FC<CustomModalProps> = ({ children, modalProps }) => {
+    if (!modalProps.open) return <></>;
+
     return (
         <Modal
             width={1200}

@@ -165,16 +165,15 @@ const FolderPage: FC = () => {
                 onSubmit={() => {}}
             />
 
-            {isOpenSyncFile && (
-                <SyncGoogleDrive
-                    folderOptions={folderOptions || []}
-                    defaultType={GoogleDriveType.FOLDER}
-                    onClose={() => setIsOpenSyncFile(false)}
-                    googleAuths={googleAuthNotExpired ?? []}
-                    onSuccess={() => setQuantityRefetch(quantityRefetch + 1)}
-                    queryLoading={queryGoogleAuths?.isLoading || queryFolderOptions?.isLoading}
-                />
-            )}
+            <SyncGoogleDrive
+                isOpen={isOpenSyncFile}
+                defaultType={GoogleDriveType.FOLDER}
+                onClose={() => setIsOpenSyncFile(false)}
+                defaultFolderOptions={folderOptions || []}
+                defaultGoogleAuths={googleAuthNotExpired ?? []}
+                onSuccess={() => setQuantityRefetch(quantityRefetch + 1)}
+                queryLoading={queryGoogleAuths?.isLoading || queryFolderOptions?.isLoading}
+            />
         </Space>
     );
 };

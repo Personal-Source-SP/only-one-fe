@@ -1,6 +1,13 @@
 'use client';
 
-import { CustomFilterType, ElementType, GoogleDriveFileType, QualityMode, ViewMode } from '@/enums';
+import {
+    CustomFilterType,
+    ElementType,
+    GoogleDriveFileType,
+    GoogleDriveType,
+    QualityMode,
+    ViewMode,
+} from '@/enums';
 import type { FilterItem, NBaseApi, NGoogle } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { useTable } from '@refinedev/antd';
@@ -299,24 +306,21 @@ const PhotosPage: FC = () => {
                 }}
             />
 
-            {isOpenSyncFile && (
-                <SyncGoogleDrive
-                    folderOptions={folderOptions || []}
-                    onSuccess={() => tableQuery?.refetch()}
-                    onClose={() => setIsOpenSyncFile(false)}
-                    googleAuths={googleAuthNotExpired ?? []}
-                    queryLoading={queryGoogleAuths?.isLoading || queryFolderOptions?.isLoading}
-                />
-            )}
+            <SyncGoogleDrive
+                isOpen={isOpenSyncFile}
+                defaultType={GoogleDriveType.FILE}
+                onSuccess={() => tableQuery?.refetch()}
+                onClose={() => setIsOpenSyncFile(false)}
+                queryLoading={queryGoogleAuths?.isLoading || queryFolderOptions?.isLoading}
+            />
 
-            {isOpenSyncLocal && (
-                <SyncLocal
-                    folderOptions={folderOptions || []}
-                    onSuccess={() => tableQuery?.refetch()}
-                    onClose={() => setIsOpenSyncLocal(false)}
-                    queryLoading={queryGoogleAuths?.isLoading || queryFolderOptions?.isLoading}
-                />
-            )}
+            <SyncLocal
+                isOpen={isOpenSyncLocal}
+                folderOptions={folderOptions || []}
+                onSuccess={() => tableQuery?.refetch()}
+                onClose={() => setIsOpenSyncLocal(false)}
+                queryLoading={queryGoogleAuths?.isLoading || queryFolderOptions?.isLoading}
+            />
         </Space>
     );
 };
