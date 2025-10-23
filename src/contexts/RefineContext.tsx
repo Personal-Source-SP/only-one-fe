@@ -5,7 +5,6 @@ import { AUTH_PUBLIC_PAGES } from '@/constants';
 import { ColorModeContextProvider } from '@/contexts/ColorModeContext';
 import accessControlProvider from '@/providers/access-control-provider';
 import RestServer, { createSessionAxiosInstance } from '@/providers/data-provider';
-import { DashboardOutlined, PictureOutlined } from '@ant-design/icons';
 import { useNotificationProvider } from '@refinedev/antd';
 import { AuthProvider, Refine } from '@refinedev/core';
 import routerProvider from '@refinedev/nextjs-router';
@@ -186,14 +185,6 @@ const App = ({ children, defaultMode }: PropsWithChildren<AppProps>) => {
                 dataProvider={RestServer(apiUrl, createSessionAxiosInstance(session))}
                 resources={[
                     {
-                        name: 'dashboard',
-                        list: '/dashboard',
-                        meta: {
-                            icon: <DashboardOutlined />,
-                            label: 'Dashboard',
-                        },
-                    },
-                    {
                         name: 'login',
                         list: '/login',
                     },
@@ -204,14 +195,6 @@ const App = ({ children, defaultMode }: PropsWithChildren<AppProps>) => {
                     {
                         name: 'forgot-password',
                         list: '/forgot-password',
-                    },
-                    {
-                        name: 'photos',
-                        list: '/photos',
-                        meta: {
-                            label: 'Photos',
-                            icon: <PictureOutlined />,
-                        },
                     },
                 ]}
                 options={{

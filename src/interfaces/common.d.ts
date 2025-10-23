@@ -1,5 +1,15 @@
 import { CustomFilterType } from '@/enums';
 
+export interface IAbstract {
+    id?: string;
+    createdAt?: Date;
+    createdBy?: string | null;
+    updatedBy?: string | null;
+    updatedAt?: Date;
+    deletedBy?: string | null;
+    deletedAt?: Date | null;
+}
+
 export interface SidebarItem {
     label: string;
     icon: string;
