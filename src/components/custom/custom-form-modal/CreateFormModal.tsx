@@ -102,6 +102,8 @@ const CreateFormModal: FC<CreateFormModalProps> = ({
         action: 'create',
         resource: resource,
         autoResetForm: true,
+        errorNotification: false,
+        successNotification: false,
         warnWhenUnsavedChanges: false,
         onMutationSuccess: (data) => {
             if (!data?.data?.data) {
