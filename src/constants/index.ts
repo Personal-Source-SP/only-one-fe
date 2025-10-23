@@ -87,8 +87,8 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
                 icon: 'noto:package',
             },
             {
-                href: '/data-provider/item-data',
-                label: 'Dữ liệu đối tượng',
+                href: '/data-provider/data-history',
+                label: 'Lịch sử dữ liệu',
                 icon: 'noto:file-folder',
             },
         ],
