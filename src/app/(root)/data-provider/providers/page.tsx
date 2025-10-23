@@ -175,6 +175,18 @@ const DataProviderPage: FC = () => {
                         icon: <Icon icon="lucide:edit" />,
                         onClick: (record) => setEditItemId(record?.id),
                     },
+                    {
+                        key: 'scrape-unconfigured',
+                        label: 'Cấu hình dữ liệu',
+                        icon: <Icon icon="lucide:settings-2" />,
+                        onClick: (record) => setEditItemId(record?.id),
+                    },
+                    {
+                        key: 'search-configured',
+                        label: 'Câu hình tìm kiếm',
+                        icon: <Icon icon="lucide:search-code" />,
+                        onClick: (record) => setEditItemId(record?.id),
+                    },
                 ]}
                 filterSearch={{
                     placeholder: 'Tìm kiếm nhà cung cấp',

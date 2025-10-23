@@ -5,7 +5,7 @@ import { ActionTableItem, NBaseApi } from '@/interfaces';
 import { DeleteOutlined } from '@ant-design/icons';
 import { Icon } from '@iconify/react';
 import { CrudSort, useDelete } from '@refinedev/core';
-import { Button, Dropdown, message, Modal, Table } from 'antd';
+import { Button, Dropdown, message, Modal, Space, Table } from 'antd';
 import { ColumnsType, TablePaginationConfig, TableProps } from 'antd/es/table';
 import { FilterValue, SorterResult, TableCurrentDataSource } from 'antd/es/table/interface';
 import { FC, memo } from 'react';
@@ -77,7 +77,7 @@ const CustomTable: FC<CustomTableProps> = ({
 
     const renderAction = (record: any) => {
         return (
-            <>
+            <Space direction="horizontal" size={4}>
                 {actionItems?.map((action) => (
                     <Button
                         type="text"
@@ -110,7 +110,7 @@ const CustomTable: FC<CustomTableProps> = ({
                         />
                     </Dropdown>
                 )}
-            </>
+            </Space>
         );
     };
 
