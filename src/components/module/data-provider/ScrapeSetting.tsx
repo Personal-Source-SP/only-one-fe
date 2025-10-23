@@ -19,6 +19,7 @@ import {
     Form,
     FormProps,
     Input,
+    InputNumber,
     ModalProps,
     notification,
     Row,
@@ -46,12 +47,24 @@ type ScrapeSettingProps = {
     onClose: () => void;
 };
 
-const FORM_FIELDS: Record<string, any> = {
+const FORM_FIELDS = {
     SCRAPER_SERVICE: 'scraperService',
     IS_GET_PARENT_ELEMENT: 'isGetParentElement',
     MAIN_CONTENT_SELECTOR: 'mainContentSelector',
+
     URL: 'url',
     FUNCTION_GENERATOR: 'functionGenerator',
+
+    RETRY_DELAY: 'retryDelay',
+    RETRY_ATTEMPTS: 'retryAttempts',
+    STEALTH_MODE: 'stealthMode',
+    CLOUDFLARE_BYPASS: 'cloudflareBypass',
+    WAIT_FOR_SELECTOR: 'waitForSelector',
+    USER_AGENT: 'userAgent',
+    JAVASCRIPT_ENABLED: 'javascriptEnabled',
+    IMAGES_ENABLED: 'imagesEnabled',
+    CSS_ENABLED: 'cssEnabled',
+
     EXTRACT_DATA: 'extractData',
     ADDITIONAL_EXTRACT_DATA: 'additionalExtractData',
     ADDITIONAL_URLS: 'additionalUrls',
@@ -112,9 +125,9 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
             handleCreate({
                 resource: 'parsers/test-scraper-function',
                 values: {
+                    ...values.targetConfig,
                     url,
                     htmlContentString,
-                    targetConfig: values.targetConfig,
                     scraperService: values?.scraperService,
                 },
                 successNotification(data) {
@@ -327,15 +340,75 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
                     />
                 </Form.Item>
 
-                <CustomSwitch
-                    fieldLabel="Lấy phần tử cha"
-                    fieldPlaceholder="Lấy phần tử cha làm container cho selector chính"
-                    formFields={['targetConfig', FORM_FIELDS.IS_GET_PARENT_ELEMENT]}
-                />
+                <Row gutter={[16, 16]}>
+                    <CustomSwitch
+                        span={12}
+                        fieldLabel="Lấy phần tử cha"
+                        fieldPlaceholder="Lấy phần tử cha làm container cho selector chính"
+                        formFields={['targetConfig', FORM_FIELDS.IS_GET_PARENT_ELEMENT]}
+                    />
+
+                    <CustomSwitch
+                        span={12}
+                        fieldLabel="Bật chế độ ẩn danh"
+                        fieldPlaceholder="Bật chế độ ẩn danh để tránh bị phát hiện là bot"
+                        formFields={['targetConfig', FORM_FIELDS.STEALTH_MODE]}
+                    />
+
+                    <CustomSwitch
+                        span={12}
+                        fieldLabel="Bật chế độ vượt qua Cloudflare"
+                        fieldPlaceholder="Bật chế độ vượt qua Cloudflare để tránh bị phát hiện là bot"
+                        formFields={['targetConfig', FORM_FIELDS.CLOUDFLARE_BYPASS]}
+                    />
+
+                    <CustomSwitch
+                        span={12}
+                        fieldLabel="Bật JavaScript"
+                        fieldPlaceholder="Bật JavaScript để tránh bị phát hiện là bot"
+                        formFields={['targetConfig', FORM_FIELDS.JAVASCRIPT_ENABLED]}
+                    />
+
+                    <CustomSwitch
+                        span={12}
+                        fieldLabel="Bật ảnh"
+                        fieldPlaceholder="Bật ảnh để tránh bị phát hiện là bot"
+                        formFields={['targetConfig', FORM_FIELDS.IMAGES_ENABLED]}
+                    />
+
+                    <CustomSwitch
+                        span={12}
+                        fieldLabel="Bật CSS"
+                        fieldPlaceholder="Bật CSS để tránh bị phát hiện là bot"
+                        formFields={['targetConfig', FORM_FIELDS.CSS_ENABLED]}
+                    />
+
+                    <Col span={12}>
+                        <Form.Item
+                            label="Thời gian delay giữa mỗi lần retry (ms)"
+                            tooltip="Thời gian delay giữa mỗi lần retry (ms)"
+                            name={['targetConfig', FORM_FIELDS.RETRY_DELAY]}
+                        >
+                            <InputNumber
+                                min={0}
+                                placeholder="Thời gian delay giữa mỗi lần retry (ms)"
+                            />
+                        </Form.Item>
+                    </Col>
+
+                    <Col span={12}>
+                        <Form.Item
+                            label="Số lần thử lại khi có lỗi"
+                            tooltip="Số lần thử lại khi có lỗi"
+                            name={['targetConfig', FORM_FIELDS.RETRY_ATTEMPTS]}
+                        >
+                            <InputNumber min={0} placeholder="Số lần thử lại khi có lỗi" />
+                        </Form.Item>
+                    </Col>
+                </Row>
 
                 <Form.Item
                     label="Selector chính"
-                    tooltip="Selector chính"
                     name={['targetConfig', FORM_FIELDS.MAIN_CONTENT_SELECTOR]}
                     rules={[
                         {
@@ -345,6 +418,17 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
                     ]}
                 >
                     <Input placeholder="Selector chính" />
+                </Form.Item>
+
+                <Form.Item
+                    label="Selector chờ"
+                    name={['targetConfig', FORM_FIELDS.WAIT_FOR_SELECTOR]}
+                >
+                    <Input placeholder="Selector chờ" />
+                </Form.Item>
+
+                <Form.Item label="User-Agent" name={['targetConfig', FORM_FIELDS.USER_AGENT]}>
+                    <Input placeholder="User-Agent" />
                 </Form.Item>
 
                 <Flex justify="space-between" align="end" gap={10}>

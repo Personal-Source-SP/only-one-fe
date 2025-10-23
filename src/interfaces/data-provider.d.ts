@@ -18,6 +18,16 @@ export declare namespace NDataProvider {
         functionGenerator: string;
         mainContentSelector: string;
         isGetParentElement: boolean;
+
+        retryDelay?: number;
+        retryAttempts?: number;
+        stealthMode?: boolean;
+        cloudflareBypass?: boolean;
+        waitForSelector?: string;
+        userAgent?: string;
+        javascriptEnabled?: boolean;
+        imagesEnabled?: boolean;
+        cssEnabled?: boolean;
     }
 
     interface ISearchConfig {
