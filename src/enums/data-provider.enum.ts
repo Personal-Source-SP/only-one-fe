@@ -27,4 +27,5 @@ export enum ScrapeStatusEnum {
 
 export enum ScraperServiceEnum {
     GENERIC = 'generic',
+    API = 'api',
 }

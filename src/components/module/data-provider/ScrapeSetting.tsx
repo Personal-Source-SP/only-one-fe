@@ -336,7 +336,10 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
                 >
                     <CustomSelect
                         disabled
-                        options={[{ label: 'Cơ bản', value: ScraperServiceEnum.GENERIC }]}
+                        options={[
+                            { label: 'Cơ bản', value: ScraperServiceEnum.GENERIC },
+                            { label: 'API', value: ScraperServiceEnum.API },
+                        ]}
                     />
                 </Form.Item>
 
