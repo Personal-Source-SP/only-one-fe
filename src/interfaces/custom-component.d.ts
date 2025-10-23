@@ -18,4 +18,7 @@ export interface FormFieldItem {
     showSearch?: boolean;
 
     rows?: number;
+
+    elementTopRender?: React.ReactNode;
+    elementBottomRender?: React.ReactNode;
 }

@@ -23,6 +23,7 @@ export const renderFormFields = (formField: FormFieldItem) => {
         case 'input':
             return (
                 <Col span={formField.span ?? 24}>
+                    {formField.elementTopRender && formField.elementTopRender}
                     <Form.Item
                         name={formField.name}
                         rules={formField.rules}
@@ -35,12 +36,14 @@ export const renderFormFields = (formField: FormFieldItem) => {
                             disabled={formField.disabled ?? false}
                         />
                     </Form.Item>
+                    {formField.elementBottomRender && formField.elementBottomRender}
                 </Col>
             );
 
         case 'select':
             return (
                 <Col span={formField.span ?? 24}>
+                    {formField.elementTopRender && formField.elementTopRender}
                     <Form.Item
                         name={formField.name}
                         label={formField.label}
@@ -59,12 +62,14 @@ export const renderFormFields = (formField: FormFieldItem) => {
                             }
                         />
                     </Form.Item>
+                    {formField.elementBottomRender && formField.elementBottomRender}
                 </Col>
             );
 
         case 'textarea':
             return (
                 <Col span={formField.span ?? 24}>
+                    {formField.elementTopRender && formField.elementTopRender}
                     <Form.Item
                         name={formField.name}
                         label={formField.label}
@@ -78,6 +83,7 @@ export const renderFormFields = (formField: FormFieldItem) => {
                             disabled={formField.disabled ?? false}
                         />
                     </Form.Item>
+                    {formField.elementBottomRender && formField.elementBottomRender}
                 </Col>
             );
 

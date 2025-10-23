@@ -1,11 +1,10 @@
 'use client';
 
-import { CustomElement, TableContainer } from '@/components/custom';
+import { CreateFormModal, CustomElement, EditFormModal, TableContainer } from '@/components/custom';
 import { ElementType, ScrapeStatusEnum } from '@/enums';
-import { NDataProvider } from '@/interfaces';
+import { FormFieldItem, NDataProvider } from '@/interfaces';
 import { Icon } from '@iconify/react';
-import { useModalForm } from '@refinedev/antd';
-import { HttpError } from '@refinedev/core';
+import { useSelect } from '@refinedev/core';
 import { Button, Space, Tag } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
@@ -13,23 +12,25 @@ import { FC, useCallback, useState } from 'react';
 
 const DataProviderItemPage: FC = () => {
     const [quantityRefetch, setQuantityRefetch] = useState(0);
+    const [openCreateItemModal, setOpenCreateItemModal] = useState(false);
+    const [editItemId, setEditItemId] = useState<string | undefined>(undefined);
 
-    const {
-        open: openFolderModal,
-        show: showFolderModal,
-        close: closeFolderModal,
-        formProps: folderModalFormProps,
-        modalProps: folderModalModalProps,
-        formLoading: folderModalFormLoading,
-    } = useModalForm<
-        NDataProvider.IDataProviderItem,
-        HttpError,
-        Partial<NDataProvider.IDataProviderItem>
-    >({
-        action: 'edit',
-        resource: 'data-provider-items',
-        autoResetForm: true,
-        warnWhenUnsavedChanges: false,
+    const { options: dataProviderOptions } = useSelect<NDataProvider.IDataProvider>({
+        resource: 'data-providers/all',
+        optionValue: (item: NDataProvider.IDataProvider) => item.id ?? '',
+        optionLabel: (item: NDataProvider.IDataProvider) => item.baseUrl ?? '',
+        pagination: {
+            mode: 'off',
+        },
+    });
+
+    const { options: itemOptions } = useSelect<NDataProvider.IItem>({
+        resource: 'items/all',
+        optionValue: (item: NDataProvider.IItem) => item.id ?? '',
+        optionLabel: (item: NDataProvider.IItem) => item.name ?? '',
+        pagination: {
+            mode: 'off',
+        },
     });
 
     const displayLastScrapeStatus = useCallback((lastScrapeStatus: ScrapeStatusEnum) => {
@@ -111,6 +112,32 @@ const DataProviderItemPage: FC = () => {
         },
     ];
 
+    const formFields: FormFieldItem[] = [
+        {
+            name: 'itemId',
+            type: 'select',
+            label: 'Tên đối tượng',
+            options: itemOptions ?? [],
+            rules: [{ required: true, message: 'Vui lòng chọn đối tượng' }],
+        },
+        {
+            type: 'select',
+            name: 'dataProviderId',
+            label: 'Tên nhà cung cấp',
+            options: dataProviderOptions ?? [],
+            rules: [{ required: true, message: 'Vui lòng chọn nhà cung cấp' }],
+        },
+        {
+            name: 'itemUrl',
+            type: 'input',
+            label: 'URL cơ sở',
+            rules: [
+                { required: true, message: 'Vui lòng nhập URL đối tượng' },
+                { type: 'url', message: 'URL đối tượng không hợp lệ' },
+            ],
+        },
+    ];
+
     return (
         <Space size="middle" direction="vertical" className="w-full h-full">
             <CustomElement
@@ -121,7 +148,7 @@ const DataProviderItemPage: FC = () => {
                         type="primary"
                         key="add-data-provider-item"
                         icon={<Icon icon="lucide:plus" />}
-                        // onClick={() => setIsOpenSyncFile(true)}
+                        onClick={() => setOpenCreateItemModal(true)}
                     >
                         Thêm đối tượng nhà cung cấp
                     </Button>,
@@ -137,7 +164,7 @@ const DataProviderItemPage: FC = () => {
                         key: 'edit',
                         label: 'Chỉnh sửa',
                         icon: <Icon icon="lucide:edit" />,
-                        onClick: (record) => showFolderModal(record?.id),
+                        onClick: (record) => setEditItemId(record?.id),
                     },
                 ]}
                 filterSearch={{
@@ -145,15 +172,27 @@ const DataProviderItemPage: FC = () => {
                 }}
             />
 
-            {/* <FolderModal
-                open={openFolderModal}
-                onClose={closeFolderModal}
-                formProps={folderModalFormProps}
-                isLoading={folderModalFormLoading}
-                modalProps={folderModalModalProps}
-                folderOptions={folderOptions ?? []}
-                onSubmit={() => {}}
-            /> */}
+            <CreateFormModal
+                resource="data-provider-items"
+                formFields={formFields}
+                title="Thêm mới đối tượng"
+                open={openCreateItemModal}
+                onClose={() => {
+                    setOpenCreateItemModal(false);
+                    setQuantityRefetch(quantityRefetch + 1);
+                }}
+            />
+
+            <EditFormModal
+                resource="data-provider-items"
+                id={editItemId ?? ''}
+                formFields={formFields}
+                title="Chỉnh sửa đối tượng"
+                onClose={() => {
+                    setEditItemId(undefined);
+                    setQuantityRefetch(quantityRefetch + 1);
+                }}
+            />
         </Space>
     );
 };
