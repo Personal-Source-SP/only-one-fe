@@ -39,8 +39,6 @@ export declare namespace NDataProvider {
 
     interface UpdateTargetConfigRequest extends ITargetConfig {
         scraperService?: string;
-        changeType: ConfigVersionType;
-        changeDescription?: string;
     }
 
     interface IDataProvider extends Abstract {

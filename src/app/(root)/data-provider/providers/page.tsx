@@ -5,7 +5,8 @@ import { ScrapeSetting } from '@/components/module/data-provider';
 import { DataProviderStatus, ElementType } from '@/enums';
 import { FormFieldItem, NDataProvider } from '@/interfaces';
 import { Icon } from '@iconify/react';
-import { useSelect } from '@refinedev/core';
+import { useModalForm } from '@refinedev/antd';
+import { HttpError, useSelect } from '@refinedev/core';
 import { Button, Space, Tag } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
@@ -24,6 +25,17 @@ const DataProviderPage: FC = () => {
         queryOptions: {
             enabled: !!selectedId,
         },
+    });
+
+    const { show, close, formProps, modalProps, formLoading } = useModalForm<
+        NDataProvider.IDataProvider,
+        HttpError,
+        Partial<NDataProvider.IDataProvider>
+    >({
+        action: 'edit',
+        resource: 'data-providers',
+        autoResetForm: true,
+        warnWhenUnsavedChanges: false,
     });
 
     const displayStatus = useCallback((status: DataProviderStatus) => {
@@ -191,13 +203,13 @@ const DataProviderPage: FC = () => {
                         key: 'scrape-unconfigured',
                         label: 'Cấu hình dữ liệu',
                         icon: <Icon icon="lucide:settings-2" />,
-                        onClick: (record) => setSelectedId(record?.id),
+                        onClick: (record) => show(record?.id),
                     },
                     {
                         key: 'search-configured',
                         label: 'Câu hình tìm kiếm',
                         icon: <Icon icon="lucide:search-code" />,
-                        onClick: (record) => setSelectedId(record?.id),
+                        onClick: (record) => show(record?.id),
                     },
                 ]}
                 filterSearch={{
@@ -227,16 +239,18 @@ const DataProviderPage: FC = () => {
                 }}
             />
 
-            {!!selectedId && (
-                <ScrapeSetting
-                    dataProviderId={selectedId}
-                    dataProviderItemOptions={providerItems}
-                    onClose={() => {
-                        setSelectedId(undefined);
-                        setQuantityRefetch(quantityRefetch + 1);
-                    }}
-                />
-            )}
+            <ScrapeSetting
+                key="scrape-setting"
+                formProps={formProps}
+                modalProps={modalProps}
+                formLoading={formLoading}
+                dataProviderItemOptions={providerItems}
+                onClose={() => {
+                    close();
+                    setSelectedId(undefined);
+                    setQuantityRefetch(quantityRefetch + 1);
+                }}
+            />
         </Space>
     );
 };

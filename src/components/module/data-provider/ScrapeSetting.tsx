@@ -1,16 +1,15 @@
 'use client';
 
-import { CustomFormModal, CustomSelect } from '@/components/custom';
+import { CustomFormModal, CustomSelect, CustomSwitch } from '@/components/custom';
 import CodeDisplay from '@/components/module/code-display';
 import {
     DEFAULT_HTML_CONTENT_STRING,
     DEFAULT_PARSER_FUNCTION_GENERATOR,
 } from '@/constants/data-provider';
-import { ConfigVersionType, DataProviderStatus, ScraperServiceEnum } from '@/enums';
+import { DataProviderStatus, ScraperServiceEnum } from '@/enums';
 import { NBaseApi, NDataProvider, Option } from '@/interfaces';
 import { LinkOutlined, MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
-import { useModalForm } from '@refinedev/antd';
-import { HttpError, useApiUrl, useCreate, useCustomMutation } from '@refinedev/core';
+import { useApiUrl, useCreate, useCustomMutation } from '@refinedev/core';
 import {
     Button,
     Card,
@@ -18,7 +17,9 @@ import {
     Divider,
     Flex,
     Form,
+    FormProps,
     Input,
+    ModalProps,
     notification,
     Row,
     Space,
@@ -28,18 +29,19 @@ import {
 } from 'antd';
 import { useWatch } from 'antd/es/form/Form';
 import { isEmpty, isNumber } from 'lodash';
-import { FC, memo, useEffect, useState } from 'react';
+import { FC, memo, useState } from 'react';
 
 type DataProviderForm = NDataProvider.IDataProvider & {
     url: string;
-    changeType: ConfigVersionType;
     extractData: Record<string, any>;
     additionalUrls?: string[];
     screenShotImage?: string;
 };
 
 type ScrapeSettingProps = {
-    dataProviderId: string;
+    formLoading: boolean;
+    formProps: FormProps;
+    modalProps: ModalProps;
     dataProviderItemOptions: Option[];
     onClose: () => void;
 };
@@ -65,24 +67,15 @@ const statusColors: Record<string, string> = {
 };
 
 const ScrapeSetting: FC<ScrapeSettingProps> = ({
-    dataProviderId,
+    formLoading,
+    formProps,
+    modalProps,
     dataProviderItemOptions,
     onClose,
 }) => {
     const apiUrl = useApiUrl();
 
     const [isTestHtmlContent, setIsTestHtmlContent] = useState<boolean>(false);
-
-    const { show, formProps, modalProps, formLoading } = useModalForm<
-        DataProviderForm,
-        HttpError,
-        DataProviderForm
-    >({
-        action: 'edit',
-        resource: 'data-providers',
-        autoResetForm: true,
-        warnWhenUnsavedChanges: false,
-    });
 
     const { mutate: handleUpdate } = useCustomMutation();
     const { mutate: handleCreate } = useCreate<NBaseApi.IResponse<unknown>>();
@@ -104,12 +97,6 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
         form,
         preserve: true,
     });
-
-    useEffect(() => {
-        if (dataProviderId) {
-            show();
-        }
-    }, [dataProviderId, show]);
 
     const handleTestParser = async () => {
         if (!url && !htmlContentString) {
@@ -174,13 +161,12 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
         const request: NDataProvider.UpdateTargetConfigRequest = {
             ...targetConfig,
             scraperService: values?.scraperService,
-            changeType: ConfigVersionType.MANUAL_EDIT,
         };
 
         handleUpdate({
             method: 'put',
             values: request,
-            url: `${apiUrl}/data-providers/${dataProviderId}/target-config`,
+            url: `${apiUrl}/data-providers/${dataProvider?.id}/target-config`,
             successNotification: (data) => {
                 if (!data?.data?.isSuccess) {
                     return {
@@ -341,6 +327,12 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
                     />
                 </Form.Item>
 
+                <CustomSwitch
+                    fieldLabel="Lấy phần tử cha"
+                    fieldPlaceholder="Lấy phần tử cha làm container cho selector chính"
+                    formFields={['targetConfig', FORM_FIELDS.IS_GET_PARENT_ELEMENT]}
+                />
+
                 <Form.Item
                     label="Selector chính"
                     tooltip="Selector chính"
@@ -436,10 +428,6 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
                         processingTime={processingTime}
                         onCodeChange={(newCode: string) => {
                             form?.setFieldValue(
-                                [FORM_FIELDS.CHANGE_TYPE],
-                                ConfigVersionType.MANUAL_EDIT,
-                            );
-                            form?.setFieldValue(
                                 ['targetConfig', FORM_FIELDS.FUNCTION_GENERATOR],
                                 newCode,
                             );
@@ -533,8 +521,8 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
             formLoading={formLoading}
             modalProps={{
                 ...modalProps,
-                open: true,
                 width: 900,
+                centered: true,
                 title: renderTitle(),
                 loading: formLoading,
                 footer: renderFooter(),
