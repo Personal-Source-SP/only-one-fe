@@ -203,13 +203,19 @@ const DataProviderPage: FC = () => {
                         key: 'scrape-unconfigured',
                         label: 'Cấu hình dữ liệu',
                         icon: <Icon icon="lucide:settings-2" />,
-                        onClick: (record) => show(record?.id),
+                        onClick: (record) => {
+                            setSelectedId(record?.id);
+                            show(record?.id);
+                        },
                     },
                     {
                         key: 'search-configured',
                         label: 'Câu hình tìm kiếm',
                         icon: <Icon icon="lucide:search-code" />,
-                        onClick: (record) => show(record?.id),
+                        onClick: (record) => {
+                            setSelectedId(record?.id);
+                            show(record?.id);
+                        },
                     },
                 ]}
                 filterSearch={{

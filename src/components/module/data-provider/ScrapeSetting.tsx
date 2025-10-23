@@ -23,6 +23,7 @@ import {
     ModalProps,
     notification,
     Row,
+    Select,
     Space,
     Switch,
     Tag,
@@ -64,12 +65,14 @@ const FORM_FIELDS = {
     JAVASCRIPT_ENABLED: 'javascriptEnabled',
     IMAGES_ENABLED: 'imagesEnabled',
     CSS_ENABLED: 'cssEnabled',
+    HEADERS: 'headers',
+    COOKIES: 'cookies',
 
     EXTRACT_DATA: 'extractData',
-    ADDITIONAL_EXTRACT_DATA: 'additionalExtractData',
-    ADDITIONAL_URLS: 'additionalUrls',
     PROCESSING_TIME: 'processingTime',
     HTML_CONTENT_STRING: 'htmlContentString',
+    ADDITIONAL_URLS: 'additionalUrls',
+    ADDITIONAL_EXTRACT_DATA: 'additionalExtractData',
 };
 
 const statusColors: Record<string, string> = {
@@ -90,15 +93,13 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
 
     const [isTestHtmlContent, setIsTestHtmlContent] = useState<boolean>(false);
 
-    const { mutate: handleUpdate } = useCustomMutation();
-    const { mutate: handleCreate } = useCreate<NBaseApi.IResponse<unknown>>();
-
     const form = formProps?.form;
     const dataProvider = formProps?.initialValues;
 
     const url = useWatch([FORM_FIELDS.URL], { form, preserve: true });
     const formUrls = useWatch([FORM_FIELDS.ADDITIONAL_URLS], { form, preserve: true });
     const extractData = useWatch([FORM_FIELDS.EXTRACT_DATA], { form, preserve: true });
+    const scraperService = useWatch([FORM_FIELDS.SCRAPER_SERVICE], { form, preserve: true });
     const processingTime = useWatch([FORM_FIELDS.PROCESSING_TIME], { form, preserve: true });
     const htmlContentString = useWatch([FORM_FIELDS.HTML_CONTENT_STRING], { form, preserve: true });
     const additionalExtractData = useWatch([FORM_FIELDS.ADDITIONAL_EXTRACT_DATA], {
@@ -106,10 +107,15 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
         preserve: true,
     });
 
+    const headers = useWatch(['targetConfig', FORM_FIELDS.HEADERS], { form, preserve: true });
+    const cookies = useWatch(['targetConfig', FORM_FIELDS.COOKIES], { form, preserve: true });
     const functionGenerator = useWatch(['targetConfig', FORM_FIELDS.FUNCTION_GENERATOR], {
         form,
         preserve: true,
     });
+
+    const { mutate: handleUpdate } = useCustomMutation();
+    const { mutate: handleCreate } = useCreate<NBaseApi.IResponse<unknown>>();
 
     const handleTestParser = async () => {
         if (!url && !htmlContentString) {
@@ -325,66 +331,69 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
         return (
             <>
                 <Form.Item
-                    label="Dịch vụ lấy dữ liệu"
+                    label="Dịch vụ"
                     name={FORM_FIELDS.SCRAPER_SERVICE}
                     rules={[
                         {
                             required: true,
-                            message: 'Dịch vụ lấy dữ liệu không được để trống',
+                            message: 'Dịch vụ cần chọn',
                         },
                     ]}
                 >
-                    <CustomSelect
-                        disabled
+                    <Select
                         options={[
-                            { label: 'Cơ bản', value: ScraperServiceEnum.GENERIC },
                             { label: 'API', value: ScraperServiceEnum.API },
+                            { label: 'Cơ bản', value: ScraperServiceEnum.GENERIC },
                         ]}
                     />
                 </Form.Item>
 
                 <Row gutter={[16, 16]}>
-                    <CustomSwitch
-                        span={12}
-                        fieldLabel="Lấy phần tử cha"
-                        fieldPlaceholder="Lấy phần tử cha làm container cho selector chính"
-                        formFields={['targetConfig', FORM_FIELDS.IS_GET_PARENT_ELEMENT]}
-                    />
+                    {scraperService === ScraperServiceEnum.GENERIC && (
+                        <>
+                            <CustomSwitch
+                                span={12}
+                                fieldLabel="Lấy phần tử cha"
+                                fieldPlaceholder="Lấy phần tử cha làm container cho selector chính"
+                                formFields={['targetConfig', FORM_FIELDS.IS_GET_PARENT_ELEMENT]}
+                            />
 
-                    <CustomSwitch
-                        span={12}
-                        fieldLabel="Bật chế độ ẩn danh"
-                        fieldPlaceholder="Bật chế độ ẩn danh để tránh bị phát hiện là bot"
-                        formFields={['targetConfig', FORM_FIELDS.STEALTH_MODE]}
-                    />
+                            <CustomSwitch
+                                span={12}
+                                fieldLabel="Bật chế độ ẩn danh"
+                                fieldPlaceholder="Bật chế độ ẩn danh để tránh bị phát hiện là bot"
+                                formFields={['targetConfig', FORM_FIELDS.STEALTH_MODE]}
+                            />
 
-                    <CustomSwitch
-                        span={12}
-                        fieldLabel="Bật chế độ vượt qua Cloudflare"
-                        fieldPlaceholder="Bật chế độ vượt qua Cloudflare để tránh bị phát hiện là bot"
-                        formFields={['targetConfig', FORM_FIELDS.CLOUDFLARE_BYPASS]}
-                    />
+                            <CustomSwitch
+                                span={12}
+                                fieldLabel="Bật chế độ vượt qua Cloudflare"
+                                fieldPlaceholder="Bật chế độ vượt qua Cloudflare để tránh bị phát hiện là bot"
+                                formFields={['targetConfig', FORM_FIELDS.CLOUDFLARE_BYPASS]}
+                            />
 
-                    <CustomSwitch
-                        span={12}
-                        fieldLabel="Bật JavaScript"
-                        fieldPlaceholder="Bật JavaScript để tránh bị phát hiện là bot"
-                        formFields={['targetConfig', FORM_FIELDS.JAVASCRIPT_ENABLED]}
-                    />
+                            <CustomSwitch
+                                span={12}
+                                fieldLabel="Bật JavaScript"
+                                fieldPlaceholder="Bật JavaScript để tránh bị phát hiện là bot"
+                                formFields={['targetConfig', FORM_FIELDS.JAVASCRIPT_ENABLED]}
+                            />
 
-                    <CustomSwitch
-                        span={12}
-                        fieldLabel="Bật ảnh"
-                        fieldPlaceholder="Bật ảnh để tránh bị phát hiện là bot"
-                        formFields={['targetConfig', FORM_FIELDS.IMAGES_ENABLED]}
-                    />
+                            <CustomSwitch
+                                span={12}
+                                fieldLabel="Bật ảnh"
+                                fieldPlaceholder="Bật ảnh để tránh bị phát hiện là bot"
+                                formFields={['targetConfig', FORM_FIELDS.IMAGES_ENABLED]}
+                            />
 
-                    <CustomSwitch
-                        span={12}
-                        fieldLabel="Bật CSS"
-                        fieldPlaceholder="Bật CSS để tránh bị phát hiện là bot"
-                        formFields={['targetConfig', FORM_FIELDS.CSS_ENABLED]}
-                    />
+                            <CustomSwitch
+                                span={12}
+                                fieldLabel="Bật CSS"
+                                fieldPlaceholder="Bật CSS để tránh bị phát hiện là bot"
+                                formFields={['targetConfig', FORM_FIELDS.CSS_ENABLED]}
+                            />
+                        </>
+                    )}
 
                     <Col span={12}>
                         <Form.Item
@@ -432,6 +441,30 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
 
                 <Form.Item label="User-Agent" name={['targetConfig', FORM_FIELDS.USER_AGENT]}>
                     <Input placeholder="User-Agent" />
+                </Form.Item>
+
+                <Form.Item name={['targetConfig', FORM_FIELDS.HEADERS]}>
+                    <CodeDisplay
+                        title="Headers"
+                        isDisplayLanguage
+                        language="json"
+                        code={JSON.stringify(headers || {})}
+                        onCodeChange={(newCode: string) => {
+                            form?.setFieldValue(['targetConfig', FORM_FIELDS.HEADERS], newCode);
+                        }}
+                    />
+                </Form.Item>
+
+                <Form.Item name={['targetConfig', FORM_FIELDS.COOKIES]}>
+                    <CodeDisplay
+                        title="Cookies"
+                        isDisplayLanguage
+                        language="json"
+                        code={JSON.stringify(cookies || {})}
+                        onCodeChange={(newCode: string) => {
+                            form?.setFieldValue(['targetConfig', FORM_FIELDS.COOKIES], newCode);
+                        }}
+                    />
                 </Form.Item>
 
                 <Flex justify="space-between" align="end" gap={10}>
@@ -624,12 +657,12 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
                 initialValues={
                     isEmpty(formProps?.initialValues?.targetConfig)
                         ? {
-                              scraperService: ScraperServiceEnum.GENERIC,
+                              scraperService: ScraperServiceEnum.API,
                               targetConfig: {
+                                  retryDelay: 1000,
+                                  retryAttempts: 0,
                                   mainContentSelector: '',
                                   isGetParentElement: false,
-                                  proxyCountries: [],
-                                  proxyProviders: [],
                                   functionGenerator: DEFAULT_PARSER_FUNCTION_GENERATOR,
                               },
                           }
