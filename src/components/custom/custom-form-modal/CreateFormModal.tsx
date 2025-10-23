@@ -102,7 +102,7 @@ const CreateFormModal: FC<CreateFormModalProps> = ({
         action: 'create',
         resource: resource,
         autoResetForm: true,
-        warnWhenUnsavedChanges: true,
+        warnWhenUnsavedChanges: false,
         onMutationSuccess: (data) => {
             if (!data?.data?.data) {
                 message.error('Tạo thất bại');

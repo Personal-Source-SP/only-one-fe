@@ -43,16 +43,19 @@ const CustomTable: FC<CustomTableProps> = ({
             okType: 'danger',
             cancelText: 'Hủy',
             title: 'Xóa dữ liệu',
-            icon: <Icon icon="lucide:trash" />,
             content: 'Bạn có chắc chắn muốn xóa dữ liệu này không?',
             onOk: () => {
                 deleteRecord(
                     {
                         id: record.id,
                         resource: resource || '',
+                        errorNotification: false,
+                        successNotification: false,
                     },
                     {
                         onSuccess: () => {
+                            message.success('Xóa dữ liệu thành công');
+
                             if (
                                 currentPage &&
                                 currentPage > 1 &&
@@ -93,7 +96,7 @@ const CustomTable: FC<CustomTableProps> = ({
                                 {
                                     key: 'delete',
                                     onClick: () => handleDelete?.(record),
-                                    label: <span className="text-red-500">Delete</span>,
+                                    label: <span className="text-red-500">Xóa</span>,
                                     icon: <DeleteOutlined style={{ color: '#ef4444' }} />,
                                 },
                             ],

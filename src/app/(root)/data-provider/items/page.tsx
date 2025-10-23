@@ -11,7 +11,6 @@ import { FC, useCallback, useState } from 'react';
 
 const ItemPage: FC = () => {
     const [quantityRefetch, setQuantityRefetch] = useState(0);
-
     const [openCreateItemModal, setOpenCreateItemModal] = useState(false);
     const [editItemId, setEditItemId] = useState<string | undefined>(undefined);
 
@@ -22,19 +21,19 @@ const ItemPage: FC = () => {
 
         switch (mappingStatus) {
             case ProductMappingStatus.MAPPED:
-                color = 'success';
+                color = '#52c41a';
                 text = 'Đã ánh xạ';
                 break;
             case ProductMappingStatus.UNMAPPED:
-                color = 'default';
+                color = '#bfbfbf';
                 text = 'Chưa ánh xạ';
                 break;
             case ProductMappingStatus.MAPPED_HAS_PRICE:
-                color = 'processing';
+                color = '#1890ff';
                 text = 'Đã ánh xạ (có giá)';
                 break;
             default:
-                color = 'default';
+                color = '#bfbfbf';
                 text = mappingStatus;
         }
 
@@ -105,13 +104,19 @@ const ItemPage: FC = () => {
             name: 'name',
             type: 'input',
             label: 'Tên đối tượng',
-            rules: [{ required: true, message: 'Vui lòng nhập tên đối tượng' }],
+            rules: [
+                { required: true, message: 'Vui lòng nhập tên đối tượng' },
+                { max: 255, message: 'Tên đối tượng không được vượt quá 255 ký tự' },
+            ],
         },
         {
             name: 'code',
             type: 'input',
             label: 'Mã',
-            rules: [{ required: true, message: 'Vui lòng nhập mã đối tượng' }],
+            rules: [
+                { required: true, message: 'Vui lòng nhập mã đối tượng' },
+                { max: 20, message: 'Mã đối tượng không được vượt quá 20 ký tự' },
+            ],
         },
     ];
 

@@ -35,7 +35,7 @@ const EditFormModal: FC<EditFormModalProps> = ({
         action: 'edit',
         resource: resource,
         autoResetForm: true,
-        warnWhenUnsavedChanges: true,
+        warnWhenUnsavedChanges: false,
         onMutationSuccess: (data) => {
             if (!data?.data?.data) {
                 message.error('Chỉnh sửa thất bại');

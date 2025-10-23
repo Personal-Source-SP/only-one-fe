@@ -111,7 +111,7 @@ const TableContainer: FC<TableContainerProps> = ({
                 {!!columns?.length && (
                     <CustomTable
                         columns={columns}
-                        resource="google-folder"
+                        resource={resource}
                         tableProps={tableProps}
                         setSorters={setSorters}
                         setPageSize={setPageSize}
