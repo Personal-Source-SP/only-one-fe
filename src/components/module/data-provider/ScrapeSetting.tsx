@@ -110,7 +110,7 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
             const values = (await form?.validateFields()) as DataProviderForm;
 
             handleCreate({
-                resource: 'parsers/test',
+                resource: 'parsers/test-scraper-function',
                 values: {
                     url,
                     htmlContentString,
