@@ -50,23 +50,27 @@ type ScrapeSettingProps = {
 
 const FORM_FIELDS = {
     SCRAPER_SERVICE: 'scraperService',
+
     IS_GET_PARENT_ELEMENT: 'isGetParentElement',
     MAIN_CONTENT_SELECTOR: 'mainContentSelector',
 
-    URL: 'url',
-    FUNCTION_GENERATOR: 'functionGenerator',
+    QUERY_PARAMS: 'queryParams',
 
     RETRY_DELAY: 'retryDelay',
     RETRY_ATTEMPTS: 'retryAttempts',
+    USER_AGENT: 'userAgent',
+    HEADERS: 'headers',
+    COOKIES: 'cookies',
+
     STEALTH_MODE: 'stealthMode',
     CLOUDFLARE_BYPASS: 'cloudflareBypass',
     WAIT_FOR_SELECTOR: 'waitForSelector',
-    USER_AGENT: 'userAgent',
     JAVASCRIPT_ENABLED: 'javascriptEnabled',
     IMAGES_ENABLED: 'imagesEnabled',
     CSS_ENABLED: 'cssEnabled',
-    HEADERS: 'headers',
-    COOKIES: 'cookies',
+
+    URL: 'url',
+    FUNCTION_GENERATOR: 'functionGenerator',
 
     EXTRACT_DATA: 'extractData',
     PROCESSING_TIME: 'processingTime',
@@ -129,7 +133,7 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
             const values = (await form?.validateFields()) as DataProviderForm;
 
             handleCreate({
-                resource: 'parsers/test-scraper-function',
+                resource: 'parsers/test-parser-function',
                 values: {
                     ...values.targetConfig,
                     url,
@@ -139,6 +143,7 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
                 successNotification(data) {
                     const response =
                         data?.data as NBaseApi.IResponse<NDataProvider.IDataProviderItem>;
+
                     if (!response?.data) {
                         return {
                             type: 'error',
@@ -419,25 +424,36 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
                     </Col>
                 </Row>
 
-                <Form.Item
-                    label="Selector chính"
-                    name={['targetConfig', FORM_FIELDS.MAIN_CONTENT_SELECTOR]}
-                    rules={[
-                        {
-                            required: true,
-                            message: 'Selector chính không được để trống',
-                        },
-                    ]}
-                >
-                    <Input placeholder="Selector chính" />
-                </Form.Item>
+                {scraperService === ScraperServiceEnum.GENERIC ? (
+                    <>
+                        <Form.Item
+                            label="Selector chính"
+                            name={['targetConfig', FORM_FIELDS.MAIN_CONTENT_SELECTOR]}
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Selector chính không được để trống',
+                                },
+                            ]}
+                        >
+                            <Input placeholder="Selector chính" />
+                        </Form.Item>
 
-                <Form.Item
-                    label="Selector chờ"
-                    name={['targetConfig', FORM_FIELDS.WAIT_FOR_SELECTOR]}
-                >
-                    <Input placeholder="Selector chờ" />
-                </Form.Item>
+                        <Form.Item
+                            label="Selector chờ"
+                            name={['targetConfig', FORM_FIELDS.WAIT_FOR_SELECTOR]}
+                        >
+                            <Input placeholder="Selector chờ" />
+                        </Form.Item>
+                    </>
+                ) : (
+                    <Form.Item
+                        label="Tham số truy vấn"
+                        name={['targetConfig', FORM_FIELDS.QUERY_PARAMS]}
+                    >
+                        <Input placeholder="Tham số truy vấn" />
+                    </Form.Item>
+                )}
 
                 <Form.Item label="User-Agent" name={['targetConfig', FORM_FIELDS.USER_AGENT]}>
                     <Input placeholder="User-Agent" />
@@ -660,7 +676,7 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
                               scraperService: ScraperServiceEnum.API,
                               targetConfig: {
                                   retryDelay: 1000,
-                                  retryAttempts: 0,
+                                  retryAttempts: 3,
                                   mainContentSelector: '',
                                   isGetParentElement: false,
                                   functionGenerator: DEFAULT_PARSER_FUNCTION_GENERATOR,

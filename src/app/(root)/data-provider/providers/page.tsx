@@ -20,7 +20,7 @@ const DataProviderPage: FC = () => {
 
     const { options: providerItems } = useSelect<NDataProvider.IDataProviderItem>({
         resource: `data-provider-items/data-provider/${selectedId}`,
-        optionValue: (item: NDataProvider.IDataProviderItem) => item.id ?? '',
+        optionValue: (item: NDataProvider.IDataProviderItem) => item.itemUrl ?? '',
         optionLabel: (item: NDataProvider.IDataProviderItem) => item.itemUrl ?? '',
         queryOptions: {
             enabled: !!selectedId,

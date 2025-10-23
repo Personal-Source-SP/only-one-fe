@@ -16,15 +16,21 @@ export declare namespace NDataProvider {
 
     interface ITargetConfig {
         functionGenerator: string;
-        mainContentSelector: string;
-        isGetParentElement: boolean;
+
+        mainContentSelector?: string;
+        isGetParentElement?: boolean;
+
+        queryParams?: string;
 
         retryDelay?: number;
         retryAttempts?: number;
+        userAgent?: string;
+        headers?: Record<string, any>;
+        cookies?: Record<string, any>;
+
         stealthMode?: boolean;
         cloudflareBypass?: boolean;
         waitForSelector?: string;
-        userAgent?: string;
         javascriptEnabled?: boolean;
         imagesEnabled?: boolean;
         cssEnabled?: boolean;
