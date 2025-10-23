@@ -1,11 +1,9 @@
 'use client';
 
-import { CustomElement, TableContainer } from '@/components/custom';
+import { CreateFormModal, CustomElement, EditFormModal, TableContainer } from '@/components/custom';
 import { DataProviderStatus, ElementType } from '@/enums';
-import { NDataProvider } from '@/interfaces';
+import { FormFieldItem, NDataProvider } from '@/interfaces';
 import { Icon } from '@iconify/react';
-import { useModalForm } from '@refinedev/antd';
-import { HttpError } from '@refinedev/core';
 import { Button, Space, Tag } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
@@ -13,20 +11,8 @@ import { FC, useCallback, useState } from 'react';
 
 const DataProviderPage: FC = () => {
     const [quantityRefetch, setQuantityRefetch] = useState(0);
-
-    const {
-        open: openFolderModal,
-        show: showFolderModal,
-        close: closeFolderModal,
-        formProps: folderModalFormProps,
-        modalProps: folderModalModalProps,
-        formLoading: folderModalFormLoading,
-    } = useModalForm<NDataProvider.IDataProvider, HttpError, Partial<NDataProvider.IDataProvider>>({
-        action: 'edit',
-        resource: 'data-providers',
-        autoResetForm: true,
-        warnWhenUnsavedChanges: false,
-    });
+    const [openCreateItemModal, setOpenCreateItemModal] = useState(false);
+    const [editItemId, setEditItemId] = useState<string | undefined>(undefined);
 
     const displayStatus = useCallback((status: DataProviderStatus) => {
         if (!status) return '---';
@@ -125,6 +111,42 @@ const DataProviderPage: FC = () => {
         },
     ];
 
+    const formFields: FormFieldItem[] = [
+        {
+            span: 12,
+            name: 'name',
+            type: 'input',
+            label: 'Tên nhà cung cấp',
+            rules: [
+                { required: true, message: 'Vui lòng nhập tên nhà cung cấp' },
+                { max: 255, message: 'Tên nhà cung cấp không được vượt quá 255 ký tự' },
+            ],
+        },
+        {
+            span: 12,
+            name: 'identifier',
+            type: 'input',
+            label: 'Mã nhà cung cấp',
+            rules: [
+                { max: 20, message: 'Mã nhà cung cấp không được vượt quá 20 ký tự' },
+                {
+                    pattern: /^[a-z0-9-]+$/,
+                    message: 'Mã nhà cung cấp chỉ được chứa chữ cái thường, số và dấu gạch ngang',
+                },
+            ],
+        },
+        {
+            name: 'baseUrl',
+            type: 'input',
+            label: 'URL cơ sở',
+            rules: [
+                { required: true, message: 'Vui lòng nhập URL cơ sở' },
+                { type: 'url', message: 'URL cơ sở không hợp lệ' },
+                { pattern: /^.*[^/]$/, message: 'URL cơ sở không được kết thúc bằng /' },
+            ],
+        },
+    ];
+
     return (
         <Space size="middle" direction="vertical" className="w-full h-full">
             <CustomElement
@@ -135,7 +157,7 @@ const DataProviderPage: FC = () => {
                         type="primary"
                         key="add-data-provider"
                         icon={<Icon icon="lucide:plus" />}
-                        // onClick={() => setIsOpenSyncFile(true)}
+                        onClick={() => setOpenCreateItemModal(true)}
                     >
                         Thêm nhà cung cấp
                     </Button>,
@@ -151,7 +173,7 @@ const DataProviderPage: FC = () => {
                         key: 'edit',
                         label: 'Chỉnh sửa',
                         icon: <Icon icon="lucide:edit" />,
-                        onClick: (record) => showFolderModal(record?.id),
+                        onClick: (record) => setEditItemId(record?.id),
                     },
                 ]}
                 filterSearch={{
@@ -159,15 +181,27 @@ const DataProviderPage: FC = () => {
                 }}
             />
 
-            {/* <FolderModal
-                open={openFolderModal}
-                onClose={closeFolderModal}
-                formProps={folderModalFormProps}
-                isLoading={folderModalFormLoading}
-                modalProps={folderModalModalProps}
-                folderOptions={folderOptions ?? []}
-                onSubmit={() => {}}
-            /> */}
+            <CreateFormModal
+                resource="data-providers"
+                formFields={formFields}
+                title="Thêm mới đối tượng"
+                open={openCreateItemModal}
+                onClose={() => {
+                    setOpenCreateItemModal(false);
+                    setQuantityRefetch(quantityRefetch + 1);
+                }}
+            />
+
+            <EditFormModal
+                resource="data-providers"
+                id={editItemId ?? ''}
+                formFields={formFields}
+                title="Chỉnh sửa đối tượng"
+                onClose={() => {
+                    setEditItemId(undefined);
+                    setQuantityRefetch(quantityRefetch + 1);
+                }}
+            />
         </Space>
     );
 };
