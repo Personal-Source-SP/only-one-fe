@@ -1,0 +1,572 @@
+'use client';
+
+import { CustomFormModal, CustomSelect } from '@/components/custom';
+import CodeDisplay from '@/components/module/code-display';
+import {
+    DEFAULT_HTML_CONTENT_STRING,
+    DEFAULT_PARSER_FUNCTION_GENERATOR,
+} from '@/constants/data-provider';
+import { ConfigVersionType, DataProviderStatus, ScraperServiceEnum } from '@/enums';
+import { NBaseApi, NDataProvider, Option } from '@/interfaces';
+import { LinkOutlined, MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
+import { useModalForm } from '@refinedev/antd';
+import { HttpError, useApiUrl, useCreate, useCustomMutation } from '@refinedev/core';
+import {
+    Button,
+    Card,
+    Col,
+    Divider,
+    Flex,
+    Form,
+    Input,
+    notification,
+    Row,
+    Space,
+    Switch,
+    Tag,
+    Typography,
+} from 'antd';
+import { useWatch } from 'antd/es/form/Form';
+import { isEmpty, isNumber } from 'lodash';
+import { FC, memo, useEffect, useState } from 'react';
+
+type DataProviderForm = NDataProvider.IDataProvider & {
+    url: string;
+    changeType: ConfigVersionType;
+    extractData: Record<string, any>;
+    additionalUrls?: string[];
+    screenShotImage?: string;
+};
+
+type ScrapeSettingProps = {
+    dataProviderId: string;
+    dataProviderItemOptions: Option[];
+    onClose: () => void;
+};
+
+const FORM_FIELDS: Record<string, any> = {
+    SCRAPER_SERVICE: 'scraperService',
+    IS_GET_PARENT_ELEMENT: 'isGetParentElement',
+    MAIN_CONTENT_SELECTOR: 'mainContentSelector',
+    URL: 'url',
+    FUNCTION_GENERATOR: 'functionGenerator',
+    EXTRACT_DATA: 'extractData',
+    ADDITIONAL_EXTRACT_DATA: 'additionalExtractData',
+    ADDITIONAL_URLS: 'additionalUrls',
+    PROCESSING_TIME: 'processingTime',
+    HTML_CONTENT_STRING: 'htmlContentString',
+};
+
+const statusColors: Record<string, string> = {
+    [DataProviderStatus.READY]: 'green',
+    [DataProviderStatus.TESTING]: 'blue',
+    [DataProviderStatus.UNCONFIGURED]: 'orange',
+    [DataProviderStatus.ERROR]: 'red',
+};
+
+const ScrapeSetting: FC<ScrapeSettingProps> = ({
+    dataProviderId,
+    dataProviderItemOptions,
+    onClose,
+}) => {
+    const apiUrl = useApiUrl();
+
+    const [isTestHtmlContent, setIsTestHtmlContent] = useState<boolean>(false);
+
+    const { show, formProps, modalProps, formLoading } = useModalForm<
+        DataProviderForm,
+        HttpError,
+        DataProviderForm
+    >({
+        action: 'edit',
+        resource: 'data-providers',
+        autoResetForm: true,
+        warnWhenUnsavedChanges: false,
+    });
+
+    const { mutate: handleUpdate } = useCustomMutation();
+    const { mutate: handleCreate } = useCreate<NBaseApi.IResponse<unknown>>();
+
+    const form = formProps?.form;
+    const dataProvider = formProps?.initialValues;
+
+    const url = useWatch([FORM_FIELDS.URL], { form, preserve: true });
+    const formUrls = useWatch([FORM_FIELDS.ADDITIONAL_URLS], { form, preserve: true });
+    const extractData = useWatch([FORM_FIELDS.EXTRACT_DATA], { form, preserve: true });
+    const processingTime = useWatch([FORM_FIELDS.PROCESSING_TIME], { form, preserve: true });
+    const htmlContentString = useWatch([FORM_FIELDS.HTML_CONTENT_STRING], { form, preserve: true });
+    const additionalExtractData = useWatch([FORM_FIELDS.ADDITIONAL_EXTRACT_DATA], {
+        form,
+        preserve: true,
+    });
+
+    const functionGenerator = useWatch(['targetConfig', FORM_FIELDS.FUNCTION_GENERATOR], {
+        form,
+        preserve: true,
+    });
+
+    useEffect(() => {
+        if (dataProviderId) {
+            show();
+        }
+    }, [dataProviderId, show]);
+
+    const handleTestParser = async () => {
+        if (!url && !htmlContentString) {
+            return notification.error({
+                message: 'URL hoặc HTML content không được để trống',
+                description: 'URL hoặc HTML content không được để trống',
+            });
+        }
+
+        try {
+            const values = (await form?.validateFields()) as DataProviderForm;
+
+            handleCreate({
+                resource: 'parsers/test',
+                values: {
+                    url,
+                    htmlContentString,
+                    targetConfig: values.targetConfig,
+                    scraperService: values?.scraperService,
+                },
+                successNotification(data) {
+                    const response =
+                        data?.data as NBaseApi.IResponse<NDataProvider.IDataProviderItem>;
+                    if (!response?.data) {
+                        return {
+                            type: 'error',
+                            message: 'Test parser thất bại',
+                            description: response?.errorMessage ?? 'Test parser thất bại',
+                        };
+                    }
+
+                    form?.setFieldValue([FORM_FIELDS.EXTRACT_DATA], response.data);
+
+                    return {
+                        type: 'success',
+                        message: 'Test parser thành công',
+                    };
+                },
+                errorNotification: (error) => {
+                    return {
+                        type: 'error',
+                        message: 'Test parser thất bại',
+                        description: error?.message ?? 'Test parser thất bại',
+                    };
+                },
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const handleUpdateTargetConfig = async (values: DataProviderForm) => {
+        const targetConfig = values?.targetConfig as NDataProvider.ITargetConfig | undefined;
+
+        if (isEmpty(targetConfig)) {
+            return notification.error({
+                message: 'Hàm parser không được để trống',
+                description: 'Vui lòng nhập hàm parser',
+            });
+        }
+
+        const request: NDataProvider.UpdateTargetConfigRequest = {
+            ...targetConfig,
+            scraperService: values?.scraperService,
+            changeType: ConfigVersionType.MANUAL_EDIT,
+        };
+
+        handleUpdate({
+            method: 'put',
+            values: request,
+            url: `${apiUrl}/data-providers/${dataProviderId}/target-config`,
+            successNotification: (data) => {
+                if (!data?.data?.isSuccess) {
+                    return {
+                        type: 'error',
+                        message: 'Cập nhật cấu hình dữ liệu thất bại',
+                        description: data?.data?.message ?? 'Cập nhật cấu hình dữ liệu thất bại',
+                    };
+                }
+
+                onClose?.();
+
+                return {
+                    type: 'success',
+                    message: 'Cập nhật cấu hình dữ liệu thành công',
+                };
+            },
+            errorNotification: () => {
+                return {
+                    type: 'error',
+                    message: 'Cập nhật cấu hình dữ liệu thất bại',
+                    description: 'Cập nhật cấu hình dữ liệu thất bại',
+                };
+            },
+        });
+    };
+
+    const handleSwitchStatus = (status: DataProviderStatus) => {
+        if (!dataProvider?.id) {
+            return notification.error({
+                message: 'Không thể chuyển trạng thái',
+                description: 'Không thể chuyển trạng thái',
+            });
+        }
+
+        handleUpdate({
+            values: {},
+            method: 'put',
+            url: `${apiUrl}/data-providers/${dataProvider.id}/switch-status/${status}`,
+            successNotification: (data) => {
+                if (!data?.data?.isSuccess) {
+                    return {
+                        type: 'error',
+                        message: 'Chuyển trạng thái thất bại',
+                        description: data?.data?.message ?? 'Chuyển trạng thái thất bại',
+                    };
+                }
+
+                onClose();
+
+                return {
+                    type: 'success',
+                    message: 'Chuyển trạng thái thành công',
+                };
+            },
+            errorNotification: (error) => {
+                return {
+                    type: 'error',
+                    message: 'Chuyển trạng thái thất bại',
+                    description: error?.message ?? 'Chuyển trạng thái thất bại',
+                };
+            },
+        });
+    };
+
+    const handleCancel = () => {
+        form?.setFieldsValue({});
+        onClose();
+    };
+
+    const renderTitle = () => {
+        if (!dataProvider) return <></>;
+
+        return (
+            <Flex justify="space-between" align="center">
+                <Space size={0}>
+                    <span className="mr-1">Cấu hình dữ liệu</span>
+                    <span className="mr-2">{`for ${dataProvider.name || dataProvider.baseUrl}`}</span>
+                    <Tag color={statusColors[dataProvider.status]}>{dataProvider.status}</Tag>
+                </Space>
+            </Flex>
+        );
+    };
+
+    const renderFooter = () => {
+        return (
+            <Flex justify="end" align="center" gap={16}>
+                {dataProvider?.status === DataProviderStatus.TESTING && (
+                    <Button
+                        type="primary"
+                        onClick={() => handleSwitchStatus(DataProviderStatus.READY)}
+                    >
+                        Chuyển trạng thái sẵn sàng
+                    </Button>
+                )}
+
+                {(dataProvider?.status === DataProviderStatus.UNCONFIGURED ||
+                    dataProvider?.status === DataProviderStatus.READY) && (
+                    <Button
+                        type="primary"
+                        onClick={() => handleSwitchStatus(DataProviderStatus.TESTING)}
+                    >
+                        Chuyển trạng thái đang kiểm tra
+                    </Button>
+                )}
+
+                <Button type="primary" htmlType="submit" onClick={() => form?.submit()}>
+                    Lưu
+                </Button>
+
+                <Button onClick={handleCancel}>Hủy</Button>
+            </Flex>
+        );
+    };
+
+    const renderFormUrl = (field: string, index?: number) => {
+        if (!dataProviderItemOptions?.length) {
+            return <Input placeholder="URL" />;
+        }
+
+        return (
+            <CustomSelect
+                showSearch
+                disabled={false}
+                options={dataProviderItemOptions}
+                onInputChange={(value) => {
+                    if (isNumber(index)) {
+                        form?.setFieldValue(
+                            [field as 'dataProviderItems' | 'additionalUrls', index],
+                            value,
+                        );
+                    } else {
+                        form?.setFieldValue(
+                            [field as 'dataProviderItems' | 'additionalUrls' | 'url'],
+                            value,
+                        );
+                    }
+                }}
+            />
+        );
+    };
+
+    const renderFormTargetConfiguration = () => {
+        return (
+            <>
+                <Form.Item
+                    label="Dịch vụ lấy dữ liệu"
+                    name={FORM_FIELDS.SCRAPER_SERVICE}
+                    rules={[
+                        {
+                            required: true,
+                            message: 'Dịch vụ lấy dữ liệu không được để trống',
+                        },
+                    ]}
+                >
+                    <CustomSelect
+                        disabled
+                        options={[{ label: 'Cơ bản', value: ScraperServiceEnum.GENERIC }]}
+                    />
+                </Form.Item>
+
+                <Form.Item
+                    label="Selector chính"
+                    tooltip="Selector chính"
+                    name={['targetConfig', FORM_FIELDS.MAIN_CONTENT_SELECTOR]}
+                    rules={[
+                        {
+                            required: true,
+                            message: 'Selector chính không được để trống',
+                        },
+                    ]}
+                >
+                    <Input placeholder="Selector chính" />
+                </Form.Item>
+
+                <Flex justify="space-between" align="end" gap={10}>
+                    <Form.Item
+                        label="URL"
+                        tooltip="URL"
+                        name={FORM_FIELDS.URL}
+                        className="w-full max-w-[calc(100%-50px)]"
+                    >
+                        {renderFormUrl(FORM_FIELDS.URL)}
+                    </Form.Item>
+                    <Button
+                        type="primary"
+                        className="mb-2"
+                        disabled={!url}
+                        icon={<LinkOutlined />}
+                        onClick={() => window.open(url, '_blank')}
+                    />
+                </Flex>
+
+                <Form.List name={FORM_FIELDS.ADDITIONAL_URLS}>
+                    {(fields, { add, remove }) => (
+                        <>
+                            {fields.map(({ key, name }, index) => (
+                                <Flex
+                                    key={key}
+                                    justify="space-between"
+                                    align="center"
+                                    gap={10}
+                                    className="mt-2"
+                                >
+                                    <Form.Item
+                                        key={key}
+                                        name={name}
+                                        className="w-full max-w-[calc(100%-50px)]"
+                                    >
+                                        {renderFormUrl(FORM_FIELDS.ADDITIONAL_URLS, index)}
+                                    </Form.Item>
+                                    <MinusCircleOutlined
+                                        className="mb-2"
+                                        onClick={() => remove(name)}
+                                    />
+                                    <Button
+                                        type="primary"
+                                        className="mb-2"
+                                        icon={<LinkOutlined />}
+                                        disabled={!formUrls?.[index]}
+                                        onClick={() => window.open(formUrls?.[index], '_blank')}
+                                    />
+                                </Flex>
+                            ))}
+
+                            <Button
+                                type="dashed"
+                                disabled={false}
+                                onClick={() => add()}
+                                className="my-2 w-full"
+                                icon={<PlusOutlined />}
+                            >
+                                Thêm URL bổ sung
+                            </Button>
+                        </>
+                    )}
+                </Form.List>
+            </>
+        );
+    };
+
+    const renderFunctionGenerator = () => {
+        const isFunctionGeneratorEmpty = isEmpty(functionGenerator);
+
+        if (isFunctionGeneratorEmpty) return <></>;
+
+        return (
+            <>
+                <Form.Item name={['targetConfig', FORM_FIELDS.FUNCTION_GENERATOR]}>
+                    <CodeDisplay
+                        isDisplayLanguage
+                        language="javascript"
+                        code={functionGenerator}
+                        processingTime={processingTime}
+                        onCodeChange={(newCode: string) => {
+                            form?.setFieldValue(
+                                [FORM_FIELDS.CHANGE_TYPE],
+                                ConfigVersionType.MANUAL_EDIT,
+                            );
+                            form?.setFieldValue(
+                                ['targetConfig', FORM_FIELDS.FUNCTION_GENERATOR],
+                                newCode,
+                            );
+                        }}
+                    />
+                </Form.Item>
+
+                <Flex justify="space-between" align="center" className="my-2">
+                    <Space>
+                        <Switch
+                            checked={isTestHtmlContent}
+                            onChange={() => setIsTestHtmlContent(!isTestHtmlContent)}
+                        />
+                        <Typography.Text type="secondary">Sử dụng HTML content</Typography.Text>
+                    </Space>
+                    <Button type="primary" onClick={handleTestParser} disabled={false}>
+                        Thử nghiệm hàm
+                    </Button>
+                </Flex>
+
+                {isTestHtmlContent && (
+                    <Form.Item name={FORM_FIELDS.HTML_CONTENT_STRING}>
+                        <CodeDisplay
+                            expanded
+                            language="html"
+                            code={htmlContentString || DEFAULT_HTML_CONTENT_STRING}
+                            onCodeChange={(newCode: string) => {
+                                form?.setFieldValue([FORM_FIELDS.HTML_CONTENT_STRING], newCode);
+                            }}
+                        />
+                    </Form.Item>
+                )}
+            </>
+        );
+    };
+
+    const renderExtractData = () => {
+        if (isEmpty(extractData)) return <></>;
+
+        return (
+            <Card className="border-2 shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <Row gutter={[24, 24]}>
+                    <Col xs={24} md={12}>
+                        <Space direction="vertical" size={8}>
+                            <Typography.Text type="secondary">Giá:</Typography.Text>
+                            <Typography.Title level={2}>
+                                {extractData?.productPrice}
+                            </Typography.Title>
+                        </Space>
+                    </Col>
+                    <Col xs={24} md={12}>
+                        <Space direction="vertical" size={8}>
+                            <Typography.Text type="secondary">Tiền tệ:</Typography.Text>
+                            <Typography.Title level={2}>
+                                {dataProvider?.expectedCurrency}
+                            </Typography.Title>
+                        </Space>
+                    </Col>
+                </Row>
+
+                <Divider />
+
+                <div className="space-y-3">
+                    <Form.Item name={FORM_FIELDS.EXTRACT_DATA}>
+                        <CodeDisplay
+                            isDisplayLanguage
+                            title="Dữ liệu metadata"
+                            code={JSON.stringify(extractData)}
+                        />
+                        {!isEmpty(additionalExtractData) &&
+                            additionalExtractData?.map(
+                                (item: Record<string, any>, index: number) => (
+                                    <div key={item.productName} className="mt-2">
+                                        <CodeDisplay
+                                            isDisplayLanguage
+                                            key={item.productName}
+                                            code={JSON.stringify(item)}
+                                            title={`Dữ liệu bổ sung - ${formUrls?.[index]}`}
+                                        />
+                                    </div>
+                                ),
+                            )}
+                    </Form.Item>
+                </div>
+            </Card>
+        );
+    };
+
+    return (
+        <CustomFormModal
+            formLoading={formLoading}
+            modalProps={{
+                ...modalProps,
+                open: true,
+                width: 900,
+                title: renderTitle(),
+                loading: formLoading,
+                footer: renderFooter(),
+                onCancel: handleCancel,
+            }}
+        >
+            <Form
+                {...formProps}
+                layout="vertical"
+                onFinish={handleUpdateTargetConfig}
+                className="[&_.ant-form-item]:!mb-2"
+                initialValues={
+                    isEmpty(formProps?.initialValues?.targetConfig)
+                        ? {
+                              scraperService: ScraperServiceEnum.GENERIC,
+                              targetConfig: {
+                                  mainContentSelector: '',
+                                  isGetParentElement: false,
+                                  proxyCountries: [],
+                                  proxyProviders: [],
+                                  functionGenerator: DEFAULT_PARSER_FUNCTION_GENERATOR,
+                              },
+                          }
+                        : formProps?.initialValues
+                }
+            >
+                {renderFormTargetConfiguration()}
+                {renderFunctionGenerator()}
+                {renderExtractData()}
+            </Form>
+        </CustomFormModal>
+    );
+};
+
+export default memo(ScrapeSetting);

@@ -1,9 +1,11 @@
 'use client';
 
 import { CreateFormModal, CustomElement, EditFormModal, TableContainer } from '@/components/custom';
+import { ScrapeSetting } from '@/components/module/data-provider';
 import { DataProviderStatus, ElementType } from '@/enums';
 import { FormFieldItem, NDataProvider } from '@/interfaces';
 import { Icon } from '@iconify/react';
+import { useSelect } from '@refinedev/core';
 import { Button, Space, Tag } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
@@ -13,6 +15,16 @@ const DataProviderPage: FC = () => {
     const [quantityRefetch, setQuantityRefetch] = useState(0);
     const [openCreateItemModal, setOpenCreateItemModal] = useState(false);
     const [editItemId, setEditItemId] = useState<string | undefined>(undefined);
+    const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
+
+    const { options: providerItems } = useSelect<NDataProvider.IDataProviderItem>({
+        resource: `data-provider-items/data-provider/${selectedId}`,
+        optionValue: (item: NDataProvider.IDataProviderItem) => item.id ?? '',
+        optionLabel: (item: NDataProvider.IDataProviderItem) => item.itemUrl ?? '',
+        queryOptions: {
+            enabled: !!selectedId,
+        },
+    });
 
     const displayStatus = useCallback((status: DataProviderStatus) => {
         if (!status) return '---';
@@ -179,13 +191,13 @@ const DataProviderPage: FC = () => {
                         key: 'scrape-unconfigured',
                         label: 'Cấu hình dữ liệu',
                         icon: <Icon icon="lucide:settings-2" />,
-                        onClick: (record) => setEditItemId(record?.id),
+                        onClick: (record) => setSelectedId(record?.id),
                     },
                     {
                         key: 'search-configured',
                         label: 'Câu hình tìm kiếm',
                         icon: <Icon icon="lucide:search-code" />,
-                        onClick: (record) => setEditItemId(record?.id),
+                        onClick: (record) => setSelectedId(record?.id),
                     },
                 ]}
                 filterSearch={{
@@ -214,6 +226,17 @@ const DataProviderPage: FC = () => {
                     setQuantityRefetch(quantityRefetch + 1);
                 }}
             />
+
+            {!!selectedId && (
+                <ScrapeSetting
+                    dataProviderId={selectedId}
+                    dataProviderItemOptions={providerItems}
+                    onClose={() => {
+                        setSelectedId(undefined);
+                        setQuantityRefetch(quantityRefetch + 1);
+                    }}
+                />
+            )}
         </Space>
     );
 };

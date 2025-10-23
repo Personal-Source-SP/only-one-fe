@@ -15,17 +15,9 @@ export declare namespace NDataProvider {
     }
 
     interface ITargetConfig {
-        useBrowser: boolean;
         functionGenerator: string;
         mainContentSelector: string;
         isGetParentElement: boolean;
-        useProxy?: boolean;
-        proxyCountries?: string[];
-        proxyProviders?: string[];
-        useVisionExtraction?: boolean;
-        visionMainSelector?: string;
-        cookieConsentSelector?: string;
-        waitForElement?: string;
     }
 
     interface ISearchConfig {
@@ -41,14 +33,14 @@ export declare namespace NDataProvider {
         maxResults: number;
 
         // Request Configuration
-        useBrowser: boolean;
         functionGenerator: string;
         isGetParentElement: boolean;
-        useProxy?: boolean;
-        proxyCountries?: string[];
-        proxyProviders?: string[];
-        waitForElement?: string;
-        enableBarcodeSearch?: boolean;
+    }
+
+    interface UpdateTargetConfigRequest extends ITargetConfig {
+        scraperService?: string;
+        changeType: ConfigVersionType;
+        changeDescription?: string;
     }
 
     interface IDataProvider extends Abstract {
