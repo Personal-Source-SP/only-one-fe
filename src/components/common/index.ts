@@ -1,8 +1,3 @@
-export { default as CustomElement } from './custom-element';
-export { default as CustomFilter } from './custom-filter';
-export { default as CustomModal } from './custom-modal';
-export { default as CustomTable } from './custom-table';
-export { default as CustomTableContainer } from './custom-table-container';
 export { default as DataNotFound } from './data-not-found';
 export { default as Forbidden } from './forbidden';
 export { default as Loading } from './loading';

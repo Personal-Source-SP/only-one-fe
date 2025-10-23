@@ -24,7 +24,7 @@ import 'yet-another-react-lightbox/plugins/thumbnails.css';
 import Zoom from 'yet-another-react-lightbox/plugins/zoom';
 import 'yet-another-react-lightbox/styles.css';
 
-import { CustomElement, CustomTableContainer } from '@/components/common';
+import { CustomElement, TableContainer } from '@/components/custom';
 
 import PhotoGroups from '@/components/module/photos/PhotoGroups';
 import SyncGoogleDrive from '@/components/module/sync-google-drive';
@@ -252,7 +252,7 @@ const PhotosPage: FC = () => {
                 ]}
             />
 
-            <CustomTableContainer
+            <TableContainer
                 resource="google-folder"
                 customFilterItems={filterItems}
                 filterSearch={{

@@ -1,6 +1,7 @@
 'use client';
 
-import { CustomElement, CustomFilter, CustomTable, PaginationControls } from '@/components/common';
+import { PaginationControls } from '@/components/common';
+import { CustomElement, CustomFilter, CustomTable } from '@/components/custom';
 import { CustomFilterType, ElementType } from '@/enums';
 import { useDebounceSearch } from '@/hooks/useDebounceSearch';
 import { ActionTableItem, FilterItem, SearchFilterItem } from '@/interfaces';
@@ -9,7 +10,7 @@ import { HttpError } from '@refinedev/core';
 import { ColumnsType } from 'antd/es/table';
 import { FC, memo, useEffect, useMemo } from 'react';
 
-type CustomTableContainerProps = {
+type TableContainerProps = {
     resource?: string;
     columns?: ColumnsType<any>;
     quantityRefetch?: number;
@@ -20,7 +21,7 @@ type CustomTableContainerProps = {
     childrenBottom?: React.ReactNode;
 };
 
-const CustomTableContainer: FC<CustomTableContainerProps> = ({
+const TableContainer: FC<TableContainerProps> = ({
     resource,
     columns,
     quantityRefetch,
@@ -127,4 +128,4 @@ const CustomTableContainer: FC<CustomTableContainerProps> = ({
     );
 };
 
-export default memo(CustomTableContainer);
+export default memo(TableContainer);

@@ -1,6 +1,6 @@
 'use client';
 
-import { CustomElement, CustomTableContainer } from '@/components/common';
+import { CustomElement, TableContainer } from '@/components/custom';
 import { ElementType, ScrapeStatusEnum } from '@/enums';
 import { NDataProvider } from '@/interfaces';
 import { Icon } from '@iconify/react';
@@ -89,7 +89,7 @@ const DataHistoryPage: FC = () => {
         <Space size="middle" direction="vertical" className="w-full h-full">
             <CustomElement title="Danh sách lịch sử dữ liệu" elementType={ElementType.TITLE} />
 
-            <CustomTableContainer
+            <TableContainer
                 columns={columns}
                 resource="data-history"
                 quantityRefetch={quantityRefetch}

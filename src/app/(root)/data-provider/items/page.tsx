@@ -1,6 +1,7 @@
 'use client';
 
-import { CustomElement, CustomTableContainer } from '@/components/common';
+import { CustomElement, TableContainer } from '@/components/custom';
+import { ItemModal } from '@/components/module/items';
 import { ElementType, ProductMappingStatus } from '@/enums';
 import { NDataProvider } from '@/interfaces';
 import { Icon } from '@iconify/react';
@@ -13,6 +14,20 @@ import { FC, useCallback, useState } from 'react';
 
 const ItemPage: FC = () => {
     const [quantityRefetch, setQuantityRefetch] = useState(0);
+
+    const {
+        open: openCreateItemModal,
+        show: showCreateItemModal,
+        close: closeCreateItemModal,
+        formProps: createItemFormProps,
+        modalProps: createItemModalProps,
+        formLoading: createItemFormLoading,
+    } = useModalForm<NDataProvider.IItem, HttpError, Partial<NDataProvider.IItem>>({
+        action: 'create',
+        resource: 'items',
+        autoResetForm: true,
+        warnWhenUnsavedChanges: false,
+    });
 
     const {
         open: openFolderModal,
@@ -123,14 +138,14 @@ const ItemPage: FC = () => {
                         type="primary"
                         key="add-item"
                         icon={<Icon icon="lucide:plus" />}
-                        // onClick={() => setIsOpenSyncFile(true)}
+                        onClick={() => showCreateItemModal()}
                     >
                         Thêm đối tượng
                     </Button>,
                 ]}
             />
 
-            <CustomTableContainer
+            <TableContainer
                 columns={columns}
                 resource="items"
                 quantityRefetch={quantityRefetch}
@@ -147,15 +162,15 @@ const ItemPage: FC = () => {
                 }}
             />
 
-            {/* <FolderModal
-                open={openFolderModal}
-                onClose={closeFolderModal}
-                formProps={folderModalFormProps}
-                isLoading={folderModalFormLoading}
-                modalProps={folderModalModalProps}
-                folderOptions={folderOptions ?? []}
+            <ItemModal
+                open={openCreateItemModal}
+                onClose={closeCreateItemModal}
+                formProps={createItemFormProps}
+                isLoading={createItemFormLoading}
+                modalProps={createItemModalProps}
+                folderOptions={[]}
                 onSubmit={() => {}}
-            /> */}
+            />
         </Space>
     );
 };

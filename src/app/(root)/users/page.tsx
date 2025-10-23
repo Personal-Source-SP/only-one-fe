@@ -1,6 +1,6 @@
 'use client';
 
-import { CustomElement, CustomTableContainer } from '@/components/common';
+import { CustomElement, TableContainer } from '@/components/custom';
 import { ElementType } from '@/enums';
 import { NGoogle, NUser } from '@/interfaces';
 import { Icon } from '@iconify/react';
@@ -97,7 +97,7 @@ const UsersPage: FC = () => {
                 }
             />
 
-            <CustomTableContainer
+            <TableContainer
                 columns={columns}
                 resource="users"
                 quantityRefetch={quantityRefetch}

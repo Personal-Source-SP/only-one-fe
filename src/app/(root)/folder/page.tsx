@@ -1,6 +1,6 @@
 'use client';
 
-import { CustomElement, CustomTableContainer } from '@/components/common';
+import { CustomElement, TableContainer } from '@/components/custom';
 import FolderModal from '@/components/module/folders/FolderModal';
 import SyncGoogleDrive from '@/components/module/sync-google-drive';
 import { ElementType, GoogleDriveType } from '@/enums';
@@ -115,7 +115,7 @@ const FolderPage: FC = () => {
                 ]}
             />
 
-            <CustomTableContainer
+            <TableContainer
                 columns={columns}
                 resource="google-folder"
                 quantityRefetch={quantityRefetch}

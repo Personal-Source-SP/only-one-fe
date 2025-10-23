@@ -1,6 +1,6 @@
 'use client';
 
-import { CustomElement, CustomTableContainer } from '@/components/common';
+import { CustomElement, TableContainer } from '@/components/custom';
 import { DataProviderStatus, ElementType } from '@/enums';
 import { NDataProvider } from '@/interfaces';
 import { Icon } from '@iconify/react';
@@ -142,7 +142,7 @@ const DataProviderPage: FC = () => {
                 ]}
             />
 
-            <CustomTableContainer
+            <TableContainer
                 columns={columns}
                 resource="data-providers"
                 quantityRefetch={quantityRefetch}

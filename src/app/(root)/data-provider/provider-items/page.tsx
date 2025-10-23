@@ -1,7 +1,7 @@
 'use client';
 
-import { CustomElement, CustomTableContainer } from '@/components/common';
-import { ElementType, ProductMappingStatus, ScrapeStatusEnum } from '@/enums';
+import { CustomElement, TableContainer } from '@/components/custom';
+import { ElementType, ScrapeStatusEnum } from '@/enums';
 import { NDataProvider } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { useModalForm } from '@refinedev/antd';
@@ -128,7 +128,7 @@ const DataProviderItemPage: FC = () => {
                 ]}
             />
 
-            <CustomTableContainer
+            <TableContainer
                 columns={columns}
                 resource="data-provider-items"
                 quantityRefetch={quantityRefetch}
