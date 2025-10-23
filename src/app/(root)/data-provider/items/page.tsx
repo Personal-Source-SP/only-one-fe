@@ -1,12 +1,9 @@
 'use client';
 
-import { CustomElement, TableContainer } from '@/components/custom';
-import { ItemModal } from '@/components/module/items';
+import { CreateFormModal, CustomElement, EditFormModal, TableContainer } from '@/components/custom';
 import { ElementType, ProductMappingStatus } from '@/enums';
-import { NDataProvider } from '@/interfaces';
+import { FormFieldItem, NDataProvider } from '@/interfaces';
 import { Icon } from '@iconify/react';
-import { useModalForm } from '@refinedev/antd';
-import { HttpError } from '@refinedev/core';
 import { Button, Space, Tag } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
@@ -15,33 +12,8 @@ import { FC, useCallback, useState } from 'react';
 const ItemPage: FC = () => {
     const [quantityRefetch, setQuantityRefetch] = useState(0);
 
-    const {
-        open: openCreateItemModal,
-        show: showCreateItemModal,
-        close: closeCreateItemModal,
-        formProps: createItemFormProps,
-        modalProps: createItemModalProps,
-        formLoading: createItemFormLoading,
-    } = useModalForm<NDataProvider.IItem, HttpError, Partial<NDataProvider.IItem>>({
-        action: 'create',
-        resource: 'items',
-        autoResetForm: true,
-        warnWhenUnsavedChanges: false,
-    });
-
-    const {
-        open: openFolderModal,
-        show: showFolderModal,
-        close: closeFolderModal,
-        formProps: folderModalFormProps,
-        modalProps: folderModalModalProps,
-        formLoading: folderModalFormLoading,
-    } = useModalForm<NDataProvider.IItem, HttpError, Partial<NDataProvider.IItem>>({
-        action: 'edit',
-        resource: 'items',
-        autoResetForm: true,
-        warnWhenUnsavedChanges: false,
-    });
+    const [openCreateItemModal, setOpenCreateItemModal] = useState(false);
+    const [editItemId, setEditItemId] = useState<string | undefined>(undefined);
 
     const displayMappingStatus = useCallback((mappingStatus: ProductMappingStatus) => {
         if (!mappingStatus) return '---';
@@ -82,14 +54,6 @@ const ItemPage: FC = () => {
             sorter: true,
         },
         {
-            title: 'Ngày tạo',
-            dataIndex: 'createdAt',
-            key: 'createdAt',
-            sorter: true,
-            render: (createdAt: Date) =>
-                createdAt ? dayjs(createdAt).format('DD/MM/YYYY HH:mm:ss') : '---',
-        },
-        {
             key: 'mappingStatus',
             title: 'Trạng thái ánh xạ',
             dataIndex: 'mappingStatus',
@@ -126,6 +90,29 @@ const ItemPage: FC = () => {
                     </span>
                 )),
         },
+        {
+            title: 'Ngày tạo',
+            dataIndex: 'createdAt',
+            key: 'createdAt',
+            sorter: true,
+            render: (createdAt: Date) =>
+                createdAt ? dayjs(createdAt).format('DD/MM/YYYY HH:mm:ss') : '---',
+        },
+    ];
+
+    const formFields: FormFieldItem[] = [
+        {
+            name: 'name',
+            type: 'input',
+            label: 'Tên đối tượng',
+            rules: [{ required: true, message: 'Vui lòng nhập tên đối tượng' }],
+        },
+        {
+            name: 'code',
+            type: 'input',
+            label: 'Mã',
+            rules: [{ required: true, message: 'Vui lòng nhập mã đối tượng' }],
+        },
     ];
 
     return (
@@ -138,7 +125,7 @@ const ItemPage: FC = () => {
                         type="primary"
                         key="add-item"
                         icon={<Icon icon="lucide:plus" />}
-                        onClick={() => showCreateItemModal()}
+                        onClick={() => setOpenCreateItemModal(true)}
                     >
                         Thêm đối tượng
                     </Button>,
@@ -154,7 +141,7 @@ const ItemPage: FC = () => {
                         key: 'edit',
                         label: 'Chỉnh sửa',
                         icon: <Icon icon="lucide:edit" />,
-                        onClick: (record) => showFolderModal(record?.id),
+                        onClick: (record) => setEditItemId(record?.id),
                     },
                 ]}
                 filterSearch={{
@@ -162,14 +149,26 @@ const ItemPage: FC = () => {
                 }}
             />
 
-            <ItemModal
+            <CreateFormModal
+                resource="items"
+                formFields={formFields}
+                title="Thêm mới đối tượng"
                 open={openCreateItemModal}
-                onClose={closeCreateItemModal}
-                formProps={createItemFormProps}
-                isLoading={createItemFormLoading}
-                modalProps={createItemModalProps}
-                folderOptions={[]}
-                onSubmit={() => {}}
+                onClose={() => {
+                    setOpenCreateItemModal(false);
+                    setQuantityRefetch(quantityRefetch + 1);
+                }}
+            />
+
+            <EditFormModal
+                resource="items"
+                id={editItemId ?? ''}
+                formFields={formFields}
+                title="Chỉnh sửa đối tượng"
+                onClose={() => {
+                    setEditItemId(undefined);
+                    setQuantityRefetch(quantityRefetch + 1);
+                }}
             />
         </Space>
     );

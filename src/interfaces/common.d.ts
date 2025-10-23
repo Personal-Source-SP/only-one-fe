@@ -1,6 +1,6 @@
 import { CustomFilterType } from '@/enums';
 
-export interface IAbstract {
+export interface Abstract {
     id?: string;
     createdAt?: Date;
     createdBy?: string | null;

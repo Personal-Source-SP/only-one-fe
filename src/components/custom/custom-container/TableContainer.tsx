@@ -89,7 +89,7 @@ const TableContainer: FC<TableContainerProps> = ({
     });
 
     return (
-        <CustomElement elementType={ElementType.CONTAINER} loading={tableQuery?.isLoading}>
+        <CustomElement elementType={ElementType.CONTAINER}>
             <CustomElement
                 elementType={ElementType.CARD}
                 header={<CustomFilter filters={filterItems} />}

@@ -4,10 +4,10 @@ import {
     ProductMappingStatus,
     ScrapeStatusEnum,
 } from '@/enums';
-import { IAbstract } from '@/interfaces/common';
+import { Abstract } from '@/interfaces/common';
 
 export declare namespace NDataProvider {
-    interface IItem extends IAbstract {
+    interface IItem extends Abstract {
         name: string;
         mappingStatus: ProductMappingStatus;
         code?: string;
@@ -51,7 +51,7 @@ export declare namespace NDataProvider {
         enableBarcodeSearch?: boolean;
     }
 
-    interface IDataProvider extends IAbstract {
+    interface IDataProvider extends Abstract {
         identifier?: string;
         name: string;
         scraperService: string;
@@ -66,7 +66,7 @@ export declare namespace NDataProvider {
         dataProviderItems?: IDataProviderItem[];
     }
 
-    interface IDataProviderItem extends IAbstract {
+    interface IDataProviderItem extends Abstract {
         itemId: string;
         dataProviderId: string;
         itemUrl: string;
@@ -77,7 +77,7 @@ export declare namespace NDataProvider {
         dataProvider: IDataProvider;
     }
 
-    interface IDataHistory extends IAbstract {
+    interface IDataHistory extends Abstract {
         dataProviderItemId: string;
         scrapeTimestamp: Date;
         status: ScrapeStatusEnum;
