@@ -1,10 +1,10 @@
 'use client';
 
-import { CustomDatePicker, CustomFormModal, CustomSelect } from '@/components/custom';
+import { CustomDatePicker, CustomFormModal } from '@/components/custom';
 import { NBaseApi, NDataProvider, Option } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { useApiUrl, useCustomMutation } from '@refinedev/core';
-import { Button, Card, Col, Flex, Form, Row, Space, StepProps, Steps, Table } from 'antd';
+import { Button, Card, Col, Flex, Form, Row, Select, Space, StepProps, Steps, Table } from 'antd';
 import { ColumnType } from 'antd/es/table';
 import dayjs from 'dayjs';
 import { FC, memo, useMemo, useState } from 'react';
@@ -106,6 +106,9 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({ open, dataProviders, on
             label: item.baseUrl,
         }));
 
+        const dataProviderIds = options?.map((item) => item.value as string);
+        setDataProviderIds(dataProviderIds ?? []);
+
         return [...defaultOptions, ...options];
     }, [dataProviders]);
 
@@ -179,27 +182,21 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({ open, dataProviders, on
         if (!dataProviderOptions?.length) return <></>;
 
         return (
-            <Form
-                layout="vertical"
-                initialValues={{
-                    dataProviderIds: dataProviders?.length
-                        ? dataProviderOptions?.filter((item) => Boolean(item.value))
-                        : '',
-                }}
-            >
-                <Row gutter={[16, 0]}>
+            <Form layout="vertical">
+                <Row gutter={[8, 8]}>
                     <Col span={24}>
                         <Form.Item
                             label="Nhà cung cấp"
                             name="dataProviderIds"
                             rules={[{ required: true, message: 'Vui lòng chọn nhà cung cấp' }]}
                         >
-                            <CustomSelect
+                            <Select
+                                disabled
                                 mode="multiple"
+                                value={dataProviderIds}
                                 options={dataProviderOptions}
                                 placeholder="Chọn nhà cung cấp"
-                                disabled={!dataProviders?.length}
-                                onChange={(value) => setDataProviderIds(value)}
+                                defaultValue={dataProviders?.length ? dataProviderIds : ''}
                             />
                         </Form.Item>
                     </Col>

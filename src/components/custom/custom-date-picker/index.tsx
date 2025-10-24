@@ -90,9 +90,10 @@ const CustomDatePicker: FC<CustomDatePickerProps> = ({
                 showTime={showTime}
                 allowClear={allowClear}
                 className="h-[42px] select-range-date"
-                disabledDate={(date) => (date ? date.isAfter(dayjs(), 'day') : false)}
                 format={showTime ? DATE_FORMAT_TIME : DATE_FORMAT}
                 value={dateRange && [dayjs(dateRange[0]), dayjs(dateRange[1])]}
+                defaultValue={dateRange && [dayjs(dateRange[0]), dayjs(dateRange[1])]}
+                disabledDate={(date) => (date ? date.isAfter(dayjs(), 'day') : false)}
                 onChange={(dates: null | (Dayjs | null)[], dateString: [string, string]) => {
                     if (dates && dates[0] && dates[1]) {
                         setDateRangeValue(dateString);
