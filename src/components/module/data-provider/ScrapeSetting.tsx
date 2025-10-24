@@ -277,22 +277,18 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
     const renderFooter = () => {
         return (
             <Flex justify="end" align="center" gap={16}>
-                {dataProvider?.status === DataProviderStatus.TESTING && (
+                {dataProvider?.status !== DataProviderStatus.UNCONFIGURED && (
                     <Button
                         type="primary"
-                        onClick={() => handleSwitchStatus(DataProviderStatus.READY)}
+                        onClick={() =>
+                            handleSwitchStatus(
+                                dataProvider?.status === DataProviderStatus.TESTING
+                                    ? DataProviderStatus.READY
+                                    : DataProviderStatus.TESTING,
+                            )
+                        }
                     >
-                        Chuyển trạng thái sẵn sàng
-                    </Button>
-                )}
-
-                {(dataProvider?.status === DataProviderStatus.UNCONFIGURED ||
-                    dataProvider?.status === DataProviderStatus.READY) && (
-                    <Button
-                        type="primary"
-                        onClick={() => handleSwitchStatus(DataProviderStatus.TESTING)}
-                    >
-                        Chuyển trạng thái đang kiểm tra
+                        Chuyển trạng thái
                     </Button>
                 )}
 
@@ -460,6 +456,7 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
                 </Form.Item>
 
                 <Form.Item name={['targetConfig', FORM_FIELDS.HEADERS]}>
+                    <p className="text-sm font-medium !mb-3">{`Cấu hình headers:`}</p>
                     <CodeDisplay
                         title="Headers"
                         isDisplayLanguage
@@ -472,6 +469,7 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
                 </Form.Item>
 
                 <Form.Item name={['targetConfig', FORM_FIELDS.COOKIES]}>
+                    <p className="text-sm font-medium !mb-3">{`Cấu hình cookies:`}</p>
                     <CodeDisplay
                         title="Cookies"
                         isDisplayLanguage
@@ -486,7 +484,6 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
                 <Flex justify="space-between" align="end" gap={10}>
                     <Form.Item
                         label="URL"
-                        tooltip="URL"
                         name={FORM_FIELDS.URL}
                         className="w-full max-w-[calc(100%-50px)]"
                     >
