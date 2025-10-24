@@ -72,22 +72,22 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
         icon: 'noto:package',
         children: [
             {
-                href: '/data-provider/items',
-                label: 'Đối tượng',
-                icon: 'noto:page-facing-up',
-            },
-            {
-                href: '/data-provider/providers',
+                href: '/scraping/data-providers',
                 label: 'Nhà cung cấp',
                 icon: 'noto:factory',
             },
             {
-                href: '/data-provider/provider-items',
+                href: '/scraping/provider-items',
                 label: 'Đối tượng nhà cung cấp',
                 icon: 'noto:package',
             },
             {
-                href: '/data-provider/data-history',
+                href: '/scraping/items',
+                label: 'Đối tượng',
+                icon: 'noto:page-facing-up',
+            },
+            {
+                href: '/scraping/data-history',
                 label: 'Lịch sử dữ liệu',
                 icon: 'noto:file-folder',
             },
