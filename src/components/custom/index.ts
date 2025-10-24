@@ -1,5 +1,6 @@
 export { default as CustomAlert } from './custom-alert';
 export { default as TableContainer } from './custom-container/TableContainer';
+export { default as CustomDatePicker } from './custom-date-picker';
 export { default as CustomElement } from './custom-element';
 export { default as CustomFilter } from './custom-filter';
 export { default as CreateFormModal } from './custom-form-modal/CreateFormModal';

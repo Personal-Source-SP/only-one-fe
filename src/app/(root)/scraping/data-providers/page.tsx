@@ -1,7 +1,7 @@
 'use client';
 
 import { CreateFormModal, CustomElement, EditFormModal, TableContainer } from '@/components/custom';
-import { ScrapeSetting } from '@/components/module/data-provider';
+import { ProcessScrapeData, ScrapeSetting } from '@/components/module/data-provider';
 import { DataProviderStatus, ElementType } from '@/enums';
 import { FormFieldItem, NDataProvider } from '@/interfaces';
 import { Icon } from '@iconify/react';
@@ -17,6 +17,8 @@ const DataProviderPage: FC = () => {
     const [openCreateItemModal, setOpenCreateItemModal] = useState(false);
     const [editItemId, setEditItemId] = useState<string | undefined>(undefined);
     const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
+
+    const [openProcessScrapeDataModal, setOpenProcessScrapeDataModal] = useState(false);
     const [selectedRows, setSelectedRows] = useState<NDataProvider.IDataProvider[]>([]);
 
     const { options: providerItems } = useSelect<NDataProvider.IDataProviderItem>({
@@ -182,7 +184,7 @@ const DataProviderPage: FC = () => {
                         type="primary"
                         key="scrape-data"
                         icon={<Icon icon="lucide:file-text" />}
-                        onClick={() => setOpenCreateItemModal(true)}
+                        onClick={() => setOpenProcessScrapeDataModal(true)}
                     >
                         Cào dữ liệu
                     </Button>,
@@ -263,6 +265,15 @@ const DataProviderPage: FC = () => {
                     close();
                     setSelectedId(undefined);
                     setQuantityRefetch(quantityRefetch + 1);
+                }}
+            />
+
+            <ProcessScrapeData
+                key="process-scrape-data"
+                open={openProcessScrapeDataModal}
+                dataProviders={selectedRows ?? []}
+                onClose={() => {
+                    setOpenProcessScrapeDataModal(false);
                 }}
             />
         </Space>

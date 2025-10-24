@@ -106,6 +106,9 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
     },
 ];
 
+export const DATE_FORMAT = 'DD/MM/YYYY';
+export const DATE_FORMAT_TIME = 'DD/MM/YYYY HH:mm:ss';
+
 export const AUTH_PUBLIC_PAGES = ['/login', '/register', '/forget-password'];
 
 export const IMAGE_WIDTH_DEFAULT = 1500;

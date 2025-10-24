@@ -1,9 +1,4 @@
-import {
-    DataProviderSearchStatus,
-    DataProviderStatus,
-    ProductMappingStatus,
-    ScrapeStatusEnum,
-} from '@/enums';
+import { DataProviderSearchStatus, DataProviderStatus, ProductMappingStatus } from '@/enums';
 import { Abstract } from '@/interfaces/common';
 
 export declare namespace NDataProvider {
@@ -65,7 +60,6 @@ export declare namespace NDataProvider {
         status: DataProviderStatus;
         targetConfig?: ITargetConfig;
         lastSuccessfulScrapeAt?: Date;
-        lastFailedScrapeAt?: Date;
         searchConfig?: ISearchConfig;
         searchService: string;
         searchStatus: DataProviderSearchStatus;
@@ -77,7 +71,6 @@ export declare namespace NDataProvider {
         dataProviderId: string;
         itemUrl: string;
         targetConfig: Record<string, any> | null;
-        lastScrapeStatus?: ScrapeStatusEnum;
         lastScrapedTimestamp?: Date;
         item: IItem;
         dataProvider: IDataProvider;
@@ -86,9 +79,25 @@ export declare namespace NDataProvider {
     interface IDataHistory extends Abstract {
         dataProviderItemId: string;
         scrapeTimestamp: Date;
-        status: ScrapeStatusEnum;
+        dataId?: string;
         metadata?: Record<string, any>;
-        errorMessage?: string;
         dataProviderItem?: IDataProviderItem;
+    }
+
+    interface IScrapeDataResponse {
+        process: number;
+        success: number;
+        error: number;
+
+        errorsMessage?: string;
+
+        dataItems?: {
+            dataProviderId: string;
+            dataProviderName: string;
+            errorMessage?: string;
+            data?: Record<string, any>;
+            itemUrl?: string;
+            dataProviderItemId?: string;
+        }[];
     }
 }
