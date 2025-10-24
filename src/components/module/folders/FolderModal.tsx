@@ -1,7 +1,6 @@
 'use client';
 
-import { CustomModal } from '@/components/common';
-import { GoogleDriveType } from '@/enums';
+import { CustomModal } from '@/components/custom';
 import { Option } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { Button, Col, Form, FormProps, Input, ModalProps, Row, Select, Space, Spin } from 'antd';

@@ -1,6 +1,6 @@
 'use client';
 
-import { CustomModal } from '@/components/common';
+import { CustomModal } from '@/components/custom';
 import { GoogleDriveFileType, GoogleDriveType } from '@/enums';
 import { NBaseApi, NGoogle, Option } from '@/interfaces';
 import { Icon } from '@iconify/react';
