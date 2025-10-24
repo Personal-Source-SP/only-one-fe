@@ -51,17 +51,17 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
         icon: 'flat-color-icons:google',
         children: [
             {
-                href: '/folder',
+                href: '/google/drive/folders',
                 label: 'Thư mục',
                 icon: 'emojione:open-file-folder',
             },
             {
-                href: '/photos',
+                href: '/google/drive/photos',
                 label: 'Ảnh',
                 icon: 'noto:framed-picture',
             },
             {
-                href: '/keep',
+                href: '/google/keep',
                 label: 'Lưu trữ',
                 icon: 'noto-v1:package',
             },
@@ -98,7 +98,7 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
         icon: 'flat-color-icons:settings',
         children: [
             {
-                href: '/users',
+                href: '/setting/users',
                 label: 'Người dùng',
                 icon: 'noto:people-holding-hands',
             },
