@@ -182,7 +182,9 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({ open, dataProviders, on
                 form={form}
                 layout="vertical"
                 initialValues={{
-                    dataProviderIds: dataProviders?.length ? dataProviderOptions : '',
+                    dataProviderIds: dataProviders?.length
+                        ? dataProviderOptions?.filter((item) => Boolean(item.value))
+                        : '',
                 }}
             >
                 <Row gutter={[16, 0]}>
