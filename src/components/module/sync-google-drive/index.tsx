@@ -61,6 +61,16 @@ type SyncGoogleDriveProps = {
     onSuccess: () => void;
 };
 
+interface IFormValues {
+    googleAuthId: string;
+    type: GoogleDriveType;
+    folderId?: string;
+    maxResults?: number;
+    fileTypes?: GoogleDriveFileType[];
+    modifiedTimeFrom?: string;
+    modifiedTimeTo?: string;
+}
+
 const SyncGoogleDrive: FC<SyncGoogleDriveProps> = ({
     isOpen,
     queryLoading,
@@ -99,7 +109,7 @@ const SyncGoogleDrive: FC<SyncGoogleDriveProps> = ({
     const { mutate: previewGoogleDrive } =
         useCustomMutation<NBaseApi.IResponse<NGoogle.IPreviewGoogleDriveData>>();
 
-    const [form] = Form.useForm();
+    const [form] = Form.useForm<IFormValues>();
 
     const [loading, setLoading] = useState(false);
     const [isActiveGoogleAuth, setIsActiveGoogleAuth] = useState(false);
@@ -447,7 +457,10 @@ const SyncGoogleDrive: FC<SyncGoogleDriveProps> = ({
                                     setType(value as GoogleDriveType);
 
                                     if (value === GoogleDriveType.FOLDER) {
-                                        form.setFieldValue(FieldsEnum.FileTypes, undefined);
+                                        form.setFieldValue(
+                                            FieldsEnum.FileTypes as keyof IFormValues,
+                                            undefined,
+                                        );
                                     }
                                 }}
                                 options={Object.values(GoogleDriveType).map((type) => ({

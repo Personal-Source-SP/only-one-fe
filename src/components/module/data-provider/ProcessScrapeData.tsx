@@ -22,11 +22,11 @@ const StepEnum = {
 
 const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({ open, dataProviders, onClose }) => {
     const apiUrl = useApiUrl();
-    const [form] = Form.useForm();
 
     const [pageSize, setPageSize] = useState(50);
     const [isLoading, setIsLoading] = useState(false);
     const [currentStep, setCurrentStep] = useState(StepEnum.Settings);
+    const [dataProviderIds, setDataProviderIds] = useState<string[]>([]);
     const [dateRanges, setDateRanges] = useState<[string, string]>([
         dayjs().startOf('d').toISOString(),
         dayjs().endOf('d').toISOString(),
@@ -113,12 +113,13 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({ open, dataProviders, on
         setIsLoading(true);
 
         try {
-            const values = await form?.validateFields();
-
             mutate({
-                values,
                 method: 'post',
                 url: `${apiUrl}/data-history/process-scrape-data`,
+                values: {
+                    dataProviderIds,
+                    lastSuccessfulScrapeAt: dateRanges[1],
+                },
                 successNotification(data) {
                     const response =
                         data?.data as NBaseApi.IResponse<NDataProvider.IScrapeDataResponse>;
@@ -179,7 +180,6 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({ open, dataProviders, on
 
         return (
             <Form
-                form={form}
                 layout="vertical"
                 initialValues={{
                     dataProviderIds: dataProviders?.length
@@ -199,6 +199,7 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({ open, dataProviders, on
                                 options={dataProviderOptions}
                                 placeholder="Chọn nhà cung cấp"
                                 disabled={!dataProviders?.length}
+                                onChange={(value) => setDataProviderIds(value)}
                             />
                         </Form.Item>
                     </Col>

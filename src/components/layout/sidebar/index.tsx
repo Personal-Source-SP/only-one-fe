@@ -156,12 +156,16 @@ const Sidebar: FC<SidebarProps> = ({ mobileOpen, setMobileOpen, collapsed, setCo
                                     </div>
                                 }
                                 placement="right"
-                                overlayClassName="max-w-xs"
-                                overlayStyle={{
-                                    backgroundColor: 'rgba(15, 23, 42, 0.95)',
-                                    borderRadius: '12px',
-                                    boxShadow: '0 10px 25px rgba(0, 0, 0, 0.3)',
-                                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                                classNames={{
+                                    body: 'max-w-xs',
+                                }}
+                                styles={{
+                                    root: {
+                                        borderRadius: '12px',
+                                        backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                                        boxShadow: '0 10px 25px rgba(0, 0, 0, 0.3)',
+                                        border: '1px solid rgba(255, 255, 255, 0.1)',
+                                    },
                                 }}
                                 trigger={['hover']}
                                 mouseEnterDelay={0.2}

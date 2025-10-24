@@ -174,8 +174,6 @@ const DataProviderPage: FC = () => {
         },
     ];
 
-    console.log(selectedRows);
-
     return (
         <Space size="middle" direction="vertical" className="w-full h-full">
             <CustomElement

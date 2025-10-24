@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: PropsWithChildren) {
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const theme = cookieStore.get('theme');
 
     const session = await getServerSession(authOptions);
