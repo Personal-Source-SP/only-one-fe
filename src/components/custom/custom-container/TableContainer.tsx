@@ -65,19 +65,36 @@ const TableContainer: FC<TableContainerProps> = ({
     }, [tableQuery?.data?.data]);
 
     const filterItems = useMemo(() => {
-        return [
-            ...(filterSearch
-                ? [
-                      {
-                          type: CustomFilterType.SEARCH,
-                          span: filterSearch?.span ?? 24,
-                          placeholder: filterSearch?.placeholder ?? 'Tìm kiếm',
-                          onChange: (value: string) => debouncedSearch(value),
-                      },
-                  ]
-                : []),
-            ...(customFilterItems ?? []),
-        ];
+        const filterItems = [];
+
+        if (filterSearch) {
+            filterItems.push({
+                type: CustomFilterType.SEARCH,
+                span: filterSearch?.span ?? 24,
+                placeholder: filterSearch?.placeholder ?? 'Tìm kiếm',
+                onChange: (value: string) => debouncedSearch(value),
+            });
+        }
+
+        if (customFilterItems) {
+            const customFilterItemsWithOperation = customFilterItems.map((item) => ({
+                ...item,
+                onChange: (value: any) => {
+                    setFilters([
+                        {
+                            value,
+                            field: item.field ?? '',
+                            operator: item.operation ?? 'eq',
+                        },
+                    ]);
+                    setCurrentPage(1);
+                },
+            }));
+
+            filterItems.push(...customFilterItemsWithOperation);
+        }
+
+        return filterItems;
     }, [customFilterItems, filterSearch]);
 
     useEffect(() => {

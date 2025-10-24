@@ -2,8 +2,13 @@
 
 import { CreateFormModal, CustomElement, EditFormModal, TableContainer } from '@/components/custom';
 import { ProcessScrapeData, ScrapeSetting } from '@/components/module/data-provider';
-import { DataProviderStatus, ElementType } from '@/enums';
-import { FormFieldItem, NDataProvider } from '@/interfaces';
+import {
+    CustomFilterType,
+    DataProviderSearchStatus,
+    DataProviderStatus,
+    ElementType,
+} from '@/enums';
+import { ActionTableItem, FilterItem, FormFieldItem, NDataProvider } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { useModalForm } from '@refinedev/antd';
 import { HttpError, useSelect } from '@refinedev/core';
@@ -49,19 +54,19 @@ const DataProviderPage: FC = () => {
         switch (status) {
             case DataProviderStatus.READY:
                 color = 'success';
-                text = 'Ready';
+                text = 'Sẵn sàng';
                 break;
             case DataProviderStatus.TESTING:
                 color = 'processing';
-                text = 'Testing';
+                text = 'Đang kiểm tra';
                 break;
             case DataProviderStatus.UNCONFIGURED:
                 color = 'default';
-                text = 'Unconfigured';
+                text = 'Chưa cấu hình';
                 break;
             case DataProviderStatus.ERROR:
                 color = 'error';
-                text = 'Error';
+                text = 'Lỗi';
                 break;
             default:
                 color = 'default';
@@ -101,7 +106,6 @@ const DataProviderPage: FC = () => {
             key: 'status',
             title: 'Trạng thái',
             dataIndex: 'status',
-            sorter: true,
             render: (status: DataProviderStatus) => displayStatus(status),
         },
         {
@@ -174,6 +178,67 @@ const DataProviderPage: FC = () => {
         },
     ];
 
+    const customFilterItems: FilterItem[] = [
+        {
+            span: 6,
+            showSearch: true,
+            allowClear: true,
+            field: 'status',
+            title: 'Trạng thái cào dữ liệu',
+            type: CustomFilterType.SELECT,
+            options: [
+                { label: 'Sẵn sàng', value: DataProviderStatus.READY },
+                { label: 'Lỗi', value: DataProviderStatus.ERROR },
+                { label: 'Đang kiểm tra', value: DataProviderStatus.TESTING },
+                { label: 'Chưa cấu hình', value: DataProviderStatus.UNCONFIGURED },
+            ],
+        },
+        {
+            span: 6,
+            showSearch: true,
+            allowClear: true,
+            title: 'Trạng thái tìm kiếm',
+            field: 'searchStatus',
+            type: CustomFilterType.SELECT,
+            options: [
+                { label: 'Sẵn sàng', value: DataProviderSearchStatus.READY },
+                { label: 'Lỗi', value: DataProviderSearchStatus.ERROR },
+                { label: 'Đang kiểm tra', value: DataProviderSearchStatus.TESTING },
+                {
+                    label: 'Chưa cấu hình',
+                    value: DataProviderSearchStatus.UNCONFIGURED,
+                },
+            ],
+        },
+    ];
+
+    const actionItems: ActionTableItem[] = [
+        {
+            key: 'edit',
+            label: 'Chỉnh sửa',
+            icon: <Icon icon="lucide:edit" />,
+            onClick: (record) => setEditItemId(record?.id),
+        },
+        {
+            key: 'scrape-unconfigured',
+            label: 'Cấu hình dữ liệu',
+            icon: <Icon icon="lucide:settings-2" />,
+            onClick: (record) => {
+                setSelectedId(record?.id);
+                show(record?.id);
+            },
+        },
+        {
+            key: 'search-configured',
+            label: 'Câu hình tìm kiếm',
+            icon: <Icon icon="lucide:search-code" />,
+            onClick: (record) => {
+                setSelectedId(record?.id);
+                show(record?.id);
+            },
+        },
+    ];
+
     return (
         <Space size="middle" direction="vertical" className="w-full h-full">
             <CustomElement
@@ -202,8 +267,10 @@ const DataProviderPage: FC = () => {
             <TableContainer
                 columns={columns}
                 resource="data-providers"
+                actionItems={actionItems}
                 quantityRefetch={quantityRefetch}
-                filterSearch={{ placeholder: 'Tìm kiếm nhà cung cấp' }}
+                customFilterItems={customFilterItems}
+                filterSearch={{ placeholder: 'Tìm kiếm nhà cung cấp', span: 12 }}
                 onRowSelectionChange={(selectedRows: NDataProvider.IDataProvider[]) => {
                     const dataProviderReady = selectedRows.filter(
                         (item) => item.status === DataProviderStatus.READY,
@@ -213,32 +280,6 @@ const DataProviderPage: FC = () => {
                 onDisableRowSelection={(record: NDataProvider.IDataProvider) =>
                     record.status !== DataProviderStatus.READY
                 }
-                actionItems={[
-                    {
-                        key: 'edit',
-                        label: 'Chỉnh sửa',
-                        icon: <Icon icon="lucide:edit" />,
-                        onClick: (record) => setEditItemId(record?.id),
-                    },
-                    {
-                        key: 'scrape-unconfigured',
-                        label: 'Cấu hình dữ liệu',
-                        icon: <Icon icon="lucide:settings-2" />,
-                        onClick: (record) => {
-                            setSelectedId(record?.id);
-                            show(record?.id);
-                        },
-                    },
-                    {
-                        key: 'search-configured',
-                        label: 'Câu hình tìm kiếm',
-                        icon: <Icon icon="lucide:search-code" />,
-                        onClick: (record) => {
-                            setSelectedId(record?.id);
-                            show(record?.id);
-                        },
-                    },
-                ]}
             />
 
             <CreateFormModal

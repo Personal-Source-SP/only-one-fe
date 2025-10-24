@@ -1,4 +1,5 @@
 import { CustomFilterType } from '@/enums';
+import { CrudOperators } from '@refinedev/core';
 
 export interface Abstract {
     id?: string;
@@ -42,7 +43,10 @@ export interface FilterItem {
     showSearch?: boolean;
     allowClear?: boolean;
     mode?: 'multiple' | 'tags';
+
+    field?: string;
     onChange?: (value: any) => void;
+    operation?: Exclude<CrudOperators, 'or' | 'and'>;
 }
 
 export interface ActionTableItem {
