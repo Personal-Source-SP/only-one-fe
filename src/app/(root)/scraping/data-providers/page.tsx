@@ -82,18 +82,20 @@ const DataProviderPage: FC = () => {
 
     const columns: ColumnsType<NDataProvider.IDataProvider> = [
         {
-            title: 'Tên nhà cung cấp',
+            title: 'Tên',
             dataIndex: 'name',
             key: 'name',
             ellipsis: true,
             sorter: true,
+            width: '15%',
         },
         {
-            title: 'Mã nhà cung cấp',
+            title: 'Mã',
             dataIndex: 'identifier',
             key: 'identifier',
             ellipsis: true,
             sorter: true,
+            width: '10%',
         },
         {
             title: 'URL cơ sở',
@@ -101,12 +103,14 @@ const DataProviderPage: FC = () => {
             key: 'baseUrl',
             ellipsis: true,
             sorter: true,
+            width: '20%',
         },
         {
             key: 'status',
             title: 'Trạng thái',
             dataIndex: 'status',
             render: (status: DataProviderStatus) => displayStatus(status),
+            width: '10%',
         },
         {
             title: 'Ngày tạo',
@@ -115,10 +119,11 @@ const DataProviderPage: FC = () => {
             sorter: true,
             render: (createdAt: Date) =>
                 createdAt ? dayjs(createdAt).format('DD/MM/YYYY HH:mm:ss') : '---',
+            width: '20%',
         },
         {
             key: 'targetConfig',
-            title: 'Cấu hình dữ liệu',
+            title: 'Cào',
             align: 'center',
             dataIndex: 'targetConfig',
             render: (targetConfig: NDataProvider.ITargetConfig) =>
@@ -127,10 +132,11 @@ const DataProviderPage: FC = () => {
                 ) : (
                     <Icon icon="lucide:x" className="w-full" />
                 ),
+            width: '10%',
         },
         {
             key: 'searchConfig',
-            title: 'Cấu hình tìm kiếm',
+            title: 'Tìm kiếm',
             align: 'center',
             dataIndex: 'searchConfig',
             render: (searchConfig: NDataProvider.ISearchConfig) =>
@@ -139,6 +145,7 @@ const DataProviderPage: FC = () => {
                 ) : (
                     <Icon icon="lucide:x" className="w-full" />
                 ),
+            width: '15%',
         },
     ];
 
