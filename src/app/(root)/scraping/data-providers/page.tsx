@@ -17,6 +17,7 @@ const DataProviderPage: FC = () => {
     const [openCreateItemModal, setOpenCreateItemModal] = useState(false);
     const [editItemId, setEditItemId] = useState<string | undefined>(undefined);
     const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
+    const [selectedRows, setSelectedRows] = useState<NDataProvider.IDataProvider[]>([]);
 
     const { options: providerItems } = useSelect<NDataProvider.IDataProviderItem>({
         resource: `data-provider-items/data-provider/${selectedId}`,
@@ -179,6 +180,14 @@ const DataProviderPage: FC = () => {
                 actions={[
                     <Button
                         type="primary"
+                        key="scrape-data"
+                        icon={<Icon icon="lucide:file-text" />}
+                        onClick={() => setOpenCreateItemModal(true)}
+                    >
+                        Cào dữ liệu
+                    </Button>,
+                    <Button
+                        type="primary"
                         key="add-data-provider"
                         icon={<Icon icon="lucide:plus" />}
                         onClick={() => setOpenCreateItemModal(true)}
@@ -192,6 +201,8 @@ const DataProviderPage: FC = () => {
                 columns={columns}
                 resource="data-providers"
                 quantityRefetch={quantityRefetch}
+                filterSearch={{ placeholder: 'Tìm kiếm nhà cung cấp' }}
+                onRowSelectionChange={(selectedRows) => setSelectedRows(selectedRows)}
                 actionItems={[
                     {
                         key: 'edit',
@@ -218,9 +229,6 @@ const DataProviderPage: FC = () => {
                         },
                     },
                 ]}
-                filterSearch={{
-                    placeholder: 'Tìm kiếm nhà cung cấp',
-                }}
             />
 
             <CreateFormModal

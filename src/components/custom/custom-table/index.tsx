@@ -21,6 +21,7 @@ type CustomTableProps = {
     setPageSize: (pageSize: number) => void;
     setSorters: (sorter: CrudSort[]) => void;
     onRefetch?: () => void;
+    onRowSelectionChange?: (selectedRows: any[]) => void;
 };
 
 const CustomTable: FC<CustomTableProps> = ({
@@ -34,8 +35,19 @@ const CustomTable: FC<CustomTableProps> = ({
     setPageSize,
     setSorters,
     onRefetch,
+    onRowSelectionChange,
 }) => {
     const { mutate: deleteRecord } = useDelete<NBaseApi.IResponse<boolean>>();
+
+    const rowSelection: TableProps<any>['rowSelection'] = {
+        type: 'checkbox',
+        onChange: (_: any[], selectedRows: any[]) => {
+            onRowSelectionChange?.(selectedRows);
+        },
+        getCheckboxProps: (record: any) => ({
+            name: record.name,
+        }),
+    };
 
     const handleDelete = (record: any) => {
         Modal.confirm({
@@ -149,7 +161,7 @@ const CustomTable: FC<CustomTableProps> = ({
             rowKey="id"
             loading={loading}
             pagination={false}
-            dataSource={tableProps.dataSource}
+            rowSelection={onRowSelectionChange ? rowSelection : undefined}
             columns={[
                 ...columns,
                 {
