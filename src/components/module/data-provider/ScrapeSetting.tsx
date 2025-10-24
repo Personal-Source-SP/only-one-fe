@@ -455,32 +455,6 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
                     <Input placeholder="User-Agent" />
                 </Form.Item>
 
-                <Form.Item name={['targetConfig', FORM_FIELDS.HEADERS]}>
-                    <p className="text-sm font-medium !mb-3">{`Cấu hình headers:`}</p>
-                    <CodeDisplay
-                        title="Headers"
-                        isDisplayLanguage
-                        language="json"
-                        code={JSON.stringify(headers || {})}
-                        onCodeChange={(newCode: string) => {
-                            form?.setFieldValue(['targetConfig', FORM_FIELDS.HEADERS], newCode);
-                        }}
-                    />
-                </Form.Item>
-
-                <Form.Item name={['targetConfig', FORM_FIELDS.COOKIES]}>
-                    <p className="text-sm font-medium !mb-3">{`Cấu hình cookies:`}</p>
-                    <CodeDisplay
-                        title="Cookies"
-                        isDisplayLanguage
-                        language="json"
-                        code={JSON.stringify(cookies || {})}
-                        onCodeChange={(newCode: string) => {
-                            form?.setFieldValue(['targetConfig', FORM_FIELDS.COOKIES], newCode);
-                        }}
-                    />
-                </Form.Item>
-
                 <Flex justify="space-between" align="end" gap={10}>
                     <Form.Item
                         label="URL"
@@ -542,6 +516,32 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
                         </>
                     )}
                 </Form.List>
+
+                <Form.Item name={['targetConfig', FORM_FIELDS.HEADERS]}>
+                    <p className="text-sm font-medium !mb-3">Cấu hình headers:</p>
+                    <CodeDisplay
+                        title="Headers"
+                        isDisplayLanguage
+                        language="json"
+                        code={JSON.stringify(headers || {})}
+                        onCodeChange={(newCode: string) => {
+                            form?.setFieldValue(['targetConfig', FORM_FIELDS.HEADERS], newCode);
+                        }}
+                    />
+                </Form.Item>
+
+                <Form.Item name={['targetConfig', FORM_FIELDS.COOKIES]}>
+                    <p className="text-sm font-medium !mb-3">Cấu hình cookies:</p>
+                    <CodeDisplay
+                        title="Cookies"
+                        isDisplayLanguage
+                        language="json"
+                        code={JSON.stringify(cookies || {})}
+                        onCodeChange={(newCode: string) => {
+                            form?.setFieldValue(['targetConfig', FORM_FIELDS.COOKIES], newCode);
+                        }}
+                    />
+                </Form.Item>
             </>
         );
     };

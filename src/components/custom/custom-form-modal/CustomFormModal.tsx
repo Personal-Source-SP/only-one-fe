@@ -13,7 +13,7 @@ type CustomFormModalProps = {
 
 const CustomFormModal: FC<CustomFormModalProps> = ({ formLoading, modalProps, children }) => {
     return (
-        <CustomModal modalProps={modalProps}>
+        <CustomModal modalProps={{ ...modalProps, destroyOnHidden: true }}>
             <Spin spinning={formLoading}>
                 <Space direction="vertical" className="w-full h-full px-3 overflow-x-hidden">
                     {children}
