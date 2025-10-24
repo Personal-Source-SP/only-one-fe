@@ -204,7 +204,15 @@ const DataProviderPage: FC = () => {
                 resource="data-providers"
                 quantityRefetch={quantityRefetch}
                 filterSearch={{ placeholder: 'Tìm kiếm nhà cung cấp' }}
-                onRowSelectionChange={(selectedRows) => setSelectedRows(selectedRows)}
+                onRowSelectionChange={(selectedRows: NDataProvider.IDataProvider[]) => {
+                    const dataProviderReady = selectedRows.filter(
+                        (item) => item.status === DataProviderStatus.READY,
+                    );
+                    setSelectedRows(dataProviderReady ?? []);
+                }}
+                onDisableRowSelection={(record: NDataProvider.IDataProvider) =>
+                    record.status !== DataProviderStatus.READY
+                }
                 actionItems={[
                     {
                         key: 'edit',

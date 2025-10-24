@@ -22,6 +22,7 @@ type CustomTableProps = {
     setSorters: (sorter: CrudSort[]) => void;
     onRefetch?: () => void;
     onRowSelectionChange?: (selectedRows: any[]) => void;
+    onDisableRowSelection?: (record: any) => boolean;
 };
 
 const CustomTable: FC<CustomTableProps> = ({
@@ -36,6 +37,7 @@ const CustomTable: FC<CustomTableProps> = ({
     setSorters,
     onRefetch,
     onRowSelectionChange,
+    onDisableRowSelection,
 }) => {
     const { mutate: deleteRecord } = useDelete<NBaseApi.IResponse<boolean>>();
 
@@ -46,6 +48,7 @@ const CustomTable: FC<CustomTableProps> = ({
         },
         getCheckboxProps: (record: any) => ({
             name: record.name,
+            disabled: onDisableRowSelection?.(record) || false,
         }),
     };
 

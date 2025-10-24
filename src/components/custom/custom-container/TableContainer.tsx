@@ -19,6 +19,7 @@ type TableContainerProps = {
     actionItems?: ActionTableItem[];
     childrenTop?: React.ReactNode;
     childrenBottom?: React.ReactNode;
+    onDisableRowSelection?: (record: any) => boolean;
     onRowSelectionChange?: (selectedRows: any[]) => void;
 };
 
@@ -32,6 +33,7 @@ const TableContainer: FC<TableContainerProps> = ({
     childrenTop,
     childrenBottom,
     onRowSelectionChange,
+    onDisableRowSelection,
 }) => {
     const {
         currentPage,
@@ -122,6 +124,7 @@ const TableContainer: FC<TableContainerProps> = ({
                         loading={tableQuery?.isLoading}
                         onRefetch={tableQuery?.refetch}
                         onRowSelectionChange={onRowSelectionChange}
+                        onDisableRowSelection={onDisableRowSelection}
                     />
                 )}
 
