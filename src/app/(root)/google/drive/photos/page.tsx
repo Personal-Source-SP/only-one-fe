@@ -6,12 +6,11 @@ import {
     GoogleDriveFileType,
     GoogleDriveType,
     QualityMode,
-    ViewMode,
+    ViewPhotoMode,
 } from '@/enums';
-import type { FilterItem, NBaseApi, NGoogle } from '@/interfaces';
+import type { FilterItem, NBaseApi, NGoogle, PhotoItem } from '@/interfaces';
 import { Icon } from '@iconify/react';
-import { useTable } from '@refinedev/antd';
-import { HttpError, useApiUrl, useCustom, useSelect } from '@refinedev/core';
+import { useApiUrl, useCustom } from '@refinedev/core';
 import { Button, Space } from 'antd';
 import { isNumber } from 'lodash';
 import { FC, useEffect, useMemo, useState } from 'react';
@@ -25,18 +24,19 @@ import Zoom from 'yet-another-react-lightbox/plugins/zoom';
 import 'yet-another-react-lightbox/styles.css';
 
 import { CustomElement, TableContainer } from '@/components/custom';
+import { PhotoGroups } from '@/components/module/photos';
 
-import PhotoGroups from '@/components/module/photos/PhotoGroups';
 import SyncGoogleDrive from '@/components/module/sync-google-drive';
 import SyncLocal from '@/components/module/sync-local';
 
+import { useSelectGoogleFolder, useTableContainer } from '@/hooks';
 import { getDriveImageUrl, isExpiredToken } from '@/libs';
 
 const PhotosPage: FC = () => {
     const apiUrl = useApiUrl();
 
     const [columns, setColumns] = useState(4);
-    const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.ALL);
+    const [viewMode, setViewMode] = useState<ViewPhotoMode>(ViewPhotoMode.ALL);
     const [qualityMode, setQualityMode] = useState<QualityMode>(QualityMode.LOW);
 
     const [isOpenSyncFile, setIsOpenSyncFile] = useState(false);
@@ -45,26 +45,11 @@ const PhotosPage: FC = () => {
     const [slideshowInterval, setSlideshowInterval] = useState<number>(3);
     const [currentPhotoIndex, setCurrentPhotoIndex] = useState<number>(0);
 
-    const { setCurrentPage, setFilters, tableQuery } = useTable<
-        NGoogle.IGoogleDriveFile,
-        HttpError,
-        Partial<NGoogle.IGoogleDriveFile>
-    >({
+    const tableContainerData = useTableContainer({
         resource: 'google-file',
-        syncWithLocation: false,
-        pagination: {
-            pageSize: 10,
-            mode: 'server',
-        },
-        sorters: {
-            mode: 'server',
-            initial: [{ field: 'createdAt', order: 'desc' }],
-        },
-        filters: {
-            initial: [
-                { field: 'mimeType', operator: 'contains', value: GoogleDriveFileType.IMAGE },
-            ],
-        },
+        defaultFilters: [
+            { field: 'mimeType', operator: 'contains', value: GoogleDriveFileType.IMAGE },
+        ],
     });
 
     const { result: googleAuthsResult, query: queryGoogleAuths } = useCustom<
@@ -77,15 +62,11 @@ const PhotosPage: FC = () => {
         },
     });
 
-    const { options: folderOptions, query: queryFolderOptions } =
-        useSelect<NGoogle.IGoogleDriveFolder>({
-            resource: 'google-folder/all',
-            optionValue: (item: NGoogle.IGoogleDriveFolder) => item.id,
-            optionLabel: (item: NGoogle.IGoogleDriveFolder) => item.name,
-            queryOptions: {
-                enabled: false,
-            },
-        });
+    const { options: folderOptions, query: queryFolderOptions } = useSelectGoogleFolder({
+        enabled: false,
+    });
+
+    const { tableQuery, setCurrentPage, setFilters } = tableContainerData;
 
     const googleDriveFiles = useMemo(() => {
         return tableQuery?.data?.data ?? [];
@@ -109,6 +90,18 @@ const PhotosPage: FC = () => {
             (item) => !isExpiredToken(item.googleExpiresAt),
         );
     }, [googleAuthsResult?.data?.data]);
+
+    const photoItems: PhotoItem[] = useMemo(() => {
+        if (!googleDriveFiles?.length) return [];
+
+        return googleDriveFiles?.map((file) => ({
+            id: file.id,
+            mimeType: file.mimeType ?? '',
+            url: getDriveImageUrl(file, qualityMode),
+            lastModified: file.lastModified ?? new Date(),
+            folderName: file.googleDriveFolder?.name ?? '',
+        }));
+    }, [googleDriveFiles, qualityMode]);
 
     useEffect(() => {
         queryGoogleAuths?.refetch();
@@ -162,11 +155,11 @@ const PhotosPage: FC = () => {
             value: viewMode,
             placeholder: 'Chế độ xem',
             type: CustomFilterType.SELECT,
-            onChange: (value: ViewMode) => setViewMode(value),
+            onChange: (value: ViewPhotoMode) => setViewMode(value),
             options: [
-                { value: ViewMode.ALL, label: 'Xem tất cả' },
-                { value: ViewMode.DATE, label: 'Xem theo ngày' },
-                { value: ViewMode.FOLDER, label: 'Xem theo thư mục' },
+                { value: ViewPhotoMode.ALL, label: 'Xem tất cả' },
+                { value: ViewPhotoMode.DATE, label: 'Xem theo ngày' },
+                { value: ViewPhotoMode.FOLDER, label: 'Xem theo thư mục' },
             ],
         },
         {
@@ -253,8 +246,9 @@ const PhotosPage: FC = () => {
             />
 
             <TableContainer
-                resource="google-folder"
+                resource="google-file"
                 customFilterItems={filterItems}
+                tableContainerData={tableContainerData}
                 filterSearch={{
                     span: 14,
                     name: 'name',
@@ -263,10 +257,9 @@ const PhotosPage: FC = () => {
                 childrenTop={
                     <PhotoGroups
                         columns={columns}
+                        data={photoItems}
                         displayMode={viewMode}
-                        qualityMode={qualityMode}
                         onPhotoClick={handlePhotoClick}
-                        googleDriveFiles={googleDriveFiles}
                     />
                 }
             />

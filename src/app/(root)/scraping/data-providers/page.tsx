@@ -8,10 +8,11 @@ import {
     DataProviderStatus,
     ElementType,
 } from '@/enums';
+import { useSelectDataProvider, useTableContainer } from '@/hooks';
 import { ActionTableItem, FilterItem, FormFieldItem, NDataProvider } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { useModalForm } from '@refinedev/antd';
-import { HttpError, useSelect } from '@refinedev/core';
+import { HttpError } from '@refinedev/core';
 import { Button, Space, Tag } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
@@ -26,13 +27,12 @@ const DataProviderPage: FC = () => {
     const [openProcessScrapeDataModal, setOpenProcessScrapeDataModal] = useState(false);
     const [selectedRows, setSelectedRows] = useState<NDataProvider.IDataProvider[]>([]);
 
-    const { options: providerItems } = useSelect<NDataProvider.IDataProviderItem>({
-        resource: `data-provider-items/data-provider/${selectedId}`,
-        optionValue: (item: NDataProvider.IDataProviderItem) => item.itemUrl ?? '',
-        optionLabel: (item: NDataProvider.IDataProviderItem) => item.itemUrl ?? '',
-        queryOptions: {
-            enabled: !!selectedId,
-        },
+    const tableContainerData = useTableContainer({
+        resource: 'data-providers',
+    });
+
+    const { options: providerItems } = useSelectDataProvider({
+        id: selectedId,
     });
 
     const { show, close, formProps, modalProps, formLoading } = useModalForm<
@@ -277,6 +277,7 @@ const DataProviderPage: FC = () => {
                 actionItems={actionItems}
                 quantityRefetch={quantityRefetch}
                 customFilterItems={customFilterItems}
+                tableContainerData={tableContainerData}
                 filterSearch={{ placeholder: 'Tìm kiếm nhà cung cấp', span: 12 }}
                 onRowSelectionChange={(selectedRows: NDataProvider.IDataProvider[]) => {
                     const dataProviderReady = selectedRows.filter(

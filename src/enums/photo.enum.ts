@@ -1,7 +1,12 @@
-export enum ViewMode {
+export enum ViewPhotoMode {
     ALL = 'all',
     DATE = 'date',
     FOLDER = 'folder',
+}
+
+export enum DisplayMode {
+    LIST = 'list',
+    TABLE = 'table',
 }
 
 export enum SortOrder {

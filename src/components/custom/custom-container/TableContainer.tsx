@@ -3,10 +3,9 @@
 import { PaginationControls } from '@/components/common';
 import { CustomElement, CustomFilter, CustomTable } from '@/components/custom';
 import { CustomFilterType, ElementType } from '@/enums';
+import { useTableContainer } from '@/hooks';
 import { useDebounceSearch } from '@/hooks/useDebounceSearch';
 import { ActionTableItem, FilterItem, SearchFilterItem } from '@/interfaces';
-import { useTable } from '@refinedev/antd';
-import { HttpError } from '@refinedev/core';
 import { ColumnsType } from 'antd/es/table';
 import { FC, memo, useEffect, useMemo } from 'react';
 
@@ -19,6 +18,7 @@ type TableContainerProps = {
     actionItems?: ActionTableItem[];
     childrenTop?: React.ReactNode;
     childrenBottom?: React.ReactNode;
+    tableContainerData: ReturnType<typeof useTableContainer>;
     onDisableRowSelection?: (record: any) => boolean;
     onRowSelectionChange?: (selectedRows: any[]) => void;
 };
@@ -32,6 +32,7 @@ const TableContainer: FC<TableContainerProps> = ({
     actionItems,
     childrenTop,
     childrenBottom,
+    tableContainerData,
     onRowSelectionChange,
     onDisableRowSelection,
 }) => {
@@ -44,21 +45,7 @@ const TableContainer: FC<TableContainerProps> = ({
         setSorters,
         tableQuery,
         tableProps,
-    } = useTable<any, HttpError, Partial<any>>({
-        resource,
-        syncWithLocation: false,
-        pagination: {
-            pageSize: 10,
-            mode: 'server',
-        },
-        sorters: {
-            mode: 'server',
-            initial: [{ field: 'createdAt', order: 'desc' }],
-        },
-        queryOptions: {
-            enabled: !!columns?.length && !!resource,
-        },
-    });
+    } = tableContainerData;
 
     const data = useMemo(() => {
         return tableQuery?.data?.data ?? [];

@@ -2,9 +2,9 @@
 
 import { CreateFormModal, CustomElement, EditFormModal, TableContainer } from '@/components/custom';
 import { ElementType, ScrapeStatusEnum } from '@/enums';
+import { useSelectDataProvider, useSelectItem, useTableContainer } from '@/hooks';
 import { FormFieldItem, NDataProvider } from '@/interfaces';
 import { Icon } from '@iconify/react';
-import { useSelect } from '@refinedev/core';
 import { Button, Space, Tag } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
@@ -15,22 +15,11 @@ const DataProviderItemPage: FC = () => {
     const [openCreateItemModal, setOpenCreateItemModal] = useState(false);
     const [editItemId, setEditItemId] = useState<string | undefined>(undefined);
 
-    const { options: dataProviderOptions } = useSelect<NDataProvider.IDataProvider>({
-        resource: 'data-providers/all',
-        optionValue: (item: NDataProvider.IDataProvider) => item.id ?? '',
-        optionLabel: (item: NDataProvider.IDataProvider) => item.baseUrl ?? '',
-        pagination: {
-            mode: 'off',
-        },
-    });
+    const { options: itemOptions } = useSelectItem();
+    const { options: dataProviderOptions } = useSelectDataProvider();
 
-    const { options: itemOptions } = useSelect<NDataProvider.IItem>({
-        resource: 'items/all',
-        optionValue: (item: NDataProvider.IItem) => item.id ?? '',
-        optionLabel: (item: NDataProvider.IItem) => item.name ?? '',
-        pagination: {
-            mode: 'off',
-        },
+    const tableContainerData = useTableContainer({
+        resource: 'data-provider-items',
     });
 
     const displayLastScrapeStatus = useCallback((lastScrapeStatus: ScrapeStatusEnum) => {
@@ -159,6 +148,7 @@ const DataProviderItemPage: FC = () => {
                 columns={columns}
                 resource="data-provider-items"
                 quantityRefetch={quantityRefetch}
+                tableContainerData={tableContainerData}
                 actionItems={[
                     {
                         key: 'edit',

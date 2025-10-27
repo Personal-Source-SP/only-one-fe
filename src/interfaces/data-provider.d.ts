@@ -80,6 +80,9 @@ export declare namespace NDataProvider {
         dataProviderItemId: string;
         scrapeTimestamp: Date;
         dataId?: string;
+        type?: string;
+        url?: string;
+        lastModified?: Date;
         metadata?: Record<string, any>;
         dataProviderItem?: IDataProviderItem;
     }

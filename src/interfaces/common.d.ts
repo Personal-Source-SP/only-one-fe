@@ -61,3 +61,17 @@ export interface SearchFilterItem {
     span?: number;
     placeholder?: string;
 }
+
+export interface PhotoItem {
+    id: string;
+    url: string;
+    mimeType: string;
+    lastModified: Date;
+    folderName?: string;
+}
+
+export interface PhotoGroup {
+    photos: PhotoItem[];
+    date?: string;
+    folder?: string;
+}

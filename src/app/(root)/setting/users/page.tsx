@@ -2,6 +2,7 @@
 
 import { CustomElement, TableContainer } from '@/components/custom';
 import { ElementType } from '@/enums';
+import { useTableContainer } from '@/hooks';
 import { NGoogle, NUser } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { useModalForm } from '@refinedev/antd';
@@ -14,6 +15,10 @@ import { FC, useState } from 'react';
 const UsersPage: FC = () => {
     const [quantityRefetch, setQuantityRefetch] = useState(0);
     const [isOpenSyncFile, setIsOpenSyncFile] = useState(false);
+
+    const tableContainerData = useTableContainer({
+        resource: 'users',
+    });
 
     const {
         open: openFolderModal,
@@ -80,27 +85,13 @@ const UsersPage: FC = () => {
 
     return (
         <Space size="middle" direction="vertical" className="w-full h-full">
-            <CustomElement
-                title="Danh sách người dùng"
-                elementType={ElementType.TITLE}
-                actions={
-                    [
-                        // <Button
-                        //     type="primary"
-                        //     key="sync google drive"
-                        //     icon={<Icon icon="ic:baseline-sync" />}
-                        //     onClick={() => setIsOpenSyncFile(true)}
-                        // >
-                        //     Đồng bộ từ Google Drive
-                        // </Button>,
-                    ]
-                }
-            />
+            <CustomElement title="Danh sách người dùng" elementType={ElementType.TITLE} />
 
             <TableContainer
-                columns={columns}
                 resource="users"
+                columns={columns}
                 quantityRefetch={quantityRefetch}
+                tableContainerData={tableContainerData}
                 actionItems={[
                     {
                         key: 'edit',
@@ -114,16 +105,6 @@ const UsersPage: FC = () => {
                     placeholder: 'Tìm kiếm người dùng',
                 }}
             />
-
-            {/* <FolderModal
-                open={openFolderModal}
-                onClose={closeFolderModal}
-                formProps={folderModalFormProps}
-                isLoading={folderModalFormLoading}
-                modalProps={folderModalModalProps}
-                folderOptions={folderOptions ?? []}
-                onSubmit={() => {}}
-            /> */}
         </Space>
     );
 };

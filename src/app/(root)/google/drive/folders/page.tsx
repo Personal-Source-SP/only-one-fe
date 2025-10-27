@@ -4,10 +4,11 @@ import { CustomElement, TableContainer } from '@/components/custom';
 import FolderModal from '@/components/module/folders/FolderModal';
 import SyncGoogleDrive from '@/components/module/sync-google-drive';
 import { ElementType, GoogleDriveType } from '@/enums';
+import { useSelectGoogleFolder, useTableContainer } from '@/hooks';
 import { NGoogle } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { useModalForm } from '@refinedev/antd';
-import { HttpError, useSelect } from '@refinedev/core';
+import { HttpError } from '@refinedev/core';
 import { Button, Space } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
@@ -16,6 +17,10 @@ import { FC, useEffect, useState } from 'react';
 const FolderPage: FC = () => {
     const [quantityRefetch, setQuantityRefetch] = useState(0);
     const [isOpenSyncFile, setIsOpenSyncFile] = useState(false);
+
+    const tableContainerData = useTableContainer({
+        resource: 'google-folder',
+    });
 
     const {
         open: openFolderModal,
@@ -31,18 +36,9 @@ const FolderPage: FC = () => {
         warnWhenUnsavedChanges: false,
     });
 
-    const { options: folderOptions, query: queryFolderOptions } =
-        useSelect<NGoogle.IGoogleDriveFolder>({
-            resource: 'google-folder/all',
-            optionValue: (item: NGoogle.IGoogleDriveFolder) => item.id,
-            optionLabel: (item: NGoogle.IGoogleDriveFolder) => item.name,
-            pagination: {
-                mode: 'off',
-            },
-            queryOptions: {
-                enabled: false,
-            },
-        });
+    const { options: folderOptions, query: queryFolderOptions } = useSelectGoogleFolder({
+        enabled: false,
+    });
 
     useEffect(() => {
         queryFolderOptions?.refetch();
@@ -119,6 +115,7 @@ const FolderPage: FC = () => {
                 columns={columns}
                 resource="google-folder"
                 quantityRefetch={quantityRefetch}
+                tableContainerData={tableContainerData}
                 actionItems={[
                     {
                         key: 'edit',

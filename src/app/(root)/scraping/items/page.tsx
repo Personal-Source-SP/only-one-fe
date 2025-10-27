@@ -2,6 +2,7 @@
 
 import { CreateFormModal, CustomElement, EditFormModal, TableContainer } from '@/components/custom';
 import { ElementType, ProductMappingStatus } from '@/enums';
+import { useTableContainer } from '@/hooks';
 import { FormFieldItem, NDataProvider } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { Button, Space, Tag } from 'antd';
@@ -13,6 +14,10 @@ const ItemPage: FC = () => {
     const [quantityRefetch, setQuantityRefetch] = useState(0);
     const [openCreateItemModal, setOpenCreateItemModal] = useState(false);
     const [editItemId, setEditItemId] = useState<string | undefined>(undefined);
+
+    const tableContainerData = useTableContainer({
+        resource: 'items',
+    });
 
     const displayMappingStatus = useCallback((mappingStatus: ProductMappingStatus) => {
         if (!mappingStatus) return '---';
@@ -138,9 +143,10 @@ const ItemPage: FC = () => {
             />
 
             <TableContainer
-                columns={columns}
                 resource="items"
+                columns={columns}
                 quantityRefetch={quantityRefetch}
+                tableContainerData={tableContainerData}
                 actionItems={[
                     {
                         key: 'edit',

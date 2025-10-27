@@ -1,65 +1,40 @@
 'use client';
 
-import { GoogleDriveFileType, QualityMode } from '@/enums';
-import { ViewMode } from '@/enums/photo.enum';
-import { NGoogle } from '@/interfaces';
-import { getDriveImageUrl } from '@/libs';
+import { GoogleDriveFileType } from '@/enums';
+import { ViewPhotoMode } from '@/enums/photo.enum';
+import { PhotoGroup, PhotoItem } from '@/interfaces';
 import { List, Spin, Tag } from 'antd';
 import Image from 'next/image';
 import { FC, memo, useMemo, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
-type Photo = {
-    id: string;
-    url: string;
-};
-
-type PhotoGroup = {
-    photos: Photo[];
-} & (
-    | { date: string; folder?: never }
-    | { folder: string; date?: never }
-    | { date?: never; folder?: never }
-);
-
 type PhotoGroupsProps = {
     columns: number;
-    displayMode: ViewMode;
-    qualityMode: QualityMode;
-    googleDriveFiles: NGoogle.IGoogleDriveFile[];
-    onPhotoClick: (googleDriveFileId: string) => void;
+    data: PhotoItem[];
+    displayMode: ViewPhotoMode;
+    onPhotoClick: (photoId: string) => void;
 };
 
-const PhotoGroups: FC<PhotoGroupsProps> = ({
-    columns,
-    displayMode,
-    qualityMode,
-    googleDriveFiles,
-    onPhotoClick,
-}) => {
+const PhotoGroups: FC<PhotoGroupsProps> = ({ columns, displayMode, data, onPhotoClick }) => {
     const [loadingImages, setLoadingImages] = useState<Set<string>>(new Set());
 
-    const groupedPhotos = useMemo(() => {
-        if (!googleDriveFiles?.length) return [];
-
-        const photoFiles = googleDriveFiles?.filter(
-            (file) => file.mimeType?.startsWith(GoogleDriveFileType.IMAGE) && file.thumbnailLink,
+    const groupedPhotos: PhotoGroup[] = useMemo(() => {
+        const photoFiles = data?.filter((file) =>
+            file.mimeType?.startsWith(GoogleDriveFileType.IMAGE),
         );
 
         if (!photoFiles?.length) return [];
 
         switch (displayMode) {
-            case ViewMode.ALL:
+            case ViewPhotoMode.ALL: {
                 return [
                     {
-                        photos: photoFiles.map((file) => ({
-                            id: file.id,
-                            url: getDriveImageUrl(file, qualityMode),
-                        })),
+                        photos: photoFiles,
                     },
                 ];
+            }
 
-            case ViewMode.DATE:
+            case ViewPhotoMode.DATE: {
                 const groupedByDate = photoFiles.reduce(
                     (groups, file) => {
                         const date = file.lastModified
@@ -70,49 +45,45 @@ const PhotoGroups: FC<PhotoGroupsProps> = ({
                             groups[date] = [];
                         }
 
-                        groups[date].push({
-                            id: file.id,
-                            url: getDriveImageUrl(file, qualityMode),
-                        });
+                        groups[date].push(file);
 
                         return groups;
                     },
-                    {} as Record<string, Photo[]>,
+                    {} as Record<string, PhotoItem[]>,
                 );
 
                 return Object.entries(groupedByDate).map(([date, photos]) => ({
                     date,
                     photos,
                 }));
+            }
 
-            case ViewMode.FOLDER:
+            case ViewPhotoMode.FOLDER: {
                 const groupedByFolder = photoFiles.reduce(
                     (groups, file) => {
-                        const folderName = file.googleDriveFolder?.name || 'Không xác định';
+                        const folderName = file.folderName || 'Không xác định';
 
                         if (!groups[folderName]) {
                             groups[folderName] = [];
                         }
 
-                        groups[folderName].push({
-                            id: file.id,
-                            url: getDriveImageUrl(file, qualityMode),
-                        });
+                        groups[folderName].push(file);
 
                         return groups;
                     },
-                    {} as Record<string, Photo[]>,
+                    {} as Record<string, PhotoItem[]>,
                 );
 
                 return Object.entries(groupedByFolder).map(([folder, photos]) => ({
                     folder,
                     photos,
                 }));
+            }
 
             default:
                 return [];
         }
-    }, [displayMode, googleDriveFiles, qualityMode]);
+    }, [displayMode, data]);
 
     const allPhotos = useMemo(
         () =>
@@ -120,8 +91,8 @@ const PhotoGroups: FC<PhotoGroupsProps> = ({
                 group.photos.map((photo) => ({
                     ...photo,
                     groupIndex,
-                    date: 'date' in group ? group.date : undefined,
-                    folder: 'folder' in group ? group.folder : undefined,
+                    date: group.date,
+                    folder: group.folder,
                 })),
             ),
         [groupedPhotos],
@@ -129,7 +100,7 @@ const PhotoGroups: FC<PhotoGroupsProps> = ({
 
     const renderGroupHeader = (group: PhotoGroup) => {
         switch (displayMode) {
-            case ViewMode.DATE: {
+            case ViewPhotoMode.DATE: {
                 return (
                     'date' in group &&
                     group.date && (
@@ -143,7 +114,7 @@ const PhotoGroups: FC<PhotoGroupsProps> = ({
                 );
             }
 
-            case ViewMode.FOLDER: {
+            case ViewPhotoMode.FOLDER: {
                 return (
                     'folder' in group &&
                     group.folder && (
@@ -163,7 +134,7 @@ const PhotoGroups: FC<PhotoGroupsProps> = ({
     };
 
     const renderPhotos = () => {
-        if (displayMode === ViewMode.ALL) {
+        if (displayMode === ViewPhotoMode.ALL) {
             return (
                 <div
                     className="grid gap-2"

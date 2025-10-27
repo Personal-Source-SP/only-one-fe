@@ -2,10 +2,11 @@
 
 import { CustomModal } from '@/components/custom';
 import { GoogleDriveFileType, GoogleDriveType } from '@/enums';
+import { useSelectGoogleFolder } from '@/hooks';
 import { NBaseApi, NGoogle, Option } from '@/interfaces';
 import { getGoogleAuthUrl, isExpiredToken } from '@/libs';
 import { Icon } from '@iconify/react';
-import { useApiUrl, useCustom, useCustomMutation, useSelect } from '@refinedev/core';
+import { useApiUrl, useCustom, useCustomMutation } from '@refinedev/core';
 import {
     Button,
     Card,
@@ -82,18 +83,9 @@ const SyncGoogleDrive: FC<SyncGoogleDriveProps> = ({
 }) => {
     const apiUrl = useApiUrl();
 
-    const { options: folderOptionResult, query: queryFolderOptions } =
-        useSelect<NGoogle.IGoogleDriveFolder>({
-            resource: 'google-folder/all',
-            optionValue: (item: NGoogle.IGoogleDriveFolder) => item.id,
-            optionLabel: (item: NGoogle.IGoogleDriveFolder) => item.name,
-            pagination: {
-                mode: 'off',
-            },
-            queryOptions: {
-                enabled: typeof defaultFolderOptions !== 'object',
-            },
-        });
+    const { options: folderOptionResult, query: queryFolderOptions } = useSelectGoogleFolder({
+        enabled: typeof defaultFolderOptions !== 'object',
+    });
 
     const { result: googleAuthsResult, query: queryGoogleAuths } = useCustom<
         NBaseApi.IResponse<NGoogle.IGoogleAuth[]>
