@@ -1,6 +1,7 @@
 'use client';
 
 import { CustomElement, TableContainer } from '@/components/custom';
+import { DisplayScrapeStatus } from '@/components/module/data-provider';
 import { PhotoGroups } from '@/components/module/photos';
 import {
     CustomFilterType,
@@ -13,10 +14,10 @@ import {
 import { useCustomModal, useTableContainer } from '@/hooks';
 import { FilterItem, NDataProvider, PhotoItem } from '@/interfaces';
 import { Icon } from '@iconify/react';
-import { Space, Switch, Tag } from 'antd';
+import { Space, Switch } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
-import { FC, useCallback, useMemo, useState } from 'react';
+import { FC, useMemo, useState } from 'react';
 
 const DataHistoryPage: FC = () => {
     const [isChecked, setIsChecked] = useState(false);
@@ -35,36 +36,6 @@ const DataHistoryPage: FC = () => {
         action: 'edit',
         resource: 'data-history',
     });
-
-    const displayStatus = useCallback((status: ScrapeStatusEnum) => {
-        if (!status) return '---';
-
-        let color: string, text: string;
-
-        switch (status) {
-            case ScrapeStatusEnum.SUCCESS:
-                color = 'success';
-                text = 'Đã ánh xạ';
-                break;
-            case ScrapeStatusEnum.ERROR:
-                color = 'default';
-                text = 'Chưa ánh xạ';
-                break;
-            case ScrapeStatusEnum.PROCESSING:
-                color = 'processing';
-                text = 'Đã ánh xạ (có giá)';
-                break;
-            default:
-                color = 'default';
-                text = status;
-        }
-
-        return (
-            <Tag color={color} className="text-sm font-medium">
-                {text}
-            </Tag>
-        );
-    }, []);
 
     const handlePhotoClick = (googleDriveFileId: string) => {
         const index = photoItems?.findIndex((photo) => photo.id === googleDriveFileId);
@@ -109,7 +80,7 @@ const DataHistoryPage: FC = () => {
             title: 'Trạng thái',
             dataIndex: 'status',
             sorter: true,
-            render: (status: ScrapeStatusEnum) => displayStatus(status),
+            render: (status: ScrapeStatusEnum) => <DisplayScrapeStatus status={status} />,
         },
     ];
 
