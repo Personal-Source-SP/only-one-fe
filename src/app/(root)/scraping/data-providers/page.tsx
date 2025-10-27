@@ -1,7 +1,11 @@
 'use client';
 
 import { CreateFormModal, CustomElement, EditFormModal, TableContainer } from '@/components/custom';
-import { ProcessScrapeData, ScrapeSetting } from '@/components/module/data-provider';
+import {
+    ProcessScrapeData,
+    ScrapeSetting,
+    displayDataProviderStatus,
+} from '@/components/module/data-provider';
 import {
     CustomFilterType,
     DataProviderSearchStatus,
@@ -13,10 +17,10 @@ import { ActionTableItem, FilterItem, FormFieldItem, NDataProvider } from '@/int
 import { Icon } from '@iconify/react';
 import { useModalForm } from '@refinedev/antd';
 import { HttpError } from '@refinedev/core';
-import { Button, Space, Tag } from 'antd';
+import { Button, Space } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
-import { FC, useCallback, useState } from 'react';
+import { FC, useState } from 'react';
 
 const DataProviderPage: FC = () => {
     const [quantityRefetch, setQuantityRefetch] = useState(0);
@@ -45,40 +49,6 @@ const DataProviderPage: FC = () => {
         autoResetForm: true,
         warnWhenUnsavedChanges: false,
     });
-
-    const displayStatus = useCallback((status: DataProviderStatus) => {
-        if (!status) return '---';
-
-        let color: string, text: string;
-
-        switch (status) {
-            case DataProviderStatus.READY:
-                color = 'success';
-                text = 'Sẵn sàng';
-                break;
-            case DataProviderStatus.TESTING:
-                color = 'processing';
-                text = 'Đang kiểm tra';
-                break;
-            case DataProviderStatus.UNCONFIGURED:
-                color = 'default';
-                text = 'Chưa cấu hình';
-                break;
-            case DataProviderStatus.ERROR:
-                color = 'error';
-                text = 'Lỗi';
-                break;
-            default:
-                color = 'default';
-                text = status;
-        }
-
-        return (
-            <Tag color={color} className="text-sm font-medium">
-                {text}
-            </Tag>
-        );
-    }, []);
 
     const columns: ColumnsType<NDataProvider.IDataProvider> = [
         {
@@ -109,7 +79,7 @@ const DataProviderPage: FC = () => {
             key: 'status',
             title: 'Trạng thái',
             dataIndex: 'status',
-            render: (status: DataProviderStatus) => displayStatus(status),
+            render: (status: DataProviderStatus) => displayDataProviderStatus(status),
             width: '10%',
         },
         {

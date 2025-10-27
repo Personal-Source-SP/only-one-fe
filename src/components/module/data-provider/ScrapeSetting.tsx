@@ -3,6 +3,7 @@
 import { CustomFormModal, CustomSelect, CustomSwitch } from '@/components/custom';
 import CodeDisplay from '@/components/module/code-display';
 import {
+    DEFAULT_API_FUNCTION_GENERATOR,
     DEFAULT_HTML_CONTENT_STRING,
     DEFAULT_PARSER_FUNCTION_GENERATOR,
 } from '@/constants/data-provider';
@@ -79,11 +80,38 @@ const FORM_FIELDS = {
     ADDITIONAL_EXTRACT_DATA: 'additionalExtractData',
 };
 
-const statusColors: Record<string, string> = {
-    [DataProviderStatus.READY]: 'green',
-    [DataProviderStatus.TESTING]: 'blue',
-    [DataProviderStatus.UNCONFIGURED]: 'orange',
-    [DataProviderStatus.ERROR]: 'red',
+export const displayDataProviderStatus = (status: DataProviderStatus) => {
+    if (!status) return '---';
+
+    let color: string, text: string;
+
+    switch (status) {
+        case DataProviderStatus.READY:
+            color = 'success';
+            text = 'Sẵn sàng';
+            break;
+        case DataProviderStatus.TESTING:
+            color = 'processing';
+            text = 'Đang kiểm tra';
+            break;
+        case DataProviderStatus.UNCONFIGURED:
+            color = 'default';
+            text = 'Chưa cấu hình';
+            break;
+        case DataProviderStatus.ERROR:
+            color = 'error';
+            text = 'Lỗi';
+            break;
+        default:
+            color = 'default';
+            text = status;
+    }
+
+    return (
+        <Tag color={color} className="text-sm font-medium">
+            {text}
+        </Tag>
+    );
 };
 
 const ScrapeSetting: FC<ScrapeSettingProps> = ({
@@ -95,6 +123,7 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
 }) => {
     const apiUrl = useApiUrl();
 
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const [isTestHtmlContent, setIsTestHtmlContent] = useState<boolean>(false);
 
     const form = formProps?.form;
@@ -123,11 +152,15 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
 
     const handleTestParser = async () => {
         if (!url && !htmlContentString) {
-            return notification.error({
+            notification.error({
                 message: 'URL hoặc HTML content không được để trống',
                 description: 'URL hoặc HTML content không được để trống',
             });
+
+            return;
         }
+
+        setIsLoading(true);
 
         try {
             const values = (await form?.validateFields()) as DataProviderForm;
@@ -145,6 +178,8 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
                         data?.data as NBaseApi.IResponse<NDataProvider.IDataProviderItem>;
 
                     if (!response?.data) {
+                        setIsLoading(false);
+
                         return {
                             type: 'error',
                             message: 'Test parser thất bại',
@@ -152,6 +187,7 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
                         };
                     }
 
+                    setIsLoading(false);
                     form?.setFieldValue([FORM_FIELDS.EXTRACT_DATA], response.data);
 
                     return {
@@ -160,6 +196,8 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
                     };
                 },
                 errorNotification: (error) => {
+                    setIsLoading(false);
+
                     return {
                         type: 'error',
                         message: 'Test parser thất bại',
@@ -268,7 +306,7 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
                 <Space size={0}>
                     <span className="mr-1">Cấu hình dữ liệu</span>
                     <span className="mr-2">{`for ${dataProvider.name || dataProvider.baseUrl}`}</span>
-                    <Tag color={statusColors[dataProvider.status]}>{dataProvider.status}</Tag>
+                    {displayDataProviderStatus(dataProvider?.status as DataProviderStatus)}
                 </Space>
             </Flex>
         );
@@ -342,10 +380,24 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
                     ]}
                 >
                     <Select
+                        disabled={dataProvider?.status === DataProviderStatus.READY}
                         options={[
                             { label: 'API', value: ScraperServiceEnum.API },
                             { label: 'Cơ bản', value: ScraperServiceEnum.GENERIC },
                         ]}
+                        onChange={(value) => {
+                            if (value === ScraperServiceEnum.API) {
+                                form?.setFieldValue(
+                                    ['targetConfig', FORM_FIELDS.FUNCTION_GENERATOR],
+                                    DEFAULT_API_FUNCTION_GENERATOR,
+                                );
+                            } else {
+                                form?.setFieldValue(
+                                    ['targetConfig', FORM_FIELDS.FUNCTION_GENERATOR],
+                                    DEFAULT_PARSER_FUNCTION_GENERATOR,
+                                );
+                            }
+                        }}
                     />
                 </Form.Item>
 
@@ -651,7 +703,7 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
 
     return (
         <CustomFormModal
-            formLoading={formLoading}
+            formLoading={formLoading || isLoading}
             modalProps={{
                 ...modalProps,
                 width: 900,
@@ -676,7 +728,7 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
                                   retryAttempts: 3,
                                   mainContentSelector: '',
                                   isGetParentElement: false,
-                                  functionGenerator: DEFAULT_PARSER_FUNCTION_GENERATOR,
+                                  functionGenerator: DEFAULT_API_FUNCTION_GENERATOR,
                               },
                           }
                         : formProps?.initialValues
