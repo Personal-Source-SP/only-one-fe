@@ -3,10 +3,11 @@
 import CustomModal from '@/components/custom/custom-modal';
 
 import { renderFormFields } from '@/components/custom/custom-form-modal/CreateFormModal';
+import { useMainContext } from '@/contexts/MainContext';
 import { useCustomModal } from '@/hooks';
 import { FormFieldItem } from '@/interfaces';
 import { Icon } from '@iconify/react';
-import { Button, Flex, Form, message, Row, Space, Spin } from 'antd';
+import { Button, Flex, Form, Row, Space, Spin } from 'antd';
 import { FC, memo, useCallback, useEffect } from 'react';
 
 type EditFormModalProps = {
@@ -26,21 +27,23 @@ const EditFormModal: FC<EditFormModalProps> = ({
     width,
     onClose,
 }) => {
+    const { handleMessage } = useMainContext();
+
     const modalPropsData = useCustomModal({
         action: 'edit',
         resource: resource,
         onMutationSuccess: (data) => {
             if (!data?.data?.data) {
-                message.error('Chỉnh sửa thất bại');
+                handleMessage('Chỉnh sửa thất bại', 'error');
             }
 
-            message.success('Chỉnh sửa thành công');
+            handleMessage('Chỉnh sửa thành công');
 
             close();
             onClose();
         },
         onMutationError: (error) => {
-            message.error(error.message || 'Chỉnh sửa thất bại');
+            handleMessage(error.message || 'Chỉnh sửa thất bại', 'error');
         },
     });
 

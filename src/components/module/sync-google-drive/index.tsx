@@ -1,6 +1,7 @@
 'use client';
 
 import { CustomModal } from '@/components/custom';
+import { useMainContext } from '@/contexts/MainContext';
 import { GoogleDriveFileType, GoogleDriveType } from '@/enums';
 import { useCustomData, useCustomMutationData, useSelectGoogleFolder } from '@/hooks';
 import { NGoogle, Option } from '@/interfaces';
@@ -17,7 +18,6 @@ import {
     Form,
     Input,
     InputNumber,
-    message,
     Result,
     Row,
     Select,
@@ -80,6 +80,8 @@ const SyncGoogleDrive: FC<SyncGoogleDriveProps> = ({
     onSuccess,
     onClose,
 }) => {
+    const { handleMessage } = useMainContext();
+
     const { options: folderOptionResult, query: queryFolderOptions } = useSelectGoogleFolder({
         enabled: typeof defaultFolderOptions !== 'object',
     });
@@ -263,13 +265,13 @@ const SyncGoogleDrive: FC<SyncGoogleDriveProps> = ({
             const url = getGoogleAuthUrl();
 
             if (!url) {
-                message.error('Lỗi khi tạo URL kết nối Google');
+                handleMessage('Lỗi khi tạo URL kết nối Google', 'error');
                 return;
             }
 
             window.location.href = url;
         } catch (e) {
-            message.error('Lỗi khi tạo URL kết nối Google');
+            handleMessage('Lỗi khi tạo URL kết nối Google', 'error');
         } finally {
             setLoading(false);
         }
@@ -330,13 +332,13 @@ const SyncGoogleDrive: FC<SyncGoogleDriveProps> = ({
                 },
             });
         } catch (e) {
-            message.error('Lỗi khi xem trước dữ liệu đồng bộ');
+            handleMessage('Lỗi khi xem trước dữ liệu đồng bộ', 'error');
         }
     };
 
     const handleSyncData = async () => {
         if (!selectedRows?.length) {
-            message.error('Không có dữ liệu để đồng bộ');
+            handleMessage('Không có dữ liệu để đồng bộ', 'error');
             return;
         }
 
@@ -379,7 +381,7 @@ const SyncGoogleDrive: FC<SyncGoogleDriveProps> = ({
                 },
             });
         } catch (e) {
-            message.error('Lỗi khi đồng bộ dữ liệu');
+            handleMessage('Lỗi khi đồng bộ dữ liệu', 'error');
         }
     };
 
@@ -721,7 +723,10 @@ const SyncGoogleDrive: FC<SyncGoogleDriveProps> = ({
                                             setIsActiveGoogleAuth(false);
                                             setGoogleExpiresAt(undefined);
 
-                                            message.info('Token đã hết hạn. Vui lòng kết nối lại.');
+                                            handleMessage(
+                                                'Token đã hết hạn. Vui lòng kết nối lại.',
+                                                'info',
+                                            );
                                         }}
                                     />
                                 </Flex>

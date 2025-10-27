@@ -1,6 +1,7 @@
 'use client';
 
 import { CustomModal } from '@/components/custom';
+import { useMainContext } from '@/contexts/MainContext';
 import { GoogleDriveFileType, GoogleDriveType } from '@/enums';
 import { useCustomMutationData } from '@/hooks';
 import { NGoogle, Option } from '@/interfaces';
@@ -15,7 +16,6 @@ import {
     Flex,
     Form,
     InputNumber,
-    message,
     Result,
     Row,
     Select,
@@ -69,6 +69,8 @@ const SyncLocal: FC<SyncLocalProps> = ({
     onSuccess,
     onClose,
 }) => {
+    const { handleMessage } = useMainContext();
+
     const { apiUrl } = useCustomMutationData();
 
     const [form] = Form.useForm<IFormValues>();
@@ -175,7 +177,7 @@ const SyncLocal: FC<SyncLocalProps> = ({
 
         try {
             if (!('showOpenFilePicker' in window)) {
-                message.error('Trình duyệt không hỗ trợ File System Access API');
+                handleMessage('Trình duyệt không hỗ trợ File System Access API', 'error');
                 setLoading(false);
                 return;
             }
@@ -188,13 +190,13 @@ const SyncLocal: FC<SyncLocalProps> = ({
             if (directoryHandle) {
                 setDirectoryHandle(directoryHandle);
                 setIsPermissionsGranted(true);
-                message.success('Đã cấp quyền truy cập thư mục thành công');
+                handleMessage('Đã cấp quyền truy cập thư mục thành công');
             }
         } catch (error: any) {
             if (error.name === 'AbortError') {
-                message.info('Người dùng đã hủy việc chọn thư mục');
+                handleMessage('Người dùng đã hủy việc chọn thư mục', 'info');
             } else {
-                message.error('Lỗi khi yêu cầu quyền truy cập thư mục: ' + error.message);
+                handleMessage('Lỗi khi yêu cầu quyền truy cập thư mục: ' + error.message, 'error');
             }
         } finally {
             setLoading(false);
@@ -254,7 +256,7 @@ const SyncLocal: FC<SyncLocalProps> = ({
 
         try {
             if (!directoryHandle) {
-                message.error('Chưa chọn thư mục');
+                handleMessage('Chưa chọn thư mục', 'error');
                 setLoading(false);
                 return;
             }
@@ -274,13 +276,13 @@ const SyncLocal: FC<SyncLocalProps> = ({
             setLoading(false);
         } catch (e) {
             setLoading(false);
-            message.error('Lỗi khi xem trước dữ liệu đồng bộ');
+            handleMessage('Lỗi khi xem trước dữ liệu đồng bộ', 'error');
         }
     };
 
     const handleSyncData = async () => {
         if (!selectedRows?.length) {
-            message.error('Không có dữ liệu để đồng bộ');
+            handleMessage('Không có dữ liệu để đồng bộ', 'error');
             return;
         }
 
@@ -307,14 +309,14 @@ const SyncLocal: FC<SyncLocalProps> = ({
 
             if (response.ok) {
                 setCurrentStep(StepEnum.Done);
-                message.success('Đồng bộ dữ liệu thành công');
+                handleMessage('Đồng bộ dữ liệu thành công');
             } else {
                 setCurrentStep(StepEnum.Preview);
-                message.error('Lỗi khi đồng bộ dữ liệu');
+                handleMessage('Lỗi khi đồng bộ dữ liệu', 'error');
             }
         } catch (e) {
             setCurrentStep(StepEnum.Preview);
-            message.error('Lỗi khi đồng bộ dữ liệu');
+            handleMessage('Lỗi khi đồng bộ dữ liệu', 'error');
         } finally {
             setLoading(false);
         }

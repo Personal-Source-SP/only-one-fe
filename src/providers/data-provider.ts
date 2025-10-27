@@ -1,10 +1,22 @@
 import { SERVER_IS_NOT_READY_MESSAGE } from '@/constants';
-import { PaginationRequest } from '@/interfaces';
+import { PaginationRequest, ApiError } from '@/interfaces';
 import { CrudFilters, CrudOperators, CrudSorting, DataProvider, HttpError } from '@refinedev/core';
 import axios, { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
 
 import { Session } from 'next-auth';
 import qs from 'query-string';
+
+const formatErrorMessage = (error: ApiError): string => {
+    if (typeof error === 'string') {
+        return error;
+    }
+
+    if (Array.isArray(error)) {
+        return error.map((item) => item.message || item.code).join(', ');
+    }
+
+    return error.message || error.code;
+};
 
 const mapOperator = (operator: CrudOperators): string => {
     switch (operator) {
@@ -91,7 +103,9 @@ export const createSessionAxiosInstance = (session: Session | null) => {
             const { data, status, statusText } = error.response || {};
 
             const statusCode = status || 408;
-            const message = data?.message || statusText || SERVER_IS_NOT_READY_MESSAGE;
+            const errorData = data?.message || data?.errors || data;
+            const message =
+                formatErrorMessage(errorData) || statusText || SERVER_IS_NOT_READY_MESSAGE;
 
             const customError: HttpError = {
                 ...error,

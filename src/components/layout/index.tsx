@@ -10,7 +10,7 @@ import { useCustomMutationData } from '@/hooks';
 import { useSearchParamsString } from '@/hooks/useSearchParamsString';
 import { exchangeCodeForTokens, getUserInfoFromGoogle } from '@/libs';
 
-import { message, Space } from 'antd';
+import { Space } from 'antd';
 import { usePathname, useRouter } from 'next/navigation';
 import { FC, memo, ReactNode, useEffect, useRef, useState } from 'react';
 
@@ -97,7 +97,7 @@ const MainLayout: FC<MainLayoutProps> = ({ children }) => {
     const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
     const [showNotifications, setShowNotifications] = useState(false);
 
-    const { handleLoading } = useMainContext();
+    const { handleLoading, handleMessage } = useMainContext();
 
     const { handleCustomMutationData: syncGoogleAuth } = useCustomMutationData();
 
@@ -113,7 +113,7 @@ const MainLayout: FC<MainLayoutProps> = ({ children }) => {
         handledAuthRef.current = true;
 
         if (error) {
-            message.error('Kết nối Google thất bại');
+            handleMessage('Kết nối Google thất bại', 'error');
             router.replace(pathname);
             return;
         }
@@ -136,13 +136,13 @@ const MainLayout: FC<MainLayoutProps> = ({ children }) => {
             );
 
             if (!tokens) {
-                message.error('Lỗi khi lấy token Google');
+                handleMessage('Lỗi khi lấy token Google', 'error');
                 return;
             }
 
             const userInfo = await getUserInfoFromGoogle(tokens.access_token);
             if (!userInfo) {
-                message.error('Lỗi khi lấy thông tin người dùng Google');
+                handleMessage('Lỗi khi lấy thông tin người dùng Google', 'error');
                 return;
             }
 
@@ -181,7 +181,7 @@ const MainLayout: FC<MainLayoutProps> = ({ children }) => {
                 },
             });
         } catch (e) {
-            message.error('Lỗi khi kết nối Google');
+            handleMessage('Lỗi khi kết nối Google', 'error');
         } finally {
             handleLoading(false);
         }

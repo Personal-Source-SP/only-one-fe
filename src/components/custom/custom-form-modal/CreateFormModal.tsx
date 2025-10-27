@@ -1,11 +1,12 @@
 'use client';
 
 import CustomModal from '@/components/custom/custom-modal';
+import { useMainContext } from '@/contexts/MainContext';
 import { useCustomModal } from '@/hooks';
 
 import { FormFieldItem } from '@/interfaces';
 import { Icon } from '@iconify/react';
-import { Button, Col, Flex, Form, Input, message, Row, Select, Space, Spin } from 'antd';
+import { Button, Col, Flex, Form, Input, Row, Select, Space, Spin } from 'antd';
 import { FC, memo, useCallback, useEffect } from 'react';
 
 type CreateFormModalProps = {
@@ -99,20 +100,22 @@ const CreateFormModal: FC<CreateFormModalProps> = ({
     width,
     onClose,
 }) => {
+    const { handleMessage } = useMainContext();
+
     const modalPropsData = useCustomModal({
         resource: resource,
         onMutationSuccess: (data) => {
             if (!data?.data?.data) {
-                message.error('Tạo thất bại');
+                handleMessage('Tạo thất bại', 'error');
             }
 
-            message.success('Tạo thành công');
+            handleMessage('Tạo thành công');
 
             close();
             onClose();
         },
         onMutationError: (error) => {
-            message.error(error.message || 'Tạo thất bại');
+            handleMessage(error.message || 'Tạo thất bại', 'error');
         },
     });
 

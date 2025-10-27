@@ -75,3 +75,10 @@ export interface PhotoGroup {
     date?: string;
     folder?: string;
 }
+
+export interface ErrorItem {
+    code: string;
+    message?: string;
+}
+
+export type ApiError = string | ErrorItem | ErrorItem[];

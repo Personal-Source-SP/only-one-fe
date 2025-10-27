@@ -1,11 +1,11 @@
 'use client';
 
+import { useMainContext } from '@/contexts/MainContext';
 import { SortOrder } from '@/enums';
 import { ActionTableItem, NBaseApi } from '@/interfaces';
 import { DeleteOutlined } from '@ant-design/icons';
-import { Icon } from '@iconify/react';
 import { CrudSort, useDelete } from '@refinedev/core';
-import { Button, Dropdown, message, Modal, Space, Table } from 'antd';
+import { Button, Popconfirm, Space, Table } from 'antd';
 import { ColumnsType, TablePaginationConfig, TableProps } from 'antd/es/table';
 import { FilterValue, SorterResult, TableCurrentDataSource } from 'antd/es/table/interface';
 import { FC, memo } from 'react';
@@ -39,6 +39,8 @@ const CustomTable: FC<CustomTableProps> = ({
     onRowSelectionChange,
     onDisableRowSelection,
 }) => {
+    const { handleMessage } = useMainContext();
+
     const { mutate: deleteRecord } = useDelete<NBaseApi.IResponse<boolean>>();
 
     const rowSelection: TableProps<any>['rowSelection'] = {
@@ -53,41 +55,28 @@ const CustomTable: FC<CustomTableProps> = ({
     };
 
     const handleDelete = (record: any) => {
-        Modal.confirm({
-            okText: 'Xóa',
-            okType: 'danger',
-            cancelText: 'Hủy',
-            title: 'Xóa dữ liệu',
-            content: 'Bạn có chắc chắn muốn xóa dữ liệu này không?',
-            onOk: () => {
-                deleteRecord(
-                    {
-                        id: record.id,
-                        resource: resource || '',
-                        errorNotification: false,
-                        successNotification: false,
-                    },
-                    {
-                        onSuccess: () => {
-                            message.success('Xóa dữ liệu thành công');
-
-                            if (
-                                currentPage &&
-                                currentPage > 1 &&
-                                tableProps.dataSource?.length === 1
-                            ) {
-                                setCurrentPage(currentPage - 1);
-                            } else {
-                                onRefetch?.();
-                            }
-                        },
-                        onError: (error) => {
-                            message.error(error?.message || 'Lỗi xóa dữ liệu không thành công');
-                        },
-                    },
-                );
+        deleteRecord(
+            {
+                id: record.id,
+                resource: resource || '',
+                errorNotification: false,
+                successNotification: false,
             },
-        });
+            {
+                onSuccess: () => {
+                    handleMessage('Xóa dữ liệu thành công');
+
+                    if (currentPage && currentPage > 1 && tableProps.dataSource?.length === 1) {
+                        setCurrentPage(currentPage - 1);
+                    } else {
+                        onRefetch?.();
+                    }
+                },
+                onError: (error) => {
+                    handleMessage(error?.message || 'Lỗi xóa dữ liệu không thành công', 'error');
+                },
+            },
+        );
     };
 
     const renderAction = (record: any) => {
@@ -104,26 +93,21 @@ const CustomTable: FC<CustomTableProps> = ({
                 ))}
 
                 {Boolean(onRefetch && resource) && (
-                    <Dropdown
-                        trigger={['click']}
-                        menu={{
-                            items: [
-                                {
-                                    key: 'delete',
-                                    onClick: () => handleDelete?.(record),
-                                    label: <span className="text-red-500">Xóa</span>,
-                                    icon: <DeleteOutlined style={{ color: '#ef4444' }} />,
-                                },
-                            ],
-                        }}
+                    <Popconfirm
+                        okType="danger"
+                        okText="Xóa"
+                        cancelText="Hủy"
+                        title="Xóa dữ liệu"
+                        description="Bạn có chắc chắn muốn xóa dữ liệu này không?"
+                        onConfirm={() => handleDelete?.(record)}
                     >
                         <Button
                             type="text"
                             size="small"
-                            title={'Actions'}
-                            icon={<Icon icon="lucide:more-vertical" />}
+                            title={'Xóa'}
+                            icon={<DeleteOutlined style={{ color: '#ef4444' }} />}
                         />
-                    </Dropdown>
+                    </Popconfirm>
                 )}
             </Space>
         );

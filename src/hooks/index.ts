@@ -4,5 +4,6 @@ export * from './useCustomSelect';
 export * from './useDebounceSearch';
 export * from './useHydratedStore';
 export * from './useLocalStorage';
+export * from './useMessage';
 export * from './useSearchParamsString';
 export * from './useTableContainer';
