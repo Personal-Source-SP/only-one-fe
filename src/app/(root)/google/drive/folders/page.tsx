@@ -13,7 +13,6 @@ import dayjs from 'dayjs';
 import { FC, useEffect, useState } from 'react';
 
 const FolderPage: FC = () => {
-    const [quantityRefetch, setQuantityRefetch] = useState(0);
     const [isOpenSyncFile, setIsOpenSyncFile] = useState(false);
 
     const tableContainerData = useTableContainer({
@@ -103,7 +102,6 @@ const FolderPage: FC = () => {
             <TableContainer
                 columns={columns}
                 resource="google-folder"
-                quantityRefetch={quantityRefetch}
                 tableContainerData={tableContainerData}
                 actionItems={[
                     {
@@ -130,7 +128,7 @@ const FolderPage: FC = () => {
                 onClose={() => setIsOpenSyncFile(false)}
                 defaultFolderOptions={folderOptions || []}
                 queryLoading={queryFolderOptions?.isLoading}
-                onSuccess={() => setQuantityRefetch(quantityRefetch + 1)}
+                onSuccess={() => tableContainerData?.tableQuery?.refetch()}
             />
         </Space>
     );

@@ -19,8 +19,6 @@ import dayjs from 'dayjs';
 import { FC, useMemo, useState } from 'react';
 
 const DataHistoryPage: FC = () => {
-    const [quantityRefetch, setQuantityRefetch] = useState(0);
-
     const [columnDisplay, setColumnDisplay] = useState(4);
     const [viewMode, setViewMode] = useState<ViewPhotoMode>(ViewPhotoMode.ALL);
     const [displayMode, setDisplayMode] = useState<DisplayMode>(DisplayMode.LIST);
@@ -149,7 +147,6 @@ const DataHistoryPage: FC = () => {
 
             <TableContainer
                 resource="data-history"
-                quantityRefetch={quantityRefetch}
                 customFilterItems={customFilterItems}
                 tableContainerData={tableContainerData}
                 columns={displayMode === DisplayMode.TABLE ? columns : undefined}

@@ -8,11 +8,9 @@ import { Icon } from '@iconify/react';
 import { Space } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
-import { FC, useState } from 'react';
+import { FC } from 'react';
 
 const UsersPage: FC = () => {
-    const [quantityRefetch, setQuantityRefetch] = useState(0);
-
     const tableContainerData = useTableContainer({
         resource: 'users',
     });
@@ -78,7 +76,6 @@ const UsersPage: FC = () => {
             <TableContainer
                 resource="users"
                 columns={columns}
-                quantityRefetch={quantityRefetch}
                 tableContainerData={tableContainerData}
                 actionItems={[
                     {

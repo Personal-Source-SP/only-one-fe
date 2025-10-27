@@ -11,7 +11,6 @@ import dayjs from 'dayjs';
 import { FC, useCallback, useState } from 'react';
 
 const DataProviderItemPage: FC = () => {
-    const [quantityRefetch, setQuantityRefetch] = useState(0);
     const [openCreateItemModal, setOpenCreateItemModal] = useState(false);
     const [editItemId, setEditItemId] = useState<string | undefined>(undefined);
 
@@ -147,7 +146,6 @@ const DataProviderItemPage: FC = () => {
             <TableContainer
                 columns={columns}
                 resource="data-provider-items"
-                quantityRefetch={quantityRefetch}
                 tableContainerData={tableContainerData}
                 actionItems={[
                     {
@@ -169,7 +167,7 @@ const DataProviderItemPage: FC = () => {
                 open={openCreateItemModal}
                 onClose={() => {
                     setOpenCreateItemModal(false);
-                    setQuantityRefetch(quantityRefetch + 1);
+                    tableContainerData?.tableQuery?.refetch();
                 }}
             />
 
@@ -180,7 +178,7 @@ const DataProviderItemPage: FC = () => {
                 title="Chỉnh sửa đối tượng"
                 onClose={() => {
                     setEditItemId(undefined);
-                    setQuantityRefetch(quantityRefetch + 1);
+                    tableContainerData?.tableQuery?.refetch();
                 }}
             />
         </Space>

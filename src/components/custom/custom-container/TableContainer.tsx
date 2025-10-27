@@ -7,12 +7,11 @@ import { useTableContainer } from '@/hooks';
 import { useDebounceSearch } from '@/hooks/useDebounceSearch';
 import { ActionTableItem, FilterItem, SearchFilterItem } from '@/interfaces';
 import { ColumnsType } from 'antd/es/table';
-import { FC, memo, useEffect, useMemo } from 'react';
+import { FC, memo, useMemo } from 'react';
 
 type TableContainerProps = {
     resource?: string;
     columns?: ColumnsType<any>;
-    quantityRefetch?: number;
     filterSearch?: SearchFilterItem;
     customFilterItems?: FilterItem[];
     actionItems?: ActionTableItem[];
@@ -26,7 +25,6 @@ type TableContainerProps = {
 const TableContainer: FC<TableContainerProps> = ({
     resource,
     columns,
-    quantityRefetch,
     filterSearch,
     customFilterItems,
     actionItems,
@@ -83,12 +81,6 @@ const TableContainer: FC<TableContainerProps> = ({
 
         return filterItems;
     }, [customFilterItems, filterSearch]);
-
-    useEffect(() => {
-        if (quantityRefetch) {
-            tableQuery?.refetch();
-        }
-    }, [quantityRefetch]);
 
     const debouncedSearch = useDebounceSearch({
         setFilters,

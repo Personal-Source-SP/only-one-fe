@@ -21,7 +21,6 @@ import dayjs from 'dayjs';
 import { FC, useState } from 'react';
 
 const DataProviderPage: FC = () => {
-    const [quantityRefetch, setQuantityRefetch] = useState(0);
     const [openCreateItemModal, setOpenCreateItemModal] = useState(false);
     const [editItemId, setEditItemId] = useState<string | undefined>(undefined);
     const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
@@ -237,7 +236,6 @@ const DataProviderPage: FC = () => {
                 columns={columns}
                 resource="data-providers"
                 actionItems={actionItems}
-                quantityRefetch={quantityRefetch}
                 customFilterItems={customFilterItems}
                 tableContainerData={tableContainerData}
                 filterSearch={{ placeholder: 'Tìm kiếm nhà cung cấp', span: 12 }}
@@ -259,7 +257,7 @@ const DataProviderPage: FC = () => {
                 open={openCreateItemModal}
                 onClose={() => {
                     setOpenCreateItemModal(false);
-                    setQuantityRefetch(quantityRefetch + 1);
+                    tableContainerData?.tableQuery?.refetch();
                 }}
             />
 
@@ -270,7 +268,7 @@ const DataProviderPage: FC = () => {
                 title="Chỉnh sửa đối tượng"
                 onClose={() => {
                     setEditItemId(undefined);
-                    setQuantityRefetch(quantityRefetch + 1);
+                    tableContainerData?.tableQuery?.refetch();
                 }}
             />
 
@@ -281,7 +279,7 @@ const DataProviderPage: FC = () => {
                 onClose={() => {
                     modalPropsData?.close();
                     setSelectedId(undefined);
-                    setQuantityRefetch(quantityRefetch + 1);
+                    tableContainerData?.tableQuery?.refetch();
                 }}
             />
 
