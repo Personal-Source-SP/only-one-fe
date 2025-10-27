@@ -1,5 +1,6 @@
 'use client';
 
+import { Empty } from '@/components/common';
 import { GoogleDriveFileType } from '@/enums';
 import { ViewPhotoMode } from '@/enums/photo.enum';
 import { PhotoGroup, PhotoItem } from '@/interfaces';
@@ -246,6 +247,10 @@ const PhotoGroups: FC<PhotoGroupsProps> = ({ columns, displayMode, data, onPhoto
             />
         );
     };
+
+    if (!allPhotos?.length) {
+        return <Empty variant="file" />;
+    }
 
     return (
         <section

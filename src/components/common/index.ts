@@ -1,4 +1,5 @@
 export { default as DataNotFound } from './data-not-found';
+export { default as Empty } from './empty';
 export { default as Forbidden } from './forbidden';
 export { default as Loading } from './loading';
 export { default as Logo } from './logo';
