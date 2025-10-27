@@ -10,11 +10,9 @@ import {
     ScrapeStatusEnum,
     ViewPhotoMode,
 } from '@/enums';
-import { useTableContainer } from '@/hooks';
+import { useCustomModal, useTableContainer } from '@/hooks';
 import { FilterItem, NDataProvider, PhotoItem } from '@/interfaces';
 import { Icon } from '@iconify/react';
-import { useModalForm } from '@refinedev/antd';
-import { HttpError } from '@refinedev/core';
 import { Space, Switch, Tag } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
@@ -33,18 +31,9 @@ const DataHistoryPage: FC = () => {
         resource: 'data-history',
     });
 
-    const {
-        open: openFolderModal,
-        show: showFolderModal,
-        close: closeFolderModal,
-        formProps: folderModalFormProps,
-        modalProps: folderModalModalProps,
-        formLoading: folderModalFormLoading,
-    } = useModalForm<NDataProvider.IDataHistory, HttpError, Partial<NDataProvider.IDataHistory>>({
+    const modalPropsData = useCustomModal({
         action: 'edit',
         resource: 'data-history',
-        autoResetForm: true,
-        warnWhenUnsavedChanges: false,
     });
 
     const displayStatus = useCallback((status: ScrapeStatusEnum) => {
@@ -164,7 +153,7 @@ const DataHistoryPage: FC = () => {
                         key: 'edit',
                         label: 'Chỉnh sửa',
                         icon: <Icon icon="lucide:edit" />,
-                        onClick: (record) => showFolderModal(record?.id),
+                        onClick: (record) => modalPropsData?.show?.(record?.id),
                     },
                 ]}
                 filterSearch={{

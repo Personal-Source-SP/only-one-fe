@@ -1,19 +1,17 @@
 'use client';
 
 import { CustomModal } from '@/components/custom';
+import { useCustomModal } from '@/hooks';
 import { Option } from '@/interfaces';
 import { Icon } from '@iconify/react';
-import { Button, Col, Form, FormProps, Input, ModalProps, Row, Select, Space, Spin } from 'antd';
+import { Button, Col, Form, Input, Row, Select, Space, Spin } from 'antd';
 import { FC, memo } from 'react';
 
 type FolderModalProps = {
-    open: boolean;
-    formProps: FormProps;
-    modalProps: ModalProps;
-    isLoading: boolean;
     folderOptions: Option[];
-    onClose: () => void;
+    modalPropsData: ReturnType<typeof useCustomModal>;
     onSubmit: () => void;
+    onClose?: () => void;
 };
 
 const FieldsEnum = {
@@ -22,14 +20,13 @@ const FieldsEnum = {
 };
 
 const FolderModal: FC<FolderModalProps> = ({
-    open,
-    isLoading,
-    formProps,
-    modalProps,
     folderOptions,
-    onClose,
+    modalPropsData,
     onSubmit,
+    onClose,
 }) => {
+    const { open, modalProps, formProps, formLoading, close } = modalPropsData;
+
     return (
         <CustomModal
             modalProps={{
@@ -38,11 +35,11 @@ const FolderModal: FC<FolderModalProps> = ({
                 width: 720,
                 centered: true,
                 closable: true,
-                onCancel: onClose,
                 title: 'Chỉnh sửa thư mục',
+                onCancel: onClose ?? close,
             }}
         >
-            <Spin spinning={isLoading}>
+            <Spin spinning={formLoading}>
                 <Space direction="vertical" className="w-full h-full px-3 overflow-x-hidden">
                     <Form
                         {...formProps}

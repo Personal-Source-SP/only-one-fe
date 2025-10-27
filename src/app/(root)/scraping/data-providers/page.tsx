@@ -12,11 +12,9 @@ import {
     DataProviderStatus,
     ElementType,
 } from '@/enums';
-import { useSelectDataProvider, useTableContainer } from '@/hooks';
+import { useCustomModal, useSelectDataProvider, useTableContainer } from '@/hooks';
 import { ActionTableItem, FilterItem, FormFieldItem, NDataProvider } from '@/interfaces';
 import { Icon } from '@iconify/react';
-import { useModalForm } from '@refinedev/antd';
-import { HttpError } from '@refinedev/core';
 import { Button, Space } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
@@ -39,15 +37,9 @@ const DataProviderPage: FC = () => {
         id: selectedId,
     });
 
-    const { show, close, formProps, modalProps, formLoading } = useModalForm<
-        NDataProvider.IDataProvider,
-        HttpError,
-        Partial<NDataProvider.IDataProvider>
-    >({
+    const modalPropsData = useCustomModal({
         action: 'edit',
         resource: 'data-providers',
-        autoResetForm: true,
-        warnWhenUnsavedChanges: false,
     });
 
     const columns: ColumnsType<NDataProvider.IDataProvider> = [
@@ -202,7 +194,7 @@ const DataProviderPage: FC = () => {
             icon: <Icon icon="lucide:settings-2" />,
             onClick: (record) => {
                 setSelectedId(record?.id);
-                show(record?.id);
+                modalPropsData?.show?.(record?.id);
             },
         },
         {
@@ -211,7 +203,7 @@ const DataProviderPage: FC = () => {
             icon: <Icon icon="lucide:search-code" />,
             onClick: (record) => {
                 setSelectedId(record?.id);
-                show(record?.id);
+                modalPropsData?.show?.(record?.id);
             },
         },
     ];
@@ -284,12 +276,10 @@ const DataProviderPage: FC = () => {
 
             <ScrapeSetting
                 key="scrape-setting"
-                formProps={formProps}
-                modalProps={modalProps}
-                formLoading={formLoading}
+                modalPropsData={modalPropsData}
                 dataProviderItemOptions={providerItems}
                 onClose={() => {
-                    close();
+                    modalPropsData?.close();
                     setSelectedId(undefined);
                     setQuantityRefetch(quantityRefetch + 1);
                 }}

@@ -3,10 +3,9 @@
 import CustomModal from '@/components/custom/custom-modal';
 
 import { renderFormFields } from '@/components/custom/custom-form-modal/CreateFormModal';
+import { useCustomModal } from '@/hooks';
 import { FormFieldItem } from '@/interfaces';
 import { Icon } from '@iconify/react';
-import { useModalForm } from '@refinedev/antd';
-import { HttpError } from '@refinedev/core';
 import { Button, Flex, Form, message, Row, Space, Spin } from 'antd';
 import { FC, memo, useCallback, useEffect } from 'react';
 
@@ -27,17 +26,9 @@ const EditFormModal: FC<EditFormModalProps> = ({
     width,
     onClose,
 }) => {
-    const { show, close, formProps, modalProps, formLoading } = useModalForm<
-        any,
-        HttpError,
-        Partial<any>
-    >({
+    const modalPropsData = useCustomModal({
         action: 'edit',
         resource: resource,
-        autoResetForm: true,
-        errorNotification: false,
-        successNotification: false,
-        warnWhenUnsavedChanges: false,
         onMutationSuccess: (data) => {
             if (!data?.data?.data) {
                 message.error('Chỉnh sửa thất bại');
@@ -52,6 +43,8 @@ const EditFormModal: FC<EditFormModalProps> = ({
             message.error(error.message || 'Chỉnh sửa thất bại');
         },
     });
+
+    const { show, close, formProps, modalProps, formLoading } = modalPropsData;
 
     useEffect(() => {
         if (id) {

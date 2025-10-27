@@ -8,6 +8,7 @@ import {
     DEFAULT_PARSER_FUNCTION_GENERATOR,
 } from '@/constants/data-provider';
 import { DataProviderStatus, ScraperServiceEnum } from '@/enums';
+import { useCustomModal } from '@/hooks';
 import { NBaseApi, NDataProvider, Option } from '@/interfaces';
 import { LinkOutlined, MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { useApiUrl, useCreate, useCustomMutation } from '@refinedev/core';
@@ -18,10 +19,8 @@ import {
     Divider,
     Flex,
     Form,
-    FormProps,
     Input,
     InputNumber,
-    ModalProps,
     notification,
     Row,
     Select,
@@ -42,9 +41,7 @@ type DataProviderForm = NDataProvider.IDataProvider & {
 };
 
 type ScrapeSettingProps = {
-    formLoading: boolean;
-    formProps: FormProps;
-    modalProps: ModalProps;
+    modalPropsData: ReturnType<typeof useCustomModal>;
     dataProviderItemOptions: Option[];
     onClose: () => void;
 };
@@ -115,13 +112,13 @@ export const displayDataProviderStatus = (status: DataProviderStatus) => {
 };
 
 const ScrapeSetting: FC<ScrapeSettingProps> = ({
-    formLoading,
-    formProps,
-    modalProps,
+    modalPropsData,
     dataProviderItemOptions,
     onClose,
 }) => {
     const apiUrl = useApiUrl();
+
+    const { formProps, modalProps, formLoading } = modalPropsData;
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [isTestHtmlContent, setIsTestHtmlContent] = useState<boolean>(false);
@@ -717,8 +714,8 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
             <Form
                 {...formProps}
                 layout="vertical"
-                onFinish={handleUpdateTargetConfig}
                 className="[&_.ant-form-item]:!mb-2"
+                onFinish={(values) => handleUpdateTargetConfig(values as DataProviderForm)}
                 initialValues={
                     isEmpty(formProps?.initialValues?.targetConfig)
                         ? {

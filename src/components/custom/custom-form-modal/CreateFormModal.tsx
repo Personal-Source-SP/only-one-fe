@@ -1,11 +1,10 @@
 'use client';
 
 import CustomModal from '@/components/custom/custom-modal';
+import { useCustomModal } from '@/hooks';
 
 import { FormFieldItem } from '@/interfaces';
 import { Icon } from '@iconify/react';
-import { useModalForm } from '@refinedev/antd';
-import { HttpError } from '@refinedev/core';
 import { Button, Col, Flex, Form, Input, message, Row, Select, Space, Spin } from 'antd';
 import { FC, memo, useCallback, useEffect } from 'react';
 
@@ -100,17 +99,8 @@ const CreateFormModal: FC<CreateFormModalProps> = ({
     width,
     onClose,
 }) => {
-    const { show, close, formProps, modalProps, formLoading } = useModalForm<
-        any,
-        HttpError,
-        Partial<any>
-    >({
-        action: 'create',
+    const modalPropsData = useCustomModal({
         resource: resource,
-        autoResetForm: true,
-        errorNotification: false,
-        successNotification: false,
-        warnWhenUnsavedChanges: false,
         onMutationSuccess: (data) => {
             if (!data?.data?.data) {
                 message.error('Tạo thất bại');
@@ -125,6 +115,8 @@ const CreateFormModal: FC<CreateFormModalProps> = ({
             message.error(error.message || 'Tạo thất bại');
         },
     });
+
+    const { show, close, formProps, modalProps, formLoading } = modalPropsData;
 
     useEffect(() => {
         if (open) {

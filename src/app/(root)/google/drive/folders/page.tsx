@@ -4,11 +4,9 @@ import { CustomElement, TableContainer } from '@/components/custom';
 import FolderModal from '@/components/module/folders/FolderModal';
 import SyncGoogleDrive from '@/components/module/sync-google-drive';
 import { ElementType, GoogleDriveType } from '@/enums';
-import { useSelectGoogleFolder, useTableContainer } from '@/hooks';
+import { useCustomModal, useSelectGoogleFolder, useTableContainer } from '@/hooks';
 import { NGoogle } from '@/interfaces';
 import { Icon } from '@iconify/react';
-import { useModalForm } from '@refinedev/antd';
-import { HttpError } from '@refinedev/core';
 import { Button, Space } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
@@ -22,18 +20,9 @@ const FolderPage: FC = () => {
         resource: 'google-folder',
     });
 
-    const {
-        open: openFolderModal,
-        show: showFolderModal,
-        close: closeFolderModal,
-        formProps: folderModalFormProps,
-        modalProps: folderModalModalProps,
-        formLoading: folderModalFormLoading,
-    } = useModalForm<NGoogle.IGoogleDriveFolder, HttpError, Partial<NGoogle.IGoogleDriveFolder>>({
+    const modalPropsData = useCustomModal({
         action: 'edit',
         resource: 'google-folder',
-        autoResetForm: true,
-        warnWhenUnsavedChanges: false,
     });
 
     const { options: folderOptions, query: queryFolderOptions } = useSelectGoogleFolder({
@@ -121,7 +110,7 @@ const FolderPage: FC = () => {
                         key: 'edit',
                         label: 'Chỉnh sửa',
                         icon: <Icon icon="lucide:edit" />,
-                        onClick: (record) => showFolderModal(record?.id),
+                        onClick: (record) => modalPropsData?.show?.(record?.id),
                     },
                 ]}
                 filterSearch={{
@@ -130,11 +119,7 @@ const FolderPage: FC = () => {
             />
 
             <FolderModal
-                open={openFolderModal}
-                onClose={closeFolderModal}
-                formProps={folderModalFormProps}
-                isLoading={folderModalFormLoading}
-                modalProps={folderModalModalProps}
+                modalPropsData={modalPropsData}
                 folderOptions={folderOptions ?? []}
                 onSubmit={() => {}}
             />
