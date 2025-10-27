@@ -2,9 +2,9 @@
 
 import { CreateFormModal, CustomElement, EditFormModal, TableContainer } from '@/components/custom';
 import {
+    DisplayDataProviderStatus,
     ProcessScrapeData,
     ScrapeSetting,
-    displayDataProviderStatus,
 } from '@/components/module/data-provider';
 import {
     CustomFilterType,
@@ -70,7 +70,7 @@ const DataProviderPage: FC = () => {
             key: 'status',
             title: 'Trạng thái',
             dataIndex: 'status',
-            render: (status: DataProviderStatus) => displayDataProviderStatus(status),
+            render: (status: DataProviderStatus) => <DisplayDataProviderStatus status={status} />,
             width: '10%',
         },
         {

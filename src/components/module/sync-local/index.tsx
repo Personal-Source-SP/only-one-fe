@@ -2,9 +2,9 @@
 
 import { CustomModal } from '@/components/custom';
 import { GoogleDriveFileType, GoogleDriveType } from '@/enums';
-import { NBaseApi, NGoogle, Option } from '@/interfaces';
+import { useCustomMutationData } from '@/hooks';
+import { NGoogle, Option } from '@/interfaces';
 import { Icon } from '@iconify/react';
-import { useApiUrl, useCustomMutation } from '@refinedev/core';
 import {
     Button,
     Card,
@@ -69,11 +69,7 @@ const SyncLocal: FC<SyncLocalProps> = ({
     onSuccess,
     onClose,
 }) => {
-    const apiUrl = useApiUrl();
-
-    const { mutate: syncGoogleDrive } = useCustomMutation<NBaseApi.IResponse<boolean>>();
-    const { mutate: previewGoogleDrive } =
-        useCustomMutation<NBaseApi.IResponse<NGoogle.IPreviewGoogleDriveData>>();
+    const { apiUrl } = useCustomMutationData();
 
     const [form] = Form.useForm<IFormValues>();
 

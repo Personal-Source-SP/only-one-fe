@@ -9,10 +9,9 @@ import {
     DEFAULT_PARSER_FUNCTION_GENERATOR,
 } from '@/constants/data-provider';
 import { DataProviderStatus, ScraperServiceEnum } from '@/enums';
-import { useCustomModal } from '@/hooks';
+import { useCustomModal, useCustomMutationData } from '@/hooks';
 import { NBaseApi, NDataProvider, Option } from '@/interfaces';
 import { LinkOutlined, MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
-import { useApiUrl, useCreate, useCustomMutation } from '@refinedev/core';
 import {
     Button,
     Card,
@@ -82,8 +81,6 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
     dataProviderItemOptions,
     onClose,
 }) => {
-    const apiUrl = useApiUrl();
-
     const { formProps, modalProps, formLoading } = modalPropsData;
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -110,8 +107,8 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
         preserve: true,
     });
 
-    const { mutate: handleUpdate } = useCustomMutation();
-    const { mutate: handleCreate } = useCreate<NBaseApi.IResponse<unknown>>();
+    const { handleCustomMutationData: handleUpdate } = useCustomMutationData();
+    const { handleCustomMutationData: handleCreate } = useCustomMutationData();
 
     const handleTestParser = async () => {
         if (!url && !htmlContentString) {
@@ -129,7 +126,7 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
             const values = (await form?.validateFields()) as DataProviderForm;
 
             handleCreate({
-                resource: 'parsers/test-parser-function',
+                url: 'parsers/test-parser-function',
                 values: {
                     ...values.targetConfig,
                     url,
@@ -191,7 +188,7 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
         handleUpdate({
             method: 'put',
             values: request,
-            url: `${apiUrl}/data-providers/${dataProvider?.id}/target-config`,
+            url: `data-providers/${dataProvider?.id}/target-config`,
             successNotification: (data) => {
                 if (!data?.data?.isSuccess) {
                     return {
@@ -229,7 +226,7 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
         handleUpdate({
             values: {},
             method: 'put',
-            url: `${apiUrl}/data-providers/${dataProvider.id}/switch-status/${status}`,
+            url: `data-providers/${dataProvider.id}/switch-status/${status}`,
             successNotification: (data) => {
                 if (!data?.data?.isSuccess) {
                     return {

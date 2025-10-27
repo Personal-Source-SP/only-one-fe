@@ -1,9 +1,9 @@
 'use client';
 
 import { CustomDatePicker, CustomFormModal } from '@/components/custom';
+import { useCustomMutationData } from '@/hooks';
 import { NBaseApi, NDataProvider, Option } from '@/interfaces';
 import { Icon } from '@iconify/react';
-import { useApiUrl, useCustomMutation } from '@refinedev/core';
 import { Button, Card, Col, Flex, Form, Row, Select, Space, StepProps, Steps, Table } from 'antd';
 import { ColumnType } from 'antd/es/table';
 import dayjs from 'dayjs';
@@ -21,8 +21,6 @@ const StepEnum = {
 };
 
 const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({ open, dataProviders, onClose }) => {
-    const apiUrl = useApiUrl();
-
     const [pageSize, setPageSize] = useState(50);
     const [isLoading, setIsLoading] = useState(false);
     const [currentStep, setCurrentStep] = useState(StepEnum.Settings);
@@ -39,7 +37,7 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({ open, dataProviders, on
         [],
     );
 
-    const { mutate } = useCustomMutation<NBaseApi.IResponse<NDataProvider.IScrapeDataResponse>>();
+    const { handleCustomMutationData } = useCustomMutationData();
 
     const steps: StepProps[] = [
         {
@@ -116,9 +114,8 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({ open, dataProviders, on
         setIsLoading(true);
 
         try {
-            mutate({
-                method: 'post',
-                url: `${apiUrl}/data-history/process-scrape-data`,
+            handleCustomMutationData({
+                url: 'data-history/process-scrape-data',
                 values: {
                     dataProviderIds,
                     lastSuccessfulScrapeAt: dateRanges[1],

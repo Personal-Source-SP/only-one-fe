@@ -8,9 +8,8 @@ import {
     QualityMode,
     ViewPhotoMode,
 } from '@/enums';
-import type { FilterItem, NBaseApi, NGoogle, PhotoItem } from '@/interfaces';
+import type { FilterItem, NGoogle, PhotoItem } from '@/interfaces';
 import { Icon } from '@iconify/react';
-import { useApiUrl, useCustom } from '@refinedev/core';
 import { Button, Space } from 'antd';
 import { isNumber } from 'lodash';
 import { FC, useEffect, useMemo, useState } from 'react';
@@ -29,12 +28,10 @@ import { PhotoGroups } from '@/components/module/photos';
 import SyncGoogleDrive from '@/components/module/sync-google-drive';
 import SyncLocal from '@/components/module/sync-local';
 
-import { useSelectGoogleFolder, useTableContainer } from '@/hooks';
+import { useCustomData, useSelectGoogleFolder, useTableContainer } from '@/hooks';
 import { getDriveImageUrl, isExpiredToken } from '@/libs';
 
 const PhotosPage: FC = () => {
-    const apiUrl = useApiUrl();
-
     const [columns, setColumns] = useState(4);
     const [viewMode, setViewMode] = useState<ViewPhotoMode>(ViewPhotoMode.ALL);
     const [qualityMode, setQualityMode] = useState<QualityMode>(QualityMode.LOW);
@@ -52,14 +49,9 @@ const PhotosPage: FC = () => {
         ],
     });
 
-    const { result: googleAuthsResult, query: queryGoogleAuths } = useCustom<
-        NBaseApi.IResponse<NGoogle.IGoogleAuth[]>
-    >({
-        url: `${apiUrl}/google-auth`,
-        method: 'get',
-        queryOptions: {
-            enabled: false,
-        },
+    const { result: googleAuthsResult, query: queryGoogleAuths } = useCustomData({
+        url: 'google-auth',
+        enabled: false,
     });
 
     const { options: folderOptions, query: queryFolderOptions } = useSelectGoogleFolder({
@@ -75,7 +67,7 @@ const PhotosPage: FC = () => {
     const googleAuthOptions = useMemo(() => {
         if (!googleAuthsResult?.data?.data?.length) return [];
 
-        const options = googleAuthsResult?.data?.data?.map((item) => ({
+        const options = googleAuthsResult?.data?.data?.map((item: NGoogle.IGoogleAuth) => ({
             value: item.id,
             label: item.email,
         }));
@@ -87,7 +79,7 @@ const PhotosPage: FC = () => {
         if (!googleAuthsResult?.data?.data?.length) return [];
 
         return googleAuthsResult?.data?.data?.filter(
-            (item) => !isExpiredToken(item.googleExpiresAt),
+            (item: NGoogle.IGoogleAuth) => !isExpiredToken(item.googleExpiresAt),
         );
     }, [googleAuthsResult?.data?.data]);
 

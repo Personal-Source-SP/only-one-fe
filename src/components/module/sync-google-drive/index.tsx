@@ -2,11 +2,10 @@
 
 import { CustomModal } from '@/components/custom';
 import { GoogleDriveFileType, GoogleDriveType } from '@/enums';
-import { useSelectGoogleFolder } from '@/hooks';
-import { NBaseApi, NGoogle, Option } from '@/interfaces';
+import { useCustomData, useCustomMutationData, useSelectGoogleFolder } from '@/hooks';
+import { NGoogle, Option } from '@/interfaces';
 import { getGoogleAuthUrl, isExpiredToken } from '@/libs';
 import { Icon } from '@iconify/react';
-import { useApiUrl, useCustom, useCustomMutation } from '@refinedev/core';
 import {
     Button,
     Card,
@@ -81,25 +80,16 @@ const SyncGoogleDrive: FC<SyncGoogleDriveProps> = ({
     onSuccess,
     onClose,
 }) => {
-    const apiUrl = useApiUrl();
-
     const { options: folderOptionResult, query: queryFolderOptions } = useSelectGoogleFolder({
         enabled: typeof defaultFolderOptions !== 'object',
     });
 
-    const { result: googleAuthsResult, query: queryGoogleAuths } = useCustom<
-        NBaseApi.IResponse<NGoogle.IGoogleAuth[]>
-    >({
-        url: `${apiUrl}/google-auth`,
-        method: 'get',
-        queryOptions: {
-            enabled: typeof defaultGoogleAuths !== 'object',
-        },
+    const { result: googleAuthsResult, query: queryGoogleAuths } = useCustomData({
+        url: 'google-auth',
+        enabled: typeof defaultGoogleAuths !== 'object',
     });
 
-    const { mutate: syncGoogleDrive } = useCustomMutation<NBaseApi.IResponse<boolean>>();
-    const { mutate: previewGoogleDrive } =
-        useCustomMutation<NBaseApi.IResponse<NGoogle.IPreviewGoogleDriveData>>();
+    const { handleCustomMutationData } = useCustomMutationData();
 
     const [form] = Form.useForm<IFormValues>();
 
@@ -128,7 +118,7 @@ const SyncGoogleDrive: FC<SyncGoogleDriveProps> = ({
         if (!googleAuthsResult?.data?.data?.length) return [];
 
         return googleAuthsResult?.data?.data?.filter(
-            (item) => !isExpiredToken(item.googleExpiresAt),
+            (item: NGoogle.IGoogleAuth) => !isExpiredToken(item.googleExpiresAt),
         );
     }, [googleAuthsResult?.data?.data, defaultGoogleAuths]);
 
@@ -306,10 +296,9 @@ const SyncGoogleDrive: FC<SyncGoogleDriveProps> = ({
         }
 
         try {
-            previewGoogleDrive({
+            handleCustomMutationData({
                 values,
-                method: 'post',
-                url: `${apiUrl}/google-drive/preview-data-sync`,
+                url: 'google-drive/preview-data-sync',
                 successNotification: (data) => {
                     setLoading(false);
 
@@ -354,9 +343,9 @@ const SyncGoogleDrive: FC<SyncGoogleDriveProps> = ({
         setLoading(true);
 
         try {
-            syncGoogleDrive({
+            handleCustomMutationData({
                 method: 'put',
-                url: `${apiUrl}/google-drive/save-data-sync`,
+                url: 'google-drive/save-data-sync',
                 values: {
                     type,
                     folderId,
@@ -419,13 +408,13 @@ const SyncGoogleDrive: FC<SyncGoogleDriveProps> = ({
                         >
                             <Select
                                 placeholder="Chọn kết nối Google"
-                                options={googleAuths?.map((auth) => ({
+                                options={googleAuths?.map((auth: NGoogle.IGoogleAuth) => ({
                                     value: auth.id,
                                     label: auth.email,
                                 }))}
                                 onChange={(value) => {
                                     const selectedGoogleAuth = googleAuths?.find(
-                                        (auth) => auth.id === value,
+                                        (auth: NGoogle.IGoogleAuth) => auth.id === value,
                                     );
 
                                     setGoogleAuthId(value);

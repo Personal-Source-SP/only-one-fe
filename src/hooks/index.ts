@@ -1,3 +1,4 @@
+export * from './useCustomData';
 export * from './useCustomModal';
 export * from './useCustomSelect';
 export * from './useDebounceSearch';

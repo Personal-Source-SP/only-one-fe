@@ -6,8 +6,22 @@ interface IUseCustomModalProps {
     action?: 'create' | 'edit';
     autoResetForm?: boolean;
     warnWhenUnsavedChanges?: boolean;
-    errorNotification?: OpenNotificationParams | false;
-    successNotification?: OpenNotificationParams | false;
+    errorNotification?:
+        | OpenNotificationParams
+        | false
+        | ((
+              error?: any,
+              values?: any,
+              resource?: string,
+          ) => OpenNotificationParams | false | undefined);
+    successNotification?:
+        | OpenNotificationParams
+        | false
+        | ((
+              data?: any,
+              values?: any,
+              resource?: string,
+          ) => OpenNotificationParams | false | undefined);
     onMutationError?: (error: any) => void;
     onMutationSuccess?: (data: any) => void;
 }

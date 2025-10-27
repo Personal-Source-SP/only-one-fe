@@ -6,9 +6,9 @@ import Search from '@/components/layout/search';
 import Sidebar from '@/components/layout/sidebar';
 
 import { useMainContext } from '@/contexts/MainContext';
+import { useCustomMutationData } from '@/hooks';
 import { useSearchParamsString } from '@/hooks/useSearchParamsString';
 import { exchangeCodeForTokens, getUserInfoFromGoogle } from '@/libs';
-import { useApiUrl, useCustomMutation } from '@refinedev/core';
 
 import { message, Space } from 'antd';
 import { usePathname, useRouter } from 'next/navigation';
@@ -87,7 +87,6 @@ const getPageTitle = (pathname: string) => {
 };
 
 const MainLayout: FC<MainLayoutProps> = ({ children }) => {
-    const apiUrl = useApiUrl();
     const router = useRouter();
     const pathname = usePathname();
     const handledAuthRef = useRef(false);
@@ -100,7 +99,7 @@ const MainLayout: FC<MainLayoutProps> = ({ children }) => {
 
     const { handleLoading } = useMainContext();
 
-    const { mutate: syncGoogleAuth } = useCustomMutation();
+    const { handleCustomMutationData: syncGoogleAuth } = useCustomMutationData();
 
     useEffect(() => {
         const params = new URLSearchParams(searchParamsString);
@@ -149,7 +148,7 @@ const MainLayout: FC<MainLayoutProps> = ({ children }) => {
 
             syncGoogleAuth({
                 method: 'put',
-                url: `${apiUrl}/google-auth`,
+                url: 'google-auth',
                 values: {
                     email: userInfo.email,
                     accessToken: tokens.access_token,
