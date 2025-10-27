@@ -12,7 +12,7 @@ import {
     DataProviderStatus,
     ElementType,
 } from '@/enums';
-import { useCustomModal, useSelectDataProvider, useTableContainer } from '@/hooks';
+import { useCustomModal, useSelectDataProviderItem, useTableContainer } from '@/hooks';
 import { ActionTableItem, FilterItem, FormFieldItem, NDataProvider } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { Button, Space } from 'antd';
@@ -32,7 +32,7 @@ const DataProviderPage: FC = () => {
         resource: 'data-providers',
     });
 
-    const { options: providerItems } = useSelectDataProvider({
+    const { options: dataProviderItems } = useSelectDataProviderItem({
         id: selectedId,
     });
 
@@ -275,7 +275,7 @@ const DataProviderPage: FC = () => {
             <ScrapeSetting
                 key="scrape-setting"
                 modalPropsData={modalPropsData}
-                dataProviderItemOptions={providerItems}
+                dataProviderItemOptions={dataProviderItems}
                 onClose={() => {
                     modalPropsData?.close();
                     setSelectedId(undefined);
