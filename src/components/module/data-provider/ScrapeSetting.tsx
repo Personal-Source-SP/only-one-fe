@@ -2,6 +2,7 @@
 
 import { CustomFormModal, CustomSelect, CustomSwitch } from '@/components/custom';
 import CodeDisplay from '@/components/module/code-display';
+import DisplayDataProviderStatus from '@/components/module/data-provider/DisplayDataProviderStatus';
 import {
     DEFAULT_API_FUNCTION_GENERATOR,
     DEFAULT_HTML_CONTENT_STRING,
@@ -26,7 +27,6 @@ import {
     Select,
     Space,
     Switch,
-    Tag,
     Typography,
 } from 'antd';
 import { useWatch } from 'antd/es/form/Form';
@@ -75,40 +75,6 @@ const FORM_FIELDS = {
     HTML_CONTENT_STRING: 'htmlContentString',
     ADDITIONAL_URLS: 'additionalUrls',
     ADDITIONAL_EXTRACT_DATA: 'additionalExtractData',
-};
-
-export const displayDataProviderStatus = (status: DataProviderStatus) => {
-    if (!status) return '---';
-
-    let color: string, text: string;
-
-    switch (status) {
-        case DataProviderStatus.READY:
-            color = 'success';
-            text = 'Sẵn sàng';
-            break;
-        case DataProviderStatus.TESTING:
-            color = 'processing';
-            text = 'Đang kiểm tra';
-            break;
-        case DataProviderStatus.UNCONFIGURED:
-            color = 'default';
-            text = 'Chưa cấu hình';
-            break;
-        case DataProviderStatus.ERROR:
-            color = 'error';
-            text = 'Lỗi';
-            break;
-        default:
-            color = 'default';
-            text = status;
-    }
-
-    return (
-        <Tag color={color} className="text-sm font-medium">
-            {text}
-        </Tag>
-    );
 };
 
 const ScrapeSetting: FC<ScrapeSettingProps> = ({
@@ -303,7 +269,7 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
                 <Space size={0}>
                     <span className="mr-1">Cấu hình dữ liệu</span>
                     <span className="mr-2">{`for ${dataProvider.name || dataProvider.baseUrl}`}</span>
-                    {displayDataProviderStatus(dataProvider?.status as DataProviderStatus)}
+                    <DisplayDataProviderStatus status={dataProvider?.status} />
                 </Space>
             </Flex>
         );
