@@ -7,7 +7,6 @@ import {
     CustomFilterType,
     DisplayMode,
     ElementType,
-    QualityMode,
     ScrapeStatusEnum,
     ViewPhotoMode,
 } from '@/enums';
@@ -20,12 +19,10 @@ import dayjs from 'dayjs';
 import { FC, useMemo, useState } from 'react';
 
 const DataHistoryPage: FC = () => {
-    const [isChecked, setIsChecked] = useState(false);
     const [quantityRefetch, setQuantityRefetch] = useState(0);
 
     const [columnDisplay, setColumnDisplay] = useState(4);
     const [viewMode, setViewMode] = useState<ViewPhotoMode>(ViewPhotoMode.ALL);
-    const [qualityMode, setQualityMode] = useState<QualityMode>(QualityMode.LOW);
     const [displayMode, setDisplayMode] = useState<DisplayMode>(DisplayMode.LIST);
 
     const tableContainerData = useTableContainer({
@@ -37,15 +34,8 @@ const DataHistoryPage: FC = () => {
         resource: 'data-history',
     });
 
-    const handlePhotoClick = (googleDriveFileId: string) => {
-        const index = photoItems?.findIndex((photo) => photo.id === googleDriveFileId);
-        if (index !== undefined) {
-            // openLightbox(index);
-        }
-    };
-
     const photoItems: PhotoItem[] = useMemo(() => {
-        const dataHistories = tableContainerData.tableQuery?.data?.data ?? [];
+        const dataHistories = tableContainerData?.tableQuery?.data?.data ?? [];
         if (!dataHistories?.length) return [];
 
         return dataHistories?.map((item) => ({
@@ -55,7 +45,55 @@ const DataHistoryPage: FC = () => {
             lastModified: item.lastModified ?? new Date(),
             folderName: item.googleDriveFolder?.name ?? '',
         }));
-    }, [tableContainerData.tableQuery?.data?.data, qualityMode]);
+    }, [tableContainerData?.tableQuery?.data?.data]);
+
+    const customFilterItems: FilterItem[] = useMemo(() => {
+        const customFilterItems: FilterItem[] = [
+            {
+                span: displayMode === DisplayMode.TABLE ? 6 : 4,
+                showSearch: true,
+                allowClear: true,
+                field: 'type',
+                title: 'Loại dữ liệu',
+                type: CustomFilterType.SELECT,
+                options: [
+                    { label: 'Ảnh', value: 'image' },
+                    { label: 'Video', value: 'video' },
+                    { label: 'Tài liệu', value: 'document' },
+                ],
+            },
+        ];
+
+        if (displayMode === DisplayMode.LIST) {
+            customFilterItems.push(
+                {
+                    span: 4,
+                    value: viewMode,
+                    placeholder: 'Chế độ xem',
+                    type: CustomFilterType.SELECT,
+                    onChange: (value: ViewPhotoMode) => setViewMode(value),
+                    options: [
+                        { value: ViewPhotoMode.ALL, label: 'Xem tất cả' },
+                        { value: ViewPhotoMode.DATE, label: 'Xem theo ngày' },
+                        { value: ViewPhotoMode.FOLDER, label: 'Xem theo thư mục' },
+                    ],
+                },
+                {
+                    span: 2,
+                    value: columnDisplay,
+                    placeholder: 'Số cột',
+                    type: CustomFilterType.SELECT,
+                    onChange: (value: number) => setColumnDisplay(value),
+                    options: [1, 2, 3, 4, 8].map((item) => ({
+                        value: item,
+                        label: item.toString(),
+                    })),
+                },
+            );
+        }
+
+        return customFilterItems;
+    }, [columnDisplay, viewMode, displayMode]);
 
     const columns: ColumnsType<NDataProvider.IDataHistory> = [
         {
@@ -84,21 +122,12 @@ const DataHistoryPage: FC = () => {
         },
     ];
 
-    const customFilterItems: FilterItem[] = [
-        {
-            span: 6,
-            showSearch: true,
-            allowClear: true,
-            field: 'type',
-            title: 'Loại dữ liệu',
-            type: CustomFilterType.SELECT,
-            options: [
-                { label: 'Ảnh', value: 'image' },
-                { label: 'Video', value: 'video' },
-                { label: 'Tài liệu', value: 'document' },
-            ],
-        },
-    ];
+    const handlePhotoClick = (googleDriveFileId: string) => {
+        const index = photoItems?.findIndex((photo) => photo.id === googleDriveFileId);
+        if (index !== undefined) {
+            // openLightbox(index);
+        }
+    };
 
     return (
         <Space size="middle" direction="vertical" className="w-full h-full">
@@ -107,7 +136,12 @@ const DataHistoryPage: FC = () => {
                 elementType={ElementType.TITLE}
                 actions={[
                     <Space key="display-list" align="center">
-                        <Switch checked={isChecked} onChange={(checked) => setIsChecked(checked)} />
+                        <Switch
+                            checked={displayMode === DisplayMode.LIST}
+                            onChange={(checked) =>
+                                setDisplayMode(checked ? DisplayMode.LIST : DisplayMode.TABLE)
+                            }
+                        />
                         <span>Hiển thị dạng danh sách</span>
                     </Space>,
                 ]}
@@ -128,8 +162,8 @@ const DataHistoryPage: FC = () => {
                     },
                 ]}
                 filterSearch={{
-                    span: 18,
                     placeholder: 'Tìm kiếm lịch sử dữ liệu',
+                    span: displayMode === DisplayMode.TABLE ? 18 : 14,
                 }}
                 childrenTop={
                     <PhotoGroups
