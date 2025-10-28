@@ -64,7 +64,9 @@ const CustomTable: FC<CustomTableProps> = ({
             },
             {
                 onSuccess: () => {
-                    handleMessage('Xóa dữ liệu thành công');
+                    handleMessage({
+                        content: 'Xóa dữ liệu thành công',
+                    });
 
                     if (currentPage && currentPage > 1 && tableProps.dataSource?.length === 1) {
                         setCurrentPage(currentPage - 1);
@@ -73,7 +75,10 @@ const CustomTable: FC<CustomTableProps> = ({
                     }
                 },
                 onError: (error) => {
-                    handleMessage(error?.message || 'Lỗi xóa dữ liệu không thành công', 'error');
+                    handleMessage({
+                        type: 'error',
+                        content: error?.message || 'Lỗi xóa dữ liệu không thành công',
+                    });
                 },
             },
         );

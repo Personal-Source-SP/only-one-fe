@@ -1,4 +1,4 @@
-import { Divider, Flex, notification, Tag } from 'antd';
+import { Divider, Flex, Tag } from 'antd';
 
 import {
     CheckOutlined,
@@ -13,6 +13,7 @@ import * as jsBeautify from 'js-beautify';
 import dynamic from 'next/dynamic';
 import { CSSProperties, FC, memo, useEffect, useState } from 'react';
 import ReactDiffViewer from 'react-diff-viewer-continued';
+import { useMainContext } from '@/contexts/MainContext';
 
 const CustomMonacoEditor = dynamic(() => import('./custom-monaco-editor'), {
     ssr: false,
@@ -73,6 +74,8 @@ const CodeDisplay: FC<CodeDisplayProps> = ({
     isDisplayLanguage = true,
     onCodeChange,
 }) => {
+    const { handleNotification } = useMainContext();
+
     const [isEditing, setIsEditing] = useState(false);
     const [editedCode, setEditedCode] = useState(code);
     const [isExpanded, setIsExpanded] = useState(expanded);
@@ -108,12 +111,13 @@ const CodeDisplay: FC<CodeDisplayProps> = ({
         try {
             await navigator.clipboard.writeText(editedCode);
 
-            notification.success({
+            handleNotification({
                 duration: 2,
                 message: 'Code copied to clipboard!',
             });
         } catch (err) {
-            notification.error({
+            handleNotification({
+                type: 'error',
                 duration: 2,
                 message: 'Failed to copy code',
             });

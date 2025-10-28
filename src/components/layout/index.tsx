@@ -113,7 +113,10 @@ const MainLayout: FC<MainLayoutProps> = ({ children }) => {
         handledAuthRef.current = true;
 
         if (error) {
-            handleMessage('Kết nối Google thất bại', 'error');
+            handleMessage({
+                type: 'error',
+                content: 'Kết nối Google thất bại',
+            });
             router.replace(pathname);
             return;
         }
@@ -136,13 +139,19 @@ const MainLayout: FC<MainLayoutProps> = ({ children }) => {
             );
 
             if (!tokens) {
-                handleMessage('Lỗi khi lấy token Google', 'error');
+                handleMessage({
+                    type: 'error',
+                    content: 'Lỗi khi lấy token Google',
+                });
                 return;
             }
 
             const userInfo = await getUserInfoFromGoogle(tokens.access_token);
             if (!userInfo) {
-                handleMessage('Lỗi khi lấy thông tin người dùng Google', 'error');
+                handleMessage({
+                    type: 'error',
+                    content: 'Lỗi khi lấy thông tin người dùng Google',
+                });
                 return;
             }
 
@@ -181,7 +190,10 @@ const MainLayout: FC<MainLayoutProps> = ({ children }) => {
                 },
             });
         } catch (e) {
-            handleMessage('Lỗi khi kết nối Google', 'error');
+            handleMessage({
+                type: 'error',
+                content: 'Lỗi khi kết nối Google',
+            });
         } finally {
             handleLoading(false);
         }

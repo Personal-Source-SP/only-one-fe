@@ -17,11 +17,17 @@ export declare namespace NDataProvider {
 
         queryParams?: string;
 
+        maxResults?: number;
         retryDelay?: number;
         retryAttempts?: number;
         userAgent?: string;
         headers?: Record<string, any>;
-        cookies?: Record<string, any>;
+        cookies?: Array<{
+            name: string;
+            value: string;
+            domain?: string;
+            path?: string;
+        }>;
 
         stealthMode?: boolean;
         cloudflareBypass?: boolean;

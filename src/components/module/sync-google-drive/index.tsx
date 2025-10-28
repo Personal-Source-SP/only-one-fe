@@ -265,13 +265,19 @@ const SyncGoogleDrive: FC<SyncGoogleDriveProps> = ({
             const url = getGoogleAuthUrl();
 
             if (!url) {
-                handleMessage('Lỗi khi tạo URL kết nối Google', 'error');
+                handleMessage({
+                    type: 'error',
+                    content: 'Lỗi khi tạo URL kết nối Google',
+                });
                 return;
             }
 
             window.location.href = url;
         } catch (e) {
-            handleMessage('Lỗi khi tạo URL kết nối Google', 'error');
+            handleMessage({
+                type: 'error',
+                content: 'Lỗi khi tạo URL kết nối Google',
+            });
         } finally {
             setLoading(false);
         }
@@ -332,13 +338,19 @@ const SyncGoogleDrive: FC<SyncGoogleDriveProps> = ({
                 },
             });
         } catch (e) {
-            handleMessage('Lỗi khi xem trước dữ liệu đồng bộ', 'error');
+            handleMessage({
+                type: 'error',
+                content: 'Lỗi khi xem trước dữ liệu đồng bộ',
+            });
         }
     };
 
     const handleSyncData = async () => {
         if (!selectedRows?.length) {
-            handleMessage('Không có dữ liệu để đồng bộ', 'error');
+            handleMessage({
+                type: 'error',
+                content: 'Không có dữ liệu để đồng bộ',
+            });
             return;
         }
 
@@ -381,7 +393,10 @@ const SyncGoogleDrive: FC<SyncGoogleDriveProps> = ({
                 },
             });
         } catch (e) {
-            handleMessage('Lỗi khi đồng bộ dữ liệu', 'error');
+            handleMessage({
+                type: 'error',
+                content: 'Lỗi khi đồng bộ dữ liệu',
+            });
         }
     };
 
@@ -723,10 +738,10 @@ const SyncGoogleDrive: FC<SyncGoogleDriveProps> = ({
                                             setIsActiveGoogleAuth(false);
                                             setGoogleExpiresAt(undefined);
 
-                                            handleMessage(
-                                                'Token đã hết hạn. Vui lòng kết nối lại.',
-                                                'info',
-                                            );
+                                            handleMessage({
+                                                type: 'info',
+                                                content: 'Token đã hết hạn. Vui lòng kết nối lại.',
+                                            });
                                         }}
                                     />
                                 </Flex>

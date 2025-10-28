@@ -177,7 +177,10 @@ const SyncLocal: FC<SyncLocalProps> = ({
 
         try {
             if (!('showOpenFilePicker' in window)) {
-                handleMessage('Trình duyệt không hỗ trợ File System Access API', 'error');
+                handleMessage({
+                    type: 'error',
+                    content: 'Trình duyệt không hỗ trợ File System Access API',
+                });
                 setLoading(false);
                 return;
             }
@@ -190,13 +193,22 @@ const SyncLocal: FC<SyncLocalProps> = ({
             if (directoryHandle) {
                 setDirectoryHandle(directoryHandle);
                 setIsPermissionsGranted(true);
-                handleMessage('Đã cấp quyền truy cập thư mục thành công');
+                handleMessage({
+                    type: 'success',
+                    content: 'Đã cấp quyền truy cập thư mục thành công',
+                });
             }
         } catch (error: any) {
             if (error.name === 'AbortError') {
-                handleMessage('Người dùng đã hủy việc chọn thư mục', 'info');
+                handleMessage({
+                    type: 'info',
+                    content: 'Người dùng đã hủy việc chọn thư mục',
+                });
             } else {
-                handleMessage('Lỗi khi yêu cầu quyền truy cập thư mục: ' + error.message, 'error');
+                handleMessage({
+                    type: 'error',
+                    content: 'Lỗi khi yêu cầu quyền truy cập thư mục: ' + error.message,
+                });
             }
         } finally {
             setLoading(false);
@@ -256,7 +268,10 @@ const SyncLocal: FC<SyncLocalProps> = ({
 
         try {
             if (!directoryHandle) {
-                handleMessage('Chưa chọn thư mục', 'error');
+                handleMessage({
+                    type: 'error',
+                    content: 'Chưa chọn thư mục',
+                });
                 setLoading(false);
                 return;
             }
@@ -276,13 +291,19 @@ const SyncLocal: FC<SyncLocalProps> = ({
             setLoading(false);
         } catch (e) {
             setLoading(false);
-            handleMessage('Lỗi khi xem trước dữ liệu đồng bộ', 'error');
+            handleMessage({
+                type: 'error',
+                content: 'Lỗi khi xem trước dữ liệu đồng bộ',
+            });
         }
     };
 
     const handleSyncData = async () => {
         if (!selectedRows?.length) {
-            handleMessage('Không có dữ liệu để đồng bộ', 'error');
+            handleMessage({
+                type: 'error',
+                content: 'Không có dữ liệu để đồng bộ',
+            });
             return;
         }
 
@@ -309,14 +330,22 @@ const SyncLocal: FC<SyncLocalProps> = ({
 
             if (response.ok) {
                 setCurrentStep(StepEnum.Done);
-                handleMessage('Đồng bộ dữ liệu thành công');
+                handleMessage({
+                    content: 'Đồng bộ dữ liệu thành công',
+                });
             } else {
                 setCurrentStep(StepEnum.Preview);
-                handleMessage('Lỗi khi đồng bộ dữ liệu', 'error');
+                handleMessage({
+                    type: 'error',
+                    content: 'Lỗi khi đồng bộ dữ liệu',
+                });
             }
         } catch (e) {
             setCurrentStep(StepEnum.Preview);
-            handleMessage('Lỗi khi đồng bộ dữ liệu', 'error');
+            handleMessage({
+                type: 'error',
+                content: 'Lỗi khi đồng bộ dữ liệu',
+            });
         } finally {
             setLoading(false);
         }

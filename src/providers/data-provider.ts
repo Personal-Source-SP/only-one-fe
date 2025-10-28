@@ -6,7 +6,7 @@ import axios, { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
 import { Session } from 'next-auth';
 import qs from 'query-string';
 
-const formatErrorMessage = (error: ApiError): string => {
+const formatErrorMessage = (error: ApiError): string | null => {
     if (typeof error === 'string') {
         return error;
     }
@@ -15,7 +15,7 @@ const formatErrorMessage = (error: ApiError): string => {
         return error.map((item) => item.message || item.code).join(', ');
     }
 
-    return error.message || error.code;
+    return null;
 };
 
 const mapOperator = (operator: CrudOperators): string => {

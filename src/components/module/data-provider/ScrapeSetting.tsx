@@ -8,6 +8,7 @@ import {
     DEFAULT_HTML_CONTENT_STRING,
     DEFAULT_PARSER_FUNCTION_GENERATOR,
 } from '@/constants/data-provider';
+import { useMainContext } from '@/contexts/MainContext';
 import { DataProviderStatus, ScraperServiceEnum } from '@/enums';
 import { useCustomModal, useCustomMutationData } from '@/hooks';
 import { NBaseApi, NDataProvider, Option } from '@/interfaces';
@@ -21,7 +22,6 @@ import {
     Form,
     Input,
     InputNumber,
-    notification,
     Row,
     Select,
     Space,
@@ -53,6 +53,7 @@ const FORM_FIELDS = {
 
     QUERY_PARAMS: 'queryParams',
 
+    MAX_RESULTS: 'maxResults',
     RETRY_DELAY: 'retryDelay',
     RETRY_ATTEMPTS: 'retryAttempts',
     USER_AGENT: 'userAgent',
@@ -81,6 +82,7 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
     dataProviderItemOptions,
     onClose,
 }) => {
+    const { handleNotification } = useMainContext();
     const { formProps, modalProps, formLoading } = modalPropsData;
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -112,9 +114,9 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
 
     const handleTestParser = async () => {
         if (!url && !htmlContentString) {
-            notification.error({
+            handleNotification({
+                type: 'error',
                 message: 'URL hoặc HTML content không được để trống',
-                description: 'URL hoặc HTML content không được để trống',
             });
 
             return;
@@ -174,7 +176,8 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
         const targetConfig = values?.targetConfig as NDataProvider.ITargetConfig | undefined;
 
         if (isEmpty(targetConfig)) {
-            return notification.error({
+            return handleNotification({
+                type: 'error',
                 message: 'Hàm parser không được để trống',
                 description: 'Vui lòng nhập hàm parser',
             });
@@ -217,7 +220,8 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
 
     const handleSwitchStatus = (status: DataProviderStatus) => {
         if (!dataProvider?.id) {
-            return notification.error({
+            return handleNotification({
+                type: 'error',
                 message: 'Không thể chuyển trạng thái',
                 description: 'Không thể chuyển trạng thái',
             });
@@ -428,6 +432,16 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
                             name={['targetConfig', FORM_FIELDS.RETRY_ATTEMPTS]}
                         >
                             <InputNumber min={0} placeholder="Số lần thử lại khi có lỗi" />
+                        </Form.Item>
+                    </Col>
+
+                    <Col span={24}>
+                        <Form.Item
+                            label="Số lượng kết quả tối đa"
+                            tooltip="Số lượng kết quả tối đa"
+                            name={['targetConfig', FORM_FIELDS.MAX_RESULTS]}
+                        >
+                            <InputNumber min={0} placeholder="Số lượng kết quả tối đa" />
                         </Form.Item>
                     </Col>
                 </Row>
@@ -672,6 +686,7 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
                 loading: formLoading,
                 footer: renderFooter(),
                 onCancel: handleCancel,
+                open: modalPropsData?.open,
             }}
         >
             <Form
@@ -684,6 +699,7 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
                         ? {
                               scraperService: ScraperServiceEnum.API,
                               targetConfig: {
+                                  maxResults: 10,
                                   retryDelay: 1000,
                                   retryAttempts: 3,
                                   mainContentSelector: '',

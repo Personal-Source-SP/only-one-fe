@@ -9,16 +9,24 @@ import { createContext, FC, PropsWithChildren, useContext, useState } from 'reac
 type NotificationType = 'success' | 'info' | 'warning' | 'error';
 type MessageType = 'success' | 'error' | 'info' | 'warning' | 'loading';
 
+interface IMessageProps {
+    content: string;
+    type?: MessageType;
+    duration?: number;
+}
+
+interface INotificationProps {
+    message: string;
+    description?: string;
+    type?: NotificationType;
+    duration?: number;
+}
+
 interface MainContextType {
     loading: boolean;
     handleLoading: (loading: boolean) => void;
-    handleMessage: (content: string, type?: MessageType, duration?: number) => void;
-    handleNotification: (
-        message: string,
-        description?: string,
-        type?: NotificationType,
-        duration?: number,
-    ) => void;
+    handleMessage: (props: IMessageProps) => void;
+    handleNotification: (props: INotificationProps) => void;
 }
 
 type MainProviderProps = PropsWithChildren<{
@@ -37,7 +45,9 @@ export const MainProvider: FC<MainProviderProps> = ({ children, isPublic = false
         setLoading(loading);
     };
 
-    const handleMessage = (content: string, type?: MessageType, duration?: number) => {
+    const handleMessage = (props: IMessageProps) => {
+        const { content, type, duration } = props;
+
         const truncatedContent = content.length > 50 ? content.slice(0, 50) + ' ...' : content;
 
         messageApi.destroy();
@@ -48,14 +58,10 @@ export const MainProvider: FC<MainProviderProps> = ({ children, isPublic = false
         });
     };
 
-    const handleNotification = (
-        messageText: string,
-        description?: string,
-        type?: NotificationType,
-        duration?: number,
-    ) => {
-        const truncatedMessageText =
-            messageText.length > 50 ? messageText.slice(0, 50) + ' ...' : messageText;
+    const handleNotification = (props: INotificationProps) => {
+        const { message, description, type, duration } = props;
+
+        const truncatedMessageText = message.length > 50 ? message.slice(0, 50) + ' ...' : message;
 
         notificationApi.destroy();
         notificationApi.open({

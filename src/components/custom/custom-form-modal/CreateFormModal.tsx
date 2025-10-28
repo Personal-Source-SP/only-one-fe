@@ -106,16 +106,24 @@ const CreateFormModal: FC<CreateFormModalProps> = ({
         resource: resource,
         onMutationSuccess: (data) => {
             if (!data?.data?.data) {
-                handleMessage('Tạo thất bại', 'error');
+                handleMessage({
+                    type: 'error',
+                    content: 'Tạo thất bại',
+                });
             }
 
-            handleMessage('Tạo thành công');
+            handleMessage({
+                content: 'Tạo thành công',
+            });
 
             close();
             onClose();
         },
         onMutationError: (error) => {
-            handleMessage(error.message || 'Tạo thất bại', 'error');
+            handleMessage({
+                type: 'error',
+                content: error.message || 'Tạo thất bại',
+            });
         },
     });
 

@@ -34,16 +34,24 @@ const EditFormModal: FC<EditFormModalProps> = ({
         resource: resource,
         onMutationSuccess: (data) => {
             if (!data?.data?.data) {
-                handleMessage('Chỉnh sửa thất bại', 'error');
+                handleMessage({
+                    type: 'error',
+                    content: 'Chỉnh sửa thất bại',
+                });
             }
 
-            handleMessage('Chỉnh sửa thành công');
+            handleMessage({
+                content: 'Chỉnh sửa thành công',
+            });
 
             close();
             onClose();
         },
         onMutationError: (error) => {
-            handleMessage(error.message || 'Chỉnh sửa thất bại', 'error');
+            handleMessage({
+                type: 'error',
+                content: error.message || 'Chỉnh sửa thất bại',
+            });
         },
     });
 
