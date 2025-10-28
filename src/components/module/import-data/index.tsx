@@ -26,7 +26,7 @@ import { FC, memo, useState } from 'react';
 
 type ImportDataProps = {
     open: boolean;
-    type: DataImportType;
+    dataType: DataImportType;
     columns: ColumnType<Record<string, any>>[];
     onClose: () => void;
     onSuccess: () => void;
@@ -38,7 +38,7 @@ const StepEnum = {
     Result: 2,
 };
 
-const ImportData: FC<ImportDataProps> = ({ open, type, columns, onClose, onSuccess }) => {
+const ImportData: FC<ImportDataProps> = ({ open, dataType, columns, onClose, onSuccess }) => {
     const { handleMessage } = useMainContext();
 
     const [pageSize, setPageSize] = useState(50);
@@ -85,7 +85,7 @@ const ImportData: FC<ImportDataProps> = ({ open, type, columns, onClose, onSucce
 
         try {
             handleCustomMutationData({
-                url: `import-data/preview-import-data/${type}`,
+                url: `import-data/preview-import-data/${dataType}`,
                 values: formData,
                 successNotification(data) {
                     const response =
@@ -129,6 +129,7 @@ const ImportData: FC<ImportDataProps> = ({ open, type, columns, onClose, onSucce
             handleCustomMutationData({
                 url: 'import-data/import-data',
                 values: {
+                    dataType,
                     data: previewItemData?.data ?? [],
                 },
                 successNotification(data) {

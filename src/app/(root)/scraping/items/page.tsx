@@ -122,8 +122,17 @@ const ItemPage: FC = () => {
             title: 'Mã',
             dataIndex: 'code',
             key: 'code',
+            width: '15%',
+            align: 'center',
             ellipsis: true,
-            width: '50%',
+        },
+        {
+            title: 'Trạng thái ánh xạ',
+            dataIndex: 'mappingStatus',
+            key: 'mappingStatus',
+            align: 'center',
+            width: '35%',
+            render: (mappingStatus: ProductMappingStatus) => displayMappingStatus(mappingStatus),
         },
     ];
 
@@ -215,8 +224,8 @@ const ItemPage: FC = () => {
             {openImportItemModal && (
                 <ImportData
                     key="import-item"
-                    type={DataImportType.ITEM}
                     open={openImportItemModal}
+                    dataType={DataImportType.ITEM}
                     onClose={() => setOpenImportItemModal(false)}
                     onSuccess={() => tableContainerData?.tableQuery?.refetch()}
                     columns={importDataColumns as unknown as ColumnType<Record<string, any>>[]}
