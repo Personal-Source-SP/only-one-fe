@@ -3,8 +3,8 @@
 import {
     CustomFilterType,
     ElementType,
-    GoogleDriveFileType,
     GoogleDriveType,
+    MimeType,
     QualityMode,
     ViewPhotoMode,
 } from '@/enums';
@@ -44,9 +44,7 @@ const PhotosPage: FC = () => {
 
     const tableContainerData = useTableContainer({
         resource: 'google-file',
-        defaultFilters: [
-            { field: 'mimeType', operator: 'contains', value: GoogleDriveFileType.IMAGE },
-        ],
+        defaultFilters: [{ field: 'mimeType', operator: 'contains', value: MimeType.IMAGE }],
     });
 
     const { result: googleAuthsResult, query: queryGoogleAuths } = useCustomData({

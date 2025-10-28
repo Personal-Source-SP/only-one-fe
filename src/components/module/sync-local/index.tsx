@@ -2,7 +2,7 @@
 
 import { CustomModal } from '@/components/custom';
 import { useMainContext } from '@/contexts/MainContext';
-import { GoogleDriveFileType, GoogleDriveType } from '@/enums';
+import { MimeType, GoogleDriveType } from '@/enums';
 import { useCustomMutationData } from '@/hooks';
 import { NGoogle, Option } from '@/interfaces';
 import { Icon } from '@iconify/react';
@@ -57,7 +57,7 @@ interface IFormValues {
     type: GoogleDriveType;
     folderId?: string;
     maxResults?: number;
-    fileTypes?: GoogleDriveFileType[];
+    fileTypes?: MimeType[];
     modifiedTimeTo?: string;
     modifiedTimeFrom?: string;
 }
@@ -80,8 +80,8 @@ const SyncLocal: FC<SyncLocalProps> = ({
     const [directoryHandle, setDirectoryHandle] = useState<any>(null);
 
     const [type, setType] = useState(GoogleDriveType.FILE);
+    const [fileTypes, setFileTypes] = useState<MimeType[]>([]);
     const [currentStep, setCurrentStep] = useState(StepEnum.Settings);
-    const [fileTypes, setFileTypes] = useState<GoogleDriveFileType[]>([]);
     const [folderId, setFolderId] = useState<string | undefined>(undefined);
 
     const [pageSize, setPageSize] = useState(50);
@@ -428,8 +428,8 @@ const SyncLocal: FC<SyncLocalProps> = ({
                                 mode="multiple"
                                 placeholder="Loại tệp"
                                 disabled={type === GoogleDriveType.FOLDER}
-                                onChange={(value) => setFileTypes(value as GoogleDriveFileType[])}
-                                options={Object.values(GoogleDriveFileType).map((type) => ({
+                                onChange={(value) => setFileTypes(value as MimeType[])}
+                                options={Object.values(MimeType).map((type) => ({
                                     value: type,
                                     label: type?.toUpperCase(),
                                 }))}

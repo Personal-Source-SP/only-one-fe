@@ -11,19 +11,19 @@ const { RangePicker } = DatePicker;
 type CustomDatePickerProps = {
     name: string;
     label: string;
-    dateRange: [string, string];
     setDateRange: (dateRange: [string, string]) => void;
     showTime?: boolean;
     allowClear?: boolean;
+    dateRange?: [string, string];
 };
 
 const CustomDatePicker: FC<CustomDatePickerProps> = ({
     name,
     label,
-    dateRange,
     setDateRange,
     showTime,
     allowClear,
+    dateRange,
 }) => {
     const presets: any[] = [
         {

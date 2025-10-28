@@ -1,10 +1,24 @@
 'use client';
 
 import { CustomDatePicker, CustomFormModal } from '@/components/custom';
+import { MimeType } from '@/enums';
 import { useCustomMutationData } from '@/hooks';
 import { NBaseApi, NDataProvider, Option } from '@/interfaces';
 import { Icon } from '@iconify/react';
-import { Button, Card, Col, Flex, Form, Row, Select, Space, StepProps, Steps, Table } from 'antd';
+import {
+    Button,
+    Card,
+    Col,
+    Flex,
+    Form,
+    Row,
+    Select,
+    Space,
+    StepProps,
+    Steps,
+    Switch,
+    Table,
+} from 'antd';
 import { ColumnType } from 'antd/es/table';
 import dayjs from 'dayjs';
 import { FC, memo, useMemo, useState } from 'react';
@@ -24,11 +38,11 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({ open, dataProviders, on
     const [pageSize, setPageSize] = useState(50);
     const [isLoading, setIsLoading] = useState(false);
     const [currentStep, setCurrentStep] = useState(StepEnum.Settings);
+
+    const [mimeTypes, setMimeTypes] = useState<MimeType[]>([]);
+    const [dateRanges, setDateRanges] = useState<[string, string]>();
     const [dataProviderIds, setDataProviderIds] = useState<string[]>([]);
-    const [dateRanges, setDateRanges] = useState<[string, string]>([
-        dayjs().startOf('d').toISOString(),
-        dayjs().endOf('d').toISOString(),
-    ]);
+    const [checkDuplicateData, setCheckDuplicateData] = useState<boolean>(true);
 
     const [error, setError] = useState(0);
     const [process, setProcess] = useState(0);
@@ -120,8 +134,10 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({ open, dataProviders, on
             handleCustomMutationData({
                 url: 'data-history/process-scrape-data',
                 values: {
+                    mimeTypes,
                     dataProviderIds,
-                    lastSuccessfulScrapeAt: dateRanges[1],
+                    checkDuplicateData,
+                    lastSuccessfulScrapeAt: dateRanges?.[1],
                 },
                 successNotification(data) {
                     const response =
@@ -184,6 +200,36 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({ open, dataProviders, on
         return (
             <Form layout="vertical">
                 <Row gutter={[8, 8]}>
+                    <Col span={8}>
+                        <Form.Item
+                            name="checkDuplicateData"
+                            label="Kiểm tra dữ liệu trùng lặp"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Vui lòng chọn kiểm tra dữ liệu trùng lặp',
+                                },
+                            ]}
+                        >
+                            <Switch
+                                defaultChecked={checkDuplicateData}
+                                onChange={(value) => setCheckDuplicateData(value)}
+                            />
+                        </Form.Item>
+                    </Col>
+                    <Col span={16}>
+                        <Form.Item name="mimeTypes" label="Loại tệp">
+                            <Select
+                                mode="multiple"
+                                placeholder="Loại tệp"
+                                onChange={(value) => setMimeTypes(value as MimeType[])}
+                                options={Object.values(MimeType).map((type) => ({
+                                    value: type,
+                                    label: type?.toUpperCase(),
+                                }))}
+                            />
+                        </Form.Item>
+                    </Col>
                     <Col span={24}>
                         <Form.Item
                             label="Nhà cung cấp"

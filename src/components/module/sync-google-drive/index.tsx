@@ -2,7 +2,7 @@
 
 import { CustomModal } from '@/components/custom';
 import { useMainContext } from '@/contexts/MainContext';
-import { GoogleDriveFileType, GoogleDriveType } from '@/enums';
+import { GoogleDriveType, MimeType } from '@/enums';
 import { useCustomData, useCustomMutationData, useSelectGoogleFolder } from '@/hooks';
 import { NGoogle, Option } from '@/interfaces';
 import { getGoogleAuthUrl, isExpiredToken } from '@/libs';
@@ -66,7 +66,7 @@ interface IFormValues {
     type: GoogleDriveType;
     folderId?: string;
     maxResults?: number;
-    fileTypes?: GoogleDriveFileType[];
+    fileTypes?: MimeType[];
     modifiedTimeFrom?: string;
     modifiedTimeTo?: string;
 }
@@ -102,8 +102,8 @@ const SyncGoogleDrive: FC<SyncGoogleDriveProps> = ({
     const [googleExpiresAt, setGoogleExpiresAt] = useState<Date | undefined>(undefined);
 
     const [type, setType] = useState(GoogleDriveType.FILE);
+    const [fileTypes, setFileTypes] = useState<MimeType[]>([]);
     const [currentStep, setCurrentStep] = useState(StepEnum.Settings);
-    const [fileTypes, setFileTypes] = useState<GoogleDriveFileType[]>([]);
     const [folderId, setFolderId] = useState<string | undefined>(undefined);
 
     const [pageSize, setPageSize] = useState(50);
@@ -503,8 +503,8 @@ const SyncGoogleDrive: FC<SyncGoogleDriveProps> = ({
                                 mode="multiple"
                                 placeholder="Loại tệp"
                                 disabled={type === GoogleDriveType.FOLDER}
-                                onChange={(value) => setFileTypes(value as GoogleDriveFileType[])}
-                                options={Object.values(GoogleDriveFileType).map((type) => ({
+                                onChange={(value) => setFileTypes(value as MimeType[])}
+                                options={Object.values(MimeType).map((type) => ({
                                     value: type,
                                     label: type?.toUpperCase(),
                                 }))}

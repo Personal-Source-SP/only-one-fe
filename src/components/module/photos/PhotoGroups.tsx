@@ -1,7 +1,7 @@
 'use client';
 
 import { Empty } from '@/components/common';
-import { GoogleDriveFileType } from '@/enums';
+import { MimeType } from '@/enums';
 import { ViewPhotoMode } from '@/enums/photo.enum';
 import { PhotoGroup, PhotoItem } from '@/interfaces';
 import { List, Spin, Tag } from 'antd';
@@ -20,9 +20,7 @@ const PhotoGroups: FC<PhotoGroupsProps> = ({ columns, displayMode, data, onPhoto
     const [loadingImages, setLoadingImages] = useState<Set<string>>(new Set());
 
     const groupedPhotos: PhotoGroup[] = useMemo(() => {
-        const photoFiles = data?.filter((file) =>
-            file.mimeType?.startsWith(GoogleDriveFileType.IMAGE),
-        );
+        const photoFiles = data?.filter((file) => file.mimeType?.startsWith(MimeType.IMAGE));
 
         if (!photoFiles?.length) return [];
 
