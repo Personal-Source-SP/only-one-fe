@@ -45,10 +45,6 @@ const TableContainer: FC<TableContainerProps> = ({
         tableProps,
     } = tableContainerData;
 
-    const data = useMemo(() => {
-        return tableQuery?.data?.data ?? [];
-    }, [tableQuery?.data?.data]);
-
     const filterItems = useMemo(() => {
         const filterItems = [];
 
@@ -102,7 +98,7 @@ const TableContainer: FC<TableContainerProps> = ({
                     <PaginationControls
                         itemsPerPage={pageSize}
                         currentPage={currentPage}
-                        totalItems={data?.length}
+                        totalItems={tableQuery?.data?.meta?.totalItems ?? 0}
                         onPageChange={(page) => setCurrentPage(page)}
                         onItemsPerPageChange={(pageSize) => {
                             setCurrentPage(1);

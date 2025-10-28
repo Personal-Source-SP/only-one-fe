@@ -25,6 +25,10 @@ const DataHistoryPage: FC = () => {
 
     const tableContainerData = useTableContainer({
         resource: 'data-history',
+        defaultPagination: {
+            pageSize: 30,
+            mode: 'server',
+        },
     });
 
     const { options: dataProviders } = useSelectDataProvider();

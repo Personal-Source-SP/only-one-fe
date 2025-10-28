@@ -156,6 +156,8 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({ open, dataProviders, on
                         data?.data as NBaseApi.IResponse<NDataProvider.IScrapeDataResponse>;
 
                     if (!response?.data) {
+                        setIsLoading(false);
+
                         return {
                             type: 'error',
                             message: 'Cào dữ liệu thất bại',
@@ -165,6 +167,7 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({ open, dataProviders, on
 
                     handleChangeStep(StepEnum.Result);
 
+                    setIsLoading(false);
                     setError(response?.data?.error || 0);
                     setProcess(response?.data?.process || 0);
                     setSuccess(response?.data?.success || 0);
@@ -176,6 +179,8 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({ open, dataProviders, on
                     };
                 },
                 errorNotification: (error) => {
+                    setIsLoading(false);
+
                     return {
                         type: 'error',
                         message: 'Cào dữ liệu thất bại',
@@ -185,8 +190,6 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({ open, dataProviders, on
             });
         } catch (error) {
             console.log(error);
-        } finally {
-            setIsLoading(false);
         }
     };
 

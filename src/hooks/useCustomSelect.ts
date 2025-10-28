@@ -16,6 +16,7 @@ export const useCustomSelect = (props: IUseSelectProps<any>) => {
         resource: resource ?? '',
         pagination: { mode: 'off' },
         queryOptions: { enabled: enabled ?? false },
+        sorters: [{ field: 'createdAt', order: 'desc' }],
         optionValue: optionValue ?? ((item: any) => item.id ?? ''),
         optionLabel: optionLabel ?? ((item: any) => item.name ?? ''),
     });
