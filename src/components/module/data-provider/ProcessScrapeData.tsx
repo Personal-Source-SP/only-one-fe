@@ -185,11 +185,13 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({ open, dataProviders, on
     const renderFooter = () => {
         return (
             <Flex justify="end" align="center" gap={16}>
-                <Button type="primary" htmlType="submit" onClick={handleProcessScrapeData}>
-                    Lưu
-                </Button>
+                {currentStep === StepEnum.Settings && (
+                    <Button type="primary" htmlType="submit" onClick={handleProcessScrapeData}>
+                        Xử lý
+                    </Button>
+                )}
 
-                <Button onClick={onClose}>Hủy</Button>
+                <Button onClick={onClose}>Đóng</Button>
             </Flex>
         );
     };
@@ -200,7 +202,7 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({ open, dataProviders, on
         return (
             <Form layout="vertical">
                 <Row gutter={[8, 8]}>
-                    <Col span={8}>
+                    <Col span={24}>
                         <Form.Item
                             name="checkDuplicateData"
                             label="Kiểm tra dữ liệu trùng lặp"
@@ -217,7 +219,7 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({ open, dataProviders, on
                             />
                         </Form.Item>
                     </Col>
-                    <Col span={16}>
+                    <Col span={24}>
                         <Form.Item name="mimeTypes" label="Loại tệp">
                             <Select
                                 mode="multiple"
@@ -264,24 +266,32 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({ open, dataProviders, on
         return (
             <Space direction="vertical" className="w-full h-full">
                 <Card className="shadow-sm" variant="borderless">
-                    <div className="grid gap-6 grid-cols-3">
+                    <div className="grid gap-6 grid-cols-4">
                         <Card className="text-center bg-blue-50 border-blue-200">
                             <p className="text-sm text-gray-600 font-bold mt-1">
-                                Tổng số dữ liệu đang xử lý
+                                Số nhà cung cấp xử lý
                             </p>
                             <div className="text-blue-600 text-2xl font-bold">{process ?? 0}</div>
                         </Card>
                         <Card className="text-center bg-blue-50 border-blue-200">
                             <p className="text-sm text-gray-600 font-bold mt-1">
-                                Tổng số dữ liệu thành công
+                                Số nhà cung cấp thành công
                             </p>
                             <div className="text-blue-600 text-2xl font-bold">{success ?? 0}</div>
                         </Card>
                         <Card className="text-center bg-blue-50 border-blue-200">
                             <p className="text-sm text-gray-600 font-bold mt-1">
-                                Tổng số dữ liệu lỗi
+                                Số nhà cung cấp lỗi
                             </p>
                             <div className="text-blue-600 text-2xl font-bold">{error ?? 0}</div>
+                        </Card>
+                        <Card className="text-center bg-blue-50 border-blue-200">
+                            <p className="text-sm text-gray-600 font-bold mt-1">
+                                Tổng số dữ liệu tìm thấy
+                            </p>
+                            <div className="text-blue-600 text-2xl font-bold">
+                                {previewData?.length ?? 0}
+                            </div>
                         </Card>
                     </div>
                 </Card>

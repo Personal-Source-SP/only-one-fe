@@ -104,10 +104,11 @@ export declare namespace NDataProvider {
             dataProviderName: string;
             dataProviderItemId: string;
             dataProviderItemUrl: string;
-            data: Record<string, any>;
 
-            url?: string;
-            mimeType?: string;
+            dataId: string;
+            data: Record<string, any>;
+            url: string;
+            mimeType: string;
             lastModified?: Date;
         }[];
 
