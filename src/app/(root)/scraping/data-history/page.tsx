@@ -1,12 +1,12 @@
 'use client';
 
-import { CustomElement, TableContainer } from '@/components/custom';
+import { CustomElement, CustomLightBox, TableContainer } from '@/components/custom';
 import { PhotoGroups } from '@/components/module/photos';
 import { CustomFilterType, DisplayMode, ElementType, ViewPhotoMode } from '@/enums';
 import { useCustomModal, useTableContainer } from '@/hooks';
 import { FilterItem, NDataProvider, PhotoItem } from '@/interfaces';
 import { Icon } from '@iconify/react';
-import { Space, Switch } from 'antd';
+import { Button, Space, Switch } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
 import { FC, useMemo, useState } from 'react';
@@ -15,6 +15,9 @@ const DataHistoryPage: FC = () => {
     const [columnDisplay, setColumnDisplay] = useState(4);
     const [viewMode, setViewMode] = useState<ViewPhotoMode>(ViewPhotoMode.ALL);
     const [displayMode, setDisplayMode] = useState<DisplayMode>(DisplayMode.LIST);
+
+    const [isLightboxOpen, setIsLightboxOpen] = useState<boolean>(false);
+    const [currentPhotoIndex, setCurrentPhotoIndex] = useState<number>(0);
 
     const tableContainerData = useTableContainer({
         resource: 'data-history',
@@ -106,10 +109,11 @@ const DataHistoryPage: FC = () => {
         },
     ];
 
-    const handlePhotoClick = (googleDriveFileId: string) => {
-        const index = photoItems?.findIndex((photo) => photo.id === googleDriveFileId);
+    const handlePhotoClick = (dataHistoryId: string) => {
+        const index = photoItems?.findIndex((photo) => photo.id === dataHistoryId);
         if (index !== undefined) {
-            // openLightbox(index);
+            setIsLightboxOpen(true);
+            setCurrentPhotoIndex(index);
         }
     };
 
@@ -119,6 +123,14 @@ const DataHistoryPage: FC = () => {
                 title="Danh sách lịch sử dữ liệu"
                 elementType={ElementType.TITLE}
                 actions={[
+                    <Button
+                        type="primary"
+                        key="slideshow"
+                        icon={<Icon icon="lucide:play" />}
+                        onClick={() => setIsLightboxOpen(true)}
+                    >
+                        Trình chiếu
+                    </Button>,
                     <Space key="display-list" align="center">
                         <Switch
                             checked={displayMode === DisplayMode.LIST}
@@ -156,6 +168,15 @@ const DataHistoryPage: FC = () => {
                         onPhotoClick={handlePhotoClick}
                     />
                 }
+            />
+
+            <CustomLightBox
+                isOpen={isLightboxOpen}
+                index={currentPhotoIndex}
+                closeLightbox={() => setIsLightboxOpen(false)}
+                slides={(photoItems || [])?.map((p) => ({
+                    src: p.url,
+                }))}
             />
         </Space>
     );

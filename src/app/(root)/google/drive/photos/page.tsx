@@ -14,15 +14,7 @@ import { Button, Space } from 'antd';
 import { isNumber } from 'lodash';
 import { FC, useEffect, useMemo, useState } from 'react';
 
-import Lightbox from 'yet-another-react-lightbox';
-import Fullscreen from 'yet-another-react-lightbox/plugins/fullscreen';
-import Slideshow from 'yet-another-react-lightbox/plugins/slideshow';
-import Thumbnails from 'yet-another-react-lightbox/plugins/thumbnails';
-import 'yet-another-react-lightbox/plugins/thumbnails.css';
-import Zoom from 'yet-another-react-lightbox/plugins/zoom';
-import 'yet-another-react-lightbox/styles.css';
-
-import { CustomElement, TableContainer } from '@/components/custom';
+import { CustomElement, CustomLightBox, TableContainer } from '@/components/custom';
 import { PhotoGroups } from '@/components/module/photos';
 
 import SyncGoogleDrive from '@/components/module/sync-google-drive';
@@ -38,8 +30,8 @@ const PhotosPage: FC = () => {
 
     const [isOpenSyncFile, setIsOpenSyncFile] = useState(false);
     const [isOpenSyncLocal, setIsOpenSyncLocal] = useState(false);
+
     const [isLightboxOpen, setIsLightboxOpen] = useState<boolean>(false);
-    const [slideshowInterval, setSlideshowInterval] = useState<number>(3);
     const [currentPhotoIndex, setCurrentPhotoIndex] = useState<number>(0);
 
     const tableContainerData = useTableContainer({
@@ -115,21 +107,9 @@ const PhotosPage: FC = () => {
         updateColumns();
     }, []);
 
-    const startSlideshow = () => {
-        setIsLightboxOpen(true);
-    };
-
-    const stopSlideshow = () => {
-        setIsLightboxOpen(false);
-    };
-
     const openLightbox = (index: number) => {
         setIsLightboxOpen(true);
         setCurrentPhotoIndex(index);
-    };
-
-    const closeLightbox = () => {
-        setIsLightboxOpen(false);
     };
 
     const handlePhotoClick = (googleDriveFileId: string) => {
@@ -211,8 +191,8 @@ const PhotosPage: FC = () => {
                     <Button
                         key="slideshow"
                         type="primary"
-                        onClick={startSlideshow}
                         icon={<Icon icon="lucide:play" />}
+                        onClick={() => setIsLightboxOpen(true)}
                     >
                         Trình chiếu
                     </Button>,
@@ -254,18 +234,13 @@ const PhotosPage: FC = () => {
                 }
             />
 
-            <Lightbox
-                open={isLightboxOpen}
+            <CustomLightBox
+                isOpen={isLightboxOpen}
                 index={currentPhotoIndex}
-                slideshow={{ delay: slideshowInterval * 1000 }}
-                plugins={[Fullscreen, Slideshow, Thumbnails, Zoom]}
+                closeLightbox={() => setIsLightboxOpen(false)}
                 slides={(googleDriveFiles || [])?.map((p) => ({
                     src: getDriveImageUrl(p, QualityMode.LOW),
                 }))}
-                close={() => {
-                    closeLightbox();
-                    stopSlideshow();
-                }}
             />
 
             <SyncGoogleDrive
