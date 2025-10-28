@@ -9,3 +9,7 @@ export enum MimeType {
     ARCHIVE = 'archive',
     OTHER = 'other',
 }
+
+export enum DataImportType {
+    ITEM = 'item',
+}

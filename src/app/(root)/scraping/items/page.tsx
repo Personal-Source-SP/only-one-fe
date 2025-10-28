@@ -1,13 +1,13 @@
 'use client';
 
 import { CreateFormModal, CustomElement, EditFormModal, TableContainer } from '@/components/custom';
-import { ImportItem } from '@/components/module/data-provider';
-import { ElementType, ProductMappingStatus } from '@/enums';
+import ImportData from '@/components/module/import-data';
+import { DataImportType, ElementType, ProductMappingStatus } from '@/enums';
 import { useTableContainer } from '@/hooks';
 import { FormFieldItem, NDataProvider } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { Button, Space, Tag } from 'antd';
-import { ColumnsType } from 'antd/es/table';
+import { ColumnsType, ColumnType } from 'antd/es/table';
 import dayjs from 'dayjs';
 import { FC, useCallback, useState } from 'react';
 
@@ -110,6 +110,23 @@ const ItemPage: FC = () => {
         },
     ];
 
+    const importDataColumns: ColumnType<NDataProvider.IItem>[] = [
+        {
+            title: 'Tên đối tượng',
+            dataIndex: 'name',
+            key: 'name',
+            ellipsis: true,
+            width: '50%',
+        },
+        {
+            title: 'Mã',
+            dataIndex: 'code',
+            key: 'code',
+            ellipsis: true,
+            width: '50%',
+        },
+    ];
+
     const formFields: FormFieldItem[] = [
         {
             name: 'name',
@@ -196,11 +213,13 @@ const ItemPage: FC = () => {
             />
 
             {openImportItemModal && (
-                <ImportItem
+                <ImportData
                     key="import-item"
+                    type={DataImportType.ITEM}
                     open={openImportItemModal}
                     onClose={() => setOpenImportItemModal(false)}
                     onSuccess={() => tableContainerData?.tableQuery?.refetch()}
+                    columns={importDataColumns as unknown as ColumnType<Record<string, any>>[]}
                 />
             )}
         </Space>

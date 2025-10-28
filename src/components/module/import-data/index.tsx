@@ -2,8 +2,9 @@
 
 import { CustomFormModal } from '@/components/custom';
 import { useMainContext } from '@/contexts/MainContext';
+import { DataImportType } from '@/enums';
 import { useCustomMutationData } from '@/hooks';
-import { NBaseApi, NDataProvider } from '@/interfaces';
+import { NBaseApi, NImportData } from '@/interfaces';
 import { FileExcelOutlined } from '@ant-design/icons';
 import { Icon } from '@iconify/react';
 import {
@@ -23,8 +24,10 @@ import {
 import { ColumnType } from 'antd/es/table';
 import { FC, memo, useState } from 'react';
 
-type ImportItemProps = {
+type ImportDataProps = {
     open: boolean;
+    type: DataImportType;
+    columns: ColumnType<Record<string, any>>[];
     onClose: () => void;
     onSuccess: () => void;
 };
@@ -35,7 +38,7 @@ const StepEnum = {
     Result: 2,
 };
 
-const ImportItem: FC<ImportItemProps> = ({ open, onClose, onSuccess }) => {
+const ImportData: FC<ImportDataProps> = ({ open, type, columns, onClose, onSuccess }) => {
     const { handleMessage } = useMainContext();
 
     const [pageSize, setPageSize] = useState(50);
@@ -44,8 +47,8 @@ const ImportItem: FC<ImportItemProps> = ({ open, onClose, onSuccess }) => {
     const [currentStep, setCurrentStep] = useState(StepEnum.Upload);
 
     const [previewItemData, setPreviewItemData] =
-        useState<NDataProvider.IPreviewImportItemResponse>();
-    const [importItemData, setImportItemData] = useState<NDataProvider.IImportItemResponse>();
+        useState<NImportData.IPreviewImportDataResponse>();
+    const [importItemData, setImportItemData] = useState<NImportData.IImportDataResponse>();
 
     const { handleCustomMutationData } = useCustomMutationData();
 
@@ -67,23 +70,6 @@ const ImportItem: FC<ImportItemProps> = ({ open, onClose, onSuccess }) => {
         },
     ];
 
-    const columns: ColumnType<NDataProvider.IItem>[] = [
-        {
-            title: 'Tên đối tượng',
-            dataIndex: 'name',
-            key: 'name',
-            ellipsis: true,
-            width: '50%',
-        },
-        {
-            title: 'Mã',
-            dataIndex: 'code',
-            key: 'code',
-            ellipsis: true,
-            width: '50%',
-        },
-    ];
-
     const handleImportFile = async () => {
         if (!fileList?.length) {
             return handleMessage({
@@ -99,11 +85,11 @@ const ImportItem: FC<ImportItemProps> = ({ open, onClose, onSuccess }) => {
 
         try {
             handleCustomMutationData({
-                url: 'items/preview-import-data',
+                url: `import-data/preview-import-data/${type}`,
                 values: formData,
                 successNotification(data) {
                     const response =
-                        data?.data as NBaseApi.IResponse<NDataProvider.IPreviewImportItemResponse>;
+                        data?.data as NBaseApi.IResponse<NImportData.IPreviewImportDataResponse>;
 
                     if (!response?.data) {
                         return {
@@ -141,13 +127,13 @@ const ImportItem: FC<ImportItemProps> = ({ open, onClose, onSuccess }) => {
 
         try {
             handleCustomMutationData({
-                url: 'items/import-item-data',
+                url: 'import-data/import-data',
                 values: {
-                    items: previewItemData?.items ?? [],
+                    data: previewItemData?.data ?? [],
                 },
                 successNotification(data) {
                     const response =
-                        data?.data as NBaseApi.IResponse<NDataProvider.IImportItemResponse>;
+                        data?.data as NBaseApi.IResponse<NImportData.IImportDataResponse>;
 
                     if (!response?.data) {
                         return {
@@ -300,9 +286,9 @@ const ImportItem: FC<ImportItemProps> = ({ open, onClose, onSuccess }) => {
                     bordered
                     size="small"
                     rowKey="itemId"
+                    columns={columns}
                     key="preview-item-table"
-                    columns={columns as any}
-                    dataSource={previewItemData?.items ?? []}
+                    dataSource={previewItemData?.data ?? []}
                     pagination={{
                         pageSize,
                         showSizeChanger: true,
@@ -405,4 +391,4 @@ const ImportItem: FC<ImportItemProps> = ({ open, onClose, onSuccess }) => {
     );
 };
 
-export default memo(ImportItem);
+export default memo(ImportData);

@@ -119,20 +119,4 @@ export declare namespace NDataProvider {
             dataProviderItemId?: string;
         }[];
     }
-
-    interface IPreviewImportItemResponse {
-        statistics?: {
-            errors: number;
-            updates: number;
-            overridden: number;
-        };
-        items: IItem[];
-    }
-
-    interface IImportItemResponse {
-        success: boolean;
-        message: string;
-        updated: number;
-        validationErrorMessages?: string[];
-    }
 }
