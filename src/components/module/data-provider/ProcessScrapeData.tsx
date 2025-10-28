@@ -69,7 +69,7 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({ open, dataProviders, on
         },
     ];
 
-    const columns: ColumnType<NDataProvider.IScrapeDataResponse['successData']>[] = [
+    const columns: ColumnType<NDataProvider.IItem>[] = [
         {
             title: 'Nhà cung cấp',
             dataIndex: 'dataProviderName',

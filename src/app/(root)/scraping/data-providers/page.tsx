@@ -184,13 +184,13 @@ const DataProviderPage: FC = () => {
         {
             key: 'edit',
             label: 'Chỉnh sửa',
-            icon: <Icon icon="lucide:edit" />,
+            icon: <Icon icon="tabler:edit" />,
             onClick: (record) => setEditItemId(record?.id),
         },
         {
             key: 'scrape-unconfigured',
             label: 'Cấu hình dữ liệu',
-            icon: <Icon icon="lucide:settings-2" />,
+            icon: <Icon icon="tabler:database-cog" />,
             onClick: (record) => {
                 setSelectedId(record?.id);
                 modalPropsData?.show?.(record?.id);
@@ -198,8 +198,8 @@ const DataProviderPage: FC = () => {
         },
         {
             key: 'search-configured',
-            label: 'Câu hình tìm kiếm',
-            icon: <Icon icon="lucide:search-code" />,
+            label: 'Cấu hình tìm kiếm',
+            icon: <Icon icon="tabler:search" />,
             onClick: (record) => {
                 setSelectedId(record?.id);
                 modalPropsData?.show?.(record?.id);

@@ -1,6 +1,7 @@
 'use client';
 
 import { CreateFormModal, CustomElement, EditFormModal, TableContainer } from '@/components/custom';
+import { ImportItem } from '@/components/module/data-provider';
 import { ElementType, ProductMappingStatus } from '@/enums';
 import { useTableContainer } from '@/hooks';
 import { FormFieldItem, NDataProvider } from '@/interfaces';
@@ -12,6 +13,7 @@ import { FC, useCallback, useState } from 'react';
 
 const ItemPage: FC = () => {
     const [openCreateItemModal, setOpenCreateItemModal] = useState(false);
+    const [openImportItemModal, setOpenImportItemModal] = useState(false);
     const [editItemId, setEditItemId] = useState<string | undefined>(undefined);
 
     const tableContainerData = useTableContainer({
@@ -32,9 +34,9 @@ const ItemPage: FC = () => {
                 color = '#bfbfbf';
                 text = 'Chưa ánh xạ';
                 break;
-            case ProductMappingStatus.MAPPED_HAS_PRICE:
+            case ProductMappingStatus.MAPPED_HAS_DATA:
                 color = '#1890ff';
-                text = 'Đã ánh xạ (có giá)';
+                text = 'Đã ánh xạ (có dữ liệu)';
                 break;
             default:
                 color = '#bfbfbf';
@@ -55,6 +57,7 @@ const ItemPage: FC = () => {
             key: 'name',
             ellipsis: true,
             sorter: true,
+            width: '25%',
         },
         {
             key: 'mappingStatus',
@@ -62,6 +65,7 @@ const ItemPage: FC = () => {
             dataIndex: 'mappingStatus',
             sorter: true,
             render: (mappingStatus: ProductMappingStatus) => displayMappingStatus(mappingStatus),
+            width: '15%',
         },
         {
             key: 'code',
@@ -78,6 +82,7 @@ const ItemPage: FC = () => {
                 ) : (
                     '---'
                 ),
+            width: '15%',
         },
         {
             key: 'tags',
@@ -92,6 +97,7 @@ const ItemPage: FC = () => {
                         </Tag>
                     </span>
                 )),
+            width: '20%',
         },
         {
             title: 'Ngày tạo',
@@ -100,6 +106,7 @@ const ItemPage: FC = () => {
             sorter: true,
             render: (createdAt: Date) =>
                 createdAt ? dayjs(createdAt).format('DD/MM/YYYY HH:mm:ss') : '---',
+            width: '25%',
         },
     ];
 
@@ -130,6 +137,14 @@ const ItemPage: FC = () => {
                 title="Danh sách đối tượng"
                 elementType={ElementType.TITLE}
                 actions={[
+                    <Button
+                        type="primary"
+                        key="import-item"
+                        icon={<Icon icon="lucide:file-text" />}
+                        onClick={() => setOpenImportItemModal(true)}
+                    >
+                        Nhập đối tượng
+                    </Button>,
                     <Button
                         type="primary"
                         key="add-item"
@@ -179,6 +194,15 @@ const ItemPage: FC = () => {
                     tableContainerData?.tableQuery?.refetch();
                 }}
             />
+
+            {openImportItemModal && (
+                <ImportItem
+                    key="import-item"
+                    open={openImportItemModal}
+                    onClose={() => setOpenImportItemModal(false)}
+                    onSuccess={() => tableContainerData?.tableQuery?.refetch()}
+                />
+            )}
         </Space>
     );
 };
