@@ -1,5 +1,6 @@
 import { Option } from '@/interfaces/common';
 import { Rule } from 'antd/es/form';
+import { FormInstance } from 'antd/lib';
 
 export interface FormFieldItem {
     name: string;
@@ -11,7 +12,7 @@ export interface FormFieldItem {
     disabled?: boolean;
     defaultValue?: any;
     placeholder?: string;
-    onChange?: (value: any) => void;
+    onChange?: (value: any, form?: FormInstance) => void;
 
     options?: Option[];
     allowClear?: boolean;

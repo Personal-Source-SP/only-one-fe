@@ -18,13 +18,6 @@ export enum DataProviderSearchStatus {
     ERROR = 'error',
 }
 
-export enum ScrapeStatusEnum {
-    ERROR = 'error',
-    PENDING = 'pending',
-    SUCCESS = 'success',
-    PROCESSING = 'processing',
-}
-
 export enum ScraperServiceEnum {
     GENERIC = 'generic',
     API = 'api',

@@ -74,9 +74,8 @@ export declare namespace NDataProvider {
 
     interface IDataProviderItem extends Abstract {
         itemId: string;
-        dataProviderId: string;
         itemUrl: string;
-        targetConfig: Record<string, any> | null;
+        dataProviderId: string;
         lastScrapedTimestamp?: Date;
         item: IItem;
         dataProvider: IDataProvider;

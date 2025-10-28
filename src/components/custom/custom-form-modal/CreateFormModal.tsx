@@ -6,7 +6,7 @@ import { useCustomModal } from '@/hooks';
 
 import { FormFieldItem } from '@/interfaces';
 import { Icon } from '@iconify/react';
-import { Button, Col, Flex, Form, Input, Row, Select, Space, Spin } from 'antd';
+import { Button, Col, Flex, Form, FormProps, Input, Row, Select, Space, Spin } from 'antd';
 import { FC, memo, useCallback, useEffect } from 'react';
 
 type CreateFormModalProps = {
@@ -15,10 +15,10 @@ type CreateFormModalProps = {
     formFields: FormFieldItem[];
     title?: string;
     width?: number;
-    onClose: () => void;
+    onClose?: () => void;
 };
 
-export const renderFormFields = (formField: FormFieldItem) => {
+export const renderFormFields = (formField: FormFieldItem, formProps: FormProps<any>) => {
     switch (formField.type) {
         case 'input':
             return (
@@ -30,10 +30,10 @@ export const renderFormFields = (formField: FormFieldItem) => {
                         label={formField.label}
                     >
                         <Input
-                            onChange={formField.onChange}
                             placeholder={formField.placeholder}
                             defaultValue={formField.defaultValue}
                             disabled={formField.disabled ?? false}
+                            onChange={(e) => formField.onChange?.(e.target.value, formProps?.form)}
                         />
                     </Form.Item>
                     {formField.elementBottomRender && formField.elementBottomRender}
@@ -50,13 +50,13 @@ export const renderFormFields = (formField: FormFieldItem) => {
                         rules={formField.rules}
                     >
                         <Select
-                            onChange={formField.onChange}
                             options={formField.options ?? []}
                             placeholder={formField.placeholder}
                             defaultValue={formField.defaultValue}
                             disabled={formField.disabled ?? false}
                             allowClear={formField.allowClear ?? true}
                             showSearch={formField.showSearch ?? true}
+                            onChange={(value) => formField.onChange?.(value, formProps?.form)}
                             filterOption={(input, option) =>
                                 (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
                             }
@@ -77,10 +77,10 @@ export const renderFormFields = (formField: FormFieldItem) => {
                     >
                         <Input.TextArea
                             rows={formField.rows ?? 4}
-                            onChange={formField.onChange}
                             placeholder={formField.placeholder}
                             defaultValue={formField.defaultValue}
                             disabled={formField.disabled ?? false}
+                            onChange={(e) => formField.onChange?.(e.target.value, formProps?.form)}
                         />
                     </Form.Item>
                     {formField.elementBottomRender && formField.elementBottomRender}
@@ -117,7 +117,7 @@ const CreateFormModal: FC<CreateFormModalProps> = ({
             });
 
             close();
-            onClose();
+            onClose?.();
         },
         onMutationError: (error) => {
             handleMessage({
@@ -166,7 +166,7 @@ const CreateFormModal: FC<CreateFormModalProps> = ({
                 footer: renderFooter(),
                 onCancel: () => {
                     close();
-                    onClose();
+                    onClose?.();
                 },
             }}
         >
@@ -174,7 +174,7 @@ const CreateFormModal: FC<CreateFormModalProps> = ({
                 <Space direction="vertical" className="w-full h-full px-3 overflow-x-hidden">
                     <Form {...formProps} layout="vertical" className="[&_.ant-form-item]:!mb-2">
                         <Row gutter={[8, 8]}>
-                            {formFields.map((formField) => renderFormFields(formField))}
+                            {formFields.map((formField) => renderFormFields(formField, formProps))}
                         </Row>
                     </Form>
                 </Space>

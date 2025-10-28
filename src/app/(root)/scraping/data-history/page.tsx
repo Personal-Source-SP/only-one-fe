@@ -1,15 +1,8 @@
 'use client';
 
 import { CustomElement, TableContainer } from '@/components/custom';
-import { DisplayScrapeStatus } from '@/components/module/data-provider';
 import { PhotoGroups } from '@/components/module/photos';
-import {
-    CustomFilterType,
-    DisplayMode,
-    ElementType,
-    ScrapeStatusEnum,
-    ViewPhotoMode,
-} from '@/enums';
+import { CustomFilterType, DisplayMode, ElementType, ViewPhotoMode } from '@/enums';
 import { useCustomModal, useTableContainer } from '@/hooks';
 import { FilterItem, NDataProvider, PhotoItem } from '@/interfaces';
 import { Icon } from '@iconify/react';
@@ -110,13 +103,6 @@ const DataHistoryPage: FC = () => {
             sorter: true,
             render: (scrapeTimestamp: Date) =>
                 scrapeTimestamp ? dayjs(scrapeTimestamp).format('DD/MM/YYYY HH:mm:ss') : '---',
-        },
-        {
-            key: 'status',
-            title: 'Trạng thái',
-            dataIndex: 'status',
-            sorter: true,
-            render: (status: ScrapeStatusEnum) => <DisplayScrapeStatus status={status} />,
         },
     ];
 

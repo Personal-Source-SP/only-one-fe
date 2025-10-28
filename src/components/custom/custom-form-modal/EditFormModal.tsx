@@ -102,7 +102,7 @@ const EditFormModal: FC<EditFormModalProps> = ({
                 <Space direction="vertical" className="w-full h-full px-3 overflow-x-hidden">
                     <Form {...formProps} layout="vertical" className="[&_.ant-form-item]:!mb-2">
                         <Row gutter={[8, 8]}>
-                            {formFields.map((formField) => renderFormFields(formField))}
+                            {formFields.map((formField) => renderFormFields(formField, formProps))}
                         </Row>
                     </Form>
                 </Space>

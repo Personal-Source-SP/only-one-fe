@@ -1,14 +1,14 @@
 'use client';
 
 import { CreateFormModal, CustomElement, EditFormModal, TableContainer } from '@/components/custom';
-import { ElementType, ScrapeStatusEnum } from '@/enums';
+import { ElementType } from '@/enums';
 import { useSelectDataProvider, useSelectItem, useTableContainer } from '@/hooks';
 import { FormFieldItem, NDataProvider } from '@/interfaces';
 import { Icon } from '@iconify/react';
-import { Button, Space, Tag } from 'antd';
+import { Button, Space } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
-import { FC, useCallback, useState } from 'react';
+import { FC, useState } from 'react';
 
 const DataProviderItemPage: FC = () => {
     const [openCreateItemModal, setOpenCreateItemModal] = useState(false);
@@ -20,40 +20,6 @@ const DataProviderItemPage: FC = () => {
     const tableContainerData = useTableContainer({
         resource: 'data-provider-items',
     });
-
-    const displayLastScrapeStatus = useCallback((lastScrapeStatus: ScrapeStatusEnum) => {
-        if (!lastScrapeStatus) return '---';
-
-        let color: string, text: string;
-
-        switch (lastScrapeStatus) {
-            case ScrapeStatusEnum.SUCCESS:
-                color = 'success';
-                text = 'Thành công';
-                break;
-            case ScrapeStatusEnum.ERROR:
-                color = 'default';
-                text = 'Lỗi';
-                break;
-            case ScrapeStatusEnum.PROCESSING:
-                color = 'processing';
-                text = 'Đang scrape';
-                break;
-            case ScrapeStatusEnum.PENDING:
-                color = 'processing';
-                text = 'Chờ scrape';
-                break;
-            default:
-                color = 'default';
-                text = lastScrapeStatus;
-        }
-
-        return (
-            <Tag color={color} className="text-sm font-medium">
-                {text}
-            </Tag>
-        );
-    }, []);
 
     const columns: ColumnsType<NDataProvider.IDataProviderItem> = [
         {
@@ -90,14 +56,6 @@ const DataProviderItemPage: FC = () => {
                     ? dayjs(lastScrapedTimestamp).format('DD/MM/YYYY HH:mm:ss')
                     : '---',
         },
-        {
-            key: 'lastScrapeStatus',
-            title: 'Trạng thái scrape gần nhất',
-            dataIndex: 'lastScrapeStatus',
-            sorter: true,
-            render: (lastScrapeStatus: ScrapeStatusEnum) =>
-                displayLastScrapeStatus(lastScrapeStatus),
-        },
     ];
 
     const formFields: FormFieldItem[] = [
@@ -114,6 +72,9 @@ const DataProviderItemPage: FC = () => {
             label: 'Tên nhà cung cấp',
             options: dataProviderOptions ?? [],
             rules: [{ required: true, message: 'Vui lòng chọn nhà cung cấp' }],
+            onChange: (value, form) => {
+                form?.setFieldValue('itemUrl', value?.baseUrl ?? '');
+            },
         },
         {
             name: 'itemUrl',
