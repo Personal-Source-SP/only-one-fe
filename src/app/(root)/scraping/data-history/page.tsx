@@ -7,9 +7,10 @@ import { CustomFilterType, DisplayMode, ElementType, ViewPhotoMode } from '@/enu
 import { useCustomModal, useSelectDataProvider, useTableContainer } from '@/hooks';
 import { FilterItem, NDataProvider, PhotoItem } from '@/interfaces';
 import { Icon } from '@iconify/react';
-import { Button, Space, Switch } from 'antd';
+import { Button, Flex, Space, Switch } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
+import Link from 'next/link';
 import { FC, useMemo, useState } from 'react';
 
 const DataHistoryPage: FC = () => {
@@ -108,17 +109,8 @@ const DataHistoryPage: FC = () => {
             dataIndex: 'dataProvider',
             key: 'dataProvider',
             ellipsis: true,
-            width: '20%',
-            render: (dataProvider: NDataProvider.IDataProvider) => dataProvider?.name ?? '---',
-        },
-        {
-            title: 'Đối tượng',
-            dataIndex: 'dataProviderItem',
-            key: 'dataProviderItem',
-            ellipsis: true,
             width: '25%',
-            render: (dataProviderItem: NDataProvider.IDataProviderItem) =>
-                dataProviderItem?.itemUrl ?? '---',
+            render: (dataProvider: NDataProvider.IDataProvider) => dataProvider?.name ?? '---',
         },
         {
             title: 'ID dữ liệu',
@@ -134,7 +126,7 @@ const DataHistoryPage: FC = () => {
             dataIndex: 'type',
             key: 'type',
             sorter: true,
-            width: '15%',
+            width: '20%',
             render: (type: string) => type ?? '---',
         },
         {
@@ -145,6 +137,24 @@ const DataHistoryPage: FC = () => {
             width: '20%',
             render: (lastModified: Date) =>
                 lastModified ? dayjs(lastModified).format('DD/MM/YYYY HH:mm:ss') : '---',
+        },
+        {
+            title: 'URL',
+            dataIndex: 'url',
+            key: 'url',
+            sorter: true,
+            width: '15%',
+            align: 'center',
+            render: (url: string) =>
+                url ? (
+                    <Flex align="center" justify="center">
+                        <Link href={url} target="_blank" rel="noopener noreferrer">
+                            <img src={url} alt="Xem" className="!h-20" />
+                        </Link>
+                    </Flex>
+                ) : (
+                    '---'
+                ),
         },
     ];
 
