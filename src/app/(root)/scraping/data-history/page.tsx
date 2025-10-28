@@ -1,6 +1,7 @@
 'use client';
 
 import { CustomElement, CustomLightBox, TableContainer } from '@/components/custom';
+import { ProcessScrapeData } from '@/components/module/data-provider';
 import { PhotoGroups } from '@/components/module/photos';
 import { CustomFilterType, DisplayMode, ElementType, ViewPhotoMode } from '@/enums';
 import { useCustomModal, useSelectDataProvider, useTableContainer } from '@/hooks';
@@ -12,6 +13,8 @@ import dayjs from 'dayjs';
 import { FC, useMemo, useState } from 'react';
 
 const DataHistoryPage: FC = () => {
+    const [openProcessScrapeDataModal, setOpenProcessScrapeDataModal] = useState(false);
+
     const [columnDisplay, setColumnDisplay] = useState(4);
     const [viewMode, setViewMode] = useState<ViewPhotoMode>(ViewPhotoMode.ALL);
     const [displayMode, setDisplayMode] = useState<DisplayMode>(DisplayMode.LIST);
@@ -135,6 +138,14 @@ const DataHistoryPage: FC = () => {
                 actions={[
                     <Button
                         type="primary"
+                        key="scrape-data"
+                        icon={<Icon icon="lucide:file-text" />}
+                        onClick={() => setOpenProcessScrapeDataModal(true)}
+                    >
+                        Cào dữ liệu
+                    </Button>,
+                    <Button
+                        type="primary"
                         key="slideshow"
                         icon={<Icon icon="lucide:play" />}
                         onClick={() => setIsLightboxOpen(true)}
@@ -186,6 +197,18 @@ const DataHistoryPage: FC = () => {
                 closeLightbox={() => setIsLightboxOpen(false)}
                 slides={(photoItems || [])?.map((p) => ({ src: p.url }))}
             />
+
+            {openProcessScrapeDataModal && (
+                <ProcessScrapeData
+                    dataProviders={[]}
+                    key="process-scrape-data"
+                    open={openProcessScrapeDataModal}
+                    onClose={() => {
+                        setOpenProcessScrapeDataModal(false);
+                        tableContainerData?.tableQuery?.refetch();
+                    }}
+                />
+            )}
         </Space>
     );
 };
