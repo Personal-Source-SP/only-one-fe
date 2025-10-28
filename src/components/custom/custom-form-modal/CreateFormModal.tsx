@@ -22,7 +22,7 @@ export const renderFormFields = (formField: FormFieldItem, formProps: FormProps<
     switch (formField.type) {
         case 'input':
             return (
-                <Col span={formField.span ?? 24}>
+                <Col span={formField.span ?? 24} key={formField.name}>
                     {formField.elementTopRender && formField.elementTopRender}
                     <Form.Item
                         name={formField.name}
@@ -42,7 +42,7 @@ export const renderFormFields = (formField: FormFieldItem, formProps: FormProps<
 
         case 'select':
             return (
-                <Col span={formField.span ?? 24}>
+                <Col span={formField.span ?? 24} key={formField.name}>
                     {formField.elementTopRender && formField.elementTopRender}
                     <Form.Item
                         name={formField.name}
@@ -68,7 +68,7 @@ export const renderFormFields = (formField: FormFieldItem, formProps: FormProps<
 
         case 'textarea':
             return (
-                <Col span={formField.span ?? 24}>
+                <Col span={formField.span ?? 24} key={formField.name}>
                     {formField.elementTopRender && formField.elementTopRender}
                     <Form.Item
                         name={formField.name}

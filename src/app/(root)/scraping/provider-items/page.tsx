@@ -73,7 +73,11 @@ const DataProviderItemPage: FC = () => {
             options: dataProviderOptions ?? [],
             rules: [{ required: true, message: 'Vui lòng chọn nhà cung cấp' }],
             onChange: (value, form) => {
-                form?.setFieldValue('itemUrl', value?.baseUrl ?? '');
+                const dataProvider = dataProviderOptions?.find((option) => option.value === value);
+                form?.setFieldValue(
+                    'itemUrl',
+                    dataProvider?.label ? `${dataProvider?.label}/` : '',
+                );
             },
         },
         {
