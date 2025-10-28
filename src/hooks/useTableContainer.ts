@@ -39,13 +39,10 @@ export const useTableContainer = (props: {
                   mode: 'server',
                   initial: [{ field: 'createdAt', order: 'desc' }],
               },
-        filters: defaultFilters
-            ? {
-                  initial: defaultFilters,
-              }
-            : {
-                  mode: 'off',
-              },
+        filters: {
+            mode: 'server',
+            initial: defaultFilters ?? [],
+        },
         queryOptions: {
             enabled: enabled ?? true,
         },

@@ -65,6 +65,11 @@ const TableContainer: FC<TableContainerProps> = ({
             const customFilterItemsWithOperation = customFilterItems.map((item) => ({
                 ...item,
                 onChange: (value: any) => {
+                    if (item.onChange) {
+                        item.onChange(value);
+                        return;
+                    }
+
                     setFilters([
                         {
                             value,

@@ -101,8 +101,7 @@ const PhotoGroups: FC<PhotoGroupsProps> = ({ columns, displayMode, data, onPhoto
         switch (displayMode) {
             case ViewPhotoMode.DATE: {
                 return (
-                    'date' in group &&
-                    group.date && (
+                    Boolean(group.date) && (
                         <Tag
                             color="blue"
                             className="text-base font-medium mb-4 px-4 py-1 rounded-full"
@@ -115,8 +114,7 @@ const PhotoGroups: FC<PhotoGroupsProps> = ({ columns, displayMode, data, onPhoto
 
             case ViewPhotoMode.FOLDER: {
                 return (
-                    'folder' in group &&
-                    group.folder && (
+                    Boolean(group.folder) && (
                         <Tag
                             color="green"
                             className="text-base font-medium mb-4 px-4 py-1 rounded-full"

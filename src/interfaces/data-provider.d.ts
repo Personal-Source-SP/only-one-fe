@@ -89,6 +89,7 @@ export declare namespace NDataProvider {
         url?: string;
         lastModified?: Date;
         metadata?: Record<string, any>;
+        dataProvider?: IDataProvider;
         dataProviderItem?: IDataProviderItem;
     }
 

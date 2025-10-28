@@ -3,7 +3,7 @@
 import { CustomElement, CustomLightBox, TableContainer } from '@/components/custom';
 import { PhotoGroups } from '@/components/module/photos';
 import { CustomFilterType, DisplayMode, ElementType, ViewPhotoMode } from '@/enums';
-import { useCustomModal, useTableContainer } from '@/hooks';
+import { useCustomModal, useSelectDataProvider, useTableContainer } from '@/hooks';
 import { FilterItem, NDataProvider, PhotoItem } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { Button, Space, Switch } from 'antd';
@@ -23,6 +23,8 @@ const DataHistoryPage: FC = () => {
         resource: 'data-history',
     });
 
+    const { options: dataProviders } = useSelectDataProvider();
+
     const modalPropsData = useCustomModal({
         action: 'edit',
         resource: 'data-history',
@@ -36,8 +38,8 @@ const DataHistoryPage: FC = () => {
             id: item.id ?? '',
             url: item.url ?? '',
             mimeType: item.type ?? '',
+            folderName: item.dataProvider?.name ?? '',
             lastModified: item.lastModified ?? new Date(),
-            folderName: item.dataProviderItem?.item?.name ?? '',
         }));
     }, [tableContainerData?.tableQuery?.data?.data]);
 
@@ -45,10 +47,18 @@ const DataHistoryPage: FC = () => {
         const customFilterItems: FilterItem[] = [
             {
                 span: displayMode === DisplayMode.TABLE ? 6 : 4,
+                field: 'dataProviderId',
+                title: 'Nhà cung cấp',
                 showSearch: true,
                 allowClear: true,
+                type: CustomFilterType.SELECT,
+                options: dataProviders ?? [],
+            },
+            {
+                span: displayMode === DisplayMode.TABLE ? 6 : 4,
                 field: 'type',
                 title: 'Loại dữ liệu',
+                showSearch: true,
                 type: CustomFilterType.SELECT,
                 options: [
                     { label: 'Ảnh', value: 'image' },
@@ -87,7 +97,7 @@ const DataHistoryPage: FC = () => {
         }
 
         return customFilterItems;
-    }, [columnDisplay, viewMode, displayMode]);
+    }, [columnDisplay, viewMode, displayMode, dataProviders]);
 
     const columns: ColumnsType<NDataProvider.IDataHistory> = [
         {
@@ -158,7 +168,7 @@ const DataHistoryPage: FC = () => {
                 ]}
                 filterSearch={{
                     placeholder: 'Tìm kiếm lịch sử dữ liệu',
-                    span: displayMode === DisplayMode.TABLE ? 18 : 14,
+                    span: displayMode === DisplayMode.TABLE ? 12 : 10,
                 }}
                 childrenTop={
                     <PhotoGroups
@@ -174,9 +184,7 @@ const DataHistoryPage: FC = () => {
                 isOpen={isLightboxOpen}
                 index={currentPhotoIndex}
                 closeLightbox={() => setIsLightboxOpen(false)}
-                slides={(photoItems || [])?.map((p) => ({
-                    src: p.url,
-                }))}
+                slides={(photoItems || [])?.map((p) => ({ src: p.url }))}
             />
         </Space>
     );
