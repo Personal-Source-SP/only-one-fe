@@ -29,12 +29,12 @@ const DataHistoryPage: FC = () => {
         const dataHistories = tableContainerData?.tableQuery?.data?.data ?? [];
         if (!dataHistories?.length) return [];
 
-        return dataHistories?.map((item) => ({
-            id: item.id,
+        return dataHistories?.map((item: NDataProvider.IDataHistory) => ({
+            id: item.id ?? '',
             url: item.url ?? '',
-            mimeType: item.mimeType ?? '',
+            mimeType: item.type ?? '',
             lastModified: item.lastModified ?? new Date(),
-            folderName: item.googleDriveFolder?.name ?? '',
+            folderName: item.dataProviderItem?.item?.name ?? '',
         }));
     }, [tableContainerData?.tableQuery?.data?.data]);
 

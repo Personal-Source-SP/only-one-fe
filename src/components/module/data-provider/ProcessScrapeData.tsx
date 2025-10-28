@@ -14,13 +14,16 @@ import {
     Row,
     Select,
     Space,
+    Spin,
     StepProps,
     Steps,
     Switch,
     Table,
+    Tooltip,
 } from 'antd';
 import { ColumnType } from 'antd/es/table';
 import dayjs from 'dayjs';
+import Link from 'next/link';
 import { FC, memo, useMemo, useState } from 'react';
 
 type ProcessScrapeDataProps = {
@@ -87,7 +90,16 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({ open, dataProviders, on
             key: 'url',
             width: '15%',
             ellipsis: true,
-            render: (url?: string) => url ?? '---',
+            render: (url?: string) =>
+                url ? (
+                    <Tooltip title={url}>
+                        <Link href={url} target="_blank" rel="noopener noreferrer">
+                            Xem
+                        </Link>
+                    </Tooltip>
+                ) : (
+                    '---'
+                ),
         },
         {
             title: 'Loại',
@@ -349,9 +361,11 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({ open, dataProviders, on
                     />
                 </Card>
 
-                <Space size="middle" direction="vertical" className="w-full h-full">
-                    {renderContent()}
-                </Space>
+                <Spin spinning={isLoading}>
+                    <Space size="middle" direction="vertical" className="w-full h-full">
+                        {renderContent()}
+                    </Space>
+                </Spin>
             </Space>
         </CustomFormModal>
     );
