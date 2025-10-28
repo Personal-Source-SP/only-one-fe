@@ -104,21 +104,47 @@ const DataHistoryPage: FC = () => {
 
     const columns: ColumnsType<NDataProvider.IDataHistory> = [
         {
-            title: 'Tên đối tượng',
+            title: 'Nhà cung cấp',
+            dataIndex: 'dataProvider',
+            key: 'dataProvider',
+            ellipsis: true,
+            width: '20%',
+            render: (dataProvider: NDataProvider.IDataProvider) => dataProvider?.name ?? '---',
+        },
+        {
+            title: 'Đối tượng',
             dataIndex: 'dataProviderItem',
             key: 'dataProviderItem',
             ellipsis: true,
-            sorter: true,
+            width: '25%',
             render: (dataProviderItem: NDataProvider.IDataProviderItem) =>
-                dataProviderItem?.item?.name ?? '---',
+                dataProviderItem?.itemUrl ?? '---',
         },
         {
-            title: 'Ngày scrape',
-            dataIndex: 'scrapeTimestamp',
-            key: 'scrapeTimestamp',
+            title: 'ID dữ liệu',
+            dataIndex: 'dataId',
+            key: 'dataId',
+            ellipsis: true,
             sorter: true,
-            render: (scrapeTimestamp: Date) =>
-                scrapeTimestamp ? dayjs(scrapeTimestamp).format('DD/MM/YYYY HH:mm:ss') : '---',
+            width: '20%',
+            render: (dataId: string) => dataId ?? '---',
+        },
+        {
+            title: 'Loại',
+            dataIndex: 'type',
+            key: 'type',
+            sorter: true,
+            width: '15%',
+            render: (type: string) => type ?? '---',
+        },
+        {
+            title: 'Ngày sửa đổi',
+            dataIndex: 'lastModified',
+            key: 'lastModified',
+            sorter: true,
+            width: '20%',
+            render: (lastModified: Date) =>
+                lastModified ? dayjs(lastModified).format('DD/MM/YYYY HH:mm:ss') : '---',
         },
     ];
 
@@ -182,12 +208,14 @@ const DataHistoryPage: FC = () => {
                     span: displayMode === DisplayMode.TABLE ? 12 : 10,
                 }}
                 childrenTop={
-                    <PhotoGroups
-                        data={photoItems}
-                        displayMode={viewMode}
-                        columns={columnDisplay}
-                        onPhotoClick={handlePhotoClick}
-                    />
+                    displayMode === DisplayMode.LIST && (
+                        <PhotoGroups
+                            data={photoItems}
+                            displayMode={viewMode}
+                            columns={columnDisplay}
+                            onPhotoClick={handlePhotoClick}
+                        />
+                    )
                 }
             />
 
