@@ -99,12 +99,21 @@ export declare namespace NDataProvider {
 
         errorsMessage?: string;
 
-        dataItems?: {
+        successData?: {
             dataProviderId: string;
             dataProviderName: string;
-            errorMessage?: string;
-            data?: Record<string, any>;
-            itemUrl?: string;
+            dataProviderItemId: string;
+            dataProviderItemUrl: string;
+            data: Record<string, any>;
+
+            url?: string;
+            mimeType?: string;
+            lastModified?: Date;
+        }[];
+
+        errors?: {
+            dataProviderId: string;
+            errorMessage: string;
             dataProviderItemId?: string;
         }[];
     }

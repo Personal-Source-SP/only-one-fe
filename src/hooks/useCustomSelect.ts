@@ -15,7 +15,7 @@ export const useCustomSelect = (props: IUseSelectProps<any>) => {
     const { options, query } = useSelect<any>({
         resource: resource ?? '',
         pagination: { mode: 'off' },
-        queryOptions: { enabled: enabled ?? true },
+        queryOptions: { enabled: enabled ?? false },
         optionValue: optionValue ?? ((item: any) => item.id ?? ''),
         optionLabel: optionLabel ?? ((item: any) => item.name ?? ''),
     });
@@ -28,7 +28,7 @@ export const useSelectDataProviderItem = (
 ) => {
     return useCustomSelect({
         resource: `data-provider-items/data-provider/${props?.id}`,
-        enabled: !!props?.id || props?.enabled,
+        enabled: !!props?.id || (props?.enabled ?? false),
         optionValue:
             props?.optionValue ?? ((item: NDataProvider.IDataProviderItem) => item.itemUrl ?? ''),
         optionLabel:

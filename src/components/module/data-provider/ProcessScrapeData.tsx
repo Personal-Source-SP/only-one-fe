@@ -33,9 +33,9 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({ open, dataProviders, on
     const [error, setError] = useState(0);
     const [process, setProcess] = useState(0);
     const [success, setSuccess] = useState(0);
-    const [previewData, setPreviewData] = useState<NDataProvider.IScrapeDataResponse['dataItems']>(
-        [],
-    );
+    const [previewData, setPreviewData] = useState<
+        NDataProvider.IScrapeDataResponse['successData']
+    >([]);
 
     const { handleCustomMutationData } = useCustomMutationData();
 
@@ -52,40 +52,43 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({ open, dataProviders, on
         },
     ];
 
-    const columns: ColumnType<NDataProvider.IScrapeDataResponse['dataItems']>[] = [
+    const columns: ColumnType<NDataProvider.IScrapeDataResponse['successData']>[] = [
         {
             title: 'Nhà cung cấp',
             dataIndex: 'dataProviderName',
             key: 'dataProviderName',
             ellipsis: true,
-            width: '15%',
+            width: '20%',
+        },
+        {
+            title: 'URL đối tượng',
+            dataIndex: 'dataProviderItemUrl',
+            key: 'dataProviderItemUrl',
+            ellipsis: true,
+            width: '30%',
         },
         {
             title: 'Đường dẫn',
-            dataIndex: 'itemUrl',
-            key: 'itemUrl',
+            dataIndex: 'url',
+            key: 'url',
+            width: '15%',
             ellipsis: true,
-            width: '10%',
+            render: (url?: string) => url ?? '---',
         },
         {
-            title: 'Trạng thái',
-            dataIndex: 'errorMessage',
-            key: 'errorMessage',
-            width: '10%',
-            align: 'center',
-            render: (errorMessage?: string) =>
-                errorMessage ? (
-                    <Icon icon="lucide:x" className="w-full" />
-                ) : (
-                    <Icon icon="lucide:check" className="w-full" />
-                ),
+            title: 'Loại',
+            dataIndex: 'mimeType',
+            key: 'mimeType',
+            width: '15%',
+            render: (mimeType?: string) => mimeType ?? '---',
         },
         {
-            title: 'Dữ liệu',
-            dataIndex: 'data',
-            key: 'data',
-            width: '10%',
-            align: 'center',
+            title: 'Ngày sửa đổi',
+            dataIndex: 'lastModified',
+            key: 'lastModified',
+            width: '20%',
+            render: (lastModified?: Date) =>
+                lastModified ? dayjs(lastModified).format('DD/MM/YYYY') : '---',
         },
     ];
 
@@ -137,7 +140,7 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({ open, dataProviders, on
                     setError(response?.data?.error || 0);
                     setProcess(response?.data?.process || 0);
                     setSuccess(response?.data?.success || 0);
-                    setPreviewData(response?.data?.dataItems || []);
+                    setPreviewData(response?.data?.successData || []);
 
                     return {
                         type: 'success',
@@ -239,6 +242,7 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({ open, dataProviders, on
                 <Table
                     bordered
                     size="small"
+                    key="preview-data-table"
                     columns={columns as any}
                     rowKey="dataProviderId-dataProviderItemId"
                     dataSource={previewData || []}

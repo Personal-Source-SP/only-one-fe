@@ -283,14 +283,16 @@ const DataProviderPage: FC = () => {
                 }}
             />
 
-            <ProcessScrapeData
-                key="process-scrape-data"
-                open={openProcessScrapeDataModal}
-                dataProviders={selectedRows ?? []}
-                onClose={() => {
-                    setOpenProcessScrapeDataModal(false);
-                }}
-            />
+            {openProcessScrapeDataModal && (
+                <ProcessScrapeData
+                    key="process-scrape-data"
+                    open={openProcessScrapeDataModal}
+                    dataProviders={selectedRows ?? []}
+                    onClose={() => {
+                        setOpenProcessScrapeDataModal(false);
+                    }}
+                />
+            )}
         </Space>
     );
 };
