@@ -6,8 +6,10 @@ import {
     ProcessScrapeData,
     ScrapeSetting,
 } from '@/components/module/data-provider';
+import ImportData from '@/components/module/import-data';
 import {
     CustomFilterType,
+    DataImportType,
     DataProviderSearchStatus,
     DataProviderStatus,
     ElementType,
@@ -17,11 +19,14 @@ import { ActionTableItem, FilterItem, FormFieldItem, NDataProvider } from '@/int
 import { Icon } from '@iconify/react';
 import { Button, Space } from 'antd';
 import { ColumnsType } from 'antd/es/table';
+import { ColumnType } from 'antd/lib/table';
 import dayjs from 'dayjs';
 import { FC, useState } from 'react';
 
 const DataProviderPage: FC = () => {
     const [openCreateItemModal, setOpenCreateItemModal] = useState(false);
+    const [openImportItemModal, setOpenImportItemModal] = useState(false);
+
     const [editItemId, setEditItemId] = useState<string | undefined>(undefined);
     const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
 
@@ -107,6 +112,46 @@ const DataProviderPage: FC = () => {
                     <Icon icon="lucide:x" className="w-full" />
                 ),
             width: '15%',
+        },
+    ];
+
+    const importDataColumns: ColumnType<NDataProvider.IImportDataProvider>[] = [
+        {
+            title: 'Tên nhà cung cấp',
+            dataIndex: 'dataProviderName',
+            key: 'dataProviderName',
+            ellipsis: true,
+            width: '25%',
+        },
+        {
+            title: 'Mã nhà cung cấp',
+            dataIndex: 'dataProviderIdentifier',
+            key: 'dataProviderIdentifier',
+            align: 'center',
+            ellipsis: true,
+            width: '15%',
+        },
+        {
+            title: 'URL đối tượng',
+            dataIndex: 'itemUrl',
+            key: 'itemUrl',
+            align: 'center',
+            width: '30%',
+        },
+        {
+            title: 'Tên đối tượng',
+            dataIndex: 'itemName',
+            key: 'itemName',
+            ellipsis: true,
+            width: '20%',
+        },
+        {
+            title: 'Mã đối tượng',
+            dataIndex: 'itemCode',
+            key: 'itemCode',
+            align: 'center',
+            ellipsis: true,
+            width: '10%',
         },
     ];
 
@@ -291,6 +336,17 @@ const DataProviderPage: FC = () => {
                     onClose={() => {
                         setOpenProcessScrapeDataModal(false);
                     }}
+                />
+            )}
+
+            {openImportItemModal && (
+                <ImportData
+                    key="import-data-provider"
+                    open={openImportItemModal}
+                    dataType={DataImportType.DATA_PROVIDER}
+                    onClose={() => setOpenImportItemModal(false)}
+                    onSuccess={() => tableContainerData?.tableQuery?.refetch()}
+                    columns={importDataColumns as unknown as ColumnType<Record<string, any>>[]}
                 />
             )}
         </Space>

@@ -119,4 +119,14 @@ export declare namespace NDataProvider {
             dataProviderItemId?: string;
         }[];
     }
+
+    interface IImportDataProvider {
+        itemName: string;
+        itemCode: string;
+        itemUrl: string;
+        dataProviderIdentifier: string;
+        itemId?: string;
+        dataProviderId?: string;
+        dataProviderName?: string;
+    }
 }

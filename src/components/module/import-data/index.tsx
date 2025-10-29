@@ -29,7 +29,7 @@ type ImportDataProps = {
     dataType: DataImportType;
     columns: ColumnType<Record<string, any>>[];
     onClose: () => void;
-    onSuccess: () => void;
+    onSuccess?: () => void;
 };
 
 const StepEnum = {
@@ -216,7 +216,7 @@ const ImportData: FC<ImportDataProps> = ({ open, dataType, columns, onClose, onS
                     onClick={() => {
                         onClose();
                         if (currentStep === StepEnum.Result) {
-                            onSuccess();
+                            onSuccess?.();
                         }
                     }}
                 >
