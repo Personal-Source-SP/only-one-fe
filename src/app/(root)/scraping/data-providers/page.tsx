@@ -268,6 +268,14 @@ const DataProviderPage: FC = () => {
                     </Button>,
                     <Button
                         type="primary"
+                        key="import-data-provider"
+                        icon={<Icon icon="lucide:file-text" />}
+                        onClick={() => setOpenImportItemModal(true)}
+                    >
+                        Nhập nhà cung cấp
+                    </Button>,
+                    <Button
+                        type="primary"
                         key="add-data-provider"
                         icon={<Icon icon="lucide:plus" />}
                         onClick={() => setOpenCreateItemModal(true)}
