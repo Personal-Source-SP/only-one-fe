@@ -8,7 +8,7 @@ import { CrudSort, useDelete } from '@refinedev/core';
 import { Button, Popconfirm, Space, Table } from 'antd';
 import { ColumnsType, TablePaginationConfig, TableProps } from 'antd/es/table';
 import { FilterValue, SorterResult, TableCurrentDataSource } from 'antd/es/table/interface';
-import { FC, memo } from 'react';
+import { FC, memo, useMemo } from 'react';
 
 type CustomTableProps = {
     loading: boolean;
@@ -53,6 +53,16 @@ const CustomTable: FC<CustomTableProps> = ({
             disabled: onDisableRowSelection?.(record) || false,
         }),
     };
+
+    const normalizedDataSource = useMemo(() => {
+        if (Array.isArray(tableProps?.dataSource)) return tableProps.dataSource;
+
+        if (Array.isArray((tableProps as any)?.dataSource?.data)) {
+            return (tableProps as any).dataSource.data;
+        }
+
+        return [];
+    }, [tableProps?.dataSource]);
 
     const handleDelete = (record: any) => {
         deleteRecord(
@@ -153,6 +163,7 @@ const CustomTable: FC<CustomTableProps> = ({
             rowKey="id"
             loading={loading}
             pagination={false}
+            dataSource={normalizedDataSource}
             rowSelection={onRowSelectionChange ? rowSelection : undefined}
             columns={[
                 ...columns,
