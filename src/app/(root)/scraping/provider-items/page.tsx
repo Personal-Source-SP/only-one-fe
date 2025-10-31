@@ -1,9 +1,10 @@
 'use client';
 
 import { CreateFormModal, CustomElement, EditFormModal, TableContainer } from '@/components/custom';
-import { ElementType } from '@/enums';
+import { ProcessScrapeData } from '@/components/module/data-provider';
+import { DataProviderStatus, ElementType } from '@/enums';
 import { useSelectDataProvider, useSelectItem, useTableContainer } from '@/hooks';
-import { FormFieldItem, NDataProvider } from '@/interfaces';
+import { ActionTableItem, FormFieldItem, NDataProvider } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { Button, Space } from 'antd';
 import { ColumnsType } from 'antd/es/table';
@@ -13,6 +14,9 @@ import { FC, useState } from 'react';
 const DataProviderItemPage: FC = () => {
     const [openCreateItemModal, setOpenCreateItemModal] = useState(false);
     const [editItemId, setEditItemId] = useState<string | undefined>(undefined);
+
+    const [openProcessScrapeDataModal, setOpenProcessScrapeDataModal] = useState(false);
+    const [selectedDataProviderItemIds, setSelectedDataProviderItemIds] = useState<string[]>([]);
 
     const { options: itemOptions } = useSelectItem();
     const { options: dataProviderOptions } = useSelectDataProvider();
@@ -91,12 +95,29 @@ const DataProviderItemPage: FC = () => {
         },
     ];
 
+    const actionItems: ActionTableItem[] = [
+        {
+            key: 'edit',
+            label: 'Chỉnh sửa',
+            icon: <Icon icon="lucide:edit" />,
+            onClick: (record) => setEditItemId(record?.id),
+        },
+    ];
+
     return (
         <Space size="middle" direction="vertical" className="w-full h-full">
             <CustomElement
                 title="Danh sách đối tượng nhà cung cấp"
                 elementType={ElementType.TITLE}
                 actions={[
+                    <Button
+                        type="primary"
+                        key="scrape-data"
+                        icon={<Icon icon="lucide:file-text" />}
+                        onClick={() => setOpenProcessScrapeDataModal(true)}
+                    >
+                        Cào dữ liệu
+                    </Button>,
                     <Button
                         type="primary"
                         key="add-data-provider-item"
@@ -110,25 +131,26 @@ const DataProviderItemPage: FC = () => {
 
             <TableContainer
                 columns={columns}
+                actionItems={actionItems}
                 resource="data-provider-items"
                 tableContainerData={tableContainerData}
-                actionItems={[
-                    {
-                        key: 'edit',
-                        label: 'Chỉnh sửa',
-                        icon: <Icon icon="lucide:edit" />,
-                        onClick: (record) => setEditItemId(record?.id),
-                    },
-                ]}
-                filterSearch={{
-                    placeholder: 'Tìm kiếm đối tượng nhà cung cấp',
+                filterSearch={{ placeholder: 'Tìm kiếm đối tượng nhà cung cấp' }}
+                onRowSelectionChange={(selectedRows: NDataProvider.IDataProviderItem[]) => {
+                    const dataProviderItemsIds = selectedRows
+                        ?.filter((item) => item.dataProvider?.status === DataProviderStatus.READY)
+                        ?.map((item) => item.id ?? '');
+
+                    setSelectedDataProviderItemIds(dataProviderItemsIds ?? []);
                 }}
+                onDisableRowSelection={(record: NDataProvider.IDataProviderItem) =>
+                    record.dataProvider?.status !== DataProviderStatus.READY
+                }
             />
 
             <CreateFormModal
-                resource="data-provider-items"
                 formFields={formFields}
-                title="Thêm mới đối tượng"
+                resource="data-provider-items"
+                title="Thêm mới đối tượng nhà cung cấp"
                 open={openCreateItemModal}
                 onClose={() => {
                     setOpenCreateItemModal(false);
@@ -137,15 +159,26 @@ const DataProviderItemPage: FC = () => {
             />
 
             <EditFormModal
-                resource="data-provider-items"
                 id={editItemId ?? ''}
                 formFields={formFields}
-                title="Chỉnh sửa đối tượng"
+                resource="data-provider-items"
+                title="Chỉnh sửa đối tượng nhà cung cấp"
                 onClose={() => {
                     setEditItemId(undefined);
                     tableContainerData?.tableQuery?.refetch();
                 }}
             />
+
+            {openProcessScrapeDataModal && (
+                <ProcessScrapeData
+                    key="process-scrape-data"
+                    open={openProcessScrapeDataModal}
+                    selectedDataProviderItemIds={selectedDataProviderItemIds}
+                    onClose={() => {
+                        setOpenProcessScrapeDataModal(false);
+                    }}
+                />
+            )}
         </Space>
     );
 };

@@ -2,8 +2,8 @@
 
 import { CustomDatePicker, CustomFormModal } from '@/components/custom';
 import { MimeType } from '@/enums';
-import { useCustomMutationData } from '@/hooks';
-import { NBaseApi, NDataProvider, Option } from '@/interfaces';
+import { useCustomMutationData, useSelectDataProvider, useSelectDataProviderItem } from '@/hooks';
+import { NBaseApi, NDataProvider } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import {
     Button,
@@ -24,11 +24,12 @@ import {
 import { ColumnType } from 'antd/es/table';
 import dayjs from 'dayjs';
 import Link from 'next/link';
-import { FC, memo, useMemo, useState } from 'react';
+import { FC, memo, useEffect, useState } from 'react';
 
 type ProcessScrapeDataProps = {
     open: boolean;
-    dataProviders: NDataProvider.IDataProvider[];
+    selectedDataProviderIds?: string[];
+    selectedDataProviderItemIds?: string[];
     onClose: () => void;
 };
 
@@ -37,7 +38,14 @@ const StepEnum = {
     Result: 1,
 };
 
-const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({ open, dataProviders, onClose }) => {
+const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({
+    open,
+    selectedDataProviderIds,
+    selectedDataProviderItemIds,
+    onClose,
+}) => {
+    const [form] = Form.useForm();
+
     const [pageSize, setPageSize] = useState(50);
     const [isLoading, setIsLoading] = useState(false);
     const [currentStep, setCurrentStep] = useState(StepEnum.Settings);
@@ -46,6 +54,7 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({ open, dataProviders, on
     const [dateRanges, setDateRanges] = useState<[string, string]>();
     const [dataProviderIds, setDataProviderIds] = useState<string[]>([]);
     const [checkDuplicateData, setCheckDuplicateData] = useState<boolean>(true);
+    const [dataProviderItemsIds, setDataProviderItemsIds] = useState<string[]>([]);
 
     const [error, setError] = useState(0);
     const [process, setProcess] = useState(0);
@@ -54,7 +63,27 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({ open, dataProviders, on
         NDataProvider.IScrapeDataResponse['successData']
     >([]);
 
+    const { options: dataProviders } = useSelectDataProvider();
+    const { options: dataProviderItems, query: dataProviderItemQuery } = useSelectDataProviderItem({
+        enabled: false,
+        id: dataProviderIds?.length === 1 ? dataProviderIds[0] : undefined,
+    });
+
     const { handleCustomMutationData } = useCustomMutationData();
+
+    useEffect(() => {
+        dataProviderItemQuery?.refetch();
+    }, [dataProviderIds]);
+
+    useEffect(() => {
+        if (selectedDataProviderItemIds?.length) {
+            setDataProviderItemsIds(selectedDataProviderItemIds);
+        }
+
+        if (selectedDataProviderIds?.length) {
+            setDataProviderIds(selectedDataProviderIds);
+        }
+    }, [selectedDataProviderItemIds, selectedDataProviderIds]);
 
     const steps: StepProps[] = [
         {
@@ -118,29 +147,16 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({ open, dataProviders, on
         },
     ];
 
-    const dataProviderOptions = useMemo(() => {
-        const defaultOptions: Option[] = [
-            {
-                value: '',
-                label: 'Tất cả',
-            },
-        ];
-
-        if (!dataProviders?.length) return defaultOptions;
-
-        const options = dataProviders.map((item) => ({
-            value: item.id,
-            label: item.baseUrl,
-        }));
-
-        const dataProviderIds = options?.map((item) => item.value as string);
-        setDataProviderIds(dataProviderIds ?? []);
-
-        return [...defaultOptions, ...options];
-    }, [dataProviders]);
-
     const handleProcessScrapeData = async () => {
         setIsLoading(true);
+
+        try {
+            const values = await form.validateFields();
+            console.log(values);
+        } catch (error) {
+            console.log(error);
+            return;
+        }
 
         try {
             handleCustomMutationData({
@@ -212,10 +228,10 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({ open, dataProviders, on
     };
 
     const renderSettingStep = () => {
-        if (!dataProviderOptions?.length) return <></>;
+        if (!dataProviders?.length && !dataProviderItems?.length) return <></>;
 
         return (
-            <Form layout="vertical">
+            <Form layout="vertical" form={form}>
                 <Row gutter={[8, 8]}>
                     <Col span={24}>
                         <Form.Item
@@ -254,12 +270,55 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({ open, dataProviders, on
                             rules={[{ required: true, message: 'Vui lòng chọn nhà cung cấp' }]}
                         >
                             <Select
-                                disabled
                                 mode="multiple"
                                 value={dataProviderIds}
-                                options={dataProviderOptions}
+                                options={dataProviders}
                                 placeholder="Chọn nhà cung cấp"
-                                defaultValue={dataProviders?.length ? dataProviderIds : ''}
+                                onChange={(value) => {
+                                    setDataProviderIds(value as string[]);
+                                    if (
+                                        dataProviderItems?.length &&
+                                        dataProviderItems?.length > 2
+                                    ) {
+                                        setDataProviderItemsIds([]);
+                                    }
+                                }}
+                                disabled={Boolean(
+                                    dataProviderItems?.length && dataProviderItems?.length > 2,
+                                )}
+                                defaultValue={
+                                    selectedDataProviderIds?.length
+                                        ? selectedDataProviderIds
+                                        : undefined
+                                }
+                            />
+                        </Form.Item>
+                    </Col>
+                    <Col span={24}>
+                        <Form.Item
+                            label="Đối tượng nhà cung cấp"
+                            name="dataProviderItemIds"
+                            rules={[{ required: true, message: 'Vui lòng chọn đối tượng' }]}
+                        >
+                            <Select
+                                mode="multiple"
+                                options={dataProviderItems}
+                                value={dataProviderItemsIds}
+                                placeholder="Chọn đối tượng nhà cung cấp"
+                                onChange={(value) => {
+                                    setDataProviderItemsIds(value as string[]);
+                                    if (dataProviderIds?.length && dataProviderIds?.length > 2) {
+                                        setDataProviderIds([]);
+                                    }
+                                }}
+                                disabled={Boolean(
+                                    dataProviderIds?.length && dataProviderIds?.length > 2,
+                                )}
+                                defaultValue={
+                                    selectedDataProviderItemIds?.length
+                                        ? selectedDataProviderItemIds
+                                        : undefined
+                                }
                             />
                         </Form.Item>
                     </Col>

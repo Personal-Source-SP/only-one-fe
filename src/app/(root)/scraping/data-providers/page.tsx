@@ -31,7 +31,7 @@ const DataProviderPage: FC = () => {
     const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
 
     const [openProcessScrapeDataModal, setOpenProcessScrapeDataModal] = useState(false);
-    const [selectedRows, setSelectedRows] = useState<NDataProvider.IDataProvider[]>([]);
+    const [selectedDataProviderIds, setSelectedDataProviderIds] = useState<string[]>([]);
 
     const tableContainerData = useTableContainer({
         resource: 'data-providers',
@@ -293,10 +293,11 @@ const DataProviderPage: FC = () => {
                 tableContainerData={tableContainerData}
                 filterSearch={{ placeholder: 'Tìm kiếm nhà cung cấp', span: 12 }}
                 onRowSelectionChange={(selectedRows: NDataProvider.IDataProvider[]) => {
-                    const dataProviderReady = selectedRows.filter(
-                        (item) => item.status === DataProviderStatus.READY,
-                    );
-                    setSelectedRows(dataProviderReady ?? []);
+                    const dataProviderIds = selectedRows
+                        ?.filter((item) => item.status === DataProviderStatus.READY)
+                        ?.map((item) => item.id ?? '');
+
+                    setSelectedDataProviderIds(dataProviderIds ?? []);
                 }}
                 onDisableRowSelection={(record: NDataProvider.IDataProvider) =>
                     record.status !== DataProviderStatus.READY
@@ -340,7 +341,7 @@ const DataProviderPage: FC = () => {
                 <ProcessScrapeData
                     key="process-scrape-data"
                     open={openProcessScrapeDataModal}
-                    dataProviders={selectedRows ?? []}
+                    selectedDataProviderIds={selectedDataProviderIds}
                     onClose={() => {
                         setOpenProcessScrapeDataModal(false);
                     }}

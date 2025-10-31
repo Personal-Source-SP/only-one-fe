@@ -28,7 +28,9 @@ export const useSelectDataProviderItem = (
     props?: IUseSelectProps<NDataProvider.IDataProviderItem>,
 ) => {
     return useCustomSelect({
-        resource: `data-provider-items/data-provider/${props?.id}`,
+        resource: props?.id
+            ? `data-provider-items/data-provider/${props?.id}`
+            : 'data-provider-items/all',
         enabled: !!props?.id || (props?.enabled ?? false),
         optionValue:
             props?.optionValue ?? ((item: NDataProvider.IDataProviderItem) => item.itemUrl ?? ''),

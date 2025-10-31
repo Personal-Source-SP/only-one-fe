@@ -18,7 +18,7 @@ const CustomModal: FC<CustomModalProps> = ({ children, modalProps }) => {
             closable={false}
             style={{ top: 20 }}
             maskClosable={false}
-            destroyOnClose={false}
+            destroyOnHidden={false}
             wrapClassName="fixed-modal"
             {...modalProps}
         >
