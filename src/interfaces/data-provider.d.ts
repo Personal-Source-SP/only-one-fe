@@ -129,4 +129,12 @@ export declare namespace NDataProvider {
         dataProviderId?: string;
         dataProviderName?: string;
     }
+
+    interface IScrapeDataRequest {
+        checkDuplicateData: boolean;
+        mimeTypes?: MimeType[];
+        dataProviderIds?: string[];
+        dataProviderItemIds?: string[];
+        lastSuccessfulScrapeAt?: Date;
+    }
 }

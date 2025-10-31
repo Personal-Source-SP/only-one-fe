@@ -21,6 +21,7 @@ import {
     Table,
     Tooltip,
 } from 'antd';
+import { useWatch } from 'antd/es/form/Form';
 import { ColumnType } from 'antd/es/table';
 import dayjs from 'dayjs';
 import Link from 'next/link';
@@ -44,17 +45,12 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({
     selectedDataProviderItemIds,
     onClose,
 }) => {
-    const [form] = Form.useForm();
+    const [form] = Form.useForm<NDataProvider.IScrapeDataRequest>();
 
     const [pageSize, setPageSize] = useState(50);
     const [isLoading, setIsLoading] = useState(false);
-    const [currentStep, setCurrentStep] = useState(StepEnum.Settings);
-
-    const [mimeTypes, setMimeTypes] = useState<MimeType[]>([]);
     const [dateRanges, setDateRanges] = useState<[string, string]>();
-    const [dataProviderIds, setDataProviderIds] = useState<string[]>([]);
-    const [checkDuplicateData, setCheckDuplicateData] = useState<boolean>(true);
-    const [dataProviderItemsIds, setDataProviderItemsIds] = useState<string[]>([]);
+    const [currentStep, setCurrentStep] = useState(StepEnum.Settings);
 
     const [error, setError] = useState(0);
     const [process, setProcess] = useState(0);
@@ -62,6 +58,8 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({
     const [previewData, setPreviewData] = useState<
         NDataProvider.IScrapeDataResponse['successData']
     >([]);
+
+    const dataProviderIds = useWatch('dataProviderIds', form);
 
     const { options: dataProviders } = useSelectDataProvider();
     const { options: dataProviderItems, query: dataProviderItemQuery } = useSelectDataProviderItem({
@@ -74,16 +72,6 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({
     useEffect(() => {
         dataProviderItemQuery?.refetch();
     }, [dataProviderIds]);
-
-    useEffect(() => {
-        if (selectedDataProviderItemIds?.length) {
-            setDataProviderItemsIds(selectedDataProviderItemIds);
-        }
-
-        if (selectedDataProviderIds?.length) {
-            setDataProviderIds(selectedDataProviderIds);
-        }
-    }, [selectedDataProviderItemIds, selectedDataProviderIds]);
 
     const steps: StepProps[] = [
         {
@@ -150,9 +138,9 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({
     const handleProcessScrapeData = async () => {
         setIsLoading(true);
 
+        let values: NDataProvider.IScrapeDataRequest;
         try {
-            const values = await form.validateFields();
-            console.log(values);
+            values = await form.validateFields();
         } catch (error) {
             console.log(error);
             return;
@@ -160,13 +148,11 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({
 
         try {
             handleCustomMutationData({
-                url: 'data-history/process-scrape-data',
                 values: {
-                    mimeTypes,
-                    dataProviderIds,
-                    checkDuplicateData,
+                    ...values,
                     lastSuccessfulScrapeAt: dateRanges?.[1],
                 },
+                url: 'data-history/process-scrape-data',
                 successNotification(data) {
                     const response =
                         data?.data as NBaseApi.IResponse<NDataProvider.IScrapeDataResponse>;
@@ -228,10 +214,24 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({
     };
 
     const renderSettingStep = () => {
-        if (!dataProviders?.length && !dataProviderItems?.length) return <></>;
+        if (!dataProviders?.length || !dataProviderItems?.length) return <></>;
 
         return (
-            <Form layout="vertical" form={form}>
+            <Form
+                form={form}
+                layout="vertical"
+                initialValues={{
+                    checkDuplicateData: true,
+                    mimeTypes: [MimeType.IMAGE],
+                    lastSuccessfulScrapeAt: undefined,
+                    dataProviderIds: selectedDataProviderIds?.length
+                        ? selectedDataProviderIds
+                        : undefined,
+                    dataProviderItemIds: selectedDataProviderItemIds?.length
+                        ? selectedDataProviderItemIds
+                        : undefined,
+                }}
+            >
                 <Row gutter={[8, 8]}>
                     <Col span={24}>
                         <Form.Item
@@ -244,10 +244,7 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({
                                 },
                             ]}
                         >
-                            <Switch
-                                defaultChecked={checkDuplicateData}
-                                onChange={(value) => setCheckDuplicateData(value)}
-                            />
+                            <Switch />
                         </Form.Item>
                     </Col>
                     <Col span={24}>
@@ -255,7 +252,6 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({
                             <Select
                                 mode="multiple"
                                 placeholder="Loại tệp"
-                                onChange={(value) => setMimeTypes(value as MimeType[])}
                                 options={Object.values(MimeType).map((type) => ({
                                     value: type,
                                     label: type?.toUpperCase(),
@@ -271,63 +267,46 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({
                         >
                             <Select
                                 mode="multiple"
-                                value={dataProviderIds}
                                 options={dataProviders}
                                 placeholder="Chọn nhà cung cấp"
                                 onChange={(value) => {
-                                    setDataProviderIds(value as string[]);
-                                    if (
-                                        dataProviderItems?.length &&
-                                        dataProviderItems?.length > 2
-                                    ) {
-                                        setDataProviderItemsIds([]);
+                                    if (value?.length && value?.length > 2) {
+                                        form?.setFieldValue('dataProviderItemIds', []);
                                     }
                                 }}
                                 disabled={Boolean(
                                     dataProviderItems?.length && dataProviderItems?.length > 2,
                                 )}
-                                defaultValue={
-                                    selectedDataProviderIds?.length
-                                        ? selectedDataProviderIds
-                                        : undefined
-                                }
                             />
                         </Form.Item>
                     </Col>
                     <Col span={24}>
                         <Form.Item
-                            label="Đối tượng nhà cung cấp"
                             name="dataProviderItemIds"
+                            label="Đối tượng nhà cung cấp"
                             rules={[{ required: true, message: 'Vui lòng chọn đối tượng' }]}
                         >
                             <Select
                                 mode="multiple"
                                 options={dataProviderItems}
-                                value={dataProviderItemsIds}
                                 placeholder="Chọn đối tượng nhà cung cấp"
                                 onChange={(value) => {
-                                    setDataProviderItemsIds(value as string[]);
                                     if (dataProviderIds?.length && dataProviderIds?.length > 2) {
-                                        setDataProviderIds([]);
+                                        form?.setFieldValue('dataProviderIds', []);
                                     }
                                 }}
                                 disabled={Boolean(
                                     dataProviderIds?.length && dataProviderIds?.length > 2,
                                 )}
-                                defaultValue={
-                                    selectedDataProviderItemIds?.length
-                                        ? selectedDataProviderItemIds
-                                        : undefined
-                                }
                             />
                         </Form.Item>
                     </Col>
                     <Col span={24}>
                         <CustomDatePicker
                             showTime
-                            name="lastSuccessfulScrapeAt"
-                            label="Đến ngày cào dữ liệu"
                             dateRange={dateRanges}
+                            label="Đến ngày cào dữ liệu"
+                            name="lastSuccessfulScrapeAt"
                             setDateRange={(dateRange) => setDateRanges(dateRange)}
                         />
                     </Col>
