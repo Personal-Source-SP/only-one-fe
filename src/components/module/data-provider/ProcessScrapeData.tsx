@@ -291,7 +291,7 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({
                                 options={dataProviderItems}
                                 placeholder="Chọn đối tượng nhà cung cấp"
                                 onChange={(value) => {
-                                    if (dataProviderIds?.length && dataProviderIds?.length > 2) {
+                                    if (value?.length && value?.length > 2) {
                                         form?.setFieldValue('dataProviderIds', []);
                                     }
                                 }}
