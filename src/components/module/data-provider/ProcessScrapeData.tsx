@@ -60,6 +60,7 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({
     >([]);
 
     const dataProviderIds = useWatch('dataProviderIds', form);
+    const dataProviderItemIds = useWatch('dataProviderItemIds', form);
 
     const { options: dataProviders } = useSelectDataProvider();
     const { options: dataProviderItems, query: dataProviderItemQuery } = useSelectDataProviderItem({
@@ -275,7 +276,7 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({
                                     }
                                 }}
                                 disabled={Boolean(
-                                    dataProviderItems?.length && dataProviderItems?.length > 2,
+                                    dataProviderItemIds?.length && dataProviderItemIds?.length > 1,
                                 )}
                             />
                         </Form.Item>
@@ -296,7 +297,7 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({
                                     }
                                 }}
                                 disabled={Boolean(
-                                    dataProviderIds?.length && dataProviderIds?.length > 2,
+                                    dataProviderIds?.length && dataProviderIds?.length > 1,
                                 )}
                             />
                         </Form.Item>
