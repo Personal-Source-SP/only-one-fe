@@ -272,7 +272,7 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({
                                 placeholder="Chọn nhà cung cấp"
                                 onChange={(value) => {
                                     if (value?.length && value?.length > 2) {
-                                        form?.setFieldValue('dataProviderItemIds', []);
+                                        form?.setFieldValue('dataProviderItemIds', undefined);
                                     }
                                 }}
                                 disabled={Boolean(
@@ -293,7 +293,7 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({
                                 placeholder="Chọn đối tượng nhà cung cấp"
                                 onChange={(value) => {
                                     if (value?.length && value?.length > 2) {
-                                        form?.setFieldValue('dataProviderIds', []);
+                                        form?.setFieldValue('dataProviderIds', undefined);
                                     }
                                 }}
                                 disabled={Boolean(
