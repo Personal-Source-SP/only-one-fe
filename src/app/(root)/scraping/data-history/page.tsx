@@ -3,9 +3,10 @@
 import { CustomElement, CustomLightBox, TableContainer } from '@/components/custom';
 import { ProcessScrapeData } from '@/components/module/data-provider';
 import { PhotoGroups } from '@/components/module/photos';
+import { useMainContext } from '@/contexts/MainContext';
 import { CustomFilterType, DisplayMode, ElementType, ViewPhotoMode } from '@/enums';
-import { useCustomModal, useSelectDataProvider, useTableContainer } from '@/hooks';
-import { FilterItem, NDataProvider, PhotoItem } from '@/interfaces';
+import { useCustomDelete, useCustomModal, useSelectDataProvider, useTableContainer } from '@/hooks';
+import { ActionTableItem, FilterItem, NBaseApi, NDataProvider, PhotoItem } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { Button, Flex, Space, Switch } from 'antd';
 import { ColumnsType } from 'antd/es/table';
@@ -14,6 +15,8 @@ import Link from 'next/link';
 import { FC, useMemo, useState } from 'react';
 
 const DataHistoryPage: FC = () => {
+    const { handleMessage } = useMainContext();
+
     const [openProcessScrapeDataModal, setOpenProcessScrapeDataModal] = useState(false);
 
     const [columnDisplay, setColumnDisplay] = useState(4);
@@ -22,6 +25,8 @@ const DataHistoryPage: FC = () => {
 
     const [isLightboxOpen, setIsLightboxOpen] = useState<boolean>(false);
     const [currentPhotoIndex, setCurrentPhotoIndex] = useState<number>(0);
+
+    const [selectedDataProviderIds, setSelectedDataProviderIds] = useState<string[]>([]);
 
     const tableContainerData = useTableContainer({
         resource: 'data-history',
@@ -32,6 +37,32 @@ const DataHistoryPage: FC = () => {
     });
 
     const { options: dataProviders } = useSelectDataProvider();
+
+    const { handleDelete } = useCustomDelete({
+        resource: 'data-history',
+        errorNotification: (error: any) => ({
+            type: 'error',
+            message: error?.message || 'Xóa dữ liệu không thành công',
+        }),
+        successNotification: (data: NBaseApi.IResponse<boolean>) => {
+            if (data?.status === 200) {
+                tableContainerData?.tableQuery?.refetch();
+
+                handleMessage({
+                    content: 'Xóa dữ liệu thành công',
+                });
+
+                return false;
+            }
+
+            handleMessage({
+                type: 'error',
+                content: 'Xóa dữ liệu không thành công',
+            });
+
+            return false;
+        },
+    });
 
     const modalPropsData = useCustomModal({
         action: 'edit',
@@ -162,6 +193,15 @@ const DataHistoryPage: FC = () => {
         },
     ];
 
+    const actionItems: ActionTableItem[] = [
+        {
+            key: 'edit',
+            label: 'Chỉnh sửa',
+            icon: <Icon icon="lucide:edit" />,
+            onClick: (record: NDataProvider.IDataHistory) => modalPropsData?.show?.(record?.id),
+        },
+    ];
+
     const handlePhotoClick = (dataHistoryId: string) => {
         const index = photoItems?.findIndex((photo) => photo.id === dataHistoryId);
         if (index !== undefined) {
@@ -192,6 +232,15 @@ const DataHistoryPage: FC = () => {
                     >
                         Trình chiếu
                     </Button>,
+                    <Button
+                        type="primary"
+                        key="delete-data"
+                        icon={<Icon icon="lucide:trash" />}
+                        disabled={!selectedDataProviderIds?.length}
+                        onClick={() => handleDelete(selectedDataProviderIds)}
+                    >
+                        Xóa dữ liệu
+                    </Button>,
                     <Space key="display-list" align="center">
                         <Switch
                             checked={displayMode === DisplayMode.LIST}
@@ -206,17 +255,10 @@ const DataHistoryPage: FC = () => {
 
             <TableContainer
                 resource="data-history"
+                actionItems={actionItems}
                 customFilterItems={customFilterItems}
                 tableContainerData={tableContainerData}
                 columns={displayMode === DisplayMode.TABLE ? columns : undefined}
-                actionItems={[
-                    {
-                        key: 'edit',
-                        label: 'Chỉnh sửa',
-                        icon: <Icon icon="lucide:edit" />,
-                        onClick: (record) => modalPropsData?.show?.(record?.id),
-                    },
-                ]}
                 filterSearch={{
                     placeholder: 'Tìm kiếm lịch sử dữ liệu',
                     span: displayMode === DisplayMode.TABLE ? 12 : 10,
@@ -231,6 +273,10 @@ const DataHistoryPage: FC = () => {
                         />
                     )
                 }
+                onRowSelectionChange={(selectedRows: NDataProvider.IDataProvider[]) => {
+                    const dataProviderIds = selectedRows?.map((item) => item.id ?? '');
+                    setSelectedDataProviderIds(dataProviderIds ?? []);
+                }}
             />
 
             <CustomLightBox
@@ -242,7 +288,6 @@ const DataHistoryPage: FC = () => {
 
             {openProcessScrapeDataModal && (
                 <ProcessScrapeData
-                    dataProviders={[]}
                     key="process-scrape-data"
                     open={openProcessScrapeDataModal}
                     onClose={() => {

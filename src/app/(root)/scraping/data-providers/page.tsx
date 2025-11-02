@@ -17,11 +17,11 @@ import {
 import { useCustomModal, useSelectDataProviderItem, useTableContainer } from '@/hooks';
 import { ActionTableItem, FilterItem, FormFieldItem, NDataProvider } from '@/interfaces';
 import { Icon } from '@iconify/react';
-import { Button, FormInstance, Space } from 'antd';
+import { Button, Space } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import { ColumnType } from 'antd/lib/table';
 import dayjs from 'dayjs';
-import { FC, ReactNode, useState } from 'react';
+import { FC, useState } from 'react';
 
 const DataProviderPage: FC = () => {
     const [openCreateItemModal, setOpenCreateItemModal] = useState(false);
