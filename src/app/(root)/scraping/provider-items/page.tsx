@@ -19,7 +19,7 @@ const DataProviderItemPage: FC = () => {
     const [selectedDataProviderItemIds, setSelectedDataProviderItemIds] = useState<string[]>([]);
 
     const { options: itemOptions } = useSelectItem();
-    const { options: dataProviderOptions } = useSelectDataProvider();
+    const { options: dataProviderOptions, query: dataProviderQuery } = useSelectDataProvider();
 
     const tableContainerData = useTableContainer({
         resource: 'data-provider-items',
@@ -77,10 +77,13 @@ const DataProviderItemPage: FC = () => {
             options: dataProviderOptions ?? [],
             rules: [{ required: true, message: 'Vui lòng chọn nhà cung cấp' }],
             onChange: (value, form) => {
-                const dataProvider = dataProviderOptions?.find((option) => option.value === value);
+                const dataProvider = dataProviderQuery?.data?.data?.find(
+                    (option) => option.id === value,
+                );
+
                 form?.setFieldValue(
                     'itemUrl',
-                    dataProvider?.label ? `${dataProvider?.label}/` : '',
+                    dataProvider?.baseUrl ? `${dataProvider?.baseUrl}` : '',
                 );
             },
         },

@@ -155,6 +155,27 @@ const ItemPage: FC = () => {
                 { max: 20, message: 'Mã đối tượng không được vượt quá 20 ký tự' },
             ],
         },
+        {
+            name: 'tags',
+            type: 'input',
+            label: 'Tags',
+            tooltip: 'Tags (cách nhau bằng dấu phẩy ",")',
+            rules: [
+                {
+                    validator: (_: any, value: string) => {
+                        if (
+                            value &&
+                            typeof value === 'string' &&
+                            value.split(',').some((tag) => tag.trim().length === 0 && tag !== '')
+                        ) {
+                            return Promise.reject(new Error('Tag không được bỏ trống!'));
+                        }
+                        return Promise.resolve();
+                    },
+                },
+            ],
+            placeholder: 'Nhập các tag, mỗi tag cách nhau bằng dấu phẩy ","',
+        },
     ];
 
     return (

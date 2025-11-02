@@ -28,6 +28,7 @@ export const renderFormFields = (formField: FormFieldItem, formProps: FormProps<
                         name={formField.name}
                         rules={formField.rules}
                         label={formField.label}
+                        tooltip={formField.tooltip}
                     >
                         <Input
                             placeholder={formField.placeholder}
@@ -48,6 +49,7 @@ export const renderFormFields = (formField: FormFieldItem, formProps: FormProps<
                         name={formField.name}
                         label={formField.label}
                         rules={formField.rules}
+                        tooltip={formField.tooltip}
                     >
                         <Select
                             options={formField.options ?? []}
@@ -74,6 +76,7 @@ export const renderFormFields = (formField: FormFieldItem, formProps: FormProps<
                         name={formField.name}
                         label={formField.label}
                         rules={formField.rules}
+                        tooltip={formField.tooltip}
                     >
                         <Input.TextArea
                             rows={formField.rows ?? 4}

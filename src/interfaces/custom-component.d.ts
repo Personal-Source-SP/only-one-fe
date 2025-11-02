@@ -9,6 +9,7 @@ export interface FormFieldItem {
 
     span?: number;
     rules?: Rule[];
+    tooltip?: string;
     disabled?: boolean;
     defaultValue?: any;
     placeholder?: string;

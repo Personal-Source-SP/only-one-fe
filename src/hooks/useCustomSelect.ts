@@ -45,7 +45,9 @@ export const useSelectDataProvider = (props?: IUseSelectProps<NDataProvider.IDat
         enabled: props?.enabled ?? true,
         optionValue: props?.optionValue ?? ((item: NDataProvider.IDataProvider) => item.id ?? ''),
         optionLabel:
-            props?.optionLabel ?? ((item: NDataProvider.IDataProvider) => item.baseUrl ?? ''),
+            props?.optionLabel ??
+            ((item: NDataProvider.IDataProvider) =>
+                item.baseUrl ? `${item.name} - ${item.baseUrl}` : (item.name ?? '')),
     });
 };
 
