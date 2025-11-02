@@ -17,11 +17,11 @@ import {
 import { useCustomModal, useSelectDataProviderItem, useTableContainer } from '@/hooks';
 import { ActionTableItem, FilterItem, FormFieldItem, NDataProvider } from '@/interfaces';
 import { Icon } from '@iconify/react';
-import { Button, Space } from 'antd';
+import { Button, FormInstance, Space } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import { ColumnType } from 'antd/lib/table';
 import dayjs from 'dayjs';
-import { FC, useState } from 'react';
+import { FC, ReactNode, useState } from 'react';
 
 const DataProviderPage: FC = () => {
     const [openCreateItemModal, setOpenCreateItemModal] = useState(false);
@@ -186,7 +186,24 @@ const DataProviderPage: FC = () => {
             rules: [
                 { required: true, message: 'Vui lòng nhập URL cơ sở' },
                 { type: 'url', message: 'URL cơ sở không hợp lệ' },
-                { pattern: /^.*[^/]$/, message: 'URL cơ sở không được kết thúc bằng /' },
+                {
+                    validator: (_, value) => {
+                        if (!value) return Promise.resolve();
+                        if (!/^.*[^/]$/.test(value)) {
+                            return Promise.reject('URL cơ sở không được kết thúc bằng /');
+                        }
+                        return Promise.resolve();
+                    },
+                },
+                {
+                    validator: (_, value) => {
+                        if (!value) return Promise.resolve();
+                        if (!/^(?!.*www\.).*$/.test(value)) {
+                            return Promise.reject('URL cơ sở không được chứa www');
+                        }
+                        return Promise.resolve();
+                    },
+                },
             ],
         },
     ];
