@@ -185,7 +185,6 @@ const DataProviderPage: FC = () => {
             label: 'URL cơ sở',
             rules: [
                 { required: true, message: 'Vui lòng nhập URL cơ sở' },
-                { type: 'url', message: 'URL cơ sở không hợp lệ' },
                 {
                     validator: (_, value) => {
                         if (!value) return Promise.resolve();
