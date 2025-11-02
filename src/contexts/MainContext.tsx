@@ -24,6 +24,7 @@ interface INotificationProps {
 
 interface MainContextType {
     loading: boolean;
+    scrollToTop: () => void;
     handleLoading: (loading: boolean) => void;
     handleMessage: (props: IMessageProps) => void;
     handleNotification: (props: INotificationProps) => void;
@@ -72,12 +73,40 @@ export const MainProvider: FC<MainProviderProps> = ({ children, isPublic = false
         });
     };
 
+    const scrollToTop = () => {
+        const mainContentElement = document.querySelector('main.overflow-y-auto');
+
+        if (mainContentElement) {
+            mainContentElement.scrollTo({
+                top: 0,
+                behavior: 'smooth',
+            });
+        } else {
+            const scrollableElements = [document.documentElement, document.body];
+
+            scrollableElements.forEach((element) => {
+                if (element instanceof HTMLElement) {
+                    element.scrollTo({
+                        top: 0,
+                        behavior: 'smooth',
+                    });
+                }
+            });
+
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth',
+            });
+        }
+    };
+
     if (loading) return <Loading />;
 
     return (
         <MainContext.Provider
             value={{
                 loading,
+                scrollToTop,
                 handleLoading,
                 handleMessage,
                 handleNotification,

@@ -1,5 +1,7 @@
 'use client';
 
+import { ScrollToTop } from '@/components/common';
+
 import Header from '@/components/layout/header';
 import NotificationsPanel from '@/components/layout/notifications-panel';
 import Search from '@/components/layout/search';
@@ -246,6 +248,9 @@ const MainLayout: FC<MainLayoutProps> = ({ children }) => {
 
                 {/* Quick Actions FAB */}
                 {/* {!mobileMenuOpen && <QuickActions />} */}
+
+                {/* Scroll to Top */}
+                <ScrollToTop />
             </div>
         </main>
     );

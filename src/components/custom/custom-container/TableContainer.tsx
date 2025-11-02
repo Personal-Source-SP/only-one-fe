@@ -2,6 +2,7 @@
 
 import { PaginationControls } from '@/components/common';
 import { CustomElement, CustomFilter, CustomTable } from '@/components/custom';
+import { useMainContext } from '@/contexts/MainContext';
 import { CustomFilterType, ElementType } from '@/enums';
 import { useTableContainer } from '@/hooks';
 import { useDebounceSearch } from '@/hooks/useDebounceSearch';
@@ -34,6 +35,8 @@ const TableContainer: FC<TableContainerProps> = ({
     onRowSelectionChange,
     onDisableRowSelection,
 }) => {
+    const { scrollToTop } = useMainContext();
+
     const {
         currentPage,
         setCurrentPage,
@@ -99,7 +102,10 @@ const TableContainer: FC<TableContainerProps> = ({
                         itemsPerPage={pageSize}
                         currentPage={currentPage}
                         totalItems={tableQuery?.data?.meta?.totalItems ?? 0}
-                        onPageChange={(page) => setCurrentPage(page)}
+                        onPageChange={(page) => {
+                            setCurrentPage(page);
+                            scrollToTop();
+                        }}
                         onItemsPerPageChange={(pageSize) => {
                             setCurrentPage(1);
                             setPageSize(pageSize);
