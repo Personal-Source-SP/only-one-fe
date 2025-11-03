@@ -4,19 +4,29 @@ import { Empty } from '@/components/common';
 import { MimeType } from '@/enums';
 import { ViewPhotoMode } from '@/enums/photo.enum';
 import { PhotoGroup, PhotoItem } from '@/interfaces';
-import { List, Spin, Tag } from 'antd';
+import { Button, List, Spin, Tag, Tooltip } from 'antd';
+import { DeleteOutlined, DownloadOutlined, EyeOutlined } from '@ant-design/icons';
 import Image from 'next/image';
 import { FC, memo, useMemo, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 type PhotoGroupsProps = {
-    columns: number;
     data: PhotoItem[];
+    columns: number;
     displayMode: ViewPhotoMode;
     onPhotoClick: (photoId: string) => void;
+    onDeletePhoto?: (photo: PhotoItem) => void;
+    onDownloadPhoto?: (photo: PhotoItem) => void;
 };
 
-const PhotoGroups: FC<PhotoGroupsProps> = ({ columns, displayMode, data, onPhotoClick }) => {
+const PhotoGroups: FC<PhotoGroupsProps> = ({
+    columns,
+    displayMode,
+    data,
+    onPhotoClick,
+    onDeletePhoto,
+    onDownloadPhoto,
+}) => {
     const [loadingImages, setLoadingImages] = useState<Set<string>>(new Set());
 
     const groupedPhotos: PhotoGroup[] = useMemo(() => {
@@ -97,6 +107,19 @@ const PhotoGroups: FC<PhotoGroupsProps> = ({ columns, displayMode, data, onPhoto
         [groupedPhotos],
     );
 
+    const handleDownloadPhoto = (photo: PhotoItem) => {
+        if (onDownloadPhoto) {
+            onDownloadPhoto(photo);
+        } else {
+            const link = document.createElement('a');
+            link.href = photo.url;
+            link.download = `photo-${photo.id}`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    };
+
     const renderGroupHeader = (group: PhotoGroup) => {
         switch (displayMode) {
             case ViewPhotoMode.DATE: {
@@ -130,6 +153,88 @@ const PhotoGroups: FC<PhotoGroupsProps> = ({ columns, displayMode, data, onPhoto
         }
     };
 
+    const renderActionOverlay = (photo: PhotoItem) => (
+        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="flex gap-2">
+                <Tooltip title="Xem chi tiết">
+                    <Button
+                        size="small"
+                        type="primary"
+                        icon={<EyeOutlined />}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onPhotoClick(photo.id);
+                        }}
+                    />
+                </Tooltip>
+                <Tooltip title="Tải xuống">
+                    <Button
+                        size="small"
+                        icon={<DownloadOutlined />}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            handleDownloadPhoto(photo);
+                        }}
+                    />
+                </Tooltip>
+                <Tooltip title="Xóa">
+                    <Button
+                        size="small"
+                        danger
+                        icon={<DeleteOutlined />}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onDeletePhoto?.(photo);
+                        }}
+                    />
+                </Tooltip>
+            </div>
+        </div>
+    );
+
+    const renderPhotoItem = (photo: PhotoItem) => (
+        <div
+            key={photo.id}
+            onClick={() => onPhotoClick(photo.id)}
+            className="group relative aspect-[4/3] rounded-md overflow-hidden cursor-pointer transition-all hover:shadow-md bg-gray-100"
+        >
+            {loadingImages.has(photo.id) && (
+                <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
+                    <Spin size="small" />
+                </div>
+            )}
+
+            <Image
+                fill
+                priority
+                unoptimized
+                src={photo.url}
+                className="object-cover transition-opacity duration-200 group-hover:opacity-60"
+                alt={`Photo ${photo.id}`}
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                onLoadStart={() => {
+                    setLoadingImages((prev) => new Set(prev).add(photo.id));
+                }}
+                onLoad={() => {
+                    setLoadingImages((prev) => {
+                        const newSet = new Set(prev);
+                        newSet.delete(photo.id);
+                        return newSet;
+                    });
+                }}
+                onError={() => {
+                    setLoadingImages((prev) => {
+                        const newSet = new Set(prev);
+                        newSet.delete(photo.id);
+                        return newSet;
+                    });
+                }}
+            />
+
+            {renderActionOverlay(photo)}
+        </div>
+    );
+
     const renderPhotos = () => {
         if (displayMode === ViewPhotoMode.ALL) {
             return (
@@ -140,46 +245,7 @@ const PhotoGroups: FC<PhotoGroupsProps> = ({ columns, displayMode, data, onPhoto
                         gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
                     }}
                 >
-                    {allPhotos.map((photo) => (
-                        <div
-                            key={photo.id}
-                            onClick={() => onPhotoClick(photo.id)}
-                            className="relative aspect-[4/3] rounded-md overflow-hidden cursor-pointer hover:opacity-90 transition-all hover:shadow-md bg-gray-100"
-                        >
-                            {loadingImages.has(photo.id) && (
-                                <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
-                                    <Spin size="small" />
-                                </div>
-                            )}
-
-                            <Image
-                                fill
-                                priority
-                                unoptimized
-                                src={photo.url}
-                                className="object-cover"
-                                alt={`Photo ${photo.id}`}
-                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                onLoadStart={() => {
-                                    setLoadingImages((prev) => new Set(prev).add(photo.id));
-                                }}
-                                onLoad={() => {
-                                    setLoadingImages((prev) => {
-                                        const newSet = new Set(prev);
-                                        newSet.delete(photo.id);
-                                        return newSet;
-                                    });
-                                }}
-                                onError={() => {
-                                    setLoadingImages((prev) => {
-                                        const newSet = new Set(prev);
-                                        newSet.delete(photo.id);
-                                        return newSet;
-                                    });
-                                }}
-                            />
-                        </div>
-                    ))}
+                    {allPhotos.map((photo) => renderPhotoItem(photo))}
                 </div>
             );
         }
@@ -198,45 +264,7 @@ const PhotoGroups: FC<PhotoGroupsProps> = ({ columns, displayMode, data, onPhoto
                                 gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
                             }}
                         >
-                            {group.photos.map((photo) => (
-                                <div
-                                    key={photo.id}
-                                    onClick={() => onPhotoClick(photo.id)}
-                                    className="relative aspect-[4/3] rounded-md overflow-hidden cursor-pointer hover:opacity-90 transition-all hover:shadow-md bg-gray-100"
-                                >
-                                    {loadingImages.has(photo.id) && (
-                                        <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
-                                            <Spin size="small" />
-                                        </div>
-                                    )}
-                                    <Image
-                                        fill
-                                        priority
-                                        unoptimized
-                                        src={photo.url}
-                                        className="object-cover"
-                                        alt={`Photo ${photo.id}`}
-                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                        onLoadStart={() => {
-                                            setLoadingImages((prev) => new Set(prev).add(photo.id));
-                                        }}
-                                        onLoad={() => {
-                                            setLoadingImages((prev) => {
-                                                const newSet = new Set(prev);
-                                                newSet.delete(photo.id);
-                                                return newSet;
-                                            });
-                                        }}
-                                        onError={() => {
-                                            setLoadingImages((prev) => {
-                                                const newSet = new Set(prev);
-                                                newSet.delete(photo.id);
-                                                return newSet;
-                                            });
-                                        }}
-                                    />
-                                </div>
-                            ))}
+                            {group.photos.map((photo) => renderPhotoItem(photo))}
                         </div>
                     </div>
                 )}
