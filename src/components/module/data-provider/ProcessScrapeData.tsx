@@ -2,7 +2,12 @@
 
 import { CustomDatePicker, CustomFormModal } from '@/components/custom';
 import { MimeType } from '@/enums';
-import { useCustomMutationData, useSelectDataProvider, useSelectDataProviderItem } from '@/hooks';
+import {
+    useCustomMutationData,
+    useSelectDataProvider,
+    useSelectDataProviderItem,
+    useSelectItem,
+} from '@/hooks';
 import { NBaseApi, NDataProvider } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import {
@@ -74,6 +79,8 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({
         optionValue: (item: NDataProvider.IDataProviderItem) => item.id ?? '',
         optionLabel: (item: NDataProvider.IDataProviderItem) => item.itemUrl ?? '',
     });
+
+    const { options: itemOptions } = useSelectItem();
 
     const { handleCustomMutationData } = useCustomMutationData();
 
@@ -301,6 +308,27 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({
                                 onChange={(value) => {
                                     if (value?.length && value?.length > 2) {
                                         form?.setFieldValue('dataProviderIds', undefined);
+                                    }
+                                }}
+                                disabled={Boolean(
+                                    dataProviderIds?.length && dataProviderIds?.length > 1,
+                                )}
+                            />
+                        </Form.Item>
+                    </Col>
+                    <Col span={24}>
+                        <Form.Item
+                            name="itemIds"
+                            label="Đối tượng"
+                            rules={[{ required: true, message: 'Vui lòng chọn đối tượng' }]}
+                        >
+                            <Select
+                                mode="multiple"
+                                options={itemOptions}
+                                placeholder="Chọn đối tượng"
+                                onChange={(value) => {
+                                    if (value?.length && value?.length > 2) {
+                                        form?.setFieldValue('dataProviderItemIds', undefined);
                                     }
                                 }}
                                 disabled={Boolean(
