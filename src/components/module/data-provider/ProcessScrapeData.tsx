@@ -62,10 +62,17 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({
     const dataProviderIds = useWatch('dataProviderIds', form);
     const dataProviderItemIds = useWatch('dataProviderItemIds', form);
 
-    const { options: dataProviders } = useSelectDataProvider();
+    const { options: dataProviders } = useSelectDataProvider({
+        optionValue: (item: NDataProvider.IDataProvider) => item.id ?? '',
+        optionLabel: (item: NDataProvider.IDataProvider) =>
+            item.baseUrl ? `${item.name} - ${item.baseUrl}` : '',
+    });
+
     const { options: dataProviderItems, query: dataProviderItemQuery } = useSelectDataProviderItem({
         enabled: false,
         id: dataProviderIds?.length === 1 ? dataProviderIds[0] : undefined,
+        optionValue: (item: NDataProvider.IDataProviderItem) => item.id ?? '',
+        optionLabel: (item: NDataProvider.IDataProviderItem) => item.itemUrl ?? '',
     });
 
     const { handleCustomMutationData } = useCustomMutationData();
