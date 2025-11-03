@@ -59,17 +59,20 @@ export declare namespace NDataProvider {
     }
 
     interface IDataProvider extends Abstract {
-        identifier?: string;
         name: string;
+        identifier: string;
         scraperService: string;
         baseUrl: string;
         status: DataProviderStatus;
         targetConfig?: ITargetConfig;
         lastSuccessfulScrapeAt?: Date;
         searchConfig?: ISearchConfig;
+        parentId?: string;
         searchService: string;
         searchStatus: DataProviderSearchStatus;
         dataProviderItems?: IDataProviderItem[];
+        parent?: IDataProvider;
+        children?: IDataProvider[];
     }
 
     interface IDataProviderItem extends Abstract {

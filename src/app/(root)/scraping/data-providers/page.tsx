@@ -14,7 +14,12 @@ import {
     DataProviderStatus,
     ElementType,
 } from '@/enums';
-import { useCustomModal, useSelectDataProviderItem, useTableContainer } from '@/hooks';
+import {
+    useCustomModal,
+    useSelectDataProvider,
+    useSelectDataProviderItem,
+    useTableContainer,
+} from '@/hooks';
 import { ActionTableItem, FilterItem, FormFieldItem, NDataProvider } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { Button, Space } from 'antd';
@@ -40,6 +45,8 @@ const DataProviderPage: FC = () => {
     const { options: dataProviderItems } = useSelectDataProviderItem({
         id: selectedId,
     });
+
+    const { options: dataProviders, query: dataProviderQuery } = useSelectDataProvider();
 
     const modalPropsData = useCustomModal({
         action: 'edit',
@@ -172,6 +179,7 @@ const DataProviderPage: FC = () => {
             type: 'input',
             label: 'Mã nhà cung cấp',
             rules: [
+                { required: true, message: 'Vui lòng nhập mã nhà cung cấp' },
                 { max: 20, message: 'Mã nhà cung cấp không được vượt quá 20 ký tự' },
                 {
                     pattern: /^[a-z0-9-]+$/,
@@ -204,6 +212,19 @@ const DataProviderPage: FC = () => {
                     },
                 },
             ],
+        },
+        {
+            type: 'select',
+            name: 'parentId',
+            label: 'Nhà cung cấp cha',
+            options: dataProviders ?? [],
+            onChange: (value, form) => {
+                const parentDataProvider = dataProviderQuery?.data?.data?.find(
+                    (item) => item.id === value,
+                );
+
+                form?.setFieldValue('identifier', parentDataProvider?.identifier ?? '');
+            },
         },
     ];
 

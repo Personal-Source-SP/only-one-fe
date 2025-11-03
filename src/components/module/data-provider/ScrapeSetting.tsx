@@ -90,6 +90,7 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
 
     const form = formProps?.form;
     const dataProvider = formProps?.initialValues;
+    const isParentProvider = dataProvider?.parentId ? false : true;
 
     const url = useWatch([FORM_FIELDS.URL], { form, preserve: true });
     const formUrls = useWatch([FORM_FIELDS.ADDITIONAL_URLS], { form, preserve: true });
@@ -279,9 +280,11 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
     const renderFooter = () => {
         return (
             <Flex justify="end" align="center" gap={16}>
-                {dataProvider?.status !== DataProviderStatus.UNCONFIGURED && (
+                {(dataProvider?.status !== DataProviderStatus.UNCONFIGURED ||
+                    dataProvider?.parent?.status !== DataProviderStatus.UNCONFIGURED) && (
                     <Button
                         type="primary"
+                        disabled={false}
                         onClick={() =>
                             handleSwitchStatus(
                                 dataProvider?.status === DataProviderStatus.TESTING
@@ -294,7 +297,12 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
                     </Button>
                 )}
 
-                <Button type="primary" htmlType="submit" onClick={() => form?.submit()}>
+                <Button
+                    type="primary"
+                    htmlType="submit"
+                    disabled={!isParentProvider}
+                    onClick={() => form?.submit()}
+                >
                     Lưu
                 </Button>
 
@@ -305,7 +313,7 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
 
     const renderFormUrl = (field: string, index?: number) => {
         if (!dataProviderItemOptions?.length) {
-            return <Input placeholder="URL" />;
+            return <Input disabled={false} placeholder="URL" />;
         }
 
         return (
@@ -344,7 +352,10 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
                     ]}
                 >
                     <Select
-                        disabled={dataProvider?.status === DataProviderStatus.READY}
+                        disabled={
+                            dataProvider?.status === DataProviderStatus.READY ||
+                            dataProvider?.parent?.status === DataProviderStatus.READY
+                        }
                         options={[
                             { label: 'API', value: ScraperServiceEnum.API },
                             { label: 'Cơ bản', value: ScraperServiceEnum.GENERIC },
@@ -692,6 +703,7 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
             <Form
                 {...formProps}
                 layout="vertical"
+                disabled={!isParentProvider}
                 className="[&_.ant-form-item]:!mb-2"
                 onFinish={(values) => handleUpdateTargetConfig(values as DataProviderForm)}
                 initialValues={
