@@ -1,20 +1,22 @@
 import { NDataProvider, NGoogle } from '@/interfaces';
-import { useSelect } from '@refinedev/core';
+import { CrudFilter, useSelect } from '@refinedev/core';
 
 interface IUseSelectProps<T> {
     id?: string;
     resource?: string;
     enabled?: boolean;
+    defaultFilters?: CrudFilter[];
     optionValue?: (item: T) => string;
     optionLabel?: (item: T) => string;
 }
 
 export const useCustomSelect = (props: IUseSelectProps<any>) => {
-    const { enabled, resource, optionValue, optionLabel } = props;
+    const { enabled, resource, defaultFilters, optionValue, optionLabel } = props;
 
     const { options, query } = useSelect<any>({
         resource: resource ?? '',
         pagination: { mode: 'off' },
+        filters: defaultFilters ?? undefined,
         queryOptions: { enabled: enabled ?? false },
         sorters: [{ field: 'createdAt', order: 'desc' }],
         optionValue: optionValue ?? ((item: any) => item.id ?? ''),
