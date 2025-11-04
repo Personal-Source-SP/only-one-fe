@@ -30,7 +30,7 @@ import {
 } from 'antd';
 import { useWatch } from 'antd/es/form/Form';
 import { isEmpty, isNumber } from 'lodash';
-import { FC, memo, useState } from 'react';
+import { FC, Fragment, memo, useState } from 'react';
 
 type DataProviderForm = NDataProvider.IDataProvider & {
     url: string;
@@ -52,6 +52,7 @@ const FORM_FIELDS = {
     MAIN_CONTENT_SELECTOR: 'mainContentSelector',
 
     QUERY_PARAMS: 'queryParams',
+    FIRST_QUERY_PARAM: 'firstQueryParam',
 
     MAX_RESULTS: 'maxResults',
     RETRY_DELAY: 'retryDelay',
@@ -480,12 +481,20 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
                         </Form.Item>
                     </>
                 ) : (
-                    <Form.Item
-                        label="Tham số truy vấn"
-                        name={['targetConfig', FORM_FIELDS.QUERY_PARAMS]}
-                    >
-                        <Input placeholder="Tham số truy vấn" />
-                    </Form.Item>
+                    <Fragment>
+                        <Form.Item
+                            label="Tham số truy vấn"
+                            name={['targetConfig', FORM_FIELDS.QUERY_PARAMS]}
+                        >
+                            <Input placeholder="Tham số truy vấn" />
+                        </Form.Item>
+                        <Form.Item
+                            label="Tham số truy vấn đầu tiên"
+                            name={['targetConfig', FORM_FIELDS.FIRST_QUERY_PARAM]}
+                        >
+                            <Input placeholder="Tham số truy vấn đầu tiên (sử dụng lần đầu tiên cào)" />
+                        </Form.Item>
+                    </Fragment>
                 )}
 
                 <Form.Item label="User-Agent" name={['targetConfig', FORM_FIELDS.USER_AGENT]}>

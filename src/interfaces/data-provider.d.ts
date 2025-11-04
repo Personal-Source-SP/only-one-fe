@@ -16,6 +16,7 @@ export declare namespace NDataProvider {
         isGetParentElement?: boolean;
 
         queryParams?: string;
+        firstQueryParam?: string;
 
         maxResults?: number;
         retryDelay?: number;

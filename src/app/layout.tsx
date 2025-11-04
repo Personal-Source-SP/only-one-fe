@@ -28,7 +28,7 @@ export default async function RootLayout({ children }: PropsWithChildren) {
     const session = await getServerSession(authOptions);
 
     return (
-        <html lang="en">
+        <html lang="en" suppressHydrationWarning>
             <body className={`${inter.className} overflow-x-hidden`}>
                 <Suspense>
                     <NavigationGuardProvider>
