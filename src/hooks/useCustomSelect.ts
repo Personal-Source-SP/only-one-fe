@@ -6,6 +6,7 @@ interface IUseSelectProps<T> {
     resource?: string;
     enabled?: boolean;
     defaultFilters?: CrudFilter[];
+    type?: 'items' | 'data-provider' | 'data-provider-items';
     optionValue?: (item: T) => string;
     optionLabel?: (item: T) => string;
 }
@@ -29,10 +30,21 @@ export const useCustomSelect = (props: IUseSelectProps<any>) => {
 export const useSelectDataProviderItem = (
     props?: IUseSelectProps<NDataProvider.IDataProviderItem>,
 ) => {
+    let resource = '';
+    switch (props?.type) {
+        case 'items':
+            resource = `data-provider-items/item/${props?.id}`;
+            break;
+        case 'data-provider':
+            resource = `data-provider-items/data-provider/${props?.id}`;
+            break;
+        default:
+            resource = 'data-provider-items/all';
+            break;
+    }
+
     return useCustomSelect({
-        resource: props?.id
-            ? `data-provider-items/data-provider/${props?.id}`
-            : 'data-provider-items/all',
+        resource,
         enabled: !!props?.id || (props?.enabled ?? false),
         optionValue:
             props?.optionValue ?? ((item: NDataProvider.IDataProviderItem) => item.itemUrl ?? ''),
