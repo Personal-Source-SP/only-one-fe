@@ -206,7 +206,7 @@ const DataProviderItemPage: FC = () => {
                     setSelectedDataProviderItemIds(dataProviderItemsIds ?? []);
                 }}
                 onDisableRowSelection={(record: NDataProvider.IDataProviderItem) =>
-                    record.dataProvider?.status !== DataProviderStatus.READY
+                    record.dataProvider?.status !== DataProviderStatus.READY || !record.isActive
                 }
             />
 
@@ -236,10 +236,8 @@ const DataProviderItemPage: FC = () => {
                 <ProcessScrapeData
                     key="process-scrape-data"
                     open={openProcessScrapeDataModal}
+                    onClose={() => setOpenProcessScrapeDataModal(false)}
                     selectedDataProviderItemIds={selectedDataProviderItemIds}
-                    onClose={() => {
-                        setOpenProcessScrapeDataModal(false);
-                    }}
                 />
             )}
         </Space>
