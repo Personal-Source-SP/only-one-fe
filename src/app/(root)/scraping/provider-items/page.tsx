@@ -3,16 +3,22 @@
 import { CreateFormModal, CustomElement, EditFormModal, TableContainer } from '@/components/custom';
 import { ProcessScrapeData } from '@/components/module/data-provider';
 import { DataProviderStatus, ElementType } from '@/enums';
-import { useSelectDataProvider, useSelectItem, useTableContainer } from '@/hooks';
+import {
+    useCustomMutationData,
+    useSelectDataProvider,
+    useSelectItem,
+    useTableContainer,
+} from '@/hooks';
 import { ActionTableItem, FormFieldItem, NDataProvider } from '@/interfaces';
 import { buildUrl } from '@/libs';
 import { Icon } from '@iconify/react';
-import { Button, Space } from 'antd';
+import { Button, Space, Switch } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
 import { FC, useState } from 'react';
 
 const DataProviderItemPage: FC = () => {
+    const [loading, setLoading] = useState(false);
     const [openCreateItemModal, setOpenCreateItemModal] = useState(false);
     const [editItemId, setEditItemId] = useState<string | undefined>(undefined);
 
@@ -21,6 +27,7 @@ const DataProviderItemPage: FC = () => {
 
     const { options: itemOptions } = useSelectItem();
     const { options: dataProviderOptions, query: dataProviderQuery } = useSelectDataProvider();
+    const { handleCustomMutationData: handleUpdate } = useCustomMutationData();
 
     const tableContainerData = useTableContainer({
         resource: 'data-provider-items',
@@ -31,6 +38,7 @@ const DataProviderItemPage: FC = () => {
             title: 'Tên đối tượng',
             dataIndex: 'item',
             key: 'item',
+            width: '20%',
             ellipsis: true,
             sorter: true,
             render: (item: NDataProvider.IItem) => item?.name ?? '---',
@@ -39,6 +47,7 @@ const DataProviderItemPage: FC = () => {
             title: 'Tên nhà cung cấp',
             dataIndex: 'dataProvider',
             key: 'dataProvider',
+            width: '20%',
             ellipsis: true,
             sorter: true,
             render: (dataProvider: NDataProvider.IDataProvider) => dataProvider?.name ?? '---',
@@ -47,6 +56,7 @@ const DataProviderItemPage: FC = () => {
             title: 'URL đối tượng',
             dataIndex: 'itemUrl',
             key: 'itemUrl',
+            width: '20%',
             ellipsis: true,
             sorter: true,
             render: (itemUrl: string) => itemUrl ?? '---',
@@ -55,11 +65,26 @@ const DataProviderItemPage: FC = () => {
             title: 'Ngày scrape gần nhất',
             dataIndex: 'lastScrapedTimestamp',
             key: 'lastScrapedTimestamp',
+            width: '30%',
             sorter: true,
             render: (lastScrapedTimestamp: Date) =>
                 lastScrapedTimestamp
                     ? dayjs(lastScrapedTimestamp).format('DD/MM/YYYY HH:mm:ss')
                     : '---',
+        },
+        {
+            title: 'Trạng thái',
+            dataIndex: 'isActive',
+            key: 'isActive',
+            width: '10%',
+            align: 'center',
+            render: (isActive: boolean, record: NDataProvider.IDataProviderItem) => (
+                <Switch
+                    size="small"
+                    checked={isActive}
+                    onChange={(checked) => handleSwitchStatus(record?.id ?? '', checked)}
+                />
+            ),
         },
     ];
 
@@ -104,6 +129,43 @@ const DataProviderItemPage: FC = () => {
         },
     ];
 
+    const handleSwitchStatus = (id: string, active: boolean) => {
+        setLoading(true);
+
+        handleUpdate({
+            values: {},
+            method: 'put',
+            url: `data-provider-items/${id}/switch-status/${active}`,
+            successNotification: (data) => {
+                if (!data?.data?.isSuccess) {
+                    setLoading(false);
+
+                    return {
+                        type: 'error',
+                        message: 'Chuyển trạng thái thất bại',
+                        description: data?.data?.message ?? 'Chuyển trạng thái thất bại',
+                    };
+                }
+
+                tableContainerData?.tableQuery?.refetch();
+
+                return {
+                    type: 'success',
+                    message: 'Chuyển trạng thái thành công',
+                };
+            },
+            errorNotification: (error) => {
+                setLoading(false);
+
+                return {
+                    type: 'error',
+                    message: 'Chuyển trạng thái thất bại',
+                    description: error?.message ?? 'Chuyển trạng thái thất bại',
+                };
+            },
+        });
+    };
+
     return (
         <Space size="middle" direction="vertical" className="w-full h-full">
             <CustomElement
@@ -130,6 +192,7 @@ const DataProviderItemPage: FC = () => {
             />
 
             <TableContainer
+                loading={loading}
                 columns={columns}
                 actionItems={actionItems}
                 resource="data-provider-items"

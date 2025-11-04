@@ -79,6 +79,7 @@ export declare namespace NDataProvider {
         itemId: string;
         itemUrl: string;
         dataProviderId: string;
+        isActive: boolean;
         lastScrapedTimestamp?: Date;
         item: IItem;
         dataProvider: IDataProvider;
