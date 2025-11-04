@@ -1,5 +1,3 @@
-'use client';
-
 import { KEY_SESSION_STORAGE } from '@/constants';
 import { Icon } from '@iconify/react';
 import { Avatar, Badge, Button, Dropdown, Input, MenuProps } from 'antd';

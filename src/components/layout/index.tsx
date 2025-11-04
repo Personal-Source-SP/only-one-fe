@@ -1,6 +1,6 @@
 'use client';
 
-import { ScrollToTop } from '@/components/common';
+import { Loading, ScrollToTop } from '@/components/common';
 
 import Header from '@/components/layout/header';
 import NotificationsPanel from '@/components/layout/notifications-panel';
@@ -14,7 +14,7 @@ import { exchangeCodeForTokens, getUserInfoFromGoogle } from '@/libs';
 
 import { Space } from 'antd';
 import { usePathname, useRouter } from 'next/navigation';
-import { FC, memo, ReactNode, useEffect, useRef, useState } from 'react';
+import { FC, memo, ReactNode, Suspense, useEffect, useRef, useState } from 'react';
 
 type MainLayoutProps = {
     children: ReactNode;
@@ -240,11 +240,17 @@ const MainLayout: FC<MainLayoutProps> = ({ children }) => {
                 <Search showSearch={showSearch} setShowSearch={setShowSearch} />
 
                 {/* Page Content */}
-                <main className="flex-1 p-0 md:p-4 !pt-20 min-h-screen max-w-[100vw] w-full overflow-y-auto">
-                    <Space size="middle" direction="vertical" className="p-4 mb-4 w-full h-full">
-                        {children}
-                    </Space>
-                </main>
+                <Suspense fallback={<Loading />}>
+                    <main className="flex-1 p-0 md:p-4 !pt-20 min-h-screen max-w-[100vw] w-full overflow-y-auto">
+                        <Space
+                            size="middle"
+                            direction="vertical"
+                            className="p-4 mb-4 w-full h-full"
+                        >
+                            {children}
+                        </Space>
+                    </main>
+                </Suspense>
 
                 {/* Quick Actions FAB */}
                 {/* {!mobileMenuOpen && <QuickActions />} */}
