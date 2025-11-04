@@ -1,6 +1,7 @@
 import { Option } from '@/interfaces/common';
 import { Rule } from 'antd/es/form';
 import { FormInstance } from 'antd/lib';
+import { ReactNode } from 'react';
 
 export interface FormFieldItem {
     name: string;
@@ -21,6 +22,8 @@ export interface FormFieldItem {
 
     rows?: number;
 
-    elementTopRender?: React.ReactNode;
-    elementBottomRender?: React.ReactNode;
+    addonAfter?: ReactNode;
+    addonBefore?: ReactNode;
+    elementTopRender?: ReactNode;
+    elementBottomRender?: ReactNode;
 }
