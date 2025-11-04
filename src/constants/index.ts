@@ -40,6 +40,10 @@ export const GOOGLE_SCOPES = [
     'https://www.googleapis.com/auth/drive.readonly', // Truy cập chỉ-đọc vào tất cả file, thư mục
 ];
 
+export const KEY_SESSION_STORAGE = {
+    RETURN_URL: 'returnUrl',
+};
+
 export const SIDEBAR_ITEMS: SidebarItem[] = [
     {
         href: '/dashboard',
