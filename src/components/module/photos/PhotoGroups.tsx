@@ -15,8 +15,8 @@ type PhotoGroupsProps = {
     columns: number;
     displayMode: ViewPhotoMode;
     onPhotoClick: (photoId: string) => void;
-    onDeletePhoto?: (photo: PhotoItem) => void;
-    onDownloadPhoto?: (photo: PhotoItem) => void;
+    onDeletePhoto?: (photoId: string) => void;
+    onDownloadPhoto?: (photoId: string) => void;
 };
 
 const PhotoGroups: FC<PhotoGroupsProps> = ({
@@ -109,7 +109,7 @@ const PhotoGroups: FC<PhotoGroupsProps> = ({
 
     const handleDownloadPhoto = (photo: PhotoItem) => {
         if (onDownloadPhoto) {
-            onDownloadPhoto(photo);
+            onDownloadPhoto(photo.id ?? '');
         } else {
             const link = document.createElement('a');
             link.href = photo.url;
@@ -184,7 +184,7 @@ const PhotoGroups: FC<PhotoGroupsProps> = ({
                         icon={<DeleteOutlined />}
                         onClick={(e) => {
                             e.stopPropagation();
-                            onDeletePhoto?.(photo);
+                            onDeletePhoto?.(photo?.id ?? '');
                         }}
                     />
                 </Tooltip>

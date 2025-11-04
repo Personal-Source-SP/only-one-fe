@@ -270,6 +270,7 @@ const DataHistoryPage: FC = () => {
                             displayMode={viewMode}
                             columns={columnDisplay}
                             onPhotoClick={handlePhotoClick}
+                            onDeletePhoto={(photoId) => handleDelete([photoId])}
                         />
                     )
                 }
