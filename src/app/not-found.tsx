@@ -1,21 +1,9 @@
-'use client';
-
-import dynamic from 'next/dynamic';
-
-const NotFound = dynamic(() => import('@/components/common/not-found'), {
-    ssr: false,
-});
+import NotFound from '@/components/common/not-found';
 
 export const metadata = {
     title: '404 - Not Found',
 };
 
 export default function NotFoundPage() {
-    return (
-        <html>
-            <body className="bg-background">
-                <NotFound />
-            </body>
-        </html>
-    );
+    return <NotFound />;
 }
