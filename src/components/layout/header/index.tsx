@@ -1,5 +1,4 @@
-'use client';
-
+import { KEY_SESSION_STORAGE } from '@/constants';
 import { Icon } from '@iconify/react';
 import { Avatar, Badge, Button, Dropdown, Input, MenuProps } from 'antd';
 import { signOut } from 'next-auth/react';
@@ -51,6 +50,7 @@ const Header: FC<HeaderProps> = ({
             label: 'Đăng xuất',
             icon: 'lucide:log-out',
             onClick: () => {
+                sessionStorage.setItem(KEY_SESSION_STORAGE.RETURN_URL, pathname);
                 signOut({
                     redirect: true,
                     callbackUrl: '/login',

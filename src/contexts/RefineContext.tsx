@@ -1,7 +1,7 @@
 'use client';
 
 import { Loading, UnsavedChangesNotifierAppRouter } from '@/components/common';
-import { AUTH_PUBLIC_PAGES } from '@/constants';
+import { AUTH_PUBLIC_PAGES, KEY_SESSION_STORAGE } from '@/constants';
 import { ColorModeContextProvider } from '@/contexts/ColorModeContext';
 import accessControlProvider from '@/providers/access-control-provider';
 import RestServer, { createSessionAxiosInstance } from '@/providers/data-provider';
@@ -40,12 +40,20 @@ const App = ({ children, defaultMode }: PropsWithChildren<AppProps>) => {
         }
 
         if (status === 'unauthenticated' && !isAuthPublicPage) {
+            if (typeof window !== 'undefined') {
+                sessionStorage.setItem(KEY_SESSION_STORAGE.RETURN_URL, to);
+            }
+
             router.replace('/login');
             return;
         }
 
         const isTokenExpired = session?.expires ? dayjs(session?.expires).isBefore(dayjs()) : false;
         if (isTokenExpired && !isAuthPublicPage) {
+            if (typeof window !== 'undefined') {
+                sessionStorage.setItem(KEY_SESSION_STORAGE.RETURN_URL, to);
+            }
+
             signOut({
                 redirect: true,
                 callbackUrl: '/login',
@@ -134,6 +142,9 @@ const App = ({ children, defaultMode }: PropsWithChildren<AppProps>) => {
             };
         },
         logout: async () => {
+            if (typeof window !== 'undefined') {
+                sessionStorage.setItem('returnUrl', to);
+            }
             signOut({
                 redirect: true,
                 callbackUrl: '/login',

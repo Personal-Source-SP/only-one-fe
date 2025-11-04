@@ -1,6 +1,7 @@
 'use client';
 
 import { CreateFormModal, CustomElement, EditFormModal, TableContainer } from '@/components/custom';
+import { ProcessScrapeData } from '@/components/module/data-provider';
 import ImportData from '@/components/module/import-data';
 import { DataImportType, ElementType, ProductMappingStatus } from '@/enums';
 import { useTableContainer } from '@/hooks';
@@ -15,6 +16,9 @@ const ItemPage: FC = () => {
     const [openCreateItemModal, setOpenCreateItemModal] = useState(false);
     const [openImportItemModal, setOpenImportItemModal] = useState(false);
     const [editItemId, setEditItemId] = useState<string | undefined>(undefined);
+
+    const [selectedItemIds, setSelectedItemIds] = useState<string[]>([]);
+    const [openProcessScrapeDataModal, setOpenProcessScrapeDataModal] = useState(false);
 
     const tableContainerData = useTableContainer({
         resource: 'items',
@@ -186,6 +190,14 @@ const ItemPage: FC = () => {
                 actions={[
                     <Button
                         type="primary"
+                        key="scrape-data"
+                        icon={<Icon icon="lucide:file-text" />}
+                        onClick={() => setOpenProcessScrapeDataModal(true)}
+                    >
+                        Cào dữ liệu
+                    </Button>,
+                    <Button
+                        type="primary"
                         key="import-item"
                         icon={<Icon icon="lucide:file-text" />}
                         onClick={() => setOpenImportItemModal(true)}
@@ -207,6 +219,7 @@ const ItemPage: FC = () => {
                 resource="items"
                 columns={columns}
                 tableContainerData={tableContainerData}
+                filterSearch={{ placeholder: 'Tìm kiếm đối tượng' }}
                 actionItems={[
                     {
                         key: 'edit',
@@ -215,8 +228,9 @@ const ItemPage: FC = () => {
                         onClick: (record) => setEditItemId(record?.id),
                     },
                 ]}
-                filterSearch={{
-                    placeholder: 'Tìm kiếm đối tượng',
+                onRowSelectionChange={(selectedRows: NDataProvider.IDataProviderItem[]) => {
+                    const itemIds = selectedRows?.map((item) => item.id ?? '');
+                    setSelectedItemIds(itemIds ?? []);
                 }}
             />
 
@@ -250,6 +264,15 @@ const ItemPage: FC = () => {
                     onClose={() => setOpenImportItemModal(false)}
                     onSuccess={() => tableContainerData?.tableQuery?.refetch()}
                     columns={importDataColumns as unknown as ColumnType<Record<string, any>>[]}
+                />
+            )}
+
+            {openProcessScrapeDataModal && (
+                <ProcessScrapeData
+                    key="process-scrape-data"
+                    open={openProcessScrapeDataModal}
+                    selectedItemIds={selectedItemIds}
+                    onClose={() => setOpenProcessScrapeDataModal(false)}
                 />
             )}
         </Space>

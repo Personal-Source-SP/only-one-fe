@@ -11,6 +11,7 @@ import { ColumnsType } from 'antd/es/table';
 import { FC, memo, useMemo } from 'react';
 
 type TableContainerProps = {
+    loading?: boolean;
     resource?: string;
     columns?: ColumnsType<any>;
     filterSearch?: SearchFilterItem;
@@ -24,6 +25,7 @@ type TableContainerProps = {
 };
 
 const TableContainer: FC<TableContainerProps> = ({
+    loading,
     resource,
     columns,
     filterSearch,
@@ -93,7 +95,7 @@ const TableContainer: FC<TableContainerProps> = ({
     });
 
     return (
-        <CustomElement elementType={ElementType.CONTAINER}>
+        <CustomElement elementType={ElementType.CONTAINER} loading={loading}>
             <CustomElement
                 elementType={ElementType.CARD}
                 header={<CustomFilter filters={filterItems} />}

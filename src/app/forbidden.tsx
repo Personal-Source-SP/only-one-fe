@@ -1,21 +1,15 @@
-'use client';
-
-import dynamic from 'next/dynamic';
-
-const Forbidden = dynamic(() => import('@/components/common/forbidden'), {
-    ssr: false,
-});
+import { Loading } from '@/components/common';
+import Forbidden from '@/components/common/forbidden';
+import { Suspense } from 'react';
 
 export const metadata = {
     title: '403 - Forbidden',
 };
 
-export default function NotFoundPage() {
+export default function ForbiddenPage() {
     return (
-        <html>
-            <body className="bg-background">
-                <Forbidden />
-            </body>
-        </html>
+        <Suspense fallback={<Loading />}>
+            <Forbidden />
+        </Suspense>
     );
 }

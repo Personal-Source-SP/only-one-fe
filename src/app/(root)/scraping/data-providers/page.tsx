@@ -329,16 +329,6 @@ const DataProviderPage: FC = () => {
                 customFilterItems={customFilterItems}
                 tableContainerData={tableContainerData}
                 filterSearch={{ placeholder: 'Tìm kiếm nhà cung cấp', span: 12 }}
-                onRowSelectionChange={(selectedRows: NDataProvider.IDataProvider[]) => {
-                    const dataProviderIds = selectedRows
-                        ?.filter((item) => item.status === DataProviderStatus.READY)
-                        ?.map((item) => item.id ?? '');
-
-                    setSelectedDataProviderIds(dataProviderIds ?? []);
-                }}
-                onDisableRowSelection={(record: NDataProvider.IDataProvider) =>
-                    record.status !== DataProviderStatus.READY
-                }
             />
 
             <CreateFormModal
@@ -378,7 +368,7 @@ const DataProviderPage: FC = () => {
                 <ProcessScrapeData
                     key="process-scrape-data"
                     open={openProcessScrapeDataModal}
-                    selectedDataProviderIds={selectedDataProviderIds}
+                    selectedItemIds={selectedDataProviderIds}
                     onClose={() => {
                         setOpenProcessScrapeDataModal(false);
                     }}

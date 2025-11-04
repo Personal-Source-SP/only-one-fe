@@ -2,12 +2,7 @@
 
 import { CustomDatePicker, CustomFormModal } from '@/components/custom';
 import { MimeType } from '@/enums';
-import {
-    useCustomMutationData,
-    useSelectDataProvider,
-    useSelectDataProviderItem,
-    useSelectItem,
-} from '@/hooks';
+import { useCustomMutationData, useSelectDataProviderItem, useSelectItem } from '@/hooks';
 import { NBaseApi, NDataProvider } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import {
@@ -34,7 +29,7 @@ import { FC, memo, useEffect, useState } from 'react';
 
 type ProcessScrapeDataProps = {
     open: boolean;
-    selectedDataProviderIds?: string[];
+    selectedItemIds?: string[];
     selectedDataProviderItemIds?: string[];
     onClose: () => void;
 };
@@ -46,7 +41,7 @@ const StepEnum = {
 
 const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({
     open,
-    selectedDataProviderIds,
+    selectedItemIds,
     selectedDataProviderItemIds,
     onClose,
 }) => {
@@ -64,21 +59,17 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({
         NDataProvider.IScrapeDataResponse['successData']
     >([]);
 
-    const dataProviderIds = useWatch('dataProviderIds', form);
+    const itemIds = useWatch('itemIds', form);
     const dataProviderItemIds = useWatch('dataProviderItemIds', form);
 
-    const { options: dataProviders } = useSelectDataProvider({
-        optionValue: (item: NDataProvider.IDataProvider) => item.id ?? '',
-        optionLabel: (item: NDataProvider.IDataProvider) =>
-            item.baseUrl ? `${item.name} - ${item.baseUrl}` : '',
-    });
-
-    const { options: dataProviderItems, query: dataProviderItemQuery } = useSelectDataProviderItem({
-        enabled: false,
-        id: dataProviderIds?.length === 1 ? dataProviderIds[0] : undefined,
-        optionValue: (item: NDataProvider.IDataProviderItem) => item.id ?? '',
-        optionLabel: (item: NDataProvider.IDataProviderItem) => item.itemUrl ?? '',
-    });
+    const { options: dataProviderItemOptions, query: dataProviderItemQuery } =
+        useSelectDataProviderItem({
+            enabled: false,
+            id: itemIds?.length === 1 ? itemIds[0] : undefined,
+            type: itemIds?.length ? 'items' : 'data-provider-items',
+            optionValue: (item: NDataProvider.IDataProviderItem) => item.id ?? '',
+            optionLabel: (item: NDataProvider.IDataProviderItem) => item.itemUrl ?? '',
+        });
 
     const { options: itemOptions } = useSelectItem();
 
@@ -86,7 +77,7 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({
 
     useEffect(() => {
         dataProviderItemQuery?.refetch();
-    }, [dataProviderIds]);
+    }, [itemIds]);
 
     const steps: StepProps[] = [
         {
@@ -218,7 +209,7 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({
         return (
             <Flex justify="end" align="center" gap={16}>
                 {currentStep === StepEnum.Settings && (
-                    <Button type="primary" htmlType="submit" onClick={handleProcessScrapeData}>
+                    <Button type="primary" onClick={handleProcessScrapeData}>
                         Xử lý
                     </Button>
                 )}
@@ -229,7 +220,7 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({
     };
 
     const renderSettingStep = () => {
-        if (!dataProviders?.length || !dataProviderItems?.length) return <></>;
+        if (!itemOptions?.length || !dataProviderItemOptions?.length) return <></>;
 
         return (
             <Form
@@ -239,9 +230,7 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({
                     checkDuplicateData: true,
                     mimeTypes: [MimeType.IMAGE],
                     lastSuccessfulScrapeAt: undefined,
-                    dataProviderIds: selectedDataProviderIds?.length
-                        ? selectedDataProviderIds
-                        : undefined,
+                    itemIds: selectedItemIds?.length ? selectedItemIds : undefined,
                     dataProviderItemIds: selectedDataProviderItemIds?.length
                         ? selectedDataProviderItemIds
                         : undefined,
@@ -275,18 +264,14 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({
                         </Form.Item>
                     </Col>
                     <Col span={24}>
-                        <Form.Item
-                            label="Nhà cung cấp"
-                            name="dataProviderIds"
-                            rules={[{ required: true, message: 'Vui lòng chọn nhà cung cấp' }]}
-                        >
+                        <Form.Item name="itemIds" label="Đối tượng">
                             <Select
                                 mode="multiple"
-                                options={dataProviders}
-                                placeholder="Chọn nhà cung cấp"
+                                options={itemOptions}
+                                placeholder="Chọn đối tượng"
                                 onChange={(value) => {
-                                    if (value?.length && value?.length > 2) {
-                                        form?.setFieldValue('dataProviderItemIds', undefined);
+                                    if (value?.length && value?.length > 1) {
+                                        form?.setFieldsValue({ dataProviderItemIds: undefined });
                                     }
                                 }}
                                 disabled={Boolean(
@@ -296,44 +281,17 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({
                         </Form.Item>
                     </Col>
                     <Col span={24}>
-                        <Form.Item
-                            name="dataProviderItemIds"
-                            label="Đối tượng nhà cung cấp"
-                            rules={[{ required: true, message: 'Vui lòng chọn đối tượng' }]}
-                        >
+                        <Form.Item name="dataProviderItemIds" label="Đối tượng nhà cung cấp">
                             <Select
                                 mode="multiple"
-                                options={dataProviderItems}
+                                options={dataProviderItemOptions}
                                 placeholder="Chọn đối tượng nhà cung cấp"
+                                disabled={Boolean(itemIds?.length && itemIds?.length > 1)}
                                 onChange={(value) => {
-                                    if (value?.length && value?.length > 2) {
-                                        form?.setFieldValue('dataProviderIds', undefined);
+                                    if (value?.length && value?.length > 1) {
+                                        form?.setFieldsValue({ itemIds: undefined });
                                     }
                                 }}
-                                disabled={Boolean(
-                                    dataProviderIds?.length && dataProviderIds?.length > 1,
-                                )}
-                            />
-                        </Form.Item>
-                    </Col>
-                    <Col span={24}>
-                        <Form.Item
-                            name="itemIds"
-                            label="Đối tượng"
-                            rules={[{ required: true, message: 'Vui lòng chọn đối tượng' }]}
-                        >
-                            <Select
-                                mode="multiple"
-                                options={itemOptions}
-                                placeholder="Chọn đối tượng"
-                                onChange={(value) => {
-                                    if (value?.length && value?.length > 2) {
-                                        form?.setFieldValue('dataProviderItemIds', undefined);
-                                    }
-                                }}
-                                disabled={Boolean(
-                                    dataProviderIds?.length && dataProviderIds?.length > 1,
-                                )}
                             />
                         </Form.Item>
                     </Col>

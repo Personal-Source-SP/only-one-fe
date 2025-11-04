@@ -16,7 +16,8 @@ type EditFormModalProps = {
     formFields: FormFieldItem[];
     title?: string;
     width?: number;
-    onClose: () => void;
+    onClose?: () => void;
+    onTransformValues?: (values: any) => Record<string, any>;
 };
 
 const EditFormModal: FC<EditFormModalProps> = ({
@@ -26,6 +27,7 @@ const EditFormModal: FC<EditFormModalProps> = ({
     title,
     width,
     onClose,
+    onTransformValues,
 }) => {
     const { handleMessage } = useMainContext();
 
@@ -45,7 +47,7 @@ const EditFormModal: FC<EditFormModalProps> = ({
             });
 
             close();
-            onClose();
+            onClose?.();
         },
         onMutationError: (error) => {
             handleMessage({
@@ -94,13 +96,21 @@ const EditFormModal: FC<EditFormModalProps> = ({
                 footer: renderFooter(),
                 onCancel: () => {
                     close();
-                    onClose();
+                    onClose?.();
                 },
             }}
         >
             <Spin spinning={formLoading}>
                 <Space direction="vertical" className="w-full h-full px-3 overflow-x-hidden">
-                    <Form {...formProps} layout="vertical" className="[&_.ant-form-item]:!mb-2">
+                    <Form
+                        {...formProps}
+                        layout="vertical"
+                        className="[&_.ant-form-item]:!mb-2"
+                        onFinish={(values) => {
+                            const request = onTransformValues?.(values) ?? values;
+                            formProps?.onFinish?.(request);
+                        }}
+                    >
                         <Row gutter={[8, 8]}>
                             {formFields.map((formField) => renderFormFields(formField, formProps))}
                         </Row>

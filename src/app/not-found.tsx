@@ -1,10 +1,6 @@
-'use client';
-
-import dynamic from 'next/dynamic';
-
-const NotFound = dynamic(() => import('@/components/common/not-found'), {
-    ssr: false,
-});
+import { Loading } from '@/components/common';
+import NotFound from '@/components/common/not-found';
+import { Suspense } from 'react';
 
 export const metadata = {
     title: '404 - Not Found',
@@ -12,10 +8,8 @@ export const metadata = {
 
 export default function NotFoundPage() {
     return (
-        <html>
-            <body className="bg-background">
-                <NotFound />
-            </body>
-        </html>
+        <Suspense fallback={<Loading />}>
+            <NotFound />
+        </Suspense>
     );
 }

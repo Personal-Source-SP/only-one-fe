@@ -1,4 +1,4 @@
-import { KEY_LOCAL_STORAGE } from '@/constants';
+import { KEY_LOCAL_STORAGE, KEY_SESSION_STORAGE } from '@/constants';
 import { NBaseApi } from '@/interfaces';
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
 import { isEmpty } from 'lodash';
@@ -61,7 +61,14 @@ export default class BaseApi {
                     localStorage.removeItem('token');
                     localStorage.removeItem('google_token');
 
-                    window.location.href = '/login';
+                    if (typeof window !== 'undefined') {
+                        const currentPath = window.location.pathname;
+                        if (currentPath !== '/login' && !currentPath.startsWith('/login')) {
+                            sessionStorage.setItem(KEY_SESSION_STORAGE.RETURN_URL, currentPath);
+                        }
+
+                        window.location.href = '/login';
+                    }
                 }
 
                 // Server errors

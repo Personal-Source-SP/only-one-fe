@@ -16,6 +16,7 @@ type CreateFormModalProps = {
     title?: string;
     width?: number;
     onClose?: () => void;
+    onTransformValues?: (values: any) => Record<string, any>;
 };
 
 export const renderFormFields = (formField: FormFieldItem, formProps: FormProps<any>) => {
@@ -31,6 +32,8 @@ export const renderFormFields = (formField: FormFieldItem, formProps: FormProps<
                         tooltip={formField.tooltip}
                     >
                         <Input
+                            addonAfter={formField.addonAfter}
+                            addonBefore={formField.addonBefore}
                             placeholder={formField.placeholder}
                             defaultValue={formField.defaultValue}
                             disabled={formField.disabled ?? false}
@@ -102,6 +105,7 @@ const CreateFormModal: FC<CreateFormModalProps> = ({
     title,
     width,
     onClose,
+    onTransformValues,
 }) => {
     const { handleMessage } = useMainContext();
 
@@ -175,7 +179,15 @@ const CreateFormModal: FC<CreateFormModalProps> = ({
         >
             <Spin spinning={formLoading}>
                 <Space direction="vertical" className="w-full h-full px-3 overflow-x-hidden">
-                    <Form {...formProps} layout="vertical" className="[&_.ant-form-item]:!mb-2">
+                    <Form
+                        {...formProps}
+                        layout="vertical"
+                        className="[&_.ant-form-item]:!mb-2"
+                        onFinish={(values) => {
+                            const request = onTransformValues?.(values) ?? values;
+                            formProps?.onFinish?.(request);
+                        }}
+                    >
                         <Row gutter={[8, 8]}>
                             {formFields.map((formField) => renderFormFields(formField, formProps))}
                         </Row>

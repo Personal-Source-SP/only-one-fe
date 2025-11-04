@@ -1,15 +1,11 @@
-import { Button, Input, Space } from 'antd';
+'use client';
+
 import { Icon } from '@iconify/react';
+import { Button, Space } from 'antd';
 import Link from 'next/link';
-import { FC, FormEvent, useState } from 'react';
+import { FC } from 'react';
 
 const NotFound: FC = () => {
-    const [searchQuery, setSearchQuery] = useState('');
-
-    const handleSearch = (e: FormEvent) => {
-        e.preventDefault();
-    };
-
     const handleGoBack = () => {
         window.history.back();
     };

@@ -1,5 +1,3 @@
-'use client';
-
 import { Icon } from '@iconify/react';
 import { Flex } from 'antd';
 import { FC, memo } from 'react';

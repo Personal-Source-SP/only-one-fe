@@ -1,14 +1,18 @@
 'use client';
 
 import { Logo } from '@/components/common';
+import { KEY_SESSION_STORAGE } from '@/constants';
 import { Icon } from '@iconify/react';
 import { useLogin } from '@refinedev/core';
 import { Button, Checkbox, Form, Input, Space, notification } from 'antd';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { FC, memo, useState } from 'react';
 
 const LoginPage: FC = () => {
     const { mutate: login, isPending } = useLogin();
+
+    const router = useRouter();
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -21,6 +25,17 @@ const LoginPage: FC = () => {
                 password,
             },
             {
+                onSuccess: (data) => {
+                    if (data?.success) {
+                        const returnUrl = sessionStorage.getItem(KEY_SESSION_STORAGE.RETURN_URL);
+                        if (returnUrl) {
+                            sessionStorage.removeItem(KEY_SESSION_STORAGE.RETURN_URL);
+                            router.push(returnUrl);
+                        } else {
+                            router.push('/dashboard');
+                        }
+                    }
+                },
                 onError: (error) => {
                     notification.error({
                         message: error?.message || 'Login failed. Please check your credentials.',
