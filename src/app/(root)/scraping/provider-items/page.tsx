@@ -228,6 +228,10 @@ const DataProviderItemPage: FC = () => {
                 open={openCreateItemModal}
                 resource="data-provider-items"
                 title="Thêm mới đối tượng nhà cung cấp"
+                initialValues={{
+                    autoProcessScraping: true,
+                    checkDuplicateData: true,
+                }}
                 onClose={() => {
                     setOpenCreateItemModal(false);
                     tableContainerData?.tableQuery?.refetch();

@@ -16,6 +16,7 @@ type EditFormModalProps = {
     formFields: FormFieldItem[];
     title?: string;
     width?: number;
+    initialValues?: Record<string, any>;
     onClose?: () => void;
     onTransformValues?: (values: any) => Record<string, any>;
 };
@@ -26,6 +27,7 @@ const EditFormModal: FC<EditFormModalProps> = ({
     formFields,
     title,
     width,
+    initialValues,
     onClose,
     onTransformValues,
 }) => {
@@ -105,6 +107,7 @@ const EditFormModal: FC<EditFormModalProps> = ({
                     <Form
                         {...formProps}
                         layout="vertical"
+                        initialValues={initialValues}
                         className="[&_.ant-form-item]:!mb-2"
                         onFinish={(values) => {
                             const request = onTransformValues?.(values) ?? values;

@@ -6,7 +6,7 @@ import { useCustomModal } from '@/hooks';
 
 import { FormFieldItem } from '@/interfaces';
 import { Icon } from '@iconify/react';
-import { Button, Col, Flex, Form, FormProps, Input, Row, Select, Space, Spin } from 'antd';
+import { Button, Col, Flex, Form, FormProps, Input, Row, Select, Space, Spin, Switch } from 'antd';
 import { FC, memo, useCallback, useEffect } from 'react';
 
 type CreateFormModalProps = {
@@ -15,6 +15,7 @@ type CreateFormModalProps = {
     formFields: FormFieldItem[];
     title?: string;
     width?: number;
+    initialValues?: Record<string, any>;
     onClose?: () => void;
     onTransformValues?: (values: any) => Record<string, any>;
 };
@@ -93,6 +94,26 @@ export const renderFormFields = (formField: FormFieldItem, formProps: FormProps<
                 </Col>
             );
 
+        case 'switch':
+            return (
+                <Col span={formField.span ?? 24} key={formField.name}>
+                    {formField.elementTopRender && formField.elementTopRender}
+                    <Form.Item
+                        name={formField.name}
+                        label={formField.label}
+                        rules={formField.rules}
+                        tooltip={formField.tooltip}
+                    >
+                        <Switch
+                            defaultValue={formField.defaultValue}
+                            disabled={formField.disabled ?? false}
+                            onChange={(value) => formField.onChange?.(value, formProps?.form)}
+                        />
+                    </Form.Item>
+                    {formField.elementBottomRender && formField.elementBottomRender}
+                </Col>
+            );
+
         default:
             return <></>;
     }
@@ -104,6 +125,7 @@ const CreateFormModal: FC<CreateFormModalProps> = ({
     formFields,
     title,
     width,
+    initialValues,
     onClose,
     onTransformValues,
 }) => {
@@ -182,6 +204,7 @@ const CreateFormModal: FC<CreateFormModalProps> = ({
                     <Form
                         {...formProps}
                         layout="vertical"
+                        initialValues={initialValues}
                         className="[&_.ant-form-item]:!mb-2"
                         onFinish={(values) => {
                             const request = onTransformValues?.(values) ?? values;

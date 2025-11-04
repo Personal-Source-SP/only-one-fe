@@ -52,7 +52,7 @@ const FORM_FIELDS = {
     MAIN_CONTENT_SELECTOR: 'mainContentSelector',
 
     QUERY_PARAMS: 'queryParams',
-    FIRST_QUERY_PARAM: 'firstQueryParam',
+    FIRST_QUERY_PARAM: 'firstQueryParams',
 
     MAX_RESULTS: 'maxResults',
     RETRY_DELAY: 'retryDelay',
