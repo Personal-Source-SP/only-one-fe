@@ -15,7 +15,6 @@ import { FC, useState } from 'react';
 const DataProviderItemPage: FC = () => {
     const [openCreateItemModal, setOpenCreateItemModal] = useState(false);
     const [editItemId, setEditItemId] = useState<string | undefined>(undefined);
-    const [selectBaseUrl, setSelectBaseUrl] = useState<string | undefined>(undefined);
 
     const [openProcessScrapeDataModal, setOpenProcessScrapeDataModal] = useState(false);
     const [selectedDataProviderItemIds, setSelectedDataProviderItemIds] = useState<string[]>([]);
@@ -78,19 +77,21 @@ const DataProviderItemPage: FC = () => {
             label: 'Tên nhà cung cấp',
             options: dataProviderOptions ?? [],
             rules: [{ required: true, message: 'Vui lòng chọn nhà cung cấp' }],
-            onChange: (value) => {
+            onChange: (value, form) => {
                 const dataProvider = dataProviderQuery?.data?.data?.find(
                     (option) => option.id === value,
                 );
-                setSelectBaseUrl(dataProvider?.baseUrl ?? '');
+                form?.setFieldValue('itemUrl', buildUrl(dataProvider?.baseUrl ?? '', ''));
             },
         },
         {
             name: 'itemUrl',
             type: 'input',
             label: 'URL cơ sở',
-            addonBefore: selectBaseUrl ? <span>{selectBaseUrl}</span> : undefined,
-            rules: [{ required: true, message: 'Vui lòng nhập URL đối tượng' }],
+            rules: [
+                { required: true, message: 'Vui lòng nhập URL đối tượng' },
+                { type: 'url', message: 'URL đối tượng không hợp lệ' },
+            ],
         },
     ];
 
@@ -99,10 +100,7 @@ const DataProviderItemPage: FC = () => {
             key: 'edit',
             label: 'Chỉnh sửa',
             icon: <Icon icon="lucide:edit" />,
-            onClick: (record) => {
-                setEditItemId(record?.id);
-                setSelectBaseUrl(record?.dataProvider?.baseUrl);
-            },
+            onClick: (record) => setEditItemId(record?.id),
         },
     ];
 
@@ -158,10 +156,6 @@ const DataProviderItemPage: FC = () => {
                     setOpenCreateItemModal(false);
                     tableContainerData?.tableQuery?.refetch();
                 }}
-                onTransformValues={(values) => ({
-                    ...values,
-                    itemUrl: buildUrl(values.itemUrl, selectBaseUrl ?? ''),
-                })}
             />
 
             <EditFormModal
@@ -173,10 +167,6 @@ const DataProviderItemPage: FC = () => {
                     setEditItemId(undefined);
                     tableContainerData?.tableQuery?.refetch();
                 }}
-                onTransformValues={(values) => ({
-                    ...values,
-                    itemUrl: buildUrl(values.itemUrl, selectBaseUrl ?? ''),
-                })}
             />
 
             {openProcessScrapeDataModal && (
