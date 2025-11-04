@@ -107,8 +107,8 @@ const EditFormModal: FC<EditFormModalProps> = ({
                     <Form
                         {...formProps}
                         layout="vertical"
-                        initialValues={initialValues}
                         className="[&_.ant-form-item]:!mb-2"
+                        initialValues={initialValues ?? formProps?.initialValues}
                         onFinish={(values) => {
                             const request = onTransformValues?.(values) ?? values;
                             formProps?.onFinish?.(request);
