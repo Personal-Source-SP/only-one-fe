@@ -32,7 +32,7 @@ const CustomSelect: FC<CustomSelectProps> = ({
     );
 
     const renderInput = useCallback(
-        (menu: React.ReactElement) => {
+        (menu: React.ReactNode) => {
             if (!onInputChange) return <></>;
 
             return (
@@ -68,7 +68,7 @@ const CustomSelect: FC<CustomSelectProps> = ({
     return (
         <Select
             {...props}
-            dropdownRender={renderInput}
+            popupRender={renderInput}
             disabled={props.disabled ?? false}
             onPopupScroll={debouncedHandlePopupScroll}
             optionRender={(option) => (

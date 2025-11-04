@@ -121,14 +121,12 @@ const DataProviderItemPage: FC = () => {
             name: 'autoProcessScraping',
             type: 'switch',
             label: 'Tự động cào dữ liệu',
-            defaultValue: true,
             span: 12,
         },
         {
             name: 'checkDuplicateData',
             type: 'switch',
             label: 'Kiểm tra dữ liệu trùng lặp',
-            defaultValue: true,
             span: 12,
         },
     ];

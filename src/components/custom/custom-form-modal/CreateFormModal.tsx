@@ -36,7 +36,6 @@ export const renderFormFields = (formField: FormFieldItem, formProps: FormProps<
                             addonAfter={formField.addonAfter}
                             addonBefore={formField.addonBefore}
                             placeholder={formField.placeholder}
-                            defaultValue={formField.defaultValue}
                             disabled={formField.disabled ?? false}
                             onChange={(e) => formField.onChange?.(e.target.value, formProps?.form)}
                         />
@@ -58,7 +57,6 @@ export const renderFormFields = (formField: FormFieldItem, formProps: FormProps<
                         <Select
                             options={formField.options ?? []}
                             placeholder={formField.placeholder}
-                            defaultValue={formField.defaultValue}
                             disabled={formField.disabled ?? false}
                             allowClear={formField.allowClear ?? true}
                             showSearch={formField.showSearch ?? true}
@@ -85,7 +83,6 @@ export const renderFormFields = (formField: FormFieldItem, formProps: FormProps<
                         <Input.TextArea
                             rows={formField.rows ?? 4}
                             placeholder={formField.placeholder}
-                            defaultValue={formField.defaultValue}
                             disabled={formField.disabled ?? false}
                             onChange={(e) => formField.onChange?.(e.target.value, formProps?.form)}
                         />
@@ -105,7 +102,6 @@ export const renderFormFields = (formField: FormFieldItem, formProps: FormProps<
                         tooltip={formField.tooltip}
                     >
                         <Switch
-                            defaultValue={formField.defaultValue}
                             disabled={formField.disabled ?? false}
                             onChange={(value) => formField.onChange?.(value, formProps?.form)}
                         />

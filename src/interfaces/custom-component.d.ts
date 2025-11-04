@@ -12,7 +12,6 @@ export interface FormFieldItem {
     rules?: Rule[];
     tooltip?: string;
     disabled?: boolean;
-    defaultValue?: any;
     placeholder?: string;
     onChange?: (value: any, form?: FormInstance) => void;
 
