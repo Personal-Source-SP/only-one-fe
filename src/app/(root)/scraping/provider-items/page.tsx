@@ -10,7 +10,6 @@ import {
     useTableContainer,
 } from '@/hooks';
 import { ActionTableItem, FormFieldItem, NDataProvider } from '@/interfaces';
-import { buildUrl } from '@/libs';
 import { Icon } from '@iconify/react';
 import { Button, Space, Switch } from 'antd';
 import { ColumnsType } from 'antd/es/table';
@@ -106,7 +105,7 @@ const DataProviderItemPage: FC = () => {
                 const dataProvider = dataProviderQuery?.data?.data?.find(
                     (option) => option.id === value,
                 );
-                form?.setFieldValue('itemUrl', buildUrl(dataProvider?.baseUrl ?? '', ''));
+                form?.setFieldValue('itemUrl', dataProvider?.baseUrl ?? '');
             },
         },
         {
@@ -117,6 +116,20 @@ const DataProviderItemPage: FC = () => {
                 { required: true, message: 'Vui lòng nhập URL đối tượng' },
                 { type: 'url', message: 'URL đối tượng không hợp lệ' },
             ],
+        },
+        {
+            name: 'autoProcessScraping',
+            type: 'switch',
+            label: 'Tự động cào dữ liệu',
+            defaultValue: true,
+            span: 12,
+        },
+        {
+            name: 'checkDuplicateData',
+            type: 'switch',
+            label: 'Kiểm tra dữ liệu trùng lặp',
+            defaultValue: true,
+            span: 12,
         },
     ];
 

@@ -6,7 +6,7 @@ import { ReactNode } from 'react';
 export interface FormFieldItem {
     name: string;
     label: string;
-    type: 'input' | 'select' | 'textarea';
+    type: 'input' | 'select' | 'textarea' | 'switch';
 
     span?: number;
     rules?: Rule[];
