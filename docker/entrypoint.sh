@@ -12,6 +12,13 @@ if [ -f .env.sample ]; then
     echo "✅ Environment file created"
 fi
 
+# Hiển thị tất cả biến môi trường
+echo "🔧 Environment variables (full):"
+printenv | while IFS='=' read -r name value; do
+    echo "   $name=$value"
+done
+echo "=========================================="
+
 # Set default values nếu chưa được set
 export PORT=${PORT:-4000}
 export NODE_ENV=${NODE_ENV:-production}

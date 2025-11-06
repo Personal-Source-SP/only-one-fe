@@ -31,7 +31,7 @@ USER nextjs
 COPY --chown=nextjs:nodejs package*.json ./
 
 # Cài tất cả dependencies (cần devDependencies để build)
-RUN npm ci
+RUN npm ci --legacy-peer-deps
 
 # ==========================================
 # Stage 2: Build
@@ -56,8 +56,8 @@ RUN if [ -f .env.sample ]; then \
         envsubst < .env.sample > .env.local; \
     fi
 
-# Build Next.js với turbo
-RUN npm run build:turbo
+# Build Next.js
+RUN npm run build
 
 # Clean cache
 RUN npm run clean:cache || true
@@ -76,7 +76,7 @@ USER nextjs
 COPY --chown=nextjs:nodejs package*.json ./
 
 # Chỉ cài production dependencies
-RUN npm ci --omit=dev && \
+RUN npm ci --legacy-peer-deps --omit=dev && \
     npm cache clean --force
 
 # ==========================================
