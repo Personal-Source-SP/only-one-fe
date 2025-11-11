@@ -93,6 +93,15 @@ const ScheduleExecutionPage: FC = () => {
                 lastRunAt ? dayjs(lastRunAt).format('DD/MM/YYYY HH:mm:ss') : '---',
         },
         {
+            title: 'Số lượng công việc',
+            dataIndex: 'scheduleJobs',
+            key: 'scheduleJobs',
+            width: 200,
+            render: (scheduleJobs: NSchedule.IScheduleJob[]) => (
+                <span>{scheduleJobs?.length ?? 0} công việc</span>
+            ),
+        },
+        {
             title: 'Trạng thái',
             dataIndex: 'isActive',
             key: 'isActive',
@@ -104,15 +113,6 @@ const ScheduleExecutionPage: FC = () => {
                     checked={isActive}
                     onChange={(checked) => handleSwitchStatus(record?.id ?? '', checked)}
                 />
-            ),
-        },
-        {
-            title: 'Số lượng công việc',
-            dataIndex: 'scheduleJobs',
-            key: 'scheduleJobs',
-            width: 200,
-            render: (scheduleJobs: NSchedule.IScheduleJob[]) => (
-                <span>{scheduleJobs?.length ?? 0} công việc</span>
             ),
         },
     ];
