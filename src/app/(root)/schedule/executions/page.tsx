@@ -49,6 +49,14 @@ const ScheduleExecutionPage: FC = () => {
 
     const columns: ColumnsType<NSchedule.ISchedule> = [
         {
+            title: 'STT',
+            key: 'index',
+            dataIndex: 'index',
+            width: 60,
+            align: 'center',
+            render: (_: any, __: any, index: number) => index + 1,
+        },
+        {
             title: 'Loại lịch biểu',
             dataIndex: 'type',
             key: 'type',
@@ -226,6 +234,8 @@ const ScheduleExecutionPage: FC = () => {
                     };
                 }
 
+                setLoading(false);
+
                 tableContainerData?.tableQuery?.refetch();
 
                 return {
@@ -262,6 +272,8 @@ const ScheduleExecutionPage: FC = () => {
                         description: data?.data?.message ?? 'Chạy thủ công thất bại',
                     };
                 }
+
+                setLoading(false);
 
                 tableContainerData?.tableQuery?.refetch();
 

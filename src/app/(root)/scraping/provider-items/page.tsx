@@ -118,16 +118,16 @@ const DataProviderItemPage: FC = () => {
             ],
         },
         {
-            name: 'autoProcessScraping',
             type: 'switch',
+            name: 'autoProcessScraping',
             label: 'Tự động cào dữ liệu',
-            span: 12,
+            placeholder: 'Tự động cào khi thêm đối tượng nhà cung cấp',
         },
         {
-            name: 'checkDuplicateData',
             type: 'switch',
+            name: 'checkDuplicateData',
             label: 'Kiểm tra dữ liệu trùng lặp',
-            span: 12,
+            placeholder: 'Kiểm tra dữ liệu trùng lặp khi cào dữ liệu',
         },
     ];
 

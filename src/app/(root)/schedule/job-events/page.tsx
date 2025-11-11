@@ -22,6 +22,14 @@ const ScheduleJobEventsPage: FC = () => {
 
     const columns: ColumnsType<NSchedule.IScheduleJobEvent> = [
         {
+            title: 'STT',
+            key: 'index',
+            dataIndex: 'index',
+            width: 60,
+            align: 'center',
+            render: (_: any, __: any, index: number) => index + 1,
+        },
+        {
             title: 'Loại sự kiện',
             dataIndex: 'eventType',
             key: 'eventType',
