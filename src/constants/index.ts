@@ -111,6 +111,11 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
                 label: 'Lịch biểu công việc',
                 icon: 'noto:calendar',
             },
+            {
+                href: '/schedule/job-events',
+                label: 'Sự kiện lịch biểu công việc',
+                icon: 'noto:spiral-calendar',
+            },
         ],
     },
     {

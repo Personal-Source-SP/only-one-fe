@@ -6,6 +6,10 @@ export declare namespace NSchedule {
         scheduleJobId: string;
         eventType: ScheduleJobEventType;
         eventMessage: string;
+        retryCount: number;
+        startedAt?: Date;
+        finishedAt?: Date;
+        payload?: Record<string, any>;
         metaData?: Record<string, any>;
         scheduleJob?: IScheduleJob;
     }
@@ -15,7 +19,6 @@ export declare namespace NSchedule {
         scheduleType: ScheduleType;
         triggerType: ScheduleJobTriggerType;
         status: ScheduleJobType;
-        retryCount: number;
         jobPayload: Record<string, any>;
         startedAt?: Date;
         finishedAt?: Date;
