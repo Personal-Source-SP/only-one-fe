@@ -68,6 +68,7 @@ export interface PhotoItem {
     mimeType: string;
     lastModified: Date;
     folderName?: string;
+    createdAt?: Date | string;
 }
 
 export interface PhotoGroup {

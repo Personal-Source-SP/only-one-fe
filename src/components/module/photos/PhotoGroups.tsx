@@ -9,6 +9,7 @@ import { DeleteOutlined, DownloadOutlined, EyeOutlined } from '@ant-design/icons
 import Image from 'next/image';
 import { FC, memo, useMemo, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import dayjs from 'dayjs';
 
 type PhotoGroupsProps = {
     data: PhotoItem[];
@@ -192,6 +193,27 @@ const PhotoGroups: FC<PhotoGroupsProps> = ({
         </div>
     );
 
+    const renderPhotoTag = (photo: PhotoItem) => {
+        const timestamp = photo.createdAt ?? photo.lastModified;
+        if (!timestamp) return null;
+
+        const createdAt = dayjs(timestamp);
+        if (!createdAt.isValid()) return null;
+
+        const diffDays = dayjs().diff(createdAt, 'day');
+        const label = diffDays < 1 ? 'Mới' : diffDays === 1 ? '1 ngày' : `${diffDays} ngày`;
+        const color = diffDays < 1 ? 'red' : 'blue';
+
+        return (
+            <Tag
+                color={color}
+                className="absolute left-2 top-2 z-20 rounded-full px-3 py-1 text-xs font-medium"
+            >
+                {label}
+            </Tag>
+        );
+    };
+
     const renderPhotoItem = (photo: PhotoItem) => (
         <div
             key={photo.id}
@@ -204,12 +226,14 @@ const PhotoGroups: FC<PhotoGroupsProps> = ({
                 </div>
             )}
 
+            {renderPhotoTag(photo)}
+
             <Image
                 fill
                 priority
                 unoptimized
                 src={photo.url}
-                className="object-cover transition-opacity duration-200 group-hover:opacity-60"
+                className="z-10 object-cover transition-opacity duration-200 group-hover:opacity-60"
                 alt={`Photo ${photo.id}`}
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 onLoadStart={() => {

@@ -25,7 +25,7 @@ const ScheduleExecutionPage: FC = () => {
     const [type, setType] = useState<ScheduleType | undefined>(undefined);
     const [cronExpression, setCronExpression] = useState<string | undefined>(undefined);
 
-    const { handleCustomMutationData: handleUpdate } = useCustomMutationData();
+    const { handleCustomMutationData } = useCustomMutationData();
 
     const { options: itemOptions, query: itemQuery } = useSelectItem({ enabled: false });
     const { options: dataProviderOptions, query: dataProviderQuery } = useSelectDataProvider({
@@ -200,12 +200,18 @@ const ScheduleExecutionPage: FC = () => {
             icon: <Icon icon="lucide:edit" />,
             onClick: (record) => setEditItemId(record?.id),
         },
+        {
+            key: 'manual-trigger',
+            label: 'Chạy thủ công',
+            icon: <Icon icon="lucide:play" />,
+            onClick: (record) => handleManualTrigger(record?.id),
+        },
     ];
 
     const handleSwitchStatus = (id: string, active: boolean) => {
         setLoading(true);
 
-        handleUpdate({
+        handleCustomMutationData({
             values: {},
             method: 'put',
             url: `schedules/${id}/switch-status/${active}`,
@@ -234,6 +240,43 @@ const ScheduleExecutionPage: FC = () => {
                     type: 'error',
                     message: 'Chuyển trạng thái thất bại',
                     description: error?.message ?? 'Chuyển trạng thái thất bại',
+                };
+            },
+        });
+    };
+
+    const handleManualTrigger = (id: string) => {
+        setLoading(true);
+
+        handleCustomMutationData({
+            values: {},
+            method: 'post',
+            url: `schedules/${id}/manual-trigger`,
+            successNotification: (data) => {
+                if (!data?.data?.isSuccess) {
+                    setLoading(false);
+
+                    return {
+                        type: 'error',
+                        message: 'Chạy thủ công thất bại',
+                        description: data?.data?.message ?? 'Chạy thủ công thất bại',
+                    };
+                }
+
+                tableContainerData?.tableQuery?.refetch();
+
+                return {
+                    type: 'success',
+                    message: 'Chạy thủ công thành công',
+                };
+            },
+            errorNotification: (error) => {
+                setLoading(false);
+
+                return {
+                    type: 'error',
+                    message: 'Chạy thủ công thất bại',
+                    description: error?.message ?? 'Chạy thủ công thất bại',
                 };
             },
         });

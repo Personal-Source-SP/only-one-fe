@@ -77,6 +77,7 @@ const DataHistoryPage: FC = () => {
             id: item.id ?? '',
             url: item.url ?? '',
             mimeType: item.type ?? '',
+            createdAt: item.createdAt ?? new Date(),
             folderName: item.dataProvider?.name ?? '',
             lastModified: item.lastModified ?? new Date(),
         }));
