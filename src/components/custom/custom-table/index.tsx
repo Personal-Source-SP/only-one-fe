@@ -168,6 +168,7 @@ const CustomTable: FC<CustomTableProps> = ({
             columns={[
                 ...columns,
                 {
+                    width: 200,
                     key: 'action',
                     fixed: 'right',
                     align: 'center',

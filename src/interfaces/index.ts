@@ -6,4 +6,5 @@ export * from './custom-component';
 export * from './data-provider';
 export * from './google';
 export * from './import-data';
+export * from './schedule';
 export * from './user';

@@ -98,6 +98,22 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
         ],
     },
     {
+        label: 'Lịch biểu',
+        icon: 'noto:alarm-clock',
+        children: [
+            {
+                href: '/schedule/executions',
+                label: 'Lịch biểu thực thi',
+                icon: 'noto:stopwatch',
+            },
+            {
+                href: '/schedule/jobs',
+                label: 'Lịch biểu công việc',
+                icon: 'noto:calendar',
+            },
+        ],
+    },
+    {
         label: 'Quản lý',
         icon: 'flat-color-icons:settings',
         children: [

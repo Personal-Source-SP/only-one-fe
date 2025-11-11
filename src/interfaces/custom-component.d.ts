@@ -10,6 +10,7 @@ export interface FormFieldItem {
 
     span?: number;
     rules?: Rule[];
+    hidden?: boolean;
     tooltip?: string;
     disabled?: boolean;
     placeholder?: string;

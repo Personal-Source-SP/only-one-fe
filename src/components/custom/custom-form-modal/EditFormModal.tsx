@@ -8,7 +8,7 @@ import { useCustomModal } from '@/hooks';
 import { FormFieldItem } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { Button, Flex, Form, Row, Space, Spin } from 'antd';
-import { FC, memo, useCallback, useEffect } from 'react';
+import { FC, memo, ReactNode, useCallback, useEffect } from 'react';
 
 type EditFormModalProps = {
     id: string;
@@ -16,6 +16,8 @@ type EditFormModalProps = {
     formFields: FormFieldItem[];
     title?: string;
     width?: number;
+    topRender?: ReactNode;
+    bottomRender?: ReactNode;
     initialValues?: Record<string, any>;
     onClose?: () => void;
     onTransformValues?: (values: any) => Record<string, any>;
@@ -27,6 +29,8 @@ const EditFormModal: FC<EditFormModalProps> = ({
     formFields,
     title,
     width,
+    topRender,
+    bottomRender,
     initialValues,
     onClose,
     onTransformValues,
@@ -102,24 +106,26 @@ const EditFormModal: FC<EditFormModalProps> = ({
                 },
             }}
         >
-            <Spin spinning={formLoading}>
-                <Space direction="vertical" className="w-full h-full px-3 overflow-x-hidden">
-                    <Form
-                        {...formProps}
-                        layout="vertical"
-                        className="[&_.ant-form-item]:!mb-2"
-                        initialValues={initialValues ?? formProps?.initialValues}
-                        onFinish={(values) => {
-                            const request = onTransformValues?.(values) ?? values;
-                            formProps?.onFinish?.(request);
-                        }}
-                    >
+            <Form
+                {...formProps}
+                layout="vertical"
+                className="[&_.ant-form-item]:!mb-2"
+                initialValues={initialValues ?? formProps?.initialValues}
+                onFinish={(values) => {
+                    const request = onTransformValues?.(values) ?? values;
+                    formProps?.onFinish?.(request);
+                }}
+            >
+                <Spin spinning={formLoading}>
+                    <Space direction="vertical" className="w-full h-full overflow-x-hidden">
+                        {topRender && topRender}
                         <Row gutter={[8, 8]}>
                             {formFields.map((formField) => renderFormFields(formField, formProps))}
                         </Row>
-                    </Form>
-                </Space>
-            </Spin>
+                        {bottomRender && bottomRender}
+                    </Space>
+                </Spin>
+            </Form>
         </CustomModal>
     );
 };

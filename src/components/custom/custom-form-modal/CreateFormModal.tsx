@@ -7,7 +7,7 @@ import { useCustomModal } from '@/hooks';
 import { FormFieldItem } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { Button, Col, Flex, Form, FormProps, Input, Row, Select, Space, Spin, Switch } from 'antd';
-import { FC, memo, useCallback, useEffect } from 'react';
+import { FC, memo, ReactNode, useCallback, useEffect } from 'react';
 
 type CreateFormModalProps = {
     open: boolean;
@@ -15,104 +15,84 @@ type CreateFormModalProps = {
     formFields: FormFieldItem[];
     title?: string;
     width?: number;
+    topRender?: ReactNode;
+    bottomRender?: ReactNode;
     initialValues?: Record<string, any>;
     onClose?: () => void;
     onTransformValues?: (values: any) => Record<string, any>;
 };
 
 export const renderFormFields = (formField: FormFieldItem, formProps: FormProps<any>) => {
+    let formFieldElement = null;
+
     switch (formField.type) {
-        case 'input':
-            return (
-                <Col span={formField.span ?? 24} key={formField.name}>
-                    {formField.elementTopRender && formField.elementTopRender}
-                    <Form.Item
-                        name={formField.name}
-                        rules={formField.rules}
-                        label={formField.label}
-                        tooltip={formField.tooltip}
-                    >
-                        <Input
-                            addonAfter={formField.addonAfter}
-                            addonBefore={formField.addonBefore}
-                            placeholder={formField.placeholder}
-                            disabled={formField.disabled ?? false}
-                            onChange={(e) => formField.onChange?.(e.target.value, formProps?.form)}
-                        />
-                    </Form.Item>
-                    {formField.elementBottomRender && formField.elementBottomRender}
-                </Col>
+        case 'input': {
+            formFieldElement = (
+                <Input
+                    addonAfter={formField.addonAfter}
+                    addonBefore={formField.addonBefore}
+                    placeholder={formField.placeholder}
+                    disabled={formField.disabled ?? false}
+                    onChange={(e) => formField.onChange?.(e.target.value, formProps?.form)}
+                />
             );
+            break;
+        }
 
-        case 'select':
-            return (
-                <Col span={formField.span ?? 24} key={formField.name}>
-                    {formField.elementTopRender && formField.elementTopRender}
-                    <Form.Item
-                        name={formField.name}
-                        label={formField.label}
-                        rules={formField.rules}
-                        tooltip={formField.tooltip}
-                    >
-                        <Select
-                            options={formField.options ?? []}
-                            placeholder={formField.placeholder}
-                            disabled={formField.disabled ?? false}
-                            allowClear={formField.allowClear ?? true}
-                            showSearch={formField.showSearch ?? true}
-                            onChange={(value) => formField.onChange?.(value, formProps?.form)}
-                            filterOption={(input, option) =>
-                                (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-                            }
-                        />
-                    </Form.Item>
-                    {formField.elementBottomRender && formField.elementBottomRender}
-                </Col>
+        case 'select': {
+            formFieldElement = (
+                <Select
+                    options={formField.options ?? []}
+                    placeholder={formField.placeholder}
+                    disabled={formField.disabled ?? false}
+                    allowClear={formField.allowClear ?? true}
+                    showSearch={formField.showSearch ?? true}
+                    onChange={(value) => formField.onChange?.(value, formProps?.form)}
+                />
             );
+            break;
+        }
 
-        case 'textarea':
-            return (
-                <Col span={formField.span ?? 24} key={formField.name}>
-                    {formField.elementTopRender && formField.elementTopRender}
-                    <Form.Item
-                        name={formField.name}
-                        label={formField.label}
-                        rules={formField.rules}
-                        tooltip={formField.tooltip}
-                    >
-                        <Input.TextArea
-                            rows={formField.rows ?? 4}
-                            placeholder={formField.placeholder}
-                            disabled={formField.disabled ?? false}
-                            onChange={(e) => formField.onChange?.(e.target.value, formProps?.form)}
-                        />
-                    </Form.Item>
-                    {formField.elementBottomRender && formField.elementBottomRender}
-                </Col>
+        case 'textarea': {
+            formFieldElement = (
+                <Input.TextArea
+                    rows={formField.rows ?? 4}
+                    placeholder={formField.placeholder}
+                    disabled={formField.disabled ?? false}
+                    onChange={(e) => formField.onChange?.(e.target.value, formProps?.form)}
+                />
             );
+            break;
+        }
 
-        case 'switch':
-            return (
-                <Col span={formField.span ?? 24} key={formField.name}>
-                    {formField.elementTopRender && formField.elementTopRender}
-                    <Form.Item
-                        name={formField.name}
-                        label={formField.label}
-                        rules={formField.rules}
-                        tooltip={formField.tooltip}
-                    >
-                        <Switch
-                            disabled={formField.disabled ?? false}
-                            onChange={(value) => formField.onChange?.(value, formProps?.form)}
-                        />
-                    </Form.Item>
-                    {formField.elementBottomRender && formField.elementBottomRender}
-                </Col>
+        case 'switch': {
+            formFieldElement = (
+                <Switch
+                    disabled={formField.disabled ?? false}
+                    onChange={(value) => formField.onChange?.(value, formProps?.form)}
+                />
             );
+            break;
+        }
 
         default:
             return <></>;
     }
+
+    return (
+        <Col span={formField.span ?? 24} key={formField.name} hidden={formField.hidden ?? false}>
+            {formField.elementTopRender && formField.elementTopRender}
+            <Form.Item
+                name={formField.name}
+                rules={formField.rules}
+                label={formField.label}
+                tooltip={formField.tooltip}
+            >
+                {formFieldElement}
+            </Form.Item>
+            {formField.elementBottomRender && formField.elementBottomRender}
+        </Col>
+    );
 };
 
 const CreateFormModal: FC<CreateFormModalProps> = ({
@@ -121,6 +101,8 @@ const CreateFormModal: FC<CreateFormModalProps> = ({
     formFields,
     title,
     width,
+    topRender,
+    bottomRender,
     initialValues,
     onClose,
     onTransformValues,
@@ -195,24 +177,26 @@ const CreateFormModal: FC<CreateFormModalProps> = ({
                 },
             }}
         >
-            <Spin spinning={formLoading}>
-                <Space direction="vertical" className="w-full h-full px-3 overflow-x-hidden">
-                    <Form
-                        {...formProps}
-                        layout="vertical"
-                        initialValues={initialValues}
-                        className="[&_.ant-form-item]:!mb-2"
-                        onFinish={(values) => {
-                            const request = onTransformValues?.(values) ?? values;
-                            formProps?.onFinish?.(request);
-                        }}
-                    >
+            <Form
+                {...formProps}
+                layout="vertical"
+                initialValues={initialValues}
+                className="[&_.ant-form-item]:!mb-2"
+                onFinish={(values) => {
+                    const request = onTransformValues?.(values) ?? values;
+                    formProps?.onFinish?.(request);
+                }}
+            >
+                <Spin spinning={formLoading}>
+                    <Space direction="vertical" className="w-full h-full overflow-x-hidden">
+                        {topRender && topRender}
                         <Row gutter={[8, 8]}>
                             {formFields.map((formField) => renderFormFields(formField, formProps))}
                         </Row>
-                    </Form>
-                </Space>
-            </Spin>
+                        {bottomRender && bottomRender}
+                    </Space>
+                </Spin>
+            </Form>
         </CustomModal>
     );
 };
