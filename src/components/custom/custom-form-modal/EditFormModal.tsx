@@ -106,26 +106,28 @@ const EditFormModal: FC<EditFormModalProps> = ({
                 },
             }}
         >
-            <Form
-                {...formProps}
-                layout="vertical"
-                className="[&_.ant-form-item]:!mb-2"
-                initialValues={initialValues ?? formProps?.initialValues}
-                onFinish={(values) => {
-                    const request = onTransformValues?.(values) ?? values;
-                    formProps?.onFinish?.(request);
-                }}
-            >
-                <Spin spinning={formLoading}>
-                    <Space direction="vertical" className="w-full h-full overflow-x-hidden">
-                        {topRender && topRender}
+            <Spin spinning={formLoading}>
+                <Space direction="vertical" className="w-full h-full overflow-x-hidden">
+                    {topRender && topRender}
+
+                    <Form
+                        {...formProps}
+                        layout="vertical"
+                        className="[&_.ant-form-item]:!mb-2"
+                        initialValues={initialValues ?? formProps?.initialValues}
+                        onFinish={(values) => {
+                            const request = onTransformValues?.(values) ?? values;
+                            formProps?.onFinish?.(request);
+                        }}
+                    >
                         <Row gutter={[8, 8]}>
                             {formFields.map((formField) => renderFormFields(formField, formProps))}
                         </Row>
-                        {bottomRender && bottomRender}
-                    </Space>
-                </Spin>
-            </Form>
+                    </Form>
+
+                    {bottomRender && bottomRender}
+                </Space>
+            </Spin>
         </CustomModal>
     );
 };

@@ -82,14 +82,32 @@ export const renderFormFields = (formField: FormFieldItem, formProps: FormProps<
     return (
         <Col span={formField.span ?? 24} key={formField.name} hidden={formField.hidden ?? false}>
             {formField.elementTopRender && formField.elementTopRender}
-            <Form.Item
-                name={formField.name}
-                rules={formField.rules}
-                label={formField.label}
-                tooltip={formField.tooltip}
-            >
-                {formFieldElement}
-            </Form.Item>
+
+            {formField.type === 'switch' ? (
+                <Flex align="center" justify="space-between">
+                    <div>
+                        <p className="font-medium !my-0">{formField.label}</p>
+                        <p className="text-sm text-gray-500 !my-0">{formField.placeholder}</p>
+                    </div>
+                    <Form.Item
+                        name={formField.name}
+                        rules={formField.rules}
+                        tooltip={formField.tooltip}
+                    >
+                        {formFieldElement}
+                    </Form.Item>
+                </Flex>
+            ) : (
+                <Form.Item
+                    name={formField.name}
+                    rules={formField.rules}
+                    label={formField.label}
+                    tooltip={formField.tooltip}
+                >
+                    {formFieldElement}
+                </Form.Item>
+            )}
+
             {formField.elementBottomRender && formField.elementBottomRender}
         </Col>
     );
@@ -177,26 +195,28 @@ const CreateFormModal: FC<CreateFormModalProps> = ({
                 },
             }}
         >
-            <Form
-                {...formProps}
-                layout="vertical"
-                initialValues={initialValues}
-                className="[&_.ant-form-item]:!mb-2"
-                onFinish={(values) => {
-                    const request = onTransformValues?.(values) ?? values;
-                    formProps?.onFinish?.(request);
-                }}
-            >
-                <Spin spinning={formLoading}>
-                    <Space direction="vertical" className="w-full h-full overflow-x-hidden">
-                        {topRender && topRender}
+            <Spin spinning={formLoading}>
+                <Space direction="vertical" className="w-full h-full overflow-x-hidden">
+                    {topRender && topRender}
+
+                    <Form
+                        {...formProps}
+                        layout="vertical"
+                        initialValues={initialValues}
+                        className="[&_.ant-form-item]:!mb-2"
+                        onFinish={(values) => {
+                            const request = onTransformValues?.(values) ?? values;
+                            formProps?.onFinish?.(request);
+                        }}
+                    >
                         <Row gutter={[8, 8]}>
                             {formFields.map((formField) => renderFormFields(formField, formProps))}
                         </Row>
-                        {bottomRender && bottomRender}
-                    </Space>
-                </Spin>
-            </Form>
+                    </Form>
+
+                    {bottomRender && bottomRender}
+                </Space>
+            </Spin>
         </CustomModal>
     );
 };

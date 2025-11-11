@@ -10,7 +10,7 @@ import {
     useTableContainer,
 } from '@/hooks';
 import { ActionTableItem, FormFieldItem, NSchedule } from '@/interfaces';
-import { enumToOptions } from '@/libs';
+import { capitalizeFirstLetter, enumToOptions, getEnumKeyByValue } from '@/libs';
 import { Icon } from '@iconify/react';
 import { Button, Space, Switch } from 'antd';
 import { ColumnsType } from 'antd/es/table';
@@ -54,15 +54,25 @@ const ScheduleExecutionPage: FC = () => {
             key: 'type',
             width: 150,
             ellipsis: true,
-            render: (type: ScheduleType) => type ?? '---',
+            render: (type: ScheduleType) => {
+                switch (type) {
+                    case ScheduleType.DATA_PROVIDER:
+                        return 'Nhà cung cấp';
+                    case ScheduleType.ITEM:
+                        return 'Đối tượng';
+                    default:
+                        return 'Toàn bộ';
+                }
+            },
         },
         {
-            title: 'Biểu thức cron',
+            title: 'Lịch biểu cron',
             dataIndex: 'cronExpression',
             key: 'cronExpression',
             width: 150,
             ellipsis: true,
-            render: (cronExpression: string) => cronExpression ?? '---',
+            render: (cronExpression: string) =>
+                capitalizeFirstLetter(getEnumKeyByValue(CronExpression, cronExpression) ?? '---'),
         },
         {
             title: 'Lần chạy gần nhất',
@@ -137,7 +147,12 @@ const ScheduleExecutionPage: FC = () => {
             options: dataProviderOptions ?? [],
             hidden: type !== ScheduleType.DATA_PROVIDER,
             disabled: type !== ScheduleType.DATA_PROVIDER,
-            rules: [{ required: true, message: 'Vui lòng chọn nhà cung cấp' }],
+            rules: [
+                {
+                    message: 'Vui lòng chọn nhà cung cấp',
+                    required: type === ScheduleType.DATA_PROVIDER,
+                },
+            ],
         },
         {
             type: 'select',
@@ -147,7 +162,7 @@ const ScheduleExecutionPage: FC = () => {
             options: itemOptions ?? [],
             hidden: type !== ScheduleType.ITEM,
             disabled: type !== ScheduleType.ITEM,
-            rules: [{ required: true, message: 'Vui lòng chọn đối tượng' }],
+            rules: [{ required: type === ScheduleType.ITEM, message: 'Vui lòng chọn đối tượng' }],
         },
         {
             type: 'select',
@@ -170,10 +185,11 @@ const ScheduleExecutionPage: FC = () => {
             ],
         },
         {
-            name: 'enabled',
             type: 'switch',
+            name: 'enabled',
             label: 'Kích hoạt',
             placeholder: 'Kích hoạt lịch biểu thực thi',
+            rules: [{ required: true, message: 'Vui lòng chọn kích hoạt lịch biểu thực thi' }],
         },
     ];
 

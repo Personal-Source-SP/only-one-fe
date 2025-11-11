@@ -8,3 +8,10 @@ export const enumToOptions = (enumObj: object): Option[] => {
             label: key,
         }));
 };
+
+export const getEnumKeyByValue = <T extends { [key: string]: string | number }>(
+    enumObj: T,
+    value: string | number,
+): keyof T | undefined => {
+    return (Object.keys(enumObj) as Array<keyof T>).find((key) => enumObj[key] === value);
+};
