@@ -67,6 +67,7 @@ const ScheduleJobEventsPage: FC = () => {
             dataIndex: 'retryCount',
             key: 'retryCount',
             width: 100,
+            align: 'center',
             render: (retryCount: number) => retryCount ?? 0,
         },
     ];
