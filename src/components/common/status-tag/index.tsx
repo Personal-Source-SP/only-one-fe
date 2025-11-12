@@ -25,6 +25,13 @@ const colorStatusMap: Record<string, string> = {
 
     ['true']: '#52c41a', // green
     ['false']: '#faad14', // orange (was gray)
+
+    ['global']: '#52c41a', // green
+    ['item']: '#1890ff', // blue
+    ['data_provider']: '#faad14', // orange (was gray)
+
+    ['cron']: '#52c41a', // green
+    ['manual']: '#1890ff', // blue
 };
 
 const textStatusMap: Record<string, string> = {
@@ -47,6 +54,13 @@ const textStatusMap: Record<string, string> = {
 
     ['true']: 'Hoạt động',
     ['false']: 'Không hoạt động',
+
+    ['global']: 'Lịch biểu toàn cục',
+    ['item']: 'Lịch biểu item',
+    ['data_provider']: 'Lịch biểu data provider',
+
+    ['cron']: 'Tự động',
+    ['manual']: 'Thủ công',
 };
 
 const randomColor = (): string => {

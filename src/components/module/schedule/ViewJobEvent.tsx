@@ -1,47 +1,17 @@
 'use client';
 
+import { StatusTag } from '@/components/common';
 import { CustomModal } from '@/components/custom';
-import { ScheduleJobEventType } from '@/enums';
 import { NSchedule } from '@/interfaces';
-import { Descriptions, Tabs, Tag } from 'antd';
+import { calculateDuration, formatDate } from '@/libs';
+import { Descriptions, Tabs } from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
-import dayjs from 'dayjs';
 import { FC, memo } from 'react';
 
 type ViewJobEventProps = {
     isOpen: boolean;
     jobEvent: NSchedule.IScheduleJobEvent;
     onClose: () => void;
-};
-
-const statusColors: Record<string, string> = {
-    pending: 'blue',
-    processing: 'orange',
-    completed: 'green',
-    failed: 'red',
-};
-
-export const renderEventTypeName = (eventType: ScheduleJobEventType) => {
-    let name = '';
-    switch (eventType) {
-        case ScheduleJobEventType.PENDING:
-            name = 'Chờ xử lý';
-            break;
-        case ScheduleJobEventType.PROCESSING:
-            name = 'Đang xử lý';
-            break;
-        case ScheduleJobEventType.COMPLETED:
-            name = 'Hoàn thành';
-            break;
-        case ScheduleJobEventType.FAILED:
-            name = 'Thất bại';
-            break;
-        default:
-            name = 'Không xác định';
-            break;
-    }
-
-    return <Tag color={statusColors[eventType]}>{name}</Tag>;
 };
 
 const ViewJobEvent: FC<ViewJobEventProps> = ({ isOpen, jobEvent, onClose }) => {
@@ -60,33 +30,22 @@ const ViewJobEvent: FC<ViewJobEventProps> = ({ isOpen, jobEvent, onClose }) => {
                 <TabPane tab="Chi tiết" key="details">
                     <Descriptions column={1} bordered size="small">
                         <Descriptions.Item label="Loại sự kiện">
-                            {renderEventTypeName(jobEvent.eventType)}
+                            <StatusTag status={jobEvent.eventType} />
                         </Descriptions.Item>
                         <Descriptions.Item label="Nội dung sự kiện">
                             {jobEvent.eventMessage ? jobEvent.eventMessage : '-'}
                         </Descriptions.Item>
                         <Descriptions.Item label="Thời gian tạo">
-                            {jobEvent.createdAt
-                                ? new Date(jobEvent.createdAt).toLocaleString()
-                                : '-'}
+                            {formatDate(jobEvent.createdAt)}
                         </Descriptions.Item>
                         <Descriptions.Item label="Thời gian bắt đầu">
-                            {jobEvent.startedAt
-                                ? new Date(jobEvent.startedAt).toLocaleString()
-                                : '-'}
+                            {formatDate(jobEvent.startedAt)}
                         </Descriptions.Item>
                         <Descriptions.Item label="Thời gian kết thúc">
-                            {jobEvent.finishedAt
-                                ? new Date(jobEvent.finishedAt).toLocaleString()
-                                : '-'}
+                            {formatDate(jobEvent.finishedAt)}
                         </Descriptions.Item>
                         <Descriptions.Item label="Thời gian thực hiện">
-                            {jobEvent.startedAt && jobEvent.finishedAt
-                                ? dayjs(jobEvent.finishedAt)
-                                      .diff(jobEvent.startedAt, 'second')
-                                      .toString()
-                                      .concat(' giây')
-                                : '-'}
+                            {calculateDuration(jobEvent.startedAt, jobEvent.finishedAt)}
                         </Descriptions.Item>
                         <Descriptions.Item label="Số lần thử">
                             {jobEvent.retryCount ? `${jobEvent.retryCount} lần` : '-'}

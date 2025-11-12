@@ -1,7 +1,7 @@
 'use client';
 
 import { CreateFormModal, CustomElement, EditFormModal, TableContainer } from '@/components/custom';
-import { NextRunTimes } from '@/components/module/schedule';
+import { NextRunTimes, ViewScheduleJobList } from '@/components/module/schedule';
 import { CronExpression, ElementType, ScheduleType } from '@/enums';
 import {
     useCustomMutationData,
@@ -23,6 +23,8 @@ const ScheduleExecutionPage: FC = () => {
 
     const [type, setType] = useState<ScheduleType | undefined>(undefined);
     const [cronExpression, setCronExpression] = useState<string | undefined>(undefined);
+
+    const [selectedScheduleId, setSelectedScheduleId] = useState<string | undefined>(undefined);
 
     const { handleCustomMutationData } = useCustomMutationData();
 
@@ -211,6 +213,12 @@ const ScheduleExecutionPage: FC = () => {
             icon: <Icon icon="lucide:play" />,
             onClick: (record) => handleManualTrigger(record?.id),
         },
+        {
+            key: 'view-schedule-job-list',
+            label: 'Xem danh sách công việc',
+            icon: <Icon icon="lucide:list" />,
+            onClick: (record) => setSelectedScheduleId(record?.id),
+        },
     ];
 
     const handleSwitchStatus = (id: string, active: boolean) => {
@@ -345,6 +353,14 @@ const ScheduleExecutionPage: FC = () => {
                     tableContainerData?.tableQuery?.refetch();
                 }}
             />
+
+            {!!selectedScheduleId && (
+                <ViewScheduleJobList
+                    isOpen
+                    scheduleId={selectedScheduleId}
+                    onClose={() => setSelectedScheduleId(undefined)}
+                />
+            )}
         </Space>
     );
 };

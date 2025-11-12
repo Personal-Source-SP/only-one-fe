@@ -64,6 +64,23 @@ const CustomTable: FC<CustomTableProps> = ({
         return [];
     }, [tableProps?.dataSource]);
 
+    const normalizedColumns: ColumnsType<any> = useMemo(() => {
+        if (!actionItems?.length && !resource) return columns;
+
+        return [
+            ...columns,
+            {
+                width: 200,
+                key: 'action',
+                fixed: 'right',
+                align: 'center',
+                title: 'Hành động',
+                dataIndex: 'action',
+                render: (_: any, record: any) => renderAction(record),
+            },
+        ];
+    }, [columns, actionItems, resource]);
+
     const handleDelete = (record: any) => {
         deleteRecord(
             {
@@ -163,20 +180,9 @@ const CustomTable: FC<CustomTableProps> = ({
             rowKey="id"
             loading={loading}
             pagination={false}
+            columns={normalizedColumns}
             dataSource={normalizedDataSource}
             rowSelection={onRowSelectionChange ? rowSelection : undefined}
-            columns={[
-                ...columns,
-                {
-                    width: 200,
-                    key: 'action',
-                    fixed: 'right',
-                    align: 'center',
-                    title: 'Hành động',
-                    dataIndex: 'action',
-                    render: (_: any, record: any) => renderAction(record),
-                },
-            ]}
             onChange={(pagination, filters, sorter, extra) =>
                 handleTableChange(pagination, filters, sorter as SorterResult<any>, extra)
             }

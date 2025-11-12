@@ -16,3 +16,8 @@ export const formatDate = (
             return '---';
     }
 };
+
+export const calculateDuration = (startDate: Date | undefined, endDate: Date | undefined) => {
+    if (!startDate || !endDate) return '---';
+    return dayjs(endDate).diff(startDate, 'second').toString().concat(' giây');
+};

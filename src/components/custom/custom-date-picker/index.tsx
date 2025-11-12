@@ -1,6 +1,6 @@
 'use client';
 
-import { DATE_FORMAT, DATE_FORMAT_TIME } from '@/constants';
+import { DATE_FORMAT_SHORT, DATE_FORMAT_TIME } from '@/constants';
 import { DatePicker, Form } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
 import { debounce } from 'lodash';
@@ -63,7 +63,7 @@ const CustomDatePicker: FC<CustomDatePickerProps> = ({
     const setDateRangeValue = useCallback(
         debounce(
             (range: [string, string]) => {
-                const format = showTime ? DATE_FORMAT_TIME : DATE_FORMAT;
+                const format = showTime ? DATE_FORMAT_TIME : DATE_FORMAT_SHORT;
 
                 const startDate = dayjs(range[0], format);
                 const endDate = dayjs(range[1], format);
@@ -90,7 +90,7 @@ const CustomDatePicker: FC<CustomDatePickerProps> = ({
                 showTime={showTime}
                 allowClear={allowClear}
                 className="h-[42px] select-range-date"
-                format={showTime ? DATE_FORMAT_TIME : DATE_FORMAT}
+                format={showTime ? DATE_FORMAT_TIME : DATE_FORMAT_SHORT}
                 value={dateRange && [dayjs(dateRange[0]), dayjs(dateRange[1])]}
                 defaultValue={dateRange && [dayjs(dateRange[0]), dayjs(dateRange[1])]}
                 disabledDate={(date) => (date ? date.isAfter(dayjs(), 'day') : false)}

@@ -107,13 +107,8 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
                 icon: 'noto:stopwatch',
             },
             {
-                href: '/schedule/jobs',
-                label: 'Lịch biểu công việc',
-                icon: 'noto:calendar',
-            },
-            {
                 href: '/schedule/job-events',
-                label: 'Sự kiện lịch biểu công việc',
+                label: 'Sự kiện lịch biểu',
                 icon: 'noto:spiral-calendar',
             },
         ],
@@ -143,7 +138,7 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
 ];
 
 export const DATE_FORMAT_SHORT = 'DD/MM/YYYY';
-export const DATE_FORMAT_TIME = 'DD/MM/YYYY HH:mm:ss';
+export const DATE_FORMAT_TIME = 'HH:mm:ss DD/MM/YYYY';
 
 export const AUTH_PUBLIC_PAGES = ['/login', '/register', '/forget-password'];
 
