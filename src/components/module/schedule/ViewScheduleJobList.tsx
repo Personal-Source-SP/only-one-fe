@@ -77,6 +77,34 @@ const ViewScheduleJobList: FC<ViewScheduleJobListProps> = ({ isOpen, scheduleId,
             sorter: true,
             render: (errorMessage: string) => errorMessage ?? '---',
         },
+        {
+            title: 'Số lượng sự kiện',
+            dataIndex: 'eventCount',
+            key: 'eventCount',
+            width: 200,
+            render: (eventCount: number) => eventCount ?? 0,
+        },
+        {
+            title: 'Số lượng sự kiện thất bại',
+            dataIndex: 'eventFailedCount',
+            key: 'eventFailedCount',
+            width: 200,
+            render: (eventFailedCount: number) => eventFailedCount ?? 0,
+        },
+        {
+            title: 'Số lượng sự kiện thành công',
+            dataIndex: 'eventSuccessCount',
+            key: 'eventSuccessCount',
+            width: 200,
+            render: (eventSuccessCount: number) => eventSuccessCount ?? 0,
+        },
+        {
+            title: 'Số lượng sự kiện chờ xử lý',
+            dataIndex: 'eventPendingCount',
+            key: 'eventPendingCount',
+            width: 200,
+            render: (eventPendingCount: number) => eventPendingCount ?? 0,
+        },
     ];
 
     return (

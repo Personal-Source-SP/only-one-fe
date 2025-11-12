@@ -84,29 +84,28 @@ const ScheduleExecutionPage: FC = () => {
                 capitalizeFirstLetter(getEnumKeyByValue(CronExpression, cronExpression) ?? '---'),
         },
         {
-            title: 'Lần chạy gần nhất',
+            title: 'Chạy gần nhất',
             dataIndex: 'nextRunAt',
             key: 'nextRunAt',
-            width: 200,
+            width: 300,
             sorter: true,
             render: (nextRunAt: Date) => formatDate(nextRunAt),
         },
         {
-            title: 'Lần chạy cuối cùng',
+            title: 'Chạy cuối cùng',
             dataIndex: 'lastRunAt',
             key: 'lastRunAt',
-            width: 200,
+            width: 300,
             sorter: true,
             render: (lastRunAt: Date) => formatDate(lastRunAt),
         },
         {
-            title: 'Số lượng công việc',
-            dataIndex: 'scheduleJobs',
-            key: 'scheduleJobs',
+            title: 'Công việc',
+            dataIndex: 'jobCount',
+            key: 'jobCount',
             width: 200,
-            render: (scheduleJobs: NSchedule.IScheduleJob[]) => (
-                <span>{scheduleJobs?.length ?? 0} công việc</span>
-            ),
+            align: 'center',
+            render: (jobCount: number) => jobCount ?? 0,
         },
         {
             title: 'Trạng thái',

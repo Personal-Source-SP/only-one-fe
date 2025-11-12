@@ -23,6 +23,10 @@ export declare namespace NSchedule {
         startedAt?: Date;
         finishedAt?: Date;
         errorMessage?: string;
+        eventCount?: number;
+        eventFailedCount?: number;
+        eventSuccessCount?: number;
+        eventPendingCount?: number;
         schedule?: IScheduleExecution;
         scheduleJobEvents?: IScheduleJobEvent[];
     }
@@ -35,6 +39,7 @@ export declare namespace NSchedule {
         nextRunAt?: Date;
         lastRunAt?: Date;
         payload?: Record<string, any>;
+        jobCount?: number;
         scheduleJobs: IScheduleJob[];
     }
 }
