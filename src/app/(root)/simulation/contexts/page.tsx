@@ -1,5 +1,6 @@
 'use client';
 
+import { StatusTag } from '@/components/common';
 import { CreateFormModal, CustomElement, EditFormModal, TableContainer } from '@/components/custom';
 import { NextRunTimes } from '@/components/module/schedule';
 import { CronExpression, ElementType, ScheduleType } from '@/enums';
@@ -9,14 +10,14 @@ import {
     useSelectItem,
     useTableContainer,
 } from '@/hooks';
-import { ActionTableItem, FormFieldItem, NSchedule } from '@/interfaces';
-import { capitalizeFirstLetter, enumToOptions, formatDate, getEnumKeyByValue } from '@/libs';
+import { ActionTableItem, FormFieldItem, NSimulation } from '@/interfaces';
+import { enumToOptions, formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
-import { Button, Space, Switch } from 'antd';
+import { Button, Space } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import { FC, useEffect, useState } from 'react';
 
-const ScheduleExecutionPage: FC = () => {
+const SimulationContextsPage: FC = () => {
     const [loading, setLoading] = useState(false);
     const [openCreateItemModal, setOpenCreateItemModal] = useState(false);
     const [editItemId, setEditItemId] = useState<string | undefined>(undefined);
@@ -32,7 +33,7 @@ const ScheduleExecutionPage: FC = () => {
     });
 
     const tableContainerData = useTableContainer({
-        resource: 'schedules',
+        resource: 'simulation-contexts',
     });
 
     useEffect(() => {
@@ -46,7 +47,7 @@ const ScheduleExecutionPage: FC = () => {
         }
     }, [type]);
 
-    const columns: ColumnsType<NSchedule.ISchedule> = [
+    const columns: ColumnsType<NSimulation.ISimulationContext> = [
         {
             title: 'STT',
             key: 'index',
@@ -56,68 +57,49 @@ const ScheduleExecutionPage: FC = () => {
             render: (_: any, __: any, index: number) => index + 1,
         },
         {
-            title: 'Loại lịch biểu',
-            dataIndex: 'type',
-            key: 'type',
-            width: 150,
+            title: 'Mã ngữ cảnh',
+            dataIndex: 'identifier',
+            key: 'identifier',
+            width: 180,
             ellipsis: true,
-            render: (type: ScheduleType) => {
-                switch (type) {
-                    case ScheduleType.DATA_PROVIDER:
-                        return 'Nhà cung cấp';
-                    case ScheduleType.ITEM:
-                        return 'Đối tượng';
-                    default:
-                        return 'Toàn bộ';
-                }
-            },
         },
         {
-            title: 'Lịch biểu cron',
-            dataIndex: 'cronExpression',
-            key: 'cronExpression',
-            width: 150,
+            title: 'Tên ngữ cảnh',
+            dataIndex: 'name',
+            key: 'name',
+            width: 200,
             ellipsis: true,
-            render: (cronExpression: string) =>
-                capitalizeFirstLetter(getEnumKeyByValue(CronExpression, cronExpression) ?? '---'),
         },
         {
-            title: 'Lần chạy gần nhất',
-            dataIndex: 'nextRunAt',
-            key: 'nextRunAt',
-            width: 200,
-            sorter: true,
-            render: (nextRunAt: Date) => formatDate(nextRunAt),
-        },
-        {
-            title: 'Lần chạy cuối cùng',
-            dataIndex: 'lastRunAt',
-            key: 'lastRunAt',
-            width: 200,
-            sorter: true,
-            render: (lastRunAt: Date) => formatDate(lastRunAt),
-        },
-        {
-            title: 'Số lượng công việc',
-            dataIndex: 'scheduleJobs',
-            key: 'scheduleJobs',
-            width: 200,
-            render: (scheduleJobs: NSchedule.IScheduleJob[]) => (
-                <span>{scheduleJobs?.length ?? 0} công việc</span>
-            ),
+            title: 'URL nguồn',
+            dataIndex: 'baseUrl',
+            key: 'baseUrl',
+            width: 220,
+            ellipsis: true,
         },
         {
             title: 'Trạng thái',
-            dataIndex: 'isActive',
-            key: 'isActive',
-            width: 200,
+            dataIndex: 'status',
+            key: 'status',
+            width: 130,
             align: 'center',
-            render: (isActive: boolean, record: NSchedule.ISchedule) => (
-                <Switch
-                    size="small"
-                    checked={isActive}
-                    onChange={(checked) => handleSwitchStatus(record?.id ?? '', checked)}
-                />
+            render: (status: string) => <StatusTag status={status} />,
+        },
+        {
+            title: 'Lần lấy dữ liệu thành công gần nhất',
+            dataIndex: 'lastSuccessfulScrapeAt',
+            key: 'lastSuccessfulScrapeAt',
+            width: 200,
+            sorter: true,
+            render: (lastSuccessfulScrapeAt: Date) => formatDate(lastSuccessfulScrapeAt),
+        },
+        {
+            title: 'Số bản ghi mô phỏng',
+            dataIndex: 'simulationItems',
+            key: 'simulationItems',
+            width: 170,
+            render: (simulationItems?: NSimulation.ISimulationItem[]) => (
+                <span>{simulationItems?.length ?? 0} bản ghi</span>
             ),
         },
     ];
@@ -311,8 +293,8 @@ const ScheduleExecutionPage: FC = () => {
             <TableContainer
                 loading={loading}
                 columns={columns}
-                resource="schedules"
                 actionItems={actionItems}
+                resource="simulation-contexts"
                 tableContainerData={tableContainerData}
                 filterSearch={{ placeholder: 'Tìm kiếm lịch biểu thực thi' }}
             />
@@ -349,4 +331,4 @@ const ScheduleExecutionPage: FC = () => {
     );
 };
 
-export default ScheduleExecutionPage;
+export default SimulationContextsPage;

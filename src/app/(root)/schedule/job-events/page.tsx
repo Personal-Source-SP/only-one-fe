@@ -1,14 +1,15 @@
 'use client';
 
+import { StatusTag } from '@/components/common';
 import { CustomElement, TableContainer } from '@/components/custom';
 import { ViewJobEvent } from '@/components/module/schedule';
 import { ElementType, ScheduleJobEventType } from '@/enums';
 import { useTableContainer } from '@/hooks';
 import { ActionTableItem, NSchedule } from '@/interfaces';
+import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react/dist/iconify.js';
 import { Space } from 'antd';
 import { ColumnsType } from 'antd/es/table';
-import dayjs from 'dayjs';
 import { FC, useState } from 'react';
 
 const ScheduleJobEventsPage: FC = () => {
@@ -35,18 +36,7 @@ const ScheduleJobEventsPage: FC = () => {
             key: 'eventType',
             width: 150,
             ellipsis: true,
-            render: (type: ScheduleJobEventType) => {
-                switch (type) {
-                    case ScheduleJobEventType.PENDING:
-                        return 'Nhà cung cấp';
-                    case ScheduleJobEventType.PROCESSING:
-                        return 'Đang xử lý';
-                    case ScheduleJobEventType.COMPLETED:
-                        return 'Hoàn thành';
-                    case ScheduleJobEventType.FAILED:
-                        return 'Thất bại';
-                }
-            },
+            render: (type: ScheduleJobEventType) => <StatusTag status={type} />,
         },
         {
             title: 'Nội dung sự kiện',
@@ -62,8 +52,7 @@ const ScheduleJobEventsPage: FC = () => {
             key: 'startedAt',
             width: 200,
             sorter: true,
-            render: (startedAt: Date) =>
-                startedAt ? dayjs(startedAt).format('DD/MM/YYYY HH:mm:ss') : '---',
+            render: (startedAt: Date) => formatDate(startedAt),
         },
         {
             title: 'Kết thúc',
@@ -71,8 +60,7 @@ const ScheduleJobEventsPage: FC = () => {
             key: 'finishedAt',
             width: 200,
             sorter: true,
-            render: (finishedAt: Date) =>
-                finishedAt ? dayjs(finishedAt).format('DD/MM/YYYY HH:mm:ss') : '---',
+            render: (finishedAt: Date) => formatDate(finishedAt),
         },
         {
             title: 'Số lần thử',

@@ -1,16 +1,17 @@
 'use client';
 
+import { StatusTag } from '@/components/common';
 import { CreateFormModal, CustomElement, EditFormModal, TableContainer } from '@/components/custom';
 import { ProcessScrapeData } from '@/components/module/data-provider';
 import ImportData from '@/components/module/import-data';
 import { DataImportType, ElementType, ProductMappingStatus } from '@/enums';
 import { useTableContainer } from '@/hooks';
 import { FormFieldItem, NDataProvider } from '@/interfaces';
+import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
 import { Button, Space, Tag } from 'antd';
 import { ColumnsType, ColumnType } from 'antd/es/table';
-import dayjs from 'dayjs';
-import { FC, useCallback, useState } from 'react';
+import { FC, useState } from 'react';
 
 const ItemPage: FC = () => {
     const [openCreateItemModal, setOpenCreateItemModal] = useState(false);
@@ -23,36 +24,6 @@ const ItemPage: FC = () => {
     const tableContainerData = useTableContainer({
         resource: 'items',
     });
-
-    const displayMappingStatus = useCallback((mappingStatus: ProductMappingStatus) => {
-        if (!mappingStatus) return '---';
-
-        let color: string, text: string;
-
-        switch (mappingStatus) {
-            case ProductMappingStatus.MAPPED:
-                color = '#52c41a';
-                text = 'Đã ánh xạ';
-                break;
-            case ProductMappingStatus.UNMAPPED:
-                color = '#bfbfbf';
-                text = 'Chưa ánh xạ';
-                break;
-            case ProductMappingStatus.MAPPED_HAS_DATA:
-                color = '#1890ff';
-                text = 'Đã ánh xạ (có dữ liệu)';
-                break;
-            default:
-                color = '#bfbfbf';
-                text = mappingStatus;
-        }
-
-        return (
-            <Tag color={color} className="text-sm font-medium">
-                {text}
-            </Tag>
-        );
-    }, []);
 
     const columns: ColumnsType<NDataProvider.IItem> = [
         {
@@ -67,8 +38,7 @@ const ItemPage: FC = () => {
             key: 'mappingStatus',
             title: 'Trạng thái ánh xạ',
             dataIndex: 'mappingStatus',
-            sorter: true,
-            render: (mappingStatus: ProductMappingStatus) => displayMappingStatus(mappingStatus),
+            render: (mappingStatus: ProductMappingStatus) => <StatusTag status={mappingStatus} />,
             width: '15%',
         },
         {
@@ -76,16 +46,7 @@ const ItemPage: FC = () => {
             title: 'Mã',
             align: 'center',
             dataIndex: 'code',
-            render: (code: string) =>
-                code ? (
-                    <span>
-                        <Tag color="blue" className="text-sm font-medium">
-                            {code}
-                        </Tag>
-                    </span>
-                ) : (
-                    '---'
-                ),
+            render: (code: string) => <StatusTag status={code} />,
             width: '15%',
         },
         {
@@ -108,8 +69,7 @@ const ItemPage: FC = () => {
             dataIndex: 'createdAt',
             key: 'createdAt',
             sorter: true,
-            render: (createdAt: Date) =>
-                createdAt ? dayjs(createdAt).format('DD/MM/YYYY HH:mm:ss') : '---',
+            render: (createdAt: Date) => formatDate(createdAt),
             width: '25%',
         },
     ];
@@ -136,7 +96,7 @@ const ItemPage: FC = () => {
             key: 'mappingStatus',
             align: 'center',
             width: '35%',
-            render: (mappingStatus: ProductMappingStatus) => displayMappingStatus(mappingStatus),
+            render: (mappingStatus: ProductMappingStatus) => <StatusTag status={mappingStatus} />,
         },
     ];
 

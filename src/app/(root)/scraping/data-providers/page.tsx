@@ -1,11 +1,8 @@
 'use client';
 
+import { StatusTag } from '@/components/common';
 import { CreateFormModal, CustomElement, EditFormModal, TableContainer } from '@/components/custom';
-import {
-    DisplayDataProviderStatus,
-    ProcessScrapeData,
-    ScrapeSetting,
-} from '@/components/module/data-provider';
+import { ProcessScrapeData, ScrapeSetting } from '@/components/module/data-provider';
 import ImportData from '@/components/module/import-data';
 import {
     CustomFilterType,
@@ -21,11 +18,11 @@ import {
     useTableContainer,
 } from '@/hooks';
 import { ActionTableItem, FilterItem, FormFieldItem, NDataProvider } from '@/interfaces';
+import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
 import { Button, Space } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import { ColumnType } from 'antd/lib/table';
-import dayjs from 'dayjs';
 import { FC, useState } from 'react';
 
 const DataProviderPage: FC = () => {
@@ -82,7 +79,7 @@ const DataProviderPage: FC = () => {
             key: 'status',
             title: 'Trạng thái',
             dataIndex: 'status',
-            render: (status: DataProviderStatus) => <DisplayDataProviderStatus status={status} />,
+            render: (status: DataProviderStatus) => <StatusTag status={status} />,
             width: '10%',
         },
         {
@@ -90,8 +87,7 @@ const DataProviderPage: FC = () => {
             dataIndex: 'createdAt',
             key: 'createdAt',
             sorter: true,
-            render: (createdAt: Date) =>
-                createdAt ? dayjs(createdAt).format('DD/MM/YYYY HH:mm:ss') : '---',
+            render: (createdAt: Date) => formatDate(createdAt),
             width: '20%',
         },
         {

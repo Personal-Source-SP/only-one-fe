@@ -5,7 +5,7 @@ import { useMainContext } from '@/contexts/MainContext';
 import { GoogleDriveType, MimeType } from '@/enums';
 import { useCustomData, useCustomMutationData, useSelectGoogleFolder } from '@/hooks';
 import { NGoogle, Option } from '@/interfaces';
-import { getGoogleAuthUrl, isExpiredToken } from '@/libs';
+import { formatDate, getGoogleAuthUrl, isExpiredToken } from '@/libs';
 import { Icon } from '@iconify/react';
 import {
     Button,
@@ -30,7 +30,6 @@ import {
     Tag,
 } from 'antd';
 import { ColumnType, TableProps } from 'antd/es/table';
-import dayjs from 'dayjs';
 import Link from 'next/link';
 import { FC, memo, useEffect, useMemo, useState, type Key } from 'react';
 
@@ -180,8 +179,7 @@ const SyncGoogleDrive: FC<SyncGoogleDriveProps> = ({
             dataIndex: 'lastModified',
             ellipsis: true,
             width: '15%',
-            render: (lastModified?: Date) =>
-                lastModified ? dayjs(lastModified).format('DD/MM/YYYY HH:mm:ss') : '---',
+            render: (lastModified?: Date) => formatDate(lastModified),
             sorter: (a, b) =>
                 (a.lastModified ? new Date(a.lastModified as unknown as string).getTime() : 0) -
                 (b.lastModified ? new Date(b.lastModified as unknown as string).getTime() : 0),

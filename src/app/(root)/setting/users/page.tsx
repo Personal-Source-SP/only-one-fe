@@ -4,10 +4,10 @@ import { CustomElement, TableContainer } from '@/components/custom';
 import { ElementType } from '@/enums';
 import { useCustomModal, useTableContainer } from '@/hooks';
 import { NGoogle, NUser } from '@/interfaces';
+import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
 import { Space } from 'antd';
 import { ColumnsType } from 'antd/es/table';
-import dayjs from 'dayjs';
 import { FC } from 'react';
 
 const UsersPage: FC = () => {
@@ -64,8 +64,7 @@ const UsersPage: FC = () => {
             dataIndex: 'createdAt',
             key: 'createdAt',
             sorter: true,
-            render: (createdAt: Date) =>
-                createdAt ? dayjs(createdAt).format('DD/MM/YYYY HH:mm:ss') : '---',
+            render: (createdAt: Date) => formatDate(createdAt),
         },
     ];
 

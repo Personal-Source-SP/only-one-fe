@@ -6,10 +6,10 @@ import SyncGoogleDrive from '@/components/module/sync-google-drive';
 import { ElementType, GoogleDriveType } from '@/enums';
 import { useCustomModal, useSelectGoogleFolder, useTableContainer } from '@/hooks';
 import { NGoogle } from '@/interfaces';
+import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
 import { Button, Space } from 'antd';
 import { ColumnsType } from 'antd/es/table';
-import dayjs from 'dayjs';
 import { FC, useEffect, useState } from 'react';
 
 const FolderPage: FC = () => {
@@ -45,16 +45,14 @@ const FolderPage: FC = () => {
             dataIndex: 'createdAt',
             key: 'createdAt',
             sorter: true,
-            render: (createdAt: Date) =>
-                createdAt ? dayjs(createdAt).format('DD/MM/YYYY HH:mm:ss') : '---',
+            render: (createdAt: Date) => formatDate(createdAt),
         },
         {
             key: 'lastModified',
             title: 'Ngày chỉnh sửa',
             dataIndex: 'lastModified',
             sorter: true,
-            render: (lastModified: Date) =>
-                lastModified ? dayjs(lastModified).format('DD/MM/YYYY HH:mm:ss') : '---',
+            render: (lastModified: Date) => formatDate(lastModified),
         },
         {
             key: 'isTrashed',

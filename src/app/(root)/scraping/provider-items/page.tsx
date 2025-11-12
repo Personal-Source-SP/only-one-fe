@@ -10,10 +10,10 @@ import {
     useTableContainer,
 } from '@/hooks';
 import { ActionTableItem, FormFieldItem, NDataProvider } from '@/interfaces';
+import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
 import { Button, Space, Switch } from 'antd';
 import { ColumnsType } from 'antd/es/table';
-import dayjs from 'dayjs';
 import { FC, useState } from 'react';
 
 const DataProviderItemPage: FC = () => {
@@ -66,10 +66,7 @@ const DataProviderItemPage: FC = () => {
             key: 'lastScrapedTimestamp',
             width: '30%',
             sorter: true,
-            render: (lastScrapedTimestamp: Date) =>
-                lastScrapedTimestamp
-                    ? dayjs(lastScrapedTimestamp).format('DD/MM/YYYY HH:mm:ss')
-                    : '---',
+            render: (lastScrapedTimestamp: Date) => formatDate(lastScrapedTimestamp),
         },
         {
             title: 'Trạng thái',

@@ -7,4 +7,5 @@ export * from './data-provider';
 export * from './google';
 export * from './import-data';
 export * from './schedule';
+export * from './simulation';
 export * from './user';

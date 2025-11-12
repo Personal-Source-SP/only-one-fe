@@ -2,9 +2,10 @@
 
 import { CustomModal } from '@/components/custom';
 import { useMainContext } from '@/contexts/MainContext';
-import { MimeType, GoogleDriveType } from '@/enums';
+import { GoogleDriveType, MimeType } from '@/enums';
 import { useCustomMutationData } from '@/hooks';
 import { NGoogle, Option } from '@/interfaces';
+import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
 import {
     Button,
@@ -26,7 +27,6 @@ import {
     Table,
 } from 'antd';
 import { ColumnType, TableProps } from 'antd/es/table';
-import dayjs from 'dayjs';
 import { FC, memo, useEffect, useState, type Key } from 'react';
 
 const StepEnum = {
@@ -129,8 +129,7 @@ const SyncLocal: FC<SyncLocalProps> = ({
             dataIndex: 'lastModified',
             ellipsis: true,
             width: '15%',
-            render: (lastModified?: Date) =>
-                lastModified ? dayjs(lastModified).format('DD/MM/YYYY HH:mm:ss') : '---',
+            render: (lastModified?: Date) => formatDate(lastModified),
             sorter: (a, b) =>
                 (a.lastModified ? new Date(a.lastModified as unknown as string).getTime() : 0) -
                 (b.lastModified ? new Date(b.lastModified as unknown as string).getTime() : 0),

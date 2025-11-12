@@ -1,8 +1,8 @@
 'use client';
 
+import { StatusTag } from '@/components/common';
 import { CustomFormModal, CustomSelect, CustomSwitch } from '@/components/custom';
 import CodeDisplay from '@/components/module/code-display';
-import DisplayDataProviderStatus from '@/components/module/data-provider/DisplayDataProviderStatus';
 import {
     DEFAULT_API_FUNCTION_GENERATOR,
     DEFAULT_HTML_CONTENT_STRING,
@@ -272,7 +272,7 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
                 <Space size={0}>
                     <span className="mr-1">Cấu hình dữ liệu</span>
                     <span className="mr-2">{`for ${dataProvider.name || dataProvider.baseUrl}`}</span>
-                    <DisplayDataProviderStatus status={dataProvider?.status} />
+                    <StatusTag status={dataProvider?.status} />
                 </Space>
             </Flex>
         );

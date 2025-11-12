@@ -7,10 +7,10 @@ import { useMainContext } from '@/contexts/MainContext';
 import { CustomFilterType, DisplayMode, ElementType, ViewPhotoMode } from '@/enums';
 import { useCustomDelete, useCustomModal, useSelectDataProvider, useTableContainer } from '@/hooks';
 import { ActionTableItem, FilterItem, NBaseApi, NDataProvider, PhotoItem } from '@/interfaces';
+import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
 import { Button, Flex, Space, Switch } from 'antd';
 import { ColumnsType } from 'antd/es/table';
-import dayjs from 'dayjs';
 import Link from 'next/link';
 import { FC, useMemo, useState } from 'react';
 
@@ -171,8 +171,7 @@ const DataHistoryPage: FC = () => {
             key: 'lastModified',
             sorter: true,
             width: '20%',
-            render: (lastModified: Date) =>
-                lastModified ? dayjs(lastModified).format('DD/MM/YYYY HH:mm:ss') : '---',
+            render: (lastModified: Date) => formatDate(lastModified),
         },
         {
             title: 'URL',

@@ -2,7 +2,7 @@ import { CustomFilterType } from '@/enums';
 import { CrudOperators } from '@refinedev/core';
 
 export interface Abstract {
-    id?: string;
+    id: string;
     createdAt?: Date;
     createdBy?: string | null;
     updatedBy?: string | null;

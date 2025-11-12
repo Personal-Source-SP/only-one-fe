@@ -119,6 +119,17 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
         ],
     },
     {
+        label: 'Mô phỏng',
+        icon: 'noto:globe-with-meridians',
+        children: [
+            {
+                href: '/simulation/contexts',
+                label: 'Danh sách ngữ cảnh',
+                icon: 'mdi:format-list-bulleted',
+            },
+        ],
+    },
+    {
         label: 'Quản lý',
         icon: 'flat-color-icons:settings',
         children: [
@@ -131,7 +142,7 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
     },
 ];
 
-export const DATE_FORMAT = 'DD/MM/YYYY';
+export const DATE_FORMAT_SHORT = 'DD/MM/YYYY';
 export const DATE_FORMAT_TIME = 'DD/MM/YYYY HH:mm:ss';
 
 export const AUTH_PUBLIC_PAGES = ['/login', '/register', '/forget-password'];
