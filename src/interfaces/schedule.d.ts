@@ -1,4 +1,9 @@
-import { ScheduleJobEventType, ScheduleJobTriggerType, ScheduleType } from '@/enums';
+import {
+    ExecutionServiceEnum,
+    ScheduleJobEventType,
+    ScheduleJobTriggerType,
+    ScheduleType,
+} from '@/enums';
 import { Abstract } from '@/interfaces/common';
 
 export declare namespace NSchedule {
@@ -17,6 +22,7 @@ export declare namespace NSchedule {
     interface IScheduleJob extends Abstract {
         scheduleId: string;
         scheduleType: ScheduleType;
+        executionService: ExecutionServiceEnum;
         triggerType: ScheduleJobTriggerType;
         status: ScheduleJobType;
         jobPayload: Record<string, any>;
@@ -33,6 +39,7 @@ export declare namespace NSchedule {
 
     interface ISchedule extends Abstract {
         type: ScheduleType;
+        executionService: ExecutionServiceEnum;
         cronExpression: string;
         enabled: boolean;
         minScrapeIntervalMinutes: number;

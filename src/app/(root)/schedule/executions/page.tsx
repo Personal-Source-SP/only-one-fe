@@ -1,8 +1,9 @@
 'use client';
 
+import { StatusTag } from '@/components/common';
 import { CreateFormModal, CustomElement, EditFormModal, TableContainer } from '@/components/custom';
 import { NextRunTimes, ViewScheduleJobList } from '@/components/module/schedule';
-import { CronExpression, ElementType, ScheduleType } from '@/enums';
+import { CronExpression, ElementType, ExecutionServiceEnum, ScheduleType } from '@/enums';
 import {
     useCustomMutationData,
     useSelectDataProvider,
@@ -58,21 +59,22 @@ const ScheduleExecutionPage: FC = () => {
             render: (_: any, __: any, index: number) => index + 1,
         },
         {
+            title: 'Loại dịch vụ',
+            dataIndex: 'executionService',
+            key: 'executionService',
+            width: 150,
+            ellipsis: true,
+            render: (executionService: ExecutionServiceEnum) => (
+                <StatusTag status={executionService} />
+            ),
+        },
+        {
             title: 'Loại lịch biểu',
             dataIndex: 'type',
             key: 'type',
             width: 150,
             ellipsis: true,
-            render: (type: ScheduleType) => {
-                switch (type) {
-                    case ScheduleType.DATA_PROVIDER:
-                        return 'Nhà cung cấp';
-                    case ScheduleType.ITEM:
-                        return 'Đối tượng';
-                    default:
-                        return 'Toàn bộ';
-                }
-            },
+            render: (type: ScheduleType) => <StatusTag status={type} />,
         },
         {
             title: 'Lịch biểu cron',
@@ -87,7 +89,7 @@ const ScheduleExecutionPage: FC = () => {
             title: 'Chạy gần nhất',
             dataIndex: 'nextRunAt',
             key: 'nextRunAt',
-            width: 300,
+            width: 400,
             sorter: true,
             render: (nextRunAt: Date) => formatDate(nextRunAt),
         },
@@ -95,7 +97,7 @@ const ScheduleExecutionPage: FC = () => {
             title: 'Chạy cuối cùng',
             dataIndex: 'lastRunAt',
             key: 'lastRunAt',
-            width: 300,
+            width: 400,
             sorter: true,
             render: (lastRunAt: Date) => formatDate(lastRunAt),
         },
@@ -124,6 +126,19 @@ const ScheduleExecutionPage: FC = () => {
     ];
 
     const formFields: FormFieldItem[] = [
+        {
+            type: 'select',
+            disabled: true,
+            label: 'Loại dịch vụ',
+            name: 'executionService',
+            rules: [{ required: true, message: 'Vui lòng chọn dịch vụ thực thi' }],
+            options: [
+                {
+                    label: 'Nhà cung cấp',
+                    value: ExecutionServiceEnum.DATA_PROVIDER,
+                },
+            ],
+        },
         {
             name: 'type',
             type: 'select',
@@ -334,6 +349,7 @@ const ScheduleExecutionPage: FC = () => {
                     enabled: true,
                     type: ScheduleType.GLOBAL,
                     minScrapeIntervalMinutes: 3,
+                    executionService: ExecutionServiceEnum.DATA_PROVIDER,
                     cronExpression: CronExpression['MỖI NGÀY LÚC 8 GIỜ TỐI'],
                 }}
                 onClose={() => {

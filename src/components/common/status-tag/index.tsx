@@ -57,7 +57,7 @@ const textStatusMap: Record<string, string> = {
 
     ['global']: 'Lịch biểu toàn cục',
     ['item']: 'Lịch biểu item',
-    ['data_provider']: 'Lịch biểu data provider',
+    ['data_provider']: 'Nhà cung cấp',
 
     ['cron']: 'Tự động',
     ['manual']: 'Thủ công',

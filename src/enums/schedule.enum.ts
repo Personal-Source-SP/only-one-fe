@@ -22,3 +22,7 @@ export enum ScheduleJobEventType {
     COMPLETED = 'completed',
     FAILED = 'failed',
 }
+
+export enum ExecutionServiceEnum {
+    DATA_PROVIDER = 'data_provider',
+}
