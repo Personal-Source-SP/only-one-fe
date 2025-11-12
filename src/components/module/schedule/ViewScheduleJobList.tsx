@@ -2,9 +2,9 @@
 
 import { StatusTag } from '@/components/common';
 import { CustomModal, TableContainer } from '@/components/custom';
-import { ScheduleJobTriggerType, ScheduleJobType, ScheduleType } from '@/enums';
+import { CustomFilterType, ScheduleJobTriggerType, ScheduleJobType, ScheduleType } from '@/enums';
 import { useTableContainer } from '@/hooks';
-import { NSchedule } from '@/interfaces';
+import { FilterItem, NSchedule } from '@/interfaces';
 import { formatDate } from '@/libs';
 import { ColumnsType } from 'antd/es/table';
 import { FC, memo } from 'react';
@@ -74,7 +74,6 @@ const ViewScheduleJobList: FC<ViewScheduleJobListProps> = ({ isOpen, scheduleId,
             dataIndex: 'errorMessage',
             key: 'errorMessage',
             width: 200,
-            sorter: true,
             render: (errorMessage: string) => errorMessage ?? '---',
         },
         {
@@ -107,6 +106,32 @@ const ViewScheduleJobList: FC<ViewScheduleJobListProps> = ({ isOpen, scheduleId,
         },
     ];
 
+    const customFilterItems: FilterItem[] = [
+        {
+            span: 12,
+            allowClear: true,
+            field: 'triggerType',
+            title: 'Loại trigger',
+            type: CustomFilterType.SELECT,
+            options: [
+                { label: 'Tự động', value: ScheduleJobTriggerType.CRON },
+                { label: 'Thủ công', value: ScheduleJobTriggerType.MANUAL },
+            ],
+        },
+        {
+            span: 12,
+            allowClear: true,
+            title: 'Loại lịch biểu',
+            field: 'scheduleType',
+            type: CustomFilterType.SELECT,
+            options: [
+                { label: 'Toàn bộ', value: ScheduleType.GLOBAL },
+                { label: 'Đối tượng', value: ScheduleType.ITEM },
+                { label: 'Nhà cung cấp', value: ScheduleType.DATA_PROVIDER },
+            ],
+        },
+    ];
+
     return (
         <CustomModal
             modalProps={{
@@ -120,9 +145,9 @@ const ViewScheduleJobList: FC<ViewScheduleJobListProps> = ({ isOpen, scheduleId,
         >
             <TableContainer
                 columns={columns}
+                customFilterItems={customFilterItems}
                 tableContainerData={tableContainerData}
                 loading={tableContainerData.tableQuery.isLoading}
-                filterSearch={{ placeholder: 'Tìm kiếm lịch biểu thực thi' }}
             />
         </CustomModal>
     );
