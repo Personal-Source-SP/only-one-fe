@@ -13,12 +13,14 @@ const CustomModal: FC<CustomModalProps> = ({ children, modalProps }) => {
 
     return (
         <Modal
+            forceRender
+            destroyOnHidden
             width={1200}
             footer={false}
             closable={false}
             style={{ top: 20 }}
+            getContainer={false}
             maskClosable={false}
-            destroyOnHidden={false}
             wrapClassName="fixed-modal"
             {...modalProps}
         >
