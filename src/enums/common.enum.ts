@@ -15,3 +15,10 @@ export enum DataImportType {
     DATA_PROVIDER = 'data-provider',
     DATA_PROVIDER_ITEM = 'data-provider-item',
 }
+
+export enum NotificationType {
+    INFO = 'info',
+    ERROR = 'error',
+    UPDATE = 'update',
+    WARNING = 'warning',
+}

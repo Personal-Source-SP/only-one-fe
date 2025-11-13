@@ -1,4 +1,4 @@
-import { CustomFilterType } from '@/enums';
+import { CustomFilterType, NotificationType } from '@/enums';
 import { CrudOperators } from '@refinedev/core';
 
 export interface Abstract {
@@ -83,3 +83,13 @@ export interface ErrorItem {
 }
 
 export type ApiError = string | ErrorItem | ErrorItem[];
+
+interface Notification extends Abstract {
+    title: string;
+    isRead: boolean;
+    type: NotificationType;
+    path?: string;
+    userId?: string;
+    description?: string;
+    data?: Record<string, any>;
+}

@@ -1,47 +1,90 @@
 'use client';
 
+import { NotificationType } from '@/enums';
+import { useTableContainer } from '@/hooks';
+import { Notification } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { Avatar, Button, Card, Space } from 'antd';
-import { FC, memo, useState } from 'react';
-
-interface Notification {
-    id: number;
-    time: string;
-    title: string;
-    read: boolean;
-    message: string;
-    type: 'share' | 'comment' | 'mention' | 'update';
-    user: {
-        name: string;
-        avatar: string;
-    };
-}
+import { FC, Fragment, memo, useMemo, useState } from 'react';
 
 type NotificationsPanelProps = {
     onClose: () => void;
     notifications: Notification[];
 };
 
+const getIcon = (type: NotificationType) => {
+    switch (type) {
+        case NotificationType.INFO:
+            return <Icon icon="lucide:share-2" className="text-primary" />;
+        case NotificationType.ERROR:
+            return <Icon icon="lucide:message-circle" className="text-success" />;
+        case NotificationType.WARNING:
+            return <Icon icon="lucide:at-sign" className="text-warning" />;
+        case NotificationType.UPDATE:
+            return <Icon icon="lucide:refresh-cw" className="text-secondary" />;
+        default:
+            return <Icon icon="lucide:bell" className="text-foreground-500" />;
+    }
+};
+
 const NotificationsPanel: FC<NotificationsPanelProps> = ({ notifications, onClose }) => {
     const [activeTab, setActiveTab] = useState<'all' | 'unread'>('all');
 
-    const filteredNotifications =
-        activeTab === 'all' ? notifications : notifications.filter((n) => !n.read);
+    const tableContainerData = useTableContainer({ resource: 'notifications' });
 
-    const getIcon = (type: string) => {
-        switch (type) {
-            case 'share':
-                return <Icon icon="lucide:share-2" className="text-primary" />;
-            case 'comment':
-                return <Icon icon="lucide:message-circle" className="text-success" />;
-            case 'mention':
-                return <Icon icon="lucide:at-sign" className="text-warning" />;
-            case 'update':
-                return <Icon icon="lucide:refresh-cw" className="text-secondary" />;
-            default:
-                return <Icon icon="lucide:bell" className="text-foreground-500" />;
-        }
+    const renderNotification = (notification: Notification) => {
+        return (
+            <div
+                key={notification.id}
+                className={`p-4 border-b border-divider hover:bg-content2 cursor-pointer ${
+                    !notification.isRead ? 'bg-primary-50' : ''
+                }`}
+            >
+                <div className="flex">
+                    <Avatar size={40} className="mr-3" src={notification.createdBy} />
+                    <div className="flex-1">
+                        <div className="flex justify-between items-start">
+                            <p className="font-medium">{notification.title}</p>
+                            <div className="flex items-center">
+                                <span className="text-xs text-foreground-500">
+                                    {notification.createdAt?.toLocaleString('vi-VN')}
+                                </span>
+                                {!notification.isRead && (
+                                    <div className="ml-2 w-2 h-2 rounded-full bg-primary"></div>
+                                )}
+                            </div>
+                        </div>
+                        <p className="text-sm text-foreground-600 mt-1">
+                            {notification.description}
+                        </p>
+                        <div className="mt-2 flex items-center">
+                            {getIcon(notification.type)}
+                            <span className="text-xs text-foreground-500 ml-1">
+                                {notification.type === NotificationType.INFO && 'Thông tin'}
+                                {notification.type === NotificationType.ERROR && 'Lỗi'}
+                                {notification.type === NotificationType.WARNING && 'Cảnh báo'}
+                                {notification.type === NotificationType.UPDATE && 'Cập nhật'}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
     };
+
+    const filterNotifications = useMemo(() => {
+        const notifications = tableContainerData.tableQuery.data?.data;
+
+        if (activeTab === 'all') {
+            return notifications;
+        }
+
+        if (activeTab === 'unread') {
+            return notifications.filter((n) => !n.isRead);
+        }
+
+        return [];
+    }, [activeTab, notifications]);
 
     return (
         <Space direction="vertical" className="fixed top-16 right-4 z-50 w-full max-w-sm">
@@ -60,16 +103,16 @@ const NotificationsPanel: FC<NotificationsPanelProps> = ({ notifications, onClos
                     <Button
                         size="small"
                         className="flex-1 rounded-r-none"
-                        type={activeTab === 'all' ? 'primary' : 'default'}
                         onClick={() => setActiveTab('all')}
+                        type={activeTab === 'all' ? 'primary' : 'default'}
                     >
                         Tất cả
                     </Button>
                     <Button
                         size="small"
                         className="flex-1 rounded-l-none"
-                        type={activeTab === 'unread' ? 'primary' : 'default'}
                         onClick={() => setActiveTab('unread')}
+                        type={activeTab === 'unread' ? 'primary' : 'default'}
                     >
                         Chưa đọc
                     </Button>
@@ -78,45 +121,9 @@ const NotificationsPanel: FC<NotificationsPanelProps> = ({ notifications, onClos
                 <div className="max-h-96 overflow-y-auto">
                     {filteredNotifications.length > 0 ? (
                         filteredNotifications.map((notification) => (
-                            <div
-                                key={notification.id}
-                                className={`p-4 border-b border-divider hover:bg-content2 cursor-pointer ${
-                                    !notification.read ? 'bg-primary-50' : ''
-                                }`}
-                            >
-                                <div className="flex">
-                                    <Avatar
-                                        size={40}
-                                        className="mr-3"
-                                        src={notification.user.avatar}
-                                    />
-                                    <div className="flex-1">
-                                        <div className="flex justify-between items-start">
-                                            <p className="font-medium">{notification.title}</p>
-                                            <div className="flex items-center">
-                                                <span className="text-xs text-foreground-500">
-                                                    {notification.time}
-                                                </span>
-                                                {!notification.read && (
-                                                    <div className="ml-2 w-2 h-2 rounded-full bg-primary"></div>
-                                                )}
-                                            </div>
-                                        </div>
-                                        <p className="text-sm text-foreground-600 mt-1">
-                                            {notification.message}
-                                        </p>
-                                        <div className="mt-2 flex items-center">
-                                            {getIcon(notification.type)}
-                                            <span className="text-xs text-foreground-500 ml-1">
-                                                {notification.type === 'share' && 'Chia sẻ'}
-                                                {notification.type === 'comment' && 'Bình luận'}
-                                                {notification.type === 'mention' && 'Nhắc đến bạn'}
-                                                {notification.type === 'update' && 'Cập nhật'}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            <Fragment key={notification.id}>
+                                {renderNotification(notification)}
+                            </Fragment>
                         ))
                     ) : (
                         <div className="p-8 text-center">
