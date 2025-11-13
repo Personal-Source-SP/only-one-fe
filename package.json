@@ -42,6 +42,7 @@
         "react-infinite-scroll-component": "^6.1.0",
         "react-photo-album": "^3.0.2",
         "recharts": "^2.15.3",
+        "socket.io-client": "^4.8.1",
         "yet-another-react-lightbox": "^3.21.4",
         "zustand": "^5.0.5"
     },

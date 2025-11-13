@@ -1,6 +1,6 @@
 'use client';
 
-import { inter } from '@/constants/font';
+import { inter } from '@/constants';
 import { useThemeStore } from '@/stores/useThemeStore';
 import { RefineThemes } from '@refinedev/antd';
 import { App as AntdApp, ConfigProvider, theme } from 'antd';

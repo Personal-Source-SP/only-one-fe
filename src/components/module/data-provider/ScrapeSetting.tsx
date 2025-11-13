@@ -7,7 +7,7 @@ import {
     DEFAULT_API_FUNCTION_GENERATOR,
     DEFAULT_HTML_CONTENT_STRING,
     DEFAULT_PARSER_FUNCTION_GENERATOR,
-} from '@/constants/data-provider';
+} from '@/constants';
 import { useMainContext } from '@/contexts/MainContext';
 import { DataProviderStatus, ScraperServiceEnum } from '@/enums';
 import { useCustomModal, useCustomMutationData } from '@/hooks';
