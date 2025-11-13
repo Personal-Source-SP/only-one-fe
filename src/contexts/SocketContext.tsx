@@ -9,6 +9,7 @@ import {
     useCallback,
     useContext,
     useEffect,
+    useRef,
     useState,
 } from 'react';
 import { Socket } from 'socket.io-client';
@@ -47,6 +48,9 @@ const SocketContext = createContext<SocketContextValue<unknown> | undefined>(und
 export const SocketProvider: FC<PropsWithChildren> = ({ children }) => {
     const notificationUrl = env('NEXT_PUBLIC_NOTIFICATION_URL') as string;
 
+    const prevEventsRef = useRef<string[]>([]);
+    const handlersRef = useRef<Record<string, (data: WebSocketMessage<any>) => void>>({});
+
     const { socket, isConnected, error } = useSocket({ url: notificationUrl });
 
     const [socketEvents, setSocketEvents] = useState<string[]>([]);
@@ -66,20 +70,35 @@ export const SocketProvider: FC<PropsWithChildren> = ({ children }) => {
     useEffect(() => {
         if (!socket || !isConnected) return;
 
-        const handlers = socketEvents.reduce(
-            (acc, eventName) => {
-                const handler = createMessageHandler(eventName);
-                acc[eventName] = handler;
-                socket.on(eventName, handler);
-                return acc;
-            },
-            {} as Record<string, (data: WebSocketMessage<any>) => void>,
-        );
+        const prevEvents = prevEventsRef.current;
+        const eventsToAdd = socketEvents.filter((event) => !prevEvents.includes(event));
+        const eventsToRemove = prevEvents.filter((event) => !socketEvents.includes(event));
+
+        eventsToAdd.forEach((eventName) => {
+            const handler = createMessageHandler(eventName);
+            handlersRef.current[eventName] = handler;
+            socket.on(eventName, handler);
+            console.log(`[Socket] Subscribed to: ${eventName}`);
+        });
+
+        eventsToRemove.forEach((eventName) => {
+            const handler = handlersRef.current[eventName];
+            if (handler) {
+                socket.off(eventName, handler);
+                delete handlersRef.current[eventName];
+                console.log(`[Socket] Unsubscribed from: ${eventName}`);
+            }
+        });
+
+        prevEventsRef.current = socketEvents;
 
         return () => {
-            Object.entries(handlers).forEach(([eventName, handler]) => {
+            Object.entries(handlersRef.current).forEach(([eventName, handler]) => {
                 socket.off(eventName, handler);
             });
+
+            handlersRef.current = {};
+            prevEventsRef.current = [];
         };
     }, [socket, isConnected, socketEvents, createMessageHandler]);
 
