@@ -194,13 +194,13 @@ const PhotoGroups: FC<PhotoGroupsProps> = ({
     );
 
     const renderPhotoTag = (photo: PhotoItem) => {
-        const timestamp = photo.createdAt ?? photo.lastModified;
+        const timestamp = photo.lastModified ?? photo.createdAt;
         if (!timestamp) return null;
 
-        const createdAt = dayjs(timestamp);
-        if (!createdAt.isValid()) return null;
+        const lastModified = dayjs(timestamp);
+        if (!lastModified.isValid()) return null;
 
-        const diffDays = dayjs().diff(createdAt, 'day');
+        const diffDays = dayjs().diff(lastModified, 'day');
         const label = diffDays < 1 ? 'Mới' : diffDays === 1 ? '1 ngày' : `${diffDays} ngày`;
         const color = diffDays < 1 ? 'red' : 'blue';
 

@@ -5,7 +5,13 @@ import { ProcessScrapeData } from '@/components/module/data-provider';
 import { PhotoGroups } from '@/components/module/photos';
 import { useMainContext } from '@/contexts/MainContext';
 import { CustomFilterType, DisplayMode, ElementType, ViewPhotoMode } from '@/enums';
-import { useCustomDelete, useCustomModal, useSelectDataProvider, useTableContainer } from '@/hooks';
+import {
+    useCustomDelete,
+    useCustomModal,
+    useSelectDataProvider,
+    useSelectItem,
+    useTableContainer,
+} from '@/hooks';
 import { ActionTableItem, FilterItem, NBaseApi, NDataProvider, PhotoItem } from '@/interfaces';
 import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
@@ -30,13 +36,15 @@ const DataHistoryPage: FC = () => {
 
     const tableContainerData = useTableContainer({
         resource: 'data-history',
+        defaultSorters: [{ field: 'lastModified', order: 'desc' }],
         defaultPagination: {
             pageSize: 30,
             mode: 'server',
         },
     });
 
-    const { options: dataProviders } = useSelectDataProvider();
+    const { options: itemOptions } = useSelectItem();
+    const { options: dataProviderOptions } = useSelectDataProvider();
 
     const { handleDelete } = useCustomDelete({
         resource: 'data-history',
@@ -79,7 +87,7 @@ const DataHistoryPage: FC = () => {
             mimeType: item.type ?? '',
             createdAt: item.createdAt ?? new Date(),
             folderName: item.dataProvider?.name ?? '',
-            lastModified: item.lastModified ?? new Date(),
+            lastModified: item.lastModified ?? item.createdAt ?? new Date(),
         }));
     }, [tableContainerData?.tableQuery?.data?.data]);
 
@@ -92,7 +100,15 @@ const DataHistoryPage: FC = () => {
                 showSearch: true,
                 allowClear: true,
                 type: CustomFilterType.SELECT,
-                options: dataProviders ?? [],
+                options: dataProviderOptions ?? [],
+            },
+            {
+                span: displayMode === DisplayMode.TABLE ? 6 : 4,
+                field: 'itemId',
+                title: 'Đối tượng',
+                showSearch: true,
+                type: CustomFilterType.SELECT,
+                options: itemOptions ?? [],
             },
             {
                 span: displayMode === DisplayMode.TABLE ? 6 : 4,
@@ -137,7 +153,7 @@ const DataHistoryPage: FC = () => {
         }
 
         return customFilterItems;
-    }, [columnDisplay, viewMode, displayMode, dataProviders]);
+    }, [columnDisplay, viewMode, displayMode, dataProviderOptions]);
 
     const columns: ColumnsType<NDataProvider.IDataHistory> = [
         {
@@ -261,7 +277,7 @@ const DataHistoryPage: FC = () => {
                 columns={displayMode === DisplayMode.TABLE ? columns : undefined}
                 filterSearch={{
                     placeholder: 'Tìm kiếm lịch sử dữ liệu',
-                    span: displayMode === DisplayMode.TABLE ? 12 : 10,
+                    span: displayMode === DisplayMode.TABLE ? 8 : 6,
                 }}
                 childrenTop={
                     displayMode === DisplayMode.LIST && (
