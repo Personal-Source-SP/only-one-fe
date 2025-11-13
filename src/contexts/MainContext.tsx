@@ -2,9 +2,10 @@
 
 import { Loading } from '@/components/common';
 import MainLayout from '@/components/layout';
+import { SocketProvider } from '@/contexts/SocketContext';
 import { message, notification } from 'antd';
 
-import { createContext, FC, PropsWithChildren, useContext, useState } from 'react';
+import { createContext, FC, Fragment, PropsWithChildren, useContext, useState } from 'react';
 
 type NotificationType = 'success' | 'info' | 'warning' | 'error';
 type MessageType = 'success' | 'error' | 'info' | 'warning' | 'loading';
@@ -118,7 +119,13 @@ export const MainProvider: FC<MainProviderProps> = ({ children, isPublic = false
             {/* Notification */}
             {notificationContextHolder}
 
-            {isPublic ? children : <MainLayout>{children}</MainLayout>}
+            {isPublic ? (
+                <Fragment>{children}</Fragment>
+            ) : (
+                <SocketProvider>
+                    <MainLayout>{children}</MainLayout>
+                </SocketProvider>
+            )}
         </MainContext.Provider>
     );
 };
