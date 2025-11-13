@@ -91,8 +91,8 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
                 icon: 'noto:page-facing-up',
             },
             {
-                href: '/scraping/data-history',
-                label: 'Lịch sử dữ liệu',
+                href: '/scraping/scraping-data',
+                label: 'Dữ liệu cào',
                 icon: 'noto:file-folder',
             },
         ],
@@ -138,7 +138,7 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
 ];
 
 export const DATE_FORMAT_SHORT = 'DD/MM/YYYY';
-export const DATE_FORMAT_TIME = 'HH:mm:ss DD/MM/YYYY';
+export const DATE_FORMAT_TIME = 'DD/MM/YYYY HH:mm:ss';
 
 export const AUTH_PUBLIC_PAGES = ['/login', '/register', '/forget-password'];
 

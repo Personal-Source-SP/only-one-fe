@@ -2,14 +2,14 @@
 
 import { CreateFormModal, CustomElement, EditFormModal, TableContainer } from '@/components/custom';
 import { ProcessScrapeData } from '@/components/module/data-provider';
-import { DataProviderStatus, ElementType } from '@/enums';
+import { CustomFilterType, DataProviderStatus, ElementType } from '@/enums';
 import {
     useCustomMutationData,
     useSelectDataProvider,
     useSelectItem,
     useTableContainer,
 } from '@/hooks';
-import { ActionTableItem, FormFieldItem, NDataProvider } from '@/interfaces';
+import { ActionTableItem, FilterItem, FormFieldItem, NDataProvider } from '@/interfaces';
 import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
 import { Button, Space, Switch } from 'antd';
@@ -26,6 +26,7 @@ const DataProviderItemPage: FC = () => {
 
     const { options: itemOptions } = useSelectItem();
     const { options: dataProviderOptions, query: dataProviderQuery } = useSelectDataProvider();
+
     const { handleCustomMutationData: handleUpdate } = useCustomMutationData();
 
     const tableContainerData = useTableContainer({
@@ -34,46 +35,57 @@ const DataProviderItemPage: FC = () => {
 
     const columns: ColumnsType<NDataProvider.IDataProviderItem> = [
         {
-            title: 'Tên đối tượng',
-            dataIndex: 'item',
-            key: 'item',
-            width: '20%',
-            ellipsis: true,
-            sorter: true,
-            render: (item: NDataProvider.IItem) => item?.name ?? '---',
+            title: 'STT',
+            key: 'index',
+            dataIndex: 'index',
+            align: 'center',
+            width: 50,
+            render: (_: any, __: any, index: number) => index + 1,
         },
         {
-            title: 'Tên nhà cung cấp',
-            dataIndex: 'dataProvider',
-            key: 'dataProvider',
-            width: '20%',
+            title: 'Tên đối tượng / Nhà cung cấp / URL đối tượng',
+            dataIndex: 'itemAndProviderAndUrl',
+            key: 'itemAndProviderAndUrl',
             ellipsis: true,
-            sorter: true,
-            render: (dataProvider: NDataProvider.IDataProvider) => dataProvider?.name ?? '---',
+            width: 200,
+            render: (_: any, record: NDataProvider.IDataProviderItem) => {
+                return (
+                    <div className="text-sm">
+                        <p>
+                            <strong>Nhà cung cấp:</strong> {record?.dataProvider?.name ?? '---'}
+                        </p>
+                        <p>
+                            <strong>URL đối tượng:</strong> {record?.itemUrl ?? '---'}
+                        </p>
+                        <p>
+                            <strong>Đối tượng:</strong> {record?.item?.name ?? '---'}
+                        </p>
+                    </div>
+                );
+            },
         },
         {
-            title: 'URL đối tượng',
-            dataIndex: 'itemUrl',
-            key: 'itemUrl',
-            width: '20%',
-            ellipsis: true,
-            sorter: true,
-            render: (itemUrl: string) => itemUrl ?? '---',
-        },
-        {
-            title: 'Ngày scrape gần nhất',
+            title: 'Ngày cào gần nhất',
             dataIndex: 'lastScrapedTimestamp',
             key: 'lastScrapedTimestamp',
-            width: '30%',
             sorter: true,
+            width: 150,
             render: (lastScrapedTimestamp: Date) => formatDate(lastScrapedTimestamp),
+        },
+        {
+            title: 'Ngày tạo',
+            dataIndex: 'createdAt',
+            key: 'createdAt',
+            sorter: true,
+            width: 150,
+            render: (createdAt: Date) => formatDate(createdAt),
         },
         {
             title: 'Trạng thái',
             dataIndex: 'isActive',
             key: 'isActive',
-            width: '10%',
             align: 'center',
+            width: 100,
             render: (isActive: boolean, record: NDataProvider.IDataProviderItem) => (
                 <Switch
                     size="small"
@@ -134,6 +146,27 @@ const DataProviderItemPage: FC = () => {
             label: 'Chỉnh sửa',
             icon: <Icon icon="lucide:edit" />,
             onClick: (record) => setEditItemId(record?.id),
+        },
+    ];
+
+    const customFilterItems: FilterItem[] = [
+        {
+            span: 6,
+            operation: 'in',
+            mode: 'multiple',
+            title: 'Nhà cung cấp',
+            field: 'dataProviderId',
+            type: CustomFilterType.SELECT,
+            options: dataProviderOptions ?? [],
+        },
+        {
+            span: 6,
+            operation: 'in',
+            field: 'itemId',
+            mode: 'multiple',
+            title: 'Đối tượng',
+            type: CustomFilterType.SELECT,
+            options: itemOptions ?? [],
         },
     ];
 
@@ -204,8 +237,9 @@ const DataProviderItemPage: FC = () => {
                 columns={columns}
                 actionItems={actionItems}
                 resource="data-provider-items"
+                customFilterItems={customFilterItems}
                 tableContainerData={tableContainerData}
-                filterSearch={{ placeholder: 'Tìm kiếm đối tượng nhà cung cấp' }}
+                filterSearch={{ placeholder: 'Tìm kiếm đối tượng nhà cung cấp', span: 12 }}
                 onRowSelectionChange={(selectedRows: NDataProvider.IDataProviderItem[]) => {
                     const dataProviderItemsIds = selectedRows
                         ?.filter((item) => item.dataProvider?.status === DataProviderStatus.READY)

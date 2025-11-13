@@ -50,6 +50,7 @@ const CustomFilter: FC<CustomFilterProps> = ({ filters }) => {
                         <Select
                             mode={mode}
                             value={value}
+                            maxTagCount={1}
                             options={options}
                             placeholder={placeholder}
                             showSearch={showSearch ?? false}

@@ -86,8 +86,10 @@ export declare namespace NDataProvider {
         dataProvider: IDataProvider;
     }
 
-    interface IDataHistory extends Abstract {
+    interface IScrapingData extends Abstract {
+        dataProviderId: string;
         dataProviderItemId: string;
+        itemId: string;
         scrapeTimestamp: Date;
         dataId?: string;
         type?: string;
@@ -96,6 +98,7 @@ export declare namespace NDataProvider {
         metadata?: Record<string, any>;
         dataProvider?: IDataProvider;
         dataProviderItem?: IDataProviderItem;
+        item?: IItem;
     }
 
     interface IScrapeDataResponse {

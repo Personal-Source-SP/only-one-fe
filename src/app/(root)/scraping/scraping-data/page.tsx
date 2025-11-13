@@ -20,7 +20,7 @@ import { ColumnsType } from 'antd/es/table';
 import Link from 'next/link';
 import { FC, useMemo, useState } from 'react';
 
-const DataHistoryPage: FC = () => {
+const ScrapingDataPage: FC = () => {
     const { handleMessage } = useMainContext();
 
     const [openProcessScrapeDataModal, setOpenProcessScrapeDataModal] = useState(false);
@@ -35,7 +35,7 @@ const DataHistoryPage: FC = () => {
     const [selectedDataProviderIds, setSelectedDataProviderIds] = useState<string[]>([]);
 
     const tableContainerData = useTableContainer({
-        resource: 'data-history',
+        resource: 'scraping-data',
         defaultSorters: [{ field: 'lastModified', order: 'desc' }],
         defaultPagination: {
             pageSize: 30,
@@ -47,7 +47,7 @@ const DataHistoryPage: FC = () => {
     const { options: dataProviderOptions } = useSelectDataProvider();
 
     const { handleDelete } = useCustomDelete({
-        resource: 'data-history',
+        resource: 'scraping-data',
         errorNotification: (error: any) => ({
             type: 'error',
             message: error?.message || 'Xóa dữ liệu không thành công',
@@ -74,14 +74,14 @@ const DataHistoryPage: FC = () => {
 
     const modalPropsData = useCustomModal({
         action: 'edit',
-        resource: 'data-history',
+        resource: 'scraping-data',
     });
 
     const photoItems: PhotoItem[] = useMemo(() => {
-        const dataHistories = tableContainerData?.tableQuery?.data?.data ?? [];
-        if (!dataHistories?.length) return [];
+        const scrapingDatas = tableContainerData?.tableQuery?.data?.data ?? [];
+        if (!scrapingDatas?.length) return [];
 
-        return dataHistories?.map((item: NDataProvider.IDataHistory) => ({
+        return scrapingDatas?.map((item: NDataProvider.IScrapingData) => ({
             id: item.id ?? '',
             url: item.url ?? '',
             mimeType: item.type ?? '',
@@ -155,14 +155,14 @@ const DataHistoryPage: FC = () => {
         return customFilterItems;
     }, [columnDisplay, viewMode, displayMode, dataProviderOptions]);
 
-    const columns: ColumnsType<NDataProvider.IDataHistory> = [
+    const columns: ColumnsType<NDataProvider.IScrapingData> = [
         {
-            title: 'Nhà cung cấp',
-            dataIndex: 'dataProvider',
-            key: 'dataProvider',
+            title: 'Đối tượng',
+            dataIndex: 'item',
+            key: 'item',
             ellipsis: true,
             width: '25%',
-            render: (dataProvider: NDataProvider.IDataProvider) => dataProvider?.name ?? '---',
+            render: (item: NDataProvider.IItem) => item?.name ?? '---',
         },
         {
             title: 'ID dữ liệu',
@@ -214,12 +214,12 @@ const DataHistoryPage: FC = () => {
             key: 'edit',
             label: 'Chỉnh sửa',
             icon: <Icon icon="lucide:edit" />,
-            onClick: (record: NDataProvider.IDataHistory) => modalPropsData?.show?.(record?.id),
+            onClick: (record: NDataProvider.IScrapingData) => modalPropsData?.show?.(record?.id),
         },
     ];
 
-    const handlePhotoClick = (dataHistoryId: string) => {
-        const index = photoItems?.findIndex((photo) => photo.id === dataHistoryId);
+    const handlePhotoClick = (scrapingDataId: string) => {
+        const index = photoItems?.findIndex((photo) => photo.id === scrapingDataId);
         if (index !== undefined) {
             setIsLightboxOpen(true);
             setCurrentPhotoIndex(index);
@@ -229,7 +229,7 @@ const DataHistoryPage: FC = () => {
     return (
         <Space size="middle" direction="vertical" className="w-full h-full">
             <CustomElement
-                title="Danh sách lịch sử dữ liệu"
+                title="Danh sách dữ liệu cào"
                 elementType={ElementType.TITLE}
                 actions={[
                     <Button
@@ -270,7 +270,7 @@ const DataHistoryPage: FC = () => {
             />
 
             <TableContainer
-                resource="data-history"
+                resource="scraping-data"
                 actionItems={actionItems}
                 customFilterItems={customFilterItems}
                 tableContainerData={tableContainerData}
@@ -317,4 +317,4 @@ const DataHistoryPage: FC = () => {
     );
 };
 
-export default DataHistoryPage;
+export default ScrapingDataPage;

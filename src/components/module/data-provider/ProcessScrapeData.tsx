@@ -158,7 +158,7 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({
                     ...values,
                     lastSuccessfulScrapeAt: dateRanges?.[1],
                 },
-                url: 'data-history/process-scrape-data',
+                url: 'scraping-data/process-scrape-data',
                 successNotification(data) {
                     const response =
                         data?.data as NBaseApi.IResponse<NDataProvider.IScrapeDataResponse>;

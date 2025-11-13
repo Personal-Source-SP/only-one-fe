@@ -1,7 +1,7 @@
 import { NBaseApi } from '@/interfaces';
 import { OpenNotificationParams, useApiUrl, useCustomMutation } from '@refinedev/core';
 
-interface IUseDeleteDataHistoryProps {
+interface IUseDeleteScrapingDataProps {
     resource?: string;
     errorNotification?:
         | OpenNotificationParams
@@ -21,7 +21,7 @@ interface IUseDeleteDataHistoryProps {
           ) => OpenNotificationParams | false | undefined);
 }
 
-export const useCustomDelete = (props: IUseDeleteDataHistoryProps) => {
+export const useCustomDelete = (props: IUseDeleteScrapingDataProps) => {
     const apiUrl = useApiUrl();
 
     const { mutate } = useCustomMutation<NBaseApi.IResponse<boolean>>();
