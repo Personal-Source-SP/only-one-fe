@@ -1,6 +1,6 @@
 'use client';
 
-import { useSocket } from '@/hooks/useSocket';
+import { useSocket } from '@/hooks';
 import { env } from 'next-runtime-env';
 import {
     createContext,
