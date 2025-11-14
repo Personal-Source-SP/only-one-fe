@@ -1,6 +1,6 @@
 'use client';
 
-import { NotificationType } from '@/enums';
+import { NotificationTab, NotificationType } from '@/enums';
 import { useTableContainer } from '@/hooks';
 import { Notification } from '@/interfaces';
 import { Icon } from '@iconify/react';
@@ -9,7 +9,6 @@ import { FC, Fragment, memo, useMemo, useState } from 'react';
 
 type NotificationsPanelProps = {
     onClose: () => void;
-    notifications: Notification[];
 };
 
 const getIcon = (type: NotificationType) => {
@@ -27,64 +26,62 @@ const getIcon = (type: NotificationType) => {
     }
 };
 
-const NotificationsPanel: FC<NotificationsPanelProps> = ({ notifications, onClose }) => {
-    const [activeTab, setActiveTab] = useState<'all' | 'unread'>('all');
-
-    const tableContainerData = useTableContainer({ resource: 'notifications' });
-
-    const renderNotification = (notification: Notification) => {
-        return (
-            <div
-                key={notification.id}
-                className={`p-4 border-b border-divider hover:bg-content2 cursor-pointer ${
-                    !notification.isRead ? 'bg-primary-50' : ''
-                }`}
-            >
-                <div className="flex">
-                    <Avatar size={40} className="mr-3" src={notification.createdBy} />
-                    <div className="flex-1">
-                        <div className="flex justify-between items-start">
-                            <p className="font-medium">{notification.title}</p>
-                            <div className="flex items-center">
-                                <span className="text-xs text-foreground-500">
-                                    {notification.createdAt?.toLocaleString('vi-VN')}
-                                </span>
-                                {!notification.isRead && (
-                                    <div className="ml-2 w-2 h-2 rounded-full bg-primary"></div>
-                                )}
-                            </div>
-                        </div>
-                        <p className="text-sm text-foreground-600 mt-1">
-                            {notification.description}
-                        </p>
-                        <div className="mt-2 flex items-center">
-                            {getIcon(notification.type)}
-                            <span className="text-xs text-foreground-500 ml-1">
-                                {notification.type === NotificationType.INFO && 'Thông tin'}
-                                {notification.type === NotificationType.ERROR && 'Lỗi'}
-                                {notification.type === NotificationType.WARNING && 'Cảnh báo'}
-                                {notification.type === NotificationType.UPDATE && 'Cập nhật'}
+const renderNotification = (notification: Notification) => {
+    return (
+        <div
+            key={notification.id}
+            className={`p-4 border-b border-divider hover:bg-content2 cursor-pointer ${
+                !notification.isRead ? 'bg-primary-50' : ''
+            }`}
+        >
+            <div className="flex">
+                <Avatar size={40} className="mr-3" src={notification.createdBy} />
+                <div className="flex-1">
+                    <div className="flex justify-between items-start">
+                        <p className="font-medium">{notification.title}</p>
+                        <div className="flex items-center">
+                            <span className="text-xs text-foreground-500">
+                                {notification.createdAt?.toLocaleString('vi-VN')}
                             </span>
+                            {!notification.isRead && (
+                                <div className="ml-2 w-2 h-2 rounded-full bg-primary"></div>
+                            )}
                         </div>
+                    </div>
+                    <p className="text-sm text-foreground-600 mt-1">{notification.description}</p>
+                    <div className="mt-2 flex items-center">
+                        {getIcon(notification.type)}
+                        <span className="text-xs text-foreground-500 ml-1">
+                            {notification.type === NotificationType.INFO && 'Thông tin'}
+                            {notification.type === NotificationType.ERROR && 'Lỗi'}
+                            {notification.type === NotificationType.WARNING && 'Cảnh báo'}
+                            {notification.type === NotificationType.UPDATE && 'Cập nhật'}
+                        </span>
                     </div>
                 </div>
             </div>
-        );
-    };
+        </div>
+    );
+};
+
+const NotificationsPanel: FC<NotificationsPanelProps> = ({ onClose }) => {
+    const [activeTab, setActiveTab] = useState<NotificationTab>(NotificationTab.ALL);
+
+    const tableContainerData = useTableContainer({ resource: 'notifications' });
 
     const filterNotifications = useMemo(() => {
-        const notifications = tableContainerData.tableQuery.data?.data;
+        const notifications = tableContainerData.tableQuery?.data?.data as Notification[];
+        if (!notifications) return [];
 
-        if (activeTab === 'all') {
-            return notifications;
+        switch (activeTab) {
+            case NotificationTab.ALL:
+                return notifications;
+            case NotificationTab.UNREAD:
+                return notifications.filter((n) => !n.isRead);
+            default:
+                return [];
         }
-
-        if (activeTab === 'unread') {
-            return notifications.filter((n) => !n.isRead);
-        }
-
-        return [];
-    }, [activeTab, notifications]);
+    }, [activeTab, tableContainerData.tableQuery?.data?.data]);
 
     return (
         <Space direction="vertical" className="fixed top-16 right-4 z-50 w-full max-w-sm">
@@ -103,24 +100,24 @@ const NotificationsPanel: FC<NotificationsPanelProps> = ({ notifications, onClos
                     <Button
                         size="small"
                         className="flex-1 rounded-r-none"
-                        onClick={() => setActiveTab('all')}
-                        type={activeTab === 'all' ? 'primary' : 'default'}
+                        onClick={() => setActiveTab(NotificationTab.ALL)}
+                        type={activeTab === NotificationTab.ALL ? 'primary' : 'default'}
                     >
                         Tất cả
                     </Button>
                     <Button
                         size="small"
                         className="flex-1 rounded-l-none"
-                        onClick={() => setActiveTab('unread')}
-                        type={activeTab === 'unread' ? 'primary' : 'default'}
+                        onClick={() => setActiveTab(NotificationTab.UNREAD)}
+                        type={activeTab === NotificationTab.UNREAD ? 'primary' : 'default'}
                     >
                         Chưa đọc
                     </Button>
                 </div>
 
                 <div className="max-h-96 overflow-y-auto">
-                    {filteredNotifications.length > 0 ? (
-                        filteredNotifications.map((notification) => (
+                    {filterNotifications.length > 0 ? (
+                        filterNotifications.map((notification) => (
                             <Fragment key={notification.id}>
                                 {renderNotification(notification)}
                             </Fragment>

@@ -22,3 +22,8 @@ export enum NotificationType {
     UPDATE = 'update',
     WARNING = 'warning',
 }
+
+export enum NotificationTab {
+    ALL = 'all',
+    UNREAD = 'unread',
+}

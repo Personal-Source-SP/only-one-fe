@@ -7,9 +7,11 @@ import NotificationsPanel from '@/components/layout/notifications-panel';
 import Search from '@/components/layout/search';
 import Sidebar from '@/components/layout/sidebar';
 
+import { SIDEBAR_ITEMS } from '@/constants/common.constant';
 import { useMainContext } from '@/contexts/MainContext';
 import { useCustomMutationData } from '@/hooks';
 import { useSearchParamsString } from '@/hooks/useSearchParamsString';
+import { SidebarItem } from '@/interfaces';
 import { exchangeCodeForTokens, getUserInfoFromGoogle } from '@/libs';
 
 import { Space } from 'antd';
@@ -20,72 +22,21 @@ type MainLayoutProps = {
     children: ReactNode;
 };
 
-const notifications = [
-    {
-        id: 1,
-        type: 'share',
-        title: 'Hương Trần đã chia sẻ một tệp với bạn',
-        message: 'Báo cáo doanh thu Q2 2023.xlsx',
-        time: '5 phút trước',
-        read: false,
-        user: {
-            name: 'Hương Trần',
-            avatar: 'https://img.heroui.chat/image/avatar?w=200&h=200&u=2',
-        },
-    },
-    {
-        id: 2,
-        type: 'comment',
-        title: 'Tuấn Nguyễn đã bình luận về tài liệu của bạn',
-        message: 'Tôi đã xem qua và có một vài ý kiến...',
-        time: '30 phút trước',
-        read: false,
-        user: {
-            name: 'Tuấn Nguyễn',
-            avatar: 'https://img.heroui.chat/image/avatar?w=200&h=200&u=3',
-        },
-    },
-    {
-        id: 3,
-        type: 'mention',
-        title: 'Linh Đỗ đã nhắc đến bạn trong một bình luận',
-        message: '@Minh Nguyễn bạn có thể kiểm tra lại số liệu này không?',
-        time: '2 giờ trước',
-        read: true,
-        user: {
-            name: 'Linh Đỗ',
-            avatar: 'https://img.heroui.chat/image/avatar?w=200&h=200&u=4',
-        },
-    },
-    {
-        id: 4,
-        type: 'update',
-        title: 'Cập nhật hệ thống',
-        message: 'Google Hub đã được cập nhật lên phiên bản mới nhất.',
-        time: '1 ngày trước',
-        read: true,
-        user: {
-            name: 'Hệ thống',
-            avatar: 'https://img.heroui.chat/image/avatar?w=200&h=200&u=10',
-        },
-    },
-];
+const getPageTitle = (pathname: string, items?: SidebarItem[]): string => {
+    for (const item of items || SIDEBAR_ITEMS) {
+        if (item.href === pathname) {
+            return item.label;
+        }
 
-const getPageTitle = (pathname: string) => {
-    switch (pathname) {
-        case '/':
-            return 'Bảng điều khiển';
-        case '/drive':
-            return 'Google Drive';
-        case '/photos':
-            return 'Google Photos';
-        case '/keep':
-            return 'Google Keep';
-        case '/users':
-            return 'Quản lý người dùng';
-        default:
-            return 'Google Hub';
+        if (item.children) {
+            const found = getPageTitle(pathname, item.children);
+            if (found) {
+                return found;
+            }
+        }
     }
+
+    return 'O-O Hub';
 };
 
 const MainLayout: FC<MainLayoutProps> = ({ children }) => {
@@ -230,10 +181,7 @@ const MainLayout: FC<MainLayoutProps> = ({ children }) => {
 
                 {/* Notifications Panel */}
                 {showNotifications && (
-                    <NotificationsPanel
-                        notifications={notifications as any}
-                        onClose={() => setShowNotifications(false)}
-                    />
+                    <NotificationsPanel onClose={() => setShowNotifications(false)} />
                 )}
 
                 {/* Mobile search bar */}

@@ -1,5 +1,5 @@
 import { useTable } from '@refinedev/antd';
-import { CrudFilter, CrudSort, HttpError, Pagination } from '@refinedev/core';
+import { CrudFilter, CrudSort, Pagination } from '@refinedev/core';
 
 export const useTableContainer = (props: {
     resource: string;
@@ -21,7 +21,7 @@ export const useTableContainer = (props: {
         setSorters,
         tableQuery,
         tableProps,
-    } = useTable<any, HttpError, Partial<any>>({
+    } = useTable({
         resource,
         syncWithLocation: false,
         pagination: defaultPagination
@@ -57,7 +57,7 @@ export const useTableContainer = (props: {
         setFilters,
         sorters,
         setSorters,
-        tableQuery,
         tableProps,
+        tableQuery,
     };
 };
