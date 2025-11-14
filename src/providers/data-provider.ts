@@ -48,9 +48,7 @@ const generateFilter = (filters?: CrudFilters): Record<string, string> => {
     const queryFilters: Record<string, string> = filters.reduce(
         (acc, filter) => {
             if (['or', 'and'].includes(filter.operator)) {
-                throw new Error(
-                    `[refine-simple-rest]: \`operator: ${filter.operator}\` is not supported. You can create custom data provider. https://refine.dev/docs/api-reference/core/providers/data-provider/#creating-a-data-provider`,
-                );
+                throw new Error(`\`operator: ${filter.operator}\` is not supported`);
             }
 
             if ('field' in filter) {

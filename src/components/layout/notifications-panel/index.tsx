@@ -3,27 +3,24 @@
 import { NotificationTab, NotificationType } from '@/enums';
 import { useTableContainer } from '@/hooks';
 import { Notification } from '@/interfaces';
+import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
+import { CrudFilter } from '@refinedev/core';
 import { Avatar, Button, Card, Space } from 'antd';
-import { FC, Fragment, memo, useMemo, useState } from 'react';
+import { FC, Fragment, memo, ReactNode, useEffect, useMemo, useState } from 'react';
 
-type NotificationsPanelProps = {
-    onClose: () => void;
+const notificationIcon: Record<NotificationType, ReactNode> = {
+    [NotificationType.INFO]: <Icon icon="lucide:share-2" className="text-primary" />,
+    [NotificationType.ERROR]: <Icon icon="lucide:message-circle" className="text-success" />,
+    [NotificationType.WARNING]: <Icon icon="lucide:at-sign" className="text-warning" />,
+    [NotificationType.UPDATE]: <Icon icon="lucide:refresh-cw" className="text-secondary" />,
 };
 
-const getIcon = (type: NotificationType) => {
-    switch (type) {
-        case NotificationType.INFO:
-            return <Icon icon="lucide:share-2" className="text-primary" />;
-        case NotificationType.ERROR:
-            return <Icon icon="lucide:message-circle" className="text-success" />;
-        case NotificationType.WARNING:
-            return <Icon icon="lucide:at-sign" className="text-warning" />;
-        case NotificationType.UPDATE:
-            return <Icon icon="lucide:refresh-cw" className="text-secondary" />;
-        default:
-            return <Icon icon="lucide:bell" className="text-foreground-500" />;
-    }
+const notificationText: Record<NotificationType, string> = {
+    [NotificationType.INFO]: 'Thông tin',
+    [NotificationType.ERROR]: 'Lỗi',
+    [NotificationType.WARNING]: 'Cảnh báo',
+    [NotificationType.UPDATE]: 'Cập nhật',
 };
 
 const renderNotification = (notification: Notification) => {
@@ -41,7 +38,7 @@ const renderNotification = (notification: Notification) => {
                         <p className="font-medium">{notification.title}</p>
                         <div className="flex items-center">
                             <span className="text-xs text-foreground-500">
-                                {notification.createdAt?.toLocaleString('vi-VN')}
+                                {formatDate(notification.createdAt)}
                             </span>
                             {!notification.isRead && (
                                 <div className="ml-2 w-2 h-2 rounded-full bg-primary"></div>
@@ -50,12 +47,9 @@ const renderNotification = (notification: Notification) => {
                     </div>
                     <p className="text-sm text-foreground-600 mt-1">{notification.description}</p>
                     <div className="mt-2 flex items-center">
-                        {getIcon(notification.type)}
+                        {notificationIcon[notification.type]}
                         <span className="text-xs text-foreground-500 ml-1">
-                            {notification.type === NotificationType.INFO && 'Thông tin'}
-                            {notification.type === NotificationType.ERROR && 'Lỗi'}
-                            {notification.type === NotificationType.WARNING && 'Cảnh báo'}
-                            {notification.type === NotificationType.UPDATE && 'Cập nhật'}
+                            {notificationText[notification.type]}
                         </span>
                     </div>
                 </div>
@@ -64,24 +58,38 @@ const renderNotification = (notification: Notification) => {
     );
 };
 
+type NotificationsPanelProps = {
+    onClose: () => void;
+};
+
 const NotificationsPanel: FC<NotificationsPanelProps> = ({ onClose }) => {
     const [activeTab, setActiveTab] = useState<NotificationTab>(NotificationTab.ALL);
 
-    const tableContainerData = useTableContainer({ resource: 'notifications' });
+    const tableContainerData = useTableContainer({
+        resource: 'notifications',
+    });
+
+    useEffect(() => {
+        const filter: CrudFilter[] = [];
+
+        if (activeTab === NotificationTab.UNREAD) {
+            filter.push({
+                field: 'isRead',
+                operator: 'eq',
+                value: false,
+            });
+        }
+
+        tableContainerData.setCurrentPage(1);
+        tableContainerData.setFilters(filter);
+    }, [activeTab]);
 
     const filterNotifications = useMemo(() => {
         const notifications = tableContainerData.tableQuery?.data?.data as Notification[];
         if (!notifications) return [];
 
-        switch (activeTab) {
-            case NotificationTab.ALL:
-                return notifications;
-            case NotificationTab.UNREAD:
-                return notifications.filter((n) => !n.isRead);
-            default:
-                return [];
-        }
-    }, [activeTab, tableContainerData.tableQuery?.data?.data]);
+        return notifications;
+    }, [tableContainerData.tableQuery?.data?.data]);
 
     return (
         <Space direction="vertical" className="fixed top-16 right-4 z-50 w-full max-w-sm">
