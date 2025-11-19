@@ -7,7 +7,7 @@ import { useCustomModal } from '@/hooks';
 import { FormFieldItem } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { Button, Col, Flex, Form, FormProps, Input, Row, Select, Space, Spin, Switch } from 'antd';
-import { FC, memo, ReactNode, useCallback, useEffect } from 'react';
+import { FC, ReactNode, useCallback, useEffect } from 'react';
 
 type CreateFormModalProps = {
     open: boolean;
@@ -221,4 +221,4 @@ const CreateFormModal: FC<CreateFormModalProps> = ({
     );
 };
 
-export default memo(CreateFormModal);
+export default CreateFormModal;

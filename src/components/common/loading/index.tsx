@@ -1,6 +1,6 @@
 import { Icon } from '@iconify/react';
 import { Space } from 'antd';
-import { FC, memo } from 'react';
+import { FC } from 'react';
 
 const Loading: FC = () => {
     return (
@@ -30,4 +30,4 @@ const Loading: FC = () => {
     );
 };
 
-export default memo(Loading);
+export default Loading;

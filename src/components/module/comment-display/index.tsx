@@ -1,5 +1,5 @@
 import { Card, Typography } from 'antd';
-import { CSSProperties, FC, memo } from 'react';
+import { CSSProperties, FC } from 'react';
 
 type CommentDisplayProps = {
   title: string;
@@ -32,4 +32,4 @@ const CommentDisplay: FC<CommentDisplayProps> = ({ title, comments }) => {
   );
 };
 
-export default memo(CommentDisplay);
+export default CommentDisplay;

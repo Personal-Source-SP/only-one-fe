@@ -1,6 +1,6 @@
 import { Button, Space, Tooltip } from 'antd';
 import { Icon } from '@iconify/react';
-import { FC, memo } from 'react';
+import { FC } from 'react';
 
 const QuickActions: FC = () => {
     const actions = [
@@ -45,4 +45,4 @@ const QuickActions: FC = () => {
     );
 };
 
-export default memo(QuickActions);
+export default QuickActions;

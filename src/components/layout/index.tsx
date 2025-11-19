@@ -16,7 +16,7 @@ import { exchangeCodeForTokens, getUserInfoFromGoogle } from '@/libs';
 
 import { Space } from 'antd';
 import { usePathname, useRouter } from 'next/navigation';
-import { FC, memo, ReactNode, Suspense, useEffect, useRef, useState } from 'react';
+import { FC, ReactNode, Suspense, useEffect, useRef, useState } from 'react';
 
 type MainLayoutProps = {
     children: ReactNode;
@@ -210,4 +210,4 @@ const MainLayout: FC<MainLayoutProps> = ({ children }) => {
     );
 };
 
-export default memo(MainLayout);
+export default MainLayout;

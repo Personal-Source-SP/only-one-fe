@@ -2,7 +2,7 @@
 
 import { Icon } from '@iconify/react';
 import { Button, Input } from 'antd';
-import { FC, memo } from 'react';
+import { FC } from 'react';
 
 type SearchProps = {
     showSearch: boolean;
@@ -32,4 +32,4 @@ const Search: FC<SearchProps> = ({ showSearch, setShowSearch }) => {
     );
 };
 
-export default memo(Search);
+export default Search;

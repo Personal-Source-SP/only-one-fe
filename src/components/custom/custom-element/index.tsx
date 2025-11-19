@@ -2,7 +2,7 @@
 
 import { ElementType } from '@/enums';
 import { Card, Flex, Space, Spin } from 'antd';
-import { FC, memo } from 'react';
+import { FC } from 'react';
 
 type CustomElementProps = {
     elementType: ElementType;
@@ -70,4 +70,4 @@ const CustomElement: FC<CustomElementProps> = ({
     }
 };
 
-export default memo(CustomElement);
+export default CustomElement;

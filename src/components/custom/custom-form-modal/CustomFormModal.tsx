@@ -3,7 +3,7 @@
 import CustomModal from '@/components/custom/custom-modal';
 
 import { ModalProps, Space, Spin } from 'antd';
-import { FC, memo } from 'react';
+import { FC } from 'react';
 
 type CustomFormModalProps = {
     formLoading: boolean;
@@ -23,4 +23,4 @@ const CustomFormModal: FC<CustomFormModalProps> = ({ formLoading, modalProps, ch
     );
 };
 
-export default memo(CustomFormModal);
+export default CustomFormModal;

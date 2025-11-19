@@ -8,7 +8,7 @@ import { useTableContainer } from '@/hooks';
 import { useDebounceSearch } from '@/hooks/useDebounceSearch';
 import { ActionTableItem, FilterItem, SearchFilterItem } from '@/interfaces';
 import { ColumnsType } from 'antd/es/table';
-import { FC, memo, useMemo } from 'react';
+import { FC, useMemo } from 'react';
 
 type TableContainerProps = {
     loading?: boolean;
@@ -139,4 +139,4 @@ const TableContainer: FC<TableContainerProps> = ({
     );
 };
 
-export default memo(TableContainer);
+export default TableContainer;

@@ -1,6 +1,6 @@
 'use client';
 
-import { FC, memo } from 'react';
+import { FC } from 'react';
 
 import Lightbox, { SlideImage } from 'yet-another-react-lightbox';
 import Fullscreen from 'yet-another-react-lightbox/plugins/fullscreen';
@@ -37,4 +37,4 @@ const CustomLightBox: FC<CustomLightBoxProps> = ({
     );
 };
 
-export default memo(CustomLightBox);
+export default CustomLightBox;

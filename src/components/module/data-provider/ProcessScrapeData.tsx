@@ -25,7 +25,7 @@ import { useWatch } from 'antd/es/form/Form';
 import { ColumnType } from 'antd/es/table';
 import dayjs from 'dayjs';
 import Link from 'next/link';
-import { FC, memo, useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 type ProcessScrapeDataProps = {
     open: boolean;
@@ -406,4 +406,4 @@ const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({
     );
 };
 
-export default memo(ProcessScrapeData);
+export default ProcessScrapeData;

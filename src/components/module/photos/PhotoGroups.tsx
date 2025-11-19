@@ -7,7 +7,7 @@ import { PhotoGroup, PhotoItem } from '@/interfaces';
 import { Button, List, Spin, Tag, Tooltip } from 'antd';
 import { DeleteOutlined, DownloadOutlined, EyeOutlined } from '@ant-design/icons';
 import Image from 'next/image';
-import { FC, memo, useMemo, useState } from 'react';
+import { FC, useMemo, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import dayjs from 'dayjs';
 
@@ -318,4 +318,4 @@ const PhotoGroups: FC<PhotoGroupsProps> = ({
     );
 };
 
-export default memo(PhotoGroups);
+export default PhotoGroups;

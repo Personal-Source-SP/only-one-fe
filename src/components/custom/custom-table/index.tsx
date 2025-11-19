@@ -8,7 +8,7 @@ import { CrudSort, useDelete } from '@refinedev/core';
 import { Button, Popconfirm, Space, Table } from 'antd';
 import { ColumnsType, TablePaginationConfig, TableProps } from 'antd/es/table';
 import { FilterValue, SorterResult, TableCurrentDataSource } from 'antd/es/table/interface';
-import { FC, memo, useMemo } from 'react';
+import { FC, useMemo } from 'react';
 
 type CustomTableProps = {
     loading: boolean;
@@ -190,4 +190,4 @@ const CustomTable: FC<CustomTableProps> = ({
     );
 };
 
-export default memo(CustomTable);
+export default CustomTable;

@@ -5,7 +5,7 @@ import { useCustomModal } from '@/hooks';
 import { Option } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { Button, Col, Form, Input, Row, Select, Space, Spin } from 'antd';
-import { FC, memo } from 'react';
+import { FC } from 'react';
 
 type FolderModalProps = {
     folderOptions: Option[];
@@ -93,4 +93,4 @@ const FolderModal: FC<FolderModalProps> = ({
     );
 };
 
-export default memo(FolderModal);
+export default FolderModal;

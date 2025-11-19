@@ -7,7 +7,7 @@ import { useTableContainer } from '@/hooks';
 import { FilterItem, NSchedule } from '@/interfaces';
 import { formatDate } from '@/libs';
 import { ColumnsType } from 'antd/es/table';
-import { FC, memo } from 'react';
+import { FC } from 'react';
 
 type ViewScheduleJobListProps = {
     isOpen: boolean;
@@ -153,4 +153,4 @@ const ViewScheduleJobList: FC<ViewScheduleJobListProps> = ({ isOpen, scheduleId,
     );
 };
 
-export default memo(ViewScheduleJobList);
+export default ViewScheduleJobList;

@@ -31,7 +31,7 @@ import {
 } from 'antd';
 import { ColumnType, TableProps } from 'antd/es/table';
 import Link from 'next/link';
-import { FC, memo, useEffect, useMemo, useState, type Key } from 'react';
+import { FC, useEffect, useMemo, useState, type Key } from 'react';
 
 const StepEnum = {
     Settings: 0,
@@ -765,4 +765,4 @@ const SyncGoogleDrive: FC<SyncGoogleDriveProps> = ({
     );
 };
 
-export default memo(SyncGoogleDrive);
+export default SyncGoogleDrive;

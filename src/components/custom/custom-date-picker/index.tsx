@@ -4,7 +4,7 @@ import { DATE_FORMAT_SHORT, DATE_FORMAT_TIME } from '@/constants';
 import { DatePicker, Form } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
 import { debounce } from 'lodash';
-import { FC, memo, useCallback } from 'react';
+import { FC, useCallback } from 'react';
 
 const { RangePicker } = DatePicker;
 
@@ -104,4 +104,4 @@ const CustomDatePicker: FC<CustomDatePickerProps> = ({
     );
 };
 
-export default memo(CustomDatePicker);
+export default CustomDatePicker;

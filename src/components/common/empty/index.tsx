@@ -9,7 +9,7 @@ import {
     UserOutlined,
 } from '@ant-design/icons';
 import { Empty as AntEmpty, Button } from 'antd';
-import { FC, memo } from 'react';
+import { FC } from 'react';
 
 type EmptyVariant =
     | 'default'
@@ -114,4 +114,4 @@ const Empty: FC<EmptyProps> = ({
     );
 };
 
-export default memo(Empty);
+export default Empty;

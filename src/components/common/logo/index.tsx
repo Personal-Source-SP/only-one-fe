@@ -1,6 +1,6 @@
 import { Icon } from '@iconify/react';
 import { Flex } from 'antd';
-import { FC, memo } from 'react';
+import { FC } from 'react';
 
 type LogoProps = {
     showText?: boolean;
@@ -18,4 +18,4 @@ const Logo: FC<LogoProps> = ({ iconSize, textSize, showText = true }) => {
     );
 };
 
-export default memo(Logo);
+export default Logo;

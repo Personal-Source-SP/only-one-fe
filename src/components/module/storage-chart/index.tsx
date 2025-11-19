@@ -1,4 +1,4 @@
-import { FC, memo } from "react";
+import { FC } from "react";
 import {
   Cell,
   Legend,
@@ -70,4 +70,4 @@ const StorageChart: FC<StorageChartProps> = ({ data, total }) => {
   );
 };
 
-export default memo(StorageChart);
+export default StorageChart;

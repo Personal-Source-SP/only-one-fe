@@ -1,4 +1,4 @@
-import { FC, memo } from "react";
+import { FC } from "react";
 import {
   Area,
   AreaChart,
@@ -81,4 +81,4 @@ const ActivityChart: FC<ActivityChartProps> = ({ data }) => {
   );
 };
 
-export default memo(ActivityChart);
+export default ActivityChart;

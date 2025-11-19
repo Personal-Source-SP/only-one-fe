@@ -30,7 +30,7 @@ import {
 } from 'antd';
 import { useWatch } from 'antd/es/form/Form';
 import { isEmpty, isNumber } from 'lodash';
-import { FC, Fragment, memo, useState } from 'react';
+import { FC, Fragment, useState } from 'react';
 
 type DataProviderForm = NDataProvider.IDataProvider & {
     url: string;
@@ -739,4 +739,4 @@ const ScrapeSetting: FC<ScrapeSettingProps> = ({
     );
 };
 
-export default memo(ScrapeSetting);
+export default ScrapeSetting;

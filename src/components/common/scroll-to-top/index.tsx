@@ -2,7 +2,7 @@
 
 import { Icon } from '@iconify/react';
 import { Button, Tooltip } from 'antd';
-import { FC, memo } from 'react';
+import { FC } from 'react';
 import { useMainContext } from '@/contexts/MainContext';
 
 const ScrollToTop: FC = () => {
@@ -23,4 +23,4 @@ const ScrollToTop: FC = () => {
     );
 };
 
-export default memo(ScrollToTop);
+export default ScrollToTop;

@@ -2,7 +2,7 @@
 
 import { PhotoItemsPerPage } from '@/enums';
 import { Button, Dropdown, Flex, MenuProps, Pagination } from 'antd';
-import { FC, memo } from 'react';
+import { FC } from 'react';
 
 type PaginationControlsProps = {
     totalItems: number;
@@ -50,4 +50,4 @@ const PaginationControls: FC<PaginationControlsProps> = ({
     );
 };
 
-export default memo(PaginationControls);
+export default PaginationControls;

@@ -3,7 +3,7 @@ import { cheerioTypes } from '@/components/module/code-display/utils/type';
 import { Editor, useMonaco } from '@monaco-editor/react';
 import { debounce } from 'lodash';
 import * as monaco from 'monaco-editor';
-import { FC, memo, useEffect, useMemo } from 'react';
+import { FC, useEffect, useMemo } from 'react';
 
 type CustomMonacoEditorProps = {
     editedCode: string;
@@ -171,4 +171,4 @@ const CustomMonacoEditor: FC<CustomMonacoEditorProps> = ({
     );
 };
 
-export default memo(CustomMonacoEditor);
+export default CustomMonacoEditor;

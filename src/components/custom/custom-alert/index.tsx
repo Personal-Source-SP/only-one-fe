@@ -1,5 +1,5 @@
 import { Alert } from 'antd';
-import { FC, memo } from 'react';
+import { FC } from 'react';
 
 type CustomAlertProps = {
   title: string;
@@ -14,4 +14,4 @@ const CustomAlert: FC<CustomAlertProps> = ({ title, description }) => {
   );
 };
 
-export default memo(CustomAlert);
+export default CustomAlert;

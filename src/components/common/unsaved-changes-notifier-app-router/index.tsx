@@ -2,7 +2,7 @@
 
 import { useWarnAboutChange } from '@refinedev/core';
 import { useNavigationGuard } from 'next-navigation-guard';
-import { FC, memo } from 'react';
+import { FC } from 'react';
 
 type UnsavedChangesNotifierProps = {
     message?: string;
@@ -29,4 +29,4 @@ const UnsavedChangesNotifierAppRouter: FC<UnsavedChangesNotifierProps> = ({
     return null;
 };
 
-export default memo(UnsavedChangesNotifierAppRouter);
+export default UnsavedChangesNotifierAppRouter;

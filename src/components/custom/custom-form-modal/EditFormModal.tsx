@@ -8,7 +8,7 @@ import { useCustomModal } from '@/hooks';
 import { FormFieldItem } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { Button, Flex, Form, Row, Space, Spin } from 'antd';
-import { FC, memo, ReactNode, useCallback, useEffect } from 'react';
+import { FC, ReactNode, useCallback, useEffect } from 'react';
 
 type EditFormModalProps = {
     id: string;
@@ -132,4 +132,4 @@ const EditFormModal: FC<EditFormModalProps> = ({
     );
 };
 
-export default memo(EditFormModal);
+export default EditFormModal;

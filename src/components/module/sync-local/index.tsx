@@ -27,7 +27,7 @@ import {
     Table,
 } from 'antd';
 import { ColumnType, TableProps } from 'antd/es/table';
-import { FC, memo, useEffect, useState, type Key } from 'react';
+import { FC, useEffect, useState, type Key } from 'react';
 
 const StepEnum = {
     Settings: 0,
@@ -639,4 +639,4 @@ const SyncLocal: FC<SyncLocalProps> = ({
     );
 };
 
-export default memo(SyncLocal);
+export default SyncLocal;

@@ -3,7 +3,7 @@
 import { Logo } from '@/components/common';
 import { Button, Card, Input, Space } from 'antd';
 import Link from 'next/link';
-import { FC, memo, useState } from 'react';
+import { FC, useState } from 'react';
 
 const ForgetPasswordPage: FC = () => {
     const [email, setEmail] = useState('');
@@ -40,4 +40,4 @@ const ForgetPasswordPage: FC = () => {
     );
 };
 
-export default memo(ForgetPasswordPage);
+export default ForgetPasswordPage;

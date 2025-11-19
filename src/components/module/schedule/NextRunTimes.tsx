@@ -1,6 +1,6 @@
 import { Card, Col, Row, Tag, Typography } from 'antd';
 import { CronExpressionParser } from 'cron-parser';
-import { FC, Fragment, memo } from 'react';
+import { FC, Fragment } from 'react';
 
 const getNextRunTimes = (cron: string, count = 6) => {
     try {
@@ -48,4 +48,4 @@ const NextRunTimes: FC<NextRunTimesProps> = ({ cron, count = 6 }) => {
     );
 };
 
-export default memo(NextRunTimes);
+export default NextRunTimes;

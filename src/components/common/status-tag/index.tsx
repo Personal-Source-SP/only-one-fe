@@ -1,5 +1,5 @@
 import { Tag } from 'antd';
-import { FC, memo } from 'react';
+import { FC } from 'react';
 
 type StatusTagProps = {
     status?: string;
@@ -80,4 +80,4 @@ const StatusTag: FC<StatusTagProps> = ({ status }) => {
     );
 };
 
-export default memo(StatusTag);
+export default StatusTag;

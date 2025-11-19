@@ -3,7 +3,7 @@ import { Icon } from '@iconify/react';
 import { Avatar, Badge, Button, Dropdown, Input, MenuProps } from 'antd';
 import { signOut } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
-import { FC, memo } from 'react';
+import { FC } from 'react';
 
 type HeaderProps = {
     showSearch: boolean;
@@ -136,4 +136,4 @@ const Header: FC<HeaderProps> = ({
     );
 };
 
-export default memo(Header);
+export default Header;

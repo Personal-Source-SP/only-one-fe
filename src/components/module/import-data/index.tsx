@@ -22,7 +22,7 @@ import {
     UploadFile,
 } from 'antd';
 import { ColumnType } from 'antd/es/table';
-import { FC, memo, useState } from 'react';
+import { FC, useState } from 'react';
 
 type ImportDataProps = {
     open: boolean;
@@ -392,4 +392,4 @@ const ImportData: FC<ImportDataProps> = ({ open, dataType, columns, onClose, onS
     );
 };
 
-export default memo(ImportData);
+export default ImportData;

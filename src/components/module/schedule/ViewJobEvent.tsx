@@ -6,7 +6,7 @@ import { NSchedule } from '@/interfaces';
 import { calculateDuration, formatDate } from '@/libs';
 import { Descriptions, Tabs } from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
-import { FC, memo } from 'react';
+import { FC } from 'react';
 
 type ViewJobEventProps = {
     isOpen: boolean;
@@ -67,4 +67,4 @@ const ViewJobEvent: FC<ViewJobEventProps> = ({ isOpen, jobEvent, onClose }) => {
     );
 };
 
-export default memo(ViewJobEvent);
+export default ViewJobEvent;

@@ -5,7 +5,7 @@ import { SIDEBAR_ITEMS } from '@/constants';
 import { Icon } from '@iconify/react';
 import { Button, Drawer, Menu, Tooltip } from 'antd';
 import { usePathname, useRouter } from 'next/navigation';
-import { FC, memo, useCallback, useMemo, useState } from 'react';
+import { FC, useCallback, useMemo, useState } from 'react';
 
 type SidebarProps = {
     mobileOpen: boolean;
@@ -372,4 +372,4 @@ const Sidebar: FC<SidebarProps> = ({ mobileOpen, setMobileOpen, collapsed, setCo
     );
 };
 
-export default memo(Sidebar);
+export default Sidebar;

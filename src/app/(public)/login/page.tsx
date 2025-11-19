@@ -7,7 +7,7 @@ import { useLogin } from '@refinedev/core';
 import { Button, Checkbox, Form, Input, Space, notification } from 'antd';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { FC, memo, useState } from 'react';
+import { FC, useState } from 'react';
 
 const LoginPage: FC = () => {
     const { mutate: login, isPending } = useLogin();
@@ -118,4 +118,4 @@ const LoginPage: FC = () => {
     );
 };
 
-export default memo(LoginPage);
+export default LoginPage;

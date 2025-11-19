@@ -11,7 +11,7 @@ import {
 import { Badge, Button, Card, Input, Space, Typography } from 'antd';
 import * as jsBeautify from 'js-beautify';
 import dynamic from 'next/dynamic';
-import { CSSProperties, FC, memo, useEffect, useState } from 'react';
+import { CSSProperties, FC, useEffect, useState } from 'react';
 import ReactDiffViewer from 'react-diff-viewer-continued';
 import { useMainContext } from '@/contexts/MainContext';
 
@@ -344,4 +344,4 @@ const CodeDisplay: FC<CodeDisplayProps> = ({
     );
 };
 
-export default memo(CodeDisplay);
+export default CodeDisplay;

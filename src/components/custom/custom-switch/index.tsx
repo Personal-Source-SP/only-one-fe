@@ -1,5 +1,5 @@
 import { Col, Flex, Form, Switch } from 'antd';
-import { FC, memo, ReactNode } from 'react';
+import { FC, ReactNode } from 'react';
 
 type CustomSwitchProps = {
   formFields: string[];
@@ -24,4 +24,4 @@ const CustomSwitch: FC<CustomSwitchProps> = ({ fieldLabel, span, fieldPlaceholde
   );
 };
 
-export default memo(CustomSwitch);
+export default CustomSwitch;

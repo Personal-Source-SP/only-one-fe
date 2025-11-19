@@ -1,7 +1,7 @@
 'use client';
 
 import { Modal, ModalProps } from 'antd';
-import { FC, memo } from 'react';
+import { FC } from 'react';
 
 type CustomModalProps = {
     modalProps: ModalProps;
@@ -29,4 +29,4 @@ const CustomModal: FC<CustomModalProps> = ({ children, modalProps }) => {
     );
 };
 
-export default memo(CustomModal);
+export default CustomModal;

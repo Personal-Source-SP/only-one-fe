@@ -4,7 +4,7 @@ import { Logo } from '@/components/common';
 import { Button, Card, Input, Space } from 'antd';
 import Link from 'next/link';
 import { Icon } from '@iconify/react';
-import { FC, memo, useState } from 'react';
+import { FC, useState } from 'react';
 
 const RegisterPage: FC = () => {
     const [name, setName] = useState('');
@@ -70,4 +70,4 @@ const RegisterPage: FC = () => {
     );
 };
 
-export default memo(RegisterPage);
+export default RegisterPage;

@@ -2,7 +2,7 @@
 
 import { Button, Card } from 'antd';
 import { Icon } from '@iconify/react';
-import { FC, memo } from 'react';
+import { FC } from 'react';
 
 type DataNotFoundProps = {
     icon?: string;
@@ -44,4 +44,4 @@ const DataNotFound: FC<DataNotFoundProps> = ({
     );
 };
 
-export default memo(DataNotFound);
+export default DataNotFound;

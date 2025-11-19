@@ -2,7 +2,7 @@
 
 import { Button, Divider, Flex, Input, Select, SelectProps, Space } from 'antd';
 import { debounce } from 'lodash';
-import { FC, memo, useCallback } from 'react';
+import { FC, useCallback } from 'react';
 
 type CustomSelectProps = SelectProps & {
     debounceTime?: number;
@@ -78,4 +78,4 @@ const CustomSelect: FC<CustomSelectProps> = ({
     );
 };
 
-export default memo(CustomSelect);
+export default CustomSelect;
