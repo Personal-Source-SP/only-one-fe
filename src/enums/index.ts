@@ -6,4 +6,5 @@ export * from './google-drive.enum';
 export * from './photo.enum';
 export * from './role.enum';
 export * from './schedule.enum';
+export * from './simulation.enum';
 export * from './socket.enum';

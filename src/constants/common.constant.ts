@@ -122,6 +122,11 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
                 label: 'Danh sách ngữ cảnh',
                 icon: 'mdi:format-list-bulleted',
             },
+            {
+                href: '/simulation/items',
+                label: 'Danh sách mô phỏng',
+                icon: 'noto:page-facing-up',
+            },
         ],
     },
     {
