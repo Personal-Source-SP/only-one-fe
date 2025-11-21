@@ -2,10 +2,10 @@
 
 import { StatusTag } from '@/components/common';
 import { CreateFormModal, CustomElement, EditFormModal, TableContainer } from '@/components/custom';
-import { ElementType } from '@/enums';
+import { ElementType, SimulationService } from '@/enums';
 import { useCustomMutationData, useTableContainer } from '@/hooks';
 import { ActionTableItem, FormFieldItem, NSimulation } from '@/interfaces';
-import { formatDate } from '@/libs';
+import { enumToOptions, formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
 import { Button, Space } from 'antd';
 import { ColumnsType } from 'antd/es/table';
@@ -93,10 +93,11 @@ const SimulationContextsPage = () => {
             rules: [{ required: true, message: 'Vui lòng nhập URL ngữ cảnh' }],
         },
         {
-            type: 'input',
-            name: 'identifier',
-            label: 'Mã ngữ cảnh',
-            rules: [{ required: true, message: 'Vui lòng nhập mã ngữ cảnh' }],
+            type: 'select',
+            name: 'serviceExecution',
+            label: 'Dịch vụ thực thi',
+            options: enumToOptions(SimulationService) ?? [],
+            rules: [{ required: true, message: 'Vui lòng chọn dịch vụ thực thi' }],
         },
     ];
 

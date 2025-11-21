@@ -79,20 +79,6 @@ const SimulationItemsPage = () => {
                 handleSimulationItemAction(record?.id, SimulationItemStatus.PROCESSING),
         },
         {
-            key: 'pause',
-            label: 'Pause',
-            icon: <Icon icon="lucide:pause" />,
-            onClick: (record) =>
-                handleSimulationItemAction(record?.id, SimulationItemStatus.PAUSED),
-        },
-        {
-            key: 'stop',
-            label: 'Stop',
-            icon: <Icon icon="lucide:square" />,
-            onClick: (record) =>
-                handleSimulationItemAction(record?.id, SimulationItemStatus.STOPPED),
-        },
-        {
             key: 'edit',
             label: 'Chỉnh sửa',
             icon: <Icon icon="lucide:edit" />,
@@ -108,20 +94,10 @@ const SimulationItemsPage = () => {
                 success: 'Bắt đầu mô phỏng thành công',
                 failed: 'Bắt đầu mô phỏng thất bại',
             },
-            [SimulationItemStatus.PAUSED]: {
-                success: 'Tạm dừng mô phỏng thành công',
-                failed: 'Tạm dừng mô phỏng thất bại',
-            },
-            [SimulationItemStatus.STOPPED]: {
-                success: 'Dừng mô phỏng thành công',
-                failed: 'Dừng mô phỏng thất bại',
-            },
         };
 
         const action: Record<string, string> = {
             [SimulationItemStatus.PROCESSING]: 'start',
-            [SimulationItemStatus.PAUSED]: 'pause',
-            [SimulationItemStatus.STOPPED]: 'stop',
         };
 
         setLoading(true);

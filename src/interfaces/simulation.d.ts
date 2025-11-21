@@ -1,5 +1,5 @@
 import { Abstract } from '@/interfaces/common';
-import { SimulationContextStatus, SimulationItemStatus } from '../enums';
+import { SimulationContextStatus, SimulationItemStatus, SimulationService } from '../enums';
 
 export declare namespace NSimulation {
     interface ISimulationItem extends Abstract {
@@ -13,12 +13,12 @@ export declare namespace NSimulation {
     }
 
     interface ISimulationContext extends Abstract {
-        identifier: string;
         name: string;
         baseUrl: string;
         status: SimulationContextStatus;
-        payload?: Record<string, any>;
-        lastSuccessfulScrapeAt?: Date;
-        simulationItems?: ISimulationItem[];
+        serviceExecution: SimulationService;
+        defaultPayload?: Record<string, any>;
+        steps?: Record<string, any>;
+        lastSuccessfulRunAt?: Date;
     }
 }

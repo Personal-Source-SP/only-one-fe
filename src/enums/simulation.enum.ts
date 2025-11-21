@@ -6,6 +6,8 @@ export enum SimulationContextStatus {
 export enum SimulationItemStatus {
     PENDING = 'pending',
     PROCESSING = 'processing',
-    PAUSED = 'paused',
-    STOPPED = 'stopped',
+}
+
+export enum SimulationService {
+    UNLUCID_AI = 'unlucid-ai',
 }
