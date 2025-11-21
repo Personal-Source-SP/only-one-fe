@@ -213,13 +213,15 @@ const DataProviderPage: FC = () => {
             type: 'select',
             name: 'parentId',
             label: 'Nhà cung cấp cha',
-            options: dataProviders ?? [],
             onChange: (value, form) => {
                 const parentDataProvider = dataProviderQuery?.data?.data?.find(
                     (item) => item.id === value,
                 );
 
                 form?.setFieldValue('identifier', parentDataProvider?.identifier ?? '');
+            },
+            selectProps: {
+                options: dataProviders ?? [],
             },
         },
     ];

@@ -101,20 +101,24 @@ const DataProviderItemPage: FC = () => {
             name: 'itemId',
             type: 'select',
             label: 'Tên đối tượng',
-            options: itemOptions ?? [],
             rules: [{ required: true, message: 'Vui lòng chọn đối tượng' }],
+            selectProps: {
+                options: itemOptions ?? [],
+            },
         },
         {
             type: 'select',
             name: 'dataProviderId',
             label: 'Tên nhà cung cấp',
-            options: dataProviderOptions ?? [],
             rules: [{ required: true, message: 'Vui lòng chọn nhà cung cấp' }],
             onChange: (value, form) => {
                 const dataProvider = dataProviderQuery?.data?.data?.find(
                     (option) => option.id === value,
                 );
                 form?.setFieldValue('itemUrl', dataProvider?.baseUrl ?? '');
+            },
+            selectProps: {
+                options: dataProviderOptions ?? [],
             },
         },
         {
@@ -130,13 +134,17 @@ const DataProviderItemPage: FC = () => {
             type: 'switch',
             name: 'autoProcessScraping',
             label: 'Tự động cào dữ liệu',
-            placeholder: 'Tự động cào khi thêm đối tượng nhà cung cấp',
+            switchProps: {
+                placeholder: 'Tự động cào khi thêm đối tượng nhà cung cấp',
+            },
         },
         {
             type: 'switch',
             name: 'checkDuplicateData',
             label: 'Kiểm tra dữ liệu trùng lặp',
-            placeholder: 'Kiểm tra dữ liệu trùng lặp khi cào dữ liệu',
+            switchProps: {
+                placeholder: 'Kiểm tra dữ liệu trùng lặp khi cào dữ liệu',
+            },
         },
     ];
 

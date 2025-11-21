@@ -1,6 +1,8 @@
 'use client';
 
+import CodeDisplay from '@/components/module/code-display';
 import CustomModal from '@/components/custom/custom-modal';
+
 import { useMainContext } from '@/contexts/MainContext';
 import { useCustomModal } from '@/hooks';
 
@@ -24,14 +26,24 @@ type CreateFormModalProps = {
 
 export const renderFormFields = (formField: FormFieldItem, formProps: FormProps<any>) => {
     let formFieldElement = null;
+    const formItemProps: Record<string, any> = {
+        name: formField.name,
+        rules: formField.rules,
+        tooltip: formField.tooltip,
+    };
+
+    if (formField.type !== 'switch') {
+        formItemProps.label = formField.label;
+    }
 
     switch (formField.type) {
         case 'input': {
+            const { placeholder, addonAfter, addonBefore } = formField.inputProps ?? {};
             formFieldElement = (
                 <Input
-                    addonAfter={formField.addonAfter}
-                    addonBefore={formField.addonBefore}
-                    placeholder={formField.placeholder}
+                    addonAfter={addonAfter}
+                    addonBefore={addonBefore}
+                    placeholder={placeholder}
                     disabled={formField.disabled ?? false}
                     onChange={(e) => formField.onChange?.(e.target.value, formProps?.form)}
                 />
@@ -40,13 +52,14 @@ export const renderFormFields = (formField: FormFieldItem, formProps: FormProps<
         }
 
         case 'select': {
+            const { placeholder, options, allowClear, showSearch } = formField.selectProps ?? {};
             formFieldElement = (
                 <Select
-                    options={formField.options ?? []}
-                    placeholder={formField.placeholder}
+                    options={options ?? []}
+                    placeholder={placeholder}
                     disabled={formField.disabled ?? false}
-                    allowClear={formField.allowClear ?? true}
-                    showSearch={formField.showSearch ?? true}
+                    allowClear={allowClear ?? true}
+                    showSearch={showSearch ?? true}
                     onChange={(value) => formField.onChange?.(value, formProps?.form)}
                 />
             );
@@ -54,10 +67,11 @@ export const renderFormFields = (formField: FormFieldItem, formProps: FormProps<
         }
 
         case 'textarea': {
+            const { placeholder, rows } = formField.textareaProps ?? {};
             formFieldElement = (
                 <Input.TextArea
-                    rows={formField.rows ?? 4}
-                    placeholder={formField.placeholder}
+                    rows={rows ?? 4}
+                    placeholder={placeholder}
                     disabled={formField.disabled ?? false}
                     onChange={(e) => formField.onChange?.(e.target.value, formProps?.form)}
                 />
@@ -75,6 +89,20 @@ export const renderFormFields = (formField: FormFieldItem, formProps: FormProps<
             break;
         }
 
+        case 'code-display': {
+            formFieldElement = <CodeDisplay code="" {...(formField.codeProps ?? {})} />;
+            Object.assign(formItemProps, {
+                valuePropName: 'code',
+                trigger: 'onCodeChange',
+                getValueProps: (value: string) => ({ code: value ?? '' }),
+                getValueFromEvent: (value: string) => {
+                    formField.onChange?.(value, formProps?.form);
+                    return value ?? '';
+                },
+            });
+            break;
+        }
+
         default:
             return <></>;
     }
@@ -87,25 +115,14 @@ export const renderFormFields = (formField: FormFieldItem, formProps: FormProps<
                 <Flex align="center" justify="space-between">
                     <div>
                         <p className="font-medium !my-0">{formField.label}</p>
-                        <p className="text-sm text-gray-500 !my-0">{formField.placeholder}</p>
+                        <p className="text-sm text-gray-500 !my-0">
+                            {formField.switchProps?.placeholder}
+                        </p>
                     </div>
-                    <Form.Item
-                        name={formField.name}
-                        rules={formField.rules}
-                        tooltip={formField.tooltip}
-                    >
-                        {formFieldElement}
-                    </Form.Item>
+                    <Form.Item {...formItemProps}>{formFieldElement}</Form.Item>
                 </Flex>
             ) : (
-                <Form.Item
-                    name={formField.name}
-                    rules={formField.rules}
-                    label={formField.label}
-                    tooltip={formField.tooltip}
-                >
-                    {formFieldElement}
-                </Form.Item>
+                <Form.Item {...formItemProps}>{formFieldElement}</Form.Item>
             )}
 
             {formField.elementBottomRender && formField.elementBottomRender}

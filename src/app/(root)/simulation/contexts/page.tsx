@@ -87,8 +87,10 @@ const SimulationContextsPage = () => {
             type: 'select',
             name: 'serviceExecution',
             label: 'Dịch vụ thực thi',
-            options: enumToOptions(SimulationService) ?? [],
             rules: [{ required: true, message: 'Vui lòng chọn dịch vụ thực thi' }],
+            selectProps: {
+                options: enumToOptions(SimulationService) ?? [],
+            },
         },
     ];
 

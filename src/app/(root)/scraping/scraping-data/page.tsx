@@ -78,10 +78,12 @@ const ScrapingDataPage: FC = () => {
     });
 
     const photoItems: PhotoItem[] = useMemo(() => {
-        const scrapingDatas = tableContainerData?.tableQuery?.data?.data ?? [];
+        const scrapingDatas = (tableContainerData?.tableQuery?.data?.data ??
+            []) as NDataProvider.IScrapingData[];
+
         if (!scrapingDatas?.length) return [];
 
-        return scrapingDatas?.map((item: NDataProvider.IScrapingData) => ({
+        return scrapingDatas?.map((item) => ({
             id: item.id ?? '',
             url: item.url ?? '',
             mimeType: item.type ?? '',

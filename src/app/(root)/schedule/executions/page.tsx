@@ -132,12 +132,14 @@ const ScheduleExecutionPage: FC = () => {
             label: 'Loại dịch vụ',
             name: 'executionService',
             rules: [{ required: true, message: 'Vui lòng chọn dịch vụ thực thi' }],
-            options: [
-                {
-                    label: 'Nhà cung cấp',
-                    value: ExecutionServiceEnum.DATA_PROVIDER,
-                },
-            ],
+            selectProps: {
+                options: [
+                    {
+                        label: 'Nhà cung cấp',
+                        value: ExecutionServiceEnum.DATA_PROVIDER,
+                    },
+                ],
+            },
         },
         {
             name: 'type',
@@ -145,27 +147,27 @@ const ScheduleExecutionPage: FC = () => {
             label: 'Loại lịch biểu',
             onChange: (value) => setType(value),
             rules: [{ required: true, message: 'Vui lòng chọn loại lịch biểu' }],
-            options: [
-                {
-                    label: 'Toàn bộ',
-                    value: ScheduleType.GLOBAL,
-                },
-                {
-                    label: 'Nhà cung cấp',
-                    value: ScheduleType.DATA_PROVIDER,
-                },
-                {
-                    label: 'Đối tượng',
-                    value: ScheduleType.ITEM,
-                },
-            ],
+            selectProps: {
+                options: [
+                    {
+                        label: 'Toàn bộ',
+                        value: ScheduleType.GLOBAL,
+                    },
+                    {
+                        label: 'Nhà cung cấp',
+                        value: ScheduleType.DATA_PROVIDER,
+                    },
+                    {
+                        label: 'Đối tượng',
+                        value: ScheduleType.ITEM,
+                    },
+                ],
+            },
         },
         {
             type: 'select',
             label: 'Nhà cung cấp',
             name: 'dataProviderId',
-            placeholder: 'Chọn nhà cung cấp',
-            options: dataProviderOptions ?? [],
             hidden: type !== ScheduleType.DATA_PROVIDER,
             disabled: type !== ScheduleType.DATA_PROVIDER,
             rules: [
@@ -174,25 +176,33 @@ const ScheduleExecutionPage: FC = () => {
                     required: type === ScheduleType.DATA_PROVIDER,
                 },
             ],
+            selectProps: {
+                placeholder: 'Chọn nhà cung cấp',
+                options: dataProviderOptions ?? [],
+            },
         },
         {
             type: 'select',
             label: 'Đối tượng',
             name: 'itemId',
-            placeholder: 'Chọn đối tượng',
-            options: itemOptions ?? [],
             hidden: type !== ScheduleType.ITEM,
             disabled: type !== ScheduleType.ITEM,
             rules: [{ required: type === ScheduleType.ITEM, message: 'Vui lòng chọn đối tượng' }],
+            selectProps: {
+                placeholder: 'Chọn đối tượng',
+                options: itemOptions ?? [],
+            },
         },
         {
             type: 'select',
-            showSearch: true,
             name: 'cronExpression',
             label: 'Biểu thức cron',
-            options: enumToOptions(CronExpression) ?? [],
             onChange: (value) => setCronExpression(value),
             rules: [{ required: true, message: 'Vui lòng chọn biểu thức cron' }],
+            selectProps: {
+                showSearch: true,
+                options: enumToOptions(CronExpression) ?? [],
+            },
         },
         {
             type: 'input',
@@ -209,8 +219,10 @@ const ScheduleExecutionPage: FC = () => {
             type: 'switch',
             name: 'enabled',
             label: 'Kích hoạt',
-            placeholder: 'Kích hoạt lịch biểu thực thi',
             rules: [{ required: true, message: 'Vui lòng chọn kích hoạt lịch biểu thực thi' }],
+            switchProps: {
+                placeholder: 'Kích hoạt lịch biểu thực thi',
+            },
         },
     ];
 

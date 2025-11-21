@@ -50,8 +50,10 @@ const PhotosPage: FC = () => {
 
     const { tableQuery, setCurrentPage, setFilters } = tableContainerData;
 
-    const googleDriveFiles = useMemo(() => {
-        return tableQuery?.data?.data ?? [];
+    const googleDriveFiles = useMemo<NGoogle.IGoogleDriveFile[]>(() => {
+        if (!tableQuery?.data?.data?.length) return [];
+
+        return tableQuery.data.data as NGoogle.IGoogleDriveFile[];
     }, [tableQuery?.data?.data]);
 
     const googleAuthOptions = useMemo(() => {
@@ -77,9 +79,9 @@ const PhotosPage: FC = () => {
         if (!googleDriveFiles?.length) return [];
 
         return googleDriveFiles?.map((file) => ({
-            id: file.id,
+            id: String(file.id ?? ''),
             mimeType: file.mimeType ?? '',
-            url: getDriveImageUrl(file, qualityMode),
+            url: getDriveImageUrl(file as NGoogle.IGoogleDriveFile, qualityMode),
             lastModified: file.lastModified ?? new Date(),
             folderName: file.googleDriveFolder?.name ?? '',
         }));
@@ -159,9 +161,9 @@ const PhotosPage: FC = () => {
             mode: 'multiple',
             allowClear: true,
             showSearch: true,
-            value: folderOptions,
             placeholder: 'Thư mục',
             type: CustomFilterType.SELECT,
+            options: folderOptions ?? [],
             onChange: (value: string[]) => {
                 setFilters([{ field: 'folderId', operator: 'eq', value }]);
                 setCurrentPage(1);
@@ -173,8 +175,8 @@ const PhotosPage: FC = () => {
             allowClear: true,
             showSearch: true,
             placeholder: 'Email',
-            value: googleAuthOptions,
             type: CustomFilterType.SELECT,
+            options: googleAuthOptions ?? [],
             onChange: (value: string[]) => {
                 setFilters([{ field: 'googleAuthId', operator: 'eq', value }]);
                 setCurrentPage(1);
@@ -239,7 +241,7 @@ const PhotosPage: FC = () => {
                 index={currentPhotoIndex}
                 closeLightbox={() => setIsLightboxOpen(false)}
                 slides={(googleDriveFiles || [])?.map((p) => ({
-                    src: getDriveImageUrl(p, QualityMode.LOW),
+                    src: getDriveImageUrl(p as NGoogle.IGoogleDriveFile, QualityMode.LOW),
                 }))}
             />
 

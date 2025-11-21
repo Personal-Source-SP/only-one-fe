@@ -138,7 +138,9 @@ const ItemPage: FC = () => {
                     },
                 },
             ],
-            placeholder: 'Nhập các tag, mỗi tag cách nhau bằng dấu phẩy ","',
+            inputProps: {
+                placeholder: 'Nhập các tag, mỗi tag cách nhau bằng dấu phẩy ","',
+            },
         },
     ];
 
