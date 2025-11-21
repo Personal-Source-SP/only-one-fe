@@ -32,13 +32,6 @@ const SimulationContextsPage = () => {
             render: (_: any, __: any, index: number) => index + 1,
         },
         {
-            title: 'Mã ngữ cảnh',
-            dataIndex: 'identifier',
-            key: 'identifier',
-            width: 180,
-            ellipsis: true,
-        },
-        {
             title: 'Tên ngữ cảnh',
             dataIndex: 'name',
             key: 'name',
@@ -53,6 +46,13 @@ const SimulationContextsPage = () => {
             ellipsis: true,
         },
         {
+            title: 'Dịch vụ thực thi',
+            dataIndex: 'serviceExecution',
+            key: 'serviceExecution',
+            width: 180,
+            render: (serviceExecution: SimulationService) => serviceExecution,
+        },
+        {
             title: 'Trạng thái',
             dataIndex: 'status',
             key: 'status',
@@ -62,20 +62,11 @@ const SimulationContextsPage = () => {
         },
         {
             title: 'Chạy gần nhất',
-            dataIndex: 'lastSuccessfulScrapeAt',
-            key: 'lastSuccessfulScrapeAt',
+            dataIndex: 'lastSuccessfulRunAt',
+            key: 'lastSuccessfulRunAt',
             width: 200,
             sorter: true,
-            render: (lastSuccessfulScrapeAt: Date) => formatDate(lastSuccessfulScrapeAt),
-        },
-        {
-            title: 'Số mô phỏng',
-            dataIndex: 'simulationItems',
-            key: 'simulationItems',
-            width: 170,
-            render: (simulationItems?: NSimulation.ISimulationItem[]) => (
-                <span>{simulationItems?.length ?? 0} bản ghi</span>
-            ),
+            render: (lastSuccessfulRunAt: Date) => formatDate(lastSuccessfulRunAt),
         },
     ];
 
