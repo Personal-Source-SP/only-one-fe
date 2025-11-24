@@ -4,9 +4,9 @@ import { Logo } from '@/components/common';
 import { Button, Card, Input, Space } from 'antd';
 import Link from 'next/link';
 import { Icon } from '@iconify/react';
-import { FC, useState } from 'react';
+import { useState } from 'react';
 
-const RegisterPage: FC = () => {
+const RegisterPage = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');

@@ -2,14 +2,14 @@
 
 import { Icon } from '@iconify/react';
 import { Button, Input } from 'antd';
-import { FC } from 'react';
+
 
 type SearchProps = {
     showSearch: boolean;
     setShowSearch: (show: boolean) => void;
 };
 
-const Search: FC<SearchProps> = ({ showSearch, setShowSearch }) => {
+const Search = ({ showSearch, setShowSearch }: SearchProps) => {
     if (!showSearch) return <></>;
 
     return (

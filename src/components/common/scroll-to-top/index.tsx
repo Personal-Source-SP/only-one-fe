@@ -2,10 +2,10 @@
 
 import { Icon } from '@iconify/react';
 import { Button, Tooltip } from 'antd';
-import { FC } from 'react';
+
 import { useMainContext } from '@/contexts/MainContext';
 
-const ScrollToTop: FC = () => {
+const ScrollToTop = () => {
     const { scrollToTop } = useMainContext();
 
     return (

@@ -8,9 +8,9 @@ import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
 import { Space } from 'antd';
 import { ColumnsType } from 'antd/es/table';
-import { FC } from 'react';
 
-const UsersPage: FC = () => {
+
+const UsersPage = () => {
     const tableContainerData = useTableContainer({
         resource: 'users',
     });

@@ -1,5 +1,5 @@
 import { Tag } from 'antd';
-import { FC } from 'react';
+
 
 type StatusTagProps = {
     status?: string;
@@ -67,7 +67,7 @@ const randomColor = (): string => {
     return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
 };
 
-const StatusTag: FC<StatusTagProps> = ({ status }) => {
+const StatusTag = ({ status }: StatusTagProps) => {
     if (!status) return '---';
 
     const color = colorStatusMap[status] ?? randomColor();

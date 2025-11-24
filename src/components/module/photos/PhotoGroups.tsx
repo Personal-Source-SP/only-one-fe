@@ -7,7 +7,7 @@ import { PhotoGroup, PhotoItem } from '@/interfaces';
 import { Button, List, Spin, Tag, Tooltip } from 'antd';
 import { DeleteOutlined, DownloadOutlined, EyeOutlined } from '@ant-design/icons';
 import Image from 'next/image';
-import { FC, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import dayjs from 'dayjs';
 
@@ -20,14 +20,14 @@ type PhotoGroupsProps = {
     onDownloadPhoto?: (photoId: string) => void;
 };
 
-const PhotoGroups: FC<PhotoGroupsProps> = ({
+const PhotoGroups = ({
     columns,
     displayMode,
     data,
     onPhotoClick,
     onDeletePhoto,
     onDownloadPhoto,
-}) => {
+}: PhotoGroupsProps) => {
     const [loadingImages, setLoadingImages] = useState<Set<string>>(new Set());
 
     const groupedPhotos: PhotoGroup[] = useMemo(() => {

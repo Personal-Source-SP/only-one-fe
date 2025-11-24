@@ -18,9 +18,9 @@ import { Icon } from '@iconify/react';
 import { Button, Flex, Space, Switch } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import Link from 'next/link';
-import { FC, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 
-const ScrapingDataPage: FC = () => {
+const ScrapingDataPage = () => {
     const { handleMessage } = useMainContext();
 
     const [openProcessScrapeDataModal, setOpenProcessScrapeDataModal] = useState(false);

@@ -8,7 +8,7 @@ import { CrudSort, useDelete } from '@refinedev/core';
 import { Button, Popconfirm, Space, Table } from 'antd';
 import { ColumnsType, TablePaginationConfig, TableProps } from 'antd/es/table';
 import { FilterValue, SorterResult, TableCurrentDataSource } from 'antd/es/table/interface';
-import { FC, useMemo } from 'react';
+import { useMemo } from 'react';
 
 type CustomTableProps = {
     loading: boolean;
@@ -25,7 +25,7 @@ type CustomTableProps = {
     onDisableRowSelection?: (record: any) => boolean;
 };
 
-const CustomTable: FC<CustomTableProps> = ({
+const CustomTable = ({
     columns,
     loading,
     tableProps,
@@ -38,7 +38,7 @@ const CustomTable: FC<CustomTableProps> = ({
     onRefetch,
     onRowSelectionChange,
     onDisableRowSelection,
-}) => {
+}: CustomTableProps) => {
     const { handleMessage } = useMainContext();
 
     const { mutate: deleteRecord } = useDelete<NBaseApi.IResponse<boolean>>();

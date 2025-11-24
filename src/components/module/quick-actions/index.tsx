@@ -1,8 +1,8 @@
 import { Button, Space, Tooltip } from 'antd';
 import { Icon } from '@iconify/react';
-import { FC } from 'react';
 
-const QuickActions: FC = () => {
+
+const QuickActions = () => {
     const actions = [
         { icon: 'lucide:file-plus', label: 'Tạo tài liệu', color: '#4285F4' },
         { icon: 'lucide:table', label: 'Tạo bảng tính', color: '#0F9D58' },

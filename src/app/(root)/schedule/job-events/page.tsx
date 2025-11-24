@@ -10,9 +10,9 @@ import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react/dist/iconify.js';
 import { Space } from 'antd';
 import { ColumnsType } from 'antd/es/table';
-import { FC, useState } from 'react';
+import { useState } from 'react';
 
-const ScheduleJobEventsPage: FC = () => {
+const ScheduleJobEventsPage = () => {
     const [selectedJobEvent, setSelectedJobEvent] = useState<
         NSchedule.IScheduleJobEvent | undefined
     >(undefined);

@@ -11,7 +11,7 @@ import {
 import { Badge, Button, Card, Input, Space, Typography } from 'antd';
 import * as jsBeautify from 'js-beautify';
 import dynamic from 'next/dynamic';
-import { CSSProperties, FC, useEffect, useState } from 'react';
+import { CSSProperties, useEffect, useState } from 'react';
 import ReactDiffViewer from 'react-diff-viewer-continued';
 import { useMainContext } from '@/contexts/MainContext';
 
@@ -61,7 +61,7 @@ const HTML_BEAUTIFY_OPTIONS: jsBeautify.HTMLBeautifyOptions = {
     end_with_newline: true,
 };
 
-const CodeDisplay: FC<CodeDisplayProps> = ({
+const CodeDisplay = ({
     code,
     title,
     loading,
@@ -73,7 +73,7 @@ const CodeDisplay: FC<CodeDisplayProps> = ({
     language = 'json',
     isDisplayLanguage = true,
     onCodeChange,
-}) => {
+}: CodeDisplayProps) => {
     const { handleNotification } = useMainContext();
 
     const [isEditing, setIsEditing] = useState(false);

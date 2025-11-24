@@ -13,7 +13,7 @@ import {
     TagOutlined,
 } from '@ant-design/icons';
 import { Button, Card, Dropdown, Input, Menu, Modal, Select, Space, Tag, Tooltip } from 'antd';
-import { FC, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface Note {
     id: number;
@@ -25,7 +25,7 @@ interface Note {
     modified: string;
 }
 
-const KeepPage: FC = () => {
+const KeepPage = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedNote, setSelectedNote] = useState<Note | null>(null);

@@ -3,9 +3,9 @@
 import { Icon } from '@iconify/react';
 import { Button, Space } from 'antd';
 import Link from 'next/link';
-import { FC } from 'react';
 
-const NotFound: FC = () => {
+
+const NotFound = () => {
     const handleGoBack = () => {
         window.history.back();
     };

@@ -1,5 +1,5 @@
 import { Col, Flex, Form, Switch } from 'antd';
-import { FC, ReactNode } from 'react';
+import { ReactNode } from 'react';
 
 type CustomSwitchProps = {
   formFields: string[];
@@ -10,7 +10,14 @@ type CustomSwitchProps = {
   onChange?: (checked?: boolean) => void;
 };
 
-const CustomSwitch: FC<CustomSwitchProps> = ({ fieldLabel, span, fieldPlaceholder, formFields, onChange, disabled }) => {
+const CustomSwitch = ({
+  fieldLabel,
+  span,
+  fieldPlaceholder,
+  formFields,
+  onChange,
+  disabled,
+}: CustomSwitchProps) => {
   return (
     <Col span={span ?? 12} className="!mb-2">
       <Flex align="center" gap={10} className="!mb-0">

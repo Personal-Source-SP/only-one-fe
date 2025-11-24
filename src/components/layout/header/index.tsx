@@ -3,7 +3,7 @@ import { Icon } from '@iconify/react';
 import { Avatar, Badge, Button, Dropdown, Input, MenuProps } from 'antd';
 import { signOut } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
-import { FC } from 'react';
+
 
 type HeaderProps = {
     showSearch: boolean;
@@ -23,7 +23,7 @@ interface SettingItem {
     onClick: () => void;
 }
 
-const Header: FC<HeaderProps> = ({
+const Header = ({
     showSearch,
     mobileMenuOpen,
     showNotifications,
@@ -32,7 +32,7 @@ const Header: FC<HeaderProps> = ({
     getPageTitle,
     setMobileMenuOpen,
     setShowNotifications,
-}) => {
+}: HeaderProps) => {
     const pathname = usePathname();
 
     const settingItem: SettingItem[] = [

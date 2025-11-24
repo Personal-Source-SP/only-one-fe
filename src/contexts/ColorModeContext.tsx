@@ -4,15 +4,15 @@ import { inter } from '@/constants';
 import { useThemeStore } from '@/stores/useThemeStore';
 import { RefineThemes } from '@refinedev/antd';
 import { App as AntdApp, ConfigProvider, theme } from 'antd';
-import React, { type PropsWithChildren } from 'react';
+import { type PropsWithChildren } from 'react';
 
 type ColorModeContextProviderProps = {
     defaultMode?: string;
 };
 
-export const ColorModeContextProvider: React.FC<
-    PropsWithChildren<ColorModeContextProviderProps>
-> = ({ children }) => {
+export const ColorModeContextProvider = ({
+    children,
+}: PropsWithChildren<ColorModeContextProviderProps>) => {
     const { mode, setMode } = useThemeStore();
 
     const { defaultAlgorithm } = theme;

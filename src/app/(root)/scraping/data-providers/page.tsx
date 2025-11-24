@@ -23,9 +23,9 @@ import { Icon } from '@iconify/react';
 import { Button, Space } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import { ColumnType } from 'antd/lib/table';
-import { FC, useState } from 'react';
+import { useState } from 'react';
 
-const DataProviderPage: FC = () => {
+const DataProviderPage = () => {
     const [openCreateItemModal, setOpenCreateItemModal] = useState(false);
     const [openImportItemModal, setOpenImportItemModal] = useState(false);
 

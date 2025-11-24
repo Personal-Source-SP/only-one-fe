@@ -4,8 +4,8 @@ import ActivityChart from '@/components/module/activity-chart';
 import StorageChart from '@/components/module/storage-chart';
 import { Card, Button, Space } from 'antd';
 import { Icon } from '@iconify/react';
-import { FC } from 'react';
 import Link from 'next/link';
+
 
 const recentFiles = [
     {
@@ -97,7 +97,7 @@ const activityData = [
     { date: '07/06', files: 4, photos: 9, notes: 5 },
 ];
 
-const DashboardPage: FC = () => {
+const DashboardPage = () => {
     // Note: Removed framer-motion variants
 
     return (

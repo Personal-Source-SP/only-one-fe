@@ -15,9 +15,9 @@ import { capitalizeFirstLetter, enumToOptions, formatDate, getEnumKeyByValue } f
 import { Icon } from '@iconify/react';
 import { Button, Space, Switch } from 'antd';
 import { ColumnsType } from 'antd/es/table';
-import { FC, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-const ScheduleExecutionPage: FC = () => {
+const ScheduleExecutionPage = () => {
     const [loading, setLoading] = useState(false);
     const [openCreateItemModal, setOpenCreateItemModal] = useState(false);
     const [editItemId, setEditItemId] = useState<string | undefined>(undefined);

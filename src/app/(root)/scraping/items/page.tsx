@@ -11,9 +11,9 @@ import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
 import { Button, Space, Tag } from 'antd';
 import { ColumnsType, ColumnType } from 'antd/es/table';
-import { FC, useState } from 'react';
+import { useState } from 'react';
 
-const ItemPage: FC = () => {
+const ItemPage = () => {
     const [openCreateItemModal, setOpenCreateItemModal] = useState(false);
     const [openImportItemModal, setOpenImportItemModal] = useState(false);
     const [editItemId, setEditItemId] = useState<string | undefined>(undefined);

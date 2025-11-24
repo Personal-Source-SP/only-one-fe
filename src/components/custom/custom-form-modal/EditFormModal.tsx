@@ -8,7 +8,7 @@ import { useCustomModal } from '@/hooks';
 import { FormFieldItem } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { Button, Flex, Form, Row, Space, Spin } from 'antd';
-import { FC, ReactNode, useCallback, useEffect } from 'react';
+import { ReactNode, useCallback, useEffect } from 'react';
 
 type EditFormModalProps = {
     id: string;
@@ -23,7 +23,7 @@ type EditFormModalProps = {
     onTransformValues?: (values: any) => Record<string, any>;
 };
 
-const EditFormModal: FC<EditFormModalProps> = ({
+const EditFormModal = ({
     id,
     resource,
     formFields,
@@ -34,7 +34,7 @@ const EditFormModal: FC<EditFormModalProps> = ({
     initialValues,
     onClose,
     onTransformValues,
-}) => {
+}: EditFormModalProps) => {
     const { handleMessage } = useMainContext();
 
     const modalPropsData = useCustomModal({

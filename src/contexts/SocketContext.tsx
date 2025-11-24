@@ -3,9 +3,8 @@
 import { useSocket } from '@/hooks';
 import { env } from 'next-runtime-env';
 import {
-    createContext,
-    FC,
     PropsWithChildren,
+    createContext,
     useCallback,
     useContext,
     useEffect,
@@ -45,7 +44,7 @@ interface SocketContextValue<T> {
 
 const SocketContext = createContext<SocketContextValue<unknown> | undefined>(undefined);
 
-export const SocketProvider: FC<PropsWithChildren> = ({ children }) => {
+export const SocketProvider = ({ children }: PropsWithChildren) => {
     const notificationUrl = env('NEXT_PUBLIC_NOTIFICATION_URL') as string;
 
     const prevEventsRef = useRef<string[]>([]);

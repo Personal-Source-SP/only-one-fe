@@ -5,7 +5,7 @@ import { SIDEBAR_ITEMS } from '@/constants';
 import { Icon } from '@iconify/react';
 import { Button, Drawer, Menu, Tooltip } from 'antd';
 import { usePathname, useRouter } from 'next/navigation';
-import { FC, useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 type SidebarProps = {
     mobileOpen: boolean;
@@ -14,7 +14,7 @@ type SidebarProps = {
     setCollapsed: (collapsed: boolean) => void;
 };
 
-const Sidebar: FC<SidebarProps> = ({ mobileOpen, setMobileOpen, collapsed, setCollapsed }) => {
+const Sidebar = ({ mobileOpen, setMobileOpen, collapsed, setCollapsed }: SidebarProps) => {
     const isAdmin = true;
     const router = useRouter();
     const pathname = usePathname();

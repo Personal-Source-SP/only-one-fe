@@ -2,7 +2,7 @@
 
 import { Button, Divider, Flex, Input, Select, SelectProps, Space } from 'antd';
 import { debounce } from 'lodash';
-import { FC, useCallback } from 'react';
+import { useCallback } from 'react';
 
 type CustomSelectProps = SelectProps & {
     debounceTime?: number;
@@ -10,12 +10,12 @@ type CustomSelectProps = SelectProps & {
     onInputChange?: (value: string) => void;
 };
 
-const CustomSelect: FC<CustomSelectProps> = ({
+const CustomSelect = ({
     debounceTime = 500,
     onPopupScroll,
     onInputChange,
     ...props
-}) => {
+}: CustomSelectProps) => {
     const debouncedHandlePopupScroll = useCallback(
         debounce((e: React.UIEvent<HTMLElement>) => {
             if (!onPopupScroll) return;

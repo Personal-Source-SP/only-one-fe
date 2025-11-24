@@ -27,7 +27,7 @@ import {
     Table,
 } from 'antd';
 import { ColumnType, TableProps } from 'antd/es/table';
-import { FC, useEffect, useState, type Key } from 'react';
+import { useEffect, useState, type Key } from 'react';
 
 const StepEnum = {
     Settings: 0,
@@ -62,13 +62,13 @@ interface IFormValues {
     modifiedTimeFrom?: string;
 }
 
-const SyncLocal: FC<SyncLocalProps> = ({
+const SyncLocal = ({
     isOpen,
     queryLoading,
     folderOptions,
     onSuccess,
     onClose,
-}) => {
+}: SyncLocalProps) => {
     const { handleMessage } = useMainContext();
 
     const { apiUrl } = useCustomMutationData();

@@ -5,7 +5,7 @@ import MainLayout from '@/components/layout';
 import { SocketProvider } from '@/contexts/SocketContext';
 import { message, notification } from 'antd';
 
-import { createContext, FC, Fragment, PropsWithChildren, useContext, useState } from 'react';
+import { createContext, Fragment, PropsWithChildren, useContext, useState } from 'react';
 
 type NotificationType = 'success' | 'info' | 'warning' | 'error';
 type MessageType = 'success' | 'error' | 'info' | 'warning' | 'loading';
@@ -37,7 +37,7 @@ type MainProviderProps = PropsWithChildren<{
 
 const MainContext = createContext<MainContextType | undefined>(undefined);
 
-export const MainProvider: FC<MainProviderProps> = ({ children, isPublic = false }) => {
+export const MainProvider = ({ children, isPublic = false }: MainProviderProps) => {
     const [loading, setLoading] = useState(false);
 
     const [messageApi, messageContextHolder] = message.useMessage();

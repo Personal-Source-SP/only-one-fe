@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { memo } from "react";
 import {
   Cell,
   Legend,
@@ -17,7 +17,7 @@ type StorageChartProps = {
   total: string;
 };
 
-const StorageChart: FC<StorageChartProps> = ({ data, total }) => {
+const StorageChart = ({ data, total }: StorageChartProps) => {
   return (
     <div className="w-full h-64 relative">
       <ResponsiveContainer width="100%" height="100%">

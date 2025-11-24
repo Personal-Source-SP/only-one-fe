@@ -2,7 +2,7 @@
 
 import { PhotoItemsPerPage } from '@/enums';
 import { Button, Dropdown, Flex, MenuProps, Pagination } from 'antd';
-import { FC } from 'react';
+
 
 type PaginationControlsProps = {
     totalItems: number;
@@ -12,13 +12,13 @@ type PaginationControlsProps = {
     onItemsPerPageChange: (value: number) => void;
 };
 
-const PaginationControls: FC<PaginationControlsProps> = ({
+const PaginationControls = ({
     totalItems,
     currentPage,
     itemsPerPage,
     onPageChange,
     onItemsPerPageChange,
-}) => {
+}: PaginationControlsProps) => {
     const items: MenuProps['items'] = [
         { key: PhotoItemsPerPage.TEN.toString(), label: '10 ảnh/trang' },
         { key: PhotoItemsPerPage.TWENTY.toString(), label: '20 ảnh/trang' },

@@ -25,7 +25,7 @@ import { useWatch } from 'antd/es/form/Form';
 import { ColumnType } from 'antd/es/table';
 import dayjs from 'dayjs';
 import Link from 'next/link';
-import { FC, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 type ProcessScrapeDataProps = {
     open: boolean;
@@ -39,12 +39,12 @@ const StepEnum = {
     Result: 1,
 };
 
-const ProcessScrapeData: FC<ProcessScrapeDataProps> = ({
+const ProcessScrapeData = ({
     open,
     selectedItemIds,
     selectedDataProviderItemIds,
     onClose,
-}) => {
+}: ProcessScrapeDataProps) => {
     const [form] = Form.useForm<NDataProvider.IScrapeDataRequest>();
 
     const [pageSize, setPageSize] = useState(50);

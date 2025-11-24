@@ -6,7 +6,7 @@ import { NSchedule } from '@/interfaces';
 import { calculateDuration, formatDate } from '@/libs';
 import { Descriptions, Tabs } from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
-import { FC } from 'react';
+
 
 type ViewJobEventProps = {
     isOpen: boolean;
@@ -14,7 +14,7 @@ type ViewJobEventProps = {
     onClose: () => void;
 };
 
-const ViewJobEvent: FC<ViewJobEventProps> = ({ isOpen, jobEvent, onClose }) => {
+const ViewJobEvent = ({ isOpen, jobEvent, onClose }: ViewJobEventProps) => {
     return (
         <CustomModal
             modalProps={{

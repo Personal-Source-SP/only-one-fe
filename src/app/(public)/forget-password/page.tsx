@@ -3,9 +3,9 @@
 import { Logo } from '@/components/common';
 import { Button, Card, Input, Space } from 'antd';
 import Link from 'next/link';
-import { FC, useState } from 'react';
+import { useState } from 'react';
 
-const ForgetPasswordPage: FC = () => {
+const ForgetPasswordPage = () => {
     const [email, setEmail] = useState('');
 
     return (

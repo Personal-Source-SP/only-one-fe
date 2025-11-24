@@ -30,7 +30,7 @@ import {
 } from 'antd';
 import { useWatch } from 'antd/es/form/Form';
 import { isEmpty, isNumber } from 'lodash';
-import { FC, Fragment, useState } from 'react';
+import { Fragment, useState } from 'react';
 
 type DataProviderForm = NDataProvider.IDataProvider & {
     url: string;
@@ -78,11 +78,11 @@ const FORM_FIELDS = {
     ADDITIONAL_EXTRACT_DATA: 'additionalExtractData',
 };
 
-const ScrapeSetting: FC<ScrapeSettingProps> = ({
+const ScrapeSetting = ({
     modalPropsData,
     dataProviderItemOptions,
     onClose,
-}) => {
+}: ScrapeSettingProps) => {
     const { handleNotification } = useMainContext();
     const { formProps, modalProps, formLoading } = modalPropsData;
 

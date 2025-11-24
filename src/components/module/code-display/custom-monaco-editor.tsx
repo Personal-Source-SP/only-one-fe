@@ -3,7 +3,7 @@ import { cheerioTypes } from '@/components/module/code-display/utils/type';
 import { Editor, useMonaco } from '@monaco-editor/react';
 import { debounce } from 'lodash';
 import * as monaco from 'monaco-editor';
-import { FC, useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 
 type CustomMonacoEditorProps = {
     editedCode: string;
@@ -55,11 +55,11 @@ const DIAGNOSTICS_OPTIONS: monaco.languages.typescript.DiagnosticsOptions = {
     diagnosticCodesToIgnore: [], // List of error codes to ignore
 };
 
-const CustomMonacoEditor: FC<CustomMonacoEditorProps> = ({
+const CustomMonacoEditor = ({
     editedCode,
     onCodeChange,
     language = 'javascript',
-}) => {
+}: CustomMonacoEditorProps) => {
     const monaco = useMonaco();
 
     useEffect(() => {

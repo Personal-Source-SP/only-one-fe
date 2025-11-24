@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { memo } from "react";
 import {
   Area,
   AreaChart,
@@ -18,7 +18,7 @@ type ActivityChartProps = {
   }[];
 };
 
-const ActivityChart: FC<ActivityChartProps> = ({ data }) => {
+const ActivityChart = ({ data }: ActivityChartProps) => {
   return (
     <div className="w-full h-64">
       <ResponsiveContainer width="100%" height="100%">

@@ -1,6 +1,6 @@
 'use client';
 
-import { FC } from 'react';
+
 
 import Lightbox, { SlideImage } from 'yet-another-react-lightbox';
 import Fullscreen from 'yet-another-react-lightbox/plugins/fullscreen';
@@ -18,13 +18,13 @@ type CustomLightBoxProps = {
     closeLightbox: () => void;
 };
 
-const CustomLightBox: FC<CustomLightBoxProps> = ({
+const CustomLightBox = ({
     index,
     isOpen,
     slides,
     slideshowInterval = 3,
     closeLightbox,
-}) => {
+}: CustomLightBoxProps) => {
     return (
         <Lightbox
             open={isOpen}

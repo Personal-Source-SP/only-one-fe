@@ -2,7 +2,7 @@
 
 import { Button, Card } from 'antd';
 import { Icon } from '@iconify/react';
-import { FC } from 'react';
+
 
 type DataNotFoundProps = {
     icon?: string;
@@ -12,13 +12,13 @@ type DataNotFoundProps = {
     onRetry?: () => void;
 };
 
-const DataNotFound: FC<DataNotFoundProps> = ({
+const DataNotFound = ({
     icon = 'lucide:circle-off',
     title = 'Không có dữ liệu',
     message = 'Vui lòng kiểm tra kết nối hoặc thử lại sau.',
     loading,
     onRetry,
-}) => {
+}: DataNotFoundProps) => {
     return (
         <div className="flex items-center justify-center bg-transparent">
             <Card className="max-w-xl w-full mx-4">

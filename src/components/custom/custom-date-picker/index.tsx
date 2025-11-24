@@ -4,7 +4,7 @@ import { DATE_FORMAT_SHORT, DATE_FORMAT_TIME } from '@/constants';
 import { DatePicker, Form } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
 import { debounce } from 'lodash';
-import { FC, useCallback } from 'react';
+import { useCallback } from 'react';
 
 const { RangePicker } = DatePicker;
 
@@ -17,14 +17,14 @@ type CustomDatePickerProps = {
     dateRange?: [string, string];
 };
 
-const CustomDatePicker: FC<CustomDatePickerProps> = ({
+const CustomDatePicker = ({
     name,
     label,
     setDateRange,
     showTime,
     allowClear,
     dateRange,
-}) => {
+}: CustomDatePickerProps) => {
     const presets: any[] = [
         {
             label: 'Hôm qua',

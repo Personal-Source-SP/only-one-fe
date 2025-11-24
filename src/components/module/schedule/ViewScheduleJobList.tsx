@@ -7,7 +7,7 @@ import { useTableContainer } from '@/hooks';
 import { FilterItem, NSchedule } from '@/interfaces';
 import { formatDate } from '@/libs';
 import { ColumnsType } from 'antd/es/table';
-import { FC } from 'react';
+
 
 type ViewScheduleJobListProps = {
     isOpen: boolean;
@@ -15,7 +15,7 @@ type ViewScheduleJobListProps = {
     onClose: () => void;
 };
 
-const ViewScheduleJobList: FC<ViewScheduleJobListProps> = ({ isOpen, scheduleId, onClose }) => {
+const ViewScheduleJobList = ({ isOpen, scheduleId, onClose }: ViewScheduleJobListProps) => {
     const tableContainerData = useTableContainer({
         resource: `schedule-jobs/schedule/${scheduleId}`,
     });

@@ -10,9 +10,9 @@ import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
 import { Button, Space } from 'antd';
 import { ColumnsType } from 'antd/es/table';
-import { FC, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-const FolderPage: FC = () => {
+const FolderPage = () => {
     const [isOpenSyncFile, setIsOpenSyncFile] = useState(false);
 
     const tableContainerData = useTableContainer({

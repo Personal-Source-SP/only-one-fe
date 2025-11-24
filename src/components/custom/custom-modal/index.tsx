@@ -1,14 +1,14 @@
 'use client';
 
 import { Modal, ModalProps } from 'antd';
-import { FC } from 'react';
+import { ReactNode } from 'react';
 
 type CustomModalProps = {
     modalProps: ModalProps;
-    children: React.ReactNode;
+    children: ReactNode;
 };
 
-const CustomModal: FC<CustomModalProps> = ({ children, modalProps }) => {
+const CustomModal = ({ modalProps, children }: CustomModalProps) => {
     if (!modalProps.open) return <></>;
 
     return (

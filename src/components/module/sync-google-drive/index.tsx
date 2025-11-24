@@ -31,7 +31,7 @@ import {
 } from 'antd';
 import { ColumnType, TableProps } from 'antd/es/table';
 import Link from 'next/link';
-import { FC, useEffect, useMemo, useState, type Key } from 'react';
+import { useEffect, useMemo, useState, type Key } from 'react';
 
 const StepEnum = {
     Settings: 0,
@@ -70,7 +70,7 @@ interface IFormValues {
     modifiedTimeTo?: string;
 }
 
-const SyncGoogleDrive: FC<SyncGoogleDriveProps> = ({
+const SyncGoogleDrive = ({
     isOpen,
     queryLoading,
     defaultType,
@@ -78,7 +78,7 @@ const SyncGoogleDrive: FC<SyncGoogleDriveProps> = ({
     defaultFolderOptions,
     onSuccess,
     onClose,
-}) => {
+}: SyncGoogleDriveProps) => {
     const { handleMessage } = useMainContext();
 
     const { options: folderOptionResult, query: queryFolderOptions } = useSelectGoogleFolder({

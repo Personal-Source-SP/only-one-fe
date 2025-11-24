@@ -22,7 +22,7 @@ import {
     UploadFile,
 } from 'antd';
 import { ColumnType } from 'antd/es/table';
-import { FC, useState } from 'react';
+import { useState } from 'react';
 
 type ImportDataProps = {
     open: boolean;
@@ -38,7 +38,7 @@ const StepEnum = {
     Result: 2,
 };
 
-const ImportData: FC<ImportDataProps> = ({ open, dataType, columns, onClose, onSuccess }) => {
+const ImportData = ({ open, dataType, columns, onClose, onSuccess }: ImportDataProps) => {
     const { handleMessage } = useMainContext();
 
     const [pageSize, setPageSize] = useState(50);

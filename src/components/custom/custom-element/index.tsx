@@ -2,22 +2,21 @@
 
 import { ElementType } from '@/enums';
 import { Card, Flex, Space, Spin } from 'antd';
-import { FC } from 'react';
+import { ReactNode } from 'react';
 
 type CustomElementProps = {
     elementType: ElementType;
-
     title?: string;
+    header?: ReactNode;
+    actions?: ReactNode[];
     loading?: boolean;
+    variant?: 'borderless' | 'outlined';
+    children?: ReactNode;
     className?: string;
     description?: string;
-    header?: React.ReactNode;
-    children?: React.ReactNode;
-    actions?: React.ReactNode[];
-    variant?: 'borderless' | 'outlined';
 };
 
-const CustomElement: FC<CustomElementProps> = ({
+const CustomElement = ({
     elementType,
     title,
     loading = false,
@@ -27,7 +26,7 @@ const CustomElement: FC<CustomElementProps> = ({
     children,
     actions,
     variant = 'borderless',
-}) => {
+}: CustomElementProps) => {
     switch (elementType) {
         case ElementType.TITLE: {
             return (

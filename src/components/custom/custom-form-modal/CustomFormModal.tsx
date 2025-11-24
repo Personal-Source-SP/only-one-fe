@@ -3,15 +3,19 @@
 import CustomModal from '@/components/custom/custom-modal';
 
 import { ModalProps, Space, Spin } from 'antd';
-import { FC } from 'react';
+import { ReactNode } from 'react';
 
 type CustomFormModalProps = {
     formLoading: boolean;
     modalProps: ModalProps;
-    children: React.ReactNode;
+    children: ReactNode;
 };
 
-const CustomFormModal: FC<CustomFormModalProps> = ({ formLoading, modalProps, children }) => {
+const CustomFormModal = ({
+    formLoading,
+    modalProps,
+    children,
+}: CustomFormModalProps) => {
     return (
         <CustomModal modalProps={{ ...modalProps, destroyOnHidden: true }}>
             <Spin spinning={formLoading}>

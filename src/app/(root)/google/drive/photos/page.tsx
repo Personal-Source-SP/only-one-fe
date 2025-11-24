@@ -12,7 +12,7 @@ import type { FilterItem, NGoogle, PhotoItem } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { Button, Space } from 'antd';
 import { isNumber } from 'lodash';
-import { FC, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { CustomElement, CustomLightBox, TableContainer } from '@/components/custom';
 import { PhotoGroups } from '@/components/module/photos';
@@ -23,7 +23,7 @@ import SyncLocal from '@/components/module/sync-local';
 import { useCustomData, useSelectGoogleFolder, useTableContainer } from '@/hooks';
 import { getDriveImageUrl, isExpiredToken } from '@/libs';
 
-const PhotosPage: FC = () => {
+const PhotosPage = () => {
     const [columns, setColumns] = useState(4);
     const [viewMode, setViewMode] = useState<ViewPhotoMode>(ViewPhotoMode.ALL);
     const [qualityMode, setQualityMode] = useState<QualityMode>(QualityMode.LOW);

@@ -1,9 +1,9 @@
 import { Icon } from '@iconify/react';
 import { Button, Space } from 'antd';
 import Link from 'next/link';
-import { FC } from 'react';
 
-const Forbidden: FC = () => {
+
+const Forbidden = () => {
     const supportLinks = [
         { name: 'Trung tâm trợ giúp', path: '/' },
         { name: 'Quên mật khẩu', path: '/login' },

@@ -1,8 +1,8 @@
 import { Icon } from '@iconify/react';
 import { Space } from 'antd';
-import { FC } from 'react';
 
-const Loading: FC = () => {
+
+const Loading = () => {
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-gradient-to-b from-blue-50 to-white">
             <div className="text-center">

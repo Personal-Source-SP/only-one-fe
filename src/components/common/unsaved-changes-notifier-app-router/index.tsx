@@ -2,15 +2,15 @@
 
 import { useWarnAboutChange } from '@refinedev/core';
 import { useNavigationGuard } from 'next-navigation-guard';
-import { FC } from 'react';
+
 
 type UnsavedChangesNotifierProps = {
     message?: string;
 };
 
-const UnsavedChangesNotifierAppRouter: FC<UnsavedChangesNotifierProps> = ({
+const UnsavedChangesNotifierAppRouter = ({
     message = 'You have unsaved changes that will be lost.',
-}) => {
+}: UnsavedChangesNotifierProps) => {
     const { warnWhen, setWarnWhen } = useWarnAboutChange();
 
     useNavigationGuard({

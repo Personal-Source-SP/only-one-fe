@@ -4,13 +4,13 @@ import { CustomFilterType } from '@/enums';
 import { FilterItem } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { Col, Input, Row, Select } from 'antd';
-import { FC } from 'react';
+
 
 type CustomFilterProps = {
     filters: FilterItem[];
 };
 
-const CustomFilter: FC<CustomFilterProps> = ({ filters }) => {
+const CustomFilter = ({ filters }: CustomFilterProps) => {
     const renderFilterItem = (filterItem: FilterItem, index: number) => {
         const {
             type,

@@ -8,35 +8,35 @@ import { useTableContainer } from '@/hooks';
 import { useDebounceSearch } from '@/hooks/useDebounceSearch';
 import { ActionTableItem, FilterItem, SearchFilterItem } from '@/interfaces';
 import { ColumnsType } from 'antd/es/table';
-import { FC, useMemo } from 'react';
+import { ReactNode, useMemo } from 'react';
 
 type TableContainerProps = {
-    loading?: boolean;
-    resource?: string;
-    columns?: ColumnsType<any>;
-    filterSearch?: SearchFilterItem;
-    customFilterItems?: FilterItem[];
-    actionItems?: ActionTableItem[];
-    childrenTop?: React.ReactNode;
-    childrenBottom?: React.ReactNode;
     tableContainerData: ReturnType<typeof useTableContainer>;
-    onDisableRowSelection?: (record: any) => boolean;
+    loading?: boolean;
+    columns?: ColumnsType<any>;
+    resource?: string;
+    actionItems?: ActionTableItem[];
+    childrenTop?: ReactNode;
+    filterSearch?: SearchFilterItem;
+    childrenBottom?: ReactNode;
+    customFilterItems?: FilterItem[];
     onRowSelectionChange?: (selectedRows: any[]) => void;
+    onDisableRowSelection?: (record: any) => boolean;
 };
 
-const TableContainer: FC<TableContainerProps> = ({
+const TableContainer = ({
+    tableContainerData,
     loading,
-    resource,
     columns,
-    filterSearch,
-    customFilterItems,
+    resource,
     actionItems,
     childrenTop,
+    filterSearch,
     childrenBottom,
-    tableContainerData,
+    customFilterItems,
     onRowSelectionChange,
     onDisableRowSelection,
-}) => {
+}: TableContainerProps) => {
     const { scrollToTop } = useMainContext();
 
     const {

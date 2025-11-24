@@ -16,7 +16,7 @@ import { exchangeCodeForTokens, getUserInfoFromGoogle } from '@/libs';
 
 import { Space } from 'antd';
 import { usePathname, useRouter } from 'next/navigation';
-import { FC, ReactNode, Suspense, useEffect, useRef, useState } from 'react';
+import { ReactNode, Suspense, useEffect, useRef, useState } from 'react';
 
 type MainLayoutProps = {
     children: ReactNode;
@@ -39,7 +39,7 @@ const getPageTitle = (pathname: string, items?: SidebarItem[]): string => {
     return 'O-O Hub';
 };
 
-const MainLayout: FC<MainLayoutProps> = ({ children }) => {
+const MainLayout = ({ children }: MainLayoutProps) => {
     const router = useRouter();
     const pathname = usePathname();
     const handledAuthRef = useRef(false);

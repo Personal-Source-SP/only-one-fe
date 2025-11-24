@@ -7,7 +7,7 @@ import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
 import { CrudFilter } from '@refinedev/core';
 import { Avatar, Button, Card, Space } from 'antd';
-import { FC, Fragment, ReactNode, useEffect, useMemo, useState } from 'react';
+import { Fragment, ReactNode, useEffect, useMemo, useState } from 'react';
 
 const notificationIcon: Record<NotificationType, ReactNode> = {
     [NotificationType.INFO]: <Icon icon="lucide:share-2" className="text-primary" />,
@@ -62,7 +62,7 @@ type NotificationsPanelProps = {
     onClose: () => void;
 };
 
-const NotificationsPanel: FC<NotificationsPanelProps> = ({ onClose }) => {
+const NotificationsPanel = ({ onClose }: NotificationsPanelProps) => {
     const [activeTab, setActiveTab] = useState<NotificationTab>(NotificationTab.ALL);
 
     const tableContainerData = useTableContainer({

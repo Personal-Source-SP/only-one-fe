@@ -1,5 +1,5 @@
 import { Card, Typography } from 'antd';
-import { CSSProperties, FC } from 'react';
+import { CSSProperties } from 'react';
 
 type CommentDisplayProps = {
   title: string;
@@ -11,7 +11,7 @@ const cardStyle: CSSProperties = {
   border: '1px solid #e0e0e0',
 };
 
-const CommentDisplay: FC<CommentDisplayProps> = ({ title, comments }) => {
+const CommentDisplay = ({ title, comments }: CommentDisplayProps) => {
   return (
     <div className="mb-2">
       <Card style={cardStyle}>

@@ -9,7 +9,7 @@ import {
     UserOutlined,
 } from '@ant-design/icons';
 import { Empty as AntEmpty, Button } from 'antd';
-import { FC } from 'react';
+import { CSSProperties, ReactNode } from 'react';
 
 type EmptyVariant =
     | 'default'
@@ -23,17 +23,17 @@ type EmptyVariant =
     | 'setting';
 
 type EmptyProps = {
+    style?: CSSProperties;
+    image?: string | ReactNode;
+    variant?: EmptyVariant;
     className?: string;
     buttonText?: string;
+    imageStyle?: CSSProperties;
     description?: string;
-    variant?: EmptyVariant;
-    style?: React.CSSProperties;
-    imageStyle?: React.CSSProperties;
-    image?: string | React.ReactNode;
     onButtonClick?: () => void;
 };
 
-const Empty: FC<EmptyProps> = ({
+const Empty = ({
     className,
     buttonText,
     description = 'Không có dữ liệu',
@@ -42,7 +42,7 @@ const Empty: FC<EmptyProps> = ({
     imageStyle,
     image,
     onButtonClick,
-}) => {
+}: EmptyProps) => {
     const getVariantConfig = () => {
         const configs = {
             default: {

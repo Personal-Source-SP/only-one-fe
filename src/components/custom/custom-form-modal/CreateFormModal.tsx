@@ -9,7 +9,7 @@ import { useCustomModal } from '@/hooks';
 import { FormFieldItem } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { Button, Col, Flex, Form, FormProps, Input, Row, Select, Space, Spin, Switch } from 'antd';
-import { FC, ReactNode, useCallback, useEffect } from 'react';
+import { ReactNode, useCallback, useEffect } from 'react';
 
 type CreateFormModalProps = {
     open: boolean;
@@ -130,7 +130,7 @@ export const renderFormFields = (formField: FormFieldItem, formProps: FormProps<
     );
 };
 
-const CreateFormModal: FC<CreateFormModalProps> = ({
+const CreateFormModal = ({
     open,
     resource,
     formFields,
@@ -141,7 +141,7 @@ const CreateFormModal: FC<CreateFormModalProps> = ({
     initialValues,
     onClose,
     onTransformValues,
-}) => {
+}: CreateFormModalProps) => {
     const { handleMessage } = useMainContext();
 
     const modalPropsData = useCustomModal({

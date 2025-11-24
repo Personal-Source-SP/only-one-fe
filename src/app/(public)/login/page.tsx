@@ -7,9 +7,9 @@ import { useLogin } from '@refinedev/core';
 import { Button, Checkbox, Form, Input, Space, notification } from 'antd';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { FC, useState } from 'react';
+import { useState } from 'react';
 
-const LoginPage: FC = () => {
+const LoginPage = () => {
     const { mutate: login, isPending } = useLogin();
 
     const router = useRouter();

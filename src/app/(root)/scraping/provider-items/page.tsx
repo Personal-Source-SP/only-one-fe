@@ -14,9 +14,9 @@ import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
 import { Button, Space, Switch } from 'antd';
 import { ColumnsType } from 'antd/es/table';
-import { FC, useState } from 'react';
+import { useState } from 'react';
 
-const DataProviderItemPage: FC = () => {
+const DataProviderItemPage = () => {
     const [loading, setLoading] = useState(false);
     const [openCreateItemModal, setOpenCreateItemModal] = useState(false);
     const [editItemId, setEditItemId] = useState<string | undefined>(undefined);

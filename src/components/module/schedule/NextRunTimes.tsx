@@ -1,6 +1,6 @@
 import { Card, Col, Row, Tag, Typography } from 'antd';
 import { CronExpressionParser } from 'cron-parser';
-import { FC, Fragment } from 'react';
+import { Fragment } from 'react';
 
 const getNextRunTimes = (cron: string, count = 6) => {
     try {
@@ -24,7 +24,7 @@ type NextRunTimesProps = {
     count?: number;
 };
 
-const NextRunTimes: FC<NextRunTimesProps> = ({ cron, count = 6 }) => {
+const NextRunTimes = ({ cron, count = 6 }: NextRunTimesProps) => {
     if (!cron) return <Fragment></Fragment>;
 
     const nextRunTimes = getNextRunTimes(cron, count);
