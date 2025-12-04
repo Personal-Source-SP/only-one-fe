@@ -1,4 +1,9 @@
-import { DataProviderSearchStatus, DataProviderStatus, ProductMappingStatus } from '@/enums';
+import {
+    DataProviderSearchStatus,
+    DataProviderStatus,
+    DisplayType,
+    ProductMappingStatus,
+} from '@/enums';
 import { Abstract } from '@/interfaces/common';
 
 export declare namespace NDataProvider {
@@ -81,6 +86,7 @@ export declare namespace NDataProvider {
         itemUrl: string;
         dataProviderId: string;
         isActive: boolean;
+        displayType: DisplayType;
         lastScrapedTimestamp?: Date;
         item: IItem;
         dataProvider: IDataProvider;
