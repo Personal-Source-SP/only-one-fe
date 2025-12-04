@@ -84,6 +84,7 @@ const CloudDataItem = () => {
             key: 'mimeType',
             width: 150,
             ellipsis: true,
+            render: (mimeType: string) => <StatusTag status={mimeType} />,
         },
         {
             title: 'Dung lượng',
