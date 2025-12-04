@@ -79,6 +79,14 @@ const CloudDataItem = () => {
             },
         },
         {
+            title: 'Trạng thái',
+            dataIndex: 'isActive',
+            key: 'isActive',
+            width: 150,
+            align: 'center',
+            render: (isActive: boolean) => <StatusTag status={isActive ? 'active' : 'inactive'} />,
+        },
+        {
             title: 'Loại file',
             dataIndex: 'mimeType',
             key: 'mimeType',
@@ -93,14 +101,6 @@ const CloudDataItem = () => {
             width: 150,
             align: 'center',
             render: (fileSize: number) => (fileSize ? formatFileSize(fileSize) : '-'),
-        },
-        {
-            title: 'Trạng thái',
-            dataIndex: 'isActive',
-            key: 'isActive',
-            width: 150,
-            align: 'center',
-            render: (isActive: boolean) => <StatusTag status={isActive ? 'active' : 'inactive'} />,
         },
         {
             title: 'Ngày tạo',
@@ -141,7 +141,7 @@ const CloudDataItem = () => {
     return (
         <Space size="middle" direction="vertical" className="w-full h-full">
             <CustomElement
-                title="Danh sách dữ liệu cloud"
+                title="Danh sách dữ liệu đám mây"
                 elementType={ElementType.TITLE}
                 actions={[
                     <Button
@@ -159,13 +159,13 @@ const CloudDataItem = () => {
                 columns={columns}
                 resource="cloud-data-items"
                 tableContainerData={tableContainerData}
-                filterSearch={{ placeholder: 'Tìm kiếm dữ liệu cloud' }}
+                filterSearch={{ placeholder: 'Tìm kiếm dữ liệu đám mây' }}
             />
 
             <CreateFormModal
                 open={openCreateItemModal}
                 formFields={createFormFields}
-                title="Thêm mới dữ liệu cloud"
+                title="Thêm mới dữ liệu đám mây"
                 resource="cloud-data-items/upload"
                 onClose={() => {
                     setOpenCreateItemModal(false);
