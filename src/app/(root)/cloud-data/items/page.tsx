@@ -10,7 +10,7 @@ import { Icon } from '@iconify/react';
 import { Button, Flex, Space, Tooltip } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import Link from 'next/link';
-import { memo, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 const CloudDataItem = () => {
     const [openCreateItemModal, setOpenCreateItemModal] = useState(false);
@@ -188,4 +188,4 @@ const CloudDataItem = () => {
     );
 };
 
-export default memo(CloudDataItem);
+export default CloudDataItem;
