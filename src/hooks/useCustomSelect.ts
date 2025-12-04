@@ -1,4 +1,4 @@
-import { NDataProvider, NGoogle } from '@/interfaces';
+import { NCloudData, NDataProvider, NGoogle } from '@/interfaces';
 import { CrudFilter, useSelect } from '@refinedev/core';
 
 interface IUseSelectProps<T> {
@@ -80,5 +80,17 @@ export const useSelectGoogleFolder = (props?: IUseSelectProps<NGoogle.IGoogleDri
         enabled: props?.enabled ?? true,
         optionValue: props?.optionValue ?? ((item: NGoogle.IGoogleDriveFolder) => item.id ?? ''),
         optionLabel: props?.optionLabel ?? ((item: NGoogle.IGoogleDriveFolder) => item.name ?? ''),
+    });
+};
+
+export const useSelectCloudDataProvider = (
+    props?: IUseSelectProps<NCloudData.ICloudDataProvider>,
+) => {
+    return useCustomSelect({
+        resource: 'cloud-data-providers/all',
+        enabled: props?.enabled ?? true,
+        optionValue: props?.optionValue ?? ((item: NCloudData.ICloudDataProvider) => item.id ?? ''),
+        optionLabel:
+            props?.optionLabel ?? ((item: NCloudData.ICloudDataProvider) => item.name ?? ''),
     });
 };

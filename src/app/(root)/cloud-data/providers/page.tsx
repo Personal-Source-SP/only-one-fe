@@ -5,7 +5,7 @@ import { CreateFormModal, CustomElement, EditFormModal, TableContainer } from '@
 import { CloudDataProviderType, ElementType } from '@/enums';
 import { useTableContainer } from '@/hooks';
 import { ActionTableItem, FormFieldItem, NCloudData } from '@/interfaces';
-import { enumToOptions, formatDate, formatFileSize } from '@/libs';
+import { capitalizeFirstLetter, enumToOptions, formatDate, formatFileSize } from '@/libs';
 import { Icon } from '@iconify/react';
 import { Button, Space } from 'antd';
 import { ColumnsType } from 'antd/es/table';
@@ -40,7 +40,9 @@ const CloudDataProvider = () => {
             dataIndex: 'type',
             key: 'type',
             width: 150,
-            render: (type: CloudDataProviderType) => <StatusTag status={type?.toUpperCase()} />,
+            render: (type: CloudDataProviderType) => (
+                <StatusTag status={capitalizeFirstLetter(type)} />
+            ),
         },
         {
             title: 'Trạng thái',

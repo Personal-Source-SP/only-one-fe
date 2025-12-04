@@ -1,15 +1,31 @@
 'use client';
 
-import CodeDisplay from '@/components/module/code-display';
 import CustomModal from '@/components/custom/custom-modal';
+import CodeDisplay from '@/components/module/code-display';
 
 import { useMainContext } from '@/contexts/MainContext';
 import { useCustomModal } from '@/hooks';
 
 import { FormFieldItem } from '@/interfaces';
 import { Icon } from '@iconify/react';
-import { Button, Col, Flex, Form, FormProps, Input, Row, Select, Space, Spin, Switch } from 'antd';
-import { ReactNode, useCallback, useEffect } from 'react';
+import { useApiUrl } from '@refinedev/core';
+import {
+    Button,
+    Col,
+    Flex,
+    Form,
+    FormProps,
+    Input,
+    Row,
+    Select,
+    Space,
+    Spin,
+    Switch,
+    Upload,
+    UploadFile,
+} from 'antd';
+import { useSession } from 'next-auth/react';
+import React, { ReactNode, useCallback, useEffect } from 'react';
 
 type CreateFormModalProps = {
     open: boolean;
@@ -112,6 +128,39 @@ export const renderFormFields = (formField: FormFieldItem, formProps: FormProps<
             break;
         }
 
+        case 'upload': {
+            const { accept, maxCount, multiple } = formField.uploadProps ?? {};
+            formFieldElement = (
+                <Upload.Dragger
+                    accept={accept}
+                    maxCount={maxCount ?? 1}
+                    beforeUpload={() => false}
+                    multiple={multiple ?? false}
+                    disabled={formField.disabled ?? false}
+                >
+                    <Space size="small" direction="vertical" align="center">
+                        <p className="ant-upload-drag-icon">
+                            <Icon icon="lucide:upload" style={{ fontSize: '48px' }} />
+                        </p>
+                        <p className="ant-upload-text font-medium text-lg mt-4">
+                            Kéo thả hoặc click để chọn file
+                        </p>
+                        <p className="ant-upload-hint text-gray-500">
+                            {accept ? `Định dạng hỗ trợ: ${accept}` : 'Chọn file để tải lên'}
+                        </p>
+                    </Space>
+                </Upload.Dragger>
+            );
+            Object.assign(formItemProps, {
+                valuePropName: 'fileList',
+                getValueFromEvent: (e: { fileList: UploadFile[] }) => {
+                    formField.onChange?.(e.fileList, formProps?.form);
+                    return e.fileList;
+                },
+            });
+            break;
+        }
+
         default:
             return <></>;
     }
@@ -152,6 +201,9 @@ const CreateFormModal = ({
     onTransformValues,
 }: CreateFormModalProps) => {
     const { handleMessage } = useMainContext();
+    const apiUrl = useApiUrl();
+    const { data: session } = useSession();
+    const [isSubmitting, setIsSubmitting] = React.useState(false);
 
     const modalPropsData = useCustomModal({
         resource: resource,
@@ -195,7 +247,7 @@ const CreateFormModal = ({
                     type="primary"
                     htmlType="submit"
                     className="w-full"
-                    loading={formLoading}
+                    loading={formLoading || isSubmitting}
                     icon={<Icon icon="lucide:plus" />}
                     onClick={() => formProps.form?.submit()}
                 >
@@ -221,7 +273,7 @@ const CreateFormModal = ({
                 },
             }}
         >
-            <Spin spinning={formLoading}>
+            <Spin spinning={formLoading || isSubmitting}>
                 <Space direction="vertical" className="w-full h-full overflow-x-hidden">
                     {topRender && topRender}
 
@@ -230,9 +282,50 @@ const CreateFormModal = ({
                         layout="vertical"
                         initialValues={initialValues}
                         className="[&_.ant-form-item]:!mb-2"
-                        onFinish={(values) => {
-                            const request = onTransformValues?.(values) ?? values;
-                            formProps?.onFinish?.(request);
+                        onFinish={async (values) => {
+                            const transformed = onTransformValues?.(values) ?? values;
+
+                            if (transformed instanceof FormData) {
+                                setIsSubmitting(true);
+                                try {
+                                    const token = session?.user?.accessToken;
+                                    const headers: HeadersInit = {};
+
+                                    if (token) {
+                                        headers['Authorization'] = `Bearer ${token}`;
+                                    }
+
+                                    const response = await fetch(`${apiUrl}/${resource}`, {
+                                        method: 'POST',
+                                        headers,
+                                        body: transformed,
+                                    });
+
+                                    const data = await response.json();
+
+                                    if (response.ok && data?.data) {
+                                        handleMessage({
+                                            content: 'Tạo thành công',
+                                        });
+                                        close();
+                                        onClose?.();
+                                    } else {
+                                        handleMessage({
+                                            type: 'error',
+                                            content: data?.errorMessage || 'Tạo thất bại',
+                                        });
+                                    }
+                                } catch (error: any) {
+                                    handleMessage({
+                                        type: 'error',
+                                        content: error?.message || 'Tạo thất bại',
+                                    });
+                                } finally {
+                                    setIsSubmitting(false);
+                                }
+                            } else {
+                                formProps?.onFinish?.(transformed);
+                            }
                         }}
                     >
                         <Row gutter={[8, 8]}>

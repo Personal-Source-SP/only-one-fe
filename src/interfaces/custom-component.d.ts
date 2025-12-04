@@ -6,7 +6,7 @@ import { ReactNode } from 'react';
 
 export interface FormFieldItem {
     name: string;
-    type: 'input' | 'select' | 'textarea' | 'switch' | 'code-display';
+    type: 'input' | 'select' | 'textarea' | 'switch' | 'code-display' | 'upload';
     label: string;
 
     span?: number;
@@ -33,6 +33,11 @@ export interface FormFieldItem {
     textareaProps?: {
         placeholder?: string;
         rows?: number;
+    };
+    uploadProps?: {
+        accept?: string;
+        maxCount?: number;
+        multiple?: boolean;
     };
     elementTopRender?: ReactNode;
     elementBottomRender?: ReactNode;
