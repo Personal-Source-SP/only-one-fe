@@ -162,6 +162,12 @@ const CloudDataProvider = () => {
                     setOpenCreateItemModal(false);
                     tableContainerData?.tableQuery?.refetch();
                 }}
+                onTransformValues={(values) => {
+                    return {
+                        ...values,
+                        config: JSON.parse(values.config),
+                    };
+                }}
             />
 
             <EditFormModal
