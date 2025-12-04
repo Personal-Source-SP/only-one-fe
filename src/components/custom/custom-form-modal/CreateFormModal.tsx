@@ -94,7 +94,16 @@ export const renderFormFields = (formField: FormFieldItem, formProps: FormProps<
             Object.assign(formItemProps, {
                 valuePropName: 'code',
                 trigger: 'onCodeChange',
-                getValueProps: (value: string) => ({ code: value ?? '' }),
+                getValueProps: (value: string) => {
+                    if (!value) return { code: '{}' };
+                    if (typeof value === 'string') return { code: value };
+
+                    try {
+                        return { code: JSON.stringify(value, null, 2) };
+                    } catch {
+                        return { code: String(value) };
+                    }
+                },
                 getValueFromEvent: (value: string) => {
                     formField.onChange?.(value, formProps?.form);
                     return value ?? '';

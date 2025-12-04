@@ -40,7 +40,7 @@ const CloudDataProvider = () => {
             dataIndex: 'type',
             key: 'type',
             width: 150,
-            render: (type: CloudDataProviderType) => <StatusTag status={type} />,
+            render: (type: CloudDataProviderType) => <StatusTag status={type?.toUpperCase()} />,
         },
         {
             title: 'Trạng thái',
