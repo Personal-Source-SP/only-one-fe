@@ -8,3 +8,4 @@ export * from './role.enum';
 export * from './schedule.enum';
 export * from './simulation.enum';
 export * from './socket.enum';
+export * from './cloud-data-provider.enum';

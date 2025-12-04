@@ -7,7 +7,7 @@ import NotificationsPanel from '@/components/layout/notifications-panel';
 import Search from '@/components/layout/search';
 import Sidebar from '@/components/layout/sidebar';
 
-import { SIDEBAR_ITEMS } from '@/constants/common.constant';
+import { SIDEBAR_ITEMS } from '@/constants';
 import { useMainContext } from '@/contexts/MainContext';
 import { useCustomMutationData } from '@/hooks';
 import { useSearchParamsString } from '@/hooks/useSearchParamsString';

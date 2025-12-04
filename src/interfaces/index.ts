@@ -1,6 +1,6 @@
-export * from './album';
 export * from './auth';
 export * from './base-api';
+export * from './cloud-data';
 export * from './common';
 export * from './custom-component';
 export * from './data-provider';
