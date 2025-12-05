@@ -5,6 +5,7 @@ import {
     ProductMappingStatus,
 } from '@/enums';
 import { Abstract } from '@/interfaces/common';
+import { NCloudData } from './cloud-data';
 
 export declare namespace NDataProvider {
     interface IItem extends Abstract {
@@ -86,10 +87,14 @@ export declare namespace NDataProvider {
         itemUrl: string;
         dataProviderId: string;
         isActive: boolean;
+        isSavedToCloudData: boolean;
         displayType: DisplayType;
+        cloudDataProviderId?: string;
         lastScrapedTimestamp?: Date;
+
         item: IItem;
         dataProvider: IDataProvider;
+        cloudDataProvider?: NCloudData.ICloudDataProvider;
     }
 
     interface IScrapingData extends Abstract {
@@ -102,6 +107,9 @@ export declare namespace NDataProvider {
         url?: string;
         lastModified?: Date;
         metadata?: Record<string, any>;
+        cloudDataItemId?: string;
+        cloudDataUrl?: string;
+
         dataProvider?: IDataProvider;
         dataProviderItem?: IDataProviderItem;
         item?: IItem;

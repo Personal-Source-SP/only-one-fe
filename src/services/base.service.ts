@@ -58,10 +58,10 @@ export default class BaseApi {
 
                 // Unauthorized - redirect to login or refresh token
                 if (error.response?.status === 401) {
-                    localStorage.removeItem('token');
-                    localStorage.removeItem('google_token');
-
                     if (typeof window !== 'undefined') {
+                        localStorage.removeItem('token');
+                        localStorage.removeItem('google_token');
+
                         const currentPath = window.location.pathname;
                         if (currentPath !== '/login' && !currentPath.startsWith('/login')) {
                             sessionStorage.setItem(KEY_SESSION_STORAGE.RETURN_URL, currentPath);

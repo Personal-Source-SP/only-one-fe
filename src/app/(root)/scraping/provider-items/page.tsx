@@ -5,6 +5,7 @@ import { ProcessScrapeData } from '@/components/module/data-provider';
 import { CustomFilterType, DataProviderStatus, DisplayType, ElementType } from '@/enums';
 import {
     useCustomMutationData,
+    useSelectCloudDataProvider,
     useSelectDataProvider,
     useSelectItem,
     useTableContainer,
@@ -26,6 +27,7 @@ const DataProviderItemPage = () => {
     const [selectedDataProviderItemIds, setSelectedDataProviderItemIds] = useState<string[]>([]);
 
     const { options: itemOptions } = useSelectItem();
+    const { options: cloudDataProviderOptions } = useSelectCloudDataProvider();
     const { options: dataProviderOptions, query: dataProviderQuery } = useSelectDataProvider();
 
     const { handleCustomMutationData: handleUpdate } = useCustomMutationData();
@@ -104,6 +106,19 @@ const DataProviderItemPage = () => {
                 />
             ),
         },
+        {
+            title: 'Lưu vào kho dữ liệu',
+            dataIndex: 'isSavedToCloudData',
+            key: 'isSavedToCloudData',
+            align: 'center',
+            width: 100,
+            render: (isSavedToCloudData: boolean, record: NDataProvider.IDataProviderItem) => (
+                <Space>
+                    <Switch size="small" checked={isSavedToCloudData} disabled />
+                    <p>{record?.cloudDataProvider?.name ?? '---'}</p>
+                </Space>
+            ),
+        },
     ];
 
     const formFields: FormFieldItem[] = [
@@ -150,6 +165,14 @@ const DataProviderItemPage = () => {
             ],
         },
         {
+            type: 'select',
+            name: 'cloudDataProviderId',
+            label: 'Nhà cung cấp kho dữ liệu',
+            selectProps: {
+                options: cloudDataProviderOptions ?? [],
+            },
+        },
+        {
             type: 'switch',
             name: 'autoProcessScraping',
             label: 'Tự động cào dữ liệu',
@@ -163,6 +186,14 @@ const DataProviderItemPage = () => {
             label: 'Kiểm tra dữ liệu trùng lặp',
             switchProps: {
                 placeholder: 'Kiểm tra dữ liệu trùng lặp khi cào dữ liệu',
+            },
+        },
+        {
+            type: 'switch',
+            name: 'isSavedToCloudData',
+            label: 'Lưu vào kho dữ liệu',
+            switchProps: {
+                placeholder: 'Lưu vào kho dữ liệu khi cào dữ liệu',
             },
         },
     ];
