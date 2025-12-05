@@ -24,6 +24,7 @@ const ScrapingDataPage = () => {
     const { handleMessage } = useMainContext();
 
     const [openProcessScrapeDataModal, setOpenProcessScrapeDataModal] = useState(false);
+    const [selectedDataProviderIds, setSelectedDataProviderIds] = useState<string[]>([]);
 
     const [columnDisplay, setColumnDisplay] = useState(4);
     const [viewMode, setViewMode] = useState<ViewPhotoMode>(ViewPhotoMode.ALL);
@@ -31,8 +32,6 @@ const ScrapingDataPage = () => {
 
     const [isLightboxOpen, setIsLightboxOpen] = useState<boolean>(false);
     const [currentPhotoIndex, setCurrentPhotoIndex] = useState<number>(0);
-
-    const [selectedDataProviderIds, setSelectedDataProviderIds] = useState<string[]>([]);
 
     const tableContainerData = useTableContainer({
         resource: 'scraping-data',
@@ -85,9 +84,9 @@ const ScrapingDataPage = () => {
 
         return scrapingDatas?.map((item) => ({
             id: item.id ?? '',
-            url: item.url ?? '',
             mimeType: item.type ?? '',
             createdAt: item.createdAt ?? new Date(),
+            url: item.cloudDataUrl ?? item.url ?? '',
             folderName: item.dataProvider?.name ?? '',
             lastModified: item.lastModified ?? item.createdAt ?? new Date(),
         }));

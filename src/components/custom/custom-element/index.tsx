@@ -35,8 +35,8 @@ const CustomElement = ({
                     <Flex justify="space-between" align="center" className="mt-0">
                         <h2 className="text-2xl font-semibold mb-0">{title}</h2>
                         {Boolean(actions?.length) && <Space size="small">{actions}</Space>}
-                        {Boolean(children) && children}
                     </Flex>
+                    {Boolean(children) && children}
                 </Card>
             );
         }

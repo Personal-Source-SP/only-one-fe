@@ -200,9 +200,6 @@ const MainLayout = ({ children }: MainLayoutProps) => {
                     </main>
                 </Suspense>
 
-                {/* Quick Actions FAB */}
-                {/* {!mobileMenuOpen && <QuickActions />} */}
-
                 {/* Scroll to Top */}
                 <ScrollToTop />
             </div>

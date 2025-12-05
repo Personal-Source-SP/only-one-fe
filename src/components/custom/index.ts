@@ -3,6 +3,7 @@ export { default as TableContainer } from './custom-container/TableContainer';
 export { default as CustomDatePicker } from './custom-date-picker';
 export { default as CustomElement } from './custom-element';
 export { default as CustomFilter } from './custom-filter';
+export { default as CustomFloatButton } from './custom-float-button';
 export { default as CreateFormModal } from './custom-form-modal/CreateFormModal';
 export { default as CustomFormModal } from './custom-form-modal/CustomFormModal';
 export { default as EditFormModal } from './custom-form-modal/EditFormModal';
