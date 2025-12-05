@@ -12,6 +12,7 @@ import dayjs from 'dayjs';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { DEFAULT_FILE_IMAGE_URL } from '../../../constants';
 import ImageItemDetail from './ImageItemDetail';
+import VideoItemDetail from './VideoItemDetail';
 
 type FileGroupsProps = {
     data: FileItem[];
@@ -214,6 +215,34 @@ const FileGroups = ({
         );
     };
 
+    const renderContent = (file: FileItem) => {
+        switch (file.mimeType) {
+            case MimeType.IMAGE: {
+                return (
+                    <ImageItemDetail
+                        fileId={file.id}
+                        imageUrl={file.url}
+                        setLoadingFiles={setLoadingFiles}
+                    />
+                );
+            }
+
+            case MimeType.VIDEO: {
+                return (
+                    <VideoItemDetail
+                        fileId={file.id}
+                        videoUrl={file.url}
+                        setLoadingFiles={setLoadingFiles}
+                    />
+                );
+            }
+
+            default: {
+                return null;
+            }
+        }
+    };
+
     const renderItem = (file: FileItem) => {
         const isImage = file.mimeType.startsWith(MimeType.IMAGE);
         const imageUrl = isImage ? file.url : DEFAULT_FILE_IMAGE_URL;
@@ -231,14 +260,7 @@ const FileGroups = ({
                 )}
 
                 {renderFileTag(file)}
-
-                <ImageItemDetail
-                    key={file.id}
-                    fileId={file.id}
-                    imageUrl={imageUrl}
-                    setLoadingFiles={setLoadingFiles}
-                />
-
+                {renderContent(file)}
                 {renderActionOverlay(file)}
             </div>
         );
