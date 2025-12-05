@@ -7,7 +7,7 @@ import { useLogin } from '@refinedev/core';
 import { Button, Checkbox, Form, Input, Space, notification } from 'antd';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 
 const LoginPage = () => {
     const { mutate: login, isPending } = useLogin();
@@ -38,7 +38,9 @@ const LoginPage = () => {
                 },
                 onError: (error) => {
                     notification.error({
-                        message: error?.message || 'Login failed. Please check your credentials.',
+                        title:
+                            error?.message ||
+                            'Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin đăng nhập.',
                     });
                 },
             },
@@ -67,7 +69,7 @@ const LoginPage = () => {
                     <Input
                         value={email}
                         placeholder="Nhập email của bạn"
-                        onChange={(e) => setEmail(e.target.value)}
+                        onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
                     />
                 </Form.Item>
                 <Form.Item
@@ -77,7 +79,7 @@ const LoginPage = () => {
                     <Input.Password
                         value={password}
                         placeholder="Nhập mật khẩu của bạn"
-                        onChange={(e) => setPassword(e.target.value)}
+                        onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
                     />
                 </Form.Item>
                 <div className="flex items-center justify-between">

@@ -22,7 +22,7 @@ import {
     Select,
     Space,
     Spin,
-    StepProps,
+    StepsProps,
     Steps,
     Table,
 } from 'antd';
@@ -62,13 +62,7 @@ interface IFormValues {
     modifiedTimeFrom?: string;
 }
 
-const SyncLocal = ({
-    isOpen,
-    queryLoading,
-    folderOptions,
-    onSuccess,
-    onClose,
-}: SyncLocalProps) => {
+const SyncLocal = ({ isOpen, queryLoading, folderOptions, onSuccess, onClose }: SyncLocalProps) => {
     const { handleMessage } = useMainContext();
 
     const { apiUrl } = useCustomMutationData();
@@ -96,7 +90,7 @@ const SyncLocal = ({
         setSelectedRows([]);
     }, [previewData]);
 
-    const steps: StepProps[] = [
+    const steps: StepsProps['items'] = [
         {
             title: 'Cài đặt',
             icon: <Icon icon="lucide:settings" />,

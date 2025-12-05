@@ -4,7 +4,7 @@ import { Logo } from '@/components/common';
 import { Button, Card, Input, Space } from 'antd';
 import Link from 'next/link';
 import { Icon } from '@iconify/react';
-import { useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 
 const RegisterPage = () => {
     const [name, setName] = useState('');
@@ -28,23 +28,29 @@ const RegisterPage = () => {
                             type="text"
                             placeholder="Nhập họ và tên của bạn"
                             value={name}
-                            onChange={(e) => setName(e.target.value)}
+                            onChange={(e: ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
                         />
                         <Input
                             type="email"
                             placeholder="Nhập email của bạn"
                             value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                                setEmail(e.target.value)
+                            }
                         />
                         <Input.Password
                             placeholder="Tạo mật khẩu mới"
                             value={password}
-                            onChange={(e) => setPassword(e.target.value)}
+                            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                                setPassword(e.target.value)
+                            }
                         />
                         <Input.Password
                             placeholder="Nhập lại mật khẩu"
                             value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                                setConfirmPassword(e.target.value)
+                            }
                         />
                         <Button type="primary" size="large" className="w-full" htmlType="submit">
                             Đăng ký

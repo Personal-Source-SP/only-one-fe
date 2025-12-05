@@ -2,7 +2,6 @@
 
 import { inter } from '@/constants';
 import { useThemeStore } from '@/stores/useThemeStore';
-import { RefineThemes } from '@refinedev/antd';
 import { App as AntdApp, ConfigProvider, theme } from 'antd';
 import { type PropsWithChildren } from 'react';
 
@@ -20,7 +19,7 @@ export const ColorModeContextProvider = ({
     return (
         <ConfigProvider
             theme={{
-                ...RefineThemes.Blue,
+                // ...RefineThemes.Blue,
                 // algorithm: defaultAlgorithm,
                 hashed: false,
                 token: {

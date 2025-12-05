@@ -7,7 +7,7 @@ import { CustomFilterType, ElementType } from '@/enums';
 import { useTableContainer } from '@/hooks';
 import { useDebounceSearch } from '@/hooks/useDebounceSearch';
 import { ActionTableItem, FilterItem, SearchFilterItem } from '@/interfaces';
-import { ColumnsType } from 'antd/es/table';
+import { ColumnsType, TableProps } from 'antd/es/table';
 import { ReactNode, useMemo } from 'react';
 
 type TableContainerProps = {
@@ -121,13 +121,13 @@ const TableContainer = ({
                     <CustomTable
                         columns={columns}
                         resource={resource}
-                        tableProps={tableProps}
                         setSorters={setSorters}
                         setPageSize={setPageSize}
                         actionItems={actionItems}
                         setCurrentPage={setCurrentPage}
                         loading={tableQuery?.isLoading}
                         onRefetch={tableQuery?.refetch}
+                        tableProps={tableProps as TableProps<any>}
                         onRowSelectionChange={onRowSelectionChange}
                         onDisableRowSelection={onDisableRowSelection}
                     />

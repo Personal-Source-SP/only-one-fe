@@ -24,7 +24,7 @@ import {
     Space,
     Spin,
     Statistic,
-    StepProps,
+    StepsProps,
     Steps,
     Table,
     Tag,
@@ -146,7 +146,7 @@ const SyncGoogleDrive = ({
         setSelectedRows([]);
     }, [previewData]);
 
-    const steps: StepProps[] = [
+    const steps: StepsProps['items'] = [
         {
             title: 'Cài đặt',
             icon: <Icon icon="lucide:settings" />,
@@ -521,7 +521,22 @@ const SyncGoogleDrive = ({
                     </Col>
                     <Col span={24}>
                         <Form.Item name={FieldsEnum.CustomQuery} label="Tùy chọn tìm kiếm">
-                            <Input.TextArea placeholder="Tùy chọn tìm kiếm" rows={4} />
+                            <Input.TextArea
+                                showCount
+                                allowClear
+                                rows={4}
+                                placeholder="Tùy chọn tìm kiếm"
+                                count={
+                                    form.getFieldValue(FieldsEnum.CustomQuery as keyof IFormValues)
+                                        ?.length ?? 0
+                                }
+                                onClear={() =>
+                                    form.setFieldValue(
+                                        FieldsEnum.CustomQuery as keyof IFormValues,
+                                        '',
+                                    )
+                                }
+                            />
                         </Form.Item>
                     </Col>
                 </Row>

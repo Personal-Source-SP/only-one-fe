@@ -15,7 +15,7 @@ import {
     Select,
     Space,
     Spin,
-    StepProps,
+    StepsProps,
     Steps,
     Switch,
     Table,
@@ -79,7 +79,7 @@ const ProcessScrapeData = ({
         dataProviderItemQuery?.refetch();
     }, [itemIds]);
 
-    const steps: StepProps[] = [
+    const steps: StepsProps['items'] = [
         {
             title: 'Cài đặt',
             icon: <Icon icon="lucide:settings" />,

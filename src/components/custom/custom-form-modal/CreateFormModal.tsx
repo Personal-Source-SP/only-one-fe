@@ -25,7 +25,7 @@ import {
     UploadFile,
 } from 'antd';
 import { useSession } from 'next-auth/react';
-import React, { ReactNode, useCallback, useEffect } from 'react';
+import React, { ChangeEvent, ReactNode, useCallback, useEffect } from 'react';
 
 type CreateFormModalProps = {
     open: boolean;
@@ -61,7 +61,9 @@ export const renderFormFields = (formField: FormFieldItem, formProps: FormProps<
                     addonBefore={addonBefore}
                     placeholder={placeholder}
                     disabled={formField.disabled ?? false}
-                    onChange={(e) => formField.onChange?.(e.target.value, formProps?.form)}
+                    onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                        formField.onChange?.(e.target.value, formProps?.form)
+                    }
                 />
             );
             break;
@@ -86,10 +88,16 @@ export const renderFormFields = (formField: FormFieldItem, formProps: FormProps<
             const { placeholder, rows } = formField.textareaProps ?? {};
             formFieldElement = (
                 <Input.TextArea
+                    showCount
+                    allowClear
                     rows={rows ?? 4}
                     placeholder={placeholder}
                     disabled={formField.disabled ?? false}
-                    onChange={(e) => formField.onChange?.(e.target.value, formProps?.form)}
+                    onClear={() => formField.onChange?.('', formProps?.form)}
+                    count={formProps?.form?.getFieldValue(formField.name)?.length ?? 0}
+                    onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
+                        formField.onChange?.(e.target.value, formProps?.form)
+                    }
                 />
             );
             break;

@@ -14,7 +14,7 @@ import {
     Result,
     Space,
     Spin,
-    StepProps,
+    StepsProps,
     Steps,
     Table,
     Typography,
@@ -52,7 +52,7 @@ const ImportData = ({ open, dataType, columns, onClose, onSuccess }: ImportDataP
 
     const { handleCustomMutationData } = useCustomMutationData();
 
-    const steps: StepProps[] = [
+    const steps: StepsProps['items'] = [
         {
             title: 'Tải lên',
             icon: <Icon icon="lucide:settings" />,

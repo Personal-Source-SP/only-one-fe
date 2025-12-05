@@ -3,7 +3,7 @@
 import { Logo } from '@/components/common';
 import { Button, Card, Input, Space } from 'antd';
 import Link from 'next/link';
-import { useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 
 const ForgetPasswordPage = () => {
     const [email, setEmail] = useState('');
@@ -24,7 +24,9 @@ const ForgetPasswordPage = () => {
                             type="email"
                             placeholder="Nhập email của bạn"
                             value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                                setEmail(e.target.value)
+                            }
                         />
                         <Button type="primary" size="large" className="w-full" htmlType="submit">
                             Gửi liên kết khôi phục

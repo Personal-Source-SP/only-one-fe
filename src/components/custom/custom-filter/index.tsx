@@ -4,7 +4,7 @@ import { CustomFilterType } from '@/enums';
 import { FilterItem } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { Col, Input, Row, Select } from 'antd';
-
+import { ChangeEvent } from 'react';
 
 type CustomFilterProps = {
     filters: FilterItem[];
@@ -34,8 +34,10 @@ const CustomFilter = ({ filters }: CustomFilterProps) => {
                         </p>
                         <Input
                             placeholder={placeholder ?? 'Tìm kiếm'}
-                            onChange={(e) => onChange?.(e.target.value.trim())}
                             prefix={<Icon icon="lucide:search" className="text-foreground-500" />}
+                            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                                onChange?.(e.target.value.trim())
+                            }
                         />
                     </Col>
                 );

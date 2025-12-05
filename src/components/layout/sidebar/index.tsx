@@ -157,7 +157,7 @@ const Sidebar = ({ mobileOpen, setMobileOpen, collapsed, setCollapsed }: Sidebar
                                 }
                                 placement="right"
                                 classNames={{
-                                    body: 'max-w-xs',
+                                    container: 'max-w-xs',
                                 }}
                                 styles={{
                                     root: {

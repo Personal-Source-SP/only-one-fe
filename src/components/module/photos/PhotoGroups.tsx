@@ -4,12 +4,12 @@ import { Empty } from '@/components/common';
 import { MimeType } from '@/enums';
 import { ViewPhotoMode } from '@/enums/photo.enum';
 import { PhotoGroup, PhotoItem } from '@/interfaces';
-import { Button, List, Spin, Tag, Tooltip } from 'antd';
 import { DeleteOutlined, DownloadOutlined, EyeOutlined } from '@ant-design/icons';
+import { Button, Masonry, Spin, Tag, Tooltip } from 'antd';
+import dayjs from 'dayjs';
 import Image from 'next/image';
 import { useMemo, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import dayjs from 'dayjs';
 
 type PhotoGroupsProps = {
     data: PhotoItem[];
@@ -262,38 +262,32 @@ const PhotoGroups = ({
     const renderPhotos = () => {
         if (displayMode === ViewPhotoMode.ALL) {
             return (
-                <div
-                    className="grid gap-2"
-                    style={{
-                        display: 'grid',
-                        gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
-                    }}
-                >
-                    {allPhotos.map((photo) => renderPhotoItem(photo))}
-                </div>
+                <Masonry
+                    items={allPhotos.map((photo) => ({
+                        key: photo.id,
+                        data: photo,
+                    }))}
+                    columns={columns}
+                    gutter={[8, 8]}
+                    itemRender={({ data }) => renderPhotoItem(data)}
+                />
             );
         }
 
-        return (
-            <List
-                loading={false}
-                dataSource={groupedPhotos}
-                renderItem={(group, groupIdx) => (
-                    <div key={groupIdx} style={{ marginBottom: 24 }}>
-                        {renderGroupHeader(group)}
-                        <div
-                            className="grid gap-2"
-                            style={{
-                                display: 'grid',
-                                gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
-                            }}
-                        >
-                            {group.photos.map((photo) => renderPhotoItem(photo))}
-                        </div>
-                    </div>
-                )}
-            />
-        );
+        return groupedPhotos.map((group, groupIdx) => (
+            <div key={groupIdx} style={{ marginBottom: 24 }}>
+                {renderGroupHeader(group)}
+                <Masonry
+                    items={group.photos.map((photo) => ({
+                        key: photo.id,
+                        data: photo,
+                    }))}
+                    columns={columns}
+                    gutter={[8, 8]}
+                    itemRender={({ data }) => renderPhotoItem(data)}
+                />
+            </div>
+        ));
     };
 
     if (!allPhotos?.length) {

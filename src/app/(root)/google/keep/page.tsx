@@ -12,8 +12,8 @@ import {
     SearchOutlined,
     TagOutlined,
 } from '@ant-design/icons';
-import { Button, Card, Dropdown, Input, Menu, Modal, Select, Space, Tag, Tooltip } from 'antd';
-import { useEffect, useState } from 'react';
+import { Button, Card, Dropdown, Input, Modal, Select, Space, Tag, Tooltip } from 'antd';
+import { ChangeEvent, useEffect, useState } from 'react';
 
 interface Note {
     id: number;
@@ -255,15 +255,11 @@ const KeepPage = () => {
     // But keep the columns state for possible future use
 
     // Dropdown menu for sorting
-    const sortMenu = (
-        <Menu
-            items={[
-                { key: 'date', label: 'Ngày chỉnh sửa' },
-                { key: 'title', label: 'Tiêu đề' },
-                { key: 'color', label: 'Màu sắc' },
-            ]}
-        />
-    );
+    const sortMenu = [
+        { key: 'date', label: 'Ngày chỉnh sửa' },
+        { key: 'title', label: 'Tiêu đề' },
+        { key: 'color', label: 'Màu sắc' },
+    ];
 
     // Color picker popover
     const ColorPicker = ({
@@ -337,7 +333,9 @@ const KeepPage = () => {
                         placeholder="Tìm kiếm ghi chú..."
                         prefix={<SearchOutlined />}
                         value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                            setSearchQuery(e.target.value)
+                        }
                         style={{ width: 260, maxWidth: '100%' }}
                         size="middle"
                     />
@@ -345,7 +343,7 @@ const KeepPage = () => {
                         <Button icon={<FilterOutlined />} type="default">
                             Lọc
                         </Button>
-                        <Dropdown overlay={sortMenu} trigger={['click']}>
+                        <Dropdown menu={{ items: sortMenu }} trigger={['click']}>
                             <Button icon={<AppstoreOutlined />} type="default">
                                 Sắp xếp
                             </Button>
@@ -376,13 +374,19 @@ const KeepPage = () => {
                         <Input
                             placeholder="Tiêu đề"
                             value={newNoteTitle}
-                            onChange={(e) => setNewNoteTitle(e.target.value)}
+                            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                                setNewNoteTitle(e.target.value)
+                            }
                             style={{ marginBottom: 8 }}
                             autoFocus
                         />
                         <Input.TextArea
-                            placeholder="Nội dung ghi chú"
+                            allowClear
+                            showCount
                             value={newNoteContent}
+                            count={newNoteContent.length}
+                            placeholder="Nội dung ghi chú"
+                            onClear={() => setNewNoteContent('')}
                             onChange={(e) => setNewNoteContent(e.target.value)}
                             autoSize={{ minRows: 4 }}
                             style={{
