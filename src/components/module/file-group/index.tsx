@@ -7,10 +7,10 @@ import { FileGroup, FileItem } from '@/interfaces';
 import { DeleteOutlined, DownloadOutlined, EyeOutlined } from '@ant-design/icons';
 import { Button, Masonry, Spin, Tag, Tooltip } from 'antd';
 import { useMemo, useState } from 'react';
+import { DEFAULT_FILE_IMAGE_URL } from '../../../constants';
 
 import dayjs from 'dayjs';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { DEFAULT_FILE_IMAGE_URL } from '../../../constants';
 import ImageItemDetail from './ImageItemDetail';
 import VideoItemDetail from './VideoItemDetail';
 
