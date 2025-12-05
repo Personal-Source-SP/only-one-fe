@@ -1,8 +1,7 @@
 'use client';
 
-import { PhotoItemsPerPage } from '@/enums';
+import { FileItemsPerPage } from '@/enums';
 import { Button, Dropdown, Flex, MenuProps, Pagination } from 'antd';
-
 
 type PaginationControlsProps = {
     totalItems: number;
@@ -20,10 +19,10 @@ const PaginationControls = ({
     onItemsPerPageChange,
 }: PaginationControlsProps) => {
     const items: MenuProps['items'] = [
-        { key: PhotoItemsPerPage.TEN.toString(), label: '10 ảnh/trang' },
-        { key: PhotoItemsPerPage.TWENTY.toString(), label: '20 ảnh/trang' },
-        { key: PhotoItemsPerPage.FIFTY.toString(), label: '50 ảnh/trang' },
-        { key: PhotoItemsPerPage.HUNDRED.toString(), label: '100 ảnh/trang' },
+        { key: FileItemsPerPage.TEN.toString(), label: '10 ảnh/trang' },
+        { key: FileItemsPerPage.TWENTY.toString(), label: '20 ảnh/trang' },
+        { key: FileItemsPerPage.FIFTY.toString(), label: '50 ảnh/trang' },
+        { key: FileItemsPerPage.HUNDRED.toString(), label: '100 ảnh/trang' },
     ];
 
     return (

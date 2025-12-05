@@ -2,9 +2,9 @@
 
 import { CustomElement, CustomLightBox, TableContainer } from '@/components/custom';
 import { ProcessScrapeData } from '@/components/module/data-provider';
-import { PhotoGroups } from '@/components/module/photos';
+import FileGroups from '@/components/module/file-group';
 import { useMainContext } from '@/contexts/MainContext';
-import { CustomFilterType, DisplayMode, ElementType, ViewPhotoMode } from '@/enums';
+import { CustomFilterType, DisplayMode, ElementType, ViewFileMode } from '@/enums';
 import {
     useCustomDelete,
     useCustomModal,
@@ -12,7 +12,7 @@ import {
     useSelectItem,
     useTableContainer,
 } from '@/hooks';
-import { ActionTableItem, FilterItem, NBaseApi, NDataProvider, PhotoItem } from '@/interfaces';
+import { ActionTableItem, FileItem, FilterItem, NBaseApi, NDataProvider } from '@/interfaces';
 import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
 import { Button, Flex, Space, Switch } from 'antd';
@@ -27,7 +27,7 @@ const ScrapingDataPage = () => {
     const [selectedDataProviderIds, setSelectedDataProviderIds] = useState<string[]>([]);
 
     const [columnDisplay, setColumnDisplay] = useState(4);
-    const [viewMode, setViewMode] = useState<ViewPhotoMode>(ViewPhotoMode.ALL);
+    const [viewMode, setViewMode] = useState<ViewFileMode>(ViewFileMode.ALL);
     const [displayMode, setDisplayMode] = useState<DisplayMode>(DisplayMode.LIST);
 
     const [isLightboxOpen, setIsLightboxOpen] = useState<boolean>(false);
@@ -76,7 +76,7 @@ const ScrapingDataPage = () => {
         resource: 'scraping-data',
     });
 
-    const photoItems: PhotoItem[] = useMemo(() => {
+    const photoItems: FileItem[] = useMemo(() => {
         const scrapingDatas = (tableContainerData?.tableQuery?.data?.data ??
             []) as NDataProvider.IScrapingData[];
 
@@ -132,11 +132,11 @@ const ScrapingDataPage = () => {
                     value: viewMode,
                     placeholder: 'Chế độ xem',
                     type: CustomFilterType.SELECT,
-                    onChange: (value: ViewPhotoMode) => setViewMode(value),
+                    onChange: (value: ViewFileMode) => setViewMode(value),
                     options: [
-                        { value: ViewPhotoMode.ALL, label: 'Xem tất cả' },
-                        { value: ViewPhotoMode.DATE, label: 'Xem theo ngày' },
-                        { value: ViewPhotoMode.FOLDER, label: 'Xem theo thư mục' },
+                        { value: ViewFileMode.ALL, label: 'Xem tất cả' },
+                        { value: ViewFileMode.DATE, label: 'Xem theo ngày' },
+                        { value: ViewFileMode.FOLDER, label: 'Xem theo thư mục' },
                     ],
                 },
                 {
@@ -282,12 +282,12 @@ const ScrapingDataPage = () => {
                 }}
                 childrenTop={
                     displayMode === DisplayMode.LIST && (
-                        <PhotoGroups
+                        <FileGroups
                             data={photoItems}
                             displayMode={viewMode}
                             columns={columnDisplay}
-                            onPhotoClick={handlePhotoClick}
-                            onDeletePhoto={(photoId) => handleDelete([photoId])}
+                            onClickFile={handlePhotoClick}
+                            onDeleteFile={(fileId: string) => handleDelete([fileId])}
                         />
                     )
                 }

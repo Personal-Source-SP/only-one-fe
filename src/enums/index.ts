@@ -5,7 +5,7 @@ export * from './cron-expression.enum';
 export * from './data-provider.enum';
 export * from './display-type.enum';
 export * from './google-drive.enum';
-export * from './photo.enum';
+export * from './file.enum';
 export * from './role.enum';
 export * from './schedule.enum';
 export * from './simulation.enum';

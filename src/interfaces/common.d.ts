@@ -62,7 +62,7 @@ export interface SearchFilterItem {
     placeholder?: string;
 }
 
-export interface PhotoItem {
+export interface FileItem {
     id: string;
     url: string;
     mimeType: string;
@@ -71,8 +71,8 @@ export interface PhotoItem {
     createdAt?: Date | string;
 }
 
-export interface PhotoGroup {
-    photos: PhotoItem[];
+export interface FileGroup {
+    files: FileItem[];
     date?: string;
     folder?: string;
 }

@@ -2,50 +2,49 @@
 
 import { Empty } from '@/components/common';
 import { MimeType } from '@/enums';
-import { ViewPhotoMode } from '@/enums/photo.enum';
-import { PhotoGroup, PhotoItem } from '@/interfaces';
+import { ViewFileMode } from '@/enums/file.enum';
+import { FileGroup, FileItem } from '@/interfaces';
 import { DeleteOutlined, DownloadOutlined, EyeOutlined } from '@ant-design/icons';
 import { Button, Masonry, Spin, Tag, Tooltip } from 'antd';
+import { useMemo, useState } from 'react';
+
 import dayjs from 'dayjs';
 import Image from 'next/image';
-import { useMemo, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { DEFAULT_FILE_IMAGE_URL } from '../../../constants';
 
-type PhotoGroupsProps = {
-    data: PhotoItem[];
+type FileGroupsProps = {
+    data: FileItem[];
     columns: number;
-    displayMode: ViewPhotoMode;
-    onPhotoClick: (photoId: string) => void;
-    onDeletePhoto?: (photoId: string) => void;
-    onDownloadPhoto?: (photoId: string) => void;
+    displayMode: ViewFileMode;
+    mimeType?: MimeType;
+    onClickFile?: (fileId: string) => void;
+    onDeleteFile?: (fileId: string) => void;
+    onDownloadFile?: (fileId: string) => void;
 };
 
-const PhotoGroups = ({
+const FileGroups = ({
+    data,
     columns,
     displayMode,
-    data,
-    onPhotoClick,
-    onDeletePhoto,
-    onDownloadPhoto,
-}: PhotoGroupsProps) => {
-    const [loadingImages, setLoadingImages] = useState<Set<string>>(new Set());
+    mimeType = MimeType.IMAGE,
+    onClickFile,
+    onDeleteFile,
+    onDownloadFile,
+}: FileGroupsProps) => {
+    const [loadingFiles, setLoadingFiles] = useState<Set<string>>(new Set());
 
-    const groupedPhotos: PhotoGroup[] = useMemo(() => {
-        const photoFiles = data?.filter((file) => file.mimeType?.startsWith(MimeType.IMAGE));
-
-        if (!photoFiles?.length) return [];
+    const groupedFiles: FileGroup[] = useMemo(() => {
+        const fileFilters = data?.filter((file) => file.mimeType?.startsWith(mimeType));
+        if (!fileFilters?.length) return [];
 
         switch (displayMode) {
-            case ViewPhotoMode.ALL: {
-                return [
-                    {
-                        photos: photoFiles,
-                    },
-                ];
+            case ViewFileMode.ALL: {
+                return [{ files: fileFilters }];
             }
 
-            case ViewPhotoMode.DATE: {
-                const groupedByDate = photoFiles.reduce(
+            case ViewFileMode.DATE: {
+                const groupedByDate = fileFilters.reduce(
                     (groups, file) => {
                         const date = file.lastModified
                             ? new Date(file.lastModified).toLocaleDateString('vi-VN')
@@ -59,17 +58,17 @@ const PhotoGroups = ({
 
                         return groups;
                     },
-                    {} as Record<string, PhotoItem[]>,
+                    {} as Record<string, FileItem[]>,
                 );
 
-                return Object.entries(groupedByDate).map(([date, photos]) => ({
+                return Object.entries(groupedByDate).map(([date, files]) => ({
                     date,
-                    photos,
+                    files,
                 }));
             }
 
-            case ViewPhotoMode.FOLDER: {
-                const groupedByFolder = photoFiles.reduce(
+            case ViewFileMode.FOLDER: {
+                const groupedByFolder = fileFilters.reduce(
                     (groups, file) => {
                         const folderName = file.folderName || 'Không xác định';
 
@@ -81,49 +80,49 @@ const PhotoGroups = ({
 
                         return groups;
                     },
-                    {} as Record<string, PhotoItem[]>,
+                    {} as Record<string, FileItem[]>,
                 );
 
-                return Object.entries(groupedByFolder).map(([folder, photos]) => ({
+                return Object.entries(groupedByFolder).map(([folder, files]) => ({
                     folder,
-                    photos,
+                    files,
                 }));
             }
 
             default:
                 return [];
         }
-    }, [displayMode, data]);
+    }, [displayMode, data, mimeType]);
 
-    const allPhotos = useMemo(
+    const allFiles = useMemo(
         () =>
-            groupedPhotos.flatMap((group, groupIndex) =>
-                group.photos.map((photo) => ({
-                    ...photo,
+            groupedFiles.flatMap((group, groupIndex) =>
+                group.files.map((file) => ({
+                    ...file,
                     groupIndex,
                     date: group.date,
                     folder: group.folder,
                 })),
             ),
-        [groupedPhotos],
+        [groupedFiles],
     );
 
-    const handleDownloadPhoto = (photo: PhotoItem) => {
-        if (onDownloadPhoto) {
-            onDownloadPhoto(photo.id ?? '');
+    const handleDownloadFile = (file: FileItem) => {
+        if (onDownloadFile) {
+            onDownloadFile(file.id ?? '');
         } else {
             const link = document.createElement('a');
-            link.href = photo.url;
-            link.download = `photo-${photo.id}`;
+            link.href = file.url;
+            link.download = `file-${file.id}`;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
         }
     };
 
-    const renderGroupHeader = (group: PhotoGroup) => {
+    const renderGroupHeader = (group: FileGroup) => {
         switch (displayMode) {
-            case ViewPhotoMode.DATE: {
+            case ViewFileMode.DATE: {
                 return (
                     Boolean(group.date) && (
                         <Tag
@@ -136,7 +135,7 @@ const PhotoGroups = ({
                 );
             }
 
-            case ViewPhotoMode.FOLDER: {
+            case ViewFileMode.FOLDER: {
                 return (
                     Boolean(group.folder) && (
                         <Tag
@@ -154,7 +153,7 @@ const PhotoGroups = ({
         }
     };
 
-    const renderActionOverlay = (photo: PhotoItem) => (
+    const renderActionOverlay = (file: FileItem) => (
         <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
             <div className="flex gap-2">
                 <Tooltip title="Xem chi tiết">
@@ -162,9 +161,10 @@ const PhotoGroups = ({
                         size="small"
                         type="primary"
                         icon={<EyeOutlined />}
+                        disabled={!file.mimeType.startsWith(MimeType.IMAGE)}
                         onClick={(e) => {
                             e.stopPropagation();
-                            onPhotoClick(photo.id);
+                            onClickFile?.(file.id);
                         }}
                     />
                 </Tooltip>
@@ -174,7 +174,7 @@ const PhotoGroups = ({
                         icon={<DownloadOutlined />}
                         onClick={(e) => {
                             e.stopPropagation();
-                            handleDownloadPhoto(photo);
+                            handleDownloadFile(file);
                         }}
                     />
                 </Tooltip>
@@ -185,7 +185,7 @@ const PhotoGroups = ({
                         icon={<DeleteOutlined />}
                         onClick={(e) => {
                             e.stopPropagation();
-                            onDeletePhoto?.(photo?.id ?? '');
+                            onDeleteFile?.(file?.id ?? '');
                         }}
                     />
                 </Tooltip>
@@ -193,8 +193,8 @@ const PhotoGroups = ({
         </div>
     );
 
-    const renderPhotoTag = (photo: PhotoItem) => {
-        const timestamp = photo.lastModified ?? photo.createdAt;
+    const renderFileTag = (file: FileItem) => {
+        const timestamp = file.lastModified ?? file.createdAt;
         if (!timestamp) return null;
 
         const lastModified = dayjs(timestamp);
@@ -214,102 +214,106 @@ const PhotoGroups = ({
         );
     };
 
-    const renderPhotoItem = (photo: PhotoItem) => (
-        <div
-            key={photo.id}
-            onClick={() => onPhotoClick(photo.id)}
-            className="group relative aspect-[4/3] rounded-md overflow-hidden cursor-pointer transition-all hover:shadow-md bg-gray-100"
-        >
-            {loadingImages.has(photo.id) && (
-                <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
-                    <Spin size="small" />
-                </div>
-            )}
+    const renderItem = (file: FileItem) => {
+        const isImage = file.mimeType.startsWith(MimeType.IMAGE);
+        const imageUrl = isImage ? file.url : DEFAULT_FILE_IMAGE_URL;
 
-            {renderPhotoTag(photo)}
+        return (
+            <div
+                key={file.id}
+                onClick={() => (isImage ? onClickFile?.(file.id) : handleDownloadFile(file))}
+                className="group relative aspect-[4/3] rounded-md overflow-hidden cursor-pointer transition-all hover:shadow-md bg-gray-100"
+            >
+                {loadingFiles.has(file.id) && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
+                        <Spin size="small" />
+                    </div>
+                )}
 
-            <Image
-                fill
-                priority
-                unoptimized
-                src={photo.url}
-                className="z-10 object-cover transition-opacity duration-200 group-hover:opacity-60"
-                alt={`Photo ${photo.id}`}
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                onLoadStart={() => {
-                    setLoadingImages((prev) => new Set(prev).add(photo.id));
-                }}
-                onLoad={() => {
-                    setLoadingImages((prev) => {
-                        const newSet = new Set(prev);
-                        newSet.delete(photo.id);
-                        return newSet;
-                    });
-                }}
-                onError={() => {
-                    setLoadingImages((prev) => {
-                        const newSet = new Set(prev);
-                        newSet.delete(photo.id);
-                        return newSet;
-                    });
-                }}
-            />
+                {renderFileTag(file)}
 
-            {renderActionOverlay(photo)}
-        </div>
-    );
+                <Image
+                    fill
+                    priority
+                    unoptimized
+                    src={imageUrl}
+                    alt={`File ${file.id}`}
+                    className="z-10 object-cover transition-opacity duration-200 group-hover:opacity-60"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    onLoadStart={() => {
+                        setLoadingFiles((prev) => new Set(prev).add(file.id));
+                    }}
+                    onLoad={() => {
+                        setLoadingFiles((prev) => {
+                            const newSet = new Set(prev);
+                            newSet.delete(file.id);
+                            return newSet;
+                        });
+                    }}
+                    onError={() => {
+                        setLoadingFiles((prev) => {
+                            const newSet = new Set(prev);
+                            newSet.delete(file.id);
+                            return newSet;
+                        });
+                    }}
+                />
 
-    const renderPhotos = () => {
-        if (displayMode === ViewPhotoMode.ALL) {
+                {renderActionOverlay(file)}
+            </div>
+        );
+    };
+
+    const renderFiles = () => {
+        const items = allFiles.map((file) => ({
+            data: file,
+            key: file.id,
+        }));
+
+        if (displayMode === ViewFileMode.ALL) {
             return (
                 <Masonry
-                    items={allPhotos.map((photo) => ({
-                        key: photo.id,
-                        data: photo,
-                    }))}
-                    columns={columns}
+                    items={items}
                     gutter={[8, 8]}
-                    itemRender={({ data }) => renderPhotoItem(data)}
+                    columns={columns}
+                    itemRender={({ data }) => renderItem(data)}
                 />
             );
         }
 
-        return groupedPhotos.map((group, groupIdx) => (
+        return groupedFiles.map((group, groupIdx) => (
             <div key={groupIdx} style={{ marginBottom: 24 }}>
                 {renderGroupHeader(group)}
                 <Masonry
-                    items={group.photos.map((photo) => ({
-                        key: photo.id,
-                        data: photo,
-                    }))}
-                    columns={columns}
+                    items={items}
                     gutter={[8, 8]}
-                    itemRender={({ data }) => renderPhotoItem(data)}
+                    columns={columns}
+                    itemRender={({ data }) => renderItem(data)}
                 />
             </div>
         ));
     };
 
-    if (!allPhotos?.length) {
+    if (!allFiles?.length) {
         return <Empty variant="file" />;
     }
 
     return (
         <section
-            id="scrollablePhotoGroups"
+            id="scrollableFileGroups"
             className="rounded-lg !overflow-auto !w-full !min-h-[500px]"
         >
             <InfiniteScroll
                 loader={null}
                 next={() => {}}
                 hasMore={false}
-                dataLength={allPhotos.length}
-                scrollableTarget="scrollablePhotoGroups"
+                dataLength={allFiles.length}
+                scrollableTarget="scrollableFileGroups"
             >
-                {renderPhotos()}
+                {renderFiles()}
             </InfiniteScroll>
         </section>
     );
 };
 
-export default PhotoGroups;
+export default FileGroups;

@@ -6,17 +6,17 @@ import {
     GoogleDriveType,
     MimeType,
     QualityMode,
-    ViewPhotoMode,
+    ViewFileMode,
 } from '@/enums';
-import type { FilterItem, NGoogle, PhotoItem } from '@/interfaces';
+import type { FileItem, FilterItem, NGoogle } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { Button, Space } from 'antd';
 import { isNumber } from 'lodash';
 import { useEffect, useMemo, useState } from 'react';
 
 import { CustomElement, CustomLightBox, TableContainer } from '@/components/custom';
-import { PhotoGroups } from '@/components/module/photos';
 
+import FileGroups from '@/components/module/file-group';
 import SyncGoogleDrive from '@/components/module/sync-google-drive';
 import SyncLocal from '@/components/module/sync-local';
 
@@ -25,7 +25,7 @@ import { getDriveImageUrl, isExpiredToken } from '@/libs';
 
 const PhotosPage = () => {
     const [columns, setColumns] = useState(4);
-    const [viewMode, setViewMode] = useState<ViewPhotoMode>(ViewPhotoMode.ALL);
+    const [viewMode, setViewMode] = useState<ViewFileMode>(ViewFileMode.ALL);
     const [qualityMode, setQualityMode] = useState<QualityMode>(QualityMode.LOW);
 
     const [isOpenSyncFile, setIsOpenSyncFile] = useState(false);
@@ -75,7 +75,7 @@ const PhotosPage = () => {
         );
     }, [googleAuthsResult?.data?.data]);
 
-    const photoItems: PhotoItem[] = useMemo(() => {
+    const photoItems: FileItem[] = useMemo(() => {
         if (!googleDriveFiles?.length) return [];
 
         return googleDriveFiles?.map((file) => ({
@@ -127,11 +127,11 @@ const PhotosPage = () => {
             value: viewMode,
             placeholder: 'Chế độ xem',
             type: CustomFilterType.SELECT,
-            onChange: (value: ViewPhotoMode) => setViewMode(value),
+            onChange: (value: ViewFileMode) => setViewMode(value),
             options: [
-                { value: ViewPhotoMode.ALL, label: 'Xem tất cả' },
-                { value: ViewPhotoMode.DATE, label: 'Xem theo ngày' },
-                { value: ViewPhotoMode.FOLDER, label: 'Xem theo thư mục' },
+                { value: ViewFileMode.ALL, label: 'Xem tất cả' },
+                { value: ViewFileMode.DATE, label: 'Xem theo ngày' },
+                { value: ViewFileMode.FOLDER, label: 'Xem theo thư mục' },
             ],
         },
         {
@@ -227,11 +227,11 @@ const PhotosPage = () => {
                     placeholder: 'Tìm kiếm ảnh',
                 }}
                 childrenTop={
-                    <PhotoGroups
+                    <FileGroups
                         columns={columns}
                         data={photoItems}
                         displayMode={viewMode}
-                        onPhotoClick={handlePhotoClick}
+                        onClickFile={handlePhotoClick}
                     />
                 }
             />

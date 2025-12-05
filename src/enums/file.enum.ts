@@ -1,4 +1,4 @@
-export enum ViewPhotoMode {
+export enum ViewFileMode {
     ALL = 'all',
     DATE = 'date',
     FOLDER = 'folder',
@@ -14,7 +14,7 @@ export enum SortOrder {
     OLDEST = 'oldest',
 }
 
-export enum PhotoItemsPerPage {
+export enum FileItemsPerPage {
     TEN = 10,
     TWENTY = 20,
     FIFTY = 50,

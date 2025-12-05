@@ -54,3 +54,4 @@ export const SLIDESHOW_DELAY_DEFAULT = 1000;
 export const ALLOWED_IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.gif'];
 
 export const SERVER_IS_NOT_READY_MESSAGE = 'Server is not ready';
+export const DEFAULT_FILE_IMAGE_URL = '/images/default-file-image.png';
