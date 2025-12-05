@@ -9,9 +9,9 @@ import { Button, Masonry, Spin, Tag, Tooltip } from 'antd';
 import { useMemo, useState } from 'react';
 
 import dayjs from 'dayjs';
-import Image from 'next/image';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { DEFAULT_FILE_IMAGE_URL } from '../../../constants';
+import ImageItemDetail from './ImageItemDetail';
 
 type FileGroupsProps = {
     data: FileItem[];
@@ -232,31 +232,11 @@ const FileGroups = ({
 
                 {renderFileTag(file)}
 
-                <Image
-                    fill
-                    priority
-                    unoptimized
-                    src={imageUrl}
-                    alt={`File ${file.id}`}
-                    className="z-10 object-cover transition-opacity duration-200 group-hover:opacity-60"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    onLoadStart={() => {
-                        setLoadingFiles((prev) => new Set(prev).add(file.id));
-                    }}
-                    onLoad={() => {
-                        setLoadingFiles((prev) => {
-                            const newSet = new Set(prev);
-                            newSet.delete(file.id);
-                            return newSet;
-                        });
-                    }}
-                    onError={() => {
-                        setLoadingFiles((prev) => {
-                            const newSet = new Set(prev);
-                            newSet.delete(file.id);
-                            return newSet;
-                        });
-                    }}
+                <ImageItemDetail
+                    key={file.id}
+                    fileId={file.id}
+                    imageUrl={imageUrl}
+                    setLoadingFiles={setLoadingFiles}
                 />
 
                 {renderActionOverlay(file)}
