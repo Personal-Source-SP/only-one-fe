@@ -384,8 +384,8 @@ const KeepPage = () => {
                             allowClear
                             showCount
                             value={newNoteContent}
-                            count={newNoteContent.length}
                             placeholder="Nội dung ghi chú"
+                            count={{ max: 1000, show: true }}
                             onClear={() => setNewNoteContent('')}
                             onChange={(e) => setNewNoteContent(e.target.value)}
                             autoSize={{ minRows: 4 }}

@@ -522,14 +522,9 @@ const SyncGoogleDrive = ({
                     <Col span={24}>
                         <Form.Item name={FieldsEnum.CustomQuery} label="Tùy chọn tìm kiếm">
                             <Input.TextArea
-                                showCount
                                 allowClear
                                 rows={4}
                                 placeholder="Tùy chọn tìm kiếm"
-                                count={
-                                    form.getFieldValue(FieldsEnum.CustomQuery as keyof IFormValues)
-                                        ?.length ?? 0
-                                }
                                 onClear={() =>
                                     form.setFieldValue(
                                         FieldsEnum.CustomQuery as keyof IFormValues,

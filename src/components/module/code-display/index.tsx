@@ -281,9 +281,7 @@ const CodeDisplay = ({
                 return (
                     <Input.TextArea
                         allowClear
-                        showCount
                         value={editedCode}
-                        count={editedCode.length}
                         className="font-mono text-sm"
                         onClear={() => setEditedCode('')}
                         autoSize={{ minRows: 4, maxRows: 20 }}

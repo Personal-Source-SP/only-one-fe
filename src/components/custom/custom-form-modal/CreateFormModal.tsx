@@ -88,13 +88,10 @@ export const renderFormFields = (formField: FormFieldItem, formProps: FormProps<
             const { placeholder, rows } = formField.textareaProps ?? {};
             formFieldElement = (
                 <Input.TextArea
-                    showCount
-                    allowClear
                     rows={rows ?? 4}
                     placeholder={placeholder}
                     disabled={formField.disabled ?? false}
                     onClear={() => formField.onChange?.('', formProps?.form)}
-                    count={formProps?.form?.getFieldValue(formField.name)?.length ?? 0}
                     onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
                         formField.onChange?.(e.target.value, formProps?.form)
                     }

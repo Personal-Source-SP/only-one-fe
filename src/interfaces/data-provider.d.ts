@@ -1,9 +1,4 @@
-import {
-    DataProviderSearchStatus,
-    DataProviderStatus,
-    DisplayType,
-    ProductMappingStatus,
-} from '@/enums';
+import { DataProviderSearchStatus, DataProviderStatus, ProductMappingStatus } from '@/enums';
 import { Abstract } from '@/interfaces/common';
 import { NCloudData } from './cloud-data';
 
@@ -88,7 +83,6 @@ export declare namespace NDataProvider {
         dataProviderId: string;
         isActive: boolean;
         isSavedToCloudData: boolean;
-        displayType: DisplayType;
         cloudDataProviderId?: string;
         lastScrapedTimestamp?: Date;
 

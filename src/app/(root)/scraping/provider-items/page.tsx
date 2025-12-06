@@ -2,7 +2,7 @@
 
 import { CreateFormModal, CustomElement, EditFormModal, TableContainer } from '@/components/custom';
 import { ProcessScrapeData } from '@/components/module/data-provider';
-import { CustomFilterType, DataProviderStatus, DisplayType, ElementType } from '@/enums';
+import { CustomFilterType, DataProviderStatus, ElementType } from '@/enums';
 import {
     useCustomMutationData,
     useSelectCloudDataProvider,
@@ -11,12 +11,11 @@ import {
     useTableContainer,
 } from '@/hooks';
 import { ActionTableItem, FilterItem, FormFieldItem, NDataProvider } from '@/interfaces';
-import { capitalizeFirstLetter, enumToOptions, formatDate } from '@/libs';
+import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
 import { Button, Space, Switch } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import { useState } from 'react';
-import { StatusTag } from '../../../../components/common';
 
 const DataProviderItemPage = () => {
     const [loading, setLoading] = useState(false);
@@ -74,15 +73,6 @@ const DataProviderItemPage = () => {
             sorter: true,
             width: 150,
             render: (lastScrapedTimestamp: Date) => formatDate(lastScrapedTimestamp),
-        },
-        {
-            title: 'Loại',
-            dataIndex: 'displayType',
-            key: 'displayType',
-            width: 150,
-            render: (displayType: DisplayType) => (
-                <StatusTag status={capitalizeFirstLetter(displayType)} />
-            ),
         },
         {
             title: 'Ngày tạo',
@@ -144,15 +134,6 @@ const DataProviderItemPage = () => {
             },
             selectProps: {
                 options: dataProviderOptions ?? [],
-            },
-        },
-        {
-            type: 'select',
-            name: 'displayType',
-            label: 'Loại hiển thị',
-            rules: [{ required: true, message: 'Vui lòng chọn loại hiển thị' }],
-            selectProps: {
-                options: enumToOptions(DisplayType) ?? [],
             },
         },
         {

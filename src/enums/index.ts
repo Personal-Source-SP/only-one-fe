@@ -3,7 +3,6 @@ export * from './common.enum';
 export * from './component.enum';
 export * from './cron-expression.enum';
 export * from './data-provider.enum';
-export * from './display-type.enum';
 export * from './google-drive.enum';
 export * from './file.enum';
 export * from './role.enum';
