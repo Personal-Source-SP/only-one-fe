@@ -69,7 +69,7 @@ export const MainProvider = ({ children, isPublic = false }: MainProviderProps) 
         notificationApi.open({
             description,
             type: type ?? 'success',
-            title: truncatedMessageText,
+            message: truncatedMessageText,
             duration: (duration ?? 3) / 1000 > 0 ? (duration ?? 3000) / 1000 : 3,
         });
     };

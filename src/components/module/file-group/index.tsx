@@ -5,7 +5,7 @@ import { MimeType } from '@/enums';
 import { ViewFileMode } from '@/enums/file.enum';
 import { FileGroup, FileItem } from '@/interfaces';
 import { DeleteOutlined, DownloadOutlined, EyeOutlined } from '@ant-design/icons';
-import { Button, Masonry, Spin, Tag, Tooltip } from 'antd';
+import { Button, List, Spin, Tag, Tooltip } from 'antd';
 import { useMemo, useState } from 'react';
 import { DEFAULT_FILE_IMAGE_URL } from '../../../constants';
 
@@ -221,8 +221,8 @@ const FileGroups = ({
                 return (
                     <ImageItemDetail
                         fileId={file.id}
-                        imageUrl={file.url}
                         setLoadingFiles={setLoadingFiles}
+                        imageUrl={file.url ?? DEFAULT_FILE_IMAGE_URL}
                     />
                 );
             }
@@ -233,6 +233,7 @@ const FileGroups = ({
                         fileId={file.id}
                         videoUrl={file.url}
                         setLoadingFiles={setLoadingFiles}
+                        videoThumbnailUrl={DEFAULT_FILE_IMAGE_URL}
                     />
                 );
             }
@@ -245,7 +246,6 @@ const FileGroups = ({
 
     const renderItem = (file: FileItem) => {
         const isImage = file.mimeType.startsWith(MimeType.IMAGE);
-        const imageUrl = isImage ? file.url : DEFAULT_FILE_IMAGE_URL;
 
         return (
             <div
@@ -267,18 +267,19 @@ const FileGroups = ({
     };
 
     const renderFiles = () => {
-        const items = allFiles.map((file) => ({
-            data: file,
-            key: file.id,
-        }));
-
         if (displayMode === ViewFileMode.ALL) {
             return (
-                <Masonry
-                    items={items}
-                    gutter={[8, 8]}
-                    columns={columns}
-                    itemRender={({ data }) => renderItem(data)}
+                <List
+                    grid={{
+                        gutter: [8, 8],
+                        column: columns,
+                    }}
+                    dataSource={allFiles}
+                    renderItem={(file) => (
+                        <List.Item style={{ padding: 0, border: 'none' }}>
+                            {renderItem(file)}
+                        </List.Item>
+                    )}
                 />
             );
         }
@@ -286,11 +287,17 @@ const FileGroups = ({
         return groupedFiles.map((group, groupIdx) => (
             <div key={groupIdx} style={{ marginBottom: 24 }}>
                 {renderGroupHeader(group)}
-                <Masonry
-                    items={items}
-                    gutter={[8, 8]}
-                    columns={columns}
-                    itemRender={({ data }) => renderItem(data)}
+                <List
+                    grid={{
+                        gutter: [8, 8],
+                        column: columns,
+                    }}
+                    dataSource={group.files}
+                    renderItem={(file) => (
+                        <List.Item style={{ padding: 0, border: 'none' }}>
+                            {renderItem(file)}
+                        </List.Item>
+                    )}
                 />
             </div>
         ));

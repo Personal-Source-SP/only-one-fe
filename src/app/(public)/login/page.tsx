@@ -38,7 +38,7 @@ const LoginPage = () => {
                 },
                 onError: (error) => {
                     notification.error({
-                        title:
+                        message:
                             error?.message ||
                             'Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin đăng nhập.',
                     });

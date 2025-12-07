@@ -6,15 +6,15 @@ import { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } fr
 type VideoItemDetailProps = {
     fileId: string;
     videoUrl: string;
+    videoThumbnailUrl: string;
     setLoadingFiles: Dispatch<SetStateAction<Set<string>>>;
-    posterUrl?: string;
 };
 
 const VideoItemDetail = ({
     fileId,
     videoUrl,
+    videoThumbnailUrl,
     setLoadingFiles,
-    posterUrl,
 }: VideoItemDetailProps) => {
     const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -109,7 +109,7 @@ const VideoItemDetail = ({
                 preload="metadata"
                 ref={videoRef}
                 src={videoUrl}
-                poster={posterUrl}
+                poster={videoThumbnailUrl}
                 onPlay={handlePlay}
                 onError={handleError}
                 onPause={handlePause}

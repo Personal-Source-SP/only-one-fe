@@ -41,6 +41,7 @@ const DataProviderPage = () => {
 
     const { options: dataProviderItems } = useSelectDataProviderItem({
         id: selectedId,
+        type: 'data-provider',
     });
 
     const { options: dataProviders, query: dataProviderQuery } = useSelectDataProvider();

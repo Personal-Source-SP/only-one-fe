@@ -2,13 +2,12 @@
 
 import { LinkOutlined, MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Col, Flex, Form, FormInstance, Input, InputNumber, Row } from 'antd';
-import { Fragment } from 'react/jsx-runtime';
-import { ScraperServiceEnum } from '../../../enums/data-provider.enum';
+import { Fragment, JSX } from 'react';
+import { FORM_FIELDS } from './ScrapeSetting';
+import { ScraperServiceEnum } from '../../../enums';
 import { Option } from '../../../interfaces';
 import { CustomSwitch } from '../../custom';
 import CodeDisplay from '../code-display';
-import FormItemUrl from './FormItemUrl';
-import { FORM_FIELDS } from './ScrapeSetting';
 
 const FormGeneric = ({
     url,
@@ -16,14 +15,14 @@ const FormGeneric = ({
     form,
     headers,
     cookies,
-    dataProviderItemOptions,
+    renderFormUrl,
 }: {
     url: string;
     formUrls: string[];
     form: FormInstance<any>;
     headers: Record<string, string>;
     cookies: Record<string, string>;
-    dataProviderItemOptions: Option[];
+    renderFormUrl: (field: string, index?: number) => JSX.Element;
 }) => {
     return (
         <Fragment>
@@ -131,11 +130,7 @@ const FormGeneric = ({
                     name={FORM_FIELDS.URL}
                     className="w-full max-w-[calc(100%-50px)]"
                 >
-                    <FormItemUrl
-                        form={form}
-                        field={FORM_FIELDS.URL}
-                        dataProviderItemOptions={dataProviderItemOptions}
-                    />
+                    {renderFormUrl(FORM_FIELDS.URL)}
                 </Form.Item>
                 <Button
                     type="primary"
@@ -162,12 +157,7 @@ const FormGeneric = ({
                                     name={name}
                                     className="w-full max-w-[calc(100%-50px)]"
                                 >
-                                    <FormItemUrl
-                                        form={form}
-                                        index={index}
-                                        field={FORM_FIELDS.ADDITIONAL_URLS}
-                                        dataProviderItemOptions={dataProviderItemOptions}
-                                    />
+                                    {renderFormUrl(FORM_FIELDS.ADDITIONAL_URLS, index)}
                                 </Form.Item>
                                 <MinusCircleOutlined
                                     className="mb-2"
@@ -231,14 +221,14 @@ const FormAPI = ({
     form,
     headers,
     cookies,
-    dataProviderItemOptions,
+    renderFormUrl,
 }: {
     url: string;
     formUrls: string[];
     form: FormInstance<any>;
     headers: Record<string, string>;
     cookies: Record<string, string>;
-    dataProviderItemOptions: Option[];
+    renderFormUrl: (field: string, index?: number) => JSX.Element;
 }) => {
     return (
         <Fragment>
@@ -297,11 +287,7 @@ const FormAPI = ({
                     name={FORM_FIELDS.URL}
                     className="w-full max-w-[calc(100%-50px)]"
                 >
-                    <FormItemUrl
-                        form={form}
-                        field={FORM_FIELDS.URL}
-                        dataProviderItemOptions={dataProviderItemOptions}
-                    />
+                    {renderFormUrl(FORM_FIELDS.URL)}
                 </Form.Item>
                 <Button
                     type="primary"
@@ -328,12 +314,7 @@ const FormAPI = ({
                                     name={name}
                                     className="w-full max-w-[calc(100%-50px)]"
                                 >
-                                    <FormItemUrl
-                                        form={form}
-                                        index={index}
-                                        field={FORM_FIELDS.ADDITIONAL_URLS}
-                                        dataProviderItemOptions={dataProviderItemOptions}
-                                    />
+                                    {renderFormUrl(FORM_FIELDS.ADDITIONAL_URLS, index)}
                                 </Form.Item>
                                 <MinusCircleOutlined
                                     className="mb-2"
@@ -391,7 +372,13 @@ const FormAPI = ({
     );
 };
 
-const FormLocal = () => {
+const FormLocal = ({
+    url,
+    renderFormUrl,
+}: {
+    url: string;
+    renderFormUrl: (field: string, index?: number) => JSX.Element;
+}) => {
     return (
         <Row gutter={[16, 16]}>
             <Col span={12}>
@@ -423,6 +410,24 @@ const FormLocal = () => {
                     <InputNumber min={0} placeholder="Số lượng kết quả tối đa" />
                 </Form.Item>
             </Col>
+            <Col span={24}>
+                <Flex justify="space-between" align="end" gap={10}>
+                    <Form.Item
+                        label="URL"
+                        name={FORM_FIELDS.URL}
+                        className="w-full max-w-[calc(100%-50px)]"
+                    >
+                        {renderFormUrl(FORM_FIELDS.URL)}
+                    </Form.Item>
+                    <Button
+                        type="primary"
+                        className="mb-2"
+                        disabled={!url}
+                        icon={<LinkOutlined />}
+                        onClick={() => window.open(url, '_blank')}
+                    />
+                </Flex>
+            </Col>
         </Row>
     );
 };
@@ -433,19 +438,19 @@ const ScrapeFormItem = ({
     form,
     headers,
     cookies,
-    dataProviderItemOptions,
     scraperService,
+    renderFormUrl,
 }: {
     url: string;
     formUrls: string[];
     form: FormInstance<any>;
     headers: Record<string, string>;
     cookies: Record<string, string>;
-    dataProviderItemOptions: Option[];
     scraperService: ScraperServiceEnum;
+    renderFormUrl: (field: string, index?: number) => JSX.Element;
 }) => {
     switch (scraperService) {
-        case FORM_FIELDS.SCRAPER_SERVICE: {
+        case ScraperServiceEnum.GENERIC: {
             return (
                 <FormGeneric
                     url={url}
@@ -453,7 +458,7 @@ const ScrapeFormItem = ({
                     cookies={cookies}
                     headers={headers}
                     formUrls={formUrls}
-                    dataProviderItemOptions={dataProviderItemOptions}
+                    renderFormUrl={renderFormUrl}
                 />
             );
         }
@@ -466,17 +471,15 @@ const ScrapeFormItem = ({
                     headers={headers}
                     cookies={cookies}
                     formUrls={formUrls}
-                    dataProviderItemOptions={dataProviderItemOptions}
+                    renderFormUrl={renderFormUrl}
                 />
             );
         }
 
         case ScraperServiceEnum.LOCAL: {
-            return <FormLocal />;
+            return <FormLocal url={url} renderFormUrl={renderFormUrl} />;
         }
     }
-
-    return <></>;
 };
 
 export default ScrapeFormItem;

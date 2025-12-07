@@ -1,7 +1,7 @@
 'use client';
 
 import { StatusTag } from '@/components/common';
-import { CustomFormModal } from '@/components/custom';
+import { CustomFormModal, CustomSelect } from '@/components/custom';
 import CodeDisplay from '@/components/module/code-display';
 import {
     DEFAULT_API_FUNCTION_GENERATOR,
@@ -19,6 +19,7 @@ import {
     Divider,
     Flex,
     Form,
+    Input,
     Row,
     Select,
     Space,
@@ -26,7 +27,7 @@ import {
     Typography,
 } from 'antd';
 import { useWatch } from 'antd/es/form/Form';
-import { isEmpty } from 'lodash';
+import { isEmpty, isNumber } from 'lodash';
 import { Fragment, useState } from 'react';
 import ScrapeFormItem from './ScrapeFormItem';
 
@@ -111,6 +112,8 @@ const ScrapeSetting = ({
 
     const { handleCustomMutationData: handleUpdate } = useCustomMutationData();
     const { handleCustomMutationData: handleCreate } = useCustomMutationData();
+
+    console.log(url, htmlContentString);
 
     const handleTestParser = async () => {
         if (!url && !htmlContentString) {
@@ -310,6 +313,33 @@ const ScrapeSetting = ({
         );
     };
 
+    const renderFormUrl = (field: string, index?: number) => {
+        if (!dataProviderItemOptions?.length) {
+            return <Input disabled={false} placeholder="URL" />;
+        }
+
+        return (
+            <CustomSelect
+                showSearch
+                disabled={false}
+                options={dataProviderItemOptions}
+                onInputChange={(value) => {
+                    if (isNumber(index)) {
+                        form?.setFieldValue(
+                            [field as 'dataProviderItems' | 'additionalUrls', index],
+                            value,
+                        );
+                    } else {
+                        form?.setFieldValue(
+                            [field as 'dataProviderItems' | 'additionalUrls' | 'url'],
+                            value,
+                        );
+                    }
+                }}
+            />
+        );
+    };
+
     const renderFormTargetConfiguration = () => {
         if (!form) return <></>;
 
@@ -372,15 +402,24 @@ const ScrapeSetting = ({
                     cookies={cookies}
                     formUrls={formUrls}
                     scraperService={scraperService}
-                    dataProviderItemOptions={dataProviderItemOptions}
+                    renderFormUrl={renderFormUrl}
                 />
             </Fragment>
         );
     };
 
     const renderFunctionGenerator = () => {
-        const isFunctionGeneratorEmpty = isEmpty(functionGenerator);
+        if (scraperService === ScraperServiceEnum.LOCAL) {
+            return (
+                <Flex justify="end" align="center" className="my-2">
+                    <Button type="primary" onClick={handleTestParser} disabled={false}>
+                        Thử nghiệm hàm
+                    </Button>
+                </Flex>
+            );
+        }
 
+        const isFunctionGeneratorEmpty = isEmpty(functionGenerator);
         if (isFunctionGeneratorEmpty) return <></>;
 
         return (

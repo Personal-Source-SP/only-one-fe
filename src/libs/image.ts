@@ -29,3 +29,15 @@ export const getDriveImageUrl = (
 
     return getProxyUrl(url);
 };
+
+export const isLocalFilePath = (path: string | undefined): boolean => {
+    if (!path) return false;
+
+    return !(
+        path.startsWith('http://') ||
+        path.startsWith('https://') ||
+        path.startsWith('blob:') ||
+        path.startsWith('file://') ||
+        path.startsWith('/')
+    );
+};

@@ -140,10 +140,7 @@ const DataProviderItemPage = () => {
             name: 'itemUrl',
             type: 'input',
             label: 'URL cơ sở',
-            rules: [
-                { required: true, message: 'Vui lòng nhập URL đối tượng' },
-                { type: 'url', message: 'URL đối tượng không hợp lệ' },
-            ],
+            rules: [{ required: true, message: 'Vui lòng nhập URL đối tượng' }],
         },
         {
             type: 'select',

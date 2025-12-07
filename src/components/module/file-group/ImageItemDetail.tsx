@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { Dispatch, SetStateAction } from 'react';
+import { isLocalFilePath } from '../../../libs';
 
 const ImageItemDetail = ({
     imageUrl,
@@ -12,6 +13,35 @@ const ImageItemDetail = ({
     fileId: string;
     setLoadingFiles: Dispatch<SetStateAction<Set<string>>>;
 }) => {
+    const isLocalFile = isLocalFilePath(imageUrl);
+
+    if (isLocalFile) {
+        return (
+            <img
+                src={imageUrl}
+                alt={`File ${fileId}`}
+                className="z-10 object-cover transition-opacity duration-200 group-hover:opacity-60 w-full h-full"
+                onLoadStart={() => {
+                    setLoadingFiles((prev) => new Set(prev).add(fileId));
+                }}
+                onLoad={() => {
+                    setLoadingFiles((prev) => {
+                        const newSet = new Set(prev);
+                        newSet.delete(fileId);
+                        return newSet;
+                    });
+                }}
+                onError={() => {
+                    setLoadingFiles((prev) => {
+                        const newSet = new Set(prev);
+                        newSet.delete(fileId);
+                        return newSet;
+                    });
+                }}
+            />
+        );
+    }
+
     return (
         <Image
             fill
