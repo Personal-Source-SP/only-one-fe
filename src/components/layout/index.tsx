@@ -17,26 +17,32 @@ import { exchangeCodeForTokens, getUserInfoFromGoogle } from '@/libs';
 import { Space } from 'antd';
 import { usePathname, useRouter } from 'next/navigation';
 import { ReactNode, Suspense, useEffect, useRef, useState } from 'react';
+import Breadcrumb from './breadcrumb';
 
 type MainLayoutProps = {
     children: ReactNode;
 };
 
-const getPageTitle = (pathname: string, items?: SidebarItem[]): string => {
-    for (const item of items || SIDEBAR_ITEMS) {
+const findPageTitle = (pathname: string, items: SidebarItem[]): string | null => {
+    for (const item of items) {
         if (item.href === pathname) {
             return item.label;
         }
 
         if (item.children) {
-            const found = getPageTitle(pathname, item.children);
+            const found = findPageTitle(pathname, item.children);
             if (found) {
                 return found;
             }
         }
     }
 
-    return 'O-O Hub';
+    return null;
+};
+
+export const getPageTitle = (pathname: string, items?: SidebarItem[]): string => {
+    const found = findPageTitle(pathname, items || SIDEBAR_ITEMS);
+    return found || 'O-O Hub';
 };
 
 const MainLayout = ({ children }: MainLayoutProps) => {
@@ -195,6 +201,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
                             direction="vertical"
                             className="p-4 mb-4 w-full h-full"
                         >
+                            <Breadcrumb />
                             {children}
                         </Space>
                     </main>

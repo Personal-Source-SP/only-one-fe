@@ -5,7 +5,7 @@ import { SIDEBAR_ITEMS } from '@/constants';
 import { Icon } from '@iconify/react';
 import { Button, Drawer, Menu, Tooltip } from 'antd';
 import { usePathname, useRouter } from 'next/navigation';
-import { useCallback, useMemo, useState } from 'react';
+import { Fragment, useCallback, useMemo, useState } from 'react';
 
 type SidebarProps = {
     mobileOpen: boolean;
@@ -365,10 +365,10 @@ const Sidebar = ({ mobileOpen, setMobileOpen, collapsed, setCollapsed }: Sidebar
     );
 
     return (
-        <>
+        <Fragment key="sidebar">
             <DesktopSidebar />
             <MobileDrawer />
-        </>
+        </Fragment>
     );
 };
 

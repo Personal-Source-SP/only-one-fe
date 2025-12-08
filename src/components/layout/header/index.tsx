@@ -4,7 +4,6 @@ import { Avatar, Badge, Button, Dropdown, Input, MenuProps } from 'antd';
 import { signOut } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
 
-
 type HeaderProps = {
     showSearch: boolean;
     mobileMenuOpen: boolean;
