@@ -15,7 +15,7 @@ import {
 import { ActionTableItem, FileItem, FilterItem, NBaseApi, NDataProvider } from '@/interfaces';
 import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
-import { Button, Flex, Space, Switch } from 'antd';
+import { Button, Flex, Segmented, Space } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
@@ -230,6 +230,35 @@ const ScrapingDataPage = () => {
     return (
         <Space size="middle" direction="vertical" className="w-full h-full">
             <CustomElement
+                title={
+                    <Space align="center" className="rounded-md">
+                        <Segmented
+                            size="middle"
+                            value={displayMode}
+                            onChange={(val) => setDisplayMode(val as DisplayMode)}
+                            options={[
+                                {
+                                    value: DisplayMode.LIST,
+                                    label: (
+                                        <span className="flex items-center gap-2">
+                                            <Icon icon="lucide:list" />
+                                            Hiển thị dạng danh sách
+                                        </span>
+                                    ),
+                                },
+                                {
+                                    value: DisplayMode.TABLE,
+                                    label: (
+                                        <span className="flex items-center gap-2">
+                                            <Icon icon="lucide:table" />
+                                            Hiển thị dạng bảng
+                                        </span>
+                                    ),
+                                },
+                            ]}
+                        />
+                    </Space>
+                }
                 elementType={ElementType.TITLE}
                 actions={[
                     <Button
@@ -254,15 +283,6 @@ const ScrapingDataPage = () => {
                         disabled={!selectedDataProviderIds?.length}
                         onClick={() => handleDelete(selectedDataProviderIds)}
                     />,
-                    <Space key="display-list" align="center">
-                        <Switch
-                            checked={displayMode === DisplayMode.LIST}
-                            onChange={(checked) =>
-                                setDisplayMode(checked ? DisplayMode.LIST : DisplayMode.TABLE)
-                            }
-                        />
-                        <span>Hiển thị dạng danh sách</span>
-                    </Space>,
                 ]}
             />
 

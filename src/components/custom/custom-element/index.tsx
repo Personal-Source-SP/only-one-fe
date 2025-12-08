@@ -6,7 +6,7 @@ import { ReactNode } from 'react';
 
 type CustomElementProps = {
     elementType: ElementType;
-    title?: string;
+    title?: string | ReactNode;
     header?: ReactNode;
     actions?: ReactNode[];
     loading?: boolean;
@@ -33,7 +33,11 @@ const CustomElement = ({
                 <Card>
                     {Boolean(description) && <p className="text-gray-500 text-sm">{description}</p>}
                     <Flex justify="space-between" align="center" className="mt-0">
-                        <h2 className="text-2xl font-semibold mb-0">{title}</h2>
+                        {typeof title === 'string' ? (
+                            <h2 className="text-2xl font-semibold mb-0">{title}</h2>
+                        ) : (
+                            title
+                        )}
                         {Boolean(actions?.length) && <Space size="small">{actions}</Space>}
                     </Flex>
                     {Boolean(children) && children}
