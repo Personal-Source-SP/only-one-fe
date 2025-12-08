@@ -147,33 +147,29 @@ const ItemPage = () => {
     return (
         <Space size="middle" direction="vertical" className="w-full h-full">
             <CustomElement
-                title="Danh sách đối tượng"
                 elementType={ElementType.TITLE}
                 actions={[
                     <Button
                         type="primary"
                         key="scrape-data"
+                        title="Cào dữ liệu"
                         icon={<Icon icon="lucide:file-text" />}
                         onClick={() => setOpenProcessScrapeDataModal(true)}
-                    >
-                        Cào dữ liệu
-                    </Button>,
+                    />,
                     <Button
                         type="primary"
                         key="import-item"
+                        title="Nhập đối tượng"
                         icon={<Icon icon="lucide:file-text" />}
                         onClick={() => setOpenImportItemModal(true)}
-                    >
-                        Nhập đối tượng
-                    </Button>,
+                    />,
                     <Button
                         type="primary"
                         key="add-item"
+                        title="Thêm đối tượng"
                         icon={<Icon icon="lucide:plus" />}
                         onClick={() => setOpenCreateItemModal(true)}
-                    >
-                        Thêm đối tượng
-                    </Button>,
+                    />,
                 ]}
             />
 

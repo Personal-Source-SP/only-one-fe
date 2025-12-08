@@ -151,17 +151,15 @@ const SimulationContextsPage = () => {
     return (
         <Space size="middle" direction="vertical" className="w-full h-full">
             <CustomElement
-                title="Danh sách ngữ cảnh mô phỏng"
                 elementType={ElementType.TITLE}
                 actions={[
                     <Button
                         type="primary"
+                        title="Thêm ngữ cảnh mô phỏng"
                         key="add-simulation-context"
                         icon={<Icon icon="lucide:plus" />}
                         onClick={() => setOpenCreateItemModal(true)}
-                    >
-                        Thêm ngữ cảnh mô phỏng
-                    </Button>,
+                    />,
                 ]}
             />
 

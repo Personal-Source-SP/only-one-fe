@@ -141,17 +141,15 @@ const CloudDataItem = () => {
     return (
         <Space size="middle" direction="vertical" className="w-full h-full">
             <CustomElement
-                title="Danh sách dữ liệu đám mây"
                 elementType={ElementType.TITLE}
                 actions={[
                     <Button
                         type="primary"
+                        title="Thêm dữ liệu"
                         key="add-cloud-data-item"
                         icon={<Icon icon="lucide:plus" />}
                         onClick={() => setOpenCreateItemModal(true)}
-                    >
-                        Thêm dữ liệu
-                    </Button>,
+                    />,
                 ]}
             />
 

@@ -187,33 +187,29 @@ const PhotosPage = () => {
     return (
         <Space size="middle" direction="vertical" className="w-full h-full">
             <CustomElement
-                title="Photos"
                 elementType={ElementType.TITLE}
                 actions={[
                     <Button
-                        key="slideshow"
                         type="primary"
+                        key="slideshow"
+                        title="Trình chiếu"
                         icon={<Icon icon="lucide:play" />}
                         onClick={() => setIsLightboxOpen(true)}
-                    >
-                        Trình chiếu
-                    </Button>,
+                    />,
                     <Button
                         type="primary"
                         key="sync google drive"
+                        title="Đồng bộ từ Google Drive"
                         icon={<Icon icon="ic:baseline-sync" />}
                         onClick={() => setIsOpenSyncFile(true)}
-                    >
-                        Đồng bộ từ Google Drive
-                    </Button>,
+                    />,
                     <Button
                         type="primary"
                         key="sync-local"
+                        title="Đồng bộ từ máy tính"
                         icon={<Icon icon="lucide:folder-plus" />}
                         onClick={() => setIsOpenSyncLocal(true)}
-                    >
-                        Đồng bộ từ máy tính
-                    </Button>,
+                    />,
                 ]}
             />
 

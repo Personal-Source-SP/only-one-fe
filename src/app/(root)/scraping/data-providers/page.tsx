@@ -291,33 +291,29 @@ const DataProviderPage = () => {
     return (
         <Space size="middle" direction="vertical" className="w-full h-full">
             <CustomElement
-                title="Danh sách nhà cung cấp"
                 elementType={ElementType.TITLE}
                 actions={[
                     <Button
                         type="primary"
                         key="scrape-data"
+                        title="Cào dữ liệu"
                         icon={<Icon icon="lucide:file-text" />}
                         onClick={() => setOpenProcessScrapeDataModal(true)}
-                    >
-                        Cào dữ liệu
-                    </Button>,
+                    />,
                     <Button
                         type="primary"
+                        title="Nhập nhà cung cấp"
                         key="import-data-provider"
-                        icon={<Icon icon="lucide:file-text" />}
+                        icon={<Icon icon="lucide:import" />}
                         onClick={() => setOpenImportItemModal(true)}
-                    >
-                        Nhập nhà cung cấp
-                    </Button>,
+                    />,
                     <Button
                         type="primary"
                         key="add-data-provider"
+                        title="Thêm nhà cung cấp"
                         icon={<Icon icon="lucide:plus" />}
                         onClick={() => setOpenCreateItemModal(true)}
-                    >
-                        Thêm nhà cung cấp
-                    </Button>,
+                    />,
                 ]}
             />
 

@@ -43,12 +43,10 @@ const Breadcrumb = () => {
     const pathname = usePathname();
 
     const breadcrumbItems = useMemo(() => {
-        const foundPath = findBreadcrumbPath(SIDEBAR_ITEMS, pathname);
-
         const items = [
             {
                 title: (
-                    <span className="text-primary font-medium text-base flex items-center gap-2">
+                    <span className="font-medium text-base flex items-center gap-2">
                         <Icon icon="mdi:home" className="text-lg" />
                         Trang chủ
                     </span>
@@ -56,32 +54,30 @@ const Breadcrumb = () => {
             },
         ];
 
-        if (!foundPath?.length) {
-            return items;
-        }
+        const foundPath = findBreadcrumbPath(SIDEBAR_ITEMS, pathname);
+        if (!foundPath?.length) return items;
 
-        foundPath.forEach((item, index) => {
-            const isLast = index === foundPath.length - 1;
-
-            items.push({
-                title: isLast ? (
-                    <span className="text-primary font-medium text-base flex items-center gap-2">
-                        <Icon icon={item.icon} className="text-lg" />
-                        {item.label}
-                    </span>
-                ) : (
+        const pathItems = foundPath.map((item) => {
+            const hasHref = item.href && item.href !== pathname;
+            return {
+                title: (
                     <span
-                        onClick={() => router.push(item.href || '')}
-                        className="cursor-pointer hover:text-primary text-base flex items-center gap-2"
+                        key={item.href}
+                        className={`${hasHref ? 'cursor-pointer hover:text-primary' : 'cursor-default text-primary'} text-base flex items-center gap-2`}
+                        onClick={() => {
+                            if (hasHref) {
+                                router.push(item.href!);
+                            }
+                        }}
                     >
                         <Icon icon={item.icon} className="text-lg" />
                         {item.label}
                     </span>
                 ),
-            });
+            };
         });
 
-        return items;
+        return [...items, ...pathItems];
     }, [pathname, router]);
 
     return (

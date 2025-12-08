@@ -126,17 +126,15 @@ const CloudDataProvider = () => {
     return (
         <Space size="middle" direction="vertical" className="w-full h-full">
             <CustomElement
-                title="Danh sách nhà cung cấp"
                 elementType={ElementType.TITLE}
                 actions={[
                     <Button
                         type="primary"
+                        title="Thêm nhà cung cấp"
                         key="add-cloud-data-provider"
                         icon={<Icon icon="lucide:plus" />}
                         onClick={() => setOpenCreateItemModal(true)}
-                    >
-                        Thêm nhà cung cấp
-                    </Button>,
+                    />,
                 ]}
             />
 

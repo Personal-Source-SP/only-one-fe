@@ -230,34 +230,30 @@ const ScrapingDataPage = () => {
     return (
         <Space size="middle" direction="vertical" className="w-full h-full">
             <CustomElement
-                title="Danh sách dữ liệu cào"
                 elementType={ElementType.TITLE}
                 actions={[
                     <Button
                         type="primary"
                         key="scrape-data"
+                        title="Cào dữ liệu"
                         icon={<Icon icon="lucide:file-text" />}
                         onClick={() => setOpenProcessScrapeDataModal(true)}
-                    >
-                        Cào dữ liệu
-                    </Button>,
+                    />,
                     <Button
                         type="primary"
                         key="slideshow"
+                        title="Trình chiếu"
                         icon={<Icon icon="lucide:play" />}
                         onClick={() => setIsLightboxOpen(true)}
-                    >
-                        Trình chiếu
-                    </Button>,
+                    />,
                     <Button
                         type="primary"
                         key="delete-data"
+                        title="Xóa dữ liệu"
                         icon={<Icon icon="lucide:trash" />}
                         disabled={!selectedDataProviderIds?.length}
                         onClick={() => handleDelete(selectedDataProviderIds)}
-                    >
-                        Xóa dữ liệu
-                    </Button>,
+                    />,
                     <Space key="display-list" align="center">
                         <Switch
                             checked={displayMode === DisplayMode.LIST}

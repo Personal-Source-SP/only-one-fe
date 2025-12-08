@@ -140,17 +140,15 @@ const SimulationItemsPage = () => {
     return (
         <Space size="middle" direction="vertical" className="w-full h-full">
             <CustomElement
-                title="Danh sách mô phỏng"
                 elementType={ElementType.TITLE}
                 actions={[
                     <Button
                         type="primary"
+                        title="Thêm mô phỏng"
                         key="add-simulation-item"
                         icon={<Icon icon="lucide:plus" />}
                         onClick={() => setOpenCreateItemModal(true)}
-                    >
-                        Thêm mô phỏng
-                    </Button>,
+                    />,
                 ]}
             />
 

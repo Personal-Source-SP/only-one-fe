@@ -1,14 +1,12 @@
 'use client';
 
-import { CustomElement, TableContainer } from '@/components/custom';
-import { ElementType } from '@/enums';
+import { TableContainer } from '@/components/custom';
 import { useCustomModal, useTableContainer } from '@/hooks';
 import { NGoogle, NUser } from '@/interfaces';
 import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
 import { Space } from 'antd';
 import { ColumnsType } from 'antd/es/table';
-
 
 const UsersPage = () => {
     const tableContainerData = useTableContainer({
@@ -70,8 +68,6 @@ const UsersPage = () => {
 
     return (
         <Space size="middle" direction="vertical" className="w-full h-full">
-            <CustomElement title="Danh sách người dùng" elementType={ElementType.TITLE} />
-
             <TableContainer
                 resource="users"
                 columns={columns}

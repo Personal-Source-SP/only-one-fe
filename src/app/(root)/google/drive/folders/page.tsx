@@ -83,17 +83,15 @@ const FolderPage = () => {
     return (
         <Space size="middle" direction="vertical" className="w-full h-full">
             <CustomElement
-                title="Danh sách thư mục"
                 elementType={ElementType.TITLE}
                 actions={[
                     <Button
                         type="primary"
                         key="sync google drive"
+                        title="Đồng bộ từ Google Drive"
                         icon={<Icon icon="ic:baseline-sync" />}
                         onClick={() => setIsOpenSyncFile(true)}
-                    >
-                        Đồng bộ từ Google Drive
-                    </Button>,
+                    />,
                 ]}
             />
 

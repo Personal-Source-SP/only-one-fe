@@ -1,9 +1,9 @@
 'use client';
 
 import { StatusTag } from '@/components/common';
-import { CustomElement, TableContainer } from '@/components/custom';
+import { TableContainer } from '@/components/custom';
 import { ViewJobEvent } from '@/components/module/schedule';
-import { ElementType, ScheduleJobEventType } from '@/enums';
+import { ScheduleJobEventType } from '@/enums';
 import { useTableContainer } from '@/hooks';
 import { ActionTableItem, NSchedule } from '@/interfaces';
 import { formatDate } from '@/libs';
@@ -85,11 +85,6 @@ const ScheduleJobEventsPage = () => {
 
     return (
         <Space size="middle" direction="vertical" className="w-full h-full">
-            <CustomElement
-                elementType={ElementType.TITLE}
-                title="Danh sách sự kiện lịch biểu thực thi"
-            />
-
             <TableContainer
                 columns={columns}
                 actionItems={actionItems}

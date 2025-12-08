@@ -2,54 +2,54 @@ import { SidebarItem } from '../interfaces';
 
 export const SIDEBAR_ITEMS: SidebarItem[] = [
     {
-        href: '/dashboard',
         label: 'Tổng quan',
         icon: 'emojione:bar-chart',
+        href: '/dashboard',
     },
     {
         label: 'Google Drive',
         icon: 'flat-color-icons:google',
         children: [
             {
-                href: '/google/drive/folders',
                 label: 'Thư mục',
+                href: '/google/drive/folders',
                 icon: 'emojione:open-file-folder',
             },
             {
-                href: '/google/drive/photos',
                 label: 'Ảnh',
+                href: '/google/drive/photos',
                 icon: 'noto:framed-picture',
             },
             {
-                href: '/google/keep',
                 label: 'Lưu trữ',
+                href: '/google/keep',
                 icon: 'noto-v1:package',
             },
         ],
     },
     {
-        label: 'Dữ liệu',
+        label: 'Cào dữ liệu',
         icon: 'noto:package',
         children: [
             {
-                href: '/scraping/data-providers',
                 label: 'Nhà cung cấp',
                 icon: 'noto:factory',
+                href: '/scraping/data-providers',
             },
             {
-                href: '/scraping/provider-items',
                 label: 'Đối tượng nhà cung cấp',
                 icon: 'noto:package',
+                href: '/scraping/provider-items',
             },
             {
-                href: '/scraping/items',
                 label: 'Đối tượng',
                 icon: 'noto:page-facing-up',
+                href: '/scraping/items',
             },
             {
-                href: '/scraping/scraping-data',
                 label: 'Dữ liệu cào',
                 icon: 'noto:file-folder',
+                href: '/scraping/scraping-data',
             },
         ],
     },
@@ -58,14 +58,14 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
         icon: 'noto:alarm-clock',
         children: [
             {
-                href: '/schedule/executions',
                 label: 'Lịch biểu thực thi',
                 icon: 'noto:stopwatch',
+                href: '/schedule/executions',
             },
             {
-                href: '/schedule/job-events',
                 label: 'Sự kiện lịch biểu',
                 icon: 'noto:spiral-calendar',
+                href: '/schedule/job-events',
             },
         ],
     },
@@ -74,14 +74,14 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
         icon: 'noto:globe-with-meridians',
         children: [
             {
-                href: '/simulation/contexts',
-                label: 'Danh sách ngữ cảnh',
+                label: 'Ngữ cảnh mô phỏng',
                 icon: 'mdi:format-list-bulleted',
+                href: '/simulation/contexts',
             },
             {
-                href: '/simulation/items',
-                label: 'Danh sách mô phỏng',
+                label: 'Đối tượng mô phỏng',
                 icon: 'noto:page-facing-up',
+                href: '/simulation/items',
             },
         ],
     },
@@ -90,14 +90,14 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
         icon: 'mdi:cloud-outline',
         children: [
             {
-                href: '/cloud-data/providers',
-                label: 'Nhà cung cấp',
+                label: 'Nhà cung cấp cloud',
                 icon: 'emojione:package',
+                href: '/cloud-data/providers',
             },
             {
-                href: '/cloud-data/items',
-                label: 'Dữ liệu',
+                label: 'Dữ liệu cloud',
                 icon: 'emojione:open-file-folder',
+                href: '/cloud-data/items',
             },
         ],
     },
@@ -106,9 +106,9 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
         icon: 'flat-color-icons:settings',
         children: [
             {
-                href: '/setting/users',
                 label: 'Người dùng',
                 icon: 'noto:people-holding-hands',
+                href: '/setting/users',
             },
         ],
     },

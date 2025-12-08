@@ -328,17 +328,15 @@ const ScheduleExecutionPage = () => {
     return (
         <Space size="middle" direction="vertical" className="w-full h-full">
             <CustomElement
-                title="Danh sách lịch biểu thực thi"
                 elementType={ElementType.TITLE}
                 actions={[
                     <Button
                         type="primary"
                         key="add-schedule-execution"
+                        title="Thêm lịch biểu thực thi"
                         icon={<Icon icon="lucide:plus" />}
                         onClick={() => setOpenCreateItemModal(true)}
-                    >
-                        Thêm lịch biểu thực thi
-                    </Button>,
+                    />,
                 ]}
             />
 
