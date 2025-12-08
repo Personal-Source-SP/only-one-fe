@@ -3,20 +3,23 @@
 import { StatusTag } from '@/components/common';
 import { CreateFormModal, CustomElement, EditFormModal, TableContainer } from '@/components/custom';
 import { ElementType, SimulationItemStatus } from '@/enums';
-import { useCustomMutationData, useTableContainer } from '@/hooks';
+import { useCustomMutationData, useSelectSimulationContext, useTableContainer } from '@/hooks';
 import { ActionTableItem, FormFieldItem, NSimulation } from '@/interfaces';
 import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
 import { Button, Space } from 'antd';
 import { ColumnsType } from 'antd/es/table';
-import { useState } from 'react';
+import { FC, useState } from 'react';
 
-const SimulationItemsPage = () => {
+const SimulationItemsPage: FC = () => {
     const [loading, setLoading] = useState(false);
     const [openCreateItemModal, setOpenCreateItemModal] = useState(false);
     const [editItemId, setEditItemId] = useState<string | undefined>(undefined);
 
     const { handleCustomMutationData } = useCustomMutationData();
+
+    const { options: simulationContextOptions, query: simulationContextQuery } =
+        useSelectSimulationContext();
 
     const tableContainerData = useTableContainer({
         resource: 'simulation-items',
@@ -51,6 +54,25 @@ const SimulationItemsPage = () => {
 
     const formFields: FormFieldItem[] = [
         {
+            type: 'select',
+            name: 'simulationContextId',
+            label: 'Ngữ cảnh',
+            rules: [{ required: true, message: 'Vui lòng chọn ngữ cảnh' }],
+            selectProps: {
+                options: simulationContextOptions,
+            },
+            onChange: (value, form) => {
+                const contextSelected = simulationContextQuery?.data?.data?.find(
+                    (item: NSimulation.ISimulationContext) => item.id === value,
+                );
+                if (!contextSelected) return;
+
+                form?.setFieldsValue({
+                    payload: JSON.stringify(contextSelected.defaultPayload ?? { referenceUrl: '' }),
+                });
+            },
+        },
+        {
             type: 'input',
             name: 'name',
             label: 'Tên ngữ cảnh',
@@ -67,6 +89,15 @@ const SimulationItemsPage = () => {
             name: 'identifier',
             label: 'Mã ngữ cảnh',
             rules: [{ required: true, message: 'Vui lòng nhập mã ngữ cảnh' }],
+        },
+        {
+            type: 'code-display',
+            name: 'payload',
+            label: 'Payload',
+            rules: [{ required: true, message: 'Vui lòng nhập payload' }],
+            codeProps: {
+                language: 'json',
+            },
         },
     ];
 
@@ -169,6 +200,21 @@ const SimulationItemsPage = () => {
                 onClose={() => {
                     setOpenCreateItemModal(false);
                     tableContainerData?.tableQuery?.refetch();
+                }}
+                initialValues={{
+                    payload: JSON.stringify({
+                        referenceUrl: '',
+                    }),
+                }}
+                onTransformValues={(values) => {
+                    try {
+                        return {
+                            ...values,
+                            payload: JSON.parse(values.payload),
+                        };
+                    } catch {
+                        return values;
+                    }
                 }}
             />
 

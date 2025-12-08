@@ -92,6 +92,15 @@ const SimulationContextsPage = () => {
                 options: enumToOptions(SimulationService) ?? [],
             },
         },
+        {
+            type: 'code-display',
+            name: 'defaultPayload',
+            label: 'Payload mặc định',
+            rules: [{ required: true, message: 'Vui lòng nhập payload mặc định' }],
+            codeProps: {
+                language: 'json',
+            },
+        },
     ];
 
     const actionItems: ActionTableItem[] = [
@@ -180,6 +189,21 @@ const SimulationContextsPage = () => {
                 onClose={() => {
                     setOpenCreateItemModal(false);
                     tableContainerData?.tableQuery?.refetch();
+                }}
+                initialValues={{
+                    defaultPayload: JSON.stringify({
+                        referenceUrl: '',
+                    }),
+                }}
+                onTransformValues={(values) => {
+                    try {
+                        return {
+                            ...values,
+                            defaultPayload: JSON.parse(values.defaultPayload),
+                        };
+                    } catch {
+                        return values;
+                    }
                 }}
             />
 

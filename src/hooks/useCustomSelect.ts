@@ -1,4 +1,4 @@
-import { NCloudData, NDataProvider, NGoogle } from '@/interfaces';
+import { NCloudData, NDataProvider, NGoogle, NSimulation } from '@/interfaces';
 import { CrudFilter, useSelect } from '@refinedev/core';
 
 interface IUseSelectProps<T> {
@@ -88,6 +88,18 @@ export const useSelectCloudDataProvider = (
 ) => {
     return useCustomSelect({
         resource: 'cloud-data-providers/all',
+        enabled: props?.enabled ?? true,
+        optionValue: props?.optionValue ?? ((item: NCloudData.ICloudDataProvider) => item.id ?? ''),
+        optionLabel:
+            props?.optionLabel ?? ((item: NCloudData.ICloudDataProvider) => item.name ?? ''),
+    });
+};
+
+export const useSelectSimulationContext = (
+    props?: IUseSelectProps<NSimulation.ISimulationContext>,
+) => {
+    return useCustomSelect({
+        resource: 'simulation-contexts/all',
         enabled: props?.enabled ?? true,
         optionValue: props?.optionValue ?? ((item: NCloudData.ICloudDataProvider) => item.id ?? ''),
         optionLabel:
