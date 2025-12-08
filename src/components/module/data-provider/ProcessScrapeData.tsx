@@ -228,8 +228,8 @@ const ProcessScrapeData = ({
                 layout="vertical"
                 initialValues={{
                     checkDuplicateData: true,
-                    mimeTypes: [MimeType.IMAGE],
                     lastSuccessfulScrapeAt: undefined,
+                    mimeTypes: [MimeType.IMAGE, MimeType.VIDEO],
                     itemIds: selectedItemIds?.length ? selectedItemIds : undefined,
                     dataProviderItemIds: selectedDataProviderItemIds?.length
                         ? selectedDataProviderItemIds

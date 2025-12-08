@@ -29,10 +29,16 @@ const CustomElement = ({
 }: CustomElementProps) => {
     switch (elementType) {
         case ElementType.TITLE: {
+            const isTitle = Boolean(title);
+
             return (
                 <Card>
                     {Boolean(description) && <p className="text-gray-500 text-sm">{description}</p>}
-                    <Flex justify="space-between" align="center" className="mt-0">
+                    <Flex
+                        align="center"
+                        className="mt-0"
+                        justify={isTitle ? 'space-between' : 'end'}
+                    >
                         {typeof title === 'string' ? (
                             <h2 className="text-2xl font-semibold mb-0">{title}</h2>
                         ) : (
