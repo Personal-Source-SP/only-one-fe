@@ -73,24 +73,6 @@ const SimulationItemsPage: FC = () => {
             },
         },
         {
-            type: 'input',
-            name: 'name',
-            label: 'Tên ngữ cảnh',
-            rules: [{ required: true, message: 'Vui lòng nhập tên ngữ cảnh' }],
-        },
-        {
-            type: 'input',
-            name: 'baseUrl',
-            label: 'URL nguồn',
-            rules: [{ required: true, message: 'Vui lòng nhập URL ngữ cảnh' }],
-        },
-        {
-            type: 'input',
-            name: 'identifier',
-            label: 'Mã ngữ cảnh',
-            rules: [{ required: true, message: 'Vui lòng nhập mã ngữ cảnh' }],
-        },
-        {
             type: 'code-display',
             name: 'payload',
             label: 'Payload',
