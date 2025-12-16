@@ -110,7 +110,7 @@ const SimulationItemsPage: FC = () => {
         };
 
         const action: Record<string, string> = {
-            [SimulationItemStatus.PROCESSING]: 'start',
+            [SimulationItemStatus.PROCESSING]: 'run',
         };
 
         setLoading(true);
