@@ -12,6 +12,7 @@ import { Space } from 'antd';
 import { usePathname, useRouter } from 'next/navigation';
 import { PropsWithChildren, Suspense, useEffect, useRef, useState } from 'react';
 
+import Footer from '@/components/layout/footer';
 import Header from '@/components/layout/header';
 import NotificationsPanel from '@/components/layout/notifications-panel';
 import Search from '@/components/layout/search';
@@ -188,14 +189,17 @@ const MainLayout = ({ children }: PropsWithChildren) => {
 
                 {/* Page Content */}
                 <Suspense fallback={<Loading />}>
-                    <main className="flex-1 p-0 md:p-4 !pt-20 min-h-screen max-w-[100vw] w-full overflow-y-auto">
+                    <main className="flex-1 p-0 md:p-4 !pt-20 min-h-screen max-w-[100vw] w-full flex flex-col">
                         <Space
                             size="middle"
                             direction="vertical"
-                            className="p-4 mb-4 w-full h-full"
+                            className="p-4 mb-4 w-full flex-1"
                         >
                             {children}
                         </Space>
+                        <div className="shrink-0">
+                            <Footer />
+                        </div>
                     </main>
                 </Suspense>
 
