@@ -23,7 +23,21 @@ export enum NotificationType {
     WARNING = 'warning',
 }
 
+export enum MessageType {
+    SUCCESS = 'success',
+    ERROR = 'error',
+    INFO = 'info',
+    WARNING = 'warning',
+    LOADING = 'loading',
+}
+
 export enum NotificationTab {
     ALL = 'all',
     UNREAD = 'unread',
+}
+
+export enum Theme {
+    LIGHT = 'light',
+    DARK = 'dark',
+    BRAND = 'brand',
 }

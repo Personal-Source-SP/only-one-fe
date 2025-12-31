@@ -1,31 +1,33 @@
 'use client';
 
 import { Loading } from '@/components/common';
-import MainLayout from '@/components/layout';
 import { SocketProvider } from '@/contexts/SocketContext';
+import { MessageType, NotificationType, Theme } from '@/enums';
 import { message, notification } from 'antd';
-
+import { NoticeType } from 'antd/es/message/interface';
+import { IconType } from 'antd/es/notification/interface';
 import { createContext, Fragment, PropsWithChildren, useContext, useState } from 'react';
 
-type NotificationType = 'success' | 'info' | 'warning' | 'error';
-type MessageType = 'success' | 'error' | 'info' | 'warning' | 'loading';
+import MainLayout from '@/components/layout';
 
 interface IMessageProps {
     content: string;
-    type?: MessageType;
     duration?: number;
+    type?: MessageType;
 }
 
 interface INotificationProps {
     message: string;
+    duration?: number;
     description?: string;
     type?: NotificationType;
-    duration?: number;
 }
 
 interface MainContextType {
+    theme: Theme;
     loading: boolean;
     scrollToTop: () => void;
+    handleTheme: (theme: Theme) => void;
     handleLoading: (loading: boolean) => void;
     handleMessage: (props: IMessageProps) => void;
     handleNotification: (props: INotificationProps) => void;
@@ -39,6 +41,7 @@ const MainContext = createContext<MainContextType | undefined>(undefined);
 
 export const MainProvider = ({ children, isPublic = false }: MainProviderProps) => {
     const [loading, setLoading] = useState(false);
+    const [theme, setTheme] = useState<Theme>(Theme.LIGHT);
 
     const [messageApi, messageContextHolder] = message.useMessage();
     const [notificationApi, notificationContextHolder] = notification.useNotification();
@@ -55,7 +58,7 @@ export const MainProvider = ({ children, isPublic = false }: MainProviderProps) 
         messageApi.destroy();
         messageApi.open({
             content: truncatedContent,
-            type: type ?? 'success',
+            type: (type ?? MessageType.SUCCESS) as NoticeType,
             duration: (duration ?? 3) / 1000 > 0 ? (duration ?? 3000) / 1000 : 3,
         });
     };
@@ -68,10 +71,14 @@ export const MainProvider = ({ children, isPublic = false }: MainProviderProps) 
         notificationApi.destroy();
         notificationApi.open({
             description,
-            type: type ?? 'success',
             message: truncatedMessageText,
+            type: (type ?? 'success') as IconType,
             duration: (duration ?? 3) / 1000 > 0 ? (duration ?? 3000) / 1000 : 3,
         });
+    };
+
+    const handleTheme = (theme: Theme) => {
+        setTheme(theme);
     };
 
     const scrollToTop = () => {
@@ -106,8 +113,10 @@ export const MainProvider = ({ children, isPublic = false }: MainProviderProps) 
     return (
         <MainContext.Provider
             value={{
+                theme,
                 loading,
                 scrollToTop,
+                handleTheme,
                 handleLoading,
                 handleMessage,
                 handleNotification,

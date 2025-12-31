@@ -1,7 +1,7 @@
 {
   "root": true,
   "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint"],
+  "plugins": ["@typescript-eslint", "no-relative-import-paths"],
   "overrides": [
       {
           "files": ["*.js", "*.tsx", "*.ts","*.d.ts"],
@@ -10,7 +10,20 @@
               "prettier/prettier": [
                   "error",
                   {
+                      "semi": true,
+                      "trailingComma": "all",
+                      "singleQuote": true,
+                      "printWidth": 100,
+                      "tabWidth": 4,
                       "endOfLine": "auto"
+                  }
+              ],
+              "no-relative-import-paths/no-relative-import-paths": [
+                  "error",
+                  {
+                      "allowSameFolder": true,
+                      "rootDir": "src",
+                      "prefix": "@"
                   }
               ]
           }

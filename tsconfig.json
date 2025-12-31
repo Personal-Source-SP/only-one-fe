@@ -24,6 +24,39 @@
     "paths": {
       "@/*": [
         "./src/*"
+      ],
+      "@contexts/*": [
+        "./src/contexts/*"
+      ],
+      "@components/*": [
+        "./src/components/*"
+      ],
+      "@enums/*": [
+        "./src/enums/*"
+      ],
+      "@hooks/*": [
+        "./src/hooks/*"
+      ],
+      "@interfaces/*": [
+        "./src/interfaces/*"
+      ],
+      "@libs/*": [
+        "./src/libs/*"
+      ],
+      "@providers/*": [
+        "./src/providers/*"
+      ],
+      "@services/*": [
+        "./src/services/*"
+      ],
+      "@stores/*": [
+        "./src/stores/*"
+      ],
+      "@styles/*": [
+        "./src/styles/*"
+      ],
+      "@types/*": [
+        "./src/types/*"
       ]
     },
     "target": "ES2017"

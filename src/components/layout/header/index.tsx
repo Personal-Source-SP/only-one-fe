@@ -1,4 +1,6 @@
 import { KEY_SESSION_STORAGE } from '@/constants';
+import { Theme } from '@/enums';
+import { useMainContext } from '@contexts/MainContext';
 import { Icon } from '@iconify/react';
 import { Avatar, Badge, Button, Dropdown, Input, MenuProps } from 'antd';
 import { signOut } from 'next-auth/react';
@@ -33,6 +35,8 @@ const Header = ({
     setShowNotifications,
 }: HeaderProps) => {
     const pathname = usePathname();
+
+    const { theme } = useMainContext();
 
     const settingItem: SettingItem[] = [
         {
@@ -122,6 +126,75 @@ const Header = ({
             </div>
         );
     };
+
+    const getThemeClasses = () => {
+        switch (theme) {
+            case Theme.DARK:
+                return 'bg-slate-900 border-slate-800 text-white';
+            case Theme.BRAND:
+                return 'bg-indigo-600 border-transparent text-white';
+            default:
+                return 'bg-white border-slate-200 text-slate-800';
+        }
+    };
+
+    // return (
+    //     <header
+    //         className={`h-16 border-b sticky top-0 z-20 px-4 sm:px-8 flex items-center justify-between shadow-sm transition-all duration-200 ${getThemeClasses()}`}
+    //     >
+    //         <div className="flex items-center gap-3 sm:gap-4">
+    //             <button
+    //                 onClick={onMobileMenuToggle}
+    //                 className={`p-2 -ml-2 rounded-lg md:hidden transition-colors ${theme === 'light' ? 'text-slate-500 hover:bg-slate-50' : 'text-white/80 hover:bg-white/10'}`}
+    //             >
+    //                 <Icon icon="lucide:menu" className="w-6 h-6" />
+    //             </button>
+
+    //             <div className="flex md:hidden items-center gap-2">
+    //                 <Icon
+    //                     icon="lucide:arrow-up-circle"
+    //                     className={`w-6 h-6 ${theme === Theme.BRAND ? 'text-white' : 'text-indigo-600'}`}
+    //                 />
+    //                 <span className="font-bold text-lg tracking-tight">Hub Center</span>
+    //             </div>
+
+    //             <nav className="hidden md:flex" aria-label="Breadcrumb">
+    //                 <ol className="flex items-center space-x-2">
+    //                     <li>
+    //                         <a
+    //                             href="#"
+    //                             className={
+    //                                 theme === Theme.LIGHT
+    //                                     ? 'text-slate-400 hover:text-slate-500'
+    //                                     : 'text-white/40 hover:text-white/60'
+    //                             }
+    //                         >
+    //                             <Icon icon="lucide:home" className="h-4 w-4" />
+    //                         </a>
+    //                     </li>
+    //                     <li>
+    //                         <span
+    //                             className={
+    //                                 theme === Theme.LIGHT ? 'text-slate-300' : 'text-white/20'
+    //                             }
+    //                         >
+    //                             /
+    //                         </span>
+    //                     </li>
+    //                     <li>
+    //                         <span
+    //                             className={`text-sm font-medium ${theme === Theme.LIGHT ? 'text-slate-800' : 'text-white'}`}
+    //                         >
+    //                             Hệ thống
+    //                         </span>
+    //                     </li>
+    //                 </ol>
+    //             </nav>
+    //         </div>
+
+    //         <HeaderActions onOpenGallery={onOpenGallery} headerTheme={theme} />
+    //     </header>
+    // );
 
     return (
         <section
