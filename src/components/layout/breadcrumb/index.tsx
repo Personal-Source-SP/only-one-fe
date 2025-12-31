@@ -1,15 +1,11 @@
 'use client';
 
-import CustomElement from '@/components/custom/custom-element';
-
 import { SIDEBAR_ITEMS } from '@/constants';
-import { ElementType } from '@/enums';
 import { SidebarItem } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { Breadcrumb as AntBreadcrumb } from 'antd';
 import { usePathname, useRouter } from 'next/navigation';
 import { useMemo } from 'react';
-import { getPageTitle } from '../index';
 
 const findBreadcrumbPath = (
     items: SidebarItem[],
@@ -81,15 +77,10 @@ const Breadcrumb = () => {
     }, [pathname, router]);
 
     return (
-        <CustomElement
-            elementType={ElementType.TITLE}
-            title={getPageTitle(pathname, SIDEBAR_ITEMS)}
-            actions={[
-                <AntBreadcrumb
-                    items={breadcrumbItems}
-                    separator={<span className="text-gray-400">/</span>}
-                />,
-            ]}
+        <AntBreadcrumb
+            items={breadcrumbItems}
+            className="hidden md:block"
+            separator={<span className="text-gray-400">/</span>}
         />
     );
 };

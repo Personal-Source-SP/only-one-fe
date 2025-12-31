@@ -1,27 +1,21 @@
 'use client';
 
 import { Loading, ScrollToTop } from '@/components/common';
+import { SIDEBAR_ITEMS } from '@/constants';
+import { useMainContext } from '@/contexts/MainContext';
+import { MessageType } from '@/enums';
+import { useCustomMutationData } from '@/hooks';
+import { useSearchParamsString } from '@/hooks/useSearchParamsString';
+import { SidebarItem } from '@/interfaces';
+import { exchangeCodeForTokens, getUserInfoFromGoogle } from '@/libs';
+import { Space } from 'antd';
+import { usePathname, useRouter } from 'next/navigation';
+import { PropsWithChildren, Suspense, useEffect, useRef, useState } from 'react';
 
 import Header from '@/components/layout/header';
 import NotificationsPanel from '@/components/layout/notifications-panel';
 import Search from '@/components/layout/search';
 import Sidebar from '@/components/layout/sidebar';
-
-import { SIDEBAR_ITEMS } from '@/constants';
-import { useMainContext } from '@/contexts/MainContext';
-import { useCustomMutationData } from '@/hooks';
-import { useSearchParamsString } from '@/hooks/useSearchParamsString';
-import { SidebarItem } from '@/interfaces';
-import { exchangeCodeForTokens, getUserInfoFromGoogle } from '@/libs';
-
-import { Space } from 'antd';
-import { usePathname, useRouter } from 'next/navigation';
-import { ReactNode, Suspense, useEffect, useRef, useState } from 'react';
-import Breadcrumb from './breadcrumb';
-
-type MainLayoutProps = {
-    children: ReactNode;
-};
 
 const findPageTitle = (pathname: string, items: SidebarItem[]): string | null => {
     for (const item of items) {
@@ -45,7 +39,7 @@ export const getPageTitle = (pathname: string, items?: SidebarItem[]): string =>
     return found || 'O-O Hub';
 };
 
-const MainLayout = ({ children }: MainLayoutProps) => {
+const MainLayout = ({ children }: PropsWithChildren) => {
     const router = useRouter();
     const pathname = usePathname();
     const handledAuthRef = useRef(false);
@@ -73,7 +67,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
 
         if (error) {
             handleMessage({
-                type: 'error',
+                type: MessageType.ERROR,
                 content: 'Kết nối Google thất bại',
             });
             router.replace(pathname);
@@ -85,7 +79,6 @@ const MainLayout = ({ children }: MainLayoutProps) => {
                 router.replace(pathname);
             });
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [searchParamsString, pathname, router]);
 
     const handleSaveToken = async (code: string) => {
@@ -99,7 +92,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
 
             if (!tokens) {
                 handleMessage({
-                    type: 'error',
+                    type: MessageType.ERROR,
                     content: 'Lỗi khi lấy token Google',
                 });
                 return;
@@ -108,7 +101,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
             const userInfo = await getUserInfoFromGoogle(tokens.access_token);
             if (!userInfo) {
                 handleMessage({
-                    type: 'error',
+                    type: MessageType.ERROR,
                     content: 'Lỗi khi lấy thông tin người dùng Google',
                 });
                 return;
@@ -150,7 +143,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
             });
         } catch (e) {
             handleMessage({
-                type: 'error',
+                type: MessageType.ERROR,
                 content: 'Lỗi khi kết nối Google',
             });
         } finally {
@@ -179,8 +172,8 @@ const MainLayout = ({ children }: MainLayoutProps) => {
                     mobileMenuOpen={mobileMenuOpen}
                     sidebarCollapsed={sidebarCollapsed}
                     showNotifications={showNotifications}
-                    getPageTitle={getPageTitle}
                     setShowSearch={setShowSearch}
+                    getPageTitle={getPageTitle}
                     setMobileMenuOpen={setMobileMenuOpen}
                     setShowNotifications={setShowNotifications}
                 />
@@ -201,7 +194,6 @@ const MainLayout = ({ children }: MainLayoutProps) => {
                             direction="vertical"
                             className="p-4 mb-4 w-full h-full"
                         >
-                            <Breadcrumb />
                             {children}
                         </Space>
                     </main>
