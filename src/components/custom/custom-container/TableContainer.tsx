@@ -114,46 +114,36 @@ const TableContainer = ({
                 elementType={ElementType.CARD}
                 header={
                     <Flex
-                        align="center"
-                        justify={title ? 'space-between' : 'end'}
                         gap={8}
-                        wrap="wrap"
-                        className="flex-col sm:flex-row"
+                        align="center"
+                        className="w-full"
+                        justify={title ? 'space-between' : 'end'}
                     >
                         {typeof title === 'string' ? (
-                            <h2 className="text-base sm:text-lg font-bold !m-0 w-full sm:w-auto">
-                                {title}
-                            </h2>
+                            <h2 className="text-bases font-bold !m-0">{title}</h2>
                         ) : (
                             <div className="w-full sm:w-auto">{title}</div>
                         )}
 
                         {Boolean(actionButtons?.length) && (
-                            <Space
-                                size="small"
-                                className="w-full sm:w-auto justify-end sm:justify-start"
-                            >
-                                {actionButtons}
-                            </Space>
+                            <Space size="middle">{actionButtons}</Space>
                         )}
                     </Flex>
                 }
                 actions={[
-                    <div key="pagination" className="w-full md:w-auto">
-                        <PaginationControls
-                            itemsPerPage={pageSize}
-                            currentPage={currentPage}
-                            totalItems={tableQuery?.data?.meta?.totalItems ?? 0}
-                            onPageChange={(page) => {
-                                setCurrentPage(page);
-                                scrollToTop();
-                            }}
-                            onItemsPerPageChange={(pageSize) => {
-                                setCurrentPage(1);
-                                setPageSize(pageSize);
-                            }}
-                        />
-                    </div>,
+                    <PaginationControls
+                        itemsPerPage={pageSize}
+                        currentPage={currentPage}
+                        totalItems={tableQuery?.data?.meta?.totalItems ?? 0}
+                        onPageChange={(page) => {
+                            setCurrentPage(page);
+                            scrollToTop();
+                        }}
+                        onItemsPerPageChange={(pageSize) => {
+                            setCurrentPage(1);
+                            setPageSize(pageSize);
+                        }}
+                    />,
                 ]}
             >
                 <CustomFilter
@@ -168,21 +158,19 @@ const TableContainer = ({
                 {childrenTop && childrenTop}
 
                 {!!columns?.length && (
-                    <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
-                        <CustomTable
-                            columns={columns}
-                            resource={resource}
-                            setSorters={setSorters}
-                            setPageSize={setPageSize}
-                            actionItems={actionItems}
-                            setCurrentPage={setCurrentPage}
-                            loading={tableQuery?.isLoading}
-                            onRefetch={tableQuery?.refetch}
-                            tableProps={tableProps as TableProps<any>}
-                            onRowSelectionChange={onRowSelectionChange}
-                            onDisableRowSelection={onDisableRowSelection}
-                        />
-                    </div>
+                    <CustomTable
+                        columns={columns}
+                        resource={resource}
+                        setSorters={setSorters}
+                        setPageSize={setPageSize}
+                        actionItems={actionItems}
+                        setCurrentPage={setCurrentPage}
+                        loading={tableQuery?.isLoading}
+                        onRefetch={tableQuery?.refetch}
+                        tableProps={tableProps as TableProps<any>}
+                        onRowSelectionChange={onRowSelectionChange}
+                        onDisableRowSelection={onDisableRowSelection}
+                    />
                 )}
 
                 {childrenBottom && childrenBottom}

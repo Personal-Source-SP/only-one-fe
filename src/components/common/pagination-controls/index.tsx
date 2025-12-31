@@ -26,13 +26,7 @@ const PaginationControls = ({
     ];
 
     return (
-        <Flex
-            justify="space-between"
-            align="center"
-            gap={16}
-            wrap="wrap"
-            className="flex-col sm:flex-row"
-        >
+        <Flex justify="space-between" align="center" gap={16}>
             <Dropdown
                 menu={{
                     items,
@@ -41,17 +35,16 @@ const PaginationControls = ({
                     onClick: ({ key }) => onItemsPerPageChange(Number(key)),
                 }}
             >
-                <Button className="w-full sm:w-auto">{itemsPerPage} ảnh/trang</Button>
+                <Button>{itemsPerPage} ảnh/trang</Button>
             </Dropdown>
 
             <Pagination
-                showSizeChanger={false}
+                responsive
                 total={totalItems}
                 current={currentPage}
                 pageSize={itemsPerPage}
+                showSizeChanger={false}
                 onChange={onPageChange}
-                className="flex justify-center sm:justify-end"
-                responsive
             />
         </Flex>
     );

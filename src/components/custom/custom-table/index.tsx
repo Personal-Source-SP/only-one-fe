@@ -183,7 +183,6 @@ const CustomTable = ({
             columns={normalizedColumns}
             dataSource={normalizedDataSource}
             rowSelection={onRowSelectionChange ? rowSelection : undefined}
-            scroll={{ x: 'max-content' }}
             onChange={(pagination, filters, sorter, extra) =>
                 handleTableChange(pagination, filters, sorter as SorterResult<any>, extra)
             }

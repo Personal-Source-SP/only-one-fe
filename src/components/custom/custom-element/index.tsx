@@ -73,7 +73,8 @@ const CustomElement = ({
                     loading={loading}
                     actions={actions}
                     variant={variant}
-                    className={`${className ? className : 'bg-white'} p-0 md:rounded-xl`}
+                    styles={{ body: { padding: '12px 24px' } }}
+                    className={`${className ? className : 'bg-white'} md:rounded-xl`}
                 >
                     <Space direction="vertical" size="middle">
                         {children}
