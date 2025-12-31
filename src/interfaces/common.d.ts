@@ -19,6 +19,7 @@ export interface SidebarItem {
     icon: string;
     href?: string;
     checkAdmin?: boolean;
+    description?: string;
     children?: SidebarItem[];
 }
 

@@ -5,6 +5,7 @@ import { signOut } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
 
 import Breadcrumb from '@/components/layout/breadcrumb';
+import { getPageTitle } from '@/libs';
 
 type HeaderProps = {
     showSearch: boolean;
@@ -12,7 +13,6 @@ type HeaderProps = {
     showNotifications: boolean;
     sidebarCollapsed?: boolean;
     setShowSearch: (show: boolean) => void;
-    getPageTitle: (pathname: string) => string;
     setMobileMenuOpen: (open: boolean) => void;
     setShowNotifications: (show: boolean) => void;
 };
@@ -30,7 +30,6 @@ const Header = ({
     showNotifications,
     sidebarCollapsed = false,
     setShowSearch,
-    getPageTitle,
     setMobileMenuOpen,
     setShowNotifications,
 }: HeaderProps) => {

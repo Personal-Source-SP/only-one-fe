@@ -6,8 +6,7 @@ import { useMainContext } from '@/contexts/MainContext';
 import { MessageType } from '@/enums';
 import { useCustomMutationData } from '@/hooks';
 import { useSearchParamsString } from '@/hooks/useSearchParamsString';
-import { SidebarItem } from '@/interfaces';
-import { exchangeCodeForTokens, getUserInfoFromGoogle } from '@/libs';
+import { exchangeCodeForTokens, findInformationPage, getUserInfoFromGoogle } from '@/libs';
 import { Space } from 'antd';
 import { usePathname, useRouter } from 'next/navigation';
 import { PropsWithChildren, Suspense, useEffect, useRef, useState } from 'react';
@@ -18,33 +17,12 @@ import NotificationsPanel from '@/components/layout/notifications-panel';
 import Search from '@/components/layout/search';
 import Sidebar from '@/components/layout/sidebar';
 
-const findPageTitle = (pathname: string, items: SidebarItem[]): string | null => {
-    for (const item of items) {
-        if (item.href === pathname) {
-            return item.label;
-        }
-
-        if (item.children) {
-            const found = findPageTitle(pathname, item.children);
-            if (found) {
-                return found;
-            }
-        }
-    }
-
-    return null;
-};
-
-export const getPageTitle = (pathname: string, items?: SidebarItem[]): string => {
-    const found = findPageTitle(pathname, items || SIDEBAR_ITEMS);
-    return found || 'O-O Hub';
-};
-
 const MainLayout = ({ children }: PropsWithChildren) => {
     const router = useRouter();
     const pathname = usePathname();
     const handledAuthRef = useRef(false);
     const searchParamsString = useSearchParamsString();
+    const informationPage = findInformationPage(pathname, SIDEBAR_ITEMS);
 
     const [showSearch, setShowSearch] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -174,7 +152,6 @@ const MainLayout = ({ children }: PropsWithChildren) => {
                     sidebarCollapsed={sidebarCollapsed}
                     showNotifications={showNotifications}
                     setShowSearch={setShowSearch}
-                    getPageTitle={getPageTitle}
                     setMobileMenuOpen={setMobileMenuOpen}
                     setShowNotifications={setShowNotifications}
                 />
@@ -195,6 +172,18 @@ const MainLayout = ({ children }: PropsWithChildren) => {
                             direction="vertical"
                             className="p-4 mb-4 w-full flex-1"
                         >
+                            {informationPage && (
+                                <Space direction="vertical" size="small">
+                                    <h1 className="text-xl sm:text-2xl font-bold m-0">
+                                        {informationPage?.label}
+                                    </h1>
+                                    {informationPage?.description && (
+                                        <p className="text-sm sm:text-base opacity-70 m-0">
+                                            {informationPage?.description}
+                                        </p>
+                                    )}
+                                </Space>
+                            )}
                             {children}
                         </Space>
                         <div className="shrink-0">
