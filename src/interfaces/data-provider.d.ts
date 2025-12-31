@@ -23,7 +23,7 @@ export declare namespace NDataProvider {
         retryDelay?: number;
         retryAttempts?: number;
         userAgent?: string;
-        headers?: Record<string, any>;
+        headers?: Record<string, unknown>;
         cookies?: Array<{
             name: string;
             value: string;
@@ -100,7 +100,7 @@ export declare namespace NDataProvider {
         type?: string;
         url?: string;
         lastModified?: Date;
-        metadata?: Record<string, any>;
+        metadata?: Record<string, unknown>;
         cloudDataItemId?: string;
         cloudDataUrl?: string;
 
@@ -123,7 +123,7 @@ export declare namespace NDataProvider {
             dataProviderItemUrl: string;
 
             dataId: string;
-            data: Record<string, any>;
+            data: Record<string, unknown>;
             url: string;
             mimeType: string;
             lastModified?: Date;

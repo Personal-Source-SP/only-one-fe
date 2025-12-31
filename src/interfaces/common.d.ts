@@ -1,5 +1,6 @@
-import { CustomFilterType, NotificationType } from '@/enums';
+import { CustomFilterType, MediaType, NotificationType } from '@/enums';
 import { CrudOperators } from '@refinedev/core';
+import { ReactNode } from 'react';
 
 export interface Abstract {
     id: string;
@@ -36,7 +37,7 @@ export interface FilterItem {
     span: number;
     type: CustomFilterType;
 
-    value?: any;
+    value?: unknown;
     title?: string;
     options?: Option[];
     placeholder?: string;
@@ -45,15 +46,15 @@ export interface FilterItem {
     mode?: 'multiple' | 'tags';
 
     field?: string;
-    onChange?: (value: any) => void;
+    onChange?: (value: unknown) => void;
     operation?: Exclude<CrudOperators, 'or' | 'and'>;
 }
 
 export interface ActionTableItem {
     key: string;
     label: string;
-    icon: React.ReactNode;
-    onClick: (record: any) => void;
+    icon: ReactNode;
+    onClick: (record: unknown) => void;
 }
 
 export interface SearchFilterItem {
@@ -84,12 +85,21 @@ export interface ErrorItem {
 
 export type ApiError = string | ErrorItem | ErrorItem[];
 
-interface Notification extends Abstract {
+export interface Notification extends Abstract {
     title: string;
     isRead: boolean;
     type: NotificationType;
     path?: string;
     userId?: string;
     description?: string;
-    data?: Record<string, any>;
+    data?: Record<string, unknown>;
+}
+
+export interface MediaItem {
+    id: string;
+    url: string;
+    title: string;
+    type: MediaType;
+    createdAt: string;
+    thumbnail?: string;
 }

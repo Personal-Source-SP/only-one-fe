@@ -35,7 +35,7 @@ export declare namespace NGoogle {
     interface ILocalFilePreviewItem {
         name: string;
         file?: File;
-        handle?: any;
+        handle?: unknown;
         size?: number;
         mimeType?: string;
         lastModified?: Date;
@@ -78,7 +78,7 @@ export declare namespace NGoogle {
         lastModified?: Date;
         isTrashed?: boolean;
         isStarred?: boolean;
-        metadata?: Record<string, any>;
+        metadata?: Record<string, unknown>;
 
         googleDriveFolder: IGoogleDriveFolder;
     }

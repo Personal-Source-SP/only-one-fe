@@ -11,7 +11,7 @@ export declare namespace NCloudData {
         mimeType?: string;
         fileSize?: number;
         mappingId?: string;
-        metadata?: Record<string, any>;
+        metadata?: Record<string, unknown>;
     }
 
     interface ICloudDataProvider extends Abstract {
@@ -20,7 +20,7 @@ export declare namespace NCloudData {
         isActive: boolean;
         totalItems: number;
         totalSize: number;
-        config?: Record<string, any>;
+        config?: Record<string, unknown>;
         cloudDataItems?: ICloudDataItem[];
     }
 }

@@ -1,5 +1,7 @@
 'use client';
 
+import { GalleryViewMode, MediaType } from '@/enums';
+import { MediaItem } from '@/interfaces';
 import {
     AppstoreOutlined,
     BorderOutlined,
@@ -16,15 +18,6 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import GalleryGridView from './GalleryGridView';
 import GallerySliderView from './GallerySliderView';
 
-interface MediaItem {
-    id: string;
-    url: string;
-    thumbnail?: string;
-    title: string;
-    type: 'image' | 'video' | string;
-    createdAt: string;
-}
-
 type FullScreenGalleryProps = {
     isOpen: boolean;
     onClose: () => void;
@@ -32,19 +25,20 @@ type FullScreenGalleryProps = {
 };
 
 const FullScreenGallery = ({ isOpen, onClose, mediaItems }: FullScreenGalleryProps) => {
-    const [viewMode, setViewMode] = useState<'grid' | 'slider'>('grid');
-    const [filter, setFilter] = useState<'all' | 'image' | 'video'>('all');
+    const settingsRef = useRef<HTMLDivElement>(null);
+
     const [currentIndex, setCurrentIndex] = useState(0);
+    const [filter, setFilter] = useState<MediaType>(MediaType.ALL);
+    const [viewMode, setViewMode] = useState<GalleryViewMode>(GalleryViewMode.GRID);
 
     // Slideshow state
     const [isPlaying, setIsPlaying] = useState(false);
     const [slideInterval, setSlideInterval] = useState(3000);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-    const settingsRef = useRef<HTMLDivElement>(null);
 
     const filteredItems = useMemo(() => {
         return mediaItems.filter((item) => {
-            if (filter === 'all') return true;
+            if (filter === MediaType.ALL) return true;
             return item.type === filter;
         });
     }, [mediaItems, filter]);
@@ -69,11 +63,11 @@ const FullScreenGallery = ({ isOpen, onClose, mediaItems }: FullScreenGalleryPro
     useEffect(() => {
         let interval: ReturnType<typeof setInterval>;
         const currentItem = filteredItems[currentIndex];
-        const currentIsVideo = currentItem?.type === 'video';
+        const currentIsVideo = currentItem?.type === MediaType.VIDEO;
 
         if (
             isPlaying &&
-            viewMode === 'slider' &&
+            viewMode === GalleryViewMode.SLIDER &&
             isOpen &&
             !currentIsVideo &&
             filteredItems.length > 0
@@ -110,7 +104,7 @@ const FullScreenGallery = ({ isOpen, onClose, mediaItems }: FullScreenGalleryPro
             if (!isOpen) return;
             if (e.key === 'Escape') onClose();
 
-            if (viewMode === 'slider' && filteredItems.length > 0) {
+            if (viewMode === GalleryViewMode.SLIDER && filteredItems.length > 0) {
                 if (e.key === 'ArrowLeft') {
                     setCurrentIndex(
                         (prev) => (prev - 1 + filteredItems.length) % filteredItems.length,
@@ -122,7 +116,7 @@ const FullScreenGallery = ({ isOpen, onClose, mediaItems }: FullScreenGalleryPro
                     setIsPlaying(false);
                 }
                 if (e.key === ' ') {
-                    if (filteredItems[currentIndex]?.type !== 'video') {
+                    if (filteredItems[currentIndex]?.type !== MediaType.VIDEO) {
                         e.preventDefault();
                         setIsPlaying((p) => !p);
                     }
@@ -135,9 +129,9 @@ const FullScreenGallery = ({ isOpen, onClose, mediaItems }: FullScreenGalleryPro
     }, [isOpen, viewMode, filteredItems.length, currentIndex, filteredItems]);
 
     const switchToSlider = (index: number) => {
-        setCurrentIndex(index);
-        setViewMode('slider');
         setIsPlaying(false);
+        setCurrentIndex(index);
+        setViewMode(GalleryViewMode.SLIDER);
     };
 
     const getDisplayTime = (dateString: string) => {
@@ -183,27 +177,27 @@ const FullScreenGallery = ({ isOpen, onClose, mediaItems }: FullScreenGalleryPro
                     {/* Filter Toggles */}
                     <Button.Group className="bg-slate-800 p-1 rounded-lg border border-slate-700 mr-1 sm:mr-2">
                         <Button
-                            type={filter === 'all' ? 'primary' : 'text'}
                             size="small"
-                            onClick={() => setFilter('all')}
-                            className={`px-2 sm:px-3 text-xs font-medium ${filter === 'all' ? 'bg-slate-700' : 'text-slate-400 hover:text-white'}`}
+                            onClick={() => setFilter(MediaType.ALL)}
+                            type={filter === MediaType.ALL ? 'primary' : 'text'}
+                            className={`px-2 sm:px-3 text-xs font-medium ${filter === MediaType.ALL ? 'bg-slate-700' : 'text-slate-400 hover:text-white'}`}
                         >
                             Tất cả
                         </Button>
                         <Button
-                            type={filter === 'image' ? 'primary' : 'text'}
                             size="small"
                             icon={<PictureOutlined />}
-                            onClick={() => setFilter('image')}
-                            className={`px-2 sm:px-3 text-xs font-medium flex items-center gap-1.5 ${filter === 'image' ? 'bg-indigo-600' : 'text-slate-400 hover:text-white'}`}
+                            onClick={() => setFilter(MediaType.IMAGE)}
+                            type={filter === MediaType.IMAGE ? 'primary' : 'text'}
+                            className={`px-2 sm:px-3 text-xs font-medium flex items-center gap-1.5 ${filter === MediaType.IMAGE ? 'bg-indigo-600' : 'text-slate-400 hover:text-white'}`}
                         >
                             <span className="hidden sm:inline">Ảnh</span>
                         </Button>
                         <Button
-                            type={filter === 'video' ? 'primary' : 'text'}
                             size="small"
                             icon={<VideoCameraOutlined />}
-                            onClick={() => setFilter('video')}
+                            onClick={() => setFilter(MediaType.VIDEO)}
+                            type={filter === MediaType.VIDEO ? 'primary' : 'text'}
                             className={`px-2 sm:px-3 text-xs font-medium flex items-center gap-1.5 ${filter === 'video' ? 'bg-rose-600' : 'text-slate-400 hover:text-white'}`}
                         >
                             <span className="hidden sm:inline">Video</span>
@@ -212,28 +206,28 @@ const FullScreenGallery = ({ isOpen, onClose, mediaItems }: FullScreenGalleryPro
 
                     <div className="flex items-center gap-2 sm:gap-3">
                         {/* Slideshow Controls */}
-                        {viewMode === 'slider' &&
-                            currentItem?.type !== 'video' &&
+                        {viewMode === GalleryViewMode.SLIDER &&
+                            currentItem?.type !== MediaType.VIDEO &&
                             filteredItems.length > 0 && (
                                 <Space.Compact className="bg-slate-800/50 rounded-lg p-1 border border-slate-700">
                                     <Button
                                         type={isPlaying ? 'primary' : 'text'}
+                                        onClick={() => setIsPlaying(!isPlaying)}
+                                        title={isPlaying ? 'Tạm dừng' : 'Phát tự động'}
                                         icon={
                                             isPlaying ? <PauseOutlined /> : <PlayCircleOutlined />
                                         }
-                                        onClick={() => setIsPlaying(!isPlaying)}
                                         className={`p-1.5 sm:p-2 ${
                                             isPlaying
                                                 ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/30'
                                                 : 'hover:bg-slate-700 text-slate-300'
                                         }`}
-                                        title={isPlaying ? 'Tạm dừng' : 'Phát tự động'}
                                     />
 
                                     <Dropdown
                                         open={isSettingsOpen}
-                                        onOpenChange={setIsSettingsOpen}
                                         placement="bottomRight"
+                                        onOpenChange={setIsSettingsOpen}
                                         dropdownRender={() => (
                                             <div
                                                 ref={settingsRef}
@@ -243,22 +237,23 @@ const FullScreenGallery = ({ isOpen, onClose, mediaItems }: FullScreenGalleryPro
                                                     Thời gian chuyển
                                                 </Typography.Text>
                                                 <Space
-                                                    direction="vertical"
                                                     size="small"
                                                     className="w-full"
+                                                    direction="vertical"
                                                 >
                                                     {[2000, 3000, 5000, 10000].map((time) => (
                                                         <Button
+                                                            block
                                                             key={time}
                                                             type={
                                                                 slideInterval === time
                                                                     ? 'primary'
                                                                     : 'text'
                                                             }
-                                                            block
                                                             onClick={() => {
                                                                 setSlideInterval(time);
                                                                 setIsSettingsOpen(false);
+
                                                                 if (!isPlaying) setIsPlaying(true);
                                                             }}
                                                             className={`text-left ${
@@ -268,8 +263,8 @@ const FullScreenGallery = ({ isOpen, onClose, mediaItems }: FullScreenGalleryPro
                                                             }`}
                                                         >
                                                             <Flex
-                                                                justify="space-between"
                                                                 align="center"
+                                                                justify="space-between"
                                                             >
                                                                 <span>{time / 1000} giây</span>
                                                                 {slideInterval === time && (
@@ -300,21 +295,21 @@ const FullScreenGallery = ({ isOpen, onClose, mediaItems }: FullScreenGalleryPro
                         {/* View Mode Toggles */}
                         <Button.Group className="bg-slate-800 p-1 rounded-lg border border-slate-700">
                             <Button
-                                type={viewMode === 'grid' ? 'primary' : 'text'}
-                                icon={<AppstoreOutlined />}
-                                onClick={() => {
-                                    setViewMode('grid');
-                                    setIsPlaying(false);
-                                }}
-                                className={`p-1.5 sm:p-2 ${viewMode === 'grid' ? 'bg-slate-700 text-white shadow-sm' : 'text-slate-400 hover:text-white'}`}
                                 title="Lưới"
+                                icon={<AppstoreOutlined />}
+                                type={viewMode === GalleryViewMode.GRID ? 'primary' : 'text'}
+                                className={`p-1.5 sm:p-2 ${viewMode === GalleryViewMode.GRID ? 'bg-slate-700 text-white shadow-sm' : 'text-slate-400 hover:text-white'}`}
+                                onClick={() => {
+                                    setIsPlaying(false);
+                                    setViewMode(GalleryViewMode.GRID);
+                                }}
                             />
                             <Button
-                                type={viewMode === 'slider' ? 'primary' : 'text'}
-                                icon={<BorderOutlined />}
-                                onClick={() => setViewMode('slider')}
-                                className={`p-1.5 sm:p-2 ${viewMode === 'slider' ? 'bg-slate-700 text-white shadow-sm' : 'text-slate-400 hover:text-white'}`}
                                 title="Trình chiếu"
+                                icon={<BorderOutlined />}
+                                onClick={() => setViewMode(GalleryViewMode.SLIDER)}
+                                type={viewMode === GalleryViewMode.SLIDER ? 'primary' : 'text'}
+                                className={`p-1.5 sm:p-2 ${viewMode === 'slider' ? 'bg-slate-700 text-white shadow-sm' : 'text-slate-400 hover:text-white'}`}
                             />
                         </Button.Group>
 
@@ -322,8 +317,8 @@ const FullScreenGallery = ({ isOpen, onClose, mediaItems }: FullScreenGalleryPro
 
                         <Button
                             type="text"
-                            icon={<CloseOutlined />}
                             onClick={onClose}
+                            icon={<CloseOutlined />}
                             className="p-1.5 sm:p-2 hover:bg-slate-800 rounded-full text-slate-400 hover:text-rose-500"
                         />
                     </div>
@@ -332,7 +327,7 @@ const FullScreenGallery = ({ isOpen, onClose, mediaItems }: FullScreenGalleryPro
 
             {/* --- Main Content --- */}
             <div className="flex-1 overflow-hidden relative bg-slate-950">
-                {viewMode === 'grid' ? (
+                {viewMode === GalleryViewMode.GRID ? (
                     <GalleryGridView
                         items={filteredItems}
                         onItemClick={switchToSlider}
@@ -341,10 +336,12 @@ const FullScreenGallery = ({ isOpen, onClose, mediaItems }: FullScreenGalleryPro
                 ) : (
                     <GallerySliderView
                         items={filteredItems}
-                        currentIndex={currentIndex}
                         isPlaying={isPlaying}
+                        currentIndex={currentIndex}
                         slideInterval={slideInterval}
-                        isOpen={isOpen && viewMode === 'slider'}
+                        getDisplayTime={getDisplayTime}
+                        onClearFilter={() => setFilter(MediaType.ALL)}
+                        isOpen={isOpen && viewMode === GalleryViewMode.SLIDER}
                         onNext={() => {
                             setCurrentIndex((prev) => (prev + 1) % filteredItems.length);
                             setIsPlaying(false);
@@ -359,8 +356,6 @@ const FullScreenGallery = ({ isOpen, onClose, mediaItems }: FullScreenGalleryPro
                             setCurrentIndex(idx);
                             setIsPlaying(false);
                         }}
-                        onClearFilter={() => setFilter('all')}
-                        getDisplayTime={getDisplayTime}
                     />
                 )}
             </div>
