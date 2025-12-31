@@ -6,5 +6,6 @@ export { default as Logo } from './logo';
 export { default as NotFound } from './not-found';
 export { default as PaginationControls } from './pagination-controls';
 export { default as ScrollToTop } from './scroll-to-top';
+export { default as StatCard } from './stat-card';
 export { default as StatusTag } from './status-tag';
 export { default as UnsavedChangesNotifierAppRouter } from './unsaved-changes-notifier-app-router';
