@@ -21,3 +21,12 @@ export const calculateDuration = (startDate: Date | undefined, endDate: Date | u
     if (!startDate || !endDate) return '---';
     return dayjs(endDate).diff(startDate, 'second').toString().concat(' giây');
 };
+
+export const formatTimeVideoPlayer = (time: number): string => {
+    if (isNaN(time)) return '0:00';
+
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+
+    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+};
