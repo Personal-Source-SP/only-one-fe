@@ -153,7 +153,7 @@ const MainLayout = ({ children }: PropsWithChildren) => {
     };
 
     return (
-        <main className="flex h-screen bg-background overflow-hidden">
+        <main className="flex h-screen bg-background overflow-hidden animate-in fade-in duration-300">
             {/* Sidebar */}
             <Sidebar
                 mobileOpen={mobileMenuOpen}

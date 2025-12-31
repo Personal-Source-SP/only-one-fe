@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { CustomFilterType, MediaType, NotificationType } from '@/enums';
 import { CrudOperators } from '@refinedev/core';
 import { ReactNode } from 'react';
@@ -37,7 +39,7 @@ export interface FilterItem {
     span: number;
     type: CustomFilterType;
 
-    value?: unknown;
+    value?: any;
     title?: string;
     options?: Option[];
     placeholder?: string;
@@ -46,7 +48,7 @@ export interface FilterItem {
     mode?: 'multiple' | 'tags';
 
     field?: string;
-    onChange?: (value: unknown) => void;
+    onChange?: (value: any) => void;
     operation?: Exclude<CrudOperators, 'or' | 'and'>;
 }
 
@@ -54,7 +56,7 @@ export interface ActionTableItem {
     key: string;
     label: string;
     icon: ReactNode;
-    onClick: (record: unknown) => void;
+    onClick: (record: any) => void;
 }
 
 export interface SearchFilterItem {
@@ -92,7 +94,7 @@ export interface Notification extends Abstract {
     path?: string;
     userId?: string;
     description?: string;
-    data?: Record<string, unknown>;
+    data?: Record<string, any>;
 }
 
 export interface MediaItem {

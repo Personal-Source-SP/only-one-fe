@@ -6,7 +6,7 @@ import { MessageType, NotificationType, Theme } from '@/enums';
 import { message, notification } from 'antd';
 import { NoticeType } from 'antd/es/message/interface';
 import { IconType } from 'antd/es/notification/interface';
-import { createContext, Fragment, PropsWithChildren, useContext, useState } from 'react';
+import { createContext, PropsWithChildren, useContext, useState } from 'react';
 
 import MainLayout from '@/components/layout';
 
@@ -33,13 +33,14 @@ interface MainContextType {
     handleNotification: (props: INotificationProps) => void;
 }
 
-type MainProviderProps = PropsWithChildren<{
-    isPublic?: boolean;
-}>;
-
 const MainContext = createContext<MainContextType | undefined>(undefined);
 
-export const MainProvider = ({ children, isPublic = false }: MainProviderProps) => {
+export const MainProvider = ({
+    children,
+    isPublic = false,
+}: PropsWithChildren<{
+    isPublic?: boolean;
+}>) => {
     const [loading, setLoading] = useState(false);
     const [theme, setTheme] = useState<Theme>(Theme.LIGHT);
 
@@ -129,7 +130,7 @@ export const MainProvider = ({ children, isPublic = false }: MainProviderProps) 
             {notificationContextHolder}
 
             {isPublic ? (
-                <Fragment>{children}</Fragment>
+                <div className="animate-in fade-in duration-300">{children}</div>
             ) : (
                 <SocketProvider>
                     <MainLayout>{children}</MainLayout>

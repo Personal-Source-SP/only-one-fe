@@ -266,13 +266,13 @@ const DataProviderPage = () => {
             key: 'edit',
             label: 'Chỉnh sửa',
             icon: <Icon icon="tabler:edit" />,
-            onClick: (record) => setEditItemId(record?.id),
+            onClick: (record: NDataProvider.IDataProvider) => setEditItemId(record?.id),
         },
         {
             key: 'scrape-unconfigured',
             label: 'Cấu hình dữ liệu',
             icon: <Icon icon="tabler:database-cog" />,
-            onClick: (record) => {
+            onClick: (record: NDataProvider.IDataProvider) => {
                 setSelectedId(record?.id);
                 modalPropsData?.show?.(record?.id);
             },
@@ -281,7 +281,7 @@ const DataProviderPage = () => {
             key: 'search-configured',
             label: 'Cấu hình tìm kiếm',
             icon: <Icon icon="tabler:search" />,
-            onClick: (record) => {
+            onClick: (record: NDataProvider.IDataProvider) => {
                 setSelectedId(record?.id);
                 modalPropsData?.show?.(record?.id);
             },
