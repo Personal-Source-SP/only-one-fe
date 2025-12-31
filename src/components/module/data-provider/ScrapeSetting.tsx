@@ -9,7 +9,7 @@ import {
     DEFAULT_PARSER_FUNCTION_GENERATOR,
 } from '@/constants';
 import { useMainContext } from '@/contexts/MainContext';
-import { DataProviderStatus, ScraperServiceEnum } from '@/enums';
+import { DataProviderStatus, NotificationType, ScraperServiceEnum } from '@/enums';
 import { useCustomModal, useCustomMutationData } from '@/hooks';
 import { NBaseApi, NDataProvider, Option } from '@/interfaces';
 import {
@@ -33,7 +33,7 @@ import ScrapeFormItem from './ScrapeFormItem';
 
 type DataProviderForm = NDataProvider.IDataProvider & {
     url: string;
-    extractData: Record<string, any>;
+    extractData: Record<string, unknown>;
     additionalUrls?: string[];
     screenShotImage?: string;
 };
@@ -118,7 +118,7 @@ const ScrapeSetting = ({
     const handleTestParser = async () => {
         if (!url && !htmlContentString) {
             handleNotification({
-                type: 'error',
+                type: NotificationType.ERROR,
                 message: 'URL hoặc HTML content không được để trống',
             });
 
@@ -180,7 +180,7 @@ const ScrapeSetting = ({
 
         if (isEmpty(targetConfig)) {
             return handleNotification({
-                type: 'error',
+                type: NotificationType.ERROR,
                 message: 'Hàm parser không được để trống',
                 description: 'Vui lòng nhập hàm parser',
             });
@@ -224,7 +224,7 @@ const ScrapeSetting = ({
     const handleSwitchStatus = (status: DataProviderStatus) => {
         if (!dataProvider?.id) {
             return handleNotification({
-                type: 'error',
+                type: NotificationType.ERROR,
                 message: 'Không thể chuyển trạng thái',
                 description: 'Không thể chuyển trạng thái',
             });

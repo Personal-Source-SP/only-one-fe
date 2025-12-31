@@ -1,5 +1,7 @@
 import { Divider, Flex, Tag } from 'antd';
 
+import { useMainContext } from '@/contexts/MainContext';
+import { NotificationType } from '@/enums';
 import {
     CheckOutlined,
     CompressOutlined,
@@ -13,9 +15,8 @@ import * as jsBeautify from 'js-beautify';
 import dynamic from 'next/dynamic';
 import { CSSProperties, useEffect, useState } from 'react';
 import ReactDiffViewer from 'react-diff-viewer-continued';
-import { useMainContext } from '@/contexts/MainContext';
 
-const CustomMonacoEditor = dynamic(() => import('./custom-monaco-editor'), {
+const CustomMonacoEditor = dynamic(() => import('./CustomMonacoEditor'), {
     ssr: false,
 });
 
@@ -117,8 +118,8 @@ const CodeDisplay = ({
             });
         } catch (err) {
             handleNotification({
-                type: 'error',
                 duration: 2,
+                type: NotificationType.ERROR,
                 message: 'Failed to copy code',
             });
         }
