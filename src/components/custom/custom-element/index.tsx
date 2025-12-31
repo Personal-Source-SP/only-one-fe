@@ -40,7 +40,10 @@ const CustomElement = ({
                         justify={isTitle ? 'space-between' : 'end'}
                     >
                         {typeof title === 'string' ? (
-                            <h2 className="text-2xl font-semibold mb-0">{title}</h2>
+                            <div>
+                                <h2 className="text-lg font-bold text-slate-800">{title}</h2>
+                                <p className="text-sm text-slate-500 mt-1">{description}</p>
+                            </div>
                         ) : (
                             title
                         )}
@@ -72,7 +75,9 @@ const CustomElement = ({
                     variant={variant}
                     className={`${className ? className : 'bg-white'} p-0 md:rounded-xl`}
                 >
-                    {children}
+                    <Space direction="vertical" size="middle">
+                        {children}
+                    </Space>
                 </Card>
             );
         }

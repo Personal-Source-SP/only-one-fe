@@ -1,17 +1,17 @@
 'use client';
 
 import { StatusTag } from '@/components/common';
-import { CreateFormModal, CustomElement, EditFormModal, TableContainer } from '@/components/custom';
+import { CreateFormModal, EditFormModal, TableContainer } from '@/components/custom';
 import { ProcessScrapeData } from '@/components/module/data-provider';
 import ImportData from '@/components/module/import-data';
-import { DataImportType, ElementType, ProductMappingStatus } from '@/enums';
+import { DataImportType, ProductMappingStatus } from '@/enums';
 import { useTableContainer } from '@/hooks';
 import { FormFieldItem, NDataProvider } from '@/interfaces';
 import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
 import { Button, Space, Tag } from 'antd';
 import { ColumnsType, ColumnType } from 'antd/es/table';
-import { useState } from 'react';
+import { Fragment, ReactNode, useState } from 'react';
 
 const ItemPage = () => {
     const [openCreateItemModal, setOpenCreateItemModal] = useState(false);
@@ -144,38 +144,37 @@ const ItemPage = () => {
         },
     ];
 
-    return (
-        <Space size="middle" direction="vertical" className="w-full h-full">
-            <CustomElement
-                elementType={ElementType.TITLE}
-                actions={[
-                    <Button
-                        type="primary"
-                        key="scrape-data"
-                        title="Cào dữ liệu"
-                        icon={<Icon icon="lucide:file-text" />}
-                        onClick={() => setOpenProcessScrapeDataModal(true)}
-                    />,
-                    <Button
-                        type="primary"
-                        key="import-item"
-                        title="Nhập đối tượng"
-                        icon={<Icon icon="lucide:file-text" />}
-                        onClick={() => setOpenImportItemModal(true)}
-                    />,
-                    <Button
-                        type="primary"
-                        key="add-item"
-                        title="Thêm đối tượng"
-                        icon={<Icon icon="lucide:plus" />}
-                        onClick={() => setOpenCreateItemModal(true)}
-                    />,
-                ]}
-            />
+    const actionButtons: ReactNode[] = [
+        <Button
+            type="primary"
+            key="scrape-data"
+            title="Cào dữ liệu"
+            icon={<Icon icon="lucide:file-text" />}
+            onClick={() => setOpenProcessScrapeDataModal(true)}
+        />,
+        <Button
+            type="primary"
+            key="import-item"
+            title="Nhập đối tượng"
+            icon={<Icon icon="lucide:file-text" />}
+            onClick={() => setOpenImportItemModal(true)}
+        />,
+        <Button
+            type="primary"
+            key="add-item"
+            title="Thêm đối tượng"
+            icon={<Icon icon="lucide:plus" />}
+            onClick={() => setOpenCreateItemModal(true)}
+        />,
+    ];
 
+    return (
+        <Fragment key="items-page">
             <TableContainer
                 resource="items"
                 columns={columns}
+                title="Danh sách đối tượng"
+                actionButtons={actionButtons}
                 tableContainerData={tableContainerData}
                 filterSearch={{ placeholder: 'Tìm kiếm đối tượng' }}
                 actionItems={[
@@ -233,7 +232,7 @@ const ItemPage = () => {
                     onClose={() => setOpenProcessScrapeDataModal(false)}
                 />
             )}
-        </Space>
+        </Fragment>
     );
 };
 

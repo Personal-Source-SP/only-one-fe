@@ -173,12 +173,12 @@ const MainLayout = ({ children }: PropsWithChildren) => {
                             className="p-4 mb-4 w-full flex-1"
                         >
                             {informationPage && (
-                                <Space direction="vertical" size="small">
-                                    <h1 className="text-xl sm:text-2xl font-bold m-0">
+                                <Space direction="vertical" size={4}>
+                                    <h1 className="text-xl sm:text-2xl font-bold !m-0">
                                         {informationPage?.label}
                                     </h1>
                                     {informationPage?.description && (
-                                        <p className="text-sm sm:text-base opacity-70 m-0">
+                                        <p className="text-sm sm:text-base opacity-70 !m-0">
                                             {informationPage?.description}
                                         </p>
                                     )}

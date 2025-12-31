@@ -7,12 +7,16 @@ import { CustomFilterType, ElementType } from '@/enums';
 import { useTableContainer } from '@/hooks';
 import { useDebounceSearch } from '@/hooks/useDebounceSearch';
 import { ActionTableItem, FilterItem, SearchFilterItem } from '@/interfaces';
+import { CrudFilter, LogicalFilter } from '@refinedev/core';
+import { Flex, Space } from 'antd';
 import { ColumnsType, TableProps } from 'antd/es/table';
 import { ReactNode, useMemo } from 'react';
 
 type TableContainerProps = {
     tableContainerData: ReturnType<typeof useTableContainer>;
+    title?: string | ReactNode;
     loading?: boolean;
+    actionButtons?: ReactNode[];
     columns?: ColumnsType<any>;
     resource?: string;
     actionItems?: ActionTableItem[];
@@ -26,7 +30,9 @@ type TableContainerProps = {
 
 const TableContainer = ({
     tableContainerData,
+    title,
     loading,
+    actionButtons,
     columns,
     resource,
     actionItems,
@@ -44,6 +50,7 @@ const TableContainer = ({
         setCurrentPage,
         pageSize,
         setPageSize,
+        filters,
         setFilters,
         setSorters,
         tableQuery,
@@ -71,13 +78,20 @@ const TableContainer = ({
                         return;
                     }
 
-                    setFilters([
-                        {
-                            value,
-                            field: item.field ?? '',
-                            operator: item.operation ?? 'eq',
-                        },
-                    ]);
+                    setFilters((prevFilters) => {
+                        const otherFilters = prevFilters.filter(
+                            (filter) => (filter as LogicalFilter)?.field !== item.field,
+                        ) as CrudFilter[];
+
+                        return [
+                            ...otherFilters,
+                            {
+                                value,
+                                field: item.field ?? '',
+                                operator: item.operation ?? 'eq',
+                            },
+                        ];
+                    });
                     setCurrentPage(1);
                 },
             }));
@@ -98,39 +112,77 @@ const TableContainer = ({
         <CustomElement elementType={ElementType.CONTAINER} loading={loading}>
             <CustomElement
                 elementType={ElementType.CARD}
-                header={<CustomFilter filters={filterItems} />}
+                header={
+                    <Flex
+                        align="center"
+                        justify={title ? 'space-between' : 'end'}
+                        gap={8}
+                        wrap="wrap"
+                        className="flex-col sm:flex-row"
+                    >
+                        {typeof title === 'string' ? (
+                            <h2 className="text-base sm:text-lg font-bold !m-0 w-full sm:w-auto">
+                                {title}
+                            </h2>
+                        ) : (
+                            <div className="w-full sm:w-auto">{title}</div>
+                        )}
+
+                        {Boolean(actionButtons?.length) && (
+                            <Space
+                                size="small"
+                                className="w-full sm:w-auto justify-end sm:justify-start"
+                            >
+                                {actionButtons}
+                            </Space>
+                        )}
+                    </Flex>
+                }
                 actions={[
-                    <PaginationControls
-                        itemsPerPage={pageSize}
-                        currentPage={currentPage}
-                        totalItems={tableQuery?.data?.meta?.totalItems ?? 0}
-                        onPageChange={(page) => {
-                            setCurrentPage(page);
-                            scrollToTop();
-                        }}
-                        onItemsPerPageChange={(pageSize) => {
-                            setCurrentPage(1);
-                            setPageSize(pageSize);
-                        }}
-                    />,
+                    <div key="pagination" className="w-full md:w-auto">
+                        <PaginationControls
+                            itemsPerPage={pageSize}
+                            currentPage={currentPage}
+                            totalItems={tableQuery?.data?.meta?.totalItems ?? 0}
+                            onPageChange={(page) => {
+                                setCurrentPage(page);
+                                scrollToTop();
+                            }}
+                            onItemsPerPageChange={(pageSize) => {
+                                setCurrentPage(1);
+                                setPageSize(pageSize);
+                            }}
+                        />
+                    </div>,
                 ]}
             >
+                <CustomFilter
+                    filterValues={filters}
+                    filterActions={filterItems}
+                    onClearFilters={() => {
+                        setFilters([]);
+                        setCurrentPage(1);
+                    }}
+                />
+
                 {childrenTop && childrenTop}
 
                 {!!columns?.length && (
-                    <CustomTable
-                        columns={columns}
-                        resource={resource}
-                        setSorters={setSorters}
-                        setPageSize={setPageSize}
-                        actionItems={actionItems}
-                        setCurrentPage={setCurrentPage}
-                        loading={tableQuery?.isLoading}
-                        onRefetch={tableQuery?.refetch}
-                        tableProps={tableProps as TableProps<any>}
-                        onRowSelectionChange={onRowSelectionChange}
-                        onDisableRowSelection={onDisableRowSelection}
-                    />
+                    <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+                        <CustomTable
+                            columns={columns}
+                            resource={resource}
+                            setSorters={setSorters}
+                            setPageSize={setPageSize}
+                            actionItems={actionItems}
+                            setCurrentPage={setCurrentPage}
+                            loading={tableQuery?.isLoading}
+                            onRefetch={tableQuery?.refetch}
+                            tableProps={tableProps as TableProps<any>}
+                            onRowSelectionChange={onRowSelectionChange}
+                            onDisableRowSelection={onDisableRowSelection}
+                        />
+                    </div>
                 )}
 
                 {childrenBottom && childrenBottom}

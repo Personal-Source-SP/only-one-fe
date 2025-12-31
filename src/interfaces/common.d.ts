@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { CustomFilterType, MediaType, NotificationType } from '@/enums';
 import { CrudOperators } from '@refinedev/core';
 import { ReactNode } from 'react';

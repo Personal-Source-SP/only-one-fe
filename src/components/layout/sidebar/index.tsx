@@ -168,10 +168,9 @@ const Sidebar = ({ mobileOpen, setMobileOpen, collapsed, setCollapsed }: Sidebar
             placement="left"
             open={mobileOpen}
             onClose={() => setMobileOpen(false)}
-            className="md:hidden [&_.ant-drawer-body]:px-2"
-            style={{ padding: 0, display: 'flex', flexDirection: 'column', height: '100%' }}
+            className="md:hidden [&_.ant-drawer-body]:!p-0 [&_.ant-drawer-body]:!h-full [&_.ant-drawer-body]:!flex [&_.ant-drawer-body]:!flex-col"
         >
-            <div className="flex items-center justify-between border-b border-divider">
+            <div className="flex items-center justify-between border-b border-divider flex-shrink-0">
                 <div className="flex items-center gap-2 h-[32px] px-4">
                     <Logo iconSize="2xl" textSize="lg" />
                 </div>
@@ -185,7 +184,7 @@ const Sidebar = ({ mobileOpen, setMobileOpen, collapsed, setCollapsed }: Sidebar
                 />
             </div>
 
-            <nav className="flex-1 py-4 overflow-y-auto px-3">
+            <nav className="flex-1 py-4 overflow-y-auto px-3 min-h-0">
                 <div className="space-y-1.5">
                     {SIDEBAR_ITEMS.map((item) => (
                         <SidebarNavItem
@@ -202,7 +201,9 @@ const Sidebar = ({ mobileOpen, setMobileOpen, collapsed, setCollapsed }: Sidebar
                 </div>
             </nav>
 
-            <SidebarProfile isCollapsed={false} />
+            <div className="flex-shrink-0">
+                <SidebarProfile isCollapsed={false} />
+            </div>
         </Drawer>
     );
 

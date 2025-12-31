@@ -1,7 +1,7 @@
 'use client';
 
 import { StatusTag } from '@/components/common';
-import { CreateFormModal, CustomElement, EditFormModal, TableContainer } from '@/components/custom';
+import { CreateFormModal, EditFormModal, TableContainer } from '@/components/custom';
 import { ProcessScrapeData, ScrapeSetting } from '@/components/module/data-provider';
 import ImportData from '@/components/module/import-data';
 import {
@@ -9,7 +9,6 @@ import {
     DataImportType,
     DataProviderSearchStatus,
     DataProviderStatus,
-    ElementType,
 } from '@/enums';
 import {
     useCustomModal,
@@ -20,10 +19,10 @@ import {
 import { ActionTableItem, FilterItem, FormFieldItem, NDataProvider } from '@/interfaces';
 import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
-import { Button, Space } from 'antd';
+import { Button } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import { ColumnType } from 'antd/lib/table';
-import { useState } from 'react';
+import { Fragment, ReactNode, useState } from 'react';
 
 const DataProviderPage = () => {
     const [openCreateItemModal, setOpenCreateItemModal] = useState(false);
@@ -288,39 +287,38 @@ const DataProviderPage = () => {
         },
     ];
 
-    return (
-        <Space size="middle" direction="vertical" className="w-full h-full">
-            <CustomElement
-                elementType={ElementType.TITLE}
-                actions={[
-                    <Button
-                        type="primary"
-                        key="scrape-data"
-                        title="Cào dữ liệu"
-                        icon={<Icon icon="lucide:file-text" />}
-                        onClick={() => setOpenProcessScrapeDataModal(true)}
-                    />,
-                    <Button
-                        type="primary"
-                        title="Nhập nhà cung cấp"
-                        key="import-data-provider"
-                        icon={<Icon icon="lucide:import" />}
-                        onClick={() => setOpenImportItemModal(true)}
-                    />,
-                    <Button
-                        type="primary"
-                        key="add-data-provider"
-                        title="Thêm nhà cung cấp"
-                        icon={<Icon icon="lucide:plus" />}
-                        onClick={() => setOpenCreateItemModal(true)}
-                    />,
-                ]}
-            />
+    const actionButtons: ReactNode[] = [
+        <Button
+            type="primary"
+            key="scrape-data"
+            title="Cào dữ liệu"
+            icon={<Icon icon="lucide:file-text" />}
+            onClick={() => setOpenProcessScrapeDataModal(true)}
+        />,
+        <Button
+            type="primary"
+            title="Nhập nhà cung cấp"
+            key="import-data-provider"
+            icon={<Icon icon="lucide:import" />}
+            onClick={() => setOpenImportItemModal(true)}
+        />,
+        <Button
+            type="primary"
+            key="add-data-provider"
+            title="Thêm nhà cung cấp"
+            icon={<Icon icon="lucide:plus" />}
+            onClick={() => setOpenCreateItemModal(true)}
+        />,
+    ];
 
+    return (
+        <Fragment key="data-providers-page">
             <TableContainer
                 columns={columns}
                 resource="data-providers"
                 actionItems={actionItems}
+                title="Danh sách nhà cung cấp"
+                actionButtons={actionButtons}
                 customFilterItems={customFilterItems}
                 tableContainerData={tableContainerData}
                 filterSearch={{ placeholder: 'Tìm kiếm nhà cung cấp', span: 12 }}
@@ -380,7 +378,7 @@ const DataProviderPage = () => {
                     columns={importDataColumns as unknown as ColumnType<Record<string, any>>[]}
                 />
             )}
-        </Space>
+        </Fragment>
     );
 };
 

@@ -3,14 +3,31 @@
 import { CustomFilterType } from '@/enums';
 import { FilterItem } from '@/interfaces';
 import { Icon } from '@iconify/react';
-import { Col, Input, Row, Select } from 'antd';
-import { ChangeEvent } from 'react';
+import { CrudFilter } from '@refinedev/core';
+import { Button, Col, Flex, Input, Row, Select, Space } from 'antd';
+import { ChangeEvent, useMemo, useState } from 'react';
 
 type CustomFilterProps = {
-    filters: FilterItem[];
+    filterActions: FilterItem[];
+    filterValues?: CrudFilter[];
+    onClearFilters?: () => void;
 };
 
-const CustomFilter = ({ filters }: CustomFilterProps) => {
+const CustomFilter = ({ filterActions, filterValues, onClearFilters }: CustomFilterProps) => {
+    const [collapsed, setCollapsed] = useState(false);
+
+    const [searchFilter, selectFilters] = useMemo(() => {
+        const searchFilter = filterActions.find(
+            (filter) => filter.type === CustomFilterType.SEARCH,
+        );
+
+        const selectFilters = filterActions.filter(
+            (filter) => filter.type === CustomFilterType.SELECT,
+        );
+
+        return [searchFilter, selectFilters];
+    }, [filterActions]);
+
     const renderFilterItem = (filterItem: FilterItem, index: number) => {
         const {
             type,
@@ -65,12 +82,68 @@ const CustomFilter = ({ filters }: CustomFilterProps) => {
         }
     };
 
-    if (!filters?.length) return null;
+    const handleClearFilters = () => {
+        setCollapsed(false);
+        onClearFilters?.();
+    };
 
     return (
-        <Row gutter={[16, 8]} className="py-3">
-            {filters.map((filter, index) => renderFilterItem(filter, index))}
-        </Row>
+        <Space direction="vertical" size="middle" className="w-full">
+            {filterActions.length > 0 && (
+                <Flex align="center" justify={searchFilter ? 'space-between' : 'end'} gap="50%">
+                    {searchFilter && (
+                        <Input
+                            className="w-full"
+                            placeholder={searchFilter.placeholder ?? 'Tìm kiếm'}
+                            prefix={<Icon icon="lucide:search" className="text-foreground-500" />}
+                            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                                searchFilter.onChange?.(e.target.value.trim())
+                            }
+                        />
+                    )}
+
+                    <Space direction="horizontal" size={8}>
+                        {selectFilters.length > 0 && (
+                            <Button
+                                type="text"
+                                icon={<Icon icon="lucide:filter" />}
+                                onClick={() => setCollapsed(!collapsed)}
+                                className="border border-slate-200 rounded-lg p-3"
+                            >
+                                <span>Bộ lọc</span>
+                                {filterValues?.length && filterValues?.length > 0 && (
+                                    <span className="ml-1 bg-indigo-600 text-white text-[10px] px-1.5 py-0.5 rounded-full min-w-[1.25rem] text-center">
+                                        {filterValues.length}
+                                    </span>
+                                )}
+                            </Button>
+                        )}
+
+                        {((filterValues?.length && filterValues?.length > 0) || searchFilter) && (
+                            <Button
+                                type="text"
+                                onClick={handleClearFilters}
+                                disabled={!filterValues?.length && !searchFilter}
+                                icon={
+                                    <Icon
+                                        icon="lucide:refresh-cw"
+                                        className="text-slate-400 w-4 h-4"
+                                    />
+                                }
+                            />
+                        )}
+                    </Space>
+                </Flex>
+            )}
+
+            {collapsed && (
+                <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 animate-in slide-in-from-top-2 duration-200">
+                    <Row gutter={[16, 8]}>
+                        {selectFilters.map((filter, index) => renderFilterItem(filter, index))}
+                    </Row>
+                </div>
+            )}
+        </Space>
     );
 };
 

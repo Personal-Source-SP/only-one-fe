@@ -9,6 +9,7 @@ export { default as CustomFormModal } from './custom-form-modal/CustomFormModal'
 export { default as EditFormModal } from './custom-form-modal/EditFormModal';
 export { default as CustomLightBox } from './custom-light-box';
 export { default as CustomModal } from './custom-modal';
+export { default as CustomPage } from './custom-page';
 export { default as CustomSelect } from './custom-select';
 export { default as CustomSwitch } from './custom-switch';
 export { default as CustomTable } from './custom-table';

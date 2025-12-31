@@ -1,7 +1,7 @@
 'use client';
 
 import { useMainContext } from '@/contexts/MainContext';
-import { SortOrder } from '@/enums';
+import { MessageType, SortOrder } from '@/enums';
 import { ActionTableItem, NBaseApi } from '@/interfaces';
 import { DeleteOutlined } from '@ant-design/icons';
 import { CrudSort, useDelete } from '@refinedev/core';
@@ -103,7 +103,7 @@ const CustomTable = ({
                 },
                 onError: (error) => {
                     handleMessage({
-                        type: 'error',
+                        type: MessageType.ERROR,
                         content: error?.message || 'Lỗi xóa dữ liệu không thành công',
                     });
                 },
@@ -183,6 +183,7 @@ const CustomTable = ({
             columns={normalizedColumns}
             dataSource={normalizedDataSource}
             rowSelection={onRowSelectionChange ? rowSelection : undefined}
+            scroll={{ x: 'max-content' }}
             onChange={(pagination, filters, sorter, extra) =>
                 handleTableChange(pagination, filters, sorter as SorterResult<any>, extra)
             }
