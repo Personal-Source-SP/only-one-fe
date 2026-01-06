@@ -322,6 +322,7 @@ const DataProviderPage = () => {
                 customFilterItems={customFilterItems}
                 tableContainerData={tableContainerData}
                 filterSearch={{ placeholder: 'Tìm kiếm nhà cung cấp', span: 12 }}
+                description="Danh sách nhà cung cấp được sử dụng để cào dữ liệu và tìm kiếm dữ liệu"
             />
 
             <CreateFormModal

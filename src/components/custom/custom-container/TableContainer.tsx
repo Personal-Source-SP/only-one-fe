@@ -10,12 +10,14 @@ import { ActionTableItem, FilterItem, SearchFilterItem } from '@/interfaces';
 import { CrudFilter, LogicalFilter } from '@refinedev/core';
 import { Flex, Space } from 'antd';
 import { ColumnsType, TableProps } from 'antd/es/table';
-import { ReactNode, useMemo } from 'react';
+import { Fragment, ReactNode, useMemo } from 'react';
 
 type TableContainerProps = {
     tableContainerData: ReturnType<typeof useTableContainer>;
+
     title?: string | ReactNode;
     loading?: boolean;
+    description?: string;
     actionButtons?: ReactNode[];
     columns?: ColumnsType<any>;
     resource?: string;
@@ -24,14 +26,15 @@ type TableContainerProps = {
     filterSearch?: SearchFilterItem;
     childrenBottom?: ReactNode;
     customFilterItems?: FilterItem[];
-    onRowSelectionChange?: (selectedRows: any[]) => void;
     onDisableRowSelection?: (record: any) => boolean;
+    onRowSelectionChange?: (selectedRows: any[]) => void;
 };
 
 const TableContainer = ({
     tableContainerData,
     title,
     loading,
+    description,
     actionButtons,
     columns,
     resource,
@@ -113,22 +116,37 @@ const TableContainer = ({
             <CustomElement
                 elementType={ElementType.CARD}
                 header={
-                    <Flex
-                        gap={8}
-                        align="center"
-                        className="w-full"
-                        justify={title ? 'space-between' : 'end'}
-                    >
-                        {typeof title === 'string' ? (
-                            <h2 className="text-bases font-bold !m-0">{title}</h2>
-                        ) : (
-                            <div className="w-full sm:w-auto">{title}</div>
-                        )}
+                    <Space size={4} direction="vertical" className="w-full mb-4">
+                        <Flex
+                            gap={8}
+                            align="center"
+                            className="w-full"
+                            justify={title ? 'space-between' : 'end'}
+                        >
+                            {typeof title === 'string' ? (
+                                <div>
+                                    <h2 className="text-bases font-bold !m-0">{title}</h2>
+                                    {description && (
+                                        <p className="text-sm font-normal mt-1">{description}</p>
+                                    )}
+                                </div>
+                            ) : (
+                                <div className="w-full sm:w-auto">{title}</div>
+                            )}
 
-                        {Boolean(actionButtons?.length) && (
-                            <Space size="middle">{actionButtons}</Space>
-                        )}
-                    </Flex>
+                            {Boolean(actionButtons?.length) && (
+                                <Space size="middle">{actionButtons}</Space>
+                            )}
+                        </Flex>
+                        <CustomFilter
+                            filterValues={filters}
+                            filterActions={filterItems}
+                            onClearFilters={() => {
+                                setFilters([]);
+                                setCurrentPage(1);
+                            }}
+                        />
+                    </Space>
                 }
                 actions={[
                     <PaginationControls
@@ -146,16 +164,7 @@ const TableContainer = ({
                     />,
                 ]}
             >
-                <CustomFilter
-                    filterValues={filters}
-                    filterActions={filterItems}
-                    onClearFilters={() => {
-                        setFilters([]);
-                        setCurrentPage(1);
-                    }}
-                />
-
-                {childrenTop && childrenTop}
+                {childrenTop && <Fragment key="children-top">{childrenTop}</Fragment>}
 
                 {!!columns?.length && (
                     <CustomTable
@@ -173,7 +182,7 @@ const TableContainer = ({
                     />
                 )}
 
-                {childrenBottom && childrenBottom}
+                {childrenBottom && <Fragment key="children-bottom">{childrenBottom}</Fragment>}
             </CustomElement>
         </CustomElement>
     );

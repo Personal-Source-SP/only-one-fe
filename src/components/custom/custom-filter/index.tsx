@@ -13,74 +13,78 @@ type CustomFilterProps = {
     onClearFilters?: () => void;
 };
 
+const renderFilterItem = (filterItem: FilterItem, index: number) => {
+    const {
+        type,
+        span,
+        value,
+        options,
+        placeholder,
+        showSearch,
+        allowClear,
+        mode,
+        title,
+        onChange,
+    } = filterItem;
+
+    switch (type) {
+        case CustomFilterType.SEARCH: {
+            return (
+                <Col span={span} key={index}>
+                    <p className="mb-1 text-md font-semibold text-foreground-500">
+                        {title || 'Tìm kiếm'}
+                    </p>
+                    <Input
+                        placeholder={placeholder ?? 'Tìm kiếm'}
+                        prefix={<Icon icon="lucide:search" className="text-foreground-500" />}
+                        onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                            onChange?.(e.target.value.trim())
+                        }
+                    />
+                </Col>
+            );
+        }
+
+        case CustomFilterType.SELECT: {
+            return (
+                <Col span={span} key={index}>
+                    <p className="mb-1 text-md font-semibold text-foreground-500">
+                        {title || placeholder}
+                    </p>
+                    <Select
+                        mode={mode}
+                        value={value}
+                        maxTagCount={1}
+                        options={options}
+                        placeholder={placeholder}
+                        showSearch={showSearch ?? false}
+                        allowClear={allowClear ?? false}
+                        onChange={(value) => onChange?.(value)}
+                    />
+                </Col>
+            );
+        }
+    }
+};
+
 const CustomFilter = ({ filterActions, filterValues, onClearFilters }: CustomFilterProps) => {
     const [collapsed, setCollapsed] = useState(false);
 
-    const [searchFilter, selectFilters] = useMemo(() => {
-        const searchFilter = filterActions.find(
-            (filter) => filter.type === CustomFilterType.SEARCH,
-        );
-
-        const selectFilters = filterActions.filter(
-            (filter) => filter.type === CustomFilterType.SELECT,
-        );
-
-        return [searchFilter, selectFilters];
-    }, [filterActions]);
-
-    const renderFilterItem = (filterItem: FilterItem, index: number) => {
-        const {
-            type,
-            span,
-            value,
-            options,
-            placeholder,
-            showSearch,
-            allowClear,
-            mode,
-            title,
-            onChange,
-        } = filterItem;
-
-        switch (type) {
-            case CustomFilterType.SEARCH: {
-                return (
-                    <Col span={span} key={index}>
-                        <p className="mb-1 text-md font-semibold text-foreground-500">
-                            {title || 'Tìm kiếm'}
-                        </p>
-                        <Input
-                            placeholder={placeholder ?? 'Tìm kiếm'}
-                            prefix={<Icon icon="lucide:search" className="text-foreground-500" />}
-                            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                                onChange?.(e.target.value.trim())
-                            }
-                        />
-                    </Col>
-                );
-            }
-
-            case CustomFilterType.SELECT: {
-                return (
-                    <Col span={span} key={index}>
-                        <p className="mb-1 text-md font-semibold text-foreground-500">
-                            {title || placeholder}
-                        </p>
-                        <Select
-                            mode={mode}
-                            value={value}
-                            maxTagCount={1}
-                            options={options}
-                            placeholder={placeholder}
-                            showSearch={showSearch ?? false}
-                            allowClear={allowClear ?? false}
-                            onChange={(value) => onChange?.(value)}
-                        />
-                    </Col>
-                );
-            }
-        }
-    };
+    const [searchFilter, selectFilters] = useMemo(
+        () =>
+            filterActions?.reduce<[FilterItem | undefined, FilterItem[]]>(
+                ([search, selects], filter) => {
+                    if (filter.type === CustomFilterType.SEARCH) {
+                        return [filter, selects];
+                    } else if (filter.type === CustomFilterType.SELECT) {
+                        return [search, [...selects, filter]];
+                    }
+                    return [search, selects];
+                },
+                [undefined, []],
+            ),
+        [filterActions],
+    );
 
     const handleClearFilters = () => {
         setCollapsed(false);
@@ -94,6 +98,7 @@ const CustomFilter = ({ filterActions, filterValues, onClearFilters }: CustomFil
                     {searchFilter && (
                         <Input
                             className="w-full"
+                            style={{ background: '#F3F4F6' }}
                             placeholder={searchFilter.placeholder ?? 'Tìm kiếm'}
                             prefix={<Icon icon="lucide:search" className="text-foreground-500" />}
                             onChange={(e: ChangeEvent<HTMLInputElement>) =>
