@@ -4,7 +4,7 @@ import { CustomFilterType } from '@/enums';
 import { FilterItem } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { CrudFilter } from '@refinedev/core';
-import { Button, Col, Flex, Input, Row, Select, Space } from 'antd';
+import { Button, Col, Flex, Grid, Input, Row, Select, Space } from 'antd';
 import { ChangeEvent, useMemo, useState } from 'react';
 
 type CustomFilterProps = {
@@ -13,7 +13,7 @@ type CustomFilterProps = {
     onClearFilters?: () => void;
 };
 
-const renderFilterItem = (filterItem: FilterItem, index: number) => {
+const renderFilterItem = (filterItem: FilterItem, index: number, isMobile: boolean) => {
     const {
         type,
         span,
@@ -30,7 +30,7 @@ const renderFilterItem = (filterItem: FilterItem, index: number) => {
     switch (type) {
         case CustomFilterType.SEARCH: {
             return (
-                <Col span={span} key={index}>
+                <Col span={isMobile ? 24 : span} key={index}>
                     <p className="mb-1 text-md font-semibold text-foreground-500">
                         {title || 'Tìm kiếm'}
                     </p>
@@ -47,7 +47,7 @@ const renderFilterItem = (filterItem: FilterItem, index: number) => {
 
         case CustomFilterType.SELECT: {
             return (
-                <Col span={span} key={index}>
+                <Col span={isMobile ? 24 : span} key={index}>
                     <p className="mb-1 text-md font-semibold text-foreground-500">
                         {title || placeholder}
                     </p>
@@ -68,6 +68,9 @@ const renderFilterItem = (filterItem: FilterItem, index: number) => {
 };
 
 const CustomFilter = ({ filterActions, filterValues, onClearFilters }: CustomFilterProps) => {
+    const screens = Grid.useBreakpoint();
+    const isMobile = !screens.md;
+
     const [collapsed, setCollapsed] = useState(false);
 
     const [searchFilter, selectFilters] = useMemo(
@@ -94,7 +97,12 @@ const CustomFilter = ({ filterActions, filterValues, onClearFilters }: CustomFil
     return (
         <Space direction="vertical" size="middle" className="w-full">
             {filterActions.length > 0 && (
-                <Flex align="center" justify={searchFilter ? 'space-between' : 'end'} gap="50%">
+                <Flex
+                    align="center"
+                    className="w-full"
+                    gap={isMobile ? 4 : '50%'}
+                    justify={searchFilter ? 'space-between' : 'end'}
+                >
                     {searchFilter && (
                         <Input
                             className="w-full"
@@ -142,9 +150,11 @@ const CustomFilter = ({ filterActions, filterValues, onClearFilters }: CustomFil
             )}
 
             {collapsed && (
-                <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 animate-in slide-in-from-top-2 duration-200">
+                <div className="bg-slate-50 p-2 md:p-4 rounded-xl border border-slate-200 animate-in slide-in-from-top-2 duration-200 w-full">
                     <Row gutter={[16, 8]}>
-                        {selectFilters.map((filter, index) => renderFilterItem(filter, index))}
+                        {selectFilters.map((filter, index) =>
+                            renderFilterItem(filter, index, isMobile),
+                        )}
                     </Row>
                 </div>
             )}

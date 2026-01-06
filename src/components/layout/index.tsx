@@ -166,14 +166,14 @@ const MainLayout = ({ children }: PropsWithChildren) => {
 
                 {/* Page Content */}
                 <Suspense fallback={<Loading />}>
-                    <main className="flex-1 p-0 md:p-4 !pt-20 min-h-screen max-w-[100vw] w-full flex flex-col">
+                    <main className="flex-1 p-0 md:p-4 !pt-20 min-h-screen max-w-[100vw] w-full flex flex-col overflow-hidden">
                         <Space
                             size="middle"
                             direction="vertical"
-                            className="p-4 mb-4 w-full flex-1"
+                            className="p-0 md:p-4 mb-4 w-full flex-1"
                         >
                             {informationPage && (
-                                <Space direction="vertical" size={4}>
+                                <Space direction="vertical" size={4} className="px-4 md:px-0">
                                     <h1 className="text-xl sm:text-2xl font-bold !m-0">
                                         {informationPage?.label}
                                     </h1>

@@ -8,7 +8,7 @@ import { useTableContainer } from '@/hooks';
 import { useDebounceSearch } from '@/hooks/useDebounceSearch';
 import { ActionTableItem, FilterItem, SearchFilterItem } from '@/interfaces';
 import { CrudFilter, LogicalFilter } from '@refinedev/core';
-import { Flex, Space } from 'antd';
+import { Flex, Grid, Space } from 'antd';
 import { ColumnsType, TableProps } from 'antd/es/table';
 import { Fragment, ReactNode, useMemo } from 'react';
 
@@ -47,6 +47,8 @@ const TableContainer = ({
     onDisableRowSelection,
 }: TableContainerProps) => {
     const { scrollToTop } = useMainContext();
+    const screens = Grid.useBreakpoint();
+    const isMobile = !screens.md;
 
     const {
         currentPage,
@@ -111,23 +113,48 @@ const TableContainer = ({
         fieldName: filterSearch?.name ?? 'name',
     });
 
+    const responsiveTableProps = useMemo(
+        () =>
+            ({
+                ...tableProps,
+                style: {
+                    ...(tableProps as TableProps<any>).style,
+                    width: '100%',
+                    maxWidth: '100%',
+                },
+                ...(isMobile
+                    ? {
+                          size: 'small',
+                          scroll: { x: 'max-content', ...(tableProps as TableProps<any>).scroll },
+                      }
+                    : {}),
+            }) as TableProps<any>,
+        [isMobile, tableProps],
+    );
+
     return (
         <CustomElement elementType={ElementType.CONTAINER} loading={loading}>
             <CustomElement
                 elementType={ElementType.CARD}
                 header={
-                    <Space size={4} direction="vertical" className="w-full mb-4">
+                    <Space size={8} direction="vertical" className="w-full mb-4">
                         <Flex
                             gap={8}
-                            align="center"
+                            vertical={isMobile}
                             className="w-full"
-                            justify={title ? 'space-between' : 'end'}
+                            wrap={isMobile ? 'wrap' : 'nowrap'}
+                            align={isMobile ? 'stretch' : 'center'}
+                            justify={isMobile ? 'start' : title ? 'space-between' : 'end'}
                         >
                             {typeof title === 'string' ? (
                                 <div>
-                                    <h2 className="text-bases font-bold !m-0">{title}</h2>
+                                    <h2 className="text-bases font-bold !m-0 whitespace-pre-line break-words">
+                                        {title}
+                                    </h2>
                                     {description && (
-                                        <p className="text-sm font-normal mt-1">{description}</p>
+                                        <p className="hidden md:block text-sm font-normal mt-1 whitespace-pre-line break-words">
+                                            {description}
+                                        </p>
                                     )}
                                 </div>
                             ) : (
@@ -135,7 +162,14 @@ const TableContainer = ({
                             )}
 
                             {Boolean(actionButtons?.length) && (
-                                <Space size="middle">{actionButtons}</Space>
+                                <Space
+                                    className="w-full"
+                                    size={isMobile ? 8 : 16}
+                                    align={isMobile ? 'center' : 'end'}
+                                    direction={isMobile ? 'horizontal' : 'vertical'}
+                                >
+                                    {actionButtons}
+                                </Space>
                             )}
                         </Flex>
                         <CustomFilter
@@ -176,7 +210,7 @@ const TableContainer = ({
                         setCurrentPage={setCurrentPage}
                         loading={tableQuery?.isLoading}
                         onRefetch={tableQuery?.refetch}
-                        tableProps={tableProps as TableProps<any>}
+                        tableProps={responsiveTableProps}
                         onRowSelectionChange={onRowSelectionChange}
                         onDisableRowSelection={onDisableRowSelection}
                     />

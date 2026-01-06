@@ -76,7 +76,7 @@ const CustomElement = ({
                     styles={{ body: { padding: '12px 24px' } }}
                     className={`${className ? className : 'bg-white'} md:rounded-xl`}
                 >
-                    <Space direction="vertical" size="middle">
+                    <Space direction="vertical" size="middle" className="w-full max-w-full">
                         {children}
                     </Space>
                 </Card>

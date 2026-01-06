@@ -294,21 +294,27 @@ const DataProviderPage = () => {
             title="Cào dữ liệu"
             icon={<Icon icon="lucide:file-text" />}
             onClick={() => setOpenProcessScrapeDataModal(true)}
-        />,
+        >
+            Cào
+        </Button>,
         <Button
             type="primary"
             title="Nhập nhà cung cấp"
             key="import-data-provider"
             icon={<Icon icon="lucide:import" />}
             onClick={() => setOpenImportItemModal(true)}
-        />,
+        >
+            Nhập
+        </Button>,
         <Button
             type="primary"
             key="add-data-provider"
             title="Thêm nhà cung cấp"
             icon={<Icon icon="lucide:plus" />}
             onClick={() => setOpenCreateItemModal(true)}
-        />,
+        >
+            Thêm
+        </Button>,
     ];
 
     return (

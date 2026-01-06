@@ -30,6 +30,26 @@ body {
   }
 }
 
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #dadce0;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #bdc1c6;
+}
+
+/* Custom ant design components */
 .sidebar-item {
   @apply flex items-center gap-3 px-4 py-3 rounded-md text-gray-600 transition-colors duration-150;
 }
@@ -84,23 +104,10 @@ body {
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
-}
 
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #dadce0;
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #bdc1c6;
+  /* Ant Design Card head padding for mobile */
+  .ant-card-head,
+  .ant-card-body {
+    padding: 0 !important;
+  }
 }
