@@ -28,6 +28,13 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+
+  .custom-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: #dadce0 transparent;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
 }
 
 /* Custom scrollbar */

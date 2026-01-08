@@ -1,6 +1,6 @@
 'use client';
 
-import { PaginationControls } from '@/components/common';
+import { DataNotFound, PaginationControls } from '@/components/common';
 import { CustomElement, CustomFilter, CustomTable } from '@/components/custom';
 import { useMainContext } from '@/contexts/MainContext';
 import { CustomFilterType, ElementType } from '@/enums';
@@ -8,9 +8,10 @@ import { useTableContainer } from '@/hooks';
 import { useDebounceSearch } from '@/hooks/useDebounceSearch';
 import { ActionTableItem, FilterItem, SearchFilterItem } from '@/interfaces';
 import { CrudFilter, LogicalFilter } from '@refinedev/core';
-import { Flex, Grid, Space } from 'antd';
+import { Empty, Flex, Grid, Space, Spin } from 'antd';
 import { ColumnsType, TableProps } from 'antd/es/table';
-import { Fragment, ReactNode, useMemo } from 'react';
+import { Fragment, ReactNode, useMemo, useState } from 'react';
+import ListItem from './ListItem';
 
 type TableContainerProps = {
     tableContainerData: ReturnType<typeof useTableContainer>;
@@ -47,8 +48,11 @@ const TableContainer = ({
     onDisableRowSelection,
 }: TableContainerProps) => {
     const { scrollToTop } = useMainContext();
+
     const screens = Grid.useBreakpoint();
     const isMobile = !screens.md;
+
+    const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([]);
 
     const {
         currentPage,
@@ -132,6 +136,36 @@ const TableContainer = ({
         [isMobile, tableProps],
     );
 
+    const normalizedDataSource = useMemo(() => {
+        if (Array.isArray(tableProps?.dataSource)) return tableProps.dataSource;
+
+        if (Array.isArray((tableProps as any)?.dataSource?.data)) {
+            return (tableProps as any).dataSource.data;
+        }
+
+        return [];
+    }, [tableProps?.dataSource]);
+
+    const handleListItemSelect = (record: any, selected: boolean) => {
+        let newSelectedKeys: string[];
+        let newSelectedRows: any[];
+
+        if (selected) {
+            newSelectedKeys = [...selectedRowKeys, record.id];
+            newSelectedRows = normalizedDataSource.filter((item: any) =>
+                newSelectedKeys.includes(item.id),
+            );
+        } else {
+            newSelectedKeys = selectedRowKeys.filter((key) => key !== record.id);
+            newSelectedRows = normalizedDataSource.filter((item: any) =>
+                newSelectedKeys.includes(item.id),
+            );
+        }
+
+        setSelectedRowKeys(newSelectedKeys);
+        onRowSelectionChange?.(newSelectedRows);
+    };
+
     return (
         <CustomElement elementType={ElementType.CONTAINER} loading={loading}>
             <CustomElement
@@ -201,19 +235,57 @@ const TableContainer = ({
                 {childrenTop && <Fragment key="children-top">{childrenTop}</Fragment>}
 
                 {!!columns?.length && (
-                    <CustomTable
-                        columns={columns}
-                        resource={resource}
-                        setSorters={setSorters}
-                        setPageSize={setPageSize}
-                        actionItems={actionItems}
-                        setCurrentPage={setCurrentPage}
-                        loading={tableQuery?.isLoading}
-                        onRefetch={tableQuery?.refetch}
-                        tableProps={responsiveTableProps}
-                        onRowSelectionChange={onRowSelectionChange}
-                        onDisableRowSelection={onDisableRowSelection}
-                    />
+                    <>
+                        {isMobile ? (
+                            <div className="min-h-[200px] max-h-[calc(100vh-300px)] overflow-y-auto custom-scroll">
+                                {tableQuery?.isLoading ? (
+                                    <Flex justify="center" align="center" className="py-12">
+                                        <Spin size="large" />
+                                    </Flex>
+                                ) : normalizedDataSource.length > 0 ? (
+                                    <div className="space-y-0 pb-2 pr-1">
+                                        {normalizedDataSource.map((record: any) => (
+                                            <ListItem
+                                                key={record.id}
+                                                record={record}
+                                                columns={columns}
+                                                resource={resource}
+                                                actionItems={actionItems}
+                                                currentPage={currentPage}
+                                                onRefetch={tableQuery?.refetch}
+                                                setCurrentPage={setCurrentPage}
+                                                selected={selectedRowKeys.includes(record.id)}
+                                                disabled={onDisableRowSelection?.(record)}
+                                                onSelectChange={
+                                                    onRowSelectionChange
+                                                        ? handleListItemSelect
+                                                        : undefined
+                                                }
+                                            />
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="py-12">
+                                        <DataNotFound />
+                                    </div>
+                                )}
+                            </div>
+                        ) : (
+                            <CustomTable
+                                columns={columns}
+                                resource={resource}
+                                setSorters={setSorters}
+                                setPageSize={setPageSize}
+                                actionItems={actionItems}
+                                setCurrentPage={setCurrentPage}
+                                loading={tableQuery?.isLoading}
+                                onRefetch={tableQuery?.refetch}
+                                tableProps={responsiveTableProps}
+                                onRowSelectionChange={onRowSelectionChange}
+                                onDisableRowSelection={onDisableRowSelection}
+                            />
+                        )}
+                    </>
                 )}
 
                 {childrenBottom && <Fragment key="children-bottom">{childrenBottom}</Fragment>}
