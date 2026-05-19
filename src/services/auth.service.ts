@@ -1,10 +1,11 @@
+import { getApiBaseUrl } from '@/libs';
 import { IAuth } from '@/interfaces';
 import { BaseApi } from './base.service';
 
 class AuthService extends BaseApi {
     constructor() {
         super({
-            baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003/api/v1',
+            baseURL: getApiBaseUrl(),
         });
     }
 
