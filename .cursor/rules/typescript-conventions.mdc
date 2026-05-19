@@ -24,6 +24,24 @@ import { Option } from '../../../interfaces';
 
 Alias có sẵn: `@/`, `@components/`, `@hooks/`, `@interfaces/`, `@enums/`, `@services/`, `@libs/`, `@stores/`.
 
+## Barrel `index.ts`
+
+Mọi folder có `index.ts` barrel → **chỉ dùng `export * from`**:
+
+```typescript
+// ✅
+export * from './schedule';
+export * from './custom-components.constant';
+
+// ❌
+export { ScheduleType } from './schedule.enum';
+export { CustomCard } from './custom-card';
+```
+
+- File nguồn export named (`export const`, `export type`, `export enum`, …).
+- Thêm module mới: một dòng `export * from './<tên-file>'` (không extension).
+- Ngoại lệ: cần **rename** hoặc export tập con → mới dùng `export { X as Y } from '…'`.
+
 ## Types & interfaces
 
 - Domain types: file `src/interfaces/<domain>.d.ts` với `export declare namespace NDomain { … }`.

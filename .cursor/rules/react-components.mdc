@@ -13,7 +13,7 @@ Thêm `'use client'` khi dùng hooks, state, browser APIs, hoặc Ant Design tư
 ## Thứ tự trong component
 
 ```tsx
-const FeatureCard = ({ id }: FeatureCardProps) => {
+export const FeatureCard = ({ id }: FeatureCardProps) => {
     // Constants (nếu phụ thuộc props)
     // State
     // useMemo
@@ -27,9 +27,38 @@ Nhóm cách nhau một dòng trống; trong nhóm sắp xếp từ ngắn → d�
 
 ## Patterns
 
-- Functional components; export default từ file component.
+- Functional components; **luôn dùng named export**: `export const ComponentName = …` — **không** `export default`.
 - List `.map()`: luôn có `key` stable (ưu tiên `id`).
 - Semantic HTML khi phù hợp (`section`, `nav`, `button`); tránh div thừa.
+
+### Export component
+
+```tsx
+// ✅ Named export
+export const LoginForm = () => {
+    return <form>...</form>;
+};
+
+export type { LoginFormProps };
+
+// ❌ Default export
+const LoginForm = () => { ... };
+export default LoginForm;
+```
+
+**Barrel `index.ts`** — `export * from`:
+
+```ts
+export * from './LoginForm';
+export * from './RegisterForm';
+```
+
+```ts
+// ❌ Liệt kê từng symbol
+export { LoginForm } from './LoginForm';
+```
+
+Consumer: `import { LoginForm } from '@/components/module/auth'` — barrel feature, không import sâu `./LoginForm`.
 
 ## Chia nhỏ component
 
@@ -39,26 +68,37 @@ Khi component **> ~200 dòng** hoặc có nhiều khối UI/logic độc lập �
 
 ```
 feature-name/
-├── index.tsx              # Component chính (orchestrator) — export default
-├── FeatureNameHeader.tsx  # Component con
-├── FeatureNameList.tsx    # Component con
-└── FeatureNameItem.tsx    # Component con (nếu cần)
+├── index.tsx              # export const FeatureName — orchestrator
+├── FeatureNameHeader.tsx  # export const FeatureNameHeader
+├── FeatureNameList.tsx    # export const FeatureNameList
+└── FeatureNameItem.tsx    # export const FeatureNameItem (nếu cần)
 ```
 
 ### Quy tắc
 
-- **`index.tsx`** là entry point duy nhất: compose UI, giữ state/hooks chính, truyền props xuống con.
-- **Component con** đặt cùng folder, tên PascalCase mô tả rõ phần UI (`VideoControlsBar`, `SidebarMobile`, …).
+- **`index.tsx`** là entry point: `export const FeatureName`, compose UI, giữ state/hooks chính.
+- **Component con**: `export const FeatureNameXxx` — cùng folder, PascalCase.
 - Tách theo **trách nhiệm UI** (header, list, item, modal body, …), không tách file chỉ vì dài mà không có ranh giới rõ.
 - Import component con bằng relative `./` (cùng folder — được ESLint cho phép).
-- Consumer bên ngoài chỉ import từ folder: `import FeatureName from '@/components/module/feature-name'`.
+- **Consumer bên ngoài** — import từ **barrel gốc của feature** (folder có `index.ts`), cùng quy tắc với `@/interfaces`, `@/components/custom`:
+
+```tsx
+// ✅ Barrel gốc feature (auth có index.ts)
+import { LoginForm } from '@/components/module/auth';
+
+// ❌ Import sâu file con — vi phạm rule barrel
+import { LoginForm } from '@/components/module/auth/LoginForm';
+import LoginForm from '@/components/module/auth/LoginForm';
+```
+
+`@/components/module/<feature-name>` **là** folder gốc của feature đó (không phải import sâu). Mỗi feature (`auth`, `schedule`, …) có `index.ts` riêng; chưa có barrel tổng `@/components/module`.
 
 ### Ví dụ thực tế trong dự án
 
-- `video-player/index.tsx` + `VideoControlsBar`, `VideoCenterOverlay`, …
-- `sidebar/index.tsx` + `SidebarDesktop`, `SidebarMobile`, `SidebarNavItem`, …
+- `video-player/index.tsx` — `export const VideoPlayer` + `VideoControlsBar`, …
+- `sidebar/index.tsx` — `export const Sidebar` + `SidebarDesktop`, `SidebarMobile`, …
 
-Module export nhiều component public: thêm `index.ts` barrel (vd. `data-provider/index.ts`).
+Module export nhiều component: barrel `index.ts` dùng `export * from './Xxx'` cho mỗi file/folder con.
 
 ## Xây dựng UI
 

@@ -36,19 +36,34 @@ import { CustomCard } from '@/components/custom';
 // ❌ Import sâu file con (khi đã có barrel)
 import { CustomCardPadding } from '@/interfaces/custom-component';
 import { ScheduleType } from '@/enums/schedule.enum';
+import { LoginForm } from '@/components/module/auth/LoginForm';
 ```
 
-| Barrel    | Import từ             |
-| --------- | --------------------- |
-| Types     | `@/interfaces`        |
-| Enums     | `@/enums`             |
-| Hooks     | `@/hooks`             |
-| Constants | `@/constants`         |
-| Services  | `@/services`          |
-| Custom UI | `@/components/custom` |
-| Common UI | `@/components/common` |
+| Barrel    | Import từ                                                                                                                       |
+| --------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| Types     | `@/interfaces`                                                                                                                  |
+| Enums     | `@/enums`                                                                                                                       |
+| Hooks     | `@/hooks`                                                                                                                       |
+| Constants | `@/constants`                                                                                                                   |
+| Services  | `@/services`                                                                                                                    |
+| Custom UI | `@/components/custom`                                                                                                           |
+| Common UI | `@/components/common`                                                                                                           |
+| Module UI | `@/components/module/<feature>` (vd. `@/components/module/auth`) — barrel của từng feature, không có `@/components/module` tổng |
 
-Mỗi folder module phải có `index.ts` re-export; thêm symbol mới → cập nhật barrel tương ứng.
+Mỗi folder module phải có `index.ts` barrel re-export. **Luôn dùng `export * from`** — không liệt kê từng symbol.
+
+```typescript
+// ✅ index.ts
+export * from './LoginForm';
+export * from './RegisterForm';
+export * from './custom-components.constant';
+
+// ❌ Liệt kê từng export (trừ khi cần rename/alias)
+export { LoginForm } from './LoginForm';
+export { default as CustomCard } from './custom-card';
+```
+
+File con phải **named export** (`export const X`, `export type { X }`) để `export *` hoạt động. Thêm file mới → thêm một dòng `export * from './<file>'` vào barrel.
 
 - **Data CRUD**: ưu tiên Refine (`useTable`, `useModalForm`, `useTableContainer`).
 - **UI**: ưu tiên `@/components/custom` → `@/components/common`; chưa có thì tạo wrapper mới (xem rule `custom-components`).

@@ -29,7 +29,7 @@ alwaysApply: false
 
 5. **Kiểm tra** `src/components/custom/index.ts` — component đã tồn tại chưa?
 6. **Tạo folder** `custom-<tên-kebab>/` (vd. `custom-card/`, `custom-stepper/`).
-7. **Implement** `index.tsx` — component chính, export default `CustomXxx` — **áp dụng** kết quả từ `ui-ux-pro-max` (mục dưới).
+7. **Implement** `index.tsx` — `export const CustomXxx` — **áp dụng** kết quả từ `ui-ux-pro-max` (mục dưới).
 8. **Tách con** nếu > ~200 dòng (xem rule `react-components`).
 9. **Types dùng chung** → `src/interfaces/custom-component.d.ts` (export qua `@/interfaces`).
 10. **Constants** (map class, default style, config) → `src/constants/custom-components.constant.ts` (export qua `@/constants`) — xem mục **Constants** bên dưới.
@@ -87,7 +87,7 @@ python3 ~/.cursor/skills/ui-ux-pro-max/scripts/search.py \
 ```
 src/components/custom/
 ├── custom-card/
-│   └── index.tsx          # export default CustomCard
+│   └── index.tsx          # export const CustomCard
 ├── custom-form-modal/
 │   ├── CustomFormModal.tsx
 │   ├── CreateFormModal.tsx
@@ -95,12 +95,12 @@ src/components/custom/
 └── index.ts               # barrel export toàn bộ custom
 ```
 
-| Thứ           | Quy ước                                               |
-| ------------- | ----------------------------------------------------- |
-| Folder        | `custom-<name>` (kebab-case)                          |
-| Component     | `Custom<Name>` (PascalCase)                           |
-| Props type    | `Custom<Name>Props`                                   |
-| Export public | `export { default as CustomXxx } from './custom-xxx'` |
+| Thứ           | Quy ước                                         |
+| ------------- | ----------------------------------------------- |
+| Folder        | `custom-<name>` (kebab-case)                    |
+| Component     | `Custom<Name>` (PascalCase)                     |
+| Props type    | `Custom<Name>Props`                             |
+| Export public | `export * from './custom-xxx'` trong `index.ts` |
 
 ## Implement pattern
 
@@ -117,11 +117,13 @@ type CustomCardProps = CardProps & {
 
 export type { CustomCardProps }; // export type nếu consumer cần
 
-const CustomCard = ({ className, paddingSize = 'default', ...cardProps }: CustomCardProps) => {
+export const CustomCard = ({
+    className,
+    paddingSize = 'default',
+    ...cardProps
+}: CustomCardProps) => {
     return <Card className={mergedClassName} {...cardProps} />;
 };
-
-export default CustomCard;
 ```
 
 ### Nguyên tắc implement
@@ -147,7 +149,7 @@ Gom mọi **config tĩnh** của layer custom vào **một file duy nhất** `sr
 | Việc    | Quy tắc                                                                                        |
 | ------- | ---------------------------------------------------------------------------------------------- |
 | File    | `src/constants/custom-components.constant.ts` — **duy nhất** cho toàn bộ `@/components/custom` |
-| Export  | Thêm `export * from './custom-components.constant'` trong `src/constants/index.ts`             |
+| Export  | `export * from './custom-components.constant'` trong `src/constants/index.ts`                  |
 | Import  | `import { CUSTOM_CARD_PADDING_CLASS_MAP } from '@/constants'`                                  |
 | Đặt tên | Prefix theo component: `CUSTOM_<COMPONENT>_<MÔ_TẢ>` (SCREAMING_SNAKE_CASE)                     |
 
@@ -192,8 +194,15 @@ Ngoại lệ: constant chỉ dùng **một lần** trong file con private và kh
 Mỗi component mới **bắt buộc** thêm vào `src/components/custom/index.ts`:
 
 ```ts
-export { default as CustomXxx } from './custom-xxx';
-export type { CustomXxxProps } from './custom-xxx'; // nếu export type
+export * from './custom-xxx';
+```
+
+Types/props export named trong file component → được re-export tự động qua `export *`.
+
+```ts
+// ❌
+export { CustomXxx } from './custom-xxx';
+export type { CustomXxxProps } from './custom-xxx';
 ```
 
 Consumer import: `import { CustomXxx } from '@/components/custom'`.
