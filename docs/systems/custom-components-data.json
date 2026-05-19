@@ -1,0 +1,137 @@
+{
+  "style": "A — Minimal & Swiss",
+  "tokens": {
+    "primary": "#2563EB",
+    "primaryLegacy": "#1840DC",
+    "cta": "#F97316",
+    "bg": "#F8FAFC",
+    "surface": "#FFFFFF",
+    "border": "#E2E8F0",
+    "borderCard": "#F0F0F0",
+    "text": "#1E293B",
+    "textTitle": "#111527",
+    "textMuted": "#64748B",
+    "radius": "8px",
+    "radiusCard": "12px"
+  },
+  "categories": [
+    {
+      "id": "crud",
+      "title": "CRUD & danh sách",
+      "description": "Pattern Refine phổ biến: filter + bảng + modal form.",
+      "components": [
+        {
+          "name": "TableContainer",
+          "path": "custom-container",
+          "usage": "useTableContainer + CustomFilter + CustomTable + pagination",
+          "demo": "table-container",
+          "mobile": "Filter full width; bảng scroll ngang; ListItem trên mobile"
+        },
+        {
+          "name": "CustomFilter",
+          "path": "custom-filter",
+          "usage": "Search / Select filters, collapse trên mobile",
+          "demo": "filter",
+          "mobile": "Col span 24; nút thu gọn filter"
+        },
+        {
+          "name": "CustomTable",
+          "path": "custom-table",
+          "usage": "Wrapper Table Ant Design",
+          "demo": "table"
+        },
+        {
+          "name": "CustomDataTable",
+          "path": "custom-data-table",
+          "usage": "Bảng dữ liệu mở rộng",
+          "demo": "table"
+        },
+        {
+          "name": "CreateFormModal / EditFormModal",
+          "path": "custom-form-modal",
+          "usage": "CRUD modal qua useCustomModal",
+          "demo": "modal-form",
+          "mobile": "Modal full width; form 1 cột"
+        },
+        {
+          "name": "CustomFormModal",
+          "path": "custom-form-modal",
+          "usage": "Spin + CustomModal + Space vertical",
+          "demo": "modal-form"
+        }
+      ]
+    },
+    {
+      "id": "layout",
+      "title": "Layout & cấu trúc",
+      "description": "Tách vùng nội dung rõ ràng — surface + border.",
+      "components": [
+        { "name": "CustomCard", "path": "custom-card", "usage": "paddingSize, header/footer slot", "demo": "card", "mobile": "padding responsive" },
+        { "name": "CustomSpace", "path": "custom-space", "usage": "Khoảng cách vertical/horizontal", "demo": "space" },
+        { "name": "CustomFlex", "path": "custom-flex", "usage": "Flex layout", "demo": "flex" },
+        { "name": "CustomGrid", "path": "custom-grid", "usage": "Grid responsive", "demo": "grid" },
+        { "name": "CustomRowCol", "path": "custom-row-col", "usage": "Row / Col", "demo": "grid" },
+        { "name": "CustomDivider", "path": "custom-divider", "usage": "Phân tách section", "demo": "divider" }
+      ]
+    },
+    {
+      "id": "forms",
+      "title": "Form & nhập liệu",
+      "description": "Label rõ, full width trên mobile, focus ring primary.",
+      "components": [
+        { "name": "CustomInput", "path": "custom-input", "usage": "Input, Password, TextArea, Search", "demo": "input", "mobile": "min-height 44px touch" },
+        { "name": "CustomSelect", "path": "custom-select", "usage": "Select / multi", "demo": "select" },
+        { "name": "CustomDatePicker", "path": "custom-date-picker", "usage": "Ngày giờ", "demo": "input" },
+        { "name": "CustomCheckbox", "path": "custom-checkbox", "usage": "Checkbox / group", "demo": "checkbox" },
+        { "name": "CustomSwitch", "path": "custom-switch", "usage": "Toggle on/off", "demo": "switch" },
+        { "name": "CustomForm", "path": "custom-form", "usage": "Form layout", "demo": "form" },
+        { "name": "CustomUpload", "path": "custom-upload", "usage": "Upload file", "demo": "upload" }
+      ]
+    },
+    {
+      "id": "actions",
+      "title": "Hành động",
+      "components": [
+        { "name": "CustomButton", "path": "custom-button", "usage": "primary | default | text | danger", "demo": "buttons", "mobile": "full width CTA nếu cần" },
+        { "name": "CustomLink", "path": "custom-link", "usage": "variant default | primary", "demo": "link" },
+        { "name": "CustomDropdown", "path": "custom-dropdown", "usage": "Menu hành động", "demo": "dropdown" },
+        { "name": "CustomPopconfirm", "path": "custom-popconfirm", "usage": "Xác nhận xóa", "demo": "popconfirm" },
+        { "name": "CustomFloatButton", "path": "custom-float-button", "usage": "FAB", "demo": "float" }
+      ]
+    },
+    {
+      "id": "feedback",
+      "title": "Phản hồi & overlay",
+      "components": [
+        { "name": "CustomModal", "path": "custom-modal", "usage": "width 1200, scroll body", "demo": "modal", "mobile": "margin 16px; scroll trong modal" },
+        { "name": "CustomDrawer", "path": "custom-drawer", "usage": "Panel phụ", "demo": "drawer", "mobile": "full width drawer" },
+        { "name": "CustomAlert", "path": "custom-alert", "usage": "Thông báo inline", "demo": "alert" },
+        { "name": "CustomSpin", "path": "custom-spin", "usage": "Loading", "demo": "spin" },
+        { "name": "CustomTooltip", "path": "custom-tooltip", "usage": "Gợi ý", "demo": "tooltip" },
+        { "name": "CustomPopover", "path": "custom-popover", "usage": "Popover menu", "demo": "popover" }
+      ]
+    },
+    {
+      "id": "display",
+      "title": "Hiển thị dữ liệu",
+      "components": [
+        { "name": "CustomTag", "path": "custom-tag", "usage": "Status", "demo": "tags" },
+        { "name": "CustomBadge", "path": "custom-badge", "usage": "Đếm thông báo", "demo": "badge" },
+        { "name": "CustomStatistic", "path": "custom-statistic", "usage": "KPI số", "demo": "statistic", "mobile": "max 2 KPI/hàng" },
+        { "name": "CustomEmpty", "path": "custom-empty", "usage": "Không có dữ liệu", "demo": "empty" },
+        { "name": "CustomDescriptions", "path": "custom-descriptions", "usage": "Chi tiết key-value", "demo": "descriptions" },
+        { "name": "CustomAvatar", "path": "custom-avatar", "usage": "Avatar user", "demo": "avatar" }
+      ]
+    },
+    {
+      "id": "navigation",
+      "title": "Điều hướng",
+      "components": [
+        { "name": "CustomBreadcrumb", "path": "custom-breadcrumb", "usage": "Breadcrumb", "demo": "breadcrumb" },
+        { "name": "CustomTabs", "path": "custom-tabs", "usage": "Tab view", "demo": "tabs", "mobile": "scroll tab bar" },
+        { "name": "CustomSteps", "path": "custom-steps", "usage": "Wizard", "demo": "steps", "mobile": "vertical steps" },
+        { "name": "CustomPagination", "path": "custom-pagination", "usage": "Phân trang", "demo": "pagination" }
+      ]
+    }
+  ]
+}
