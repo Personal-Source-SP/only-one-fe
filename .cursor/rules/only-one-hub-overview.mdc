@@ -24,12 +24,36 @@ Next.js 16 (App Router) + React 19 + TypeScript + Ant Design 5 + Refine.dev + Ta
 
 ## Nguyên tắc chung
 
-- **Import**: dùng alias `@/…` (ESLint bắt buộc; chỉ cùng folder mới được relative).
+- **Import**: dùng alias `@/…` (ESLint bắt buộc; chỉ cùng folder mới được relative). **Import từ barrel gốc** của folder (`index.ts`), không import sâu vào file con.
+
+```typescript
+// ✅ Barrel gốc
+import { CustomCardPadding } from '@/interfaces';
+import { ScheduleType } from '@/enums';
+import { useTableContainer } from '@/hooks';
+import { CustomCard } from '@/components/custom';
+
+// ❌ Import sâu file con (khi đã có barrel)
+import { CustomCardPadding } from '@/interfaces/custom-component';
+import { ScheduleType } from '@/enums/schedule.enum';
+```
+
+| Barrel    | Import từ             |
+| --------- | --------------------- |
+| Types     | `@/interfaces`        |
+| Enums     | `@/enums`             |
+| Hooks     | `@/hooks`             |
+| Constants | `@/constants`         |
+| Services  | `@/services`          |
+| Custom UI | `@/components/custom` |
+| Common UI | `@/components/common` |
+
+Mỗi folder module phải có `index.ts` re-export; thêm symbol mới → cập nhật barrel tương ứng.
+
 - **Data CRUD**: ưu tiên Refine (`useTable`, `useModalForm`, `useTableContainer`).
-- **UI**: Ant Design cho form/table/modal; Tailwind cho layout/spacing responsive.
+- **UI**: ưu tiên `@/components/custom` → `@/components/common`; chưa có thì tạo wrapper mới (xem rule `custom-components`).
 - **Utils**: lodash thay vì tự viết lại (`isEmpty`, `debounce`, …).
 - **Phạm vi thay đổi**: tối thiểu, không refactor ngoài yêu cầu.
-- Mỗi folder component/module có `index.ts` barrel export.
 
 ## Scripts
 

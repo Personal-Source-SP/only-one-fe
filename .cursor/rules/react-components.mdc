@@ -71,7 +71,7 @@ Module export nhiều component public: thêm `index.ts` barrel (vd. `data-provi
 ### Quy tắc bắt buộc
 
 - **Luôn bắt đầu** từ `@/components/custom` trước khi dùng Ant Design/component thuần.
-- **Chưa có hoặc chưa hỗ trợ** use case → **dừng và raise** (báo user / đề xuất tạo component mới trong `custom`), không tự ý dùng Ant Design thô hoặc copy-paste UI one-off.
+- **Chưa có hoặc chưa hỗ trợ** use case → **dừng và raise** (báo user / đề xuất tạo component mới trong `custom`), không tự ý dùng Ant Design thô hoặc copy-paste UI one-off. Quy trình: quét usage hiện tại → thống nhất UI → xây custom → thay thế toàn bộ (rule `custom-components`).
 - **Responsive bắt buộc**: mọi UI phải hoạt động tốt trên **mobile, tablet, desktop** (Tailwind `sm:` / `md:` / `lg:`, layout linh hoạt, không overflow ngang).
 - **Suy nghĩ common trước**: nếu pattern có thể tái sử dụng (≥2 chỗ hoặc khả năng dùng lại cao) → xây component **common/reusable** trong `custom` (hoặc `common` nếu không phải wrapper Ant Design), không nhét logic UI vào page/module.
 

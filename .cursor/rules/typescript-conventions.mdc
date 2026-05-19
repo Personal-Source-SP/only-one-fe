@@ -9,9 +9,14 @@ alwaysApply: false
 ## Imports
 
 ```typescript
-// ✅ Alias từ src/
+// ✅ Barrel gốc
 import { ScheduleType } from '@/enums';
-import { NSchedule } from '@/interfaces';
+import { NSchedule, CustomCardPadding, Abstract } from '@/interfaces';
+import { useTableContainer } from '@/hooks';
+
+// ❌ Import sâu file con (khi đã có barrel)
+import { CustomCardPadding } from '@/interfaces/custom-component';
+import { NSchedule } from '@/interfaces/schedule';
 
 // ❌ Relative ra ngoài folder (ESLint error)
 import { Option } from '../../../interfaces';
@@ -22,7 +27,7 @@ Alias có sẵn: `@/`, `@components/`, `@hooks/`, `@interfaces/`, `@enums/`, `@s
 ## Types & interfaces
 
 - Domain types: file `src/interfaces/<domain>.d.ts` với `export declare namespace NDomain { … }`.
-- Entity base: extend `Abstract` từ `@/interfaces/common`.
+- Entity base: extend `Abstract` từ `@/interfaces`.
 - Domain constants: `enum` trong `src/enums/`, export qua `src/enums/index.ts`.
 - Props component: `type XxxProps = { … }` hoặc `interface IXxxProps` (theo pattern file hiện có).
 - Tránh `any` khi có thể; dùng type cụ thể hoặc `unknown` + narrow.

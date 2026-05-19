@@ -1,0 +1,161 @@
+---
+description: Quy trình xây dựng component mới trong @/components/custom
+globs: 'src/components/custom/**/*'
+alwaysApply: false
+---
+
+# Custom Components — Xây dựng mới
+
+`@/components/custom` là **wrapper layer** chuẩn hóa Ant Design cho toàn dự án. Mọi UI Ant Design dùng lặp lại hoặc cần default/style chung → tạo ở đây, không để trong `module/` hay `page`.
+
+## Khi nào tạo mới
+
+- Feature/module cần UI Ant Design nhưng **chưa có** wrapper tương ứng trong `custom`.
+- Wrapper hiện có **chưa hỗ trợ** use case → mở rộng props hoặc tạo variant mới (ưu tiên mở rộng).
+- Pattern UI dùng ≥2 chỗ hoặc khả năng tái sử dụng cao.
+
+## Quy trình (checklist)
+
+### Bước 1 — Quét & thống nhất UI (trước khi code)
+
+1. **Quét codebase** tìm mọi chỗ đang dùng Ant Design/component tương đương:
+    - Search import (`from 'antd'`), JSX tag (`<Card`, `<Modal`, …), pattern/style lặp lại.
+    - Phạm vi: `src/components/module`, `src/components/layout`, `src/app`, `src/components/common`.
+2. **Liệt kê use cases** từ các chỗ tìm được: props đang dùng, variant, layout, responsive khác nhau.
+3. **Thống nhất UI** trước khi implement — `CustomXxx` phải cover **tất cả** use case đã quét (props/default/style chung), không chỉ case đang làm.
+4. **Dùng skill `ui-ux-pro-max`** (đọc skill trước khi code) để chốt design direction — spacing, contrast, responsive, interaction. Stack dự án: `nextjs` + `html-tailwind`.
+
+### Bước 2 — Xây dựng
+
+5. **Kiểm tra** `src/components/custom/index.ts` — component đã tồn tại chưa?
+6. **Tạo folder** `custom-<tên-kebab>/` (vd. `custom-card/`, `custom-stepper/`).
+7. **Implement** `index.tsx` — component chính, export default `CustomXxx` — **áp dụng** kết quả từ `ui-ux-pro-max` (mục dưới).
+8. **Tách con** nếu > ~200 dòng (xem rule `react-components`).
+9. **Types dùng chung** → `src/interfaces/custom-component.d.ts`.
+10. **Export** trong `src/components/custom/index.ts`.
+11. **Verify** responsive mobile / tablet / desktop + checklist UX từ skill.
+
+### Bước 3 — Thay thế hoàn toàn (sau khi xây xong)
+
+12. **Migrate toàn bộ** các chỗ đã quét ở bước 1 → dùng `CustomXxx` từ `@/components/custom`.
+13. **Xóa** import Ant Design trực tiếp tại các file đã migrate (không để song song).
+14. **Xác nhận** không còn usage Ant Design thô cho component đó (grep lại trước khi coi là xong).
+
+> Custom component mới **chưa hoàn thành** nếu còn chỗ dùng Ant Design trực tiếp thay vì wrapper.
+
+## UI/UX — Skill `ui-ux-pro-max` (bắt buộc khi xây dựng)
+
+**Đọc và follow skill `ui-ux-pro-max`** trước/song song bước implement. Mục tiêu: wrapper vừa thống nhất Ant Design, vừa đạt chuẩn UX chuyên nghiệp.
+
+### Workflow tối thiểu
+
+```bash
+# 1. Design system — dashboard/admin SaaS (Only One Hub)
+python3 ~/.cursor/skills/ui-ux-pro-max/scripts/search.py \
+  "dashboard admin SaaS data management professional" \
+  --design-system -p "Only One Hub"
+
+# 2. Stack guidelines
+python3 ~/.cursor/skills/ui-ux-pro-max/scripts/search.py \
+  "form modal table responsive" --stack nextjs
+
+python3 ~/.cursor/skills/ui-ux-pro-max/scripts/search.py \
+  "layout spacing responsive" --stack html-tailwind
+
+# 3. UX chi tiết (khi cần)
+python3 ~/.cursor/skills/ui-ux-pro-max/scripts/search.py \
+  "accessibility focus keyboard" --domain ux
+```
+
+### Áp dụng vào custom component
+
+- **Spacing & layout**: padding/margin nhất quán; responsive 375px / 768px / 1024px+.
+- **Interaction**: `cursor-pointer`, hover/focus rõ, transition 150–300ms, không layout shift.
+- **Contrast**: text/border đủ tương phản light mode; test dark mode nếu component hỗ trợ theme.
+- **Icons**: `@iconify/react` (Lucide/Heroicons) — không dùng emoji làm icon.
+- **Cân bằng**: follow skill UX nhưng **giữ API Ant Design** và palette/style hiện có của dự án — không redesign lệch hệ thống.
+
+### Pre-delivery (từ skill)
+
+- [ ] Responsive mobile / tablet / desktop, không scroll ngang
+- [ ] Clickable có feedback; focus visible cho keyboard
+- [ ] Label/alt/aria phù hợp cho form và interactive elements
+
+## Naming & cấu trúc
+
+```
+src/components/custom/
+├── custom-card/
+│   └── index.tsx          # export default CustomCard
+├── custom-form-modal/
+│   ├── CustomFormModal.tsx
+│   ├── CreateFormModal.tsx
+│   └── EditFormModal.tsx
+└── index.ts               # barrel export toàn bộ custom
+```
+
+| Thứ           | Quy ước                                               |
+| ------------- | ----------------------------------------------------- |
+| Folder        | `custom-<name>` (kebab-case)                          |
+| Component     | `Custom<Name>` (PascalCase)                           |
+| Props type    | `Custom<Name>Props`                                   |
+| Export public | `export { default as CustomXxx } from './custom-xxx'` |
+
+## Implement pattern
+
+```tsx
+'use client'; // khi dùng hooks, state, browser API
+
+import { Card, CardProps } from 'antd';
+
+type CustomCardProps = CardProps & {
+    // custom props — sắp xếp: required vars → optional vars → required fn → optional fn
+    footer?: ReactNode;
+    paddingSize?: CustomCardPadding;
+};
+
+export type { CustomCardProps }; // export type nếu consumer cần
+
+const CustomCard = ({ className, paddingSize = 'default', ...cardProps }: CustomCardProps) => {
+    return <Card className={mergedClassName} {...cardProps} />;
+};
+
+export default CustomCard;
+```
+
+### Nguyên tắc implement
+
+- **Wrap Ant Design**, không copy UI từ đầu; giữ API tương thích qua spread `...props`.
+- **Default hợp lý**: set sẵn behavior/style dùng chung (vd. `CustomModal`: width, footer, scroll).
+- **Compose custom**: dùng custom khác làm nền (vd. `CustomFormModal` → `CustomModal`).
+- **Styling**: Tailwind cho layout/responsive; override Ant Design qua `className` / `styles`.
+- **Responsive**: dùng `Grid.useBreakpoint()` hoặc Tailwind `sm:`/`md:`/`lg:`; test 3 breakpoint.
+- **`'use client'`**: bắt buộc khi có hooks/interaction; bỏ nếu component thuần presentational.
+- **Import**: alias `@/`; chỉ `./` cho file cùng folder custom.
+
+## Props design
+
+- Ưu tiên **extend** props Ant Design gốc (`SelectProps`, `ModalProps`, `CardProps`, …).
+- Props mới chỉ thêm khi wrapper cần behavior/style riêng — tránh duplicate API Ant Design.
+- Enum/union dùng chung → `custom-component.d.ts` hoặc `@/enums`.
+
+## Export barrel (`index.ts`)
+
+Mỗi component mới **bắt buộc** thêm vào `src/components/custom/index.ts`:
+
+```ts
+export { default as CustomXxx } from './custom-xxx';
+export type { CustomXxxProps } from './custom-xxx'; // nếu export type
+```
+
+Consumer import: `import { CustomXxx } from '@/components/custom'`.
+
+## Không làm
+
+- Không implement custom **trước khi quét** các chỗ đang dùng — dễ thiếu use case, UI không thống nhất.
+- Không implement custom **mà không dùng skill `ui-ux-pro-max`** — UI dễ lệch chuẩn UX/spacing/responsive.
+- Không coi task xong khi **chỉ tạo file** mà chưa migrate hết usage cũ sang `CustomXxx`.
+- Không đặt business logic / fetch API trong custom.
+- Không import từ `@/components/module` (custom là layer thấp hơn module).
+- Không dùng Ant Design trực tiếp ở module/page khi đã có hoặc vừa tạo wrapper.
+- Không tạo one-off trong module rồi “chuyển sau” — tạo đúng chỗ ngay từ đầu.
