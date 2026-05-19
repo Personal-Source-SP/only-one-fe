@@ -1,7 +1,6 @@
 import { Icon } from '@iconify/react';
 import { Flex } from 'antd';
 
-
 type LogoProps = {
     iconSize: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl';
     showText?: boolean;

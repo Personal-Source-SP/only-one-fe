@@ -8,7 +8,6 @@ import { FilterItem, NSchedule } from '@/interfaces';
 import { formatDate } from '@/libs';
 import { ColumnsType } from 'antd/es/table';
 
-
 type ViewScheduleJobListProps = {
     isOpen: boolean;
     scheduleId: string;

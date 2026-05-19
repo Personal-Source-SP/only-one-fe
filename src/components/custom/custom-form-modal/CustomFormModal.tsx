@@ -11,11 +11,7 @@ type CustomFormModalProps = {
     children: ReactNode;
 };
 
-const CustomFormModal = ({
-    formLoading,
-    modalProps,
-    children,
-}: CustomFormModalProps) => {
+const CustomFormModal = ({ formLoading, modalProps, children }: CustomFormModalProps) => {
     return (
         <CustomModal modalProps={{ ...modalProps, destroyOnHidden: true }}>
             <Spin spinning={formLoading}>

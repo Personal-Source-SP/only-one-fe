@@ -3,7 +3,6 @@
 import { Icon } from '@iconify/react';
 import { Button, Input } from 'antd';
 
-
 type SearchProps = {
     showSearch: boolean;
     setShowSearch: (show: boolean) => void;

@@ -4,6 +4,10 @@ import { Rule } from 'antd/es/form';
 import { FormInstance } from 'antd/lib';
 import { ReactNode } from 'react';
 
+export type CustomCardPadding = 'sm' | 'lg' | 'none' | 'default' | 'responsive';
+
+export type CustomLinkVariant = 'default' | 'primary';
+
 export interface FormFieldItem {
     name: string;
     label: string;

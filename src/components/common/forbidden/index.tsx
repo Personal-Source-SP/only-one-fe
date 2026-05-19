@@ -2,7 +2,6 @@ import { Icon } from '@iconify/react';
 import { Button, Space } from 'antd';
 import Link from 'next/link';
 
-
 const Forbidden = () => {
     const supportLinks = [
         { name: 'Trung tâm trợ giúp', path: '/' },

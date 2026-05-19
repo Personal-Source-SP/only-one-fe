@@ -7,7 +7,6 @@ import { calculateDuration, formatDate } from '@/libs';
 import { Descriptions, Tabs } from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
 
-
 type ViewJobEventProps = {
     isOpen: boolean;
     jobEvent: NSchedule.IScheduleJobEvent;

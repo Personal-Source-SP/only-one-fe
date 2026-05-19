@@ -1,7 +1,6 @@
 import { Icon } from '@iconify/react';
 import { Space } from 'antd';
 
-
 const Loading = () => {
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-gradient-to-b from-blue-50 to-white">

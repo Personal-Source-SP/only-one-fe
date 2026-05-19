@@ -3,7 +3,6 @@
 import { Button, Card } from 'antd';
 import { Icon } from '@iconify/react';
 
-
 type DataNotFoundProps = {
     icon?: string;
     title?: string;

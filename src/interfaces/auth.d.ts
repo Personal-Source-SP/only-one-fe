@@ -28,4 +28,15 @@ export declare namespace IAuth {
         accessToken: string;
         refreshToken: string;
     }
+
+    interface IRegisterFormValues {
+        name: string;
+        email: string;
+        password: string;
+        confirmPassword: string;
+    }
+
+    interface IForgetPasswordFormValues {
+        email: string;
+    }
 }

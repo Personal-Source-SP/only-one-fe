@@ -6,7 +6,6 @@ import { Option } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { Button, Col, Form, Input, Row, Select, Space, Spin } from 'antd';
 
-
 type FolderModalProps = {
     folderOptions: Option[];
     modalPropsData: ReturnType<typeof useCustomModal>;
@@ -19,12 +18,7 @@ const FieldsEnum = {
     ParentFolderId: 'parentFolderId',
 };
 
-const FolderModal = ({
-    folderOptions,
-    modalPropsData,
-    onSubmit,
-    onClose,
-}: FolderModalProps) => {
+const FolderModal = ({ folderOptions, modalPropsData, onSubmit, onClose }: FolderModalProps) => {
     const { open, modalProps, formProps, formLoading, close } = modalPropsData;
 
     return (

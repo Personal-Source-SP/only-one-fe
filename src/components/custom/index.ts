@@ -1,12 +1,15 @@
 export { default as CustomAlert } from './custom-alert';
+export { default as CustomCard } from './custom-card';
 export { default as TableContainer } from './custom-container';
 export { default as CustomDatePicker } from './custom-date-picker';
+export { default as CustomDivider } from './custom-divider';
 export { default as CustomElement } from './custom-element';
 export { default as CustomFilter } from './custom-filter';
 export { default as CustomFloatButton } from './custom-float-button';
 export { default as CreateFormModal } from './custom-form-modal/CreateFormModal';
 export { default as CustomFormModal } from './custom-form-modal/CustomFormModal';
 export { default as EditFormModal } from './custom-form-modal/EditFormModal';
+export { default as CustomLink } from './custom-link';
 export { default as CustomLightBox } from './custom-light-box';
 export { default as CustomModal } from './custom-modal';
 export { default as CustomSelect } from './custom-select';

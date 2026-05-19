@@ -1,6 +1,5 @@
 import { Tag } from 'antd';
 
-
 type StatusTagProps = {
     status?: string;
 };

@@ -1,7 +1,5 @@
 'use client';
 
-
-
 import Lightbox, { SlideImage } from 'yet-another-react-lightbox';
 import Fullscreen from 'yet-another-react-lightbox/plugins/fullscreen';
 import Slideshow from 'yet-another-react-lightbox/plugins/slideshow';

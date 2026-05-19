@@ -3,7 +3,6 @@
 import { useWarnAboutChange } from '@refinedev/core';
 import { useNavigationGuard } from 'next-navigation-guard';
 
-
 type UnsavedChangesNotifierProps = {
     message?: string;
 };
