@@ -31,9 +31,10 @@ alwaysApply: false
 6. **Tạo folder** `custom-<tên-kebab>/` (vd. `custom-card/`, `custom-stepper/`).
 7. **Implement** `index.tsx` — component chính, export default `CustomXxx` — **áp dụng** kết quả từ `ui-ux-pro-max` (mục dưới).
 8. **Tách con** nếu > ~200 dòng (xem rule `react-components`).
-9. **Types dùng chung** → `src/interfaces/custom-component.d.ts`.
-10. **Export** trong `src/components/custom/index.ts`.
-11. **Verify** responsive mobile / tablet / desktop + checklist UX từ skill.
+9. **Types dùng chung** → `src/interfaces/custom-component.d.ts` (export qua `@/interfaces`).
+10. **Constants** (map class, default style, config) → `src/constants/custom-components.constant.ts` (export qua `@/constants`) — xem mục **Constants** bên dưới.
+11. **Export** trong `src/components/custom/index.ts`.
+12. **Verify** responsive mobile / tablet / desktop + checklist UX từ skill.
 
 ### Bước 3 — Thay thế hoàn toàn (sau khi xây xong)
 
@@ -131,7 +132,54 @@ export default CustomCard;
 - **Styling**: Tailwind cho layout/responsive; override Ant Design qua `className` / `styles`.
 - **Responsive**: dùng `Grid.useBreakpoint()` hoặc Tailwind `sm:`/`md:`/`lg:`; test 3 breakpoint.
 - **`'use client'`**: bắt buộc khi có hooks/interaction; bỏ nếu component thuần presentational.
-- **Import**: alias `@/`; chỉ `./` cho file cùng folder custom.
+- **Import**: alias `@/`; barrel gốc `@/interfaces`, `@/constants`; chỉ `./` cho file cùng folder custom.
+
+## Constants
+
+Gom mọi **config tĩnh** của layer custom vào **một file duy nhất** `src/constants/custom-components.constant.ts`, không tạo file constant riêng cho từng component (`custom-card.constant.ts`, …).
+
+- Map class Tailwind (`Record<Variant, string>`) — vd. `CUSTOM_CARD_PADDING_CLASS_MAP`
+- ClassName mặc định (`CUSTOM_CARD_BASE_CLASS_NAME`, `CUSTOM_MODAL_*`, …)
+- Default size/width/option lists dùng lại
+
+### Quy ước
+
+| Việc    | Quy tắc                                                                                        |
+| ------- | ---------------------------------------------------------------------------------------------- |
+| File    | `src/constants/custom-components.constant.ts` — **duy nhất** cho toàn bộ `@/components/custom` |
+| Export  | Thêm `export * from './custom-components.constant'` trong `src/constants/index.ts`             |
+| Import  | `import { CUSTOM_CARD_PADDING_CLASS_MAP } from '@/constants'`                                  |
+| Đặt tên | Prefix theo component: `CUSTOM_<COMPONENT>_<MÔ_TẢ>` (SCREAMING_SNAKE_CASE)                     |
+
+Thêm constant mới → **append** vào `custom-components.constant.ts`, nhóm theo comment section của component.
+
+### Ví dụ
+
+```typescript
+// src/constants/custom-components.constant.ts
+import { CustomCardPadding } from '@/interfaces';
+
+// --- CustomCard ---
+export const CUSTOM_CARD_PADDING_CLASS_MAP: Record<CustomCardPadding, string> = {
+    none: '[&_.ant-card-body]:p-0',
+    sm: '[&_.ant-card-body]:p-4',
+    default: '[&_.ant-card-body]:p-6',
+    lg: '[&_.ant-card-body]:p-8',
+    responsive: '[&_.ant-card-body]:p-6 sm:[&_.ant-card-body]:p-8 lg:[&_.ant-card-body]:p-10',
+};
+
+export const CUSTOM_CARD_BASE_CLASS_NAME = 'w-full rounded-xl border border-[#F0F0F0] shadow-sm';
+
+// --- CustomModal ---
+// export const CUSTOM_MODAL_DEFAULT_WIDTH = 1200;
+```
+
+```tsx
+// custom-card/index.tsx
+import { CUSTOM_CARD_BASE_CLASS_NAME, CUSTOM_CARD_PADDING_CLASS_MAP } from '@/constants';
+```
+
+Ngoại lệ: constant chỉ dùng **một lần** trong file con private và không tái sử dụng — có thể giữ local; ưu tiên đưa vào `custom-components.constant.ts` khi ≥2 chỗ hoặc map/config thuộc design system.
 
 ## Props design
 
@@ -158,4 +206,6 @@ Consumer import: `import { CustomXxx } from '@/components/custom'`.
 - Không đặt business logic / fetch API trong custom.
 - Không import từ `@/components/module` (custom là layer thấp hơn module).
 - Không dùng Ant Design trực tiếp ở module/page khi đã có hoặc vừa tạo wrapper.
+- Không tạo file `custom-<name>.constant.ts` riêng lẻ — mọi constant của custom layer gom vào `custom-components.constant.ts`.
+- Không để map class / default style config **inline** trong component khi đủ loại đưa vào file constants chung.
 - Không tạo one-off trong module rồi “chuyển sau” — tạo đúng chỗ ngay từ đầu.
