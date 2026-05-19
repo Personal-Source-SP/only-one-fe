@@ -1,7 +1,17 @@
 'use client';
 
+import {
+    ColumnsType,
+    CreateFormModal,
+    CustomButton,
+    CustomElement,
+    CustomSpace,
+    CustomToggle,
+    EditFormModal,
+    TableContainer,
+} from '@/components/custom';
+import { MessageType } from '@/enums';
 import { StatusTag } from '@/components/common';
-import { CreateFormModal, CustomElement, EditFormModal, TableContainer } from '@/components/custom';
 import { NextRunTimes, ViewScheduleJobList } from '@/components/module/schedule';
 import { CronExpression, ElementType, ExecutionServiceEnum, ScheduleType } from '@/enums';
 import {
@@ -13,8 +23,6 @@ import {
 import { ActionTableItem, FormFieldItem, NSchedule } from '@/interfaces';
 import { capitalizeFirstLetter, enumToOptions, formatDate, getEnumKeyByValue } from '@/libs';
 import { Icon } from '@iconify/react';
-import { Button, Space, Switch } from 'antd';
-import { ColumnsType } from 'antd/es/table';
 import { useEffect, useState } from 'react';
 
 const ScheduleExecutionPage = () => {
@@ -116,7 +124,7 @@ const ScheduleExecutionPage = () => {
             width: 200,
             align: 'center',
             render: (isActive: boolean, record: NSchedule.ISchedule) => (
-                <Switch
+                <CustomToggle
                     size="small"
                     checked={isActive}
                     onChange={(checked) => handleSwitchStatus(record?.id ?? '', checked)}
@@ -145,7 +153,7 @@ const ScheduleExecutionPage = () => {
             name: 'type',
             type: 'select',
             label: 'Loại lịch biểu',
-            onChange: (value) => setType(value),
+            onChange: (value) => setType(value as ScheduleType),
             rules: [{ required: true, message: 'Vui lòng chọn loại lịch biểu' }],
             selectProps: {
                 options: [
@@ -197,7 +205,7 @@ const ScheduleExecutionPage = () => {
             type: 'select',
             name: 'cronExpression',
             label: 'Biểu thức cron',
-            onChange: (value) => setCronExpression(value),
+            onChange: (value) => setCronExpression(value as string),
             rules: [{ required: true, message: 'Vui lòng chọn biểu thức cron' }],
             selectProps: {
                 showSearch: true,
@@ -259,7 +267,7 @@ const ScheduleExecutionPage = () => {
                     setLoading(false);
 
                     return {
-                        type: 'error',
+                        type: MessageType.ERROR,
                         message: 'Chuyển trạng thái thất bại',
                         description: data?.data?.message ?? 'Chuyển trạng thái thất bại',
                     };
@@ -270,7 +278,7 @@ const ScheduleExecutionPage = () => {
                 tableContainerData?.tableQuery?.refetch();
 
                 return {
-                    type: 'success',
+                    type: MessageType.SUCCESS,
                     message: 'Chuyển trạng thái thành công',
                 };
             },
@@ -278,7 +286,7 @@ const ScheduleExecutionPage = () => {
                 setLoading(false);
 
                 return {
-                    type: 'error',
+                    type: MessageType.ERROR,
                     message: 'Chuyển trạng thái thất bại',
                     description: error?.message ?? 'Chuyển trạng thái thất bại',
                 };
@@ -298,7 +306,7 @@ const ScheduleExecutionPage = () => {
                     setLoading(false);
 
                     return {
-                        type: 'error',
+                        type: MessageType.ERROR,
                         message: 'Chạy thủ công thất bại',
                         description: data?.data?.message ?? 'Chạy thủ công thất bại',
                     };
@@ -309,7 +317,7 @@ const ScheduleExecutionPage = () => {
                 tableContainerData?.tableQuery?.refetch();
 
                 return {
-                    type: 'success',
+                    type: MessageType.SUCCESS,
                     message: 'Chạy thủ công thành công',
                 };
             },
@@ -317,7 +325,7 @@ const ScheduleExecutionPage = () => {
                 setLoading(false);
 
                 return {
-                    type: 'error',
+                    type: MessageType.ERROR,
                     message: 'Chạy thủ công thất bại',
                     description: error?.message ?? 'Chạy thủ công thất bại',
                 };
@@ -326,11 +334,11 @@ const ScheduleExecutionPage = () => {
     };
 
     return (
-        <Space size="middle" direction="vertical" className="w-full h-full">
+        <CustomSpace size="middle" direction="vertical" className="w-full h-full">
             <CustomElement
                 elementType={ElementType.TITLE}
                 actions={[
-                    <Button
+                    <CustomButton
                         type="primary"
                         key="add-schedule-execution"
                         title="Thêm lịch biểu thực thi"
@@ -386,7 +394,7 @@ const ScheduleExecutionPage = () => {
                     onClose={() => setSelectedScheduleId(undefined)}
                 />
             )}
-        </Space>
+        </CustomSpace>
     );
 };
 

@@ -1,3 +1,4 @@
+import { CustomButton, CustomEmpty } from '@/components/custom';
 import {
     DatabaseOutlined,
     FileOutlined,
@@ -8,7 +9,6 @@ import {
     SettingOutlined,
     UserOutlined,
 } from '@ant-design/icons';
-import { Empty as AntEmpty, Button } from 'antd';
 import { CSSProperties, ReactNode } from 'react';
 
 type EmptyVariant =
@@ -33,7 +33,7 @@ type EmptyProps = {
     onButtonClick?: () => void;
 };
 
-const Empty = ({
+export const Empty = ({
     className,
     buttonText,
     description = 'Không có dữ liệu',
@@ -90,9 +90,9 @@ const Empty = ({
         if (!buttonText || !onButtonClick) return null;
 
         return (
-            <Button type="primary" onClick={onButtonClick}>
+            <CustomButton type="primary" onClick={onButtonClick}>
                 {buttonText}
-            </Button>
+            </CustomButton>
         );
     };
 
@@ -102,7 +102,7 @@ const Empty = ({
     const finalDescription = description || variantConfig.description;
 
     return (
-        <AntEmpty
+        <CustomEmpty
             style={style}
             image={finalImage}
             className={className}
@@ -110,8 +110,6 @@ const Empty = ({
             description={finalDescription}
         >
             {renderButton()}
-        </AntEmpty>
+        </CustomEmpty>
     );
 };
-
-export default Empty;

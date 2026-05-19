@@ -1,10 +1,10 @@
 'use client';
 
+import { CustomEmpty, CustomFlex } from '@/components/custom';
 import { MediaItem } from '@/interfaces';
 import { FilterOutlined } from '@ant-design/icons';
-import { Empty, Flex } from 'antd';
 
-import GalleryGridViewItem from './GalleryGridViewItem';
+import { GalleryGridViewItem } from './GalleryGridViewItem';
 
 type GalleryGridViewProps = {
     items: MediaItem[];
@@ -12,15 +12,15 @@ type GalleryGridViewProps = {
     getDisplayTime: (date: string) => string;
 };
 
-const GalleryGridView = ({ items, onItemClick, getDisplayTime }: GalleryGridViewProps) => {
+export const GalleryGridView = ({ items, onItemClick, getDisplayTime }: GalleryGridViewProps) => {
     if (!items?.length) {
         return (
-            <Flex vertical align="center" justify="center" className="h-full">
-                <Empty
+            <CustomFlex vertical align="center" justify="center" className="h-full">
+                <CustomEmpty
                     image={<FilterOutlined className="text-5xl text-slate-500 opacity-50" />}
                     description={<p className="text-slate-500">Không tìm thấy media nào.</p>}
                 />
-            </Flex>
+            </CustomFlex>
         );
     }
 
@@ -40,5 +40,3 @@ const GalleryGridView = ({ items, onItemClick, getDisplayTime }: GalleryGridView
         </div>
     );
 };
-
-export default GalleryGridView;

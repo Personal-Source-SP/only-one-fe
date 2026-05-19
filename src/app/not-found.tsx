@@ -1,5 +1,4 @@
-import { Loading } from '@/components/common';
-import NotFound from '@/components/common/not-found';
+import { Loading, NotFound } from '@/components/common';
 import { Suspense } from 'react';
 
 export const metadata = {

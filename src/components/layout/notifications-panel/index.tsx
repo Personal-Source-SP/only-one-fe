@@ -1,12 +1,12 @@
 'use client';
 
+import { CustomAvatar, CustomButton, CustomCard, CustomSpace } from '@/components/custom';
 import { NotificationTab, NotificationType } from '@/enums';
 import { useTableContainer } from '@/hooks';
 import { Notification } from '@/interfaces';
 import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
 import { CrudFilter } from '@refinedev/core';
-import { Avatar, Button, Card, Space } from 'antd';
 import { Fragment, ReactNode, useEffect, useMemo, useState } from 'react';
 
 const notificationIcon: Record<NotificationType, ReactNode> = {
@@ -32,7 +32,7 @@ const renderNotification = (notification: Notification) => {
             }`}
         >
             <div className="flex">
-                <Avatar size={40} className="mr-3" src={notification.createdBy} />
+                <CustomAvatar size={40} className="mr-3" src={notification.createdBy} />
                 <div className="flex-1">
                     <div className="flex justify-between items-start">
                         <p className="font-medium">{notification.title}</p>
@@ -62,7 +62,7 @@ type NotificationsPanelProps = {
     onClose: () => void;
 };
 
-const NotificationsPanel = ({ onClose }: NotificationsPanelProps) => {
+export const NotificationsPanel = ({ onClose }: NotificationsPanelProps) => {
     const [activeTab, setActiveTab] = useState<NotificationTab>(NotificationTab.ALL);
 
     const tableContainerData = useTableContainer({
@@ -92,11 +92,11 @@ const NotificationsPanel = ({ onClose }: NotificationsPanelProps) => {
     }, [tableContainerData.tableQuery?.data?.data]);
 
     return (
-        <Space direction="vertical" className="fixed top-16 right-4 z-50 w-full max-w-sm">
-            <Card className="shadow-lg">
+        <CustomSpace direction="vertical" className="fixed top-16 right-4 z-50 w-full max-w-sm">
+            <CustomCard className="shadow-lg">
                 <div className="p-4 border-b border-divider flex justify-between items-center">
                     <h3 className="text-lg font-medium">Thông báo</h3>
-                    <Button
+                    <CustomButton
                         type="text"
                         size="small"
                         onClick={onClose}
@@ -105,22 +105,22 @@ const NotificationsPanel = ({ onClose }: NotificationsPanelProps) => {
                 </div>
 
                 <div className="p-2 border-b border-divider flex">
-                    <Button
+                    <CustomButton
                         size="small"
                         className="flex-1 rounded-r-none"
                         onClick={() => setActiveTab(NotificationTab.ALL)}
                         type={activeTab === NotificationTab.ALL ? 'primary' : 'default'}
                     >
                         Tất cả
-                    </Button>
-                    <Button
+                    </CustomButton>
+                    <CustomButton
                         size="small"
                         className="flex-1 rounded-l-none"
                         onClick={() => setActiveTab(NotificationTab.UNREAD)}
                         type={activeTab === NotificationTab.UNREAD ? 'primary' : 'default'}
                     >
                         Chưa đọc
-                    </Button>
+                    </CustomButton>
                 </div>
 
                 <div className="max-h-96 overflow-y-auto">
@@ -142,13 +142,11 @@ const NotificationsPanel = ({ onClose }: NotificationsPanelProps) => {
                 </div>
 
                 <div className="p-3 border-t border-divider">
-                    <Button type="primary" className="w-full" size="small">
+                    <CustomButton type="primary" className="w-full" size="small">
                         Đánh dấu tất cả là đã đọc
-                    </Button>
+                    </CustomButton>
                 </div>
-            </Card>
-        </Space>
+            </CustomCard>
+        </CustomSpace>
     );
 };
-
-export default NotificationsPanel;

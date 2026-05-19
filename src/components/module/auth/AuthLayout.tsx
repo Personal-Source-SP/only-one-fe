@@ -4,7 +4,7 @@ type AuthLayoutProps = {
     children: ReactNode;
 };
 
-const AuthLayout = ({ children }: AuthLayoutProps) => {
+export const AuthLayout = ({ children }: AuthLayoutProps) => {
     return (
         <main className="relative min-h-screen w-full overflow-x-hidden bg-[#F8FAFC]">
             <div
@@ -17,5 +17,3 @@ const AuthLayout = ({ children }: AuthLayoutProps) => {
         </main>
     );
 };
-
-export default AuthLayout;

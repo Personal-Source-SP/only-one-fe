@@ -7,7 +7,7 @@ type UnsavedChangesNotifierProps = {
     message?: string;
 };
 
-const UnsavedChangesNotifierAppRouter = ({
+export const UnsavedChangesNotifierAppRouter = ({
     message = 'You have unsaved changes that will be lost.',
 }: UnsavedChangesNotifierProps) => {
     const { warnWhen, setWarnWhen } = useWarnAboutChange();
@@ -27,5 +27,3 @@ const UnsavedChangesNotifierAppRouter = ({
 
     return null;
 };
-
-export default UnsavedChangesNotifierAppRouter;

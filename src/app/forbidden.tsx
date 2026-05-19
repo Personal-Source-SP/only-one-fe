@@ -1,5 +1,4 @@
-import { Loading } from '@/components/common';
-import Forbidden from '@/components/common/forbidden';
+import { Forbidden, Loading } from '@/components/common';
 import { Suspense } from 'react';
 
 export const metadata = {

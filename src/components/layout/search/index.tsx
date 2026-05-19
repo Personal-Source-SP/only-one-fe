@@ -1,25 +1,25 @@
 'use client';
 
+import { CustomButton, CustomInput } from '@/components/custom';
 import { Icon } from '@iconify/react';
-import { Button, Input } from 'antd';
 
 type SearchProps = {
     showSearch: boolean;
     setShowSearch: (show: boolean) => void;
 };
 
-const Search = ({ showSearch, setShowSearch }: SearchProps) => {
+export const Search = ({ showSearch, setShowSearch }: SearchProps) => {
     if (!showSearch) return <></>;
 
     return (
         <div className="p-2 border-b border-divider md:hidden">
             <div className="relative">
-                <Input
+                <CustomInput
                     placeholder="Tìm kiếm..."
                     prefix={<Icon icon="lucide:search" className="text-foreground-500" />}
                     autoFocus
                 />
-                <Button
+                <CustomButton
                     size="small"
                     type="text"
                     className="absolute right-1 top-1/2 -translate-y-1/2"
@@ -30,5 +30,3 @@ const Search = ({ showSearch, setShowSearch }: SearchProps) => {
         </div>
     );
 };
-
-export default Search;

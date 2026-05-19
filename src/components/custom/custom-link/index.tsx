@@ -10,7 +10,7 @@ type CustomLinkProps = LinkProps & {
     variant?: CustomLinkVariant;
 };
 
-const CustomLink = ({
+export const CustomLink = ({
     href,
     children,
     className,
@@ -27,5 +27,3 @@ const CustomLink = ({
         </Link>
     );
 };
-
-export default CustomLink;

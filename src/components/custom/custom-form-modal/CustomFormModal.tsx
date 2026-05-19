@@ -1,6 +1,6 @@
 'use client';
 
-import CustomModal from '@/components/custom/custom-modal';
+import { CustomModal } from '@/components/custom';
 
 import { ModalProps, Space, Spin } from 'antd';
 import { ReactNode } from 'react';
@@ -11,7 +11,7 @@ type CustomFormModalProps = {
     children: ReactNode;
 };
 
-const CustomFormModal = ({ formLoading, modalProps, children }: CustomFormModalProps) => {
+export const CustomFormModal = ({ formLoading, modalProps, children }: CustomFormModalProps) => {
     return (
         <CustomModal modalProps={{ ...modalProps, destroyOnHidden: true }}>
             <Spin spinning={formLoading}>
@@ -22,5 +22,3 @@ const CustomFormModal = ({ formLoading, modalProps, children }: CustomFormModalP
         </CustomModal>
     );
 };
-
-export default CustomFormModal;

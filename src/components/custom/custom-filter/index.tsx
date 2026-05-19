@@ -67,7 +67,11 @@ const renderFilterItem = (filterItem: FilterItem, index: number, isMobile: boole
     }
 };
 
-const CustomFilter = ({ filterActions, filterValues, onClearFilters }: CustomFilterProps) => {
+export const CustomFilter = ({
+    filterActions,
+    filterValues,
+    onClearFilters,
+}: CustomFilterProps) => {
     const screens = Grid.useBreakpoint();
     const isMobile = !screens.md;
 
@@ -161,5 +165,3 @@ const CustomFilter = ({ filterActions, filterValues, onClearFilters }: CustomFil
         </Space>
     );
 };
-
-export default CustomFilter;

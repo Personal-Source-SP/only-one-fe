@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Card } from 'antd';
+import { CustomButton, CustomCard } from '@/components/custom';
 import { Icon } from '@iconify/react';
 
 type DataNotFoundProps = {
@@ -11,7 +11,7 @@ type DataNotFoundProps = {
     onRetry?: () => void;
 };
 
-const DataNotFound = ({
+export const DataNotFound = ({
     icon = 'lucide:circle-off',
     title = 'Không có dữ liệu',
     message = 'Vui lòng kiểm tra kết nối hoặc thử lại sau.',
@@ -20,7 +20,7 @@ const DataNotFound = ({
 }: DataNotFoundProps) => {
     return (
         <div className="flex items-center justify-center bg-transparent">
-            <Card className="max-w-xl w-full mx-4">
+            <CustomCard className="max-w-xl w-full mx-4">
                 <div className="flex flex-col items-center gap-4 py-10">
                     <Icon icon={icon} className="text-5xl text-foreground-400" />
                     <h2 className="text-xl font-semibold">{title}</h2>
@@ -28,19 +28,17 @@ const DataNotFound = ({
 
                     {onRetry ? (
                         <div className="flex gap-3">
-                            <Button type="primary" loading={!!loading} onClick={onRetry}>
+                            <CustomButton type="primary" loading={!!loading} onClick={onRetry}>
                                 <span className="inline-flex items-center">
                                     <Icon icon="lucide:refresh-ccw" className="mr-2" /> Thử lại
                                 </span>
-                            </Button>
+                            </CustomButton>
                         </div>
                     ) : (
                         <></>
                     )}
                 </div>
-            </Card>
+            </CustomCard>
         </div>
     );
 };
-
-export default DataNotFound;

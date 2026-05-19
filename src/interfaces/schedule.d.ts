@@ -2,9 +2,10 @@ import {
     ExecutionServiceEnum,
     ScheduleJobEventType,
     ScheduleJobTriggerType,
+    ScheduleJobType,
     ScheduleType,
 } from '@/enums';
-import { Abstract } from '@/interfaces/common';
+import { Abstract } from '@/interfaces';
 
 export declare namespace NSchedule {
     interface IScheduleJobEvent extends Abstract {
@@ -33,7 +34,7 @@ export declare namespace NSchedule {
         eventFailedCount?: number;
         eventSuccessCount?: number;
         eventPendingCount?: number;
-        schedule?: IScheduleExecution;
+        schedule?: ISchedule;
         scheduleJobEvents?: IScheduleJobEvent[];
     }
 

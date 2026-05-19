@@ -1,14 +1,20 @@
 'use client';
 
+import {
+    ColumnsType,
+    CreateFormModal,
+    CustomButton,
+    CustomElement,
+    CustomSpace,
+    EditFormModal,
+    TableContainer,
+} from '@/components/custom';
 import { StatusTag } from '@/components/common';
-import { CreateFormModal, CustomElement, EditFormModal, TableContainer } from '@/components/custom';
 import { CloudDataProviderType, ElementType } from '@/enums';
 import { useTableContainer } from '@/hooks';
 import { ActionTableItem, FormFieldItem, NCloudData } from '@/interfaces';
 import { capitalizeFirstLetter, enumToOptions, formatDate, formatFileSize } from '@/libs';
 import { Icon } from '@iconify/react';
-import { Button, Space } from 'antd';
-import { ColumnsType } from 'antd/es/table';
 import { useState } from 'react';
 
 const CloudDataProvider = () => {
@@ -124,11 +130,11 @@ const CloudDataProvider = () => {
     ];
 
     return (
-        <Space size="middle" direction="vertical" className="w-full h-full">
+        <CustomSpace size="middle" direction="vertical" className="w-full h-full">
             <CustomElement
                 elementType={ElementType.TITLE}
                 actions={[
-                    <Button
+                    <CustomButton
                         type="primary"
                         title="Thêm nhà cung cấp"
                         key="add-cloud-data-provider"
@@ -180,7 +186,7 @@ const CloudDataProvider = () => {
                     tableContainerData?.tableQuery?.refetch();
                 }}
             />
-        </Space>
+        </CustomSpace>
     );
 };
 

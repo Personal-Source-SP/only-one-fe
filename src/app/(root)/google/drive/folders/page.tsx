@@ -1,15 +1,19 @@
 'use client';
 
-import { CustomElement, TableContainer } from '@/components/custom';
-import FolderModal from '@/components/module/folders/FolderModal';
-import SyncGoogleDrive from '@/components/module/sync-google-drive';
+import {
+    ColumnsType,
+    CustomButton,
+    CustomElement,
+    CustomSpace,
+    TableContainer,
+} from '@/components/custom';
+import { FolderModal } from '@/components/module/folders';
+import { SyncGoogleDrive } from '@/components/module/sync-google-drive';
 import { ElementType, GoogleDriveType } from '@/enums';
 import { useCustomModal, useSelectGoogleFolder, useTableContainer } from '@/hooks';
 import { NGoogle } from '@/interfaces';
 import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
-import { Button, Space } from 'antd';
-import { ColumnsType } from 'antd/es/table';
 import { useEffect, useState } from 'react';
 
 const FolderPage = () => {
@@ -81,11 +85,11 @@ const FolderPage = () => {
     ];
 
     return (
-        <Space size="middle" direction="vertical" className="w-full h-full">
+        <CustomSpace size="middle" direction="vertical" className="w-full h-full">
             <CustomElement
                 elementType={ElementType.TITLE}
                 actions={[
-                    <Button
+                    <CustomButton
                         type="primary"
                         key="sync google drive"
                         title="Đồng bộ từ Google Drive"
@@ -126,7 +130,7 @@ const FolderPage = () => {
                 queryLoading={queryFolderOptions?.isLoading}
                 onSuccess={() => tableContainerData?.tableQuery?.refetch()}
             />
-        </Space>
+        </CustomSpace>
     );
 };
 

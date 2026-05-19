@@ -1,5 +1,3 @@
-import { Tag } from 'antd';
-
 type StatusTagProps = {
     status?: string;
 };
@@ -66,17 +64,16 @@ const randomColor = (): string => {
     return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
 };
 
-const StatusTag = ({ status }: StatusTagProps) => {
+export const StatusTag = ({ status }: StatusTagProps) => {
     if (!status) return '---';
 
     const color = colorStatusMap[status] ?? randomColor();
     const text = textStatusMap[status] ?? status ?? '---';
 
     return (
-        <Tag color={color} className="text-sm font-medium">
+        <CustomTag color={color} className="text-sm font-medium">
             {text}
-        </Tag>
+        </CustomTag>
     );
 };
-
-export default StatusTag;
+import { CustomTag } from '@/components/custom';

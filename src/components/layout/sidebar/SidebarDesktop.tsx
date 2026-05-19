@@ -1,12 +1,12 @@
+import { CustomButton, CustomPopover } from '@/components/custom';
 import { Logo } from '@/components/common';
-import { SIDEBAR_ITEMS } from '@/constants/sidebar.constant';
+import { SIDEBAR_ITEMS } from '@/constants';
 import { SidebarItem } from '@/interfaces';
 import { Icon } from '@iconify/react';
-import { Button, Popover } from 'antd';
 
-import SidebarNavItem from '@/components/layout/sidebar/SidebarNavItem';
-import SidebarPopoverContent from '@/components/layout/sidebar/SidebarPopoverContent';
-import SidebarProfile from '@/components/layout/sidebar/SidebarProfile';
+import { SidebarNavItem } from '@/components/layout/sidebar/SidebarNavItem';
+import { SidebarPopoverContent } from '@/components/layout/sidebar/SidebarPopoverContent';
+import { SidebarProfile } from '@/components/layout/sidebar/SidebarProfile';
 
 type SidebarDesktopProps = {
     collapsed: boolean;
@@ -18,7 +18,7 @@ type SidebarDesktopProps = {
     isMenuExpanded: (item: SidebarItem) => boolean;
 };
 
-const SidebarDesktop = ({
+export const SidebarDesktop = ({
     collapsed,
     activeMenu,
     handleLogoClick,
@@ -46,7 +46,7 @@ const SidebarDesktop = ({
                     <Logo iconSize="2xl" textSize={collapsed ? 'sm' : 'lg'} showText={!collapsed} />
                 </div>
                 {!collapsed && (
-                    <Button
+                    <CustomButton
                         type="text"
                         title="Collapse sidebar"
                         onClick={handleToggleCollapse}
@@ -63,7 +63,7 @@ const SidebarDesktop = ({
 
                         if (collapsed && hasChildren) {
                             return (
-                                <Popover
+                                <CustomPopover
                                     trigger="hover"
                                     placement="right"
                                     key={item.href || item.label}
@@ -88,7 +88,7 @@ const SidebarDesktop = ({
                                             onSubItemClick={handleMenuClick}
                                         />
                                     </div>
-                                </Popover>
+                                </CustomPopover>
                             );
                         }
 
@@ -112,5 +112,3 @@ const SidebarDesktop = ({
         </aside>
     );
 };
-
-export default SidebarDesktop;

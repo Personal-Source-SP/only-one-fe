@@ -5,7 +5,7 @@ type CustomAlertProps = {
     description: string;
 };
 
-const CustomAlert = ({ title, description }: CustomAlertProps) => {
+export const CustomAlert = ({ title, description }: CustomAlertProps) => {
     return (
         <section className="mt-2 mb-4">
             <Alert
@@ -18,5 +18,3 @@ const CustomAlert = ({ title, description }: CustomAlertProps) => {
         </section>
     );
 };
-
-export default CustomAlert;

@@ -1,16 +1,23 @@
 'use client';
 
+import {
+    ColumnType,
+    ColumnsType,
+    CreateFormModal,
+    CustomButton,
+    CustomSpace,
+    CustomTag,
+    EditFormModal,
+    TableContainer,
+} from '@/components/custom';
 import { StatusTag } from '@/components/common';
-import { CreateFormModal, EditFormModal, TableContainer } from '@/components/custom';
 import { ProcessScrapeData } from '@/components/module/data-provider';
-import ImportData from '@/components/module/import-data';
+import { ImportData } from '@/components/module/import-data';
 import { DataImportType, ProductMappingStatus } from '@/enums';
 import { useTableContainer } from '@/hooks';
 import { FormFieldItem, NDataProvider } from '@/interfaces';
 import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
-import { Button, Space, Tag } from 'antd';
-import { ColumnsType, ColumnType } from 'antd/es/table';
 import { Fragment, ReactNode, useState } from 'react';
 
 const ItemPage = () => {
@@ -57,9 +64,9 @@ const ItemPage = () => {
             render: (tags: string[]) =>
                 tags?.map((tag) => (
                     <span key={tag}>
-                        <Tag color="blue" className="text-sm font-medium">
+                        <CustomTag color="blue" className="text-sm font-medium">
                             {tag}
-                        </Tag>
+                        </CustomTag>
                     </span>
                 )),
             width: '20%',
@@ -132,7 +139,7 @@ const ItemPage = () => {
                             typeof value === 'string' &&
                             value.split(',').some((tag) => tag.trim().length === 0 && tag !== '')
                         ) {
-                            return Promise.reject(new Error('Tag không được bỏ trống!'));
+                            return Promise.reject(new Error('CustomTag không được bỏ trống!'));
                         }
                         return Promise.resolve();
                     },
@@ -145,21 +152,21 @@ const ItemPage = () => {
     ];
 
     const actionButtons: ReactNode[] = [
-        <Button
+        <CustomButton
             type="primary"
             key="scrape-data"
             title="Cào dữ liệu"
             icon={<Icon icon="lucide:file-text" />}
             onClick={() => setOpenProcessScrapeDataModal(true)}
         />,
-        <Button
+        <CustomButton
             type="primary"
             key="import-item"
             title="Nhập đối tượng"
             icon={<Icon icon="lucide:file-text" />}
             onClick={() => setOpenImportItemModal(true)}
         />,
-        <Button
+        <CustomButton
             type="primary"
             key="add-item"
             title="Thêm đối tượng"

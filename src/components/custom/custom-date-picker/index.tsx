@@ -17,7 +17,7 @@ type CustomDatePickerProps = {
     dateRange?: [string, string];
 };
 
-const CustomDatePicker = ({
+export const CustomDatePicker = ({
     name,
     label,
     setDateRange,
@@ -103,5 +103,3 @@ const CustomDatePicker = ({
         </Form.Item>
     );
 };
-
-export default CustomDatePicker;

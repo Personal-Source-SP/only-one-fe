@@ -1,6 +1,16 @@
 'use client';
 
-import { CreateFormModal, CustomElement, EditFormModal, TableContainer } from '@/components/custom';
+import {
+    ColumnsType,
+    CreateFormModal,
+    CustomButton,
+    CustomElement,
+    CustomSpace,
+    CustomToggle,
+    EditFormModal,
+    TableContainer,
+} from '@/components/custom';
+import { MessageType } from '@/enums';
 import { ProcessScrapeData } from '@/components/module/data-provider';
 import { CustomFilterType, DataProviderStatus, ElementType } from '@/enums';
 import {
@@ -13,8 +23,6 @@ import {
 import { ActionTableItem, FilterItem, FormFieldItem, NDataProvider } from '@/interfaces';
 import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
-import { Button, Space, Switch } from 'antd';
-import { ColumnsType } from 'antd/es/table';
 import { useState } from 'react';
 
 const DataProviderItemPage = () => {
@@ -89,7 +97,7 @@ const DataProviderItemPage = () => {
             align: 'center',
             width: 100,
             render: (isActive: boolean, record: NDataProvider.IDataProviderItem) => (
-                <Switch
+                <CustomToggle
                     size="small"
                     checked={isActive}
                     onChange={(checked) => handleSwitchStatus(record?.id ?? '', checked)}
@@ -103,10 +111,10 @@ const DataProviderItemPage = () => {
             align: 'center',
             width: 100,
             render: (isSavedToCloudData: boolean, record: NDataProvider.IDataProviderItem) => (
-                <Space>
-                    <Switch size="small" checked={isSavedToCloudData} disabled />
+                <CustomSpace>
+                    <CustomToggle size="small" checked={isSavedToCloudData} disabled />
                     <p>{record?.cloudDataProvider?.name ?? '---'}</p>
-                </Space>
+                </CustomSpace>
             ),
         },
     ];
@@ -218,7 +226,7 @@ const DataProviderItemPage = () => {
                     setLoading(false);
 
                     return {
-                        type: 'error',
+                        type: MessageType.ERROR,
                         message: 'Chuyển trạng thái thất bại',
                         description: data?.data?.message ?? 'Chuyển trạng thái thất bại',
                     };
@@ -227,7 +235,7 @@ const DataProviderItemPage = () => {
                 tableContainerData?.tableQuery?.refetch();
 
                 return {
-                    type: 'success',
+                    type: MessageType.SUCCESS,
                     message: 'Chuyển trạng thái thành công',
                 };
             },
@@ -235,7 +243,7 @@ const DataProviderItemPage = () => {
                 setLoading(false);
 
                 return {
-                    type: 'error',
+                    type: MessageType.ERROR,
                     message: 'Chuyển trạng thái thất bại',
                     description: error?.message ?? 'Chuyển trạng thái thất bại',
                 };
@@ -244,18 +252,18 @@ const DataProviderItemPage = () => {
     };
 
     return (
-        <Space size="middle" direction="vertical" className="w-full h-full">
+        <CustomSpace size="middle" direction="vertical" className="w-full h-full">
             <CustomElement
                 elementType={ElementType.TITLE}
                 actions={[
-                    <Button
+                    <CustomButton
                         type="primary"
                         key="scrape-data"
                         title="Cào dữ liệu"
                         icon={<Icon icon="lucide:file-text" />}
                         onClick={() => setOpenProcessScrapeDataModal(true)}
                     />,
-                    <Button
+                    <CustomButton
                         type="primary"
                         key="add-data-provider-item"
                         title="Thêm đối tượng nhà cung cấp"
@@ -319,7 +327,7 @@ const DataProviderItemPage = () => {
                     selectedDataProviderItemIds={selectedDataProviderItemIds}
                 />
             )}
-        </Space>
+        </CustomSpace>
     );
 };
 

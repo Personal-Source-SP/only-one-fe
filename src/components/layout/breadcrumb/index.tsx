@@ -1,9 +1,10 @@
 'use client';
 
+import { CustomBreadcrumb } from '@/components/custom';
 import { SIDEBAR_ITEMS } from '@/constants';
 import { SidebarItem } from '@/interfaces';
 import { Icon } from '@iconify/react';
-import { Breadcrumb as AntBreadcrumb } from 'antd';
+
 import { usePathname, useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 
@@ -34,7 +35,7 @@ const findBreadcrumbPath = (
     return null;
 };
 
-const Breadcrumb = () => {
+export const Breadcrumb = () => {
     const router = useRouter();
     const pathname = usePathname();
 
@@ -77,12 +78,10 @@ const Breadcrumb = () => {
     }, [pathname, router]);
 
     return (
-        <AntBreadcrumb
+        <CustomBreadcrumb
             items={breadcrumbItems}
             className="hidden md:block"
             separator={<span className="text-gray-400">/</span>}
         />
     );
 };
-
-export default Breadcrumb;

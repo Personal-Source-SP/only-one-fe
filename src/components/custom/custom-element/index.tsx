@@ -16,7 +16,7 @@ type CustomElementProps = {
     description?: string;
 };
 
-const CustomElement = ({
+export const CustomElement = ({
     elementType,
     title,
     loading = false,
@@ -84,5 +84,3 @@ const CustomElement = ({
         }
     }
 };
-
-export default CustomElement;

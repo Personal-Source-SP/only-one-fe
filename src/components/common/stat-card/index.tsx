@@ -12,7 +12,7 @@ type StatCardProps = {
     trend: StatCardTrend;
 };
 
-const StatCard = ({ title, value, color, change, icon, trend }: StatCardProps) => {
+export const StatCard = ({ title, value, color, change, icon, trend }: StatCardProps) => {
     const colorClass = color.replace('bg-', '');
 
     const trendClass = useMemo(() => {
@@ -71,5 +71,3 @@ const StatCard = ({ title, value, color, change, icon, trend }: StatCardProps) =
         </div>
     );
 };
-
-export default StatCard;

@@ -1,7 +1,7 @@
 'use client';
 
+import { CustomButton, CustomSpace } from '@/components/custom';
 import { PauseOutlined, PlaySquareOutlined, ReloadOutlined } from '@ant-design/icons';
-import { Button, Space } from 'antd';
 
 type VideoPlaybackControlsProps = {
     isPlaying: boolean;
@@ -9,10 +9,14 @@ type VideoPlaybackControlsProps = {
     onSkip: (seconds: number) => void;
 };
 
-const VideoPlaybackControls = ({ isPlaying, onTogglePlay, onSkip }: VideoPlaybackControlsProps) => {
+export const VideoPlaybackControls = ({
+    isPlaying,
+    onTogglePlay,
+    onSkip,
+}: VideoPlaybackControlsProps) => {
     return (
-        <Space size="small" className="gap-2 sm:gap-4">
-            <Button
+        <CustomSpace size="small" className="gap-2 sm:gap-4">
+            <CustomButton
                 type="text"
                 title="Lùi 10 giây"
                 icon={<ReloadOutlined />}
@@ -21,7 +25,7 @@ const VideoPlaybackControls = ({ isPlaying, onTogglePlay, onSkip }: VideoPlaybac
                 className="text-white/80 hover:text-indigo-400 p-1 border-none"
             />
 
-            <Button
+            <CustomButton
                 type="text"
                 onClick={onTogglePlay}
                 style={{ width: 'auto', height: 'auto' }}
@@ -35,7 +39,7 @@ const VideoPlaybackControls = ({ isPlaying, onTogglePlay, onSkip }: VideoPlaybac
                 }
             />
 
-            <Button
+            <CustomButton
                 type="text"
                 title="Tua 10 giây"
                 onClick={() => onSkip(10)}
@@ -43,8 +47,6 @@ const VideoPlaybackControls = ({ isPlaying, onTogglePlay, onSkip }: VideoPlaybac
                 icon={<ReloadOutlined className="scale-x-[-1]" />}
                 className="text-white/80 hover:text-indigo-400 p-1 border-none"
             />
-        </Space>
+        </CustomSpace>
     );
 };
-
-export default VideoPlaybackControls;

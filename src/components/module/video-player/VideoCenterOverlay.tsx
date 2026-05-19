@@ -1,27 +1,31 @@
 'use client';
 
+import { CustomTypography } from '@/components/custom';
 import { PlayCircleOutlined, ReloadOutlined } from '@ant-design/icons';
-import { Typography } from 'antd';
 
 type VideoCenterOverlayProps = {
     isPlaying: boolean;
     seekFeedback: 'forward' | 'backward' | null;
 };
 
-const VideoCenterOverlay = ({ isPlaying, seekFeedback }: VideoCenterOverlayProps) => {
+export const VideoCenterOverlay = ({ isPlaying, seekFeedback }: VideoCenterOverlayProps) => {
     return (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             {seekFeedback === 'backward' && (
                 <div className="bg-black/50 p-4 rounded-full backdrop-blur-sm animate-in zoom-in fade-in flex flex-col items-center">
                     <ReloadOutlined className="text-2xl text-white mb-1" />
-                    <Typography.Text className="text-white text-xs font-bold">-10s</Typography.Text>
+                    <CustomTypography.Text className="text-white text-xs font-bold">
+                        -10s
+                    </CustomTypography.Text>
                 </div>
             )}
 
             {seekFeedback === 'forward' && (
                 <div className="bg-black/50 p-4 rounded-full backdrop-blur-sm animate-in zoom-in fade-in flex flex-col items-center">
                     <ReloadOutlined className="text-2xl text-white mb-1 scale-x-[-1]" />
-                    <Typography.Text className="text-white text-xs font-bold">+10s</Typography.Text>
+                    <CustomTypography.Text className="text-white text-xs font-bold">
+                        +10s
+                    </CustomTypography.Text>
                 </div>
             )}
 
@@ -37,5 +41,3 @@ const VideoCenterOverlay = ({ isPlaying, seekFeedback }: VideoCenterOverlayProps
         </div>
     );
 };
-
-export default VideoCenterOverlay;

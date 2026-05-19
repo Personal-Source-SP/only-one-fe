@@ -56,7 +56,54 @@ export default [
                     prefix: '@',
                 },
             ],
+            'no-restricted-imports': [
+                'error',
+                {
+                    patterns: [
+                        {
+                            group: [
+                                '@/interfaces/*',
+                                '@/enums/*',
+                                '@/hooks/*',
+                                '@/constants/*',
+                                '@/services/*',
+                                '@/components/custom/*',
+                                '@/components/common/*',
+                                '@/components/module/*/*',
+                            ],
+                            message:
+                                'Import from barrel root (@/interfaces, @/enums, @/hooks, @/constants, @/services, @/components/custom, @/components/common, or @/components/module/<feature>).',
+                        },
+                    ],
+                },
+            ],
             ...prettierConfig.rules,
+        },
+    },
+    {
+        files: ['src/components/**/*.{ts,tsx}'],
+        rules: {
+            'no-restricted-syntax': [
+                'error',
+                {
+                    selector: 'ExportDefaultDeclaration',
+                    message:
+                        'Use named exports in src/components (export const X). App routes may use default exports.',
+                },
+            ],
+        },
+    },
+    {
+        files: [
+            'src/app/**/*.{ts,tsx}',
+            'src/contexts/**/*.{ts,tsx}',
+            'src/hooks/**/*.{ts,tsx}',
+            'src/providers/**/*.{ts,tsx}',
+            'src/interfaces/**/*.d.ts',
+            'src/components/custom/**/*.{ts,tsx}',
+        ],
+        rules: {
+            'no-restricted-syntax': 'off',
         },
     },
     {

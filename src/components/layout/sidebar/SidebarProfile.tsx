@@ -1,10 +1,10 @@
 'use client';
 
+import { CustomAvatar, CustomButton, CustomFlex, CustomSpace } from '@/components/custom';
 import { KEY_SESSION_STORAGE } from '@/constants';
 import { useMainContext } from '@/contexts/MainContext';
 import { Theme } from '@/enums';
 import { Icon } from '@iconify/react';
-import { Avatar, Button, Flex, Space } from 'antd';
 import { signOut, useSession } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
 import { Fragment, useCallback } from 'react';
@@ -13,7 +13,7 @@ type SidebarProfileProps = {
     isCollapsed: boolean;
 };
 
-const SidebarProfile = ({ isCollapsed }: SidebarProfileProps) => {
+export const SidebarProfile = ({ isCollapsed }: SidebarProfileProps) => {
     const { theme } = useMainContext();
     const { data: session } = useSession();
 
@@ -50,26 +50,26 @@ const SidebarProfile = ({ isCollapsed }: SidebarProfileProps) => {
         <div
             className={`border-t border-slate-100/10 ${isDark ? 'bg-black/10' : 'bg-slate-50/50'} ${isCollapsed ? 'md:p-2' : 'p-4'} pb-safe`}
         >
-            <Flex
+            <CustomFlex
                 align="center"
                 gap={isCollapsed ? 0 : 12}
                 justify={isCollapsed ? 'center' : 'flex-start'}
                 className="p-2 rounded-xl hover:bg-white/10 transition-all border border-transparent active:bg-black/20 group"
             >
-                <Avatar
+                <CustomAvatar
                     size={36}
                     src={session?.user?.image}
                     className="flex-shrink-0 bg-gradient-to-br from-indigo-500 to-purple-600"
                 >
                     {getUserInitial()}
-                </Avatar>
+                </CustomAvatar>
                 {!isCollapsed && (
                     <Fragment>
-                        <Space direction="vertical" size={0} className="flex-1 min-w-0">
+                        <CustomSpace direction="vertical" size={0} className="flex-1 min-w-0">
                             <p className="text-sm font-semibold truncate m-0">{getUserName()}</p>
                             <p className="text-xs opacity-50 truncate m-0">{getUserRole()}</p>
-                        </Space>
-                        <Button
+                        </CustomSpace>
+                        <CustomButton
                             type="text"
                             size="small"
                             onClick={handleLogout}
@@ -78,9 +78,7 @@ const SidebarProfile = ({ isCollapsed }: SidebarProfileProps) => {
                         />
                     </Fragment>
                 )}
-            </Flex>
+            </CustomFlex>
         </div>
     );
 };
-
-export default SidebarProfile;

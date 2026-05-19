@@ -1,8 +1,8 @@
+import { CustomButton, CustomSpace } from '@/components/custom';
 import { Icon } from '@iconify/react';
-import { Button, Space } from 'antd';
 import Link from 'next/link';
 
-const Forbidden = () => {
+export const Forbidden = () => {
     const supportLinks = [
         { name: 'Trung tâm trợ giúp', path: '/' },
         { name: 'Quên mật khẩu', path: '/login' },
@@ -19,7 +19,10 @@ const Forbidden = () => {
                 </div>
             </div>
 
-            <Space direction="vertical" className="w-full max-w-3xl flex flex-col items-center">
+            <CustomSpace
+                direction="vertical"
+                className="w-full max-w-3xl flex flex-col items-center"
+            >
                 {/* Illustration */}
                 <div className="mb-8 text-danger" aria-hidden="true">
                     <div className="relative">
@@ -49,28 +52,28 @@ const Forbidden = () => {
                 {/* CTA buttons */}
                 <div className="flex flex-col sm:flex-row gap-3 mb-8 w-full max-w-md">
                     <Link href="/login" className="w-full">
-                        <Button type="primary" size="large" className="w-full">
+                        <CustomButton type="primary" size="large" className="w-full">
                             <span className="inline-flex items-center">
                                 <Icon icon="lucide:log-in" className="mr-2" /> Đăng nhập
                             </span>
-                        </Button>
+                        </CustomButton>
                     </Link>
                     <Link href="/" className="w-full">
-                        <Button size="large" className="w-full">
+                        <CustomButton size="large" className="w-full">
                             <span className="inline-flex items-center">
                                 <Icon icon="lucide:home" className="mr-2" /> Quay về Trang chủ
                             </span>
-                        </Button>
+                        </CustomButton>
                     </Link>
                 </div>
 
                 {/* Contact support button */}
                 <div className="mb-8 w-full max-w-md">
-                    <Button danger size="large" className="w-full">
+                    <CustomButton danger size="large" className="w-full">
                         <span className="inline-flex items-center">
                             <Icon icon="lucide:help-circle" className="mr-2" /> Liên hệ hỗ trợ
                         </span>
-                    </Button>
+                    </CustomButton>
                 </div>
 
                 {/* Support links */}
@@ -106,9 +109,7 @@ const Forbidden = () => {
                         Chính sách bảo mật
                     </Link>
                 </div>
-            </Space>
+            </CustomSpace>
         </div>
     );
 };
-
-export default Forbidden;

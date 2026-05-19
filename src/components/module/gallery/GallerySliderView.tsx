@@ -1,6 +1,7 @@
 'use client';
 
-import VideoPlayer from '@/components/module/video-player';
+import { CustomButton, CustomEmpty, CustomFlex, CustomSpace } from '@/components/custom';
+import { VideoPlayer } from '@/components/module/video-player';
 import {
     ClockCircleOutlined,
     CompressOutlined,
@@ -12,7 +13,6 @@ import {
     PlayCircleOutlined,
     RightOutlined,
 } from '@ant-design/icons';
-import { Button, Empty, Flex, Space } from 'antd';
 import { useEffect, useRef, useState } from 'react';
 
 interface MediaItem {
@@ -37,7 +37,7 @@ type GallerySliderViewProps = {
     getDisplayTime: (date: string) => string;
 };
 
-const GallerySliderView = ({
+export const GallerySliderView = ({
     items,
     currentIndex,
     isPlaying,
@@ -81,21 +81,25 @@ const GallerySliderView = ({
 
     if (!items?.length) {
         return (
-            <Flex vertical align="center" justify="center" className="flex-1">
-                <Empty
+            <CustomFlex vertical align="center" justify="center" className="flex-1">
+                <CustomEmpty
                     image={<FilterOutlined className="text-5xl text-slate-500 opacity-50" />}
                     description={
                         <div className="flex flex-col items-center gap-2">
                             <p className="text-slate-500">
                                 Không có media nào trong danh sách lọc.
                             </p>
-                            <Button type="link" onClick={onClearFilter} className="text-indigo-400">
+                            <CustomButton
+                                type="link"
+                                onClick={onClearFilter}
+                                className="text-indigo-400"
+                            >
                                 Xem tất cả
-                            </Button>
+                            </CustomButton>
                         </div>
                     }
                 />
-            </Flex>
+            </CustomFlex>
         );
     }
 
@@ -106,8 +110,8 @@ const GallerySliderView = ({
         >
             {/* Main Content Container */}
             <div className="flex-1 flex items-center justify-center p-2 sm:p-4 md:p-10 relative group bg-black/50 overflow-hidden">
-                {/* Previous Button - Always visible on mobile, hover on desktop */}
-                <Button
+                {/* Previous CustomButton - Always visible on mobile, hover on desktop */}
+                <CustomButton
                     type="text"
                     onClick={onPrev}
                     icon={<LeftOutlined />}
@@ -136,8 +140,8 @@ const GallerySliderView = ({
                     )}
                 </div>
 
-                {/* Next Button - Always visible on mobile, hover on desktop */}
-                <Button
+                {/* Next CustomButton - Always visible on mobile, hover on desktop */}
+                <CustomButton
                     type="text"
                     onClick={onNext}
                     icon={<RightOutlined />}
@@ -177,7 +181,7 @@ const GallerySliderView = ({
                                 </span>
                             )}
 
-                            <Button
+                            <CustomButton
                                 type="text"
                                 icon={<DownloadOutlined />}
                                 className="text-slate-300 hover:text-white ml-2 p-1 border-none"
@@ -185,7 +189,7 @@ const GallerySliderView = ({
                                 style={{ width: 'auto', height: 'auto' }}
                             />
 
-                            <Button
+                            <CustomButton
                                 type="text"
                                 onClick={toggleFullscreen}
                                 style={{ width: 'auto', height: 'auto' }}
@@ -200,9 +204,9 @@ const GallerySliderView = ({
 
             {/* Thumbnails Strip */}
             <div className="h-20 sm:h-24 bg-slate-900 border-t border-slate-800 flex items-center gap-2 px-2 sm:px-4 overflow-x-auto custom-scrollbar z-20">
-                <Space size="small" className="w-full">
+                <CustomSpace size="small" className="w-full">
                     {items.map((item, idx) => (
-                        <Button
+                        <CustomButton
                             type="text"
                             key={item.id}
                             onClick={() => onSelectIndex(idx)}
@@ -223,12 +227,10 @@ const GallerySliderView = ({
                                     <PlayCircleOutlined className="text-lg sm:text-xl text-white/80" />
                                 </div>
                             )}
-                        </Button>
+                        </CustomButton>
                     ))}
-                </Space>
+                </CustomSpace>
             </div>
         </div>
     );
 };
-
-export default GallerySliderView;

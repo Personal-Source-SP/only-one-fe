@@ -1,10 +1,10 @@
 'use client';
 
+import { CustomButton, CustomSpace } from '@/components/custom';
 import { Icon } from '@iconify/react';
-import { Button, Space } from 'antd';
 import Link from 'next/link';
 
-const NotFound = () => {
+export const NotFound = () => {
     const handleGoBack = () => {
         window.history.back();
     };
@@ -20,7 +20,10 @@ const NotFound = () => {
 
     return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-content2 p-4">
-            <Space direction="vertical" className="w-full max-w-3xl flex flex-col items-center">
+            <CustomSpace
+                direction="vertical"
+                className="w-full max-w-3xl flex flex-col items-center"
+            >
                 {/* Illustration */}
                 <div className="mb-8 text-primary">
                     <div className="relative">
@@ -46,18 +49,18 @@ const NotFound = () => {
 
                 {/* CTA buttons */}
                 <div className="flex flex-col sm:flex-row gap-3 mb-8">
-                    <Button type="primary" size="large">
+                    <CustomButton type="primary" size="large">
                         <Link href="/">
                             <span className="inline-flex items-center">
                                 <Icon icon="lucide:home" className="mr-2" /> Quay về Trang chủ
                             </span>
                         </Link>
-                    </Button>
-                    <Button size="large" onClick={handleGoBack}>
+                    </CustomButton>
+                    <CustomButton size="large" onClick={handleGoBack}>
                         <span className="inline-flex items-center">
                             <Icon icon="lucide:arrow-left" className="mr-2" /> Quay lại trang trước
                         </span>
-                    </Button>
+                    </CustomButton>
                 </div>
 
                 {/* Popular links */}
@@ -68,7 +71,7 @@ const NotFound = () => {
                     <div className="flex flex-wrap justify-center gap-3">
                         {popularLinks.map((link, index) => (
                             <Link key={index} href={link.path} className="transition-all">
-                                <Button>{link.name}</Button>
+                                <CustomButton>{link.name}</CustomButton>
                             </Link>
                         ))}
                     </div>
@@ -92,9 +95,7 @@ const NotFound = () => {
                         Chính sách bảo mật
                     </Link>
                 </div>
-            </Space>
+            </CustomSpace>
         </div>
     );
 };
-
-export default NotFound;

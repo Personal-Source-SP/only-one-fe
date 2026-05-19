@@ -1,5 +1,5 @@
 import { SimulationContextStatus, SimulationItemStatus, SimulationService } from '@/enums';
-import { Abstract } from '@/interfaces/common';
+import { Abstract } from '@/interfaces';
 
 export declare namespace NSimulation {
     interface ISimulationItem extends Abstract {

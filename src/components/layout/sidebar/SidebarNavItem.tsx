@@ -1,8 +1,8 @@
 'use client';
 
+import { CustomButton } from '@/components/custom';
 import { SidebarItem } from '@/interfaces';
 import { Icon } from '@iconify/react';
-import { Button } from 'antd';
 import { Fragment } from 'react';
 
 type SidebarNavItemProps = {
@@ -15,7 +15,7 @@ type SidebarNavItemProps = {
     onSubItemClick: (item: SidebarItem) => void;
 };
 
-const SidebarNavItem = ({
+export const SidebarNavItem = ({
     item,
     isActive,
     isExpanded,
@@ -27,7 +27,7 @@ const SidebarNavItem = ({
     const hasChildren = item.children && item.children.length > 0;
 
     const renderParentItem = () => (
-        <Button
+        <CustomButton
             type="text"
             onClick={() => onItemClick(item)}
             title={isCollapsed ? item.label : ''}
@@ -61,7 +61,7 @@ const SidebarNavItem = ({
                     className={`w-4 h-4 transition-transform duration-200 ${isExpanded ? 'rotate-180 text-indigo-500' : 'text-slate-400'} ${isCollapsed ? 'md:hidden' : 'block'}`}
                 />
             )}
-        </Button>
+        </CustomButton>
     );
 
     const renderChildrenItems = () => {
@@ -74,7 +74,7 @@ const SidebarNavItem = ({
                 {item.children?.map((child: SidebarItem) => {
                     const isSubActive = activeMenu === child.href;
                     return (
-                        <Button
+                        <CustomButton
                             type="text"
                             key={child.href || child.label}
                             onClick={() => onSubItemClick(child)}
@@ -91,7 +91,7 @@ const SidebarNavItem = ({
                                 }`}
                             />
                             <span className="truncate">{child.label}</span>
-                        </Button>
+                        </CustomButton>
                     );
                 })}
             </div>
@@ -105,5 +105,3 @@ const SidebarNavItem = ({
         </Fragment>
     );
 };
-
-export default SidebarNavItem;

@@ -1,12 +1,11 @@
 'use client';
 
 import { StatusTag } from '@/components/common';
-import { CustomModal, TableContainer } from '@/components/custom';
+import { ColumnsType, CustomModal, TableContainer } from '@/components/custom';
 import { CustomFilterType, ScheduleJobTriggerType, ScheduleJobType, ScheduleType } from '@/enums';
 import { useTableContainer } from '@/hooks';
 import { FilterItem, NSchedule } from '@/interfaces';
 import { formatDate } from '@/libs';
-import { ColumnsType } from 'antd/es/table';
 
 type ViewScheduleJobListProps = {
     isOpen: boolean;
@@ -14,7 +13,7 @@ type ViewScheduleJobListProps = {
     onClose: () => void;
 };
 
-const ViewScheduleJobList = ({ isOpen, scheduleId, onClose }: ViewScheduleJobListProps) => {
+export const ViewScheduleJobList = ({ isOpen, scheduleId, onClose }: ViewScheduleJobListProps) => {
     const tableContainerData = useTableContainer({
         resource: `schedule-jobs/schedule/${scheduleId}`,
     });
@@ -151,5 +150,3 @@ const ViewScheduleJobList = ({ isOpen, scheduleId, onClose }: ViewScheduleJobLis
         </CustomModal>
     );
 };
-
-export default ViewScheduleJobList;

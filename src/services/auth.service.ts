@@ -1,5 +1,5 @@
-import { IAuth } from '@/interfaces/auth';
-import BaseApi from './base.service';
+import { IAuth } from '@/interfaces';
+import { BaseApi } from './base.service';
 
 class AuthService extends BaseApi {
     constructor() {

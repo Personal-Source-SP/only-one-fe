@@ -140,7 +140,7 @@ export const createSessionAxiosInstance = (session: Session | null) => {
     return axiosInstance;
 };
 
-const RestServer = (
+export const RestServer = (
     apiUrl: string,
     httpClient: AxiosInstance = createSessionAxiosInstance(null),
 ): DataProvider => ({
@@ -298,5 +298,3 @@ const RestServer = (
         return Promise.resolve(axiosResponse);
     },
 });
-
-export default RestServer;

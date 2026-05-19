@@ -6,7 +6,7 @@ type ExtendedAccessControlProvider = AccessControlProvider & {
     setUserPermissions: (role: string, permissions: string[]) => void;
 };
 
-const accessControlProvider: ExtendedAccessControlProvider = {
+export const accessControlProvider: ExtendedAccessControlProvider = {
     userRole: undefined,
     userPermissions: [],
     setUserPermissions: (role: string, permissions: string[]) => {
@@ -20,5 +20,3 @@ const accessControlProvider: ExtendedAccessControlProvider = {
         });
     },
 };
-
-export default accessControlProvider;

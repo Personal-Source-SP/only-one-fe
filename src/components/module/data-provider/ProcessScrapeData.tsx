@@ -1,28 +1,30 @@
 'use client';
 
-import { CustomDatePicker, CustomFormModal } from '@/components/custom';
+import {
+    ColumnType,
+    CustomButton,
+    CustomCard,
+    CustomCol,
+    CustomDatePicker,
+    CustomFlex,
+    CustomForm,
+    CustomFormModal,
+    CustomRow,
+    CustomSelect,
+    CustomSpace,
+    CustomSpin,
+    CustomSteps,
+    CustomToggle,
+    CustomDataTable,
+    CustomTooltip,
+    StepsProps,
+} from '@/components/custom';
+import { MessageType } from '@/enums';
 import { MimeType } from '@/enums';
 import { useCustomMutationData, useSelectDataProviderItem, useSelectItem } from '@/hooks';
 import { NBaseApi, NDataProvider } from '@/interfaces';
 import { Icon } from '@iconify/react';
-import {
-    Button,
-    Card,
-    Col,
-    Flex,
-    Form,
-    Row,
-    Select,
-    Space,
-    Spin,
-    StepsProps,
-    Steps,
-    Switch,
-    Table,
-    Tooltip,
-} from 'antd';
-import { useWatch } from 'antd/es/form/Form';
-import { ColumnType } from 'antd/es/table';
+
 import dayjs from 'dayjs';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -39,13 +41,13 @@ const StepEnum = {
     Result: 1,
 };
 
-const ProcessScrapeData = ({
+export const ProcessScrapeData = ({
     open,
     selectedItemIds,
     selectedDataProviderItemIds,
     onClose,
 }: ProcessScrapeDataProps) => {
-    const [form] = Form.useForm<NDataProvider.IScrapeDataRequest>();
+    const [form] = CustomForm.useForm<NDataProvider.IScrapeDataRequest>();
 
     const [pageSize, setPageSize] = useState(50);
     const [isLoading, setIsLoading] = useState(false);
@@ -59,8 +61,8 @@ const ProcessScrapeData = ({
         NDataProvider.IScrapeDataResponse['successData']
     >([]);
 
-    const itemIds = useWatch('itemIds', form);
-    const dataProviderItemIds = useWatch('dataProviderItemIds', form);
+    const itemIds = CustomForm.useWatch('itemIds', form);
+    const dataProviderItemIds = CustomForm.useWatch('dataProviderItemIds', form);
 
     const { options: dataProviderItemOptions, query: dataProviderItemQuery } =
         useSelectDataProviderItem({
@@ -115,11 +117,11 @@ const ProcessScrapeData = ({
             ellipsis: true,
             render: (url?: string) =>
                 url ? (
-                    <Tooltip title={url}>
+                    <CustomTooltip title={url}>
                         <Link href={url} target="_blank" rel="noopener noreferrer">
                             Xem
                         </Link>
-                    </Tooltip>
+                    </CustomTooltip>
                 ) : (
                     '---'
                 ),
@@ -167,7 +169,7 @@ const ProcessScrapeData = ({
                         setIsLoading(false);
 
                         return {
-                            type: 'error',
+                            type: MessageType.ERROR,
                             message: 'Cào dữ liệu thất bại',
                             description: response?.errorMessage ?? 'Cào dữ liệu thất bại',
                         };
@@ -182,7 +184,7 @@ const ProcessScrapeData = ({
                     setPreviewData(response?.data?.successData || []);
 
                     return {
-                        type: 'success',
+                        type: MessageType.SUCCESS,
                         message: 'Cào dữ liệu thành công',
                     };
                 },
@@ -190,7 +192,7 @@ const ProcessScrapeData = ({
                     setIsLoading(false);
 
                     return {
-                        type: 'error',
+                        type: MessageType.ERROR,
                         message: 'Cào dữ liệu thất bại',
                         description: error?.message ?? 'Cào dữ liệu thất bại',
                     };
@@ -207,15 +209,15 @@ const ProcessScrapeData = ({
 
     const renderFooter = () => {
         return (
-            <Flex justify="end" align="center" gap={16}>
+            <CustomFlex justify="end" align="center" gap={16}>
                 {currentStep === StepEnum.Settings && (
-                    <Button type="primary" onClick={handleProcessScrapeData}>
+                    <CustomButton type="primary" onClick={handleProcessScrapeData}>
                         Xử lý
-                    </Button>
+                    </CustomButton>
                 )}
 
-                <Button onClick={onClose}>Đóng</Button>
-            </Flex>
+                <CustomButton onClick={onClose}>Đóng</CustomButton>
+            </CustomFlex>
         );
     };
 
@@ -223,7 +225,7 @@ const ProcessScrapeData = ({
         if (!itemOptions?.length || !dataProviderItemOptions?.length) return <></>;
 
         return (
-            <Form
+            <CustomForm
                 form={form}
                 layout="vertical"
                 initialValues={{
@@ -236,9 +238,9 @@ const ProcessScrapeData = ({
                         : undefined,
                 }}
             >
-                <Row gutter={[8, 8]}>
-                    <Col span={24}>
-                        <Form.Item
+                <CustomRow gutter={[8, 8]}>
+                    <CustomCol span={24}>
+                        <CustomForm.Item
                             name="checkDuplicateData"
                             label="Kiểm tra dữ liệu trùng lặp"
                             rules={[
@@ -248,12 +250,12 @@ const ProcessScrapeData = ({
                                 },
                             ]}
                         >
-                            <Switch />
-                        </Form.Item>
-                    </Col>
-                    <Col span={24}>
-                        <Form.Item name="mimeTypes" label="Loại tệp">
-                            <Select
+                            <CustomToggle />
+                        </CustomForm.Item>
+                    </CustomCol>
+                    <CustomCol span={24}>
+                        <CustomForm.Item name="mimeTypes" label="Loại tệp">
+                            <CustomSelect
                                 mode="multiple"
                                 placeholder="Loại tệp"
                                 options={Object.values(MimeType).map((type) => ({
@@ -261,11 +263,11 @@ const ProcessScrapeData = ({
                                     label: type?.toUpperCase(),
                                 }))}
                             />
-                        </Form.Item>
-                    </Col>
-                    <Col span={24}>
-                        <Form.Item name="itemIds" label="Đối tượng">
-                            <Select
+                        </CustomForm.Item>
+                    </CustomCol>
+                    <CustomCol span={24}>
+                        <CustomForm.Item name="itemIds" label="Đối tượng">
+                            <CustomSelect
                                 mode="multiple"
                                 options={itemOptions}
                                 placeholder="Chọn đối tượng"
@@ -278,11 +280,11 @@ const ProcessScrapeData = ({
                                     dataProviderItemIds?.length && dataProviderItemIds?.length > 1,
                                 )}
                             />
-                        </Form.Item>
-                    </Col>
-                    <Col span={24}>
-                        <Form.Item name="dataProviderItemIds" label="Đối tượng nhà cung cấp">
-                            <Select
+                        </CustomForm.Item>
+                    </CustomCol>
+                    <CustomCol span={24}>
+                        <CustomForm.Item name="dataProviderItemIds" label="Đối tượng nhà cung cấp">
+                            <CustomSelect
                                 mode="multiple"
                                 options={dataProviderItemOptions}
                                 placeholder="Chọn đối tượng nhà cung cấp"
@@ -293,9 +295,9 @@ const ProcessScrapeData = ({
                                     }
                                 }}
                             />
-                        </Form.Item>
-                    </Col>
-                    <Col span={24}>
+                        </CustomForm.Item>
+                    </CustomCol>
+                    <CustomCol span={24}>
                         <CustomDatePicker
                             showTime
                             dateRange={dateRanges}
@@ -303,46 +305,46 @@ const ProcessScrapeData = ({
                             name="lastSuccessfulScrapeAt"
                             setDateRange={(dateRange) => setDateRanges(dateRange)}
                         />
-                    </Col>
-                </Row>
-            </Form>
+                    </CustomCol>
+                </CustomRow>
+            </CustomForm>
         );
     };
 
     const renderResultStep = () => {
         return (
-            <Space direction="vertical" className="w-full h-full">
-                <Card className="shadow-sm" variant="borderless">
+            <CustomSpace direction="vertical" className="w-full h-full">
+                <CustomCard className="shadow-sm" variant="borderless">
                     <div className="grid gap-6 grid-cols-4">
-                        <Card className="text-center bg-blue-50 border-blue-200">
+                        <CustomCard className="text-center bg-blue-50 border-blue-200">
                             <p className="text-sm text-gray-600 font-bold mt-1">
                                 Số nhà cung cấp xử lý
                             </p>
                             <div className="text-blue-600 text-2xl font-bold">{process ?? 0}</div>
-                        </Card>
-                        <Card className="text-center bg-blue-50 border-blue-200">
+                        </CustomCard>
+                        <CustomCard className="text-center bg-blue-50 border-blue-200">
                             <p className="text-sm text-gray-600 font-bold mt-1">
                                 Số nhà cung cấp thành công
                             </p>
                             <div className="text-blue-600 text-2xl font-bold">{success ?? 0}</div>
-                        </Card>
-                        <Card className="text-center bg-blue-50 border-blue-200">
+                        </CustomCard>
+                        <CustomCard className="text-center bg-blue-50 border-blue-200">
                             <p className="text-sm text-gray-600 font-bold mt-1">
                                 Số nhà cung cấp lỗi
                             </p>
                             <div className="text-blue-600 text-2xl font-bold">{error ?? 0}</div>
-                        </Card>
-                        <Card className="text-center bg-blue-50 border-blue-200">
+                        </CustomCard>
+                        <CustomCard className="text-center bg-blue-50 border-blue-200">
                             <p className="text-sm text-gray-600 font-bold mt-1">
                                 Tổng số dữ liệu tìm thấy
                             </p>
                             <div className="text-blue-600 text-2xl font-bold">
                                 {previewData?.length ?? 0}
                             </div>
-                        </Card>
+                        </CustomCard>
                     </div>
-                </Card>
-                <Table
+                </CustomCard>
+                <CustomDataTable
                     bordered
                     size="small"
                     key="preview-data-table"
@@ -358,7 +360,7 @@ const ProcessScrapeData = ({
                         },
                     }}
                 />
-            </Space>
+            </CustomSpace>
         );
     };
 
@@ -386,24 +388,22 @@ const ProcessScrapeData = ({
                 footer: renderFooter(),
             }}
         >
-            <Space direction="vertical" className="w-full h-full px-3 overflow-x-hidden">
-                <Card className="mb-4 bg-green-50 border-green-200" size="small">
-                    <Steps
+            <CustomSpace direction="vertical" className="w-full h-full px-3 overflow-x-hidden">
+                <CustomCard className="mb-4 bg-green-50 border-green-200" size="small">
+                    <CustomSteps
                         items={steps}
                         size="default"
                         current={currentStep}
                         onChange={handleChangeStep}
                     />
-                </Card>
+                </CustomCard>
 
-                <Spin spinning={isLoading}>
-                    <Space size="middle" direction="vertical" className="w-full h-full">
+                <CustomSpin spinning={isLoading}>
+                    <CustomSpace size="middle" direction="vertical" className="w-full h-full">
                         {renderContent()}
-                    </Space>
-                </Spin>
-            </Space>
+                    </CustomSpace>
+                </CustomSpin>
+            </CustomSpace>
         </CustomFormModal>
     );
 };
-
-export default ProcessScrapeData;

@@ -10,7 +10,7 @@ type VideoItemDetailProps = {
     setLoadingFiles: Dispatch<SetStateAction<Set<string>>>;
 };
 
-const VideoItemDetail = ({
+export const VideoItemDetail = ({
     fileId,
     videoUrl,
     videoThumbnailUrl,
@@ -146,5 +146,3 @@ const VideoItemDetail = ({
         </div>
     );
 };
-
-export default VideoItemDetail;

@@ -36,7 +36,7 @@ const renderTitleContent = (title: ReactNode, description: ReactNode) => (
     </div>
 );
 
-const CustomCard = ({
+export const CustomCard = ({
     title,
     styles,
     footer,
@@ -93,5 +93,3 @@ const CustomCard = ({
         </Card>
     );
 };
-
-export default CustomCard;

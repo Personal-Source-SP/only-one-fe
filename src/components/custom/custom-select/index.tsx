@@ -2,7 +2,7 @@
 
 import { Button, Divider, Flex, Input, Select, SelectProps, Space } from 'antd';
 import { debounce } from 'lodash';
-import { useCallback } from 'react';
+import { useCallback, type ReactNode, type UIEvent } from 'react';
 
 type CustomSelectProps = SelectProps & {
     debounceTime?: number;
@@ -10,14 +10,14 @@ type CustomSelectProps = SelectProps & {
     onInputChange?: (value: string) => void;
 };
 
-const CustomSelect = ({
+export const CustomSelect = ({
     debounceTime = 500,
     onPopupScroll,
     onInputChange,
     ...props
 }: CustomSelectProps) => {
     const debouncedHandlePopupScroll = useCallback(
-        debounce((e: React.UIEvent<HTMLElement>) => {
+        debounce((e: UIEvent<HTMLElement>) => {
             if (!onPopupScroll) return;
 
             const target = e.target as HTMLElement;
@@ -32,7 +32,7 @@ const CustomSelect = ({
     );
 
     const renderInput = useCallback(
-        (menu: React.ReactNode) => {
+        (menu: ReactNode) => {
             if (!onInputChange) return <></>;
 
             return (
@@ -77,5 +77,3 @@ const CustomSelect = ({
         />
     );
 };
-
-export default CustomSelect;

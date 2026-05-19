@@ -1,14 +1,21 @@
 'use client';
 
+import {
+    ColumnsType,
+    CreateFormModal,
+    CustomButton,
+    CustomElement,
+    CustomSpace,
+    EditFormModal,
+    TableContainer,
+} from '@/components/custom';
+import { MessageType } from '@/enums';
 import { StatusTag } from '@/components/common';
-import { CreateFormModal, CustomElement, EditFormModal, TableContainer } from '@/components/custom';
 import { ElementType, SimulationItemStatus } from '@/enums';
 import { useCustomMutationData, useSelectSimulationContext, useTableContainer } from '@/hooks';
 import { ActionTableItem, FormFieldItem, NSimulation } from '@/interfaces';
 import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
-import { Button, Space } from 'antd';
-import { ColumnsType } from 'antd/es/table';
 import { FC, useState } from 'react';
 
 const SimulationItemsPage: FC = () => {
@@ -124,7 +131,7 @@ const SimulationItemsPage: FC = () => {
                     setLoading(false);
 
                     return {
-                        type: 'error',
+                        type: MessageType.ERROR,
                         message: actionMessages[status]?.failed,
                         description: data?.data?.message ?? actionMessages[status]?.failed,
                     };
@@ -134,7 +141,7 @@ const SimulationItemsPage: FC = () => {
                 tableContainerData?.tableQuery?.refetch();
 
                 return {
-                    type: 'success',
+                    type: MessageType.SUCCESS,
                     message: actionMessages[status].success,
                 };
             },
@@ -142,7 +149,7 @@ const SimulationItemsPage: FC = () => {
                 setLoading(false);
 
                 return {
-                    type: 'error',
+                    type: MessageType.ERROR,
                     message: actionMessages[status].failed,
                     description: error?.message ?? actionMessages[status].failed,
                 };
@@ -151,11 +158,11 @@ const SimulationItemsPage: FC = () => {
     };
 
     return (
-        <Space size="middle" direction="vertical" className="w-full h-full">
+        <CustomSpace size="middle" direction="vertical" className="w-full h-full">
             <CustomElement
                 elementType={ElementType.TITLE}
                 actions={[
-                    <Button
+                    <CustomButton
                         type="primary"
                         title="Thêm mô phỏng"
                         key="add-simulation-item"
@@ -210,7 +217,7 @@ const SimulationItemsPage: FC = () => {
                     tableContainerData?.tableQuery?.refetch();
                 }}
             />
-        </Space>
+        </CustomSpace>
     );
 };
 

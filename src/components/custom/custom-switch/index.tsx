@@ -10,7 +10,7 @@ type CustomSwitchProps = {
     onChange?: (checked?: boolean) => void;
 };
 
-const CustomSwitch = ({
+export const CustomSwitch = ({
     fieldLabel,
     span,
     fieldPlaceholder,
@@ -32,5 +32,3 @@ const CustomSwitch = ({
         </Col>
     );
 };
-
-export default CustomSwitch;

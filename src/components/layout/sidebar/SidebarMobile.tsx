@@ -1,12 +1,12 @@
+import { CustomButton, CustomDrawer } from '@/components/custom';
 import { Logo } from '@/components/common';
 import { SIDEBAR_ITEMS } from '@/constants';
 import { SidebarItem } from '@/interfaces';
 import { Icon } from '@iconify/react';
-import { Button, Drawer } from 'antd';
 import { Fragment } from 'react/jsx-runtime';
 
-import SidebarNavItem from '@/components/layout/sidebar/SidebarNavItem';
-import SidebarProfile from '@/components/layout/sidebar/SidebarProfile';
+import { SidebarNavItem } from '@/components/layout/sidebar/SidebarNavItem';
+import { SidebarProfile } from '@/components/layout/sidebar/SidebarProfile';
 
 type SidebarMobileProps = {
     activeMenu: string;
@@ -17,7 +17,7 @@ type SidebarMobileProps = {
     isMenuExpanded: (item: SidebarItem) => boolean;
 };
 
-const SidebarMobile = ({
+export const SidebarMobile = ({
     mobileOpen,
     activeMenu,
     setMobileOpen,
@@ -34,7 +34,7 @@ const SidebarMobile = ({
                     mobileOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
                 }`}
             />
-            <Drawer
+            <CustomDrawer
                 width={300}
                 zIndex={1050}
                 closable={false}
@@ -47,7 +47,7 @@ const SidebarMobile = ({
                     <div className="flex items-center gap-2 h-[32px] px-4">
                         <Logo iconSize="2xl" textSize="lg" />
                     </div>
-                    <Button
+                    <CustomButton
                         type="text"
                         shape="circle"
                         aria-label="Close sidebar"
@@ -77,9 +77,7 @@ const SidebarMobile = ({
                 <div className="flex-shrink-0">
                     <SidebarProfile isCollapsed={false} />
                 </div>
-            </Drawer>
+            </CustomDrawer>
         </Fragment>
     );
 };
-
-export default SidebarMobile;

@@ -1,14 +1,21 @@
 'use client';
 
+import {
+    ColumnsType,
+    CreateFormModal,
+    CustomButton,
+    CustomElement,
+    CustomFlex,
+    CustomSpace,
+    CustomTooltip,
+    TableContainer,
+} from '@/components/custom';
 import { StatusTag } from '@/components/common';
-import { CreateFormModal, CustomElement, TableContainer } from '@/components/custom';
 import { ElementType, MimeType } from '@/enums';
 import { useSelectCloudDataProvider, useTableContainer } from '@/hooks';
 import { FormFieldItem, NCloudData } from '@/interfaces';
 import { formatDate, formatFileSize } from '@/libs';
 import { Icon } from '@iconify/react';
-import { Button, Flex, Space, Tooltip } from 'antd';
-import { ColumnsType } from 'antd/es/table';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 
@@ -37,14 +44,14 @@ const CloudDataItem = () => {
             width: 200,
             ellipsis: true,
             render: (fileName: string) => (
-                <Tooltip title={fileName}>
+                <CustomTooltip title={fileName}>
                     <span
                         style={{ verticalAlign: 'middle' }}
                         className="inline-block max-w-[180px] truncate align-middle"
                     >
                         {fileName}
                     </span>
-                </Tooltip>
+                </CustomTooltip>
             ),
         },
         {
@@ -56,16 +63,16 @@ const CloudDataItem = () => {
             render: (pathUrl: string, record: NCloudData.ICloudDataItem) => {
                 if (record.mimeType?.startsWith(MimeType.IMAGE)) {
                     return (
-                        <Flex align="center" justify="center">
+                        <CustomFlex align="center" justify="center">
                             <Link href={pathUrl} target="_blank" rel="noopener noreferrer">
                                 <img src={pathUrl} alt="Xem" className="!h-20" />
                             </Link>
-                        </Flex>
+                        </CustomFlex>
                     );
                 }
 
                 return (
-                    <Tooltip title={pathUrl}>
+                    <CustomTooltip title={pathUrl}>
                         <Link
                             href={pathUrl}
                             target="_blank"
@@ -74,7 +81,7 @@ const CloudDataItem = () => {
                         >
                             {pathUrl}
                         </Link>
-                    </Tooltip>
+                    </CustomTooltip>
                 );
             },
         },
@@ -139,11 +146,11 @@ const CloudDataItem = () => {
     );
 
     return (
-        <Space size="middle" direction="vertical" className="w-full h-full">
+        <CustomSpace size="middle" direction="vertical" className="w-full h-full">
             <CustomElement
                 elementType={ElementType.TITLE}
                 actions={[
-                    <Button
+                    <CustomButton
                         type="primary"
                         title="Thêm dữ liệu"
                         key="add-cloud-data-item"
@@ -182,7 +189,7 @@ const CloudDataItem = () => {
                     return formData;
                 }}
             />
-        </Space>
+        </CustomSpace>
     );
 };
 

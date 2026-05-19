@@ -10,7 +10,7 @@ type AuthCardProps = {
     footer?: ReactNode;
 };
 
-const AuthCard = ({ children, footer, subtitle }: AuthCardProps) => {
+export const AuthCard = ({ children, footer, subtitle }: AuthCardProps) => {
     return (
         <CustomCard
             footer={footer}
@@ -26,5 +26,3 @@ const AuthCard = ({ children, footer, subtitle }: AuthCardProps) => {
         </CustomCard>
     );
 };
-
-export default AuthCard;

@@ -1,5 +1,5 @@
-import { IAuth } from '@/interfaces/auth';
-import { authService } from '@/services/auth.service';
+import { IAuth } from '@/interfaces';
+import { authService } from '@/services';
 import { AxiosError } from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import type { Awaitable, Session, User } from 'next-auth';
@@ -25,7 +25,7 @@ interface IAuthorizeCredentials {
     password: string;
 }
 
-const authOptions: NextAuthOptions = {
+export const authOptions: NextAuthOptions = {
     providers: [
         CredentialsProvider({
             id: 'credentials',
@@ -143,5 +143,3 @@ const authOptions: NextAuthOptions = {
     },
     debug: true,
 };
-
-export default authOptions;

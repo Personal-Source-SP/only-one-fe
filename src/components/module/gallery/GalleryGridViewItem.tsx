@@ -1,5 +1,6 @@
 'use client';
 
+import { CustomButton, CustomTag } from '@/components/custom';
 import { MediaType } from '@/enums';
 import { MediaItem } from '@/interfaces';
 import {
@@ -8,7 +9,6 @@ import {
     PlayCircleOutlined,
     VideoCameraOutlined,
 } from '@ant-design/icons';
-import { Button, Tag } from 'antd';
 
 type GalleryGridViewItemProps = {
     index: number;
@@ -17,14 +17,14 @@ type GalleryGridViewItemProps = {
     getDisplayTime: (date: string) => string;
 };
 
-const GalleryGridViewItem = ({
+export const GalleryGridViewItem = ({
     index,
     item,
     onItemClick,
     getDisplayTime,
 }: GalleryGridViewItemProps) => {
     return (
-        <Button
+        <CustomButton
             type="text"
             key={item.id}
             onClick={() => onItemClick(index)}
@@ -49,7 +49,7 @@ const GalleryGridViewItem = ({
 
             {/* Tags (Top Left) */}
             <div className="absolute top-2 left-2 flex flex-wrap gap-1 z-10">
-                <Tag
+                <CustomTag
                     color={item.type === MediaType.VIDEO ? 'red' : 'blue'}
                     className="backdrop-blur-md text-white text-[10px] px-1.5 py-0.5 rounded flex items-center gap-1 border border-white/10 m-0"
                 >
@@ -62,10 +62,10 @@ const GalleryGridViewItem = ({
                     <span className="font-medium">
                         {item.type === MediaType.VIDEO ? 'Video' : 'Ảnh'}
                     </span>
-                </Tag>
-                <Tag className="bg-black/60 backdrop-blur-md text-white text-[10px] px-1.5 py-0.5 rounded border border-white/10 m-0">
+                </CustomTag>
+                <CustomTag className="bg-black/60 backdrop-blur-md text-white text-[10px] px-1.5 py-0.5 rounded border border-white/10 m-0">
                     {getDisplayTime(item.createdAt)}
-                </Tag>
+                </CustomTag>
             </div>
 
             {/* Info Overlay (Bottom) */}
@@ -76,8 +76,6 @@ const GalleryGridViewItem = ({
                     <span>Xem chi tiết</span>
                 </div>
             </div>
-        </Button>
+        </CustomButton>
     );
 };
-
-export default GalleryGridViewItem;

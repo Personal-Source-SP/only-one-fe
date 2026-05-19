@@ -25,7 +25,7 @@ type CustomTableProps = {
     onDisableRowSelection?: (record: any) => boolean;
 };
 
-const CustomTable = ({
+export const CustomTable = ({
     columns,
     loading,
     tableProps,
@@ -189,5 +189,3 @@ const CustomTable = ({
         />
     );
 };
-
-export default CustomTable;

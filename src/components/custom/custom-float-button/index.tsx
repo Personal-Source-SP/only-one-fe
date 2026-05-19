@@ -1,5 +1,6 @@
 import { Icon } from '@iconify/react/dist/iconify.js';
 import { FloatButton } from 'antd';
+import type { CSSProperties } from 'react';
 
 type FloatButtonItem = {
     icon: string;
@@ -15,12 +16,12 @@ type CustomFloatButtonProps = {
     open?: boolean;
     icon?: string;
     shape?: 'circle' | 'square';
-    style?: React.CSSProperties;
+    style?: CSSProperties;
     type?: 'default' | 'primary';
     trigger?: 'hover' | 'click';
 };
 
-const CustomFloatButton = ({
+export const CustomFloatButton = ({
     items,
     open,
     icon,
@@ -49,5 +50,3 @@ const CustomFloatButton = ({
         </FloatButton.Group>
     );
 };
-
-export default CustomFloatButton;

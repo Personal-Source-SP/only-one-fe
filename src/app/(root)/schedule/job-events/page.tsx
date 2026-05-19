@@ -1,15 +1,13 @@
 'use client';
 
+import { ColumnsType, CustomSpace, TableContainer } from '@/components/custom';
 import { StatusTag } from '@/components/common';
-import { TableContainer } from '@/components/custom';
 import { ViewJobEvent } from '@/components/module/schedule';
 import { ScheduleJobEventType } from '@/enums';
 import { useTableContainer } from '@/hooks';
 import { ActionTableItem, NSchedule } from '@/interfaces';
 import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react/dist/iconify.js';
-import { Space } from 'antd';
-import { ColumnsType } from 'antd/es/table';
 import { useState } from 'react';
 
 const ScheduleJobEventsPage = () => {
@@ -84,7 +82,7 @@ const ScheduleJobEventsPage = () => {
     ];
 
     return (
-        <Space size="middle" direction="vertical" className="w-full h-full">
+        <CustomSpace size="middle" direction="vertical" className="w-full h-full">
             <TableContainer
                 columns={columns}
                 actionItems={actionItems}
@@ -99,7 +97,7 @@ const ScheduleJobEventsPage = () => {
                     onClose={() => setSelectedJobEvent(undefined)}
                 />
             )}
-        </Space>
+        </CustomSpace>
     );
 };
 

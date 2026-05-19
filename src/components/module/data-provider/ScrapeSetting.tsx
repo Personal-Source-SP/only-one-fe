@@ -1,8 +1,23 @@
 'use client';
 
+import {
+    CustomButton,
+    CustomCard,
+    CustomCol,
+    CustomDivider,
+    CustomFlex,
+    CustomForm,
+    CustomFormModal,
+    CustomInput,
+    CustomRow,
+    CustomSelect,
+    CustomSpace,
+    CustomToggle,
+    CustomTypography,
+} from '@/components/custom';
+import { MessageType } from '@/enums';
 import { StatusTag } from '@/components/common';
-import { CustomFormModal, CustomSelect } from '@/components/custom';
-import CodeDisplay from '@/components/module/code-display';
+import { CodeDisplay } from '@/components/module/code-display';
 import {
     DEFAULT_API_FUNCTION_GENERATOR,
     DEFAULT_HTML_CONTENT_STRING,
@@ -12,24 +27,10 @@ import { useMainContext } from '@/contexts/MainContext';
 import { DataProviderStatus, NotificationType, ScraperServiceEnum } from '@/enums';
 import { useCustomModal, useCustomMutationData } from '@/hooks';
 import { NBaseApi, NDataProvider, Option } from '@/interfaces';
-import {
-    Button,
-    Card,
-    Col,
-    Divider,
-    Flex,
-    Form,
-    Input,
-    Row,
-    Select,
-    Space,
-    Switch,
-    Typography,
-} from 'antd';
-import { useWatch } from 'antd/es/form/Form';
+
 import { isEmpty, isNumber } from 'lodash';
 import { Fragment, useState } from 'react';
-import ScrapeFormItem from './ScrapeFormItem';
+import { ScrapeFormItem } from './ScrapeFormItem';
 
 type DataProviderForm = NDataProvider.IDataProvider & {
     url: string;
@@ -77,7 +78,7 @@ export const FORM_FIELDS = {
     ADDITIONAL_EXTRACT_DATA: 'additionalExtractData',
 };
 
-const ScrapeSetting = ({
+export const ScrapeSetting = ({
     modalPropsData,
     dataProviderItemOptions,
     onClose,
@@ -92,23 +93,41 @@ const ScrapeSetting = ({
     const dataProvider = formProps?.initialValues;
     const isParentProvider = dataProvider?.parentId ? false : true;
 
-    const url = useWatch([FORM_FIELDS.URL], { form, preserve: true });
-    const formUrls = useWatch([FORM_FIELDS.ADDITIONAL_URLS], { form, preserve: true });
-    const extractData = useWatch([FORM_FIELDS.EXTRACT_DATA], { form, preserve: true });
-    const scraperService = useWatch([FORM_FIELDS.SCRAPER_SERVICE], { form, preserve: true });
-    const processingTime = useWatch([FORM_FIELDS.PROCESSING_TIME], { form, preserve: true });
-    const htmlContentString = useWatch([FORM_FIELDS.HTML_CONTENT_STRING], { form, preserve: true });
-    const additionalExtractData = useWatch([FORM_FIELDS.ADDITIONAL_EXTRACT_DATA], {
+    const url = CustomForm.useWatch([FORM_FIELDS.URL], { form, preserve: true });
+    const formUrls = CustomForm.useWatch([FORM_FIELDS.ADDITIONAL_URLS], { form, preserve: true });
+    const extractData = CustomForm.useWatch([FORM_FIELDS.EXTRACT_DATA], { form, preserve: true });
+    const scraperService = CustomForm.useWatch([FORM_FIELDS.SCRAPER_SERVICE], {
+        form,
+        preserve: true,
+    });
+    const processingTime = CustomForm.useWatch([FORM_FIELDS.PROCESSING_TIME], {
+        form,
+        preserve: true,
+    });
+    const htmlContentString = CustomForm.useWatch([FORM_FIELDS.HTML_CONTENT_STRING], {
+        form,
+        preserve: true,
+    });
+    const additionalExtractData = CustomForm.useWatch([FORM_FIELDS.ADDITIONAL_EXTRACT_DATA], {
         form,
         preserve: true,
     });
 
-    const headers = useWatch(['targetConfig', FORM_FIELDS.HEADERS], { form, preserve: true });
-    const cookies = useWatch(['targetConfig', FORM_FIELDS.COOKIES], { form, preserve: true });
-    const functionGenerator = useWatch(['targetConfig', FORM_FIELDS.FUNCTION_GENERATOR], {
+    const headers = CustomForm.useWatch(['targetConfig', FORM_FIELDS.HEADERS], {
         form,
         preserve: true,
     });
+    const cookies = CustomForm.useWatch(['targetConfig', FORM_FIELDS.COOKIES], {
+        form,
+        preserve: true,
+    });
+    const functionGenerator = CustomForm.useWatch(
+        ['targetConfig', FORM_FIELDS.FUNCTION_GENERATOR],
+        {
+            form,
+            preserve: true,
+        },
+    );
 
     const { handleCustomMutationData: handleUpdate } = useCustomMutationData();
     const { handleCustomMutationData: handleCreate } = useCustomMutationData();
@@ -146,7 +165,7 @@ const ScrapeSetting = ({
                         setIsLoading(false);
 
                         return {
-                            type: 'error',
+                            type: MessageType.ERROR,
                             message: 'Test parser thất bại',
                             description: response?.errorMessage ?? 'Test parser thất bại',
                         };
@@ -156,7 +175,7 @@ const ScrapeSetting = ({
                     form?.setFieldValue([FORM_FIELDS.EXTRACT_DATA], response.data);
 
                     return {
-                        type: 'success',
+                        type: MessageType.SUCCESS,
                         message: 'Test parser thành công',
                     };
                 },
@@ -164,7 +183,7 @@ const ScrapeSetting = ({
                     setIsLoading(false);
 
                     return {
-                        type: 'error',
+                        type: MessageType.ERROR,
                         message: 'Test parser thất bại',
                         description: error?.message ?? 'Test parser thất bại',
                     };
@@ -198,7 +217,7 @@ const ScrapeSetting = ({
             successNotification: (data) => {
                 if (!data?.data?.isSuccess) {
                     return {
-                        type: 'error',
+                        type: MessageType.ERROR,
                         message: 'Cập nhật cấu hình dữ liệu thất bại',
                         description: data?.data?.message ?? 'Cập nhật cấu hình dữ liệu thất bại',
                     };
@@ -207,13 +226,13 @@ const ScrapeSetting = ({
                 onClose?.();
 
                 return {
-                    type: 'success',
+                    type: MessageType.SUCCESS,
                     message: 'Cập nhật cấu hình dữ liệu thành công',
                 };
             },
             errorNotification: () => {
                 return {
-                    type: 'error',
+                    type: MessageType.ERROR,
                     message: 'Cập nhật cấu hình dữ liệu thất bại',
                     description: 'Cập nhật cấu hình dữ liệu thất bại',
                 };
@@ -237,7 +256,7 @@ const ScrapeSetting = ({
             successNotification: (data) => {
                 if (!data?.data?.isSuccess) {
                     return {
-                        type: 'error',
+                        type: MessageType.ERROR,
                         message: 'Chuyển trạng thái thất bại',
                         description: data?.data?.message ?? 'Chuyển trạng thái thất bại',
                     };
@@ -246,13 +265,13 @@ const ScrapeSetting = ({
                 onClose();
 
                 return {
-                    type: 'success',
+                    type: MessageType.SUCCESS,
                     message: 'Chuyển trạng thái thành công',
                 };
             },
             errorNotification: (error) => {
                 return {
-                    type: 'error',
+                    type: MessageType.ERROR,
                     message: 'Chuyển trạng thái thất bại',
                     description: error?.message ?? 'Chuyển trạng thái thất bại',
                 };
@@ -269,22 +288,22 @@ const ScrapeSetting = ({
         if (!dataProvider) return <></>;
 
         return (
-            <Flex justify="space-between" align="center">
-                <Space size={0}>
+            <CustomFlex justify="space-between" align="center">
+                <CustomSpace size={0}>
                     <span className="mr-1">Cấu hình dữ liệu</span>
                     <span className="mr-2">{`for ${dataProvider.name || dataProvider.baseUrl}`}</span>
                     <StatusTag status={dataProvider?.status} />
-                </Space>
-            </Flex>
+                </CustomSpace>
+            </CustomFlex>
         );
     };
 
     const renderFooter = () => {
         return (
-            <Flex justify="end" align="center" gap={16}>
+            <CustomFlex justify="end" align="center" gap={16}>
                 {(dataProvider?.status !== DataProviderStatus.UNCONFIGURED ||
                     dataProvider?.parent?.status !== DataProviderStatus.UNCONFIGURED) && (
-                    <Button
+                    <CustomButton
                         type="primary"
                         disabled={false}
                         onClick={() =>
@@ -296,26 +315,26 @@ const ScrapeSetting = ({
                         }
                     >
                         Chuyển trạng thái
-                    </Button>
+                    </CustomButton>
                 )}
 
-                <Button
+                <CustomButton
                     type="primary"
                     htmlType="submit"
                     disabled={!isParentProvider}
                     onClick={() => form?.submit()}
                 >
                     Lưu
-                </Button>
+                </CustomButton>
 
-                <Button onClick={handleCancel}>Hủy</Button>
-            </Flex>
+                <CustomButton onClick={handleCancel}>Hủy</CustomButton>
+            </CustomFlex>
         );
     };
 
     const renderFormUrl = (field: string, index?: number) => {
         if (!dataProviderItemOptions?.length) {
-            return <Input disabled={false} placeholder="URL" />;
+            return <CustomInput disabled={false} placeholder="URL" />;
         }
 
         return (
@@ -345,7 +364,7 @@ const ScrapeSetting = ({
 
         return (
             <Fragment>
-                <Form.Item
+                <CustomForm.Item
                     label="Dịch vụ"
                     name={FORM_FIELDS.SCRAPER_SERVICE}
                     rules={[
@@ -355,7 +374,7 @@ const ScrapeSetting = ({
                         },
                     ]}
                 >
-                    <Select
+                    <CustomSelect
                         disabled={
                             dataProvider?.status === DataProviderStatus.READY ||
                             dataProvider?.parent?.status === DataProviderStatus.READY
@@ -393,7 +412,7 @@ const ScrapeSetting = ({
                             }
                         }}
                     />
-                </Form.Item>
+                </CustomForm.Item>
 
                 <ScrapeFormItem
                     url={url}
@@ -411,11 +430,11 @@ const ScrapeSetting = ({
     const renderFunctionGenerator = () => {
         if (scraperService === ScraperServiceEnum.LOCAL) {
             return (
-                <Flex justify="end" align="center" className="my-2">
-                    <Button type="primary" onClick={handleTestParser} disabled={false}>
+                <CustomFlex justify="end" align="center" className="my-2">
+                    <CustomButton type="primary" onClick={handleTestParser} disabled={false}>
                         Thử nghiệm hàm
-                    </Button>
-                </Flex>
+                    </CustomButton>
+                </CustomFlex>
             );
         }
 
@@ -424,7 +443,7 @@ const ScrapeSetting = ({
 
         return (
             <Fragment>
-                <Form.Item name={['targetConfig', FORM_FIELDS.FUNCTION_GENERATOR]}>
+                <CustomForm.Item name={['targetConfig', FORM_FIELDS.FUNCTION_GENERATOR]}>
                     <CodeDisplay
                         isDisplayLanguage
                         language="javascript"
@@ -437,23 +456,25 @@ const ScrapeSetting = ({
                             );
                         }}
                     />
-                </Form.Item>
+                </CustomForm.Item>
 
-                <Flex justify="space-between" align="center" className="my-2">
-                    <Space>
-                        <Switch
+                <CustomFlex justify="space-between" align="center" className="my-2">
+                    <CustomSpace>
+                        <CustomToggle
                             checked={isTestHtmlContent}
                             onChange={() => setIsTestHtmlContent(!isTestHtmlContent)}
                         />
-                        <Typography.Text type="secondary">Sử dụng HTML content</Typography.Text>
-                    </Space>
-                    <Button type="primary" onClick={handleTestParser} disabled={false}>
+                        <CustomTypography.Text type="secondary">
+                            Sử dụng HTML content
+                        </CustomTypography.Text>
+                    </CustomSpace>
+                    <CustomButton type="primary" onClick={handleTestParser} disabled={false}>
                         Thử nghiệm hàm
-                    </Button>
-                </Flex>
+                    </CustomButton>
+                </CustomFlex>
 
                 {isTestHtmlContent && (
-                    <Form.Item name={FORM_FIELDS.HTML_CONTENT_STRING}>
+                    <CustomForm.Item name={FORM_FIELDS.HTML_CONTENT_STRING}>
                         <CodeDisplay
                             expanded
                             language="html"
@@ -462,7 +483,7 @@ const ScrapeSetting = ({
                                 form?.setFieldValue([FORM_FIELDS.HTML_CONTENT_STRING], newCode);
                             }}
                         />
-                    </Form.Item>
+                    </CustomForm.Item>
                 )}
             </Fragment>
         );
@@ -472,30 +493,30 @@ const ScrapeSetting = ({
         if (isEmpty(extractData)) return <></>;
 
         return (
-            <Card className="border-2 shadow-lg hover:shadow-xl transition-shadow duration-300">
-                <Row gutter={[24, 24]}>
-                    <Col xs={24} md={12}>
-                        <Space direction="vertical" size={8}>
-                            <Typography.Text type="secondary">Giá:</Typography.Text>
-                            <Typography.Title level={2}>
+            <CustomCard className="border-2 shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <CustomRow gutter={[24, 24]}>
+                    <CustomCol xs={24} md={12}>
+                        <CustomSpace direction="vertical" size={8}>
+                            <CustomTypography.Text type="secondary">Giá:</CustomTypography.Text>
+                            <CustomTypography.Title level={2}>
                                 {extractData?.productPrice}
-                            </Typography.Title>
-                        </Space>
-                    </Col>
-                    <Col xs={24} md={12}>
-                        <Space direction="vertical" size={8}>
-                            <Typography.Text type="secondary">Tiền tệ:</Typography.Text>
-                            <Typography.Title level={2}>
+                            </CustomTypography.Title>
+                        </CustomSpace>
+                    </CustomCol>
+                    <CustomCol xs={24} md={12}>
+                        <CustomSpace direction="vertical" size={8}>
+                            <CustomTypography.Text type="secondary">Tiền tệ:</CustomTypography.Text>
+                            <CustomTypography.Title level={2}>
                                 {dataProvider?.expectedCurrency}
-                            </Typography.Title>
-                        </Space>
-                    </Col>
-                </Row>
+                            </CustomTypography.Title>
+                        </CustomSpace>
+                    </CustomCol>
+                </CustomRow>
 
-                <Divider />
+                <CustomDivider />
 
                 <div className="space-y-3">
-                    <Form.Item name={FORM_FIELDS.EXTRACT_DATA}>
+                    <CustomForm.Item name={FORM_FIELDS.EXTRACT_DATA}>
                         <CodeDisplay
                             isDisplayLanguage
                             title="Dữ liệu metadata"
@@ -514,9 +535,9 @@ const ScrapeSetting = ({
                                     </div>
                                 ),
                             )}
-                    </Form.Item>
+                    </CustomForm.Item>
                 </div>
-            </Card>
+            </CustomCard>
         );
     };
 
@@ -534,7 +555,7 @@ const ScrapeSetting = ({
                 open: modalPropsData?.open,
             }}
         >
-            <Form
+            <CustomForm
                 {...formProps}
                 layout="vertical"
                 disabled={!isParentProvider}
@@ -559,9 +580,7 @@ const ScrapeSetting = ({
                 {renderFormTargetConfiguration()}
                 {renderFunctionGenerator()}
                 {renderExtractData()}
-            </Form>
+            </CustomForm>
         </CustomFormModal>
     );
 };
-
-export default ScrapeSetting;

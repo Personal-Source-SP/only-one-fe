@@ -1,7 +1,13 @@
 'use client';
 
+import {
+    CustomButton,
+    CustomDropdown,
+    CustomFlex,
+    CustomPagination,
+    MenuProps,
+} from '@/components/custom';
 import { FileItemsPerPage } from '@/enums';
-import { Button, Dropdown, Flex, MenuProps, Pagination } from 'antd';
 
 type PaginationControlsProps = {
     totalItems: number;
@@ -11,7 +17,7 @@ type PaginationControlsProps = {
     onItemsPerPageChange: (value: number) => void;
 };
 
-const PaginationControls = ({
+export const PaginationControls = ({
     totalItems,
     currentPage,
     itemsPerPage,
@@ -26,8 +32,8 @@ const PaginationControls = ({
     ];
 
     return (
-        <Flex justify="space-between" align="center" gap={16}>
-            <Dropdown
+        <CustomFlex justify="space-between" align="center" gap={16}>
+            <CustomDropdown
                 menu={{
                     items,
                     selectable: true,
@@ -35,10 +41,10 @@ const PaginationControls = ({
                     onClick: ({ key }) => onItemsPerPageChange(Number(key)),
                 }}
             >
-                <Button>{itemsPerPage} ảnh/trang</Button>
-            </Dropdown>
+                <CustomButton>{itemsPerPage} ảnh/trang</CustomButton>
+            </CustomDropdown>
 
-            <Pagination
+            <CustomPagination
                 responsive
                 total={totalItems}
                 current={currentPage}
@@ -46,8 +52,6 @@ const PaginationControls = ({
                 showSizeChanger={false}
                 onChange={onPageChange}
             />
-        </Flex>
+        </CustomFlex>
     );
 };
-
-export default PaginationControls;

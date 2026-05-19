@@ -1,10 +1,11 @@
 'use client';
 
+import { CustomButton, CustomForm, CustomInput } from '@/components/custom';
+import { notification } from 'antd';
 import { IAuth } from '@/interfaces';
-import { Button, Form, Input, notification } from 'antd';
 import { useCallback } from 'react';
 
-const ForgetPasswordForm = () => {
+export const ForgetPasswordForm = () => {
     const handleSubmit = useCallback(async (_values: IAuth.IForgetPasswordFormValues) => {
         notification.success({
             message: 'Đã gửi liên kết khôi phục',
@@ -13,8 +14,8 @@ const ForgetPasswordForm = () => {
     }, []);
 
     return (
-        <Form className="space-y-1" layout="vertical" onFinish={handleSubmit}>
-            <Form.Item
+        <CustomForm className="space-y-1" layout="vertical" onFinish={handleSubmit}>
+            <CustomForm.Item
                 label="Email"
                 name="email"
                 rules={[
@@ -22,14 +23,12 @@ const ForgetPasswordForm = () => {
                     { type: 'email', message: 'Email không hợp lệ' },
                 ]}
             >
-                <Input placeholder="Nhập email của bạn" type="email" />
-            </Form.Item>
+                <CustomInput placeholder="Nhập email của bạn" type="email" />
+            </CustomForm.Item>
 
-            <Button block htmlType="submit" size="large" type="primary">
+            <CustomButton block htmlType="submit" size="large" type="primary">
                 Gửi liên kết khôi phục
-            </Button>
-        </Form>
+            </CustomButton>
+        </CustomForm>
     );
 };
-
-export default ForgetPasswordForm;

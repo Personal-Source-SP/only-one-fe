@@ -1,13 +1,13 @@
 'use client';
 
+import { CustomButton, CustomFlex, CustomSpace } from '@/components/custom';
 import { CompressOutlined, ExpandOutlined } from '@ant-design/icons';
 import { Icon } from '@iconify/react';
-import { Button, Flex, Space } from 'antd';
-import VideoPlaybackControls from './VideoPlaybackControls';
-import VideoPlaybackSpeedMenu from './VideoPlaybackSpeedMenu';
-import VideoProgressBar from './VideoProgressBar';
-import VideoTimeDisplay from './VideoTimeDisplay';
-import VideoVolumeControl from './VideoVolumeControl';
+import { VideoPlaybackControls } from './VideoPlaybackControls';
+import { VideoPlaybackSpeedMenu } from './VideoPlaybackSpeedMenu';
+import { VideoProgressBar } from './VideoProgressBar';
+import { VideoTimeDisplay } from './VideoTimeDisplay';
+import { VideoVolumeControl } from './VideoVolumeControl';
 
 type VideoControlsBarProps = {
     showControls: boolean;
@@ -32,7 +32,7 @@ type VideoControlsBarProps = {
     onToggleFullscreen: () => void;
 };
 
-const VideoControlsBar = ({
+export const VideoControlsBar = ({
     showControls,
     progress,
     isPlaying,
@@ -61,8 +61,8 @@ const VideoControlsBar = ({
         >
             <VideoProgressBar progress={progress} onSeek={onSeek} />
 
-            <Flex justify="space-between" align="center" className="mt-2">
-                <Space size="small" className="gap-2 sm:gap-4">
+            <CustomFlex justify="space-between" align="center" className="mt-2">
+                <CustomSpace size="small" className="gap-2 sm:gap-4">
                     <VideoPlaybackControls
                         isPlaying={isPlaying}
                         onSkip={onSkip}
@@ -81,9 +81,9 @@ const VideoControlsBar = ({
                         currentTime={currentTime}
                         formatTime={formatTime}
                     />
-                </Space>
+                </CustomSpace>
 
-                <Space size="small" className="gap-3">
+                <CustomSpace size="small" className="gap-3">
                     <VideoPlaybackSpeedMenu
                         playbackRate={playbackRate}
                         isSettingsOpen={isSettingsOpen}
@@ -91,7 +91,7 @@ const VideoControlsBar = ({
                         onChangePlaybackRate={onChangePlaybackRate}
                     />
 
-                    <Button
+                    <CustomButton
                         type="text"
                         onClick={onTogglePiP}
                         title="Picture in Picture"
@@ -100,7 +100,7 @@ const VideoControlsBar = ({
                         icon={<Icon icon="lucide:picture-in-picture" className="text-lg" />}
                     />
 
-                    <Button
+                    <CustomButton
                         type="text"
                         title="Toàn màn hình"
                         onClick={onToggleFullscreen}
@@ -108,10 +108,8 @@ const VideoControlsBar = ({
                         className="text-white hover:text-indigo-400 border-none"
                         icon={isFullscreen ? <CompressOutlined /> : <ExpandOutlined />}
                     />
-                </Space>
-            </Flex>
+                </CustomSpace>
+            </CustomFlex>
         </div>
     );
 };
-
-export default VideoControlsBar;

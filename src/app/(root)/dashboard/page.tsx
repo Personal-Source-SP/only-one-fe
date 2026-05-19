@@ -1,8 +1,8 @@
 'use client';
 
-import ActivityChart from '@/components/module/activity-chart';
-import StorageChart from '@/components/module/storage-chart';
-import { Card, Button, Space } from 'antd';
+import { CustomButton, CustomCard, CustomSpace } from '@/components/custom';
+import { ActivityChart } from '@/components/module/activity-chart';
+import { StorageChart } from '@/components/module/storage-chart';
 import { Icon } from '@iconify/react';
 import Link from 'next/link';
 
@@ -100,35 +100,35 @@ const DashboardPage = () => {
     // Note: Removed framer-motion variants
 
     return (
-        <Space direction="vertical" className="space-y-6 w-full">
+        <CustomSpace direction="vertical" className="space-y-6 w-full">
             <div>
                 <h1 className="text-2xl font-medium mb-2">Chào buổi sáng, Minh Nguyễn!</h1>
                 <p className="text-foreground-600">Đây là tổng quan hoạt động của bạn.</p>
             </div>
 
             <div>
-                <Card>
+                <CustomCard>
                     <div className="p-4 border-b">
                         <h2 className="text-lg font-medium">Hoạt động 7 ngày qua</h2>
                     </div>
                     <div className="p-4">
                         <ActivityChart data={activityData} />
                     </div>
-                </Card>
+                </CustomCard>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                 <div className="lg:col-span-2">
-                    <Card className="h-full">
+                    <CustomCard className="h-full">
                         <div className="flex justify-between items-center p-4 border-b">
                             <div className="flex items-center gap-2">
                                 <Icon icon="logos:google-drive" className="text-xl" />
                                 <h2 className="text-lg font-medium">Tệp Drive truy cập gần đây</h2>
                             </div>
                             <Link href="/drive">
-                                <Button type="link" size="small">
+                                <CustomButton type="link" size="small">
                                     Xem tất cả
-                                </Button>
+                                </CustomButton>
                             </Link>
                         </div>
                         <div className="p-4">
@@ -150,14 +150,14 @@ const DashboardPage = () => {
                                             </p>
                                         </div>
                                         <div className="flex gap-1">
-                                            <Button
+                                            <CustomButton
                                                 type="text"
                                                 shape="circle"
                                                 icon={
                                                     <Icon icon="lucide:eye" className="text-lg" />
                                                 }
                                             />
-                                            <Button
+                                            <CustomButton
                                                 type="text"
                                                 shape="circle"
                                                 icon={
@@ -172,31 +172,31 @@ const DashboardPage = () => {
                                 ))}
                             </div>
                         </div>
-                    </Card>
+                    </CustomCard>
                 </div>
 
                 <div>
-                    <Card className="h-full">
+                    <CustomCard className="h-full">
                         <div className="p-4 border-b">
                             <h2 className="text-lg font-medium">Dung lượng lưu trữ</h2>
                         </div>
                         <div className="p-4">
                             <StorageChart data={storageData} total="16 GB" />
                         </div>
-                    </Card>
+                    </CustomCard>
                 </div>
 
                 <div className="lg:col-span-2">
-                    <Card>
+                    <CustomCard>
                         <div className="flex justify-between items-center p-4 border-b">
                             <div className="flex items-center gap-2">
                                 <Icon icon="logos:google-keep" className="text-xl" />
                                 <h2 className="text-lg font-medium">Ghi chú Keep gần đây</h2>
                             </div>
                             <Link href="/keep">
-                                <Button type="link" size="small">
+                                <CustomButton type="link" size="small">
                                     Xem tất cả
-                                </Button>
+                                </CustomButton>
                             </Link>
                         </div>
                         <div className="p-4">
@@ -220,20 +220,20 @@ const DashboardPage = () => {
                                 ))}
                             </div>
                         </div>
-                    </Card>
+                    </CustomCard>
                 </div>
 
                 <div className="lg:col-span-3">
-                    <Card>
+                    <CustomCard>
                         <div className="flex justify-between items-center p-4 border-b">
                             <div className="flex items-center gap-2">
                                 <Icon icon="logos:google-photos" className="text-xl" />
                                 <h2 className="text-lg font-medium">Ảnh mới nhất trên Photos</h2>
                             </div>
                             <Link href="/photos">
-                                <Button type="link" size="small">
+                                <CustomButton type="link" size="small">
                                     Xem tất cả
-                                </Button>
+                                </CustomButton>
                             </Link>
                         </div>
                         <div className="p-4">
@@ -252,10 +252,10 @@ const DashboardPage = () => {
                                 ))}
                             </div>
                         </div>
-                    </Card>
+                    </CustomCard>
                 </div>
             </div>
-        </Space>
+        </CustomSpace>
     );
 };
 

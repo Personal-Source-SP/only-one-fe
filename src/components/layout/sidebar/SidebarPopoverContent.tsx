@@ -1,6 +1,6 @@
+import { CustomButton } from '@/components/custom';
 import { SidebarItem } from '@/interfaces';
 import { Icon } from '@iconify/react';
-import { Button } from 'antd';
 
 type SidebarPopoverContentProps = {
     item: SidebarItem;
@@ -8,7 +8,7 @@ type SidebarPopoverContentProps = {
     handleMenuClick: (item: SidebarItem) => void;
 };
 
-const SidebarPopoverContent = ({
+export const SidebarPopoverContent = ({
     item,
     activeMenu,
     handleMenuClick,
@@ -24,7 +24,7 @@ const SidebarPopoverContent = ({
                 const isSubActive = activeMenu === child.href;
 
                 return (
-                    <Button
+                    <CustomButton
                         type="text"
                         key={child.href || child.label}
                         onClick={() => handleMenuClick(child)}
@@ -41,11 +41,9 @@ const SidebarPopoverContent = ({
                             }`}
                         />
                         <span className="truncate">{child.label}</span>
-                    </Button>
+                    </CustomButton>
                 );
             })}
         </div>
     </section>
 );
-
-export default SidebarPopoverContent;

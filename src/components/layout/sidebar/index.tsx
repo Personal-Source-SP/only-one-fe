@@ -5,8 +5,8 @@ import { SidebarItem } from '@/interfaces';
 import { usePathname, useRouter } from 'next/navigation';
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 
-import SidebarDesktop from '@/components/layout/sidebar/SidebarDesktop';
-import SidebarMobile from '@/components/layout/sidebar/SidebarMobile';
+import { SidebarDesktop } from '@/components/layout/sidebar/SidebarDesktop';
+import { SidebarMobile } from '@/components/layout/sidebar/SidebarMobile';
 
 type SidebarProps = {
     mobileOpen: boolean;
@@ -15,7 +15,7 @@ type SidebarProps = {
     setCollapsed: (collapsed: boolean) => void;
 };
 
-const Sidebar = ({ mobileOpen, setMobileOpen, collapsed, setCollapsed }: SidebarProps) => {
+export const Sidebar = ({ mobileOpen, setMobileOpen, collapsed, setCollapsed }: SidebarProps) => {
     const router = useRouter();
     const pathname = usePathname();
 
@@ -131,5 +131,3 @@ const Sidebar = ({ mobileOpen, setMobileOpen, collapsed, setCollapsed }: Sidebar
         </Fragment>
     );
 };
-
-export default Sidebar;

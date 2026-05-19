@@ -1,16 +1,14 @@
 'use client';
 
-import { Typography } from 'antd';
-
 type VideoTimeDisplayProps = {
     currentTime: number;
     duration: number;
     formatTime: (time: number) => string;
 };
 
-const VideoTimeDisplay = ({ currentTime, duration, formatTime }: VideoTimeDisplayProps) => {
+export const VideoTimeDisplay = ({ currentTime, duration, formatTime }: VideoTimeDisplayProps) => {
     return (
-        <Typography.Text className="text-[10px] sm:text-xs text-slate-300 font-medium font-mono flex items-center ml-2">
+        <CustomTypography.Text className="text-[10px] sm:text-xs text-slate-300 font-medium font-mono flex items-center ml-2">
             {formatTime(currentTime)}
             <span className="mx-1 text-slate-500">/</span>
             {formatTime(duration)}
@@ -19,8 +17,7 @@ const VideoTimeDisplay = ({ currentTime, duration, formatTime }: VideoTimeDispla
                     (-{formatTime(Math.max(0, duration - currentTime))})
                 </span>
             )}
-        </Typography.Text>
+        </CustomTypography.Text>
     );
 };
-
-export default VideoTimeDisplay;
+import { CustomTypography } from '@/components/custom';

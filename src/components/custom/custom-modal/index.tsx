@@ -8,7 +8,7 @@ type CustomModalProps = {
     children: ReactNode;
 };
 
-const CustomModal = ({ modalProps, children }: CustomModalProps) => {
+export const CustomModal = ({ modalProps, children }: CustomModalProps) => {
     if (!modalProps.open) return <></>;
 
     return (
@@ -28,5 +28,3 @@ const CustomModal = ({ modalProps, children }: CustomModalProps) => {
         </Modal>
     );
 };
-
-export default CustomModal;

@@ -2,9 +2,9 @@
 
 import Image from 'next/image';
 import { Dispatch, SetStateAction } from 'react';
-import { isLocalFilePath } from '../../../libs';
+import { isLocalFilePath } from '@/libs';
 
-const ImageItemDetail = ({
+export const ImageItemDetail = ({
     imageUrl,
     fileId,
     setLoadingFiles,
@@ -71,5 +71,3 @@ const ImageItemDetail = ({
         />
     );
 };
-
-export default ImageItemDetail;

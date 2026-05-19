@@ -1,14 +1,22 @@
 'use client';
 
+import {
+    CustomButton,
+    CustomCol,
+    CustomFlex,
+    CustomForm,
+    CustomInput,
+    CustomInputNumber,
+    CustomRow,
+    CustomSwitch,
+    FormInstance,
+} from '@/components/custom';
 import { LinkOutlined, MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Col, Flex, Form, FormInstance, Input, InputNumber, Row } from 'antd';
 import { Fragment, JSX } from 'react';
 import { FORM_FIELDS } from './ScrapeSetting';
-import { ScraperServiceEnum } from '../../../enums';
-import { Option } from '../../../interfaces';
-import { CustomSwitch } from '../../custom';
-import CodeDisplay from '../code-display';
-
+import { CodeDisplay } from '@/components/module/code-display';
+import { ScraperServiceEnum } from '@/enums';
+import { Option } from '@/interfaces';
 const FormGeneric = ({
     url,
     formUrls,
@@ -26,7 +34,7 @@ const FormGeneric = ({
 }) => {
     return (
         <Fragment>
-            <Row gutter={[16, 16]}>
+            <CustomRow gutter={[16, 16]}>
                 <CustomSwitch
                     span={12}
                     fieldLabel="Lấy phần tử cha"
@@ -69,41 +77,41 @@ const FormGeneric = ({
                     formFields={['targetConfig', FORM_FIELDS.CSS_ENABLED]}
                 />
 
-                <Col span={12}>
-                    <Form.Item
+                <CustomCol span={12}>
+                    <CustomForm.Item
                         label="Thời gian delay giữa mỗi lần retry (ms)"
                         tooltip="Thời gian delay giữa mỗi lần retry (ms)"
                         name={['targetConfig', FORM_FIELDS.RETRY_DELAY]}
                     >
-                        <InputNumber
+                        <CustomInputNumber
                             min={0}
                             placeholder="Thời gian delay giữa mỗi lần retry (ms)"
                         />
-                    </Form.Item>
-                </Col>
+                    </CustomForm.Item>
+                </CustomCol>
 
-                <Col span={12}>
-                    <Form.Item
+                <CustomCol span={12}>
+                    <CustomForm.Item
                         label="Số lần thử lại khi có lỗi"
                         tooltip="Số lần thử lại khi có lỗi"
                         name={['targetConfig', FORM_FIELDS.RETRY_ATTEMPTS]}
                     >
-                        <InputNumber min={0} placeholder="Số lần thử lại khi có lỗi" />
-                    </Form.Item>
-                </Col>
+                        <CustomInputNumber min={0} placeholder="Số lần thử lại khi có lỗi" />
+                    </CustomForm.Item>
+                </CustomCol>
 
-                <Col span={24}>
-                    <Form.Item
+                <CustomCol span={24}>
+                    <CustomForm.Item
                         label="Số lượng kết quả tối đa"
                         tooltip="Số lượng kết quả tối đa"
                         name={['targetConfig', FORM_FIELDS.MAX_RESULTS]}
                     >
-                        <InputNumber min={0} placeholder="Số lượng kết quả tối đa" />
-                    </Form.Item>
-                </Col>
-            </Row>
+                        <CustomInputNumber min={0} placeholder="Số lượng kết quả tối đa" />
+                    </CustomForm.Item>
+                </CustomCol>
+            </CustomRow>
 
-            <Form.Item
+            <CustomForm.Item
                 label="Selector chính"
                 name={['targetConfig', FORM_FIELDS.MAIN_CONTENT_SELECTOR]}
                 rules={[
@@ -113,67 +121,70 @@ const FormGeneric = ({
                     },
                 ]}
             >
-                <Input placeholder="Selector chính" />
-            </Form.Item>
+                <CustomInput placeholder="Selector chính" />
+            </CustomForm.Item>
 
-            <Form.Item label="Selector chờ" name={['targetConfig', FORM_FIELDS.WAIT_FOR_SELECTOR]}>
-                <Input placeholder="Selector chờ" />
-            </Form.Item>
+            <CustomForm.Item
+                label="Selector chờ"
+                name={['targetConfig', FORM_FIELDS.WAIT_FOR_SELECTOR]}
+            >
+                <CustomInput placeholder="Selector chờ" />
+            </CustomForm.Item>
 
-            <Form.Item label="User-Agent" name={['targetConfig', FORM_FIELDS.USER_AGENT]}>
-                <Input placeholder="User-Agent" />
-            </Form.Item>
+            <CustomForm.Item label="User-Agent" name={['targetConfig', FORM_FIELDS.USER_AGENT]}>
+                <CustomInput placeholder="User-Agent" />
+            </CustomForm.Item>
 
-            <Flex justify="space-between" align="end" gap={10}>
-                <Form.Item
+            <CustomFlex justify="space-between" align="end" gap={10}>
+                <CustomForm.Item
                     label="URL"
                     name={FORM_FIELDS.URL}
                     className="w-full max-w-[calc(100%-50px)]"
                 >
                     {renderFormUrl(FORM_FIELDS.URL)}
-                </Form.Item>
-                <Button
+                </CustomForm.Item>
+                <CustomButton
                     type="primary"
                     className="mb-2"
                     disabled={!url}
                     icon={<LinkOutlined />}
                     onClick={() => window.open(url, '_blank')}
                 />
-            </Flex>
+            </CustomFlex>
 
-            <Form.List name={FORM_FIELDS.ADDITIONAL_URLS}>
+            <CustomForm.List name={FORM_FIELDS.ADDITIONAL_URLS}>
                 {(fields, { add, remove }) => (
                     <Fragment>
                         {fields.map(({ key, name }, index) => (
-                            <Flex
+                            <CustomFlex
                                 key={key}
                                 justify="space-between"
                                 align="center"
                                 gap={10}
                                 className="mt-2"
                             >
-                                <Form.Item
+                                <CustomForm.Item
                                     key={key}
                                     name={name}
                                     className="w-full max-w-[calc(100%-50px)]"
                                 >
                                     {renderFormUrl(FORM_FIELDS.ADDITIONAL_URLS, index)}
-                                </Form.Item>
+                                </CustomForm.Item>
                                 <MinusCircleOutlined
                                     className="mb-2"
                                     onClick={() => remove(name)}
                                 />
-                                <Button
+                                <CustomButton
                                     type="primary"
                                     className="mb-2"
                                     icon={<LinkOutlined />}
                                     disabled={!formUrls?.[index]}
                                     onClick={() => window.open(formUrls?.[index], '_blank')}
                                 />
-                            </Flex>
+                            </CustomFlex>
                         ))}
 
-                        <Button
+                        <CustomButton
                             type="dashed"
                             disabled={false}
                             onClick={() => add()}
@@ -181,12 +192,12 @@ const FormGeneric = ({
                             icon={<PlusOutlined />}
                         >
                             Thêm URL bổ sung
-                        </Button>
+                        </CustomButton>
                     </Fragment>
                 )}
-            </Form.List>
+            </CustomForm.List>
 
-            <Form.Item name={['targetConfig', FORM_FIELDS.HEADERS]}>
+            <CustomForm.Item name={['targetConfig', FORM_FIELDS.HEADERS]}>
                 <p className="text-sm font-medium !mb-3">Cấu hình headers:</p>
                 <CodeDisplay
                     title="Headers"
@@ -197,9 +208,9 @@ const FormGeneric = ({
                         form?.setFieldValue(['targetConfig', FORM_FIELDS.HEADERS], newCode);
                     }}
                 />
-            </Form.Item>
+            </CustomForm.Item>
 
-            <Form.Item name={['targetConfig', FORM_FIELDS.COOKIES]}>
+            <CustomForm.Item name={['targetConfig', FORM_FIELDS.COOKIES]}>
                 <p className="text-sm font-medium !mb-3">Cấu hình cookies:</p>
                 <CodeDisplay
                     title="Cookies"
@@ -210,7 +221,7 @@ const FormGeneric = ({
                         form?.setFieldValue(['targetConfig', FORM_FIELDS.COOKIES], newCode);
                     }}
                 />
-            </Form.Item>
+            </CustomForm.Item>
         </Fragment>
     );
 };
@@ -232,105 +243,108 @@ const FormAPI = ({
 }) => {
     return (
         <Fragment>
-            <Row gutter={[16, 16]}>
-                <Col span={12}>
-                    <Form.Item
+            <CustomRow gutter={[16, 16]}>
+                <CustomCol span={12}>
+                    <CustomForm.Item
                         label="Thời gian delay giữa mỗi lần retry (ms)"
                         tooltip="Thời gian delay giữa mỗi lần retry (ms)"
                         name={['targetConfig', FORM_FIELDS.RETRY_DELAY]}
                     >
-                        <InputNumber
+                        <CustomInputNumber
                             min={0}
                             placeholder="Thời gian delay giữa mỗi lần retry (ms)"
                         />
-                    </Form.Item>
-                </Col>
+                    </CustomForm.Item>
+                </CustomCol>
 
-                <Col span={12}>
-                    <Form.Item
+                <CustomCol span={12}>
+                    <CustomForm.Item
                         label="Số lần thử lại khi có lỗi"
                         tooltip="Số lần thử lại khi có lỗi"
                         name={['targetConfig', FORM_FIELDS.RETRY_ATTEMPTS]}
                     >
-                        <InputNumber min={0} placeholder="Số lần thử lại khi có lỗi" />
-                    </Form.Item>
-                </Col>
+                        <CustomInputNumber min={0} placeholder="Số lần thử lại khi có lỗi" />
+                    </CustomForm.Item>
+                </CustomCol>
 
-                <Col span={24}>
-                    <Form.Item
+                <CustomCol span={24}>
+                    <CustomForm.Item
                         label="Số lượng kết quả tối đa"
                         tooltip="Số lượng kết quả tối đa"
                         name={['targetConfig', FORM_FIELDS.MAX_RESULTS]}
                     >
-                        <InputNumber min={0} placeholder="Số lượng kết quả tối đa" />
-                    </Form.Item>
-                </Col>
-            </Row>
+                        <CustomInputNumber min={0} placeholder="Số lượng kết quả tối đa" />
+                    </CustomForm.Item>
+                </CustomCol>
+            </CustomRow>
 
-            <Form.Item label="Tham số truy vấn" name={['targetConfig', FORM_FIELDS.QUERY_PARAMS]}>
-                <Input placeholder="Tham số truy vấn" />
-            </Form.Item>
-            <Form.Item
+            <CustomForm.Item
+                label="Tham số truy vấn"
+                name={['targetConfig', FORM_FIELDS.QUERY_PARAMS]}
+            >
+                <CustomInput placeholder="Tham số truy vấn" />
+            </CustomForm.Item>
+            <CustomForm.Item
                 label="Tham số truy vấn đầu tiên"
                 name={['targetConfig', FORM_FIELDS.FIRST_QUERY_PARAM]}
             >
-                <Input placeholder="Tham số truy vấn đầu tiên (sử dụng lần đầu tiên cào)" />
-            </Form.Item>
+                <CustomInput placeholder="Tham số truy vấn đầu tiên (sử dụng lần đầu tiên cào)" />
+            </CustomForm.Item>
 
-            <Form.Item label="User-Agent" name={['targetConfig', FORM_FIELDS.USER_AGENT]}>
-                <Input placeholder="User-Agent" />
-            </Form.Item>
+            <CustomForm.Item label="User-Agent" name={['targetConfig', FORM_FIELDS.USER_AGENT]}>
+                <CustomInput placeholder="User-Agent" />
+            </CustomForm.Item>
 
-            <Flex justify="space-between" align="end" gap={10}>
-                <Form.Item
+            <CustomFlex justify="space-between" align="end" gap={10}>
+                <CustomForm.Item
                     label="URL"
                     name={FORM_FIELDS.URL}
                     className="w-full max-w-[calc(100%-50px)]"
                 >
                     {renderFormUrl(FORM_FIELDS.URL)}
-                </Form.Item>
-                <Button
+                </CustomForm.Item>
+                <CustomButton
                     type="primary"
                     className="mb-2"
                     disabled={!url}
                     icon={<LinkOutlined />}
                     onClick={() => window.open(url, '_blank')}
                 />
-            </Flex>
+            </CustomFlex>
 
-            <Form.List name={FORM_FIELDS.ADDITIONAL_URLS}>
+            <CustomForm.List name={FORM_FIELDS.ADDITIONAL_URLS}>
                 {(fields, { add, remove }) => (
                     <Fragment>
                         {fields.map(({ key, name }, index) => (
-                            <Flex
+                            <CustomFlex
                                 key={key}
                                 justify="space-between"
                                 align="center"
                                 gap={10}
                                 className="mt-2"
                             >
-                                <Form.Item
+                                <CustomForm.Item
                                     key={key}
                                     name={name}
                                     className="w-full max-w-[calc(100%-50px)]"
                                 >
                                     {renderFormUrl(FORM_FIELDS.ADDITIONAL_URLS, index)}
-                                </Form.Item>
+                                </CustomForm.Item>
                                 <MinusCircleOutlined
                                     className="mb-2"
                                     onClick={() => remove(name)}
                                 />
-                                <Button
+                                <CustomButton
                                     type="primary"
                                     className="mb-2"
                                     icon={<LinkOutlined />}
                                     disabled={!formUrls?.[index]}
                                     onClick={() => window.open(formUrls?.[index], '_blank')}
                                 />
-                            </Flex>
+                            </CustomFlex>
                         ))}
 
-                        <Button
+                        <CustomButton
                             type="dashed"
                             disabled={false}
                             onClick={() => add()}
@@ -338,12 +352,12 @@ const FormAPI = ({
                             icon={<PlusOutlined />}
                         >
                             Thêm URL bổ sung
-                        </Button>
+                        </CustomButton>
                     </Fragment>
                 )}
-            </Form.List>
+            </CustomForm.List>
 
-            <Form.Item name={['targetConfig', FORM_FIELDS.HEADERS]}>
+            <CustomForm.Item name={['targetConfig', FORM_FIELDS.HEADERS]}>
                 <p className="text-sm font-medium !mb-3">Cấu hình headers:</p>
                 <CodeDisplay
                     title="Headers"
@@ -354,9 +368,9 @@ const FormAPI = ({
                         form?.setFieldValue(['targetConfig', FORM_FIELDS.HEADERS], newCode);
                     }}
                 />
-            </Form.Item>
+            </CustomForm.Item>
 
-            <Form.Item name={['targetConfig', FORM_FIELDS.COOKIES]}>
+            <CustomForm.Item name={['targetConfig', FORM_FIELDS.COOKIES]}>
                 <p className="text-sm font-medium !mb-3">Cấu hình cookies:</p>
                 <CodeDisplay
                     title="Cookies"
@@ -367,7 +381,7 @@ const FormAPI = ({
                         form?.setFieldValue(['targetConfig', FORM_FIELDS.COOKIES], newCode);
                     }}
                 />
-            </Form.Item>
+            </CustomForm.Item>
         </Fragment>
     );
 };
@@ -380,59 +394,62 @@ const FormLocal = ({
     renderFormUrl: (field: string, index?: number) => JSX.Element;
 }) => {
     return (
-        <Row gutter={[16, 16]}>
-            <Col span={12}>
-                <Form.Item
+        <CustomRow gutter={[16, 16]}>
+            <CustomCol span={12}>
+                <CustomForm.Item
                     label="Thời gian delay giữa mỗi lần retry (ms)"
                     tooltip="Thời gian delay giữa mỗi lần retry (ms)"
                     name={['targetConfig', FORM_FIELDS.RETRY_DELAY]}
                 >
-                    <InputNumber min={0} placeholder="Thời gian delay giữa mỗi lần retry (ms)" />
-                </Form.Item>
-            </Col>
+                    <CustomInputNumber
+                        min={0}
+                        placeholder="Thời gian delay giữa mỗi lần retry (ms)"
+                    />
+                </CustomForm.Item>
+            </CustomCol>
 
-            <Col span={12}>
-                <Form.Item
+            <CustomCol span={12}>
+                <CustomForm.Item
                     label="Số lần thử lại khi có lỗi"
                     tooltip="Số lần thử lại khi có lỗi"
                     name={['targetConfig', FORM_FIELDS.RETRY_ATTEMPTS]}
                 >
-                    <InputNumber min={0} placeholder="Số lần thử lại khi có lỗi" />
-                </Form.Item>
-            </Col>
+                    <CustomInputNumber min={0} placeholder="Số lần thử lại khi có lỗi" />
+                </CustomForm.Item>
+            </CustomCol>
 
-            <Col span={24}>
-                <Form.Item
+            <CustomCol span={24}>
+                <CustomForm.Item
                     label="Số lượng kết quả tối đa"
                     tooltip="Số lượng kết quả tối đa"
                     name={['targetConfig', FORM_FIELDS.MAX_RESULTS]}
                 >
-                    <InputNumber min={0} placeholder="Số lượng kết quả tối đa" />
-                </Form.Item>
-            </Col>
-            <Col span={24}>
-                <Flex justify="space-between" align="end" gap={10}>
-                    <Form.Item
+                    <CustomInputNumber min={0} placeholder="Số lượng kết quả tối đa" />
+                </CustomForm.Item>
+            </CustomCol>
+            <CustomCol span={24}>
+                <CustomFlex justify="space-between" align="end" gap={10}>
+                    <CustomForm.Item
                         label="URL"
                         name={FORM_FIELDS.URL}
                         className="w-full max-w-[calc(100%-50px)]"
                     >
                         {renderFormUrl(FORM_FIELDS.URL)}
-                    </Form.Item>
-                    <Button
+                    </CustomForm.Item>
+                    <CustomButton
                         type="primary"
                         className="mb-2"
                         disabled={!url}
                         icon={<LinkOutlined />}
                         onClick={() => window.open(url, '_blank')}
                     />
-                </Flex>
-            </Col>
-        </Row>
+                </CustomFlex>
+            </CustomCol>
+        </CustomRow>
     );
 };
 
-const ScrapeFormItem = ({
+export const ScrapeFormItem = ({
     url,
     formUrls,
     form,
@@ -481,5 +498,3 @@ const ScrapeFormItem = ({
         }
     }
 };
-
-export default ScrapeFormItem;

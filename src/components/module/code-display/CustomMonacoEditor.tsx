@@ -1,5 +1,5 @@
-import { CHEERIO_COMPLETION_ITEMS } from '@/components/module/code-display/utils/completion';
-import { cheerioTypes } from '@/components/module/code-display/utils/type';
+import { CHEERIO_COMPLETION_ITEMS } from './utils/completion';
+import { cheerioTypes } from './utils/type';
 import { Editor, useMonaco } from '@monaco-editor/react';
 import { debounce } from 'lodash';
 import * as monaco from 'monaco-editor';
@@ -55,7 +55,7 @@ const DIAGNOSTICS_OPTIONS: monaco.languages.typescript.DiagnosticsOptions = {
     diagnosticCodesToIgnore: [], // List of error codes to ignore
 };
 
-const CustomMonacoEditor = ({
+export const CustomMonacoEditor = ({
     editedCode,
     onCodeChange,
     language = 'javascript',
@@ -170,5 +170,3 @@ const CustomMonacoEditor = ({
         />
     );
 };
-
-export default CustomMonacoEditor;

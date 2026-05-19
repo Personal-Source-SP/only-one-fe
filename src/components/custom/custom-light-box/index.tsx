@@ -16,7 +16,7 @@ type CustomLightBoxProps = {
     closeLightbox: () => void;
 };
 
-const CustomLightBox = ({
+export const CustomLightBox = ({
     index,
     isOpen,
     slides,
@@ -34,5 +34,3 @@ const CustomLightBox = ({
         />
     );
 };
-
-export default CustomLightBox;

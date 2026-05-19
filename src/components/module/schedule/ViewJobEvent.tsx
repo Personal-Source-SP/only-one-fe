@@ -1,11 +1,9 @@
 'use client';
 
+import { CustomDescriptions, CustomModal, CustomTabs } from '@/components/custom';
 import { StatusTag } from '@/components/common';
-import { CustomModal } from '@/components/custom';
 import { NSchedule } from '@/interfaces';
 import { calculateDuration, formatDate } from '@/libs';
-import { Descriptions, Tabs } from 'antd';
-import TabPane from 'antd/es/tabs/TabPane';
 
 type ViewJobEventProps = {
     isOpen: boolean;
@@ -13,7 +11,57 @@ type ViewJobEventProps = {
     onClose: () => void;
 };
 
-const ViewJobEvent = ({ isOpen, jobEvent, onClose }: ViewJobEventProps) => {
+export const ViewJobEvent = ({ isOpen, jobEvent, onClose }: ViewJobEventProps) => {
+    const tabItems = [
+        {
+            key: 'details',
+            label: 'Chi tiết',
+            children: (
+                <CustomDescriptions column={1} bordered size="small">
+                    <CustomDescriptions.Item label="Loại sự kiện">
+                        <StatusTag status={jobEvent.eventType} />
+                    </CustomDescriptions.Item>
+                    <CustomDescriptions.Item label="Nội dung sự kiện">
+                        {jobEvent.eventMessage ? jobEvent.eventMessage : '-'}
+                    </CustomDescriptions.Item>
+                    <CustomDescriptions.Item label="Thời gian tạo">
+                        {formatDate(jobEvent.createdAt)}
+                    </CustomDescriptions.Item>
+                    <CustomDescriptions.Item label="Thời gian bắt đầu">
+                        {formatDate(jobEvent.startedAt)}
+                    </CustomDescriptions.Item>
+                    <CustomDescriptions.Item label="Thời gian kết thúc">
+                        {formatDate(jobEvent.finishedAt)}
+                    </CustomDescriptions.Item>
+                    <CustomDescriptions.Item label="Thời gian thực hiện">
+                        {calculateDuration(jobEvent.startedAt, jobEvent.finishedAt)}
+                    </CustomDescriptions.Item>
+                    <CustomDescriptions.Item label="Số lần thử">
+                        {jobEvent.retryCount ? `${jobEvent.retryCount} lần` : '-'}
+                    </CustomDescriptions.Item>
+                </CustomDescriptions>
+            ),
+        },
+        {
+            key: 'payload',
+            label: 'Nội dung xử lý',
+            children: (
+                <pre style={{ background: '#f6f8fa', padding: 12, borderRadius: 4 }}>
+                    {JSON.stringify(jobEvent.payload, null, 2)}
+                </pre>
+            ),
+        },
+        {
+            key: 'metaData',
+            label: 'Kết quả',
+            children: (
+                <pre style={{ background: '#f6f8fa', padding: 12, borderRadius: 4 }}>
+                    {JSON.stringify(jobEvent.metaData, null, 2)}
+                </pre>
+            ),
+        },
+    ];
+
     return (
         <CustomModal
             modalProps={{
@@ -25,45 +73,7 @@ const ViewJobEvent = ({ isOpen, jobEvent, onClose }: ViewJobEventProps) => {
                 title: 'Xem sự kiện lịch biểu thực thi',
             }}
         >
-            <Tabs defaultActiveKey="details">
-                <TabPane tab="Chi tiết" key="details">
-                    <Descriptions column={1} bordered size="small">
-                        <Descriptions.Item label="Loại sự kiện">
-                            <StatusTag status={jobEvent.eventType} />
-                        </Descriptions.Item>
-                        <Descriptions.Item label="Nội dung sự kiện">
-                            {jobEvent.eventMessage ? jobEvent.eventMessage : '-'}
-                        </Descriptions.Item>
-                        <Descriptions.Item label="Thời gian tạo">
-                            {formatDate(jobEvent.createdAt)}
-                        </Descriptions.Item>
-                        <Descriptions.Item label="Thời gian bắt đầu">
-                            {formatDate(jobEvent.startedAt)}
-                        </Descriptions.Item>
-                        <Descriptions.Item label="Thời gian kết thúc">
-                            {formatDate(jobEvent.finishedAt)}
-                        </Descriptions.Item>
-                        <Descriptions.Item label="Thời gian thực hiện">
-                            {calculateDuration(jobEvent.startedAt, jobEvent.finishedAt)}
-                        </Descriptions.Item>
-                        <Descriptions.Item label="Số lần thử">
-                            {jobEvent.retryCount ? `${jobEvent.retryCount} lần` : '-'}
-                        </Descriptions.Item>
-                    </Descriptions>
-                </TabPane>
-                <TabPane tab="Nội dung xử lý" key="payload">
-                    <pre style={{ background: '#f6f8fa', padding: 12, borderRadius: 4 }}>
-                        {JSON.stringify(jobEvent.payload, null, 2)}
-                    </pre>
-                </TabPane>
-                <TabPane tab="Kết quả" key="metaData">
-                    <pre style={{ background: '#f6f8fa', padding: 12, borderRadius: 4 }}>
-                        {JSON.stringify(jobEvent.metaData, null, 2)}
-                    </pre>
-                </TabPane>
-            </Tabs>
+            <CustomTabs defaultActiveKey="details" items={tabItems} />
         </CustomModal>
     );
 };
-
-export default ViewJobEvent;

@@ -1,16 +1,14 @@
 'use client';
 
-import { Slider } from 'antd';
-
 type VideoProgressBarProps = {
     progress: number;
     onSeek: (value: number) => void;
 };
 
-const VideoProgressBar = ({ progress, onSeek }: VideoProgressBarProps) => {
+export const VideoProgressBar = ({ progress, onSeek }: VideoProgressBarProps) => {
     return (
         <div className="relative w-full">
-            <Slider
+            <CustomSlider
                 value={progress}
                 onChange={onSeek}
                 tooltip={{ formatter: null }}
@@ -24,5 +22,4 @@ const VideoProgressBar = ({ progress, onSeek }: VideoProgressBarProps) => {
         </div>
     );
 };
-
-export default VideoProgressBar;
+import { CustomSlider } from '@/components/custom';

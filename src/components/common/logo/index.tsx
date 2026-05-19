@@ -1,5 +1,5 @@
+import { CustomFlex } from '@/components/custom';
 import { Icon } from '@iconify/react';
-import { Flex } from 'antd';
 
 type LogoProps = {
     iconSize: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl';
@@ -7,14 +7,12 @@ type LogoProps = {
     textSize?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl';
 };
 
-const Logo = ({ iconSize, textSize, showText = true }: LogoProps) => {
+export const Logo = ({ iconSize, textSize, showText = true }: LogoProps) => {
     return (
-        <Flex align="center" gap={4}>
+        <CustomFlex align="center" gap={4}>
             <Icon icon="cil:arrow-circle-top" className={`text-${iconSize}`} />
             {showText && !!textSize && <span className={`font-medium text-${textSize}`}>Hub</span>}
             <Icon icon="cil:arrow-circle-bottom" className={`text-${iconSize}`} />
-        </Flex>
+        </CustomFlex>
     );
 };
-
-export default Logo;

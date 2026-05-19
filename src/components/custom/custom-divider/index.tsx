@@ -10,7 +10,12 @@ type CustomDividerProps = DividerProps & {
 
 export type { CustomDividerProps };
 
-const CustomDivider = ({ label, children, className, ...dividerProps }: CustomDividerProps) => {
+export const CustomDivider = ({
+    label,
+    children,
+    className,
+    ...dividerProps
+}: CustomDividerProps) => {
     const content = label ?? children;
 
     const mergedClassName = [CUSTOM_DIVIDER_CLASS_NAME, className].filter(Boolean).join(' ');
@@ -21,5 +26,3 @@ const CustomDivider = ({ label, children, className, ...dividerProps }: CustomDi
         </Divider>
     );
 };
-
-export default CustomDivider;

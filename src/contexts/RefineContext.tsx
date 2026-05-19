@@ -3,8 +3,8 @@
 import { Loading, UnsavedChangesNotifierAppRouter } from '@/components/common';
 import { AUTH_PUBLIC_PAGES, KEY_SESSION_STORAGE } from '@/constants';
 import { ColorModeContextProvider } from '@/contexts/ColorModeContext';
-import accessControlProvider from '@/providers/access-control-provider';
-import RestServer, { createSessionAxiosInstance } from '@/providers/data-provider';
+import { accessControlProvider } from '@/providers/access-control-provider';
+import { RestServer, createSessionAxiosInstance } from '@/providers/data-provider';
 import { useNotificationProvider } from '@refinedev/antd';
 import { AuthProvider, Refine } from '@refinedev/core';
 import routerProvider from '@refinedev/nextjs-router';

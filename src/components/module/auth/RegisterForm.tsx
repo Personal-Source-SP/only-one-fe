@@ -1,13 +1,14 @@
 'use client';
 
+import { CustomButton, CustomForm, CustomInput } from '@/components/custom';
+import { notification } from 'antd';
 import { IAuth } from '@/interfaces';
-import { Button, Form, Input, notification } from 'antd';
 import { useCallback } from 'react';
 
-import AuthSocialLogin from './AuthSocialLogin';
+import { AuthSocialLogin } from './AuthSocialLogin';
 
-const RegisterForm = () => {
-    const [form] = Form.useForm<IAuth.IRegisterFormValues>();
+export const RegisterForm = () => {
+    const [form] = CustomForm.useForm<IAuth.IRegisterFormValues>();
 
     const handleRegister = useCallback(async (_values: IAuth.IRegisterFormValues) => {
         notification.info({
@@ -18,16 +19,21 @@ const RegisterForm = () => {
 
     return (
         <>
-            <Form className="space-y-1" form={form} layout="vertical" onFinish={handleRegister}>
-                <Form.Item
+            <CustomForm
+                className="space-y-1"
+                form={form}
+                layout="vertical"
+                onFinish={handleRegister}
+            >
+                <CustomForm.Item
                     label="Họ và tên"
                     name="name"
                     rules={[{ required: true, message: 'Vui lòng nhập họ và tên' }]}
                 >
-                    <Input placeholder="Nhập họ và tên của bạn" />
-                </Form.Item>
+                    <CustomInput placeholder="Nhập họ và tên của bạn" />
+                </CustomForm.Item>
 
-                <Form.Item
+                <CustomForm.Item
                     label="Email"
                     name="email"
                     rules={[
@@ -35,10 +41,10 @@ const RegisterForm = () => {
                         { type: 'email', message: 'Email không hợp lệ' },
                     ]}
                 >
-                    <Input placeholder="Nhập email của bạn" type="email" />
-                </Form.Item>
+                    <CustomInput placeholder="Nhập email của bạn" type="email" />
+                </CustomForm.Item>
 
-                <Form.Item
+                <CustomForm.Item
                     label="Mật khẩu"
                     name="password"
                     rules={[
@@ -46,10 +52,10 @@ const RegisterForm = () => {
                         { min: 8, message: 'Mật khẩu phải có ít nhất 8 ký tự' },
                     ]}
                 >
-                    <Input.Password placeholder="Tạo mật khẩu mới" />
-                </Form.Item>
+                    <CustomInput.Password placeholder="Tạo mật khẩu mới" />
+                </CustomForm.Item>
 
-                <Form.Item
+                <CustomForm.Item
                     dependencies={['password']}
                     label="Xác nhận mật khẩu"
                     name="confirmPassword"
@@ -65,17 +71,15 @@ const RegisterForm = () => {
                         }),
                     ]}
                 >
-                    <Input.Password placeholder="Nhập lại mật khẩu" />
-                </Form.Item>
+                    <CustomInput.Password placeholder="Nhập lại mật khẩu" />
+                </CustomForm.Item>
 
-                <Button block htmlType="submit" size="large" type="primary">
+                <CustomButton block htmlType="submit" size="large" type="primary">
                     Đăng ký
-                </Button>
-            </Form>
+                </CustomButton>
+            </CustomForm>
 
             <AuthSocialLogin googleLabel="Đăng ký với Google" />
         </>
     );
 };
-
-export default RegisterForm;

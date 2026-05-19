@@ -1,16 +1,22 @@
 'use client';
 
-import { CustomLink } from '@/components/custom';
+import {
+    CustomButton,
+    CustomCheckbox,
+    CustomForm,
+    CustomInput,
+    CustomLink,
+} from '@/components/custom';
+import { notification } from 'antd';
 import { KEY_SESSION_STORAGE } from '@/constants';
 import { IAuth } from '@/interfaces';
 import { useLogin } from '@refinedev/core';
-import { Button, Checkbox, Form, Input, notification } from 'antd';
 import { useRouter } from 'next/navigation';
 import { useCallback, useState } from 'react';
 
-import AuthSocialLogin from './AuthSocialLogin';
+import { AuthSocialLogin } from './AuthSocialLogin';
 
-const LoginForm = () => {
+export const LoginForm = () => {
     const { isPending, mutate: login } = useLogin();
 
     const router = useRouter();
@@ -53,40 +59,44 @@ const LoginForm = () => {
 
     return (
         <>
-            <Form className="space-y-1" layout="vertical" onFinish={handleLogin}>
-                <Form.Item
+            <CustomForm className="space-y-1" layout="vertical" onFinish={handleLogin}>
+                <CustomForm.Item
                     label="Email"
                     name="email"
                     rules={[{ required: true, message: 'Vui lòng nhập email' }]}
                 >
-                    <Input placeholder="Nhập email của bạn" type="email" />
-                </Form.Item>
+                    <CustomInput placeholder="Nhập email của bạn" type="email" />
+                </CustomForm.Item>
 
-                <Form.Item
+                <CustomForm.Item
                     label="Mật khẩu"
                     name="password"
                     rules={[{ required: true, message: 'Vui lòng nhập mật khẩu' }]}
                 >
-                    <Input.Password placeholder="Nhập mật khẩu của bạn" />
-                </Form.Item>
+                    <CustomInput.Password placeholder="Nhập mật khẩu của bạn" />
+                </CustomForm.Item>
 
                 <div className="mb-4 flex items-center justify-between">
-                    <Checkbox
+                    <CustomCheckbox
                         checked={rememberMe}
                         onChange={(e) => setRememberMe(e.target.checked)}
                     >
                         Ghi nhớ đăng nhập
-                    </Checkbox>
+                    </CustomCheckbox>
                     <CustomLink href="/forget-password">Quên mật khẩu?</CustomLink>
                 </div>
-                <Button block htmlType="submit" loading={isPending} size="large" type="primary">
+                <CustomButton
+                    block
+                    htmlType="submit"
+                    loading={isPending}
+                    size="large"
+                    type="primary"
+                >
                     Đăng nhập
-                </Button>
-            </Form>
+                </CustomButton>
+            </CustomForm>
 
             <AuthSocialLogin googleLabel="Đăng nhập với Google" />
         </>
     );
 };
-
-export default LoginForm;

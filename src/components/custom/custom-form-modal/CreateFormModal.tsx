@@ -1,7 +1,8 @@
 'use client';
 
-import CustomModal from '@/components/custom/custom-modal';
-import CodeDisplay from '@/components/module/code-display';
+import { MessageType } from '@/enums';
+import { CustomModal } from '@/components/custom';
+import { CodeDisplay } from '@/components/module/code-display';
 
 import { useMainContext } from '@/contexts/MainContext';
 import { useCustomModal } from '@/hooks';
@@ -193,7 +194,7 @@ export const renderFormFields = (formField: FormFieldItem, formProps: FormProps<
     );
 };
 
-const CreateFormModal = ({
+export const CreateFormModal = ({
     open,
     resource,
     formFields,
@@ -215,7 +216,7 @@ const CreateFormModal = ({
         onMutationSuccess: (data) => {
             if (!data?.data?.data) {
                 handleMessage({
-                    type: 'error',
+                    type: MessageType.ERROR,
                     content: 'Tạo thất bại',
                 });
             }
@@ -229,7 +230,7 @@ const CreateFormModal = ({
         },
         onMutationError: (error) => {
             handleMessage({
-                type: 'error',
+                type: MessageType.ERROR,
                 content: error.message || 'Tạo thất bại',
             });
         },
@@ -294,7 +295,7 @@ const CreateFormModal = ({
                                 setIsSubmitting(true);
                                 try {
                                     const token = session?.user?.accessToken;
-                                    const headers: HeadersInit = {};
+                                    const headers: Record<string, string> = {};
 
                                     if (token) {
                                         headers['Authorization'] = `Bearer ${token}`;
@@ -316,13 +317,13 @@ const CreateFormModal = ({
                                         onClose?.();
                                     } else {
                                         handleMessage({
-                                            type: 'error',
+                                            type: MessageType.ERROR,
                                             content: data?.errorMessage || 'Tạo thất bại',
                                         });
                                     }
                                 } catch (error: any) {
                                     handleMessage({
-                                        type: 'error',
+                                        type: MessageType.ERROR,
                                         content: error?.message || 'Tạo thất bại',
                                     });
                                 } finally {
@@ -344,5 +345,3 @@ const CreateFormModal = ({
         </CustomModal>
     );
 };
-
-export default CreateFormModal;

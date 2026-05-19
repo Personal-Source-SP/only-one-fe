@@ -1,5 +1,5 @@
 import { DataProviderSearchStatus, DataProviderStatus, ProductMappingStatus } from '@/enums';
-import { Abstract } from '@/interfaces/common';
+import { Abstract } from '@/interfaces';
 import { NCloudData } from './cloud-data';
 
 export declare namespace NDataProvider {

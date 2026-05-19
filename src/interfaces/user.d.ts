@@ -1,4 +1,4 @@
-import { NGoogle } from '@/interfaces/google';
+import { NGoogle } from '@/interfaces';
 
 export declare namespace NUser {
     interface IUser {

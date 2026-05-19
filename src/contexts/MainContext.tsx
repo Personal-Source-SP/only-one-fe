@@ -1,14 +1,15 @@
 'use client';
 
+import { message, notification } from 'antd';
 import { Loading } from '@/components/common';
 import { SocketProvider } from '@/contexts/SocketContext';
 import { MessageType, NotificationType, Theme } from '@/enums';
-import { message, notification } from 'antd';
+
 import { NoticeType } from 'antd/es/message/interface';
 import { IconType } from 'antd/es/notification/interface';
 import { createContext, PropsWithChildren, useContext, useState } from 'react';
 
-import MainLayout from '@/components/layout';
+import { MainLayout } from '@/components/layout';
 
 interface IMessageProps {
     content: string;

@@ -1,15 +1,15 @@
 'use client';
 
+import { CustomBackTop } from '@/components/custom';
 import { Icon } from '@iconify/react';
-import { FloatButton } from 'antd';
 
 import { useMainContext } from '@/contexts/MainContext';
 
-const ScrollToTop = () => {
+export const ScrollToTop = () => {
     const { scrollToTop } = useMainContext();
 
     return (
-        <FloatButton
+        <CustomBackTop
             type="primary"
             onClick={scrollToTop}
             tooltip="Lên đầu trang"
@@ -18,5 +18,3 @@ const ScrollToTop = () => {
         />
     );
 };
-
-export default ScrollToTop;

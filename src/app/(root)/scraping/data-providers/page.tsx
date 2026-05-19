@@ -1,9 +1,16 @@
 'use client';
 
+import {
+    ColumnType,
+    ColumnsType,
+    CreateFormModal,
+    CustomButton,
+    EditFormModal,
+    TableContainer,
+} from '@/components/custom';
 import { StatusTag } from '@/components/common';
-import { CreateFormModal, EditFormModal, TableContainer } from '@/components/custom';
 import { ProcessScrapeData, ScrapeSetting } from '@/components/module/data-provider';
-import ImportData from '@/components/module/import-data';
+import { ImportData } from '@/components/module/import-data';
 import {
     CustomFilterType,
     DataImportType,
@@ -19,9 +26,6 @@ import {
 import { ActionTableItem, FilterItem, FormFieldItem, NDataProvider } from '@/interfaces';
 import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
-import { Button } from 'antd';
-import { ColumnsType } from 'antd/es/table';
-import { ColumnType } from 'antd/lib/table';
 import { Fragment, ReactNode, useState } from 'react';
 
 const DataProviderPage = () => {
@@ -288,7 +292,7 @@ const DataProviderPage = () => {
     ];
 
     const actionButtons: ReactNode[] = [
-        <Button
+        <CustomButton
             type="primary"
             key="scrape-data"
             title="Cào dữ liệu"
@@ -296,8 +300,8 @@ const DataProviderPage = () => {
             onClick={() => setOpenProcessScrapeDataModal(true)}
         >
             Cào
-        </Button>,
-        <Button
+        </CustomButton>,
+        <CustomButton
             type="primary"
             title="Nhập nhà cung cấp"
             key="import-data-provider"
@@ -305,8 +309,8 @@ const DataProviderPage = () => {
             onClick={() => setOpenImportItemModal(true)}
         >
             Nhập
-        </Button>,
-        <Button
+        </CustomButton>,
+        <CustomButton
             type="primary"
             key="add-data-provider"
             title="Thêm nhà cung cấp"
@@ -314,7 +318,7 @@ const DataProviderPage = () => {
             onClick={() => setOpenCreateItemModal(true)}
         >
             Thêm
-        </Button>,
+        </CustomButton>,
     ];
 
     return (

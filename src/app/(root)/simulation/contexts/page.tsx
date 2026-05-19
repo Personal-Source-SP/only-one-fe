@@ -1,14 +1,21 @@
 'use client';
 
+import {
+    ColumnsType,
+    CreateFormModal,
+    CustomButton,
+    CustomElement,
+    CustomSpace,
+    EditFormModal,
+    TableContainer,
+} from '@/components/custom';
+import { MessageType } from '@/enums';
 import { StatusTag } from '@/components/common';
-import { CreateFormModal, CustomElement, EditFormModal, TableContainer } from '@/components/custom';
 import { ElementType, SimulationService } from '@/enums';
 import { useCustomMutationData, useTableContainer } from '@/hooks';
 import { ActionTableItem, FormFieldItem, NSimulation } from '@/interfaces';
 import { enumToOptions, formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
-import { Button, Space } from 'antd';
-import { ColumnsType } from 'antd/es/table';
 import { useState } from 'react';
 
 const SimulationContextsPage = () => {
@@ -130,7 +137,7 @@ const SimulationContextsPage = () => {
                     setLoading(false);
 
                     return {
-                        type: 'error',
+                        type: MessageType.ERROR,
                         message: 'Tạo mô phỏng thất bại',
                         description: data?.data?.message ?? 'Tạo mô phỏng thất bại',
                     };
@@ -141,7 +148,7 @@ const SimulationContextsPage = () => {
                 tableContainerData?.tableQuery?.refetch();
 
                 return {
-                    type: 'success',
+                    type: MessageType.SUCCESS,
                     message: 'Tạo mô phỏng thành công',
                 };
             },
@@ -149,7 +156,7 @@ const SimulationContextsPage = () => {
                 setLoading(false);
 
                 return {
-                    type: 'error',
+                    type: MessageType.ERROR,
                     message: 'Tạo mô phỏng thất bại',
                     description: error?.message ?? 'Tạo mô phỏng thất bại',
                 };
@@ -158,11 +165,11 @@ const SimulationContextsPage = () => {
     };
 
     return (
-        <Space size="middle" direction="vertical" className="w-full h-full">
+        <CustomSpace size="middle" direction="vertical" className="w-full h-full">
             <CustomElement
                 elementType={ElementType.TITLE}
                 actions={[
-                    <Button
+                    <CustomButton
                         type="primary"
                         title="Thêm ngữ cảnh mô phỏng"
                         key="add-simulation-context"
@@ -217,7 +224,7 @@ const SimulationContextsPage = () => {
                     tableContainerData?.tableQuery?.refetch();
                 }}
             />
-        </Space>
+        </CustomSpace>
     );
 };
 

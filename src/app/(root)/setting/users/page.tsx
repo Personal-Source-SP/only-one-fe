@@ -1,12 +1,10 @@
 'use client';
 
-import { TableContainer } from '@/components/custom';
+import { ColumnsType, CustomSpace, TableContainer } from '@/components/custom';
 import { useCustomModal, useTableContainer } from '@/hooks';
 import { NGoogle, NUser } from '@/interfaces';
 import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
-import { Space } from 'antd';
-import { ColumnsType } from 'antd/es/table';
 
 const UsersPage = () => {
     const tableContainerData = useTableContainer({
@@ -67,7 +65,7 @@ const UsersPage = () => {
     ];
 
     return (
-        <Space size="middle" direction="vertical" className="w-full h-full">
+        <CustomSpace size="middle" direction="vertical" className="w-full h-full">
             <TableContainer
                 resource="users"
                 columns={columns}
@@ -85,7 +83,7 @@ const UsersPage = () => {
                     placeholder: 'Tìm kiếm người dùng',
                 }}
             />
-        </Space>
+        </CustomSpace>
     );
 };
 

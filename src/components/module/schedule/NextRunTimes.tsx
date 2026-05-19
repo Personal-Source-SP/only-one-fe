@@ -1,4 +1,4 @@
-import { Card, Col, Row, Tag, Typography } from 'antd';
+import { CustomCard, CustomCol, CustomRow, CustomTag, CustomTypography } from '@/components/custom';
 import { CronExpressionParser } from 'cron-parser';
 import { Fragment } from 'react';
 
@@ -24,28 +24,28 @@ type NextRunTimesProps = {
     count?: number;
 };
 
-const NextRunTimes = ({ cron, count = 6 }: NextRunTimesProps) => {
+export const NextRunTimes = ({ cron, count = 6 }: NextRunTimesProps) => {
     if (!cron) return <Fragment></Fragment>;
 
     const nextRunTimes = getNextRunTimes(cron, count);
 
     return (
-        <Card title={`${count} lần chạy gần nhất`} size="small">
+        <CustomCard title={`${count} lần chạy gần nhất`} size="small">
             {nextRunTimes.length > 0 ? (
-                <Row gutter={[8, 8]}>
+                <CustomRow gutter={[8, 8]}>
                     {nextRunTimes.map((time, idx) => (
-                        <Col span={8} key={idx}>
-                            <Tag key={idx} color="blue">
+                        <CustomCol span={8} key={idx}>
+                            <CustomTag key={idx} color="blue">
                                 {time}
-                            </Tag>
-                        </Col>
+                            </CustomTag>
+                        </CustomCol>
                     ))}
-                </Row>
+                </CustomRow>
             ) : (
-                <Typography.Text type="secondary">Biểu thức cron không hợp lệ</Typography.Text>
+                <CustomTypography.Text type="secondary">
+                    Biểu thức cron không hợp lệ
+                </CustomTypography.Text>
             )}
-        </Card>
+        </CustomCard>
     );
 };
-
-export default NextRunTimes;

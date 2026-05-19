@@ -1,8 +1,18 @@
 'use client';
 
-import { CustomElement, CustomLightBox, TableContainer } from '@/components/custom';
+import {
+    ColumnsType,
+    CustomButton,
+    CustomElement,
+    CustomFlex,
+    CustomLightBox,
+    CustomSegmented,
+    CustomSpace,
+    TableContainer,
+} from '@/components/custom';
+import { MessageType } from '@/enums';
 import { ProcessScrapeData } from '@/components/module/data-provider';
-import FileGroups from '@/components/module/file-group';
+import { FileGroups } from '@/components/module/file-group';
 import { useMainContext } from '@/contexts/MainContext';
 import { CustomFilterType, DisplayMode, ElementType, ViewFileMode } from '@/enums';
 import {
@@ -15,8 +25,6 @@ import {
 import { ActionTableItem, FileItem, FilterItem, NBaseApi, NDataProvider } from '@/interfaces';
 import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
-import { Button, Flex, Segmented, Space } from 'antd';
-import { ColumnsType } from 'antd/es/table';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 
@@ -48,7 +56,7 @@ const ScrapingDataPage = () => {
     const { handleDelete } = useCustomDelete({
         resource: 'scraping-data',
         errorNotification: (error: any) => ({
-            type: 'error',
+            type: MessageType.ERROR,
             message: error?.message || 'Xóa dữ liệu không thành công',
         }),
         successNotification: (data: NBaseApi.IResponse<boolean>) => {
@@ -63,7 +71,7 @@ const ScrapingDataPage = () => {
             }
 
             handleMessage({
-                type: 'error',
+                type: MessageType.ERROR,
                 content: 'Xóa dữ liệu không thành công',
             });
 
@@ -199,11 +207,11 @@ const ScrapingDataPage = () => {
             align: 'center',
             render: (url: string) =>
                 url ? (
-                    <Flex align="center" justify="center">
+                    <CustomFlex align="center" justify="center">
                         <Link href={url} target="_blank" rel="noopener noreferrer">
                             <img src={url} alt="Xem" className="!h-20" />
                         </Link>
-                    </Flex>
+                    </CustomFlex>
                 ) : (
                     '---'
                 ),
@@ -228,11 +236,11 @@ const ScrapingDataPage = () => {
     };
 
     return (
-        <Space size="middle" direction="vertical" className="w-full h-full">
+        <CustomSpace size="middle" direction="vertical" className="w-full h-full">
             <CustomElement
                 title={
-                    <Space align="center" className="rounded-md">
-                        <Segmented
+                    <CustomSpace align="center" className="rounded-md">
+                        <CustomSegmented
                             size="middle"
                             value={displayMode}
                             onChange={(val) => setDisplayMode(val as DisplayMode)}
@@ -257,25 +265,25 @@ const ScrapingDataPage = () => {
                                 },
                             ]}
                         />
-                    </Space>
+                    </CustomSpace>
                 }
                 elementType={ElementType.TITLE}
                 actions={[
-                    <Button
+                    <CustomButton
                         type="primary"
                         key="scrape-data"
                         title="Cào dữ liệu"
                         icon={<Icon icon="lucide:file-text" />}
                         onClick={() => setOpenProcessScrapeDataModal(true)}
                     />,
-                    <Button
+                    <CustomButton
                         type="primary"
                         key="slideshow"
                         title="Trình chiếu"
                         icon={<Icon icon="lucide:play" />}
                         onClick={() => setIsLightboxOpen(true)}
                     />,
-                    <Button
+                    <CustomButton
                         type="primary"
                         key="delete-data"
                         title="Xóa dữ liệu"
@@ -330,7 +338,7 @@ const ScrapingDataPage = () => {
                     }}
                 />
             )}
-        </Space>
+        </CustomSpace>
     );
 };
 

@@ -1,10 +1,19 @@
 'use client';
 
-import { CustomModal } from '@/components/custom';
+import {
+    CustomButton,
+    CustomCol,
+    CustomForm,
+    CustomInput,
+    CustomModal,
+    CustomRow,
+    CustomSelect,
+    CustomSpace,
+    CustomSpin,
+} from '@/components/custom';
 import { useCustomModal } from '@/hooks';
 import { Option } from '@/interfaces';
 import { Icon } from '@iconify/react';
-import { Button, Col, Form, Input, Row, Select, Space, Spin } from 'antd';
 
 type FolderModalProps = {
     folderOptions: Option[];
@@ -18,7 +27,12 @@ const FieldsEnum = {
     ParentFolderId: 'parentFolderId',
 };
 
-const FolderModal = ({ folderOptions, modalPropsData, onSubmit, onClose }: FolderModalProps) => {
+export const FolderModal = ({
+    folderOptions,
+    modalPropsData,
+    onSubmit,
+    onClose,
+}: FolderModalProps) => {
     const { open, modalProps, formProps, formLoading, close } = modalPropsData;
 
     return (
@@ -33,29 +47,29 @@ const FolderModal = ({ folderOptions, modalPropsData, onSubmit, onClose }: Folde
                 onCancel: onClose ?? close,
             }}
         >
-            <Spin spinning={formLoading}>
-                <Space direction="vertical" className="w-full h-full px-3 overflow-x-hidden">
-                    <Form
+            <CustomSpin spinning={formLoading}>
+                <CustomSpace direction="vertical" className="w-full h-full px-3 overflow-x-hidden">
+                    <CustomForm
                         {...formProps}
                         layout="vertical"
                         onFinish={onSubmit}
                         className="[&_.ant-form-item]:!mb-2"
                     >
-                        <Row gutter={[16, 8]}>
-                            <Col span={24}>
-                                <Form.Item
+                        <CustomRow gutter={[16, 8]}>
+                            <CustomCol span={24}>
+                                <CustomForm.Item
                                     label="Tên thư mục"
                                     name={FieldsEnum.Name}
                                     rules={[
                                         { required: true, message: 'Vui lòng nhập tên thư mục' },
                                     ]}
                                 >
-                                    <Input placeholder="Tên thư mục" />
-                                </Form.Item>
-                            </Col>
-                            <Col span={24}>
-                                <Form.Item label="Thư mục" name={FieldsEnum.ParentFolderId}>
-                                    <Select
+                                    <CustomInput placeholder="Tên thư mục" />
+                                </CustomForm.Item>
+                            </CustomCol>
+                            <CustomCol span={24}>
+                                <CustomForm.Item label="Thư mục" name={FieldsEnum.ParentFolderId}>
+                                    <CustomSelect
                                         allowClear
                                         showSearch
                                         placeholder="Thư mục cha"
@@ -63,28 +77,26 @@ const FolderModal = ({ folderOptions, modalPropsData, onSubmit, onClose }: Folde
                                             (item) => item.value !== formProps.initialValues?.id,
                                         )}
                                         filterOption={(input, option) =>
-                                            (option?.label ?? '')
+                                            String(option?.label ?? '')
                                                 .toLowerCase()
                                                 .includes(input.toLowerCase())
                                         }
                                     />
-                                </Form.Item>
-                            </Col>
+                                </CustomForm.Item>
+                            </CustomCol>
 
-                            <Button
+                            <CustomButton
                                 type="primary"
                                 htmlType="submit"
                                 className="w-full"
                                 icon={<Icon icon="lucide:x" />}
                             >
                                 <span>Chỉnh sửa</span>
-                            </Button>
-                        </Row>
-                    </Form>
-                </Space>
-            </Spin>
+                            </CustomButton>
+                        </CustomRow>
+                    </CustomForm>
+                </CustomSpace>
+            </CustomSpin>
         </CustomModal>
     );
 };
-
-export default FolderModal;

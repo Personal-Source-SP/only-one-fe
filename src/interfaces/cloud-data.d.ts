@@ -1,5 +1,5 @@
 import { CloudDataProviderType } from '@/enums';
-import { Abstract } from '@/interfaces/common';
+import { Abstract } from '@/interfaces';
 
 export declare namespace NCloudData {
     interface ICloudDataItem extends Abstract {

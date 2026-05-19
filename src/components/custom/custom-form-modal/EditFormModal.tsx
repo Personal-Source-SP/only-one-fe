@@ -1,8 +1,9 @@
 'use client';
 
-import CustomModal from '@/components/custom/custom-modal';
+import { MessageType } from '@/enums';
+import { CustomModal } from '@/components/custom';
 
-import { renderFormFields } from '@/components/custom/custom-form-modal/CreateFormModal';
+import { renderFormFields } from './CreateFormModal';
 import { useMainContext } from '@/contexts/MainContext';
 import { useCustomModal } from '@/hooks';
 import { FormFieldItem } from '@/interfaces';
@@ -23,7 +24,7 @@ type EditFormModalProps = {
     onTransformValues?: (values: any) => Record<string, any>;
 };
 
-const EditFormModal = ({
+export const EditFormModal = ({
     id,
     resource,
     formFields,
@@ -43,7 +44,7 @@ const EditFormModal = ({
         onMutationSuccess: (data) => {
             if (!data?.data?.data) {
                 handleMessage({
-                    type: 'error',
+                    type: MessageType.ERROR,
                     content: 'Chỉnh sửa thất bại',
                 });
             }
@@ -57,7 +58,7 @@ const EditFormModal = ({
         },
         onMutationError: (error) => {
             handleMessage({
-                type: 'error',
+                type: MessageType.ERROR,
                 content: error.message || 'Chỉnh sửa thất bại',
             });
         },
@@ -131,5 +132,3 @@ const EditFormModal = ({
         </CustomModal>
     );
 };
-
-export default EditFormModal;

@@ -4,7 +4,7 @@ import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
 import { isEmpty } from 'lodash';
 import { stringify } from 'querystring';
 
-export default class BaseApi {
+export class BaseApi {
     private httpClient: AxiosInstance;
 
     constructor(request: NBaseApi.IRequest) {

@@ -1,7 +1,7 @@
 'use client';
 
+import { CustomButton, CustomSlider, CustomSpace } from '@/components/custom';
 import { SoundOutlined } from '@ant-design/icons';
-import { Button, Slider, Space } from 'antd';
 
 type VideoVolumeControlProps = {
     volume: number;
@@ -10,15 +10,15 @@ type VideoVolumeControlProps = {
     onVolumeChange: (value: number) => void;
 };
 
-const VideoVolumeControl = ({
+export const VideoVolumeControl = ({
     volume,
     isMuted,
     onToggleMute,
     onVolumeChange,
 }: VideoVolumeControlProps) => {
     return (
-        <Space.Compact className="items-center gap-2 group/volume ml-1 sm:ml-2">
-            <Button
+        <CustomSpace.Compact className="items-center gap-2 group/volume ml-1 sm:ml-2">
+            <CustomButton
                 type="text"
                 onClick={onToggleMute}
                 style={{ width: 'auto', height: 'auto' }}
@@ -26,7 +26,7 @@ const VideoVolumeControl = ({
                 className="text-white hover:text-indigo-400 border-none"
             />
             <div className="hidden sm:block w-0 overflow-hidden group-hover/volume:w-20 transition-all duration-300">
-                <Slider
+                <CustomSlider
                     min={0}
                     max={1}
                     step={0.05}
@@ -40,8 +40,6 @@ const VideoVolumeControl = ({
                     }}
                 />
             </div>
-        </Space.Compact>
+        </CustomSpace.Compact>
     );
 };
-
-export default VideoVolumeControl;

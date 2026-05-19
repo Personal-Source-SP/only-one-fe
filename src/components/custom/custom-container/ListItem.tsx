@@ -22,7 +22,7 @@ type ListItemProps = {
     setCurrentPage?: (page: number) => void;
 };
 
-const ListItem = ({
+export const ListItem = ({
     record,
     columns,
     resource,
@@ -128,7 +128,7 @@ const ListItem = ({
                                                 icon: action.icon,
                                                 onClick: () => action.onClick(record),
                                             })) || []),
-                                            ...(Boolean(onRefetch && resource)
+                                            ...(onRefetch && resource
                                                 ? [
                                                       {
                                                           type: 'divider' as const,
@@ -194,5 +194,3 @@ const ListItem = ({
         </Card>
     );
 };
-
-export default ListItem;
