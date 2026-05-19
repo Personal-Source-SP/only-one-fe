@@ -1,0 +1,36 @@
+---
+description: Only One Hub — stack, cấu trúc thư mục và quy ước chung
+alwaysApply: true
+---
+
+# Only One Hub — Project Overview
+
+Next.js 16 (App Router) + React 19 + TypeScript + Ant Design 5 + Refine.dev + Tailwind/DaisyUI + Zustand + NextAuth + Socket.io.
+
+## Cấu trúc `src/`
+
+| Thư mục                                       | Mục đích                                               |
+| --------------------------------------------- | ------------------------------------------------------ |
+| `app/`                                        | Routes: `(public)/` login, `(root)/` protected, `api/` |
+| `components/common`                           | UI dùng chung (StatusTag, Loading, …)                  |
+| `components/custom`                           | Wrapper Ant Design (CustomModal, TableContainer, …)    |
+| `components/layout`                           | Header, Sidebar, Footer                                |
+| `components/module/`                          | Feature UI (scraping, schedule, gallery, …)            |
+| `hooks/`                                      | Custom hooks (useTableContainer, useCustomModal, …)    |
+| `services/`                                   | API classes (extends BaseApi)                          |
+| `interfaces/`                                 | Types `.d.ts` với namespace (`NSchedule`, …)           |
+| `enums/`                                      | Domain constants                                       |
+| `constants/`, `libs/`, `stores/`, `contexts/` | Hỗ trợ                                                 |
+
+## Nguyên tắc chung
+
+- **Import**: dùng alias `@/…` (ESLint bắt buộc; chỉ cùng folder mới được relative).
+- **Data CRUD**: ưu tiên Refine (`useTable`, `useModalForm`, `useTableContainer`).
+- **UI**: Ant Design cho form/table/modal; Tailwind cho layout/spacing responsive.
+- **Utils**: lodash thay vì tự viết lại (`isEmpty`, `debounce`, …).
+- **Phạm vi thay đổi**: tối thiểu, không refactor ngoài yêu cầu.
+- Mỗi folder component/module có `index.ts` barrel export.
+
+## Scripts
+
+`npm run dev` | `build` | `lint` | `lint:fix` | `prettier`
