@@ -3,11 +3,7 @@ import { PropsWithChildren } from 'react';
 
 export const AuthLayout = ({ children }: PropsWithChildren) => {
     return (
-        <main className="relative min-h-screen w-full overflow-x-hidden bg-[#F8FAFC]">
-            <div
-                aria-hidden
-                className="pointer-events-none absolute inset-0 bg-[radial-gradient(#2563EB_0.5px,transparent_0.5px)] [background-size:24px_24px] opacity-[0.03]"
-            />
+        <main className="relative min-h-screen w-full overflow-x-hidden bg-hub-bg">
             <div className="relative flex min-h-screen w-full flex-col items-center justify-center px-4 py-8 sm:px-6 md:py-12 lg:py-16">
                 <CustomSpace
                     size="small"

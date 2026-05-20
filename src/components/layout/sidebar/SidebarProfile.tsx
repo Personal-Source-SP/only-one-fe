@@ -48,18 +48,18 @@ export const SidebarProfile = ({ isCollapsed }: SidebarProfileProps) => {
 
     return (
         <div
-            className={`border-t border-slate-100/10 ${isDark ? 'bg-black/10' : 'bg-slate-50/50'} ${isCollapsed ? 'md:p-2' : 'p-4'} pb-safe`}
+            className={`border-t border-hub-border ${isDark ? 'bg-black/10' : 'bg-hub-bg'} ${isCollapsed ? 'md:p-2' : 'p-4'} pb-safe`}
         >
             <CustomFlex
                 align="center"
                 gap={isCollapsed ? 0 : 12}
                 justify={isCollapsed ? 'center' : 'flex-start'}
-                className="p-2 rounded-xl hover:bg-white/10 transition-all border border-transparent active:bg-black/20 group"
+                className="group rounded-xl border border-transparent p-2 transition-all hover:bg-hub-active active:bg-hub-border"
             >
                 <CustomAvatar
                     size={36}
                     src={session?.user?.image}
-                    className="flex-shrink-0 bg-gradient-to-br from-indigo-500 to-purple-600"
+                    className="flex-shrink-0 bg-hub-primary"
                 >
                     {getUserInitial()}
                 </CustomAvatar>

@@ -22,14 +22,14 @@ export const VideoPlaybackControls = ({
                 icon={<ReloadOutlined />}
                 onClick={() => onSkip(-10)}
                 style={{ width: 'auto', height: 'auto' }}
-                className="text-white/80 hover:text-indigo-400 p-1 border-none"
+                className="text-white/80 hover:text-hub-primary p-1 border-none"
             />
 
             <CustomButton
                 type="text"
                 onClick={onTogglePlay}
                 style={{ width: 'auto', height: 'auto' }}
-                className="text-white hover:text-indigo-400 border-none"
+                className="text-white hover:text-hub-primary border-none"
                 icon={
                     isPlaying ? (
                         <PauseOutlined className="text-xl sm:text-2xl" />
@@ -45,7 +45,7 @@ export const VideoPlaybackControls = ({
                 onClick={() => onSkip(10)}
                 style={{ width: 'auto', height: 'auto' }}
                 icon={<ReloadOutlined className="scale-x-[-1]" />}
-                className="text-white/80 hover:text-indigo-400 p-1 border-none"
+                className="text-white/80 hover:text-hub-primary p-1 border-none"
             />
         </CustomSpace>
     );

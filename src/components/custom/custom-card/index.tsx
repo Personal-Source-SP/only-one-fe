@@ -6,9 +6,10 @@ import {
     CUSTOM_CARD_DEFAULT_HEADER_CLASS_NAME,
     CUSTOM_CARD_DESCRIPTION_CLASS_NAME,
     CUSTOM_CARD_PADDING_CLASS_MAP,
+    CUSTOM_CARD_SHADOW_CLASS_NAME,
     CUSTOM_CARD_TITLE_CLASS_NAME,
 } from '@/constants';
-import { CustomCardPadding } from '@/interfaces';
+import { CustomCardPadding, CustomCardShadow } from '@/interfaces';
 import { Card, CardProps } from 'antd';
 import { ReactNode, useMemo } from 'react';
 
@@ -17,6 +18,7 @@ type CustomCardProps = CardProps & {
     header?: ReactNode;
     description?: ReactNode;
     paddingSize?: CustomCardPadding;
+    shadow?: CustomCardShadow;
     footerClassName?: string;
     headerClassName?: string;
 };
@@ -47,6 +49,7 @@ export const CustomCard = ({
     className,
     description,
     paddingSize = 'default',
+    shadow = 'none',
     footerClassName,
     headerClassName,
     ...cardProps
@@ -73,6 +76,7 @@ export const CustomCard = ({
 
     const mergedClassName = [
         CUSTOM_CARD_BASE_CLASS_NAME,
+        shadow === 'sm' ? CUSTOM_CARD_SHADOW_CLASS_NAME : '',
         CUSTOM_CARD_PADDING_CLASS_MAP[paddingSize],
         className,
     ]

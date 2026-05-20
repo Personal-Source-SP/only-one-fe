@@ -3,8 +3,12 @@
 import { CustomButton, CustomInput, CustomSelect } from '@/components/custom';
 import {
     CUSTOM_FILTER_BADGE_CLASS_NAME,
+    CUSTOM_FILTER_CLEAR_LABEL,
     CUSTOM_FILTER_LABEL_CLASS_NAME,
     CUSTOM_FILTER_PANEL_CLASS_NAME,
+    CUSTOM_FILTER_SEARCH_LABEL,
+    CUSTOM_FILTER_TOGGLE_COLLAPSE_LABEL,
+    CUSTOM_FILTER_TOGGLE_EXPAND_LABEL,
 } from '@/constants';
 import { CustomFilterType } from '@/enums';
 import { FilterItem } from '@/interfaces';
@@ -37,10 +41,12 @@ const renderFilterItem = (filterItem: FilterItem, index: number, isMobile: boole
         case CustomFilterType.SEARCH: {
             return (
                 <Col span={isMobile ? 24 : span} key={index}>
-                    <label className={CUSTOM_FILTER_LABEL_CLASS_NAME}>{title || 'Tìm kiếm'}</label>
+                    <label className={CUSTOM_FILTER_LABEL_CLASS_NAME}>
+                        {title || CUSTOM_FILTER_SEARCH_LABEL}
+                    </label>
                     <CustomInput
                         touchFriendly={isMobile}
-                        placeholder={placeholder ?? 'Tìm kiếm'}
+                        placeholder={placeholder ?? CUSTOM_FILTER_SEARCH_LABEL}
                         prefix={<Icon icon="lucide:search" className="text-hub-muted" />}
                         onChange={(e: ChangeEvent<HTMLInputElement>) =>
                             onChange?.(e.target.value.trim())
@@ -116,7 +122,7 @@ export const CustomFilter = ({
                     {onClearFilters && (
                         <Col flex="none">
                             <CustomButton type="default" onClick={handleClearFilters}>
-                                Xóa lọc
+                                {CUSTOM_FILTER_CLEAR_LABEL}
                             </CustomButton>
                         </Col>
                     )}
@@ -137,7 +143,7 @@ export const CustomFilter = ({
                     <CustomInput
                         touchFriendly
                         className="w-full"
-                        placeholder={searchFilter.placeholder ?? 'Tìm kiếm'}
+                        placeholder={searchFilter.placeholder ?? CUSTOM_FILTER_SEARCH_LABEL}
                         prefix={<Icon icon="lucide:search" className="text-hub-muted" />}
                         onChange={(e: ChangeEvent<HTMLInputElement>) =>
                             searchFilter.onChange?.(e.target.value.trim())
@@ -148,12 +154,17 @@ export const CustomFilter = ({
                 <Space direction="horizontal" size={8}>
                     {!!selectFilters.length && (
                         <CustomButton
+                            touchFriendly
                             type="default"
                             icon={<Icon icon="lucide:filter" />}
                             onClick={() => setCollapsed(!collapsed)}
-                            className="rounded-lg border border-hub-border p-3"
+                            className="rounded-lg border border-hub-border px-3"
                         >
-                            <span>{collapsed ? 'Thu gọn bộ lọc' : 'Bộ lọc'}</span>
+                            <span>
+                                {collapsed
+                                    ? CUSTOM_FILTER_TOGGLE_COLLAPSE_LABEL
+                                    : CUSTOM_FILTER_TOGGLE_EXPAND_LABEL}
+                            </span>
                             {hasActiveFilters && (
                                 <span className={CUSTOM_FILTER_BADGE_CLASS_NAME}>
                                     {filterValues?.length}
@@ -170,7 +181,7 @@ export const CustomFilter = ({
                             icon={
                                 <Icon icon="lucide:refresh-cw" className="h-4 w-4 text-hub-muted" />
                             }
-                            aria-label="Xóa lọc"
+                            aria-label={CUSTOM_FILTER_CLEAR_LABEL}
                         />
                     )}
                 </Space>

@@ -27,7 +27,7 @@ export const StatCard = ({ title, value, color, change, icon, trend }: StatCardP
     }, [trend]);
 
     return (
-        <div className="group relative bg-white rounded-xl p-3 sm:p-5 border border-slate-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col justify-between h-full">
+        <div className="group relative flex h-full flex-col justify-between overflow-hidden rounded-hub-card border border-hub-border-card bg-hub-surface p-3 transition-all duration-300 hover:-translate-y-0.5 hover:bg-hub-bg sm:p-5">
             <div
                 className={`absolute top-0 left-0 w-full h-1 bg-${colorClass} opacity-0 group-hover:opacity-100 transition-opacity`}
             />

@@ -96,7 +96,7 @@ export const VideoControlsBar = ({
                         onClick={onTogglePiP}
                         title="Picture in Picture"
                         style={{ width: 'auto', height: 'auto' }}
-                        className="text-white hover:text-indigo-400 border-none"
+                        className="text-white hover:text-hub-primary border-none"
                         icon={<Icon icon="lucide:picture-in-picture" className="text-lg" />}
                     />
 
@@ -105,7 +105,7 @@ export const VideoControlsBar = ({
                         title="Toàn màn hình"
                         onClick={onToggleFullscreen}
                         style={{ width: 'auto', height: 'auto' }}
-                        className="text-white hover:text-indigo-400 border-none"
+                        className="text-white hover:text-hub-primary border-none"
                         icon={isFullscreen ? <CompressOutlined /> : <ExpandOutlined />}
                     />
                 </CustomSpace>

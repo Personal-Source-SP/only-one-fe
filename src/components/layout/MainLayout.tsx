@@ -166,7 +166,7 @@ export const MainLayout = ({ children }: PropsWithChildren) => {
 
                 {/* Page Content */}
                 <Suspense fallback={<Loading />}>
-                    <main className="flex-1 p-0 md:p-4 !pt-20 min-h-screen max-w-[100vw] w-full flex flex-col overflow-hidden">
+                    <div className="flex min-h-0 w-full max-w-full flex-1 flex-col overflow-x-hidden overflow-y-auto p-0 pt-14 md:p-4 md:pt-16">
                         <CustomSpace
                             size="middle"
                             direction="vertical"
@@ -189,7 +189,7 @@ export const MainLayout = ({ children }: PropsWithChildren) => {
                         <div className="shrink-0">
                             <Footer />
                         </div>
-                    </main>
+                    </div>
                 </Suspense>
 
                 {/* Scroll to Top */}

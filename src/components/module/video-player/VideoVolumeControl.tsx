@@ -23,7 +23,7 @@ export const VideoVolumeControl = ({
                 onClick={onToggleMute}
                 style={{ width: 'auto', height: 'auto' }}
                 icon={<SoundOutlined className="text-lg" />}
-                className="text-white hover:text-indigo-400 border-none"
+                className="text-white hover:text-hub-primary border-none"
             />
             <div className="hidden sm:block w-0 overflow-hidden group-hover/volume:w-20 transition-all duration-300">
                 <CustomSlider

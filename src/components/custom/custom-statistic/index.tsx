@@ -1,7 +1,8 @@
 'use client';
 
+import { CUSTOM_STATISTIC_ITEM_CLASS_NAME } from '@/constants';
 import { Statistic, StatisticProps } from 'antd';
-import { ReactNode } from 'react';
+import { Children, ReactNode, isValidElement } from 'react';
 
 type CustomStatisticProps = StatisticProps;
 
@@ -18,11 +19,24 @@ export const CustomStatistic = Object.assign(
         Countdown: Statistic.Countdown,
         Group: ({ children, className }: CustomStatisticGroupProps) => (
             <div
-                className={['grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4', className]
+                className={[
+                    'grid max-w-full grid-cols-2 gap-4 overflow-x-hidden sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4',
+                    className,
+                ]
                     .filter(Boolean)
                     .join(' ')}
             >
-                {children}
+                {Children.map(children, (child, index) => {
+                    if (!isValidElement(child)) {
+                        return child;
+                    }
+
+                    return (
+                        <div key={child.key ?? index} className={CUSTOM_STATISTIC_ITEM_CLASS_NAME}>
+                            {child}
+                        </div>
+                    );
+                })}
             </div>
         ),
     },

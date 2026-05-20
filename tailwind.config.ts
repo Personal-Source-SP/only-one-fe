@@ -21,6 +21,7 @@ const config: Config = {
                     title: 'var(--hub-title)',
                     muted: 'var(--hub-muted)',
                     success: 'var(--hub-success)',
+                    active: 'var(--hub-active)',
                 },
                 background: 'var(--hub-bg)',
             },

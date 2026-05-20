@@ -43,17 +43,18 @@ export const SidebarMobile = ({
                 onClose={() => setMobileOpen(false)}
                 className="md:hidden [&_.ant-drawer-body]:!p-0 [&_.ant-drawer-body]:!h-full [&_.ant-drawer-body]:!flex [&_.ant-drawer-body]:!flex-col"
             >
-                <div className="flex items-center justify-between border-b border-divider flex-shrink-0">
+                <div className="flex flex-shrink-0 items-center justify-between border-b border-hub-border">
                     <div className="flex items-center gap-2 h-[32px] px-4">
                         <Logo iconSize="2xl" textSize="lg" />
                     </div>
                     <CustomButton
+                        touchFriendly
                         type="text"
                         shape="circle"
                         aria-label="Close sidebar"
                         onClick={() => setMobileOpen(false)}
                         icon={<Icon icon="lucide:x" className="text-lg" />}
-                        className="text-foreground-500 hover:text-foreground-700"
+                        className="min-h-11 min-w-11 text-hub-muted hover:text-hub-text"
                     />
                 </div>
 

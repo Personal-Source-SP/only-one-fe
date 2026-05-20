@@ -41,14 +41,14 @@ export const VideoPlaybackSpeedMenu = ({
                                 type={playbackRate === rate ? 'primary' : 'text'}
                                 className={`text-left ${
                                     playbackRate === rate
-                                        ? 'text-indigo-400 font-bold'
+                                        ? 'text-hub-primary font-bold'
                                         : 'text-slate-300'
                                 }`}
                             >
                                 <CustomFlex justify="space-between" align="center">
                                     <span>{rate}x</span>
                                     {playbackRate === rate && (
-                                        <div className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
+                                        <div className="w-1.5 h-1.5 rounded-full bg-hub-primary" />
                                     )}
                                 </CustomFlex>
                             </CustomButton>
@@ -62,7 +62,7 @@ export const VideoPlaybackSpeedMenu = ({
                 title="Tốc độ phát"
                 style={{ width: 'auto', height: 'auto' }}
                 onClick={() => onOpenChange(!isSettingsOpen)}
-                className="text-white hover:text-indigo-400 border-none"
+                className="text-white hover:text-hub-primary border-none"
                 icon={<SettingOutlined className={isSettingsOpen ? 'rotate-45' : ''} />}
             />
         </CustomDropdown>

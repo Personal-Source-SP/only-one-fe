@@ -195,7 +195,7 @@ export const FullScreenGallery = ({ isOpen, onClose, mediaItems }: FullScreenGal
                             icon={<PictureOutlined />}
                             onClick={() => setFilter(MediaType.IMAGE)}
                             type={filter === MediaType.IMAGE ? 'primary' : 'text'}
-                            className={`px-2 sm:px-3 text-xs font-medium flex items-center gap-1.5 ${filter === MediaType.IMAGE ? 'bg-indigo-600' : 'text-slate-400 hover:text-white'}`}
+                            className={`px-2 sm:px-3 text-xs font-medium flex items-center gap-1.5 ${filter === MediaType.IMAGE ? 'bg-hub-primary' : 'text-slate-400 hover:text-white'}`}
                         >
                             <span className="hidden sm:inline">Ảnh</span>
                         </CustomButton>
@@ -225,7 +225,7 @@ export const FullScreenGallery = ({ isOpen, onClose, mediaItems }: FullScreenGal
                                         }
                                         className={`p-1.5 sm:p-2 ${
                                             isPlaying
-                                                ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/30'
+                                                ? 'bg-hub-primary text-white shadow-lg shadow-hub-primary/30'
                                                 : 'hover:bg-slate-700 text-slate-300'
                                         }`}
                                     />
@@ -264,7 +264,7 @@ export const FullScreenGallery = ({ isOpen, onClose, mediaItems }: FullScreenGal
                                                             }}
                                                             className={`text-left ${
                                                                 slideInterval === time
-                                                                    ? 'bg-indigo-600 text-white'
+                                                                    ? 'bg-hub-primary text-white'
                                                                     : 'hover:bg-slate-700 text-slate-300'
                                                             }`}
                                                         >

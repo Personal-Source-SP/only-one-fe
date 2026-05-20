@@ -33,7 +33,7 @@ export const VideoCenterOverlay = ({ isPlaying, seekFeedback }: VideoCenterOverl
                 <div
                     className={`transition-all duration-300 transform ${isPlaying ? 'opacity-0 scale-150' : 'opacity-100 scale-100'}`}
                 >
-                    <div className="bg-black/40 p-4 sm:p-5 rounded-full backdrop-blur-sm border border-white/20 shadow-xl group-hover:bg-indigo-600/80 group-hover:border-indigo-400 transition-colors">
+                    <div className="bg-black/40 p-4 sm:p-5 rounded-full backdrop-blur-sm border border-white/20 shadow-xl group-hover:bg-hub-primary/80 group-hover:border-hub-primary transition-colors">
                         <PlayCircleOutlined className="text-2xl sm:text-3xl text-white translate-x-1" />
                     </div>
                 </div>

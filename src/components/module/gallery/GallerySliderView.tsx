@@ -92,7 +92,7 @@ export const GallerySliderView = ({
                             <CustomButton
                                 type="link"
                                 onClick={onClearFilter}
-                                className="text-indigo-400"
+                                className="text-hub-primary"
                             >
                                 Xem tất cả
                             </CustomButton>
@@ -115,7 +115,7 @@ export const GallerySliderView = ({
                     type="text"
                     onClick={onPrev}
                     icon={<LeftOutlined />}
-                    className="absolute left-2 sm:left-4 md:left-8 p-2 sm:p-3 bg-black/20 hover:bg-indigo-600/80 backdrop-blur-sm rounded-full text-white transition-all transform hover:scale-110 z-20 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 border-none h-auto"
+                    className="absolute left-2 sm:left-4 md:left-8 p-2 sm:p-3 bg-black/20 hover:bg-hub-primary/80 backdrop-blur-sm rounded-full text-white transition-all transform hover:scale-110 z-20 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 border-none h-auto"
                     style={{ width: 'auto', height: 'auto' }}
                 />
 
@@ -146,7 +146,7 @@ export const GallerySliderView = ({
                     onClick={onNext}
                     icon={<RightOutlined />}
                     style={{ width: 'auto', height: 'auto' }}
-                    className="absolute right-2 sm:right-4 md:right-8 p-2 sm:p-3 bg-black/20 hover:bg-indigo-600/80 backdrop-blur-sm rounded-full text-white transition-all transform hover:scale-110 z-20 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 border-none h-auto"
+                    className="absolute right-2 sm:right-4 md:right-8 p-2 sm:p-3 bg-black/20 hover:bg-hub-primary/80 backdrop-blur-sm rounded-full text-white transition-all transform hover:scale-110 z-20 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 border-none h-auto"
                 />
 
                 {/* Image Info Overlay - Only show for Images, Video has its own controls */}
@@ -155,7 +155,7 @@ export const GallerySliderView = ({
                         className={`absolute bottom-4 sm:bottom-8 left-1/2 -translate-x-1/2 bg-black/60 backdrop-blur-md px-4 py-2 sm:px-6 sm:py-3 rounded-xl sm:rounded-full flex flex-col sm:flex-row items-start sm:items-center gap-1 sm:gap-4 transition-opacity duration-300 w-[90%] sm:w-auto max-w-full ${isPlaying ? 'opacity-30 hover:opacity-100' : 'opacity-100 sm:opacity-0 sm:group-hover:opacity-100'}`}
                     >
                         <div className="flex items-center gap-2 text-xs sm:text-sm text-slate-300 sm:border-r border-white/20 pr-0 sm:pr-4 w-full sm:w-auto">
-                            <PictureOutlined className="text-indigo-400 flex-shrink-0 text-sm" />
+                            <PictureOutlined className="text-hub-primary flex-shrink-0 text-sm" />
                             <span className="truncate">
                                 {getDisplayTime(currentItem.createdAt)}
                             </span>
@@ -175,7 +175,7 @@ export const GallerySliderView = ({
 
                         <div className="hidden sm:flex items-center">
                             {isPlaying && (
-                                <span className="flex items-center gap-1 text-xs text-indigo-400 border-l border-white/20 pl-3">
+                                <span className="flex items-center gap-1 text-xs text-hub-primary border-l border-white/20 pl-3">
                                     <ClockCircleOutlined className="text-xs" />{' '}
                                     {slideInterval / 1000}s
                                 </span>
@@ -213,7 +213,7 @@ export const GallerySliderView = ({
                             style={{ width: '56px', height: '56px', padding: 0 }}
                             className={`relative flex-shrink-0 w-14 h-14 sm:w-16 sm:h-16 rounded-lg overflow-hidden border-2 transition-all p-0 ${
                                 idx === currentIndex
-                                    ? 'border-indigo-500 opacity-100 ring-2 ring-indigo-500/30'
+                                    ? 'border-hub-primary opacity-100 ring-2 ring-hub-primary/30'
                                     : 'border-transparent opacity-50 hover:opacity-80'
                             }`}
                         >

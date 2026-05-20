@@ -1,10 +1,13 @@
 'use client';
 
 import {
+    HUB_COLOR_ACTIVE_BG,
+    HUB_COLOR_BG,
     HUB_COLOR_BORDER,
     HUB_COLOR_BORDER_CARD,
-    HUB_COLOR_CTA,
+    HUB_COLOR_MUTED,
     HUB_COLOR_PRIMARY,
+    HUB_COLOR_SURFACE,
     HUB_COLOR_TEXT,
     HUB_COLOR_TITLE,
     HUB_RADIUS,
@@ -36,8 +39,8 @@ export const ColorModeContextProvider = ({
                     borderRadius: HUB_RADIUS,
                     borderRadiusLG: HUB_RADIUS_CARD,
                     borderRadiusSM: 4,
-                    colorBgContainer: '#FFFFFF',
-                    colorBgLayout: '#F8FAFC',
+                    colorBgContainer: HUB_COLOR_SURFACE,
+                    colorBgLayout: HUB_COLOR_BG,
                     colorBorder: HUB_COLOR_BORDER,
                     colorBorderSecondary: HUB_COLOR_BORDER_CARD,
                     colorError: '#DC2626',
@@ -45,7 +48,7 @@ export const ColorModeContextProvider = ({
                     colorPrimaryText: HUB_COLOR_TITLE,
                     colorPrimaryTextActive: HUB_COLOR_TITLE,
                     colorText: HUB_COLOR_TEXT,
-                    colorTextSecondary: '#64748B',
+                    colorTextSecondary: HUB_COLOR_MUTED,
                     controlHeight: 40,
                     controlHeightLG: HUB_TOUCH_MIN_HEIGHT,
                     controlHeightSM: 32,
@@ -73,7 +76,7 @@ export const ColorModeContextProvider = ({
                     },
                     Card: {
                         borderRadiusLG: HUB_RADIUS_CARD,
-                        boxShadowTertiary: '0 1px 2px 0 rgba(0, 0, 0, 0.04)',
+                        boxShadowTertiary: 'none',
                         colorBorderSecondary: HUB_COLOR_BORDER_CARD,
                         padding: 16,
                         paddingLG: 24,
@@ -83,12 +86,12 @@ export const ColorModeContextProvider = ({
                         boxShadow: 'none',
                     },
                     Layout: {
-                        bodyBg: '#F8FAFC',
-                        headerBg: '#FFFFFF',
-                        siderBg: '#FFFFFF',
+                        bodyBg: HUB_COLOR_BG,
+                        headerBg: HUB_COLOR_SURFACE,
+                        siderBg: HUB_COLOR_SURFACE,
                     },
                     Menu: {
-                        colorItemBgSelected: '#EFF6FF',
+                        colorItemBgSelected: HUB_COLOR_ACTIVE_BG,
                         fontSize: 14,
                         fontWeightStrong: 500,
                         itemBorderRadius: HUB_RADIUS,
@@ -103,10 +106,10 @@ export const ColorModeContextProvider = ({
                         titleFontSize: 18,
                     },
                     Select: {
-                        optionSelectedBg: '#EFF6FF',
+                        optionSelectedBg: HUB_COLOR_ACTIVE_BG,
                     },
                     Table: {
-                        headerBg: '#F8FAFC',
+                        headerBg: HUB_COLOR_BG,
                         headerColor: HUB_COLOR_TITLE,
                     },
                     Tabs: {

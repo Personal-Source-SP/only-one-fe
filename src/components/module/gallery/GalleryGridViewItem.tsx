@@ -29,7 +29,7 @@ export const GalleryGridViewItem = ({
             key={item.id}
             onClick={() => onItemClick(index)}
             style={{ width: '100%', padding: 0 }}
-            className="group relative aspect-square bg-slate-800 rounded-xl overflow-hidden cursor-pointer border border-slate-800 hover:border-indigo-500 transition-all duration-300 p-0 h-auto"
+            className="group relative aspect-square bg-slate-800 rounded-xl overflow-hidden cursor-pointer border border-slate-800 hover:border-hub-primary transition-all duration-300 p-0 h-auto"
         >
             <img
                 loading="lazy"

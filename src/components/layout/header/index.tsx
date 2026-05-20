@@ -83,9 +83,10 @@ export const Header = ({
             <CustomFlex align="center">
                 <Breadcrumb />
                 <CustomButton
+                    touchFriendly
                     type="text"
                     shape="circle"
-                    className="mr-2 md:hidden"
+                    className="mr-2 min-h-11 min-w-11 md:hidden"
                     onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                     icon={<Icon icon="lucide:menu" className="text-xl" />}
                 />
@@ -98,11 +99,12 @@ export const Header = ({
         return (
             <CustomFlex align="center" gap={8} className="md:gap-4">
                 <CustomButton
+                    touchFriendly
                     type="text"
                     shape="circle"
-                    className="md:hidden"
+                    className="min-h-11 min-w-11 md:hidden"
                     onClick={() => setShowSearch(!showSearch)}
-                    icon={<Icon icon="lucide:search" className="text-xl text-foreground-600" />}
+                    icon={<Icon icon="lucide:search" className="text-xl text-hub-muted" />}
                 />
 
                 <div className="relative hidden md:block">
@@ -139,9 +141,9 @@ export const Header = ({
 
     return (
         <section
-            className={`h-16 flex items-center justify-between px-4 bg-white fixed top-0 z-40 ${
+            className={`fixed top-0 z-40 flex h-14 items-center justify-between border-b border-hub-border bg-hub-surface px-4 md:h-16 ${
                 sidebarCollapsed ? 'md:left-16 md:right-0' : 'md:left-64 md:right-0'
-            } left-0 right-0 border-b`}
+            } left-0 right-0`}
         >
             {renderNavbarLeft()}
             {renderNavbarRight()}

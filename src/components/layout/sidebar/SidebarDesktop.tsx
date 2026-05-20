@@ -30,12 +30,12 @@ export const SidebarDesktop = ({
     return (
         <aside
             key="sidebar-desktop"
-            className={`hidden md:flex md:flex-col md:fixed md:inset-y-0 bg-white border-r transition-all duration-300 ${
+            className={`hidden border-r border-hub-border bg-hub-surface transition-all duration-300 md:fixed md:inset-y-0 md:flex md:flex-col ${
                 collapsed ? 'md:w-16' : 'md:w-64'
             }`}
         >
             <div
-                className={`flex items-center h-16 border-b border-divider ${
+                className={`flex h-16 items-center border-b border-hub-border ${
                     collapsed ? 'justify-center px-2' : 'justify-between px-4'
                 }`}
             >
@@ -51,7 +51,7 @@ export const SidebarDesktop = ({
                         title="Collapse sidebar"
                         onClick={handleToggleCollapse}
                         icon={<Icon icon="lucide:panel-left-close" className="w-5 h-5" />}
-                        className="flex items-center justify-center p-1.5 rounded-lg hover:bg-slate-50 text-slate-600 transition-all duration-200"
+                        className="flex items-center justify-center rounded-lg p-1.5 text-hub-muted transition-all duration-200 hover:bg-hub-bg hover:text-hub-text"
                     />
                 )}
             </div>

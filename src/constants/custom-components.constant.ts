@@ -11,6 +11,7 @@ export const HUB_COLOR_TEXT = '#1E293B';
 export const HUB_COLOR_TITLE = '#111527';
 export const HUB_COLOR_MUTED = '#64748B';
 export const HUB_COLOR_SUCCESS = '#16A34A';
+export const HUB_COLOR_ACTIVE_BG = '#EFF6FF';
 export const HUB_RADIUS = 8;
 export const HUB_RADIUS_CARD = 12;
 export const HUB_MODAL_WIDTH = 1200;
@@ -26,7 +27,9 @@ export const CUSTOM_CARD_PADDING_CLASS_MAP: Record<CustomCardPadding, string> = 
 };
 
 export const CUSTOM_CARD_BASE_CLASS_NAME =
-    'w-full rounded-xl border border-hub-border-card bg-hub-surface shadow-sm';
+    'w-full rounded-hub-card border border-hub-border-card bg-hub-surface';
+
+export const CUSTOM_CARD_SHADOW_CLASS_NAME = 'shadow-sm';
 
 export const CUSTOM_CARD_TITLE_CLASS_NAME = 'text-lg font-medium text-hub-title';
 
@@ -54,8 +57,19 @@ export const CUSTOM_BUTTON_CTA_CLASS_NAME =
 export const CUSTOM_BUTTON_TOUCH_CLASS_NAME = 'min-h-11 sm:min-h-9';
 
 // --- CustomInput ---
+export const CUSTOM_INPUT_HUB_CLASS_NAME =
+    '[&_.ant-input]:rounded-hub [&_.ant-input]:border-hub-border';
+
 export const CUSTOM_INPUT_CLASS_NAME =
     'min-h-11 sm:min-h-10 [&_.ant-input]:min-h-11 sm:[&_.ant-input]:min-h-10';
+
+export const CUSTOM_FILTER_CLEAR_LABEL = 'Xóa lọc';
+
+export const CUSTOM_FILTER_SEARCH_LABEL = 'Tìm kiếm';
+
+export const CUSTOM_FILTER_TOGGLE_COLLAPSE_LABEL = 'Thu gọn bộ lọc';
+
+export const CUSTOM_FILTER_TOGGLE_EXPAND_LABEL = 'Bộ lọc';
 
 // --- CustomFilter ---
 export const CUSTOM_FILTER_PANEL_CLASS_NAME =
@@ -81,8 +95,10 @@ export const CUSTOM_ALERT_SUCCESS_CLASS_NAME =
 // --- CustomTag status presets ---
 export const CUSTOM_TAG_STATUS_CLASS_MAP = {
     active: 'border-green-200 bg-green-100 text-green-800',
-    running: 'border-blue-200 bg-blue-100 text-blue-800',
     draft: 'border-slate-200 bg-slate-100 text-slate-600',
+    error: 'border-red-200 bg-red-100 text-red-800',
+    running: 'border-blue-200 bg-blue-100 text-blue-800',
+    warning: 'border-amber-200 bg-amber-100 text-amber-800',
 } as const;
 
 // --- CustomElement / TableContainer shell ---
@@ -93,11 +109,15 @@ export const CUSTOM_ELEMENT_CARD_CLASS_NAME =
     'w-full bg-hub-surface md:rounded-xl md:border md:border-hub-border-card';
 
 // --- Sidebar nav (Style A active state) ---
-export const SIDEBAR_NAV_ACTIVE_CLASS_NAME = 'bg-blue-50/80 text-hub-primary shadow-sm';
+export const SIDEBAR_NAV_ACTIVE_CLASS_NAME = 'bg-hub-active text-hub-primary';
 
 export const SIDEBAR_NAV_ACTIVE_INDICATOR_CLASS_NAME =
     'absolute left-0 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-full bg-hub-primary';
 
 export const SIDEBAR_NAV_ICON_ACTIVE_CLASS_NAME = 'text-hub-primary';
 
-export const SIDEBAR_NAV_SUB_ACTIVE_CLASS_NAME = 'bg-blue-50 font-medium text-hub-primary';
+export const SIDEBAR_NAV_SUB_ACTIVE_CLASS_NAME = 'bg-hub-active font-medium text-hub-primary';
+
+// --- CustomStatistic ---
+export const CUSTOM_STATISTIC_ITEM_CLASS_NAME =
+    'rounded-hub border border-hub-border-card bg-hub-surface p-4';
