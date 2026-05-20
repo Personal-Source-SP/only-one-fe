@@ -1,6 +1,5 @@
 'use client';
 
-import { FormModalLayout } from '@/components/common';
 import { useMainContext } from '@/contexts/MainContext';
 import { MessageType } from '@/enums';
 import { useCustomModal } from '@/hooks';
@@ -8,7 +7,9 @@ import { FormFieldItem } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { Button, Flex, Form, Row, Space, Spin } from 'antd';
 import { ReactNode, useCallback, useEffect } from 'react';
-import { renderFormFields } from './CreateFormDialog';
+
+import { renderFormFields } from './FormFields';
+import { FormModalLayout } from './FormModalLayout';
 
 type EditFormDialogProps = {
     id: string;

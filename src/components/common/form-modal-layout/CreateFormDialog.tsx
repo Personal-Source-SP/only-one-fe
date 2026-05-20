@@ -1,30 +1,17 @@
 'use client';
 
-import { FormModalLayout } from '@/components/common';
 import { useMainContext } from '@/contexts/MainContext';
 import { MessageType } from '@/enums';
 import { useCustomModal } from '@/hooks';
 import { FormFieldItem } from '@/interfaces';
-import { CodeDisplay } from '@/components/module/code-display';
 import { Icon } from '@iconify/react';
 import { useApiUrl } from '@refinedev/core';
-import {
-    Button,
-    Col,
-    Flex,
-    Form,
-    FormProps,
-    Input,
-    Row,
-    Select,
-    Space,
-    Spin,
-    Switch,
-    Upload,
-    UploadFile,
-} from 'antd';
+import { Button, Flex, Form, Row, Space, Spin } from 'antd';
 import { useSession } from 'next-auth/react';
-import React, { ChangeEvent, ReactNode, useCallback, useEffect } from 'react';
+import { ReactNode, useCallback, useEffect, useState } from 'react';
+
+import { renderFormFields } from './FormFields';
+import { FormModalLayout } from './FormModalLayout';
 
 type CreateFormDialogProps = {
     open: boolean;
@@ -39,159 +26,6 @@ type CreateFormDialogProps = {
     onTransformValues?: (values: any) => Record<string, any>;
 };
 
-export const renderFormFields = (formField: FormFieldItem, formProps: FormProps<any>) => {
-    let formFieldElement = null;
-    const formItemProps: Record<string, any> = {
-        name: formField.name,
-        rules: formField.rules,
-        tooltip: formField.tooltip,
-    };
-
-    if (formField.type !== 'switch') {
-        formItemProps.label = formField.label;
-    }
-
-    switch (formField.type) {
-        case 'input': {
-            const { placeholder, addonAfter, addonBefore } = formField.inputProps ?? {};
-            formFieldElement = (
-                <Input
-                    addonAfter={addonAfter}
-                    addonBefore={addonBefore}
-                    placeholder={placeholder}
-                    disabled={formField.disabled ?? false}
-                    onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                        formField.onChange?.(e.target.value, formProps?.form)
-                    }
-                />
-            );
-            break;
-        }
-
-        case 'select': {
-            const { placeholder, options, allowClear, showSearch } = formField.selectProps ?? {};
-            formFieldElement = (
-                <Select
-                    options={options ?? []}
-                    placeholder={placeholder}
-                    disabled={formField.disabled ?? false}
-                    allowClear={allowClear ?? true}
-                    showSearch={showSearch ?? true}
-                    onChange={(value) => formField.onChange?.(value, formProps?.form)}
-                />
-            );
-            break;
-        }
-
-        case 'textarea': {
-            const { placeholder, rows } = formField.textareaProps ?? {};
-            formFieldElement = (
-                <Input.TextArea
-                    rows={rows ?? 4}
-                    placeholder={placeholder}
-                    disabled={formField.disabled ?? false}
-                    onClear={() => formField.onChange?.('', formProps?.form)}
-                    onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
-                        formField.onChange?.(e.target.value, formProps?.form)
-                    }
-                />
-            );
-            break;
-        }
-
-        case 'switch': {
-            formFieldElement = (
-                <Switch
-                    disabled={formField.disabled ?? false}
-                    onChange={(value) => formField.onChange?.(value, formProps?.form)}
-                />
-            );
-            break;
-        }
-
-        case 'code-display': {
-            formFieldElement = <CodeDisplay code="" {...(formField.codeProps ?? {})} />;
-            Object.assign(formItemProps, {
-                valuePropName: 'code',
-                trigger: 'onCodeChange',
-                getValueProps: (value: string) => {
-                    if (!value) return { code: '{}' };
-                    if (typeof value === 'string') return { code: value };
-
-                    try {
-                        return { code: JSON.stringify(value, null, 2) };
-                    } catch {
-                        return { code: String(value) };
-                    }
-                },
-                getValueFromEvent: (value: string) => {
-                    formField.onChange?.(value, formProps?.form);
-                    return value ?? '';
-                },
-            });
-            break;
-        }
-
-        case 'upload': {
-            const { accept, maxCount, multiple } = formField.uploadProps ?? {};
-            formFieldElement = (
-                <Upload.Dragger
-                    accept={accept}
-                    maxCount={maxCount ?? 1}
-                    beforeUpload={() => false}
-                    multiple={multiple ?? false}
-                    disabled={formField.disabled ?? false}
-                >
-                    <Space size="small" direction="vertical" align="center">
-                        <p className="ant-upload-drag-icon">
-                            <Icon icon="lucide:upload" style={{ fontSize: '48px' }} />
-                        </p>
-                        <p className="ant-upload-text font-medium text-lg mt-4">
-                            Kéo thả hoặc click để chọn file
-                        </p>
-                        <p className="ant-upload-hint text-gray-500">
-                            {accept ? `Định dạng hỗ trợ: ${accept}` : 'Chọn file để tải lên'}
-                        </p>
-                    </Space>
-                </Upload.Dragger>
-            );
-            Object.assign(formItemProps, {
-                valuePropName: 'fileList',
-                getValueFromEvent: (e: { fileList: UploadFile[] }) => {
-                    formField.onChange?.(e.fileList, formProps?.form);
-                    return e.fileList;
-                },
-            });
-            break;
-        }
-
-        default:
-            return <></>;
-    }
-
-    return (
-        <Col span={formField.span ?? 24} key={formField.name} hidden={formField.hidden ?? false}>
-            {formField.elementTopRender && formField.elementTopRender}
-
-            {formField.type === 'switch' ? (
-                <Flex align="center" justify="space-between">
-                    <div>
-                        <p className="font-medium !my-0">{formField.label}</p>
-                        <p className="text-sm text-gray-500 !my-0">
-                            {formField.switchProps?.placeholder}
-                        </p>
-                    </div>
-                    <Form.Item {...formItemProps}>{formFieldElement}</Form.Item>
-                </Flex>
-            ) : (
-                <Form.Item {...formItemProps}>{formFieldElement}</Form.Item>
-            )}
-
-            {formField.elementBottomRender && formField.elementBottomRender}
-        </Col>
-    );
-};
-
 export const CreateFormDialog = ({
     open,
     resource,
@@ -204,12 +38,14 @@ export const CreateFormDialog = ({
     onClose,
     onTransformValues,
 }: CreateFormDialogProps) => {
-    const { handleMessage } = useMainContext();
     const apiUrl = useApiUrl();
-    const { data: session } = useSession();
-    const [isSubmitting, setIsSubmitting] = React.useState(false);
 
-    const modalPropsData = useCustomModal({
+    const { data: session } = useSession();
+    const { handleMessage } = useMainContext();
+
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const { show, close, formProps, modalProps, formLoading } = useCustomModal({
         resource: resource,
         onMutationSuccess: (data) => {
             if (!data?.data?.data) {
@@ -234,8 +70,6 @@ export const CreateFormDialog = ({
         },
     });
 
-    const { show, close, formProps, modalProps, formLoading } = modalPropsData;
-
     useEffect(() => {
         if (open) {
             show();
@@ -251,8 +85,8 @@ export const CreateFormDialog = ({
                     type="primary"
                     htmlType="submit"
                     className="w-full"
-                    loading={formLoading || isSubmitting}
                     icon={<Icon icon="lucide:plus" />}
+                    loading={formLoading || isSubmitting}
                     onClick={() => formProps.form?.submit()}
                 >
                     <span>Tạo mới</span>

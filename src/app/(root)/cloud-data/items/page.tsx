@@ -24,9 +24,7 @@ import { useMemo, useState } from 'react';
 const CloudDataItem = () => {
     const [openCreateItemModal, setOpenCreateItemModal] = useState(false);
 
-    const tableContainerData = useTableContainer({
-        resource: 'cloud-data-items',
-    });
+    const tableContainerData = useTableContainer({ resource: 'cloud-data-items' });
 
     const { options: cloudDataProviderOptions } = useSelectCloudDataProvider();
 
