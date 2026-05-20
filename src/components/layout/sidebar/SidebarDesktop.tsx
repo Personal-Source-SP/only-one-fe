@@ -1,10 +1,10 @@
 import { CustomButton, CustomPopover } from '@/components/custom';
-import { Logo } from '@/components/common';
 import { SIDEBAR_ITEMS } from '@/constants';
 import { SidebarItem } from '@/interfaces';
 import { Icon } from '@iconify/react';
 
 import { SidebarNavItem } from '@/components/layout/sidebar/SidebarNavItem';
+import { SidebarLogo } from '@/components/layout/sidebar/SidebarLogo';
 import { SidebarPopoverContent } from '@/components/layout/sidebar/SidebarPopoverContent';
 import { SidebarProfile } from '@/components/layout/sidebar/SidebarProfile';
 
@@ -36,14 +36,14 @@ export const SidebarDesktop = ({
         >
             <div
                 className={`flex h-16 items-center border-b border-hub-border ${
-                    collapsed ? 'justify-center px-2' : 'justify-between px-4'
+                    collapsed ? 'justify-center px-2' : 'relative justify-center px-4'
                 }`}
             >
                 <div
                     onClick={handleLogoClick}
                     className={`flex items-center ${collapsed ? 'cursor-pointer hover:opacity-80 transition-opacity' : ''}`}
                 >
-                    <Logo iconSize="2xl" textSize={collapsed ? 'sm' : 'lg'} showText={!collapsed} />
+                    <SidebarLogo compact={collapsed} />
                 </div>
                 {!collapsed && (
                     <CustomButton
@@ -51,7 +51,7 @@ export const SidebarDesktop = ({
                         title="Collapse sidebar"
                         onClick={handleToggleCollapse}
                         icon={<Icon icon="lucide:panel-left-close" className="w-5 h-5" />}
-                        className="flex items-center justify-center rounded-lg p-1.5 text-hub-muted transition-all duration-200 hover:bg-hub-bg hover:text-hub-text"
+                        className="absolute right-4 flex items-center justify-center rounded-lg p-1.5 text-hub-muted transition-all duration-200 hover:bg-hub-bg hover:text-hub-text"
                     />
                 )}
             </div>

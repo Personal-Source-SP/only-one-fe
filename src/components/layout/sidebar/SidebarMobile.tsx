@@ -1,12 +1,12 @@
 import { CustomButton, CustomDrawer } from '@/components/custom';
-import { Logo } from '@/components/common';
 import { SIDEBAR_ITEMS } from '@/constants';
 import { SidebarItem } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { Fragment } from 'react/jsx-runtime';
 
-import { SidebarNavItem } from '@/components/layout/sidebar/SidebarNavItem';
-import { SidebarProfile } from '@/components/layout/sidebar/SidebarProfile';
+import { SidebarLogo } from './SidebarLogo';
+import { SidebarNavItem } from './SidebarNavItem';
+import { SidebarProfile } from './SidebarProfile';
 
 type SidebarMobileProps = {
     activeMenu: string;
@@ -44,8 +44,8 @@ export const SidebarMobile = ({
                 className="md:hidden [&_.ant-drawer-body]:!p-0 [&_.ant-drawer-body]:!h-full [&_.ant-drawer-body]:!flex [&_.ant-drawer-body]:!flex-col"
             >
                 <div className="flex flex-shrink-0 items-center justify-between border-b border-hub-border">
-                    <div className="flex items-center gap-2 h-[32px] px-4">
-                        <Logo iconSize="2xl" textSize="lg" />
+                    <div className="flex h-16 items-center px-4">
+                        <SidebarLogo />
                     </div>
                     <CustomButton
                         touchFriendly
