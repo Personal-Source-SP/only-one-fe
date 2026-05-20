@@ -1,6 +1,6 @@
+export * from './content-section';
 export * from './data-not-found';
 export * from './data-table-container';
-export * from './content-section';
 export * from './empty';
 export * from './filter-panel';
 export * from './forbidden';
@@ -10,7 +10,6 @@ export * from './logo';
 export * from './media-lightbox';
 export * from './not-found';
 export * from './pagination-controls';
-export * from './scroll-to-top';
 export * from './stat-card';
 export * from './status-tag';
 export * from './unsaved-changes-notifier-app-router';

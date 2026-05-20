@@ -20,11 +20,6 @@ import { SessionProvider, signIn, signOut, useSession } from 'next-auth/react';
 import { usePathname, useRouter } from 'next/navigation';
 import { PropsWithChildren, useEffect, useState } from 'react';
 
-type RefineContextProps = {
-    defaultMode?: string;
-    session?: Session | null;
-};
-
 type AppProps = {
     defaultMode?: string;
 };
@@ -234,12 +229,15 @@ const App = ({ children, defaultMode }: PropsWithChildren<AppProps>) => {
     );
 };
 
-const RefineContext = (props: PropsWithChildren<RefineContextProps>) => {
-    return (
-        <SessionProvider session={props?.session} refetchInterval={120} refetchOnWindowFocus={true}>
-            <App {...props} />
-        </SessionProvider>
-    );
+type RefineContextProps = {
+    defaultMode?: string;
+    session?: Session | null;
 };
+
+const RefineContext = (props: PropsWithChildren<RefineContextProps>) => (
+    <SessionProvider session={props?.session} refetchInterval={120} refetchOnWindowFocus={true}>
+        <App {...props} />
+    </SessionProvider>
+);
 
 export default RefineContext;

@@ -1,37 +1,31 @@
 'use client';
 
+import { Loading } from '@/components/common';
 import { CustomSpace } from '@/components/custom';
-import { Loading, ScrollToTop } from '@/components/common';
 import { SIDEBAR_ITEMS } from '@/constants';
 import { useMainContext } from '@/contexts/MainContext';
 import { MessageType } from '@/enums';
-import { useCustomMutationData } from '@/hooks';
-import { useSearchParamsString } from '@/hooks';
+import { useCustomMutationData, useSearchParamsString } from '@/hooks';
 import { exchangeCodeForTokens, findInformationPage, getUserInfoFromGoogle } from '@/libs';
 import { usePathname, useRouter } from 'next/navigation';
 import { PropsWithChildren, Suspense, useEffect, useRef, useState } from 'react';
-
-import { Footer } from '@/components/layout/footer';
-import { Header } from '@/components/layout/header';
-import { NotificationsPanel } from '@/components/layout/notifications-panel';
-import { Search } from '@/components/layout/search';
-import { Sidebar } from '@/components/layout/sidebar';
+import { Footer, Header, NotificationsPanel, ScrollToTop, Search, Sidebar } from '.';
 
 export const MainLayout = ({ children }: PropsWithChildren) => {
     const router = useRouter();
     const pathname = usePathname();
     const handledAuthRef = useRef(false);
+
     const searchParamsString = useSearchParamsString();
     const informationPage = findInformationPage(pathname, SIDEBAR_ITEMS);
+
+    const { handleLoading, handleMessage } = useMainContext();
+    const { handleCustomMutationData: syncGoogleAuth } = useCustomMutationData();
 
     const [showSearch, setShowSearch] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
     const [showNotifications, setShowNotifications] = useState(false);
-
-    const { handleLoading, handleMessage } = useMainContext();
-
-    const { handleCustomMutationData: syncGoogleAuth } = useCustomMutationData();
 
     useEffect(() => {
         const params = new URLSearchParams(searchParamsString);
@@ -45,10 +39,7 @@ export const MainLayout = ({ children }: PropsWithChildren) => {
         handledAuthRef.current = true;
 
         if (error) {
-            handleMessage({
-                type: MessageType.ERROR,
-                content: 'Kết nối Google thất bại',
-            });
+            handleMessage({ type: MessageType.ERROR, content: 'Kết nối Google thất bại' });
             router.replace(pathname);
             return;
         }
@@ -70,10 +61,7 @@ export const MainLayout = ({ children }: PropsWithChildren) => {
             );
 
             if (!tokens) {
-                handleMessage({
-                    type: MessageType.ERROR,
-                    content: 'Lỗi khi lấy token Google',
-                });
+                handleMessage({ type: MessageType.ERROR, content: 'Lỗi khi lấy token Google' });
                 return;
             }
 

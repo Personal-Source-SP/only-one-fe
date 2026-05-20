@@ -1,9 +1,9 @@
 'use client';
 
-import { message, notification } from 'antd';
 import { Loading } from '@/components/common';
 import { SocketProvider } from '@/contexts/SocketContext';
 import { MessageType, NotificationType, Theme } from '@/enums';
+import { message, notification } from 'antd';
 
 import { NoticeType } from 'antd/es/message/interface';
 import { IconType } from 'antd/es/notification/interface';
@@ -39,9 +39,7 @@ const MainContext = createContext<MainContextType | undefined>(undefined);
 export const MainProvider = ({
     children,
     isPublic = false,
-}: PropsWithChildren<{
-    isPublic?: boolean;
-}>) => {
+}: PropsWithChildren<{ isPublic?: boolean }>) => {
     const [loading, setLoading] = useState(false);
     const [theme, setTheme] = useState<Theme>(Theme.LIGHT);
 
@@ -93,20 +91,13 @@ export const MainProvider = ({
             });
         } else {
             const scrollableElements = [document.documentElement, document.body];
-
             scrollableElements.forEach((element) => {
                 if (element instanceof HTMLElement) {
-                    element.scrollTo({
-                        top: 0,
-                        behavior: 'smooth',
-                    });
+                    element.scrollTo({ top: 0, behavior: 'smooth' });
                 }
             });
 
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth',
-            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     };
 
