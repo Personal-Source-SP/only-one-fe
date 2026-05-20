@@ -35,7 +35,11 @@ const findBreadcrumbPath = (
     return null;
 };
 
-export const Breadcrumb = () => {
+type BreadcrumbProps = {
+    className?: string;
+};
+
+export const Breadcrumb = ({ className }: BreadcrumbProps) => {
     const router = useRouter();
     const pathname = usePathname();
 
@@ -43,7 +47,7 @@ export const Breadcrumb = () => {
         const items = [
             {
                 title: (
-                    <span className="font-medium text-base flex items-center gap-2">
+                    <span className="flex items-center gap-2 text-sm font-medium text-hub-muted">
                         <Icon icon="mdi:home" className="text-lg" />
                         Trang chủ
                     </span>
@@ -60,7 +64,7 @@ export const Breadcrumb = () => {
                 title: (
                     <span
                         key={item.href}
-                        className={`${hasHref ? 'cursor-pointer hover:text-primary' : 'cursor-default text-primary'} text-base flex items-center gap-2`}
+                        className={`flex items-center gap-2 text-sm ${hasHref ? 'cursor-pointer text-hub-muted hover:text-primary' : 'cursor-default font-semibold text-hub-title'}`}
                         onClick={() => {
                             if (hasHref) {
                                 router.push(item.href!);
@@ -80,7 +84,7 @@ export const Breadcrumb = () => {
     return (
         <CustomBreadcrumb
             items={breadcrumbItems}
-            className="hidden md:block"
+            className={className ?? 'hidden md:block'}
             separator={<span className="text-gray-400">/</span>}
         />
     );

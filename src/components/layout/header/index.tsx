@@ -17,6 +17,7 @@ import { getPageTitle } from '@/libs';
 
 type HeaderProps = {
     showSearch: boolean;
+    showBreadcrumb?: boolean;
     mobileMenuOpen: boolean;
     showNotifications: boolean;
     sidebarCollapsed?: boolean;
@@ -34,6 +35,7 @@ interface SettingItem {
 
 export const Header = ({
     showSearch,
+    showBreadcrumb = true,
     mobileMenuOpen,
     showNotifications,
     sidebarCollapsed = false,
@@ -81,7 +83,7 @@ export const Header = ({
     const renderNavbarLeft = () => {
         return (
             <CustomFlex align="center">
-                <Breadcrumb />
+                {showBreadcrumb && <Breadcrumb />}
                 <CustomButton
                     touchFriendly
                     type="text"

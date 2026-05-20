@@ -1,9 +1,9 @@
 'use client';
 
-import { ContentSection, DataNotFound, FilterPanel, PaginationControls } from '@/components/common';
-import { CustomTable } from '@/components/custom';
+import { DataNotFound, FilterPanel, PaginationControls } from '@/components/common';
+import { CustomCard, CustomTable } from '@/components/custom';
 import { useMainContext } from '@/contexts/MainContext';
-import { CustomFilterType, ElementType } from '@/enums';
+import { CustomFilterType } from '@/enums';
 import { useDebounceSearch, useTableContainer } from '@/hooks';
 import { ActionTableItem, FilterItem, SearchFilterItem } from '@/interfaces';
 import { CrudFilter, LogicalFilter } from '@refinedev/core';
@@ -33,7 +33,7 @@ type DataTableContainerProps = {
 export const DataTableContainer = ({
     tableContainerData,
     title,
-    loading,
+    loading = false,
     description,
     actionButtons,
     columns,
@@ -165,130 +165,149 @@ export const DataTableContainer = ({
         onRowSelectionChange?.(newSelectedRows);
     };
 
+    const renderTitleAndActions = (
+        <header className="flex w-full flex-col gap-3 md:flex-row md:items-start md:justify-between">
+            {typeof title === 'string' ? (
+                <div className="min-w-0 md:max-w-[65%]">
+                    <h2 className="!m-0 whitespace-pre-line break-words text-base font-bold">
+                        {title}
+                    </h2>
+                    {description && (
+                        <p className="mt-1 !mb-0 whitespace-pre-line break-words text-sm font-normal text-hub-muted">
+                            {description}
+                        </p>
+                    )}
+                </div>
+            ) : (
+                <div className="w-full">{title}</div>
+            )}
+
+            {Boolean(actionButtons?.length) && (
+                <Space
+                    size={8}
+                    wrap
+                    direction="horizontal"
+                    className="w-full md:w-auto md:justify-end"
+                >
+                    {actionButtons}
+                </Space>
+            )}
+        </header>
+    );
+
+    const renderFilterPanel = (
+        <FilterPanel
+            borderless
+            filterValues={filters}
+            filterActions={filterItems}
+            onClearFilters={() => {
+                setFilters([]);
+                setCurrentPage(1);
+            }}
+        />
+    );
+
+    const pagination = (
+        <PaginationControls
+            itemsPerPage={pageSize}
+            currentPage={currentPage}
+            totalItems={tableQuery?.data?.meta?.totalItems ?? 0}
+            onPageChange={(page) => {
+                setCurrentPage(page);
+                scrollToTop();
+            }}
+            onItemsPerPageChange={(currentPageSize) => {
+                setCurrentPage(1);
+                setPageSize(currentPageSize);
+            }}
+        />
+    );
+
     return (
-        <ContentSection elementType={ElementType.CONTAINER} loading={loading}>
-            <ContentSection
-                elementType={ElementType.CARD}
-                header={
-                    <Space size={8} direction="vertical" className="w-full mb-4">
-                        <Flex
-                            gap={8}
-                            vertical={isMobile}
-                            className="w-full"
-                            wrap={isMobile ? 'wrap' : 'nowrap'}
-                            align={isMobile ? 'stretch' : 'center'}
-                            justify={isMobile ? 'start' : title ? 'space-between' : 'end'}
-                        >
-                            {typeof title === 'string' ? (
-                                <div>
-                                    <h2 className="text-bases font-bold !m-0 whitespace-pre-line break-words">
-                                        {title}
-                                    </h2>
-                                    {description && (
-                                        <p className="hidden md:block text-sm font-normal mt-1 whitespace-pre-line break-words">
-                                            {description}
-                                        </p>
+        <Spin spinning={loading}>
+            <Space size={12} direction="vertical" className="w-full">
+                <section className="w-full">
+                    <CustomCard paddingSize="default">{renderTitleAndActions}</CustomCard>
+                </section>
+                <section className="w-full">
+                    <CustomCard paddingSize="default">{renderFilterPanel}</CustomCard>
+                </section>
+                <section className="w-full">
+                    <CustomCard
+                        paddingSize="none"
+                        footer={pagination}
+                        footerClassName="px-4 py-3 md:px-6"
+                    >
+                        <div className="p-4 md:p-6">
+                            {childrenTop && <>{childrenTop}</>}
+
+                            {!!columns?.length && (
+                                <>
+                                    {isMobile ? (
+                                        <div className="min-h-[200px] max-h-[calc(100vh-300px)] overflow-y-auto custom-scroll">
+                                            {tableQuery?.isLoading ? (
+                                                <Flex
+                                                    justify="center"
+                                                    align="center"
+                                                    className="py-12"
+                                                >
+                                                    <Spin size="large" />
+                                                </Flex>
+                                            ) : normalizedDataSource.length > 0 ? (
+                                                <div className="space-y-0 pb-2 pr-1">
+                                                    {normalizedDataSource.map((record: any) => (
+                                                        <ListItem
+                                                            key={record.id}
+                                                            record={record}
+                                                            columns={columns}
+                                                            resource={resource}
+                                                            actionItems={actionItems}
+                                                            currentPage={currentPage}
+                                                            onRefetch={tableQuery?.refetch}
+                                                            setCurrentPage={setCurrentPage}
+                                                            selected={selectedRowKeys.includes(
+                                                                record.id,
+                                                            )}
+                                                            disabled={onDisableRowSelection?.(
+                                                                record,
+                                                            )}
+                                                            onSelectChange={
+                                                                onRowSelectionChange
+                                                                    ? handleListItemSelect
+                                                                    : undefined
+                                                            }
+                                                        />
+                                                    ))}
+                                                </div>
+                                            ) : (
+                                                <div className="py-12">
+                                                    <DataNotFound />
+                                                </div>
+                                            )}
+                                        </div>
+                                    ) : (
+                                        <CustomTable
+                                            columns={columns}
+                                            resource={resource}
+                                            setSorters={setSorters}
+                                            setPageSize={setPageSize}
+                                            actionItems={actionItems}
+                                            setCurrentPage={setCurrentPage}
+                                            loading={tableQuery?.isLoading}
+                                            onRefetch={tableQuery?.refetch}
+                                            tableProps={responsiveTableProps}
+                                            onRowSelectionChange={onRowSelectionChange}
+                                            onDisableRowSelection={onDisableRowSelection}
+                                        />
                                     )}
-                                </div>
-                            ) : (
-                                <div className="w-full sm:w-auto">{title}</div>
+                                </>
                             )}
 
-                            {Boolean(actionButtons?.length) && (
-                                <Space
-                                    className="w-full"
-                                    size={isMobile ? 8 : 16}
-                                    align={isMobile ? 'center' : 'end'}
-                                    direction={isMobile ? 'horizontal' : 'vertical'}
-                                >
-                                    {actionButtons}
-                                </Space>
-                            )}
-                        </Flex>
-                        <FilterPanel
-                            filterValues={filters}
-                            filterActions={filterItems}
-                            onClearFilters={() => {
-                                setFilters([]);
-                                setCurrentPage(1);
-                            }}
-                        />
-                    </Space>
-                }
-                actions={[
-                    <PaginationControls
-                        itemsPerPage={pageSize}
-                        currentPage={currentPage}
-                        totalItems={tableQuery?.data?.meta?.totalItems ?? 0}
-                        onPageChange={(page) => {
-                            setCurrentPage(page);
-                            scrollToTop();
-                        }}
-                        onItemsPerPageChange={(currentPageSize) => {
-                            setCurrentPage(1);
-                            setPageSize(currentPageSize);
-                        }}
-                    />,
-                ]}
-            >
-                {childrenTop && <>{childrenTop}</>}
-
-                {!!columns?.length && (
-                    <>
-                        {isMobile ? (
-                            <div className="min-h-[200px] max-h-[calc(100vh-300px)] overflow-y-auto custom-scroll">
-                                {tableQuery?.isLoading ? (
-                                    <Flex justify="center" align="center" className="py-12">
-                                        <Spin size="large" />
-                                    </Flex>
-                                ) : normalizedDataSource.length > 0 ? (
-                                    <div className="space-y-0 pb-2 pr-1">
-                                        {normalizedDataSource.map((record: any) => (
-                                            <ListItem
-                                                key={record.id}
-                                                record={record}
-                                                columns={columns}
-                                                resource={resource}
-                                                actionItems={actionItems}
-                                                currentPage={currentPage}
-                                                onRefetch={tableQuery?.refetch}
-                                                setCurrentPage={setCurrentPage}
-                                                selected={selectedRowKeys.includes(record.id)}
-                                                disabled={onDisableRowSelection?.(record)}
-                                                onSelectChange={
-                                                    onRowSelectionChange
-                                                        ? handleListItemSelect
-                                                        : undefined
-                                                }
-                                            />
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <div className="py-12">
-                                        <DataNotFound />
-                                    </div>
-                                )}
-                            </div>
-                        ) : (
-                            <CustomTable
-                                columns={columns}
-                                resource={resource}
-                                setSorters={setSorters}
-                                setPageSize={setPageSize}
-                                actionItems={actionItems}
-                                setCurrentPage={setCurrentPage}
-                                loading={tableQuery?.isLoading}
-                                onRefetch={tableQuery?.refetch}
-                                tableProps={responsiveTableProps}
-                                onRowSelectionChange={onRowSelectionChange}
-                                onDisableRowSelection={onDisableRowSelection}
-                            />
-                        )}
-                    </>
-                )}
-
-                {childrenBottom && <>{childrenBottom}</>}
-            </ContentSection>
-        </ContentSection>
+                            {childrenBottom && <>{childrenBottom}</>}
+                        </div>
+                    </CustomCard>
+                </section>
+            </Space>
+        </Spin>
     );
 };

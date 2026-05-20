@@ -19,6 +19,7 @@ import { ChangeEvent, useMemo, useState } from 'react';
 
 type FilterPanelProps = {
     filterActions: FilterItem[];
+    borderless?: boolean;
     filterValues?: CrudFilter[];
     onClearFilters?: () => void;
 };
@@ -76,7 +77,12 @@ const renderFilterItem = (filterItem: FilterItem, index: number, isMobile: boole
     }
 };
 
-export const FilterPanel = ({ filterActions, filterValues, onClearFilters }: FilterPanelProps) => {
+export const FilterPanel = ({
+    filterActions,
+    borderless = false,
+    filterValues,
+    onClearFilters,
+}: FilterPanelProps) => {
     const screens = Grid.useBreakpoint();
     const isMobile = !screens.md;
 
@@ -105,6 +111,9 @@ export const FilterPanel = ({ filterActions, filterValues, onClearFilters }: Fil
     };
 
     const hasActiveFilters = Boolean(filterValues?.length);
+    const panelClassName = borderless
+        ? 'rounded-none border-none bg-transparent p-0 shadow-none'
+        : CUSTOM_FILTER_PANEL_CLASS_NAME;
 
     if (!filterActions.length) {
         return null;
@@ -112,7 +121,7 @@ export const FilterPanel = ({ filterActions, filterValues, onClearFilters }: Fil
 
     if (!isMobile) {
         return (
-            <section className={CUSTOM_FILTER_PANEL_CLASS_NAME}>
+            <section className={panelClassName}>
                 <Row align="bottom" gutter={[16, 16]}>
                     {filterActions.map((filter, index) => renderFilterItem(filter, index, false))}
                     {onClearFilters && (
@@ -185,7 +194,7 @@ export const FilterPanel = ({ filterActions, filterValues, onClearFilters }: Fil
 
             {collapsed && !!selectFilters.length && (
                 <section
-                    className={`${CUSTOM_FILTER_PANEL_CLASS_NAME} animate-in slide-in-from-top-2 duration-200`}
+                    className={`${panelClassName} animate-in slide-in-from-top-2 duration-200`}
                 >
                     <Row gutter={[16, 8]}>
                         {selectFilters.map((filter, index) =>

@@ -24,14 +24,14 @@ import {
 import { ActionTableItem, FilterItem, FormFieldItem, NDataProvider } from '@/interfaces';
 import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
-import { Fragment, ReactNode, useState } from 'react';
+import { ReactNode, useState } from 'react';
 
 const DataProviderPage = () => {
     const [openCreateItemModal, setOpenCreateItemModal] = useState(false);
     const [openImportItemModal, setOpenImportItemModal] = useState(false);
 
-    const [editItemId, setEditItemId] = useState<string | undefined>(undefined);
-    const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
+    const [editItemId, setEditItemId] = useState<string>();
+    const [selectedId, setSelectedId] = useState<string>();
 
     const [openProcessScrapeDataModal, setOpenProcessScrapeDataModal] = useState(false);
     const [selectedDataProviderIds, setSelectedDataProviderIds] = useState<string[]>([]);
@@ -314,18 +314,20 @@ const DataProviderPage = () => {
     ];
 
     return (
-        <Fragment key="data-providers-page">
-            <DataTableContainer
-                columns={columns}
-                resource="data-providers"
-                actionItems={actionItems}
-                title="Danh sách nhà cung cấp"
-                actionButtons={actionButtons}
-                customFilterItems={customFilterItems}
-                tableContainerData={tableContainerData}
-                filterSearch={{ placeholder: 'Tìm kiếm nhà cung cấp', span: 12 }}
-                description="Danh sách nhà cung cấp được sử dụng để cào dữ liệu và tìm kiếm dữ liệu"
-            />
+        <>
+            <section className="mt-2 md:mt-4">
+                <DataTableContainer
+                    columns={columns}
+                    resource="data-providers"
+                    actionItems={actionItems}
+                    title="Danh sách nhà cung cấp"
+                    actionButtons={actionButtons}
+                    customFilterItems={customFilterItems}
+                    tableContainerData={tableContainerData}
+                    filterSearch={{ placeholder: 'Tìm kiếm nhà cung cấp', span: 12 }}
+                    description="Danh sách nhà cung cấp được sử dụng để cào dữ liệu và tìm kiếm dữ liệu"
+                />
+            </section>
 
             <CreateFormDialog
                 resource="data-providers"
@@ -381,7 +383,7 @@ const DataProviderPage = () => {
                     columns={importDataColumns as unknown as ColumnType<Record<string, any>>[]}
                 />
             )}
-        </Fragment>
+        </>
     );
 };
 
