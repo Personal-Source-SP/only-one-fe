@@ -1,7 +1,13 @@
 'use client';
 
 import { Loading, UnsavedChangesNotifierAppRouter } from '@/components/common';
-import { AUTH_PUBLIC_PAGES, KEY_SESSION_STORAGE } from '@/constants';
+import {
+    AUTH_PUBLIC_PAGES,
+    AUTH_REGISTER_UNKNOWN_FAILURE_MESSAGE,
+    AUTH_SIGN_IN_DEFAULT_FAILURE_MESSAGE,
+    KEY_SESSION_STORAGE,
+    mapNextAuthSignInErrorMessage,
+} from '@/constants';
 import { ColorModeContextProvider } from '@/contexts/ColorModeContext';
 import { accessControlProvider } from '@/providers/access-control-provider';
 import { RestServer, createSessionAxiosInstance } from '@/providers/data-provider';
@@ -31,9 +37,13 @@ const App = ({ children, defaultMode }: PropsWithChildren<AppProps>) => {
     const isAuthPublicPage = AUTH_PUBLIC_PAGES.includes(to);
     const apiUrl = process.env.NEXT_PUBLIC_API_URL as string;
 
-    const [isDomLoaded, setIsDomLoaded] = useState(false);
+    const [sessionBootstrapComplete, setSessionBootstrapComplete] = useState(false);
 
     useEffect(() => {
+        if (status === 'loading') {
+            return;
+        }
+
         if (status === 'authenticated' && isAuthPublicPage) {
             router.replace('/dashboard');
             return;
@@ -48,7 +58,7 @@ const App = ({ children, defaultMode }: PropsWithChildren<AppProps>) => {
             return;
         }
 
-        const isTokenExpired = session?.expires ? dayjs(session?.expires).isBefore(dayjs()) : false;
+        const isTokenExpired = session?.expires ? dayjs(session.expires).isBefore(dayjs()) : false;
         if (isTokenExpired && !isAuthPublicPage) {
             if (typeof window !== 'undefined') {
                 sessionStorage.setItem(KEY_SESSION_STORAGE.RETURN_URL, to);
@@ -58,12 +68,18 @@ const App = ({ children, defaultMode }: PropsWithChildren<AppProps>) => {
                 redirect: true,
                 callbackUrl: '/login',
             });
+            return;
         }
 
-        setIsDomLoaded(true);
-    }, [status, isAuthPublicPage, router, session]);
+        setSessionBootstrapComplete(true);
+    }, [status, isAuthPublicPage, to, router, session]);
 
-    if (status === 'loading' || !isDomLoaded) {
+    const awaitingAuthRedirect =
+        status !== 'loading' &&
+        ((status === 'authenticated' && isAuthPublicPage) ||
+            (status === 'unauthenticated' && !isAuthPublicPage));
+
+    if (status === 'loading' || !sessionBootstrapComplete || awaitingAuthRedirect) {
         return <Loading />;
     }
 
@@ -78,7 +94,10 @@ const App = ({ children, defaultMode }: PropsWithChildren<AppProps>) => {
             });
 
             if (!signUpResponse) {
-                return { success: false };
+                return {
+                    success: false,
+                    error: new Error(AUTH_REGISTER_UNKNOWN_FAILURE_MESSAGE),
+                };
             }
 
             const { ok, error } = signUpResponse;
@@ -92,7 +111,7 @@ const App = ({ children, defaultMode }: PropsWithChildren<AppProps>) => {
 
             return {
                 success: false,
-                error: new Error(error?.toString()),
+                error: new Error(mapNextAuthSignInErrorMessage(error?.toString())),
             };
         },
         login: async ({ providerName, email, password }) => {
@@ -115,7 +134,7 @@ const App = ({ children, defaultMode }: PropsWithChildren<AppProps>) => {
             if (!signInResponse) {
                 return {
                     success: false,
-                    error: new Error('Invalid credentials'),
+                    error: new Error(AUTH_SIGN_IN_DEFAULT_FAILURE_MESSAGE),
                 };
             }
 
@@ -129,21 +148,15 @@ const App = ({ children, defaultMode }: PropsWithChildren<AppProps>) => {
             }
 
             const errorMessage = error?.toString() || '';
-            if (errorMessage) {
-                return {
-                    success: false,
-                    error: new Error(errorMessage),
-                };
-            }
 
             return {
                 success: false,
-                error: new Error('Invalid credentials'),
+                error: new Error(mapNextAuthSignInErrorMessage(errorMessage)),
             };
         },
         logout: async () => {
             if (typeof window !== 'undefined') {
-                sessionStorage.setItem('returnUrl', to);
+                sessionStorage.setItem(KEY_SESSION_STORAGE.RETURN_URL, to);
             }
             signOut({
                 redirect: true,
@@ -205,7 +218,7 @@ const App = ({ children, defaultMode }: PropsWithChildren<AppProps>) => {
                     },
                     {
                         name: 'forgot-password',
-                        list: '/forgot-password',
+                        list: '/forget-password',
                     },
                 ]}
                 options={{

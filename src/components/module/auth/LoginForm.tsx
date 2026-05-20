@@ -1,5 +1,11 @@
 'use client';
 
+import { useCallback, useState } from 'react';
+
+import { notification } from 'antd';
+import { useLogin } from '@refinedev/core';
+import { useRouter } from 'next/navigation';
+
 import {
     CustomButton,
     CustomCheckbox,
@@ -7,12 +13,8 @@ import {
     CustomInput,
     CustomLink,
 } from '@/components/custom';
-import { notification } from 'antd';
-import { KEY_SESSION_STORAGE } from '@/constants';
+import { KEY_SESSION_STORAGE, mapNextAuthSignInErrorMessage } from '@/constants';
 import { IAuth } from '@/interfaces';
-import { useLogin } from '@refinedev/core';
-import { useRouter } from 'next/navigation';
-import { useCallback, useState } from 'react';
 
 import { AuthSocialLogin } from './AuthSocialLogin';
 
@@ -46,9 +48,7 @@ export const LoginForm = () => {
                     },
                     onError: (error) => {
                         notification.error({
-                            message:
-                                error?.message ||
-                                'Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin đăng nhập.',
+                            message: mapNextAuthSignInErrorMessage(error?.message),
                         });
                     },
                 },

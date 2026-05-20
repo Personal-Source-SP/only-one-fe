@@ -14,7 +14,7 @@ export const AuthSocialLogin = ({ googleLabel }: AuthSocialLoginProps) => {
             <CustomButton
                 block
                 size="large"
-                className="cursor-pointer border border-slate-200 transition-colors duration-200 hover:bg-slate-50"
+                className="cursor-pointer border border-hub-border bg-hub-surface text-hub-text transition-colors duration-200 hover:border-hub-border-card hover:bg-hub-bg"
             >
                 <Icon icon="logos:google-icon" className="mr-2 text-lg" />
                 {googleLabel}

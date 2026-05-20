@@ -7,7 +7,7 @@ const LoginPage = () => {
     return (
         <AuthCard
             footer={
-                <p>
+                <p className="text-center text-sm text-hub-muted">
                     <span>Chưa có tài khoản? </span>
                     <CustomLink href="/register">Đăng ký ngay</CustomLink>
                 </p>

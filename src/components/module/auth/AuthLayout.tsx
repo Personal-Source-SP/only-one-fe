@@ -8,7 +8,7 @@ export const AuthLayout = ({ children }: PropsWithChildren) => {
                 <CustomSpace
                     size="small"
                     direction="vertical"
-                    className="w-full max-w-[420px] lg:max-w-[440px]"
+                    className="w-full min-w-0 max-w-[420px] lg:max-w-[440px]"
                 >
                     {children}
                 </CustomSpace>

@@ -17,8 +17,12 @@ export const AuthCard = ({ children, footer, subtitle }: AuthCardProps) => {
             paddingSize="responsive"
             header={
                 <header className="flex flex-col items-center gap-2 text-center">
-                    <Logo iconSize="3xl" textSize="2xl" />
-                    <p className="text-sm text-slate-600 sm:text-base">{subtitle}</p>
+                    <div className="flex justify-center text-hub-title">
+                        <Logo iconSize="3xl" textSize="2xl" />
+                    </div>
+                    <h1 className="text-base font-semibold leading-snug text-hub-title sm:text-lg">
+                        {subtitle}
+                    </h1>
                 </header>
             }
         >

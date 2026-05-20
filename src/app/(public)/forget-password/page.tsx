@@ -7,7 +7,7 @@ const ForgetPasswordPage = () => {
     return (
         <AuthCard
             footer={
-                <p>
+                <p className="text-center text-sm text-hub-muted">
                     <span>Nhớ mật khẩu? </span>
                     <CustomLink href="/login">Đăng nhập</CustomLink>
                 </p>
