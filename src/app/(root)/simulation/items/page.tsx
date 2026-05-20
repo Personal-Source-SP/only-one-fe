@@ -1,16 +1,14 @@
 'use client';
 
 import {
-    ColumnsType,
-    CreateFormModal,
-    CustomButton,
-    CustomElement,
-    CustomSpace,
-    EditFormModal,
-    TableContainer,
-} from '@/components/custom';
+    ContentSection,
+    CreateFormDialog,
+    DataTableContainer,
+    EditFormDialog,
+    StatusTag,
+} from '@/components/common';
+import { ColumnsType, CustomButton, CustomSpace } from '@/components/custom';
 import { MessageType } from '@/enums';
-import { StatusTag } from '@/components/common';
 import { ElementType, SimulationItemStatus } from '@/enums';
 import { useCustomMutationData, useSelectSimulationContext, useTableContainer } from '@/hooks';
 import { ActionTableItem, FormFieldItem, NSimulation } from '@/interfaces';
@@ -159,7 +157,7 @@ const SimulationItemsPage: FC = () => {
 
     return (
         <CustomSpace size="middle" direction="vertical" className="w-full h-full">
-            <CustomElement
+            <ContentSection
                 elementType={ElementType.TITLE}
                 actions={[
                     <CustomButton
@@ -172,7 +170,7 @@ const SimulationItemsPage: FC = () => {
                 ]}
             />
 
-            <TableContainer
+            <DataTableContainer
                 loading={loading}
                 columns={columns}
                 actionItems={actionItems}
@@ -181,7 +179,7 @@ const SimulationItemsPage: FC = () => {
                 filterSearch={{ placeholder: 'Tìm kiếm mô phỏng' }}
             />
 
-            <CreateFormModal
+            <CreateFormDialog
                 formFields={formFields}
                 open={openCreateItemModal}
                 title="Thêm mới mô phỏng"
@@ -207,7 +205,7 @@ const SimulationItemsPage: FC = () => {
                 }}
             />
 
-            <EditFormModal
+            <EditFormDialog
                 id={editItemId ?? ''}
                 formFields={formFields}
                 title="Chỉnh sửa mô phỏng"

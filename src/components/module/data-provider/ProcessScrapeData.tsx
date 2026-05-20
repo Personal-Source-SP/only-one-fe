@@ -1,5 +1,6 @@
 'use client';
 
+import { FormModalLayout } from '@/components/common';
 import {
     ColumnType,
     CustomButton,
@@ -8,7 +9,6 @@ import {
     CustomDatePicker,
     CustomFlex,
     CustomForm,
-    CustomFormModal,
     CustomRow,
     CustomSelect,
     CustomSpace,
@@ -377,7 +377,7 @@ export const ProcessScrapeData = ({
     };
 
     return (
-        <CustomFormModal
+        <FormModalLayout
             formLoading={false}
             modalProps={{
                 open,
@@ -404,6 +404,6 @@ export const ProcessScrapeData = ({
                     </CustomSpace>
                 </CustomSpin>
             </CustomSpace>
-        </CustomFormModal>
+        </FormModalLayout>
     );
 };

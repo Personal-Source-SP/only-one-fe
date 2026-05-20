@@ -1,7 +1,7 @@
 'use client';
 
-import { StatusTag } from '@/components/common';
-import { ColumnsType, CustomModal, TableContainer } from '@/components/custom';
+import { DataTableContainer, StatusTag } from '@/components/common';
+import { ColumnsType, CustomModal } from '@/components/custom';
 import { CustomFilterType, ScheduleJobTriggerType, ScheduleJobType, ScheduleType } from '@/enums';
 import { useTableContainer } from '@/hooks';
 import { FilterItem, NSchedule } from '@/interfaces';
@@ -141,7 +141,7 @@ export const ViewScheduleJobList = ({ isOpen, scheduleId, onClose }: ViewSchedul
                 title: 'Xem sự kiện lịch biểu thực thi',
             }}
         >
-            <TableContainer
+            <DataTableContainer
                 columns={columns}
                 customFilterItems={customFilterItems}
                 tableContainerData={tableContainerData}

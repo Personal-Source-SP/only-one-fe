@@ -1,14 +1,12 @@
 'use client';
 
+import { ContentSection, DataTableContainer, MediaLightbox } from '@/components/common';
 import {
     ColumnsType,
     CustomButton,
-    CustomElement,
     CustomFlex,
-    CustomLightBox,
     CustomSegmented,
     CustomSpace,
-    TableContainer,
 } from '@/components/custom';
 import { MessageType } from '@/enums';
 import { ProcessScrapeData } from '@/components/module/data-provider';
@@ -237,7 +235,7 @@ const ScrapingDataPage = () => {
 
     return (
         <CustomSpace size="middle" direction="vertical" className="w-full h-full">
-            <CustomElement
+            <ContentSection
                 title={
                     <CustomSpace align="center" className="rounded-md">
                         <CustomSegmented
@@ -294,7 +292,7 @@ const ScrapingDataPage = () => {
                 ]}
             />
 
-            <TableContainer
+            <DataTableContainer
                 resource="scraping-data"
                 actionItems={actionItems}
                 customFilterItems={customFilterItems}
@@ -321,7 +319,7 @@ const ScrapingDataPage = () => {
                 }}
             />
 
-            <CustomLightBox
+            <MediaLightbox
                 isOpen={isLightboxOpen}
                 index={currentPhotoIndex}
                 closeLightbox={() => setIsLightboxOpen(false)}

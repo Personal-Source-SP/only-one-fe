@@ -17,7 +17,7 @@ import { CrudFilter } from '@refinedev/core';
 import { Col, Flex, Grid, Row, Space } from 'antd';
 import { ChangeEvent, useMemo, useState } from 'react';
 
-type CustomFilterProps = {
+type FilterPanelProps = {
     filterActions: FilterItem[];
     filterValues?: CrudFilter[];
     onClearFilters?: () => void;
@@ -76,11 +76,7 @@ const renderFilterItem = (filterItem: FilterItem, index: number, isMobile: boole
     }
 };
 
-export const CustomFilter = ({
-    filterActions,
-    filterValues,
-    onClearFilters,
-}: CustomFilterProps) => {
+export const FilterPanel = ({ filterActions, filterValues, onClearFilters }: FilterPanelProps) => {
     const screens = Grid.useBreakpoint();
     const isMobile = !screens.md;
 

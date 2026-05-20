@@ -1,17 +1,16 @@
 'use client';
 
-import { MessageType } from '@/enums';
-import { CustomModal } from '@/components/custom';
-
-import { renderFormFields } from './CreateFormModal';
+import { FormModalLayout } from '@/components/common';
 import { useMainContext } from '@/contexts/MainContext';
+import { MessageType } from '@/enums';
 import { useCustomModal } from '@/hooks';
 import { FormFieldItem } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { Button, Flex, Form, Row, Space, Spin } from 'antd';
 import { ReactNode, useCallback, useEffect } from 'react';
+import { renderFormFields } from './CreateFormDialog';
 
-type EditFormModalProps = {
+type EditFormDialogProps = {
     id: string;
     resource: string;
     formFields: FormFieldItem[];
@@ -24,7 +23,7 @@ type EditFormModalProps = {
     onTransformValues?: (values: any) => Record<string, any>;
 };
 
-export const EditFormModal = ({
+export const EditFormDialog = ({
     id,
     resource,
     formFields,
@@ -35,7 +34,7 @@ export const EditFormModal = ({
     initialValues,
     onClose,
     onTransformValues,
-}: EditFormModalProps) => {
+}: EditFormDialogProps) => {
     const { handleMessage } = useMainContext();
 
     const modalPropsData = useCustomModal({
@@ -92,7 +91,8 @@ export const EditFormModal = ({
     }, [formProps, formLoading]);
 
     return (
-        <CustomModal
+        <FormModalLayout
+            formLoading={formLoading}
             modalProps={{
                 ...modalProps,
                 centered: true,
@@ -129,6 +129,6 @@ export const EditFormModal = ({
                     {bottomRender && bottomRender}
                 </Space>
             </Spin>
-        </CustomModal>
+        </FormModalLayout>
     );
 };

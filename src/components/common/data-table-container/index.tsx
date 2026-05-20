@@ -1,19 +1,18 @@
 'use client';
 
-import { DataNotFound, PaginationControls } from '@/components/common';
-import { CustomElement, CustomFilter, CustomTable } from '@/components/custom';
+import { ContentSection, DataNotFound, FilterPanel, PaginationControls } from '@/components/common';
+import { CustomTable } from '@/components/custom';
 import { useMainContext } from '@/contexts/MainContext';
 import { CustomFilterType, ElementType } from '@/enums';
-import { useTableContainer } from '@/hooks';
-import { useDebounceSearch } from '@/hooks';
+import { useDebounceSearch, useTableContainer } from '@/hooks';
 import { ActionTableItem, FilterItem, SearchFilterItem } from '@/interfaces';
 import { CrudFilter, LogicalFilter } from '@refinedev/core';
-import { Empty, Flex, Grid, Space, Spin } from 'antd';
+import { Flex, Grid, Space, Spin } from 'antd';
 import { ColumnsType, TableProps } from 'antd/es/table';
-import { Fragment, ReactNode, useMemo, useState } from 'react';
+import { ReactNode, useMemo, useState } from 'react';
 import { ListItem } from './ListItem';
 
-type TableContainerProps = {
+type DataTableContainerProps = {
     tableContainerData: ReturnType<typeof useTableContainer>;
 
     title?: string | ReactNode;
@@ -31,7 +30,7 @@ type TableContainerProps = {
     onRowSelectionChange?: (selectedRows: any[]) => void;
 };
 
-export const TableContainer = ({
+export const DataTableContainer = ({
     tableContainerData,
     title,
     loading,
@@ -46,7 +45,7 @@ export const TableContainer = ({
     customFilterItems,
     onRowSelectionChange,
     onDisableRowSelection,
-}: TableContainerProps) => {
+}: DataTableContainerProps) => {
     const { scrollToTop } = useMainContext();
 
     const screens = Grid.useBreakpoint();
@@ -109,7 +108,7 @@ export const TableContainer = ({
         }
 
         return filterItems;
-    }, [customFilterItems, filterSearch]);
+    }, [customFilterItems, filterSearch, setCurrentPage, setFilters]);
 
     const debouncedSearch = useDebounceSearch({
         setFilters,
@@ -167,8 +166,8 @@ export const TableContainer = ({
     };
 
     return (
-        <CustomElement elementType={ElementType.CONTAINER} loading={loading}>
-            <CustomElement
+        <ContentSection elementType={ElementType.CONTAINER} loading={loading}>
+            <ContentSection
                 elementType={ElementType.CARD}
                 header={
                     <Space size={8} direction="vertical" className="w-full mb-4">
@@ -206,7 +205,7 @@ export const TableContainer = ({
                                 </Space>
                             )}
                         </Flex>
-                        <CustomFilter
+                        <FilterPanel
                             filterValues={filters}
                             filterActions={filterItems}
                             onClearFilters={() => {
@@ -225,14 +224,14 @@ export const TableContainer = ({
                             setCurrentPage(page);
                             scrollToTop();
                         }}
-                        onItemsPerPageChange={(pageSize) => {
+                        onItemsPerPageChange={(currentPageSize) => {
                             setCurrentPage(1);
-                            setPageSize(pageSize);
+                            setPageSize(currentPageSize);
                         }}
                     />,
                 ]}
             >
-                {childrenTop && <Fragment key="children-top">{childrenTop}</Fragment>}
+                {childrenTop && <>{childrenTop}</>}
 
                 {!!columns?.length && (
                     <>
@@ -288,8 +287,8 @@ export const TableContainer = ({
                     </>
                 )}
 
-                {childrenBottom && <Fragment key="children-bottom">{childrenBottom}</Fragment>}
-            </CustomElement>
-        </CustomElement>
+                {childrenBottom && <>{childrenBottom}</>}
+            </ContentSection>
+        </ContentSection>
     );
 };

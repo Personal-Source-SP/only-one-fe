@@ -1,15 +1,12 @@
 'use client';
 
 import {
-    ColumnsType,
-    CreateFormModal,
-    CustomButton,
-    CustomElement,
-    CustomSpace,
-    CustomToggle,
-    EditFormModal,
-    TableContainer,
-} from '@/components/custom';
+    ContentSection,
+    CreateFormDialog,
+    DataTableContainer,
+    EditFormDialog,
+} from '@/components/common';
+import { ColumnsType, CustomButton, CustomSpace, CustomToggle } from '@/components/custom';
 import { MessageType } from '@/enums';
 import { ProcessScrapeData } from '@/components/module/data-provider';
 import { CustomFilterType, DataProviderStatus, ElementType } from '@/enums';
@@ -253,7 +250,7 @@ const DataProviderItemPage = () => {
 
     return (
         <CustomSpace size="middle" direction="vertical" className="w-full h-full">
-            <CustomElement
+            <ContentSection
                 elementType={ElementType.TITLE}
                 actions={[
                     <CustomButton
@@ -273,7 +270,7 @@ const DataProviderItemPage = () => {
                 ]}
             />
 
-            <TableContainer
+            <DataTableContainer
                 loading={loading}
                 columns={columns}
                 actionItems={actionItems}
@@ -293,7 +290,7 @@ const DataProviderItemPage = () => {
                 }
             />
 
-            <CreateFormModal
+            <CreateFormDialog
                 formFields={formFields}
                 open={openCreateItemModal}
                 resource="data-provider-items"
@@ -308,7 +305,7 @@ const DataProviderItemPage = () => {
                 }}
             />
 
-            <EditFormModal
+            <EditFormDialog
                 id={editItemId ?? ''}
                 formFields={formFields}
                 resource="data-provider-items"

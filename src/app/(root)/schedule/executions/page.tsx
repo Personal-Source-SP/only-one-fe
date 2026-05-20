@@ -1,17 +1,14 @@
 'use client';
 
 import {
-    ColumnsType,
-    CreateFormModal,
-    CustomButton,
-    CustomElement,
-    CustomSpace,
-    CustomToggle,
-    EditFormModal,
-    TableContainer,
-} from '@/components/custom';
+    ContentSection,
+    CreateFormDialog,
+    DataTableContainer,
+    EditFormDialog,
+    StatusTag,
+} from '@/components/common';
+import { ColumnsType, CustomButton, CustomSpace, CustomToggle } from '@/components/custom';
 import { MessageType } from '@/enums';
-import { StatusTag } from '@/components/common';
 import { NextRunTimes, ViewScheduleJobList } from '@/components/module/schedule';
 import { CronExpression, ElementType, ExecutionServiceEnum, ScheduleType } from '@/enums';
 import {
@@ -335,7 +332,7 @@ const ScheduleExecutionPage = () => {
 
     return (
         <CustomSpace size="middle" direction="vertical" className="w-full h-full">
-            <CustomElement
+            <ContentSection
                 elementType={ElementType.TITLE}
                 actions={[
                     <CustomButton
@@ -348,7 +345,7 @@ const ScheduleExecutionPage = () => {
                 ]}
             />
 
-            <TableContainer
+            <DataTableContainer
                 loading={loading}
                 columns={columns}
                 resource="schedules"
@@ -357,7 +354,7 @@ const ScheduleExecutionPage = () => {
                 filterSearch={{ placeholder: 'Tìm kiếm lịch biểu thực thi' }}
             />
 
-            <CreateFormModal
+            <CreateFormDialog
                 resource="schedules"
                 formFields={formFields}
                 open={openCreateItemModal}
@@ -376,7 +373,7 @@ const ScheduleExecutionPage = () => {
                 }}
             />
 
-            <EditFormModal
+            <EditFormDialog
                 resource="schedules"
                 id={editItemId ?? ''}
                 formFields={formFields}

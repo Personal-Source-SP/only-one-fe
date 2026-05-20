@@ -1,14 +1,12 @@
 'use client';
 
 import {
-    ColumnType,
-    ColumnsType,
-    CreateFormModal,
-    CustomButton,
-    EditFormModal,
-    TableContainer,
-} from '@/components/custom';
-import { StatusTag } from '@/components/common';
+    CreateFormDialog,
+    DataTableContainer,
+    EditFormDialog,
+    StatusTag,
+} from '@/components/common';
+import { ColumnType, ColumnsType, CustomButton } from '@/components/custom';
 import { ProcessScrapeData, ScrapeSetting } from '@/components/module/data-provider';
 import { ImportData } from '@/components/module/import-data';
 import {
@@ -38,9 +36,8 @@ const DataProviderPage = () => {
     const [openProcessScrapeDataModal, setOpenProcessScrapeDataModal] = useState(false);
     const [selectedDataProviderIds, setSelectedDataProviderIds] = useState<string[]>([]);
 
-    const tableContainerData = useTableContainer({
-        resource: 'data-providers',
-    });
+    const tableContainerData = useTableContainer({ resource: 'data-providers' });
+    const modalPropsData = useCustomModal({ action: 'edit', resource: 'data-providers' });
 
     const { options: dataProviderItems } = useSelectDataProviderItem({
         id: selectedId,
@@ -48,11 +45,6 @@ const DataProviderPage = () => {
     });
 
     const { options: dataProviders, query: dataProviderQuery } = useSelectDataProvider();
-
-    const modalPropsData = useCustomModal({
-        action: 'edit',
-        resource: 'data-providers',
-    });
 
     const columns: ColumnsType<NDataProvider.IDataProvider> = [
         {
@@ -323,7 +315,7 @@ const DataProviderPage = () => {
 
     return (
         <Fragment key="data-providers-page">
-            <TableContainer
+            <DataTableContainer
                 columns={columns}
                 resource="data-providers"
                 actionItems={actionItems}
@@ -335,7 +327,7 @@ const DataProviderPage = () => {
                 description="Danh sách nhà cung cấp được sử dụng để cào dữ liệu và tìm kiếm dữ liệu"
             />
 
-            <CreateFormModal
+            <CreateFormDialog
                 resource="data-providers"
                 formFields={formFields}
                 title="Thêm mới đối tượng"
@@ -346,7 +338,7 @@ const DataProviderPage = () => {
                 }}
             />
 
-            <EditFormModal
+            <EditFormDialog
                 resource="data-providers"
                 id={editItemId ?? ''}
                 formFields={formFields}

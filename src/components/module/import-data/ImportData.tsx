@@ -1,11 +1,11 @@
 'use client';
 
+import { FormModalLayout } from '@/components/common';
 import {
     ColumnType,
     CustomButton,
     CustomCard,
     CustomFlex,
-    CustomFormModal,
     CustomResult,
     CustomSpace,
     CustomSpin,
@@ -367,7 +367,7 @@ export const ImportData = ({ open, dataType, columns, onClose, onSuccess }: Impo
     };
 
     return (
-        <CustomFormModal
+        <FormModalLayout
             formLoading={false}
             modalProps={{
                 open,
@@ -394,6 +394,6 @@ export const ImportData = ({ open, dataType, columns, onClose, onSuccess }: Impo
                     </CustomSpace>
                 </CustomSpin>
             </CustomSpace>
-        </CustomFormModal>
+        </FormModalLayout>
     );
 };

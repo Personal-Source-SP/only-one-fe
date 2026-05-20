@@ -1,12 +1,7 @@
 'use client';
 
-import {
-    CustomButton,
-    CustomElement,
-    CustomLightBox,
-    CustomSpace,
-    TableContainer,
-} from '@/components/custom';
+import { ContentSection, DataTableContainer, MediaLightbox } from '@/components/common';
+import { CustomButton, CustomSpace } from '@/components/custom';
 import {
     CustomFilterType,
     ElementType,
@@ -190,7 +185,7 @@ const PhotosPage = () => {
 
     return (
         <CustomSpace size="middle" direction="vertical" className="w-full h-full">
-            <CustomElement
+            <ContentSection
                 elementType={ElementType.TITLE}
                 actions={[
                     <CustomButton
@@ -217,7 +212,7 @@ const PhotosPage = () => {
                 ]}
             />
 
-            <TableContainer
+            <DataTableContainer
                 resource="google-file"
                 customFilterItems={filterItems}
                 tableContainerData={tableContainerData}
@@ -236,7 +231,7 @@ const PhotosPage = () => {
                 }
             />
 
-            <CustomLightBox
+            <MediaLightbox
                 isOpen={isLightboxOpen}
                 index={currentPhotoIndex}
                 closeLightbox={() => setIsLightboxOpen(false)}

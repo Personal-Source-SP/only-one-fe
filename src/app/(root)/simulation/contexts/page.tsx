@@ -1,16 +1,14 @@
 'use client';
 
 import {
-    ColumnsType,
-    CreateFormModal,
-    CustomButton,
-    CustomElement,
-    CustomSpace,
-    EditFormModal,
-    TableContainer,
-} from '@/components/custom';
+    ContentSection,
+    CreateFormDialog,
+    DataTableContainer,
+    EditFormDialog,
+    StatusTag,
+} from '@/components/common';
+import { ColumnsType, CustomButton, CustomSpace } from '@/components/custom';
 import { MessageType } from '@/enums';
-import { StatusTag } from '@/components/common';
 import { ElementType, SimulationService } from '@/enums';
 import { useCustomMutationData, useTableContainer } from '@/hooks';
 import { ActionTableItem, FormFieldItem, NSimulation } from '@/interfaces';
@@ -166,7 +164,7 @@ const SimulationContextsPage = () => {
 
     return (
         <CustomSpace size="middle" direction="vertical" className="w-full h-full">
-            <CustomElement
+            <ContentSection
                 elementType={ElementType.TITLE}
                 actions={[
                     <CustomButton
@@ -179,7 +177,7 @@ const SimulationContextsPage = () => {
                 ]}
             />
 
-            <TableContainer
+            <DataTableContainer
                 loading={loading}
                 columns={columns}
                 actionItems={actionItems}
@@ -188,7 +186,7 @@ const SimulationContextsPage = () => {
                 filterSearch={{ placeholder: 'Tìm kiếm ngữ cảnh mô phỏng' }}
             />
 
-            <CreateFormModal
+            <CreateFormDialog
                 formFields={formFields}
                 open={openCreateItemModal}
                 resource="simulation-contexts"
@@ -214,7 +212,7 @@ const SimulationContextsPage = () => {
                 }}
             />
 
-            <EditFormModal
+            <EditFormDialog
                 id={editItemId ?? ''}
                 formFields={formFields}
                 resource="simulation-contexts"

@@ -5,9 +5,9 @@ import { ElementType } from '@/enums';
 import { Card, Flex, Space, Spin } from 'antd';
 import { ReactNode } from 'react';
 
-type CustomElementProps = {
+type ContentSectionProps = {
     elementType: ElementType;
-    title?: string | ReactNode;
+    title?: ReactNode | string;
     header?: ReactNode;
     actions?: ReactNode[];
     loading?: boolean;
@@ -17,7 +17,7 @@ type CustomElementProps = {
     description?: string;
 };
 
-export const CustomElement = ({
+export const ContentSection = ({
     elementType,
     title,
     loading = false,
@@ -27,7 +27,7 @@ export const CustomElement = ({
     children,
     actions,
     variant = 'borderless',
-}: CustomElementProps) => {
+}: ContentSectionProps) => {
     switch (elementType) {
         case ElementType.TITLE: {
             const isTitle = Boolean(title);

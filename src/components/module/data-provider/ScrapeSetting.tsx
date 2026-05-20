@@ -1,5 +1,6 @@
 'use client';
 
+import { FormModalLayout } from '@/components/common';
 import {
     CustomButton,
     CustomCard,
@@ -7,7 +8,6 @@ import {
     CustomDivider,
     CustomFlex,
     CustomForm,
-    CustomFormModal,
     CustomInput,
     CustomRow,
     CustomSelect,
@@ -542,7 +542,7 @@ export const ScrapeSetting = ({
     };
 
     return (
-        <CustomFormModal
+        <FormModalLayout
             formLoading={formLoading || isLoading}
             modalProps={{
                 ...modalProps,
@@ -581,6 +581,6 @@ export const ScrapeSetting = ({
                 {renderFunctionGenerator()}
                 {renderExtractData()}
             </CustomForm>
-        </CustomFormModal>
+        </FormModalLayout>
     );
 };

@@ -1,16 +1,12 @@
 'use client';
 
 import {
-    ColumnType,
-    ColumnsType,
-    CreateFormModal,
-    CustomButton,
-    CustomSpace,
-    CustomTag,
-    EditFormModal,
-    TableContainer,
-} from '@/components/custom';
-import { StatusTag } from '@/components/common';
+    CreateFormDialog,
+    DataTableContainer,
+    EditFormDialog,
+    StatusTag,
+} from '@/components/common';
+import { ColumnType, ColumnsType, CustomButton, CustomSpace, CustomTag } from '@/components/custom';
 import { ProcessScrapeData } from '@/components/module/data-provider';
 import { ImportData } from '@/components/module/import-data';
 import { DataImportType, ProductMappingStatus } from '@/enums';
@@ -177,7 +173,7 @@ const ItemPage = () => {
 
     return (
         <Fragment key="items-page">
-            <TableContainer
+            <DataTableContainer
                 resource="items"
                 columns={columns}
                 title="Danh sách đối tượng"
@@ -198,7 +194,7 @@ const ItemPage = () => {
                 }}
             />
 
-            <CreateFormModal
+            <CreateFormDialog
                 resource="items"
                 formFields={formFields}
                 title="Thêm mới đối tượng"
@@ -209,7 +205,7 @@ const ItemPage = () => {
                 }}
             />
 
-            <EditFormModal
+            <EditFormDialog
                 resource="items"
                 id={editItemId ?? ''}
                 formFields={formFields}

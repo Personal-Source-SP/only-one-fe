@@ -1,13 +1,11 @@
 'use client';
 
-import { MessageType } from '@/enums';
-import { CustomModal } from '@/components/custom';
-import { CodeDisplay } from '@/components/module/code-display';
-
+import { FormModalLayout } from '@/components/common';
 import { useMainContext } from '@/contexts/MainContext';
+import { MessageType } from '@/enums';
 import { useCustomModal } from '@/hooks';
-
 import { FormFieldItem } from '@/interfaces';
+import { CodeDisplay } from '@/components/module/code-display';
 import { Icon } from '@iconify/react';
 import { useApiUrl } from '@refinedev/core';
 import {
@@ -28,7 +26,7 @@ import {
 import { useSession } from 'next-auth/react';
 import React, { ChangeEvent, ReactNode, useCallback, useEffect } from 'react';
 
-type CreateFormModalProps = {
+type CreateFormDialogProps = {
     open: boolean;
     resource: string;
     formFields: FormFieldItem[];
@@ -194,7 +192,7 @@ export const renderFormFields = (formField: FormFieldItem, formProps: FormProps<
     );
 };
 
-export const CreateFormModal = ({
+export const CreateFormDialog = ({
     open,
     resource,
     formFields,
@@ -205,7 +203,7 @@ export const CreateFormModal = ({
     initialValues,
     onClose,
     onTransformValues,
-}: CreateFormModalProps) => {
+}: CreateFormDialogProps) => {
     const { handleMessage } = useMainContext();
     const apiUrl = useApiUrl();
     const { data: session } = useSession();
@@ -261,10 +259,11 @@ export const CreateFormModal = ({
                 </Button>
             </Flex>
         );
-    }, [formProps, formLoading]);
+    }, [formProps, formLoading, isSubmitting]);
 
     return (
-        <CustomModal
+        <FormModalLayout
+            formLoading={formLoading || isSubmitting}
             modalProps={{
                 ...modalProps,
                 open,
@@ -298,7 +297,7 @@ export const CreateFormModal = ({
                                     const headers: Record<string, string> = {};
 
                                     if (token) {
-                                        headers['Authorization'] = `Bearer ${token}`;
+                                        headers.Authorization = `Bearer ${token}`;
                                     }
 
                                     const response = await fetch(`${apiUrl}/${resource}`, {
@@ -342,6 +341,6 @@ export const CreateFormModal = ({
                     {bottomRender && bottomRender}
                 </Space>
             </Spin>
-        </CustomModal>
+        </FormModalLayout>
     );
 };

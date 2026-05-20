@@ -1,12 +1,7 @@
 'use client';
 
-import {
-    ColumnsType,
-    CustomButton,
-    CustomElement,
-    CustomSpace,
-    TableContainer,
-} from '@/components/custom';
+import { ContentSection, DataTableContainer } from '@/components/common';
+import { ColumnsType, CustomButton, CustomSpace } from '@/components/custom';
 import { FolderModal } from '@/components/module/folders';
 import { SyncGoogleDrive } from '@/components/module/sync-google-drive';
 import { ElementType, GoogleDriveType } from '@/enums';
@@ -86,7 +81,7 @@ const FolderPage = () => {
 
     return (
         <CustomSpace size="middle" direction="vertical" className="w-full h-full">
-            <CustomElement
+            <ContentSection
                 elementType={ElementType.TITLE}
                 actions={[
                     <CustomButton
@@ -99,7 +94,7 @@ const FolderPage = () => {
                 ]}
             />
 
-            <TableContainer
+            <DataTableContainer
                 columns={columns}
                 resource="google-folder"
                 tableContainerData={tableContainerData}

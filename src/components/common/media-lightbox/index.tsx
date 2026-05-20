@@ -8,7 +8,7 @@ import 'yet-another-react-lightbox/plugins/thumbnails.css';
 import Zoom from 'yet-another-react-lightbox/plugins/zoom';
 import 'yet-another-react-lightbox/styles.css';
 
-type CustomLightBoxProps = {
+type MediaLightboxProps = {
     index: number;
     isOpen: boolean;
     slides: SlideImage[];
@@ -16,13 +16,13 @@ type CustomLightBoxProps = {
     closeLightbox: () => void;
 };
 
-export const CustomLightBox = ({
+export const MediaLightbox = ({
     index,
     isOpen,
     slides,
     slideshowInterval = 3,
     closeLightbox,
-}: CustomLightBoxProps) => {
+}: MediaLightboxProps) => {
     return (
         <Lightbox
             open={isOpen}

@@ -1,7 +1,7 @@
 'use client';
 
-import { ColumnsType, CustomSpace, TableContainer } from '@/components/custom';
-import { StatusTag } from '@/components/common';
+import { DataTableContainer, StatusTag } from '@/components/common';
+import { ColumnsType, CustomSpace } from '@/components/custom';
 import { ViewJobEvent } from '@/components/module/schedule';
 import { ScheduleJobEventType } from '@/enums';
 import { useTableContainer } from '@/hooks';
@@ -83,7 +83,7 @@ const ScheduleJobEventsPage = () => {
 
     return (
         <CustomSpace size="middle" direction="vertical" className="w-full h-full">
-            <TableContainer
+            <DataTableContainer
                 columns={columns}
                 actionItems={actionItems}
                 tableContainerData={tableContainerData}

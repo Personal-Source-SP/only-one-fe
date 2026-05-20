@@ -1,15 +1,13 @@
 'use client';
 
 import {
-    ColumnsType,
-    CreateFormModal,
-    CustomButton,
-    CustomElement,
-    CustomSpace,
-    EditFormModal,
-    TableContainer,
-} from '@/components/custom';
-import { StatusTag } from '@/components/common';
+    ContentSection,
+    CreateFormDialog,
+    DataTableContainer,
+    EditFormDialog,
+    StatusTag,
+} from '@/components/common';
+import { ColumnsType, CustomButton, CustomSpace } from '@/components/custom';
 import { CloudDataProviderType, ElementType } from '@/enums';
 import { useTableContainer } from '@/hooks';
 import { ActionTableItem, FormFieldItem, NCloudData } from '@/interfaces';
@@ -131,7 +129,7 @@ const CloudDataProvider = () => {
 
     return (
         <CustomSpace size="middle" direction="vertical" className="w-full h-full">
-            <CustomElement
+            <ContentSection
                 elementType={ElementType.TITLE}
                 actions={[
                     <CustomButton
@@ -144,7 +142,7 @@ const CloudDataProvider = () => {
                 ]}
             />
 
-            <TableContainer
+            <DataTableContainer
                 columns={columns}
                 actionItems={actionItems}
                 resource="cloud-data-providers"
@@ -152,7 +150,7 @@ const CloudDataProvider = () => {
                 filterSearch={{ placeholder: 'Tìm kiếm nhà cung cấp' }}
             />
 
-            <CreateFormModal
+            <CreateFormDialog
                 formFields={formFields}
                 open={openCreateItemModal}
                 title="Thêm mới nhà cung cấp"
@@ -176,7 +174,7 @@ const CloudDataProvider = () => {
                 }}
             />
 
-            <EditFormModal
+            <EditFormDialog
                 id={editItemId ?? ''}
                 formFields={formFields}
                 resource="cloud-data-providers"

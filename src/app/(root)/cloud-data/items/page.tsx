@@ -1,16 +1,18 @@
 'use client';
 
 import {
+    ContentSection,
+    CreateFormDialog,
+    DataTableContainer,
+    StatusTag,
+} from '@/components/common';
+import {
     ColumnsType,
-    CreateFormModal,
     CustomButton,
-    CustomElement,
     CustomFlex,
     CustomSpace,
     CustomTooltip,
-    TableContainer,
 } from '@/components/custom';
-import { StatusTag } from '@/components/common';
 import { ElementType, MimeType } from '@/enums';
 import { useSelectCloudDataProvider, useTableContainer } from '@/hooks';
 import { FormFieldItem, NCloudData } from '@/interfaces';
@@ -147,7 +149,7 @@ const CloudDataItem = () => {
 
     return (
         <CustomSpace size="middle" direction="vertical" className="w-full h-full">
-            <CustomElement
+            <ContentSection
                 elementType={ElementType.TITLE}
                 actions={[
                     <CustomButton
@@ -160,14 +162,14 @@ const CloudDataItem = () => {
                 ]}
             />
 
-            <TableContainer
+            <DataTableContainer
                 columns={columns}
                 resource="cloud-data-items"
                 tableContainerData={tableContainerData}
                 filterSearch={{ placeholder: 'Tìm kiếm dữ liệu đám mây' }}
             />
 
-            <CreateFormModal
+            <CreateFormDialog
                 open={openCreateItemModal}
                 formFields={createFormFields}
                 title="Thêm mới dữ liệu đám mây"

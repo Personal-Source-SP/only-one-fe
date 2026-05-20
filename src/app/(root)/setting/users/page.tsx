@@ -1,6 +1,7 @@
 'use client';
 
-import { ColumnsType, CustomSpace, TableContainer } from '@/components/custom';
+import { DataTableContainer } from '@/components/common';
+import { ColumnsType, CustomSpace } from '@/components/custom';
 import { useCustomModal, useTableContainer } from '@/hooks';
 import { NGoogle, NUser } from '@/interfaces';
 import { formatDate } from '@/libs';
@@ -66,7 +67,7 @@ const UsersPage = () => {
 
     return (
         <CustomSpace size="middle" direction="vertical" className="w-full h-full">
-            <TableContainer
+            <DataTableContainer
                 resource="users"
                 columns={columns}
                 tableContainerData={tableContainerData}
