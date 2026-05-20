@@ -5,14 +5,12 @@ import { AntdRegistry } from '@ant-design/nextjs-registry';
 import type { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
 import { NavigationGuardProvider } from 'next-navigation-guard';
-import { Inter } from 'next/font/google';
+import { plusJakartaSans } from '@/constants';
 import { cookies } from 'next/headers';
 import { PropsWithChildren, Suspense } from 'react';
 
 import '@/styles/globals.css';
 import 'antd/dist/reset.css';
-
-const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
     title: 'O-O Hub',
@@ -30,7 +28,9 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 
     return (
         <html lang="en" suppressHydrationWarning>
-            <body className={`${inter.className} overflow-x-hidden`}>
+            <body
+                className={`${plusJakartaSans.variable} ${plusJakartaSans.className} overflow-x-hidden`}
+            >
                 <Suspense>
                     <NavigationGuardProvider>
                         <AntdRegistry>

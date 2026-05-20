@@ -1,4 +1,5 @@
 import { CustomButton } from '@/components/custom';
+import { SIDEBAR_NAV_ICON_ACTIVE_CLASS_NAME, SIDEBAR_NAV_SUB_ACTIVE_CLASS_NAME } from '@/constants';
 import { SidebarItem } from '@/interfaces';
 import { Icon } from '@iconify/react';
 
@@ -14,9 +15,9 @@ export const SidebarPopoverContent = ({
     handleMenuClick,
 }: SidebarPopoverContentProps) => (
     <section className="min-w-[200px]">
-        <div className="flex items-center gap-2 mb-2 border-b border-divider pb-2">
-            <Icon icon={item.icon} className="flex-shrink-0 w-5 h-5 text-slate-500" />
-            <span className="font-medium text-slate-800">{item.label}</span>
+        <div className="mb-2 flex items-center gap-2 border-b border-hub-border pb-2">
+            <Icon icon={item.icon} className="h-5 w-5 flex-shrink-0 text-hub-muted" />
+            <span className="font-medium text-hub-text">{item.label}</span>
         </div>
 
         <div className="space-y-1">
@@ -28,16 +29,16 @@ export const SidebarPopoverContent = ({
                         type="text"
                         key={child.href || child.label}
                         onClick={() => handleMenuClick(child)}
-                        className={`w-full flex items-center justify-start gap-2 px-3 py-1.5 rounded-md text-sm h-auto transition-colors ${
+                        className={`flex h-auto w-full items-center justify-start gap-2 rounded-md px-3 py-1.5 text-sm transition-colors ${
                             isSubActive
-                                ? 'bg-indigo-50 text-indigo-600 font-medium'
-                                : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                                ? SIDEBAR_NAV_SUB_ACTIVE_CLASS_NAME
+                                : 'text-hub-muted hover:bg-hub-bg hover:text-hub-text'
                         }`}
                     >
                         <Icon
                             icon={child.icon}
-                            className={`flex-shrink-0 w-4 h-4 ${
-                                isSubActive ? 'text-indigo-600' : 'text-slate-400'
+                            className={`h-4 w-4 flex-shrink-0 ${
+                                isSubActive ? SIDEBAR_NAV_ICON_ACTIVE_CLASS_NAME : 'text-hub-muted'
                             }`}
                         />
                         <span className="truncate">{child.label}</span>

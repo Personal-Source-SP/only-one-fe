@@ -178,7 +178,7 @@ export const MainLayout = ({ children }: PropsWithChildren) => {
                                         {informationPage?.label}
                                     </h1>
                                     {informationPage?.description && (
-                                        <p className="text-sm sm:text-base opacity-70 !m-0">
+                                        <p className="text-sm sm:text-base text-hub-muted !m-0">
                                             {informationPage?.description}
                                         </p>
                                     )}

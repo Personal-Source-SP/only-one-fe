@@ -7,6 +7,12 @@ export type CustomCardPadding = 'sm' | 'lg' | 'none' | 'default' | 'responsive';
 
 export type CustomLinkVariant = 'default' | 'primary';
 
+export type CustomButtonHubVariant = 'cta';
+
+export type CustomTagStatus = 'active' | 'running' | 'draft';
+
+export type CustomAlertType = 'info' | 'success' | 'warning' | 'error';
+
 export interface FormFieldItem {
     name: string;
     label: string;

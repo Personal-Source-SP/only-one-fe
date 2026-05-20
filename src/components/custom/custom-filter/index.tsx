@@ -1,10 +1,16 @@
 'use client';
 
+import { CustomButton, CustomInput, CustomSelect } from '@/components/custom';
+import {
+    CUSTOM_FILTER_BADGE_CLASS_NAME,
+    CUSTOM_FILTER_LABEL_CLASS_NAME,
+    CUSTOM_FILTER_PANEL_CLASS_NAME,
+} from '@/constants';
 import { CustomFilterType } from '@/enums';
 import { FilterItem } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { CrudFilter } from '@refinedev/core';
-import { Button, Col, Flex, Grid, Input, Row, Select, Space } from 'antd';
+import { Col, Flex, Grid, Row, Space } from 'antd';
 import { ChangeEvent, useMemo, useState } from 'react';
 
 type CustomFilterProps = {
@@ -31,12 +37,11 @@ const renderFilterItem = (filterItem: FilterItem, index: number, isMobile: boole
         case CustomFilterType.SEARCH: {
             return (
                 <Col span={isMobile ? 24 : span} key={index}>
-                    <p className="mb-1 text-md font-semibold text-foreground-500">
-                        {title || 'Tìm kiếm'}
-                    </p>
-                    <Input
+                    <label className={CUSTOM_FILTER_LABEL_CLASS_NAME}>{title || 'Tìm kiếm'}</label>
+                    <CustomInput
+                        touchFriendly={isMobile}
                         placeholder={placeholder ?? 'Tìm kiếm'}
-                        prefix={<Icon icon="lucide:search" className="text-foreground-500" />}
+                        prefix={<Icon icon="lucide:search" className="text-hub-muted" />}
                         onChange={(e: ChangeEvent<HTMLInputElement>) =>
                             onChange?.(e.target.value.trim())
                         }
@@ -48,10 +53,8 @@ const renderFilterItem = (filterItem: FilterItem, index: number, isMobile: boole
         case CustomFilterType.SELECT: {
             return (
                 <Col span={isMobile ? 24 : span} key={index}>
-                    <p className="mb-1 text-md font-semibold text-foreground-500">
-                        {title || placeholder}
-                    </p>
-                    <Select
+                    <label className={CUSTOM_FILTER_LABEL_CLASS_NAME}>{title || placeholder}</label>
+                    <CustomSelect
                         mode={mode}
                         value={value}
                         maxTagCount={1}
@@ -59,7 +62,7 @@ const renderFilterItem = (filterItem: FilterItem, index: number, isMobile: boole
                         placeholder={placeholder}
                         showSearch={showSearch ?? false}
                         allowClear={allowClear ?? false}
-                        onChange={(value) => onChange?.(value)}
+                        onChange={(selectedValue) => onChange?.(selectedValue)}
                     />
                 </Col>
             );
@@ -83,7 +86,8 @@ export const CustomFilter = ({
                 ([search, selects], filter) => {
                     if (filter.type === CustomFilterType.SEARCH) {
                         return [filter, selects];
-                    } else if (filter.type === CustomFilterType.SELECT) {
+                    }
+                    if (filter.type === CustomFilterType.SELECT) {
                         return [search, [...selects, filter]];
                     }
                     return [search, selects];
@@ -98,69 +102,90 @@ export const CustomFilter = ({
         onClearFilters?.();
     };
 
+    const hasActiveFilters = Boolean(filterValues?.length);
+
+    if (!filterActions.length) {
+        return null;
+    }
+
+    if (!isMobile) {
+        return (
+            <section className={CUSTOM_FILTER_PANEL_CLASS_NAME}>
+                <Row align="bottom" gutter={[16, 16]}>
+                    {filterActions.map((filter, index) => renderFilterItem(filter, index, false))}
+                    {onClearFilters && (
+                        <Col flex="none">
+                            <CustomButton type="default" onClick={handleClearFilters}>
+                                Xóa lọc
+                            </CustomButton>
+                        </Col>
+                    )}
+                </Row>
+            </section>
+        );
+    }
+
     return (
         <Space direction="vertical" size="middle" className="w-full">
-            {filterActions.length > 0 && (
-                <Flex
-                    align="center"
-                    className="w-full"
-                    gap={isMobile ? 4 : '50%'}
-                    justify={searchFilter ? 'space-between' : 'end'}
-                >
-                    {searchFilter && (
-                        <Input
-                            className="w-full"
-                            style={{ background: '#F3F4F6' }}
-                            placeholder={searchFilter.placeholder ?? 'Tìm kiếm'}
-                            prefix={<Icon icon="lucide:search" className="text-foreground-500" />}
-                            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                                searchFilter.onChange?.(e.target.value.trim())
-                            }
-                        />
+            <Flex
+                align="center"
+                className="w-full"
+                gap={8}
+                justify={searchFilter ? 'space-between' : 'end'}
+            >
+                {searchFilter && (
+                    <CustomInput
+                        touchFriendly
+                        className="w-full"
+                        placeholder={searchFilter.placeholder ?? 'Tìm kiếm'}
+                        prefix={<Icon icon="lucide:search" className="text-hub-muted" />}
+                        onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                            searchFilter.onChange?.(e.target.value.trim())
+                        }
+                    />
+                )}
+
+                <Space direction="horizontal" size={8}>
+                    {!!selectFilters.length && (
+                        <CustomButton
+                            type="default"
+                            icon={<Icon icon="lucide:filter" />}
+                            onClick={() => setCollapsed(!collapsed)}
+                            className="rounded-lg border border-hub-border p-3"
+                        >
+                            <span>{collapsed ? 'Thu gọn bộ lọc' : 'Bộ lọc'}</span>
+                            {hasActiveFilters && (
+                                <span className={CUSTOM_FILTER_BADGE_CLASS_NAME}>
+                                    {filterValues?.length}
+                                </span>
+                            )}
+                        </CustomButton>
                     )}
 
-                    <Space direction="horizontal" size={8}>
-                        {selectFilters.length > 0 && (
-                            <Button
-                                type="text"
-                                icon={<Icon icon="lucide:filter" />}
-                                onClick={() => setCollapsed(!collapsed)}
-                                className="border border-slate-200 rounded-lg p-3"
-                            >
-                                <span>Bộ lọc</span>
-                                {filterValues?.length && filterValues?.length > 0 && (
-                                    <span className="ml-1 bg-indigo-600 text-white text-[10px] px-1.5 py-0.5 rounded-full min-w-[1.25rem] text-center">
-                                        {filterValues.length}
-                                    </span>
-                                )}
-                            </Button>
-                        )}
+                    {(hasActiveFilters || searchFilter) && (
+                        <CustomButton
+                            type="text"
+                            onClick={handleClearFilters}
+                            disabled={!hasActiveFilters}
+                            icon={
+                                <Icon icon="lucide:refresh-cw" className="h-4 w-4 text-hub-muted" />
+                            }
+                            aria-label="Xóa lọc"
+                        />
+                    )}
+                </Space>
+            </Flex>
 
-                        {((filterValues?.length && filterValues?.length > 0) || searchFilter) && (
-                            <Button
-                                type="text"
-                                onClick={handleClearFilters}
-                                disabled={!filterValues?.length && !searchFilter}
-                                icon={
-                                    <Icon
-                                        icon="lucide:refresh-cw"
-                                        className="text-slate-400 w-4 h-4"
-                                    />
-                                }
-                            />
-                        )}
-                    </Space>
-                </Flex>
-            )}
-
-            {collapsed && (
-                <div className="bg-slate-50 p-2 md:p-4 rounded-xl border border-slate-200 animate-in slide-in-from-top-2 duration-200 w-full">
+            {collapsed && !!selectFilters.length && (
+                <section
+                    className={`${CUSTOM_FILTER_PANEL_CLASS_NAME} animate-in slide-in-from-top-2 duration-200`}
+                >
                     <Row gutter={[16, 8]}>
                         {selectFilters.map((filter, index) =>
-                            renderFilterItem(filter, index, isMobile),
+                            renderFilterItem(filter, index, true),
                         )}
                     </Row>
-                </div>
+                </section>
             )}
         </Space>
     );

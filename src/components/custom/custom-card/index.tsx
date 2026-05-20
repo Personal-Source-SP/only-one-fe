@@ -4,7 +4,9 @@ import {
     CUSTOM_CARD_BASE_CLASS_NAME,
     CUSTOM_CARD_DEFAULT_FOOTER_CLASS_NAME,
     CUSTOM_CARD_DEFAULT_HEADER_CLASS_NAME,
+    CUSTOM_CARD_DESCRIPTION_CLASS_NAME,
     CUSTOM_CARD_PADDING_CLASS_MAP,
+    CUSTOM_CARD_TITLE_CLASS_NAME,
 } from '@/constants';
 import { CustomCardPadding } from '@/interfaces';
 import { Card, CardProps } from 'antd';
@@ -24,12 +26,12 @@ export type { CustomCardProps };
 const renderTitleContent = (title: ReactNode, description: ReactNode) => (
     <div className="flex flex-col gap-1">
         {typeof title === 'string' ? (
-            <span className="text-lg font-medium text-[#111527]">{title}</span>
+            <span className={CUSTOM_CARD_TITLE_CLASS_NAME}>{title}</span>
         ) : (
             title
         )}
         {typeof description === 'string' ? (
-            <p className="text-sm text-slate-600">{description}</p>
+            <p className={CUSTOM_CARD_DESCRIPTION_CLASS_NAME}>{description}</p>
         ) : (
             description
         )}
@@ -60,7 +62,7 @@ export const CustomCard = ({
 
         if (!title) {
             return typeof description === 'string' ? (
-                <p className="text-sm text-slate-600">{description}</p>
+                <p className={CUSTOM_CARD_DESCRIPTION_CLASS_NAME}>{description}</p>
             ) : (
                 description
             );
@@ -80,9 +82,9 @@ export const CustomCard = ({
     return (
         <Card className={mergedClassName} styles={styles} title={resolvedTitle} {...cardProps}>
             {header && (
-                <div className={headerClassName ?? CUSTOM_CARD_DEFAULT_HEADER_CLASS_NAME}>
+                <header className={headerClassName ?? CUSTOM_CARD_DEFAULT_HEADER_CLASS_NAME}>
                     {header}
-                </div>
+                </header>
             )}
             {children}
             {footer && (

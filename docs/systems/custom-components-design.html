@@ -1,328 +1,1820 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
-<head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Custom Components — Minimal &amp; Swiss | Only One Hub</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
-<style>
-    :root {
-      --doc-bg: #09090b; --doc-surface: #18181b; --doc-border: #3f3f46;
-      --doc-text: #fafafa; --doc-muted: #a1a1aa;
-      --primary: #2563EB; --cta: #F97316; --a-bg: #F8FAFC; --a-surface: #fff;
-      --a-border: #E2E8F0; --a-border-card: #F0F0F0; --a-text: #1E293B;
-      --a-title: #111527; --a-muted: #64748B; --radius: 8px; --radius-card: 12px;
-    }
-    * { box-sizing: border-box; }
-    body { margin: 0; background: var(--doc-bg); color: var(--doc-text);
-      font-family: 'Plus Jakarta Sans', system-ui, sans-serif; line-height: 1.6; font-size: 15px; }
-    .doc-header { position: sticky; top: 0; z-index: 50; padding: 1rem 1.5rem;
-      background: rgba(9,9,11,.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--doc-border); }
-    .wrap { max-width: 1100px; margin: 0 auto; }
-    .doc-header h1 { margin: 0; font-size: 1.5rem; font-weight: 700; }
-    .doc-header p { margin: .35rem 0 0; font-size: .875rem; color: var(--doc-muted); }
-    .badge { display: inline-block; padding: .2rem .6rem; border-radius: 9999px; font-size: .6875rem;
-      font-weight: 600; background: #1e3a5f; color: #93c5fd; margin-bottom: .5rem; }
-    .doc-nav { padding: 1rem 1.5rem 0; }
-    .doc-nav a { display: inline-block; margin: 0 .4rem .4rem 0; padding: .35rem .7rem;
-      border-radius: 8px; background: var(--doc-surface); border: 1px solid var(--doc-border);
-      color: #e4e4e7; text-decoration: none; font-size: .8125rem; }
-    main.wrap { padding: 1.5rem 1.5rem 4rem; }
-    section { margin-bottom: 2.5rem; }
-    h2 { font-size: 1.25rem; font-weight: 700; margin: 0 0 1rem; padding-bottom: .5rem;
-      border-bottom: 1px solid var(--doc-border); }
-    h3 { font-size: 1rem; font-weight: 600; margin: 1.5rem 0 .75rem; color: #e4e4e7; }
-    p, li { color: #d4d4d8; }
-    .card-doc { background: var(--doc-surface); border: 1px solid var(--doc-border);
-      border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1rem; }
-    .comp-item { border-bottom: 1px solid var(--doc-border); padding: 1rem 0; }
-    .comp-item:last-child { border-bottom: none; }
-    .comp-name { font-weight: 600; color: #fafafa; font-size: 1rem; }
-    .comp-path { font-size: .75rem; color: #93c5fd; margin: .25rem 0; }
-    .comp-path code { background: #27272a; padding: .1rem .35rem; border-radius: 4px; }
-    .comp-usage { font-size: .875rem; color: var(--doc-muted); margin: .35rem 0; }
-    .comp-mobile { font-size: .8125rem; color: #86efac; margin-top: .35rem; }
-    .token-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: .5rem; }
-    .token { padding: .5rem; border-radius: 8px; border: 1px solid var(--doc-border); font-size: .75rem; text-align: center; }
-    .demo-surface { background: var(--a-bg); border: 1px solid var(--a-border); border-radius: var(--radius-card);
-      padding: 1.25rem; color: var(--a-text); }
-    .demo-row { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
-    .demo-card { background: var(--a-surface); border: 1px solid var(--a-border-card); border-radius: var(--radius-card);
-      box-shadow: 0 1px 2px rgba(0,0,0,.04); overflow: hidden; }
-    .demo-card-head { padding: 1rem 1.25rem 0; }
-    .demo-card-title { margin: 0; font-size: 1.125rem; font-weight: 500; color: var(--a-title); }
-    .demo-card-desc { margin: .25rem 0 0; font-size: .875rem; color: var(--a-muted); }
-    .demo-card-body { padding: 1rem 1.25rem 1.25rem; }
-    .demo-card-foot { padding: .75rem 1.25rem; border-top: 1px solid var(--a-border-card);
-      font-size: .875rem; color: var(--a-muted); text-align: center; }
-    .btn { display: inline-flex; align-items: center; justify-content: center; padding: .5rem 1rem;
-      border-radius: var(--radius); font-size: .875rem; font-weight: 500; border: 1px solid transparent;
-      cursor: pointer; transition: opacity .2s; min-height: 36px; }
-    .btn:hover { opacity: .9; }
-    .btn-primary { background: var(--primary); color: #fff; }
-    .btn-default { background: #fff; border-color: var(--a-border); color: var(--a-text); }
-    .btn-text { background: transparent; color: var(--a-text); }
-    .btn-danger { background: #dc2626; color: #fff; }
-    .btn-cta { background: var(--cta); color: #fff; }
-    .inp { width: 100%; max-width: 280px; padding: .5rem .75rem; border: 1px solid var(--a-border);
-      border-radius: var(--radius); font-size: .875rem; }
-    .inp:focus { outline: 2px solid #bfdbfe; border-color: var(--primary); }
-    .lbl { display: block; font-size: .875rem; font-weight: 600; color: var(--a-muted); margin-bottom: .35rem; }
-    .tag { display: inline-block; padding: .125rem .5rem; border-radius: 4px; font-size: .75rem; font-weight: 500; }
-    .tag-green { background: #dcfce7; color: #166534; }
-    .tag-blue { background: #dbeafe; color: #1e40af; }
-    .tag-gray { background: #f1f5f9; color: #475569; }
-    .alert { padding: .75rem 1rem; border-radius: var(--radius); font-size: .875rem; margin-bottom: .5rem; }
-    .alert-info { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; }
-    .alert-success { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; }
-    .demo-table { width: 100%; border-collapse: collapse; font-size: .8125rem; background: #fff; border-radius: var(--radius); overflow: hidden; }
-    .demo-table th { background: #f8fafc; text-align: left; padding: .625rem .75rem; font-weight: 600;
-      border-bottom: 1px solid var(--a-border); color: var(--a-title); }
-    .demo-table td { padding: .625rem .75rem; border-bottom: 1px solid #f1f5f9; }
-    .demo-filter { background: #fff; border: 1px solid var(--a-border-card); border-radius: var(--radius-card); padding: 1rem; }
-    .demo-filter-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
-    .demo-modal-box { background: #fff; border-radius: var(--radius-card); border: 1px solid var(--a-border);
-      max-width: 100%; box-shadow: 0 25px 50px -12px rgba(0,0,0,.15); }
-    .demo-modal-head { padding: 1rem 1.25rem; border-bottom: 1px solid var(--a-border); font-weight: 600; }
-    .demo-modal-body { padding: 1.25rem; max-height: 200px; overflow-y: auto; }
-    .demo-modal-foot { padding: .75rem 1.25rem; border-top: 1px solid var(--a-border); text-align: right; }
-    .device-compare { display: grid; gap: 1.5rem; margin-top: 1rem; }
-    @media (min-width: 900px) { .device-compare { grid-template-columns: 1fr 320px; } }
-    .device-frame { border: 2px solid var(--doc-border); border-radius: 24px; overflow: hidden; background: var(--a-bg); }
-    .device-frame-bar { height: 28px; background: #0f172a; display: flex; align-items: center; justify-content: center;
-      font-size: .625rem; color: #94a3b8; }
-    .device-frame-body { padding: .75rem; max-height: 420px; overflow-y: auto; }
-    .device-desktop-label, .device-mobile-label { font-size: .6875rem; font-weight: 600; text-transform: uppercase;
-      letter-spacing: .06em; color: var(--doc-muted); margin: 0 0 .5rem; }
-    table.index { width: 100%; border-collapse: collapse; font-size: .8125rem; }
-    table.index th, table.index td { padding: .5rem .75rem; border-bottom: 1px solid var(--doc-border); text-align: left; }
-    table.index code { background: #27272a; padding: .1rem .3rem; border-radius: 4px; color: #93c5fd; font-size: .75rem; }
-    .footer-links { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--doc-border); font-size: .875rem; color: var(--doc-muted); }
-    .footer-links a { color: #93c5fd; }
-    .rules { display: grid; gap: .5rem; }
-    @media (min-width: 640px) { .rules { grid-template-columns: 1fr 1fr; } }
-    .rule { padding: .75rem; background: #0c0c0e; border-radius: 8px; border: 1px solid var(--doc-border); font-size: .875rem; }
-    .rule.do strong { color: #86efac; }
-    .rule.dont strong { color: #fca5a5; }
-  </style>
-</head>
-<body>
-<header class="doc-header"><div class="wrap">
-<span class="badge">@/components/custom · Style A</span>
-<h1>Custom Components — Design Guide</h1>
-<p>Minimal &amp; Swiss · Desktop + Mobile</p>
-</div></header>
-<nav class="doc-nav wrap">
-<a href="#tokens">Tokens</a><a href="#patterns">Patterns</a>
-<a href="#crud">CRUD</a><a href="#layout">Layout</a><a href="#forms">Forms</a>
-<a href="#actions">Actions</a><a href="#feedback">Feedback</a><a href="#display">Display</a>
-<a href="#mobile">Mobile</a><a href="#index">Index</a><a href="#rules">Rules</a>
-</nav>
-<main class="wrap">
-<section id="tokens"><h2>Design tokens (Style A)</h2>
-<p>Áp dụng cho mọi <code>Custom*</code>. Cập nhật <code>custom-components.constant.ts</code> + Ant Design ConfigProvider.</p>
-<div class="card-doc"><div class="token-grid">
-<div class="token" style="background:#2563EB;color:#fff">Primary<br><code>#2563EB</code></div>
-<div class="token" style="background:#F8FAFC;color:#1E293B">BG<br><code>#F8FAFC</code></div>
-<div class="token" style="background:#fff;border:1px solid #E2E8F0;color:#1E293B">Surface<br><code>#FFFFFF</code></div>
-<div class="token" style="background:#E2E8F0;color:#1E293B">Border<br><code>#E2E8F0</code></div>
-<div class="token" style="background:#F0F0F0;color:#1E293B">Card border<br><code>#F0F0F0</code></div>
-<div class="token" style="background:#F97316;color:#fff">CTA<br><code>#F97316</code></div>
-</div>
-<p style="margin-top:1rem;font-size:.875rem;color:var(--doc-muted)">CustomCard hiện dùng <code>#111527</code> title, <code>rounded-xl</code>, <code>shadow-sm</code>. CustomLink primary legacy <code>#1840DC</code> — nên đồng bộ <code>#2563EB</code>.</p>
-</div></section>
-<section id="patterns"><h2>Patterns chính</h2>
-<h3>TableContainer + CustomFilter</h3>
-<div class="device-compare">
-<div><p class="device-desktop-label">Desktop</p><div class="demo-surface">
-<div class="demo-filter" style="margin-bottom:1rem"><div class="demo-filter-grid">
-<div><span class="lbl">Tìm kiếm</span><input class="inp" placeholder="Tìm kiếm..." value=""/></div>
-<div><span class="lbl">Trạng thái</span><input class="inp" placeholder="Chọn..." value=""/></div>
-<div style="display:flex;align-items:flex-end"><button class="btn btn-default">Xóa lọc</button></div>
-</div></div>
-<table class="demo-table"><thead><tr><th>Tên</th><th>Trạng thái</th><th>Cập nhật</th></tr></thead>
-<tbody><tr><td>Provider A</td><td><span class="tag tag-green">Active</span></td><td>2 phút</td></tr>
-<tr><td>Provider B</td><td><span class="tag tag-blue">Running</span></td><td>vừa xong</td></tr></tbody></table>
-</div></div>
-<div><p class="device-mobile-label">Mobile (375px)</p><div class="device-frame"><div class="device-frame-bar">375px</div>
-<div class="device-frame-body">
-<div class="demo-filter" style="margin-bottom:.75rem"><span class="lbl">Tìm kiếm</span><input class="inp" style="max-width:100%" placeholder="Tìm kiếm..."/></div>
-<button class="btn btn-default" style="width:100%;margin-bottom:.75rem">Thu gọn bộ lọc</button>
-<table class="demo-table" style="font-size:.75rem"><thead><tr><th>Tên</th><th>TT</th></tr></thead>
-<tbody><tr><td>Provider A</td><td><span class="tag tag-green">On</span></td></tr></tbody></table>
-</div></div></div>
-</div>
-<h3>CustomCard</h3><div class="demo-surface"><article class="demo-card">
-<header class="demo-card-head"><h4 class="demo-card-title">Module title</h4>
-<p class="demo-card-desc">Mô tả ngắn</p></header>
-<div class="demo-card-body"><p style="margin:0;font-size:14px;color:#64748B">paddingSize: default | sm | lg | responsive</p></div>
-</article></div>
-<h3>Buttons &amp; Form</h3><div class="demo-surface demo-row">
-<button type="button" class="btn btn-primary">Primary</button>
-<button type="button" class="btn btn-default">Default</button>
-<button type="button" class="btn btn-text">Text</button>
-<button type="button" class="btn btn-danger">Danger</button>
-<button type="button" class="btn btn-cta">CTA</button>
-</div>
-<div class="demo-surface" style="margin-top:1rem;display:grid;grid-template-columns:1fr 1fr;gap:1rem;max-width:560px">
-<div><span class="lbl">Email</span><input class="inp" style="max-width:100%" placeholder="email@example.com"/></div>
-<div><span class="lbl">Vai trò</span><input class="inp" style="max-width:100%" placeholder="Chọn vai trò"/></div>
-</div>
-<h3>CustomModal / Form modal</h3><div class="demo-surface" style="background:#e2e8f0;padding:1.5rem">
-<div class="demo-modal-box"><div class="demo-modal-head">Tạo mới · CustomFormModal</div>
-<div class="demo-modal-body"><span class="lbl">Tên</span><input class="inp" style="max-width:100%;margin-bottom:.75rem"/>
-<span class="lbl">Mô tả</span><input class="inp" style="max-width:100%"/></div>
-<div class="demo-modal-foot"><button class="btn btn-default">Hủy</button> <button class="btn btn-primary">Lưu</button></div>
-</div><p style="margin:.75rem 0 0;font-size:.75rem;color:#64748B">Default width 1200px · scroll body · Spin khi loading</p></div>
-<h3>Tags &amp; Alert</h3><div class="demo-surface">
-<div class="alert alert-info">Thông tin cấu hình đã lưu.</div>
-<div class="alert alert-success">Kết nối Google thành công.</div>
-<span class="tag tag-green">Active</span> <span class="tag tag-blue">Running</span> <span class="tag tag-gray">Draft</span>
-</div>
-</section>
-<section id="crud"><h2>CRUD &amp; danh sách</h2><p>Pattern Refine phổ biến: filter + bảng + modal form.</p><div class="card-doc"><div class="comp-item">
-  <div class="comp-name">TableContainer</div>
-  <p class="comp-path"><code>@/components/custom/custom-container</code></p>
-  <p class="comp-usage">useTableContainer + CustomFilter + CustomTable + pagination</p><p class="comp-mobile">Mobile: Filter full width; bảng scroll ngang; ListItem trên mobile</p></div><div class="comp-item">
-  <div class="comp-name">CustomFilter</div>
-  <p class="comp-path"><code>@/components/custom/custom-filter</code></p>
-  <p class="comp-usage">Search / Select filters, collapse trên mobile</p><p class="comp-mobile">Mobile: Col span 24; nút thu gọn filter</p></div><div class="comp-item">
-  <div class="comp-name">CustomTable</div>
-  <p class="comp-path"><code>@/components/custom/custom-table</code></p>
-  <p class="comp-usage">Wrapper Table Ant Design</p></div><div class="comp-item">
-  <div class="comp-name">CustomDataTable</div>
-  <p class="comp-path"><code>@/components/custom/custom-data-table</code></p>
-  <p class="comp-usage">Bảng dữ liệu mở rộng</p></div><div class="comp-item">
-  <div class="comp-name">CreateFormModal / EditFormModal</div>
-  <p class="comp-path"><code>@/components/custom/custom-form-modal</code></p>
-  <p class="comp-usage">CRUD modal qua useCustomModal</p><p class="comp-mobile">Mobile: Modal full width; form 1 cột</p></div><div class="comp-item">
-  <div class="comp-name">CustomFormModal</div>
-  <p class="comp-path"><code>@/components/custom/custom-form-modal</code></p>
-  <p class="comp-usage">Spin + CustomModal + Space vertical</p></div></div></section><section id="layout"><h2>Layout &amp; cấu trúc</h2><p>Tách vùng nội dung rõ ràng — surface + border.</p><div class="card-doc"><div class="comp-item">
-  <div class="comp-name">CustomCard</div>
-  <p class="comp-path"><code>@/components/custom/custom-card</code></p>
-  <p class="comp-usage">paddingSize, header/footer slot</p><p class="comp-mobile">Mobile: padding responsive</p></div><div class="comp-item">
-  <div class="comp-name">CustomSpace</div>
-  <p class="comp-path"><code>@/components/custom/custom-space</code></p>
-  <p class="comp-usage">Khoảng cách vertical/horizontal</p></div><div class="comp-item">
-  <div class="comp-name">CustomFlex</div>
-  <p class="comp-path"><code>@/components/custom/custom-flex</code></p>
-  <p class="comp-usage">Flex layout</p></div><div class="comp-item">
-  <div class="comp-name">CustomGrid</div>
-  <p class="comp-path"><code>@/components/custom/custom-grid</code></p>
-  <p class="comp-usage">Grid responsive</p></div><div class="comp-item">
-  <div class="comp-name">CustomRowCol</div>
-  <p class="comp-path"><code>@/components/custom/custom-row-col</code></p>
-  <p class="comp-usage">Row / Col</p></div><div class="comp-item">
-  <div class="comp-name">CustomDivider</div>
-  <p class="comp-path"><code>@/components/custom/custom-divider</code></p>
-  <p class="comp-usage">Phân tách section</p></div></div></section><section id="forms"><h2>Form &amp; nhập liệu</h2><p>Label rõ, full width trên mobile, focus ring primary.</p><div class="card-doc"><div class="comp-item">
-  <div class="comp-name">CustomInput</div>
-  <p class="comp-path"><code>@/components/custom/custom-input</code></p>
-  <p class="comp-usage">Input, Password, TextArea, Search</p><p class="comp-mobile">Mobile: min-height 44px touch</p></div><div class="comp-item">
-  <div class="comp-name">CustomSelect</div>
-  <p class="comp-path"><code>@/components/custom/custom-select</code></p>
-  <p class="comp-usage">Select / multi</p></div><div class="comp-item">
-  <div class="comp-name">CustomDatePicker</div>
-  <p class="comp-path"><code>@/components/custom/custom-date-picker</code></p>
-  <p class="comp-usage">Ngày giờ</p></div><div class="comp-item">
-  <div class="comp-name">CustomCheckbox</div>
-  <p class="comp-path"><code>@/components/custom/custom-checkbox</code></p>
-  <p class="comp-usage">Checkbox / group</p></div><div class="comp-item">
-  <div class="comp-name">CustomSwitch</div>
-  <p class="comp-path"><code>@/components/custom/custom-switch</code></p>
-  <p class="comp-usage">Toggle on/off</p></div><div class="comp-item">
-  <div class="comp-name">CustomForm</div>
-  <p class="comp-path"><code>@/components/custom/custom-form</code></p>
-  <p class="comp-usage">Form layout</p></div><div class="comp-item">
-  <div class="comp-name">CustomUpload</div>
-  <p class="comp-path"><code>@/components/custom/custom-upload</code></p>
-  <p class="comp-usage">Upload file</p></div></div></section><section id="actions"><h2>Hành động</h2><div class="card-doc"><div class="comp-item">
-  <div class="comp-name">CustomButton</div>
-  <p class="comp-path"><code>@/components/custom/custom-button</code></p>
-  <p class="comp-usage">primary | default | text | danger</p><p class="comp-mobile">Mobile: full width CTA nếu cần</p></div><div class="comp-item">
-  <div class="comp-name">CustomLink</div>
-  <p class="comp-path"><code>@/components/custom/custom-link</code></p>
-  <p class="comp-usage">variant default | primary</p></div><div class="comp-item">
-  <div class="comp-name">CustomDropdown</div>
-  <p class="comp-path"><code>@/components/custom/custom-dropdown</code></p>
-  <p class="comp-usage">Menu hành động</p></div><div class="comp-item">
-  <div class="comp-name">CustomPopconfirm</div>
-  <p class="comp-path"><code>@/components/custom/custom-popconfirm</code></p>
-  <p class="comp-usage">Xác nhận xóa</p></div><div class="comp-item">
-  <div class="comp-name">CustomFloatButton</div>
-  <p class="comp-path"><code>@/components/custom/custom-float-button</code></p>
-  <p class="comp-usage">FAB</p></div></div></section><section id="feedback"><h2>Phản hồi &amp; overlay</h2><div class="card-doc"><div class="comp-item">
-  <div class="comp-name">CustomModal</div>
-  <p class="comp-path"><code>@/components/custom/custom-modal</code></p>
-  <p class="comp-usage">width 1200, scroll body</p><p class="comp-mobile">Mobile: margin 16px; scroll trong modal</p></div><div class="comp-item">
-  <div class="comp-name">CustomDrawer</div>
-  <p class="comp-path"><code>@/components/custom/custom-drawer</code></p>
-  <p class="comp-usage">Panel phụ</p><p class="comp-mobile">Mobile: full width drawer</p></div><div class="comp-item">
-  <div class="comp-name">CustomAlert</div>
-  <p class="comp-path"><code>@/components/custom/custom-alert</code></p>
-  <p class="comp-usage">Thông báo inline</p></div><div class="comp-item">
-  <div class="comp-name">CustomSpin</div>
-  <p class="comp-path"><code>@/components/custom/custom-spin</code></p>
-  <p class="comp-usage">Loading</p></div><div class="comp-item">
-  <div class="comp-name">CustomTooltip</div>
-  <p class="comp-path"><code>@/components/custom/custom-tooltip</code></p>
-  <p class="comp-usage">Gợi ý</p></div><div class="comp-item">
-  <div class="comp-name">CustomPopover</div>
-  <p class="comp-path"><code>@/components/custom/custom-popover</code></p>
-  <p class="comp-usage">Popover menu</p></div></div></section><section id="display"><h2>Hiển thị dữ liệu</h2><div class="card-doc"><div class="comp-item">
-  <div class="comp-name">CustomTag</div>
-  <p class="comp-path"><code>@/components/custom/custom-tag</code></p>
-  <p class="comp-usage">Status</p></div><div class="comp-item">
-  <div class="comp-name">CustomBadge</div>
-  <p class="comp-path"><code>@/components/custom/custom-badge</code></p>
-  <p class="comp-usage">Đếm thông báo</p></div><div class="comp-item">
-  <div class="comp-name">CustomStatistic</div>
-  <p class="comp-path"><code>@/components/custom/custom-statistic</code></p>
-  <p class="comp-usage">KPI số</p><p class="comp-mobile">Mobile: max 2 KPI/hàng</p></div><div class="comp-item">
-  <div class="comp-name">CustomEmpty</div>
-  <p class="comp-path"><code>@/components/custom/custom-empty</code></p>
-  <p class="comp-usage">Không có dữ liệu</p></div><div class="comp-item">
-  <div class="comp-name">CustomDescriptions</div>
-  <p class="comp-path"><code>@/components/custom/custom-descriptions</code></p>
-  <p class="comp-usage">Chi tiết key-value</p></div><div class="comp-item">
-  <div class="comp-name">CustomAvatar</div>
-  <p class="comp-path"><code>@/components/custom/custom-avatar</code></p>
-  <p class="comp-usage">Avatar user</p></div></div></section><section id="navigation"><h2>Điều hướng</h2><div class="card-doc"><div class="comp-item">
-  <div class="comp-name">CustomBreadcrumb</div>
-  <p class="comp-path"><code>@/components/custom/custom-breadcrumb</code></p>
-  <p class="comp-usage">Breadcrumb</p></div><div class="comp-item">
-  <div class="comp-name">CustomTabs</div>
-  <p class="comp-path"><code>@/components/custom/custom-tabs</code></p>
-  <p class="comp-usage">Tab view</p><p class="comp-mobile">Mobile: scroll tab bar</p></div><div class="comp-item">
-  <div class="comp-name">CustomSteps</div>
-  <p class="comp-path"><code>@/components/custom/custom-steps</code></p>
-  <p class="comp-usage">Wizard</p><p class="comp-mobile">Mobile: vertical steps</p></div><div class="comp-item">
-  <div class="comp-name">CustomPagination</div>
-  <p class="comp-path"><code>@/components/custom/custom-pagination</code></p>
-  <p class="comp-usage">Phân trang</p></div></div></section><section id="mobile"><h2>Mobile guidelines</h2>
-<div class="card-doc"><ul>
-<li>CustomFilter: mỗi field <code>Col span=24</code>, nút collapse</li>
-<li>CustomButton CTA chính: có thể <code>block</code> full width</li>
-<li>CustomModal: margin 16px, form 1 cột, scroll trong body</li>
-<li>CustomTable: <code>scroll.x</code> hoặc ListItem (TableContainer)</li>
-<li>CustomStatistic: tối đa 2 KPI / hàng, không stack quá 2 hàng trước main</li>
-<li>Touch target ≥ 44px cho Input / Button</li>
-</ul></div></section>
-<section id="index"><h2>Danh mục đầy đủ (52 exports)</h2>
-<div class="card-doc" style="overflow-x:auto"><table class="index"><thead>
-<tr><th>Component</th><th>Folder</th><th>Import</th></tr></thead><tbody><tr><td>CustomAlert</td><td><code>custom-alert</code></td><td><code>import { ... } from '@/components/custom'</code></td></tr><tr><td>CustomAvatar</td><td><code>custom-avatar</code></td><td><code>import { ... } from '@/components/custom'</code></td></tr><tr><td>CustomBackTop</td><td><code>custom-back-top</code></td><td><code>import { ... } from '@/components/custom'</code></td></tr><tr><td>CustomBadge</td><td><code>custom-badge</code></td><td><code>import { ... } from '@/components/custom'</code></td></tr><tr><td>CustomBreadcrumb</td><td><code>custom-breadcrumb</code></td><td><code>import { ... } from '@/components/custom'</code></td></tr><tr><td>CustomButton</td><td><code>custom-button</code></td><td><code>import { ... } from '@/components/custom'</code></td></tr><tr><td>CustomCard</td><td><code>custom-card</code></td><td><code>import { ... } from '@/components/custom'</code></td></tr><tr><td>CustomCheckbox</td><td><code>custom-checkbox</code></td><td><code>import { ... } from '@/components/custom'</code></td></tr><tr><td>CustomContainer / TableContainer</td><td><code>custom-container</code></td><td><code>import { ... } from '@/components/custom'</code></td></tr><tr><td>CustomDataTable</td><td><code>custom-data-table</code></td><td><code>import { ... } from '@/components/custom'</code></td></tr><tr><td>CustomDatePicker</td><td><code>custom-date-picker</code></td><td><code>import { ... } from '@/components/custom'</code></td></tr><tr><td>CustomDescriptions</td><td><code>custom-descriptions</code></td><td><code>import { ... } from '@/components/custom'</code></td></tr><tr><td>CustomDivider</td><td><code>custom-divider</code></td><td><code>import { ... } from '@/components/custom'</code></td></tr><tr><td>CustomDrawer</td><td><code>custom-drawer</code></td><td><code>import { ... } from '@/components/custom'</code></td></tr><tr><td>CustomDropdown</td><td><code>custom-dropdown</code></td><td><code>import { ... } from '@/components/custom'</code></td></tr><tr><td>CustomElement</td><td><code>custom-element</code></td><td><code>import { ... } from '@/components/custom'</code></td></tr><tr><td>CustomEmpty</td><td><code>custom-empty</code></td><td><code>import { ... } from '@/components/custom'</code></td></tr><tr><td>CustomFilter</td><td><code>custom-filter</code></td><td><code>import { ... } from '@/components/custom'</code></td></tr><tr><td>CustomFlex</td><td><code>custom-flex</code></td><td><code>import { ... } from '@/components/custom'</code></td></tr><tr><td>CustomFloatButton</td><td><code>custom-float-button</code></td><td><code>import { ... } from '@/components/custom'</code></td></tr><tr><td>CustomForm</td><td><code>custom-form</code></td><td><code>import { ... } from '@/components/custom'</code></td></tr><tr><td>CustomFormModal</td><td><code>custom-form-modal</code></td><td><code>import { ... } from '@/components/custom'</code></td></tr><tr><td>CustomGrid</td><td><code>custom-grid</code></td><td><code>import { ... } from '@/components/custom'</code></td></tr><tr><td>CustomInput</td><td><code>custom-input</code></td><td><code>import { ... } from '@/components/custom'</code></td></tr><tr><td>CustomLightBox</td><td><code>custom-light-box</code></td><td><code>import { ... } from '@/components/custom'</code></td></tr><tr><td>CustomLink</td><td><code>custom-link</code></td><td><code>import { ... } from '@/components/custom'</code></td></tr><tr><td>CustomList</td><td><code>custom-list</code></td><td><code>import { ... } from '@/components/custom'</code></td></tr><tr><td>CustomModal</td><td><code>custom-modal</code></td><td><code>import { ... } from '@/components/custom'</code></td></tr><tr><td>CustomPagination</td><td><code>custom-pagination</code></td><td><code>import { ... } from '@/components/custom'</code></td></tr><tr><td>CustomPicker</td><td><code>custom-picker</code></td><td><code>import { ... } from '@/components/custom'</code></td></tr><tr><td>CustomPopconfirm</td><td><code>custom-popconfirm</code></td><td><code>import { ... } from '@/components/custom'</code></td></tr><tr><td>CustomPopover</td><td><code>custom-popover</code></td><td><code>import { ... } from '@/components/custom'</code></td></tr><tr><td>CustomResult</td><td><code>custom-result</code></td><td><code>import { ... } from '@/components/custom'</code></td></tr><tr><td>CustomRowCol</td><td><code>custom-row-col</code></td><td><code>import { ... } from '@/components/custom'</code></td></tr><tr><td>CustomSegmented</td><td><code>custom-segmented</code></td><td><code>import { ... } from '@/components/custom'</code></td></tr><tr><td>CustomSelect</td><td><code>custom-select</code></td><td><code>import { ... } from '@/components/custom'</code></td></tr><tr><td>CustomSlider</td><td><code>custom-slider</code></td><td><code>import { ... } from '@/components/custom'</code></td></tr><tr><td>CustomSpace</td><td><code>custom-space</code></td><td><code>import { ... } from '@/components/custom'</code></td></tr><tr><td>CustomSpin</td><td><code>custom-spin</code></td><td><code>import { ... } from '@/components/custom'</code></td></tr><tr><td>CustomStatistic</td><td><code>custom-statistic</code></td><td><code>import { ... } from '@/components/custom'</code></td></tr><tr><td>CustomSteps</td><td><code>custom-steps</code></td><td><code>import { ... } from '@/components/custom'</code></td></tr><tr><td>CustomSwitch</td><td><code>custom-switch</code></td><td><code>import { ... } from '@/components/custom'</code></td></tr><tr><td>CustomTable</td><td><code>custom-table</code></td><td><code>import { ... } from '@/components/custom'</code></td></tr><tr><td>CustomTabs</td><td><code>custom-tabs</code></td><td><code>import { ... } from '@/components/custom'</code></td></tr><tr><td>CustomTag</td><td><code>custom-tag</code></td><td><code>import { ... } from '@/components/custom'</code></td></tr><tr><td>CustomToggle</td><td><code>custom-toggle</code></td><td><code>import { ... } from '@/components/custom'</code></td></tr><tr><td>CustomTooltip</td><td><code>custom-tooltip</code></td><td><code>import { ... } from '@/components/custom'</code></td></tr><tr><td>CustomTypography</td><td><code>custom-typography</code></td><td><code>import { ... } from '@/components/custom'</code></td></tr><tr><td>CustomUpload</td><td><code>custom-upload</code></td><td><code>import { ... } from '@/components/custom'</code></td></tr><tr><td>CreateFormModal</td><td><code>custom-form-modal</code></td><td><code>import { ... } from '@/components/custom'</code></td></tr><tr><td>EditFormModal</td><td><code>custom-form-modal</code></td><td><code>import { ... } from '@/components/custom'</code></td></tr></tbody></table></div></section>
-<section id="rules"><h2>Do / Don't</h2>
-<div class="rules">
-<div class="rule do"><strong>Do</strong> Luôn import từ <code>@/components/custom</code></div>
-<div class="rule do"><strong>Do</strong> Bọc list trong CustomCard / TableContainer</div>
-<div class="rule do"><strong>Do</strong> Constants vào <code>custom-components.constant.ts</code></div>
-<div class="rule dont"><strong>Don't</strong> Import Ant Design trực tiếp khi đã có wrapper</div>
-<div class="rule dont"><strong>Don't</strong> Nested card trong card</div>
-<div class="rule dont"><strong>Don't</strong> Gradient/glass trên custom shell</div>
-</div></section>
-<p class="footer-links">
-<a href="style-a-minimal-swiss.html">Style A</a> ·
-<a href="dashboard-design-system.md">Dashboard system</a> ·
-<a href="style-options.html">So sánh A–F</a>
-</p></main></body></html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <title>Custom Components — Minimal &amp; Swiss | Only One Hub</title>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
+        <style>
+            :root {
+                --doc-bg: #09090b;
+                --doc-surface: #18181b;
+                --doc-border: #3f3f46;
+                --doc-text: #fafafa;
+                --doc-muted: #a1a1aa;
+                --primary: #2563eb;
+                --cta: #f97316;
+                --a-bg: #f8fafc;
+                --a-surface: #fff;
+                --a-border: #e2e8f0;
+                --a-border-card: #f0f0f0;
+                --a-text: #1e293b;
+                --a-title: #111527;
+                --a-muted: #64748b;
+                --radius: 8px;
+                --radius-card: 12px;
+            }
+            * {
+                box-sizing: border-box;
+            }
+            body {
+                margin: 0;
+                background: var(--doc-bg);
+                color: var(--doc-text);
+                font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+                line-height: 1.6;
+                font-size: 15px;
+            }
+            .doc-header {
+                position: sticky;
+                top: 0;
+                z-index: 50;
+                padding: 1rem 1.5rem;
+                background: rgba(9, 9, 11, 0.92);
+                backdrop-filter: blur(12px);
+                border-bottom: 1px solid var(--doc-border);
+            }
+            .wrap {
+                max-width: 1100px;
+                margin: 0 auto;
+            }
+            .doc-header h1 {
+                margin: 0;
+                font-size: 1.5rem;
+                font-weight: 700;
+            }
+            .doc-header p {
+                margin: 0.35rem 0 0;
+                font-size: 0.875rem;
+                color: var(--doc-muted);
+            }
+            .badge {
+                display: inline-block;
+                padding: 0.2rem 0.6rem;
+                border-radius: 9999px;
+                font-size: 0.6875rem;
+                font-weight: 600;
+                background: #1e3a5f;
+                color: #93c5fd;
+                margin-bottom: 0.5rem;
+            }
+            .doc-nav {
+                padding: 1rem 1.5rem 0;
+            }
+            .doc-nav a {
+                display: inline-block;
+                margin: 0 0.4rem 0.4rem 0;
+                padding: 0.35rem 0.7rem;
+                border-radius: 8px;
+                background: var(--doc-surface);
+                border: 1px solid var(--doc-border);
+                color: #e4e4e7;
+                text-decoration: none;
+                font-size: 0.8125rem;
+            }
+            main.wrap {
+                padding: 1.5rem 1.5rem 4rem;
+            }
+            section {
+                margin-bottom: 2.5rem;
+            }
+            h2 {
+                font-size: 1.25rem;
+                font-weight: 700;
+                margin: 0 0 1rem;
+                padding-bottom: 0.5rem;
+                border-bottom: 1px solid var(--doc-border);
+            }
+            h3 {
+                font-size: 1rem;
+                font-weight: 600;
+                margin: 1.5rem 0 0.75rem;
+                color: #e4e4e7;
+            }
+            h4 {
+                font-size: 0.875rem;
+                font-weight: 600;
+                margin: 0 0 0.5rem;
+                color: #e4e4e7;
+            }
+            p,
+            li {
+                color: #d4d4d8;
+            }
+            .lead {
+                font-size: 1rem;
+                color: #e4e4e7;
+                margin: 0 0 1rem;
+            }
+            .card-doc {
+                background: var(--doc-surface);
+                border: 1px solid var(--doc-border);
+                border-radius: 12px;
+                padding: 1.25rem 1.5rem;
+                margin-bottom: 1rem;
+            }
+            .comp-item {
+                border-bottom: 1px solid var(--doc-border);
+                padding: 1.25rem 0;
+            }
+            .comp-item:last-child {
+                border-bottom: none;
+            }
+            .comp-name {
+                font-weight: 600;
+                color: #fafafa;
+                font-size: 1rem;
+            }
+            .comp-path {
+                font-size: 0.75rem;
+                color: #93c5fd;
+                margin: 0.25rem 0 0.5rem;
+            }
+            .comp-path code {
+                background: #27272a;
+                padding: 0.1rem 0.35rem;
+                border-radius: 4px;
+            }
+            .comp-desc {
+                font-size: 0.875rem;
+                color: #d4d4d8;
+                margin: 0 0 0.75rem;
+                max-width: 72ch;
+            }
+            .comp-usage {
+                font-size: 0.8125rem;
+                color: var(--doc-muted);
+                margin: 0.35rem 0;
+            }
+            .comp-mobile {
+                font-size: 0.8125rem;
+                color: #86efac;
+                margin-top: 0.35rem;
+            }
+            .comp-props {
+                font-size: 0.75rem;
+                color: #a1a1aa;
+                margin: 0.25rem 0 0.5rem;
+            }
+            .comp-props code {
+                background: #27272a;
+                padding: 0.1rem 0.3rem;
+                border-radius: 4px;
+                color: #fde68a;
+            }
+            .code-sample {
+                margin: 0.5rem 0 0.75rem;
+                padding: 0.75rem 1rem;
+                background: #0c0c0e;
+                border: 1px solid var(--doc-border);
+                border-radius: 8px;
+                overflow-x: auto;
+            }
+            .code-sample pre {
+                margin: 0;
+                font-family: ui-monospace, Consolas, monospace;
+                font-size: 0.75rem;
+                line-height: 1.5;
+                color: #e4e4e7;
+                white-space: pre-wrap;
+            }
+            .code-sample .kw {
+                color: #c084fc;
+            }
+            .code-sample .str {
+                color: #86efac;
+            }
+            .code-sample .cmt {
+                color: #71717a;
+            }
+            .comp-demo {
+                margin-top: 0.75rem;
+            }
+            .token-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+                gap: 0.5rem;
+            }
+            .token {
+                padding: 0.5rem;
+                border-radius: 8px;
+                border: 1px solid var(--doc-border);
+                font-size: 0.75rem;
+                text-align: center;
+            }
+            .impl-list {
+                margin: 0;
+                padding-left: 1.25rem;
+                font-size: 0.875rem;
+            }
+            .impl-list li {
+                margin-bottom: 0.35rem;
+            }
+            .impl-list code {
+                background: #27272a;
+                padding: 0.1rem 0.3rem;
+                border-radius: 4px;
+                color: #93c5fd;
+                font-size: 0.8125rem;
+            }
+            .demo-surface {
+                background: var(--a-bg);
+                border: 1px solid var(--a-border);
+                border-radius: var(--radius-card);
+                padding: 1.25rem;
+                color: var(--a-text);
+            }
+            .demo-row {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+                align-items: center;
+            }
+            .demo-card {
+                background: var(--a-surface);
+                border: 1px solid var(--a-border-card);
+                border-radius: var(--radius-card);
+                box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+                overflow: hidden;
+            }
+            .demo-card-head {
+                padding: 1rem 1.25rem 0;
+            }
+            .demo-card-title {
+                margin: 0;
+                font-size: 1.125rem;
+                font-weight: 500;
+                color: var(--a-title);
+            }
+            .demo-card-desc {
+                margin: 0.25rem 0 0;
+                font-size: 0.875rem;
+                color: var(--a-muted);
+            }
+            .demo-card-body {
+                padding: 1rem 1.25rem 1.25rem;
+            }
+            .demo-card-foot {
+                padding: 0.75rem 1.25rem;
+                border-top: 1px solid var(--a-border-card);
+                font-size: 0.875rem;
+                color: var(--a-muted);
+                text-align: center;
+            }
+            .btn {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                padding: 0.5rem 1rem;
+                border-radius: var(--radius);
+                font-size: 0.875rem;
+                font-weight: 500;
+                border: 1px solid transparent;
+                cursor: pointer;
+                transition: opacity 0.2s;
+                min-height: 36px;
+            }
+            .btn:hover {
+                opacity: 0.9;
+            }
+            .btn-primary {
+                background: var(--primary);
+                color: #fff;
+            }
+            .btn-default {
+                background: #fff;
+                border-color: var(--a-border);
+                color: var(--a-text);
+            }
+            .btn-text {
+                background: transparent;
+                color: var(--a-text);
+            }
+            .btn-danger {
+                background: #dc2626;
+                color: #fff;
+            }
+            .btn-cta {
+                background: var(--cta);
+                color: #fff;
+            }
+            .btn-block {
+                width: 100%;
+            }
+            .btn-touch {
+                min-height: 44px;
+            }
+            .inp {
+                width: 100%;
+                max-width: 280px;
+                padding: 0.5rem 0.75rem;
+                border: 1px solid var(--a-border);
+                border-radius: var(--radius);
+                font-size: 0.875rem;
+                min-height: 40px;
+            }
+            .inp:focus {
+                outline: 2px solid #bfdbfe;
+                border-color: var(--primary);
+                box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+            }
+            .inp-touch {
+                min-height: 44px;
+            }
+            .lbl {
+                display: block;
+                font-size: 0.875rem;
+                font-weight: 600;
+                color: var(--a-muted);
+                margin-bottom: 0.35rem;
+            }
+            .tag {
+                display: inline-block;
+                padding: 0.125rem 0.5rem;
+                border-radius: 4px;
+                font-size: 0.75rem;
+                font-weight: 500;
+                border: 1px solid transparent;
+            }
+            .tag-green {
+                background: #dcfce7;
+                color: #166534;
+                border-color: #bbf7d0;
+            }
+            .tag-blue {
+                background: #dbeafe;
+                color: #1e40af;
+                border-color: #bfdbfe;
+            }
+            .tag-gray {
+                background: #f1f5f9;
+                color: #475569;
+                border-color: #e2e8f0;
+            }
+            .alert {
+                padding: 0.75rem 1rem;
+                border-radius: var(--radius);
+                font-size: 0.875rem;
+                margin-bottom: 0.5rem;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+            .alert-info {
+                background: #eff6ff;
+                border: 1px solid #bfdbfe;
+                color: #1e40af;
+            }
+            .alert-success {
+                background: #f0fdf4;
+                border: 1px solid #bbf7d0;
+                color: #166534;
+            }
+            .demo-table {
+                width: 100%;
+                border-collapse: collapse;
+                font-size: 0.8125rem;
+                background: #fff;
+                border-radius: var(--radius);
+                overflow: hidden;
+            }
+            .demo-table th {
+                background: #f8fafc;
+                text-align: left;
+                padding: 0.625rem 0.75rem;
+                font-weight: 600;
+                border-bottom: 1px solid var(--a-border);
+                color: var(--a-title);
+            }
+            .demo-table td {
+                padding: 0.625rem 0.75rem;
+                border-bottom: 1px solid #f1f5f9;
+            }
+            .demo-filter {
+                background: #fff;
+                border: 1px solid var(--a-border-card);
+                border-radius: var(--radius-card);
+                padding: 1rem;
+            }
+            .demo-filter-grid {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 1rem;
+            }
+            .demo-modal-box {
+                background: #fff;
+                border-radius: var(--radius-card);
+                border: 1px solid var(--a-border);
+                max-width: 100%;
+                box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+            }
+            .demo-modal-head {
+                padding: 1rem 1.25rem;
+                border-bottom: 1px solid var(--a-border);
+                font-weight: 600;
+                color: var(--a-title);
+            }
+            .demo-modal-body {
+                padding: 1.25rem;
+                max-height: 200px;
+                overflow-y: auto;
+            }
+            .demo-modal-foot {
+                padding: 0.75rem 1.25rem;
+                border-top: 1px solid var(--a-border);
+                text-align: right;
+            }
+            .demo-kpi {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+            @media (min-width: 640px) {
+                .demo-kpi {
+                    grid-template-columns: repeat(4, 1fr);
+                }
+            }
+            .demo-kpi-item {
+                background: #fff;
+                border: 1px solid var(--a-border-card);
+                border-radius: var(--radius);
+                padding: 1rem;
+            }
+            .demo-kpi-label {
+                font-size: 0.75rem;
+                color: var(--a-muted);
+                margin: 0 0 0.25rem;
+            }
+            .demo-kpi-value {
+                font-size: 1.5rem;
+                font-weight: 700;
+                color: var(--a-title);
+                margin: 0;
+            }
+            .demo-nav {
+                background: #fff;
+                border: 1px solid var(--a-border-card);
+                border-radius: var(--radius);
+                padding: 0.5rem;
+                max-width: 240px;
+            }
+            .demo-nav-item {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                padding: 0.5rem 0.75rem;
+                border-radius: 8px;
+                font-size: 0.875rem;
+                color: var(--a-muted);
+                position: relative;
+            }
+            .demo-nav-active {
+                background: #eff6ff;
+                color: var(--primary);
+                font-weight: 500;
+            }
+            .demo-nav-active::before {
+                content: '';
+                position: absolute;
+                left: 0;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 4px;
+                height: 20px;
+                background: var(--primary);
+                border-radius: 0 4px 4px 0;
+            }
+            .demo-link {
+                font-size: 0.875rem;
+                margin-right: 1rem;
+            }
+            .demo-link-primary {
+                color: var(--primary);
+                cursor: pointer;
+            }
+            .demo-link-default {
+                color: var(--a-muted);
+                cursor: pointer;
+            }
+            .demo-drawer {
+                background: #fff;
+                border: 1px solid var(--a-border);
+                border-radius: var(--radius-card);
+                max-width: 280px;
+                box-shadow: -4px 0 24px rgba(0, 0, 0, 0.08);
+            }
+            .demo-drawer-head {
+                padding: 1rem;
+                border-bottom: 1px solid var(--a-border);
+                font-weight: 600;
+            }
+            .demo-drawer-body {
+                padding: 1rem;
+                font-size: 0.875rem;
+                color: var(--a-muted);
+            }
+            .device-compare {
+                display: grid;
+                gap: 1.5rem;
+                margin-top: 1rem;
+            }
+            @media (min-width: 900px) {
+                .device-compare {
+                    grid-template-columns: 1fr 320px;
+                }
+            }
+            .device-frame {
+                border: 2px solid var(--doc-border);
+                border-radius: 24px;
+                overflow: hidden;
+                background: var(--a-bg);
+            }
+            .device-frame-bar {
+                height: 28px;
+                background: #0f172a;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.625rem;
+                color: #94a3b8;
+            }
+            .device-frame-body {
+                padding: 0.75rem;
+                max-height: 420px;
+                overflow-y: auto;
+            }
+            .device-desktop-label,
+            .device-mobile-label {
+                font-size: 0.6875rem;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.06em;
+                color: var(--doc-muted);
+                margin: 0 0 0.5rem;
+            }
+            table.index {
+                width: 100%;
+                border-collapse: collapse;
+                font-size: 0.8125rem;
+            }
+            table.index th,
+            table.index td {
+                padding: 0.5rem 0.75rem;
+                border-bottom: 1px solid var(--doc-border);
+                text-align: left;
+                vertical-align: top;
+            }
+            table.index code {
+                background: #27272a;
+                padding: 0.1rem 0.3rem;
+                border-radius: 4px;
+                color: #93c5fd;
+                font-size: 0.75rem;
+            }
+            .footer-links {
+                margin-top: 2rem;
+                padding-top: 1.5rem;
+                border-top: 1px solid var(--doc-border);
+                font-size: 0.875rem;
+                color: var(--doc-muted);
+            }
+            .footer-links a {
+                color: #93c5fd;
+            }
+            .rules {
+                display: grid;
+                gap: 0.5rem;
+            }
+            @media (min-width: 640px) {
+                .rules {
+                    grid-template-columns: 1fr 1fr;
+                }
+            }
+            .rule {
+                padding: 0.75rem;
+                background: #0c0c0e;
+                border-radius: 8px;
+                border: 1px solid var(--doc-border);
+                font-size: 0.875rem;
+            }
+            .rule.do strong {
+                color: #86efac;
+            }
+            .rule.dont strong {
+                color: #fca5a5;
+            }
+            .filter-badge {
+                display: inline-block;
+                margin-left: 0.25rem;
+                min-width: 1.25rem;
+                padding: 0.1rem 0.4rem;
+                border-radius: 9999px;
+                background: var(--primary);
+                color: #fff;
+                font-size: 0.625rem;
+                text-align: center;
+            }
+        </style>
+    </head>
+    <body>
+        <header class="doc-header">
+            <div class="wrap">
+                <span class="badge">@/components/custom · Style A · Đã triển khai</span>
+                <h1>Custom Components — Design Guide</h1>
+                <p>Minimal &amp; Swiss · Mô tả · Mẫu code · Demo trực quan</p>
+            </div>
+        </header>
+        <nav class="doc-nav wrap" aria-label="Mục lục">
+            <a href="#impl">Triển khai</a><a href="#tokens">Tokens</a
+            ><a href="#patterns">Patterns</a> <a href="#crud">CRUD</a><a href="#layout">Layout</a
+            ><a href="#forms">Forms</a> <a href="#actions">Actions</a
+            ><a href="#feedback">Feedback</a><a href="#display">Display</a>
+            <a href="#navigation">Navigation</a><a href="#mobile">Mobile</a
+            ><a href="#index">Index</a><a href="#rules">Rules</a>
+        </nav>
+        <main class="wrap">
+            <section id="impl">
+                <h2>Triển khai trong codebase</h2>
+                <p class="lead">
+                    Style A đã được áp dụng qua design tokens tập trung, Ant Design ConfigProvider,
+                    Tailwind <code>hub-*</code> và wrapper <code>Custom*</code>.
+                </p>
+                <div class="card-doc">
+                    <ul class="impl-list">
+                        <li>
+                            <code>src/constants/custom-components.constant.ts</code> — màu, class
+                            map, modal width, touch height
+                        </li>
+                        <li>
+                            <code>src/styles/globals.css</code> — CSS variables
+                            <code>--hub-*</code>, focus ring, Plus Jakarta Sans
+                        </li>
+                        <li>
+                            <code>src/contexts/ColorModeContext.tsx</code> —
+                            <code>colorPrimary: #2563EB</code>, layout/card/menu/table tokens
+                        </li>
+                        <li>
+                            <code>tailwind.config.ts</code> — <code>colors.hub.*</code>,
+                            <code>background</code>
+                        </li>
+                        <li>
+                            Import:
+                            <code
+                                >import { CustomButton, TableContainer } from
+                                '@/components/custom'</code
+                            >
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="tokens">
+                <h2>Design tokens (Style A)</h2>
+                <p>
+                    Áp dụng cho mọi <code>Custom*</code>. Đồng bộ constant + ConfigProvider +
+                    Tailwind.
+                </p>
+                <div class="card-doc">
+                    <div class="token-grid">
+                        <div class="token" style="background: #2563eb; color: #fff">
+                            Primary<br /><code>#2563EB</code><br /><span
+                                style="opacity: 0.8; font-size: 0.65rem"
+                                >HUB_COLOR_PRIMARY</span
+                            >
+                        </div>
+                        <div class="token" style="background: #f8fafc; color: #1e293b">
+                            BG<br /><code>#F8FAFC</code>
+                        </div>
+                        <div
+                            class="token"
+                            style="background: #fff; border: 1px solid #e2e8f0; color: #1e293b"
+                        >
+                            Surface<br /><code>#FFFFFF</code>
+                        </div>
+                        <div class="token" style="background: #e2e8f0; color: #1e293b">
+                            Border<br /><code>#E2E8F0</code>
+                        </div>
+                        <div class="token" style="background: #f0f0f0; color: #1e293b">
+                            Card border<br /><code>#F0F0F0</code>
+                        </div>
+                        <div class="token" style="background: #f97316; color: #fff">
+                            CTA<br /><code>#F97316</code>
+                        </div>
+                        <div class="token" style="background: #111527; color: #fff">
+                            Title<br /><code>#111527</code>
+                        </div>
+                        <div class="token" style="background: #64748b; color: #fff">
+                            Muted<br /><code>#64748B</code>
+                        </div>
+                    </div>
+                    <p style="margin-top: 1rem; font-size: 0.875rem; color: var(--doc-muted)">
+                        Radius: <code>8px</code> control · <code>12px</code> card · Modal desktop
+                        <code>1200px</code> · Touch <code>≥44px</code> (mobile input/button).
+                    </p>
+                </div>
+            </section>
+
+            <section id="patterns">
+                <h2>Patterns chính</h2>
+                <p class="lead">
+                    Các composition thường gặp — kết hợp nhiều Custom* thành flow hoàn chỉnh.
+                </p>
+
+                <h3>TableContainer + CustomFilter</h3>
+                <p class="comp-desc">
+                    List page Refine: header (title + actions) → filter → bảng / list mobile →
+                    pagination. Desktop: filter panel luôn hiển thị dạng grid. Mobile: search full
+                    width + nút “Bộ lọc” / “Thu gọn bộ lọc”.
+                </p>
+                <div class="code-sample">
+                    <pre><span class="cmt">// Page module</span>
+<span class="kw">import</span> { TableContainer, CustomButton } <span class="kw">from</span> <span class="str">'@/components/custom'</span>;
+<span class="kw">import</span> { useTableContainer } <span class="kw">from</span> <span class="str">'@/hooks'</span>;
+
+<span class="kw">const</span> table = useTableContainer({ resource: <span class="str">'providers'</span> });
+
+&lt;TableContainer
+  tableContainerData={table}
+  title=<span class="str">"Data providers"</span>
+  filterSearch={{ placeholder: <span class="str">'Tìm kiếm...'</span> }}
+  customFilterItems={[...]}
+  columns={columns}
+/&gt;</pre>
+                </div>
+                <div class="device-compare">
+                    <div>
+                        <p class="device-desktop-label">Desktop — filter grid</p>
+                        <div class="demo-surface">
+                            <div class="demo-filter" style="margin-bottom: 1rem">
+                                <div class="demo-filter-grid">
+                                    <div>
+                                        <span class="lbl">Tìm kiếm</span
+                                        ><input
+                                            class="inp"
+                                            placeholder="Tìm kiếm..."
+                                            aria-label="Tìm kiếm"
+                                        />
+                                    </div>
+                                    <div>
+                                        <span class="lbl">Trạng thái</span
+                                        ><input
+                                            class="inp"
+                                            placeholder="Chọn..."
+                                            aria-label="Trạng thái"
+                                        />
+                                    </div>
+                                    <div style="display: flex; align-items: flex-end">
+                                        <button type="button" class="btn btn-default">
+                                            Xóa lọc
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <table class="demo-table">
+                                <thead>
+                                    <tr>
+                                        <th>Tên</th>
+                                        <th>Trạng thái</th>
+                                        <th>Cập nhật</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Provider A</td>
+                                        <td><span class="tag tag-green">Active</span></td>
+                                        <td>2 phút</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Provider B</td>
+                                        <td><span class="tag tag-blue">Running</span></td>
+                                        <td>vừa xong</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div>
+                        <p class="device-mobile-label">Mobile (375px)</p>
+                        <div class="device-frame">
+                            <div class="device-frame-bar">375px</div>
+                            <div class="device-frame-body">
+                                <input
+                                    class="inp inp-touch"
+                                    style="max-width: 100%; margin-bottom: 0.5rem"
+                                    placeholder="Tìm kiếm..."
+                                    aria-label="Tìm kiếm"
+                                />
+                                <button
+                                    type="button"
+                                    class="btn btn-default btn-block"
+                                    style="margin-bottom: 0.75rem"
+                                >
+                                    Bộ lọc <span class="filter-badge">2</span>
+                                </button>
+                                <table class="demo-table" style="font-size: 0.75rem">
+                                    <thead>
+                                        <tr>
+                                            <th>Tên</th>
+                                            <th>TT</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Provider A</td>
+                                            <td><span class="tag tag-green">On</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>CustomCard</h3>
+                <p class="comp-desc">
+                    Khối nội dung độc lập: title + description, slot header/footer, padding
+                    responsive. Không lồng card trong card.
+                </p>
+                <div class="code-sample">
+                    <pre>&lt;CustomCard title=<span class="str">"Module title"</span> description=<span class="str">"Mô tả ngắn"</span> paddingSize=<span class="str">"responsive"</span>&gt;
+  {children}
+&lt;/CustomCard&gt;</pre>
+                </div>
+                <div class="demo-surface comp-demo">
+                    <article class="demo-card">
+                        <header class="demo-card-head">
+                            <h4 class="demo-card-title">Module title</h4>
+                            <p class="demo-card-desc">Mô tả ngắn · text-hub-muted</p>
+                        </header>
+                        <div class="demo-card-body">
+                            <p style="margin: 0; font-size: 14px; color: #64748b">
+                                paddingSize: <code>none</code> · <code>sm</code> ·
+                                <code>default</code> · <code>lg</code> · <code>responsive</code>
+                            </p>
+                        </div>
+                        <footer class="demo-card-foot">Footer slot (optional)</footer>
+                    </article>
+                </div>
+
+                <h3>CustomButton</h3>
+                <p class="comp-desc">
+                    Wrapper Ant Design Button. CTA cam qua <code>hubVariant="cta"</code>. Mobile:
+                    <code>touchFriendly</code> hoặc <code>block</code> cho CTA chính.
+                </p>
+                <div class="code-sample">
+                    <pre>&lt;CustomButton type=<span class="str">"primary"</span>&gt;Lưu&lt;/CustomButton&gt;
+&lt;CustomButton hubVariant=<span class="str">"cta"</span>&gt;Kết nối Google&lt;/CustomButton&gt;
+&lt;CustomButton type=<span class="str">"primary"</span> block touchFriendly&gt;Tạo mới&lt;/CustomButton&gt;</pre>
+                </div>
+                <div class="demo-surface demo-row comp-demo">
+                    <button type="button" class="btn btn-primary">Primary</button>
+                    <button type="button" class="btn btn-default">Default</button>
+                    <button type="button" class="btn btn-text">Text</button>
+                    <button type="button" class="btn btn-danger">Danger</button>
+                    <button type="button" class="btn btn-cta">CTA</button>
+                </div>
+
+                <h3>Form inputs</h3>
+                <p class="comp-desc">
+                    Label rõ (<code>text-hub-muted</code>), full width mobile, focus ring primary.
+                    <code>touchFriendly</code> trên CustomInput.
+                </p>
+                <div class="code-sample">
+                    <pre>&lt;CustomInput touchFriendly placeholder=<span class="str">"email@example.com"</span> /&gt;
+&lt;CustomSelect options={options} placeholder=<span class="str">"Chọn vai trò"</span> /&gt;</pre>
+                </div>
+                <div
+                    class="demo-surface comp-demo"
+                    style="
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                        gap: 1rem;
+                        max-width: 560px;
+                    "
+                >
+                    <div>
+                        <span class="lbl">Email</span
+                        ><input
+                            class="inp"
+                            style="max-width: 100%"
+                            placeholder="email@example.com"
+                        />
+                    </div>
+                    <div>
+                        <span class="lbl">Vai trò</span
+                        ><input class="inp" style="max-width: 100%" placeholder="Chọn vai trò" />
+                    </div>
+                </div>
+
+                <h3>CustomModal / CustomFormModal</h3>
+                <p class="comp-desc">
+                    Modal CRUD: desktop width 1200px, body scroll, Spin khi submit. Mobile:
+                    <code>calc(100vw - 32px)</code>, form 1 cột.
+                </p>
+                <div class="code-sample">
+                    <pre>&lt;CustomFormModal formLoading={loading} modalProps={modalProps}&gt;
+  &lt;CustomForm layout=<span class="str">"vertical"</span>&gt;...&lt;/CustomForm&gt;
+&lt;/CustomFormModal&gt;
+
+<span class="cmt">// Hoặc CreateFormModal / EditFormModal + useCustomModal</span></pre>
+                </div>
+                <div class="demo-surface comp-demo" style="background: #e2e8f0; padding: 1.5rem">
+                    <div class="demo-modal-box">
+                        <div class="demo-modal-head">Tạo mới · CustomFormModal</div>
+                        <div class="demo-modal-body">
+                            <span class="lbl">Tên</span
+                            ><input class="inp" style="max-width: 100%; margin-bottom: 0.75rem" />
+                            <span class="lbl">Mô tả</span
+                            ><input class="inp" style="max-width: 100%" />
+                        </div>
+                        <div class="demo-modal-foot">
+                            <button type="button" class="btn btn-default">Hủy</button>
+                            <button type="button" class="btn btn-primary">Lưu</button>
+                        </div>
+                    </div>
+                    <p style="margin: 0.75rem 0 0; font-size: 0.75rem; color: #64748b">
+                        Desktop 1200px · Mobile margin 16px · Spin overlay
+                    </p>
+                </div>
+
+                <h3>CustomTag &amp; CustomAlert</h3>
+                <p class="comp-desc">
+                    Tag trạng thái preset <code>status</code>. Alert inline
+                    <code>type</code> info/success.
+                </p>
+                <div class="code-sample">
+                    <pre>&lt;CustomTag status=<span class="str">"active"</span>&gt;Active&lt;/CustomTag&gt;
+&lt;CustomAlert type=<span class="str">"success"</span> title=<span class="str">"Thành công"</span> description=<span class="str">"..."</span> /&gt;</pre>
+                </div>
+                <div class="demo-surface comp-demo">
+                    <div class="alert alert-info">ℹ Thông tin cấu hình đã lưu.</div>
+                    <div class="alert alert-success">✓ Kết nối Google thành công.</div>
+                    <span class="tag tag-green">Active</span>
+                    <span class="tag tag-blue">Running</span>
+                    <span class="tag tag-gray">Draft</span>
+                </div>
+
+                <h3>CustomStatistic.Group</h3>
+                <p class="comp-desc">
+                    KPI dashboard: grid 2 cột mobile, 3–4 desktop. Không xếp quá 2 hàng KPI trước
+                    main content trên mobile.
+                </p>
+                <div class="code-sample">
+                    <pre>&lt;CustomStatistic.Group&gt;
+  &lt;CustomStatistic title=<span class="str">"Jobs"</span> value={42} /&gt;
+  &lt;CustomStatistic title=<span class="str">"Active"</span> value={12} /&gt;
+&lt;/CustomStatistic.Group&gt;</pre>
+                </div>
+                <div class="demo-surface comp-demo">
+                    <div class="demo-kpi">
+                        <div class="demo-kpi-item">
+                            <p class="demo-kpi-label">Jobs</p>
+                            <p class="demo-kpi-value">42</p>
+                        </div>
+                        <div class="demo-kpi-item">
+                            <p class="demo-kpi-label">Active</p>
+                            <p class="demo-kpi-value">12</p>
+                        </div>
+                        <div class="demo-kpi-item">
+                            <p class="demo-kpi-label">Errors</p>
+                            <p class="demo-kpi-value">3</p>
+                        </div>
+                        <div class="demo-kpi-item">
+                            <p class="demo-kpi-label">Queue</p>
+                            <p class="demo-kpi-value">7</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CRUD -->
+            <section id="crud">
+                <h2>CRUD &amp; danh sách</h2>
+                <p class="lead">
+                    Pattern Refine: filter + bảng + modal form. Luôn bọc trong
+                    <code>TableContainer</code>.
+                </p>
+                <div class="card-doc">
+                    <div class="comp-item">
+                        <div class="comp-name">TableContainer</div>
+                        <p class="comp-path">
+                            <code>@/components/custom/custom-container</code> · export
+                            <code>TableContainer</code>
+                        </p>
+                        <p class="comp-desc">
+                            Orchestrator list page: tiêu đề, action buttons, CustomFilter,
+                            CustomTable (desktop) hoặc ListItem cards (mobile), PaginationControls.
+                            Kết nối <code>useTableContainer</code>.
+                        </p>
+                        <p class="comp-props">
+                            Props: <code>tableContainerData</code>, <code>columns</code>,
+                            <code>filterSearch</code>, <code>customFilterItems</code>,
+                            <code>actionButtons</code>
+                        </p>
+                        <p class="comp-mobile">
+                            Mobile: ListItem thay table; filter collapse; action buttons wrap
+                        </p>
+                    </div>
+
+                    <div class="comp-item">
+                        <div class="comp-name">CustomFilter</div>
+                        <p class="comp-path"><code>@/components/custom/custom-filter</code></p>
+                        <p class="comp-desc">
+                            Bộ lọc search + select theo <code>FilterItem[]</code>. Desktop: panel
+                            trắng, grid 3 cột + “Xóa lọc”. Mobile: search trên, select trong panel
+                            thu gọn, badge đếm filter active.
+                        </p>
+                        <p class="comp-props">
+                            Props: <code>filterActions</code>, <code>filterValues</code>,
+                            <code>onClearFilters</code>
+                        </p>
+                        <div class="code-sample">
+                            <pre>
+&lt;CustomFilter
+  filterActions={filterItems}
+  filterValues={filters}
+  onClearFilters={() =&gt; setFilters([])}
+/&gt;</pre
+                            >
+                        </div>
+                        <p class="comp-mobile">
+                            Mobile: Col span 24; nút “Bộ lọc” / “Thu gọn bộ lọc”; badge primary
+                        </p>
+                    </div>
+
+                    <div class="comp-item">
+                        <div class="comp-name">CustomTable</div>
+                        <p class="comp-path"><code>@/components/custom/custom-table</code></p>
+                        <p class="comp-desc">
+                            Wrapper Table Ant Design + cột action (edit/delete), sort, row
+                            selection. Header nền <code>#F8FAFC</code> qua ConfigProvider.
+                        </p>
+                        <div class="code-sample">
+                            <pre>&lt;CustomTable
+  columns={columns}
+  tableProps={tableProps}
+  loading={isLoading}
+  actionItems={[{ type: <span class="str">'edit'</span> }, { type: <span class="str">'delete'</span> }]}
+/&gt;</pre>
+                        </div>
+                    </div>
+
+                    <div class="comp-item">
+                        <div class="comp-name">CustomDataTable</div>
+                        <p class="comp-path"><code>@/components/custom/custom-data-table</code></p>
+                        <p class="comp-desc">
+                            Bảng dữ liệu mở rộng khi CustomTable chưa đủ (column phức tạp, nested).
+                        </p>
+                    </div>
+
+                    <div class="comp-item">
+                        <div class="comp-name">CreateFormModal / EditFormModal</div>
+                        <p class="comp-path"><code>@/components/custom/custom-form-modal</code></p>
+                        <p class="comp-desc">
+                            Modal CRUD preset create/edit, dùng với <code>useCustomModal</code> từ
+                            Refine.
+                        </p>
+                        <div class="code-sample">
+                            <pre><span class="kw">const</span> { modalProps, formProps } = useCustomModal();
+
+&lt;CreateFormModal modalProps={modalProps} formProps={formProps}&gt;
+  &lt;FormFields fields={fields} /&gt;
+&lt;/CreateFormModal&gt;</pre>
+                        </div>
+                        <p class="comp-mobile">Mobile: modal full width; form 1 cột</p>
+                    </div>
+
+                    <div class="comp-item">
+                        <div class="comp-name">CustomFormModal</div>
+                        <p class="comp-path">
+                            <code>@/components/custom/custom-form-modal/CustomFormModal.tsx</code>
+                        </p>
+                        <p class="comp-desc">
+                            Base: CustomModal + Spin + Space vertical. Dùng khi cần modal form tùy
+                            biến ngoài create/edit preset.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Layout -->
+            <section id="layout">
+                <h2>Layout &amp; cấu trúc</h2>
+                <p class="lead">
+                    Tách vùng nội dung — surface trắng + border card, không shadow nặng.
+                </p>
+                <div class="card-doc">
+                    <div class="comp-item">
+                        <div class="comp-name">CustomCard</div>
+                        <p class="comp-path"><code>@/components/custom/custom-card</code></p>
+                        <p class="comp-desc">
+                            Card chính cho module: <code>rounded-xl</code>,
+                            <code>border-hub-border-card</code>, <code>shadow-sm</code>. Title
+                            <code>#111527</code>, description muted.
+                        </p>
+                        <p class="comp-props">
+                            <code>paddingSize</code> · <code>header</code> · <code>footer</code> ·
+                            <code>description</code>
+                        </p>
+                        <p class="comp-mobile">
+                            <code>paddingSize="responsive"</code> — p-4 → p-6 → p-8
+                        </p>
+                    </div>
+
+                    <div class="comp-item">
+                        <div class="comp-name">CustomElement</div>
+                        <p class="comp-path"><code>@/components/custom/custom-element</code></p>
+                        <p class="comp-desc">
+                            Shell đa dạng: <code>CONTAINER</code> (nền page), <code>CARD</code> (bọc
+                            table), <code>TITLE</code>. TableContainer dùng ElementType bên trong.
+                        </p>
+                        <p class="comp-props">
+                            <code>elementType</code> · <code>ElementType</code> enum
+                        </p>
+                    </div>
+
+                    <div class="comp-item">
+                        <div class="comp-name">CustomSpace</div>
+                        <p class="comp-path"><code>@/components/custom/custom-space</code></p>
+                        <p class="comp-desc">
+                            Khoảng cách vertical/horizontal chuẩn Ant Design — dùng trong layout
+                            page.
+                        </p>
+                        <div class="code-sample">
+                            <pre>&lt;CustomSpace direction=<span class="str">"vertical"</span> size=<span class="str">"middle"</span> className=<span class="str">"w-full"</span>&gt;...&lt;/CustomSpace&gt;</pre>
+                        </div>
+                    </div>
+
+                    <div class="comp-item">
+                        <div class="comp-name">CustomFlex · CustomGrid · CustomRowCol</div>
+                        <p class="comp-path">
+                            <code>custom-flex</code> · <code>custom-grid</code> ·
+                            <code>custom-row-col</code>
+                        </p>
+                        <p class="comp-desc">
+                            Layout primitives — ưu tiên Tailwind cho spacing; dùng khi cần API Ant
+                            Design (gutter, align).
+                        </p>
+                    </div>
+
+                    <div class="comp-item">
+                        <div class="comp-name">CustomDivider</div>
+                        <p class="comp-path"><code>@/components/custom/custom-divider</code></p>
+                        <p class="comp-desc">
+                            Phân tách section — border <code>hub-border</code>, text muted.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Forms -->
+            <section id="forms">
+                <h2>Form &amp; nhập liệu</h2>
+                <p class="lead">
+                    Label rõ, full width mobile, focus ring primary <code>#2563EB</code>.
+                </p>
+                <div class="card-doc">
+                    <div class="comp-item">
+                        <div class="comp-name">CustomInput</div>
+                        <p class="comp-path"><code>@/components/custom/custom-input</code></p>
+                        <p class="comp-desc">
+                            Input, Password, TextArea, Search. <code>touchFriendly</code> →
+                            min-height 44px mobile.
+                        </p>
+                        <div class="code-sample">
+                            <pre>&lt;CustomInput.Password touchFriendly placeholder=<span class="str">"••••••"</span> /&gt;
+&lt;CustomInput.TextArea rows={4} /&gt;</pre>
+                        </div>
+                        <div class="comp-demo demo-surface" style="max-width: 320px">
+                            <span class="lbl">Email</span
+                            ><input
+                                class="inp inp-touch"
+                                placeholder="email@example.com"
+                                style="max-width: 100%"
+                            />
+                        </div>
+                        <p class="comp-mobile">
+                            Mobile: <code>touchFriendly</code> hoặc controlHeightLG 44px
+                            (ConfigProvider)
+                        </p>
+                    </div>
+
+                    <div class="comp-item">
+                        <div class="comp-name">CustomSelect</div>
+                        <p class="comp-path"><code>@/components/custom/custom-select</code></p>
+                        <p class="comp-desc">
+                            Select đơn/đa, search, debounce scroll infinite. Dùng trong CustomFilter
+                            và form.
+                        </p>
+                    </div>
+
+                    <div class="comp-item">
+                        <div class="comp-name">
+                            CustomDatePicker · CustomCheckbox · CustomSwitch
+                        </div>
+                        <p class="comp-path">
+                            <code>custom-date-picker</code> · <code>custom-checkbox</code> ·
+                            <code>custom-switch</code>
+                        </p>
+                        <p class="comp-desc">
+                            Nhập ngày, checkbox group, toggle — inherit token primary từ
+                            ConfigProvider.
+                        </p>
+                    </div>
+
+                    <div class="comp-item">
+                        <div class="comp-name">CustomForm</div>
+                        <p class="comp-path"><code>@/components/custom/custom-form</code></p>
+                        <p class="comp-desc">
+                            Form layout vertical/horizontal — bọc field trong modal hoặc page
+                            settings.
+                        </p>
+                    </div>
+
+                    <div class="comp-item">
+                        <div class="comp-name">CustomUpload</div>
+                        <p class="comp-path"><code>@/components/custom/custom-upload</code></p>
+                        <p class="comp-desc">
+                            Upload file/ảnh — drag zone border dashed hub-border.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Actions -->
+            <section id="actions">
+                <h2>Hành động</h2>
+                <div class="card-doc">
+                    <div class="comp-item">
+                        <div class="comp-name">CustomButton</div>
+                        <p class="comp-path"><code>@/components/custom/custom-button</code></p>
+                        <p class="comp-desc">
+                            Mọi CTA trong app. Ant Design <code>type</code> +
+                            <code>hubVariant="cta"</code> cho action cam (kết nối, upgrade).
+                        </p>
+                        <p class="comp-props">
+                            <code>type</code> primary|default|text · <code>danger</code> ·
+                            <code>hubVariant="cta"</code> · <code>touchFriendly</code> ·
+                            <code>block</code>
+                        </p>
+                        <div class="comp-demo demo-surface demo-row">
+                            <button type="button" class="btn btn-primary">Lưu</button>
+                            <button type="button" class="btn btn-cta">Kết nối</button>
+                        </div>
+                        <p class="comp-mobile">
+                            CTA chính: <code>block touchFriendly</code> full width
+                        </p>
+                    </div>
+
+                    <div class="comp-item">
+                        <div class="comp-name">CustomLink</div>
+                        <p class="comp-path"><code>@/components/custom/custom-link</code></p>
+                        <p class="comp-desc">
+                            Link Next.js với variant Style A. Primary <code>#2563EB</code> (đã đồng
+                            bộ từ legacy #1840DC).
+                        </p>
+                        <div class="code-sample">
+                            <pre>&lt;CustomLink href=<span class="str">"/settings"</span> variant=<span class="str">"primary"</span>&gt;Cài đặt&lt;/CustomLink&gt;</pre>
+                        </div>
+                        <div class="comp-demo demo-surface">
+                            <span class="demo-link demo-link-primary">Liên kết primary</span>
+                            <span class="demo-link demo-link-default">Liên kết muted</span>
+                        </div>
+                    </div>
+
+                    <div class="comp-item">
+                        <div class="comp-name">
+                            CustomDropdown · CustomPopconfirm · CustomFloatButton
+                        </div>
+                        <p class="comp-path">
+                            <code>custom-dropdown</code> · <code>custom-popconfirm</code> ·
+                            <code>custom-float-button</code>
+                        </p>
+                        <p class="comp-desc">
+                            Menu hành động, xác nhận xóa, FAB — dùng token primary cho destructive
+                            confirm.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Feedback -->
+            <section id="feedback">
+                <h2>Phản hồi &amp; overlay</h2>
+                <div class="card-doc">
+                    <div class="comp-item">
+                        <div class="comp-name">CustomModal</div>
+                        <p class="comp-path"><code>@/components/custom/custom-modal</code></p>
+                        <p class="comp-desc">
+                            Modal base — scroll body, không footer mặc định. Responsive width tự
+                            động.
+                        </p>
+                        <p class="comp-props">
+                            <code>modalProps</code> (Ant Design ModalProps) · <code>children</code>
+                        </p>
+                        <p class="comp-mobile">Mobile: <code>calc(100vw - 32px)</code>, centered</p>
+                    </div>
+
+                    <div class="comp-item">
+                        <div class="comp-name">CustomDrawer</div>
+                        <p class="comp-path"><code>@/components/custom/custom-drawer</code></p>
+                        <p class="comp-desc">
+                            Panel phụ (filter nâng cao, preview). Mobile auto
+                            <code>width: 100%</code>.
+                        </p>
+                        <div class="comp-demo">
+                            <div class="demo-drawer">
+                                <div class="demo-drawer-head">Chi tiết</div>
+                                <div class="demo-drawer-body">
+                                    Nội dung drawer — full width trên mobile.
+                                </div>
+                            </div>
+                        </div>
+                        <p class="comp-mobile">Mobile: full width drawer</p>
+                    </div>
+
+                    <div class="comp-item">
+                        <div class="comp-name">CustomAlert</div>
+                        <p class="comp-path"><code>@/components/custom/custom-alert</code></p>
+                        <p class="comp-desc">
+                            Thông báo inline trên form/page. <code>type="info"</code> (mặc định)
+                            hoặc <code>success</code>.
+                        </p>
+                        <div class="code-sample">
+                            <pre>&lt;CustomAlert
+  type=<span class="str">"info"</span>
+  title=<span class="str">"Lưu ý"</span>
+  description=<span class="str">"Thay đổi có hiệu lực sau khi reload."</span>
+/&gt;</pre>
+                        </div>
+                        <div class="comp-demo demo-surface">
+                            <div class="alert alert-info">Thông tin cấu hình đã lưu.</div>
+                        </div>
+                    </div>
+
+                    <div class="comp-item">
+                        <div class="comp-name">CustomSpin · CustomTooltip · CustomPopover</div>
+                        <p class="comp-path">
+                            <code>custom-spin</code> · <code>custom-tooltip</code> ·
+                            <code>custom-popover</code>
+                        </p>
+                        <p class="comp-desc">
+                            Loading overlay, gợi ý icon, menu popover — giữ API Ant Design.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Display -->
+            <section id="display">
+                <h2>Hiển thị dữ liệu</h2>
+                <div class="card-doc">
+                    <div class="comp-item">
+                        <div class="comp-name">CustomTag</div>
+                        <p class="comp-path"><code>@/components/custom/custom-tag</code></p>
+                        <p class="comp-desc">
+                            Status chip. Preset: <code>active</code> (xanh),
+                            <code>running</code> (xanh dương), <code>draft</code> (xám).
+                        </p>
+                        <div class="code-sample">
+                            <pre>&lt;CustomTag status=<span class="str">"running"</span>&gt;Running&lt;/CustomTag&gt;</pre>
+                        </div>
+                        <div class="comp-demo demo-surface">
+                            <span class="tag tag-green">Active</span>
+                            <span class="tag tag-blue">Running</span>
+                            <span class="tag tag-gray">Draft</span>
+                        </div>
+                    </div>
+
+                    <div class="comp-item">
+                        <div class="comp-name">CustomBadge</div>
+                        <p class="comp-path"><code>@/components/custom/custom-badge</code></p>
+                        <p class="comp-desc">Đếm thông báo trên icon header — dot/error count.</p>
+                    </div>
+
+                    <div class="comp-item">
+                        <div class="comp-name">CustomStatistic</div>
+                        <p class="comp-path"><code>@/components/custom/custom-statistic</code></p>
+                        <p class="comp-desc">
+                            KPI số. Dùng <code>CustomStatistic.Group</code> cho grid responsive 2
+                            cột mobile.
+                        </p>
+                        <div class="code-sample">
+                            <pre>&lt;CustomStatistic.Group&gt;
+  &lt;CustomStatistic title=<span class="str">"Total"</span> value={128} /&gt;
+&lt;/CustomStatistic.Group&gt;</pre>
+                        </div>
+                        <p class="comp-mobile">Mobile: max 2 KPI/hàng (grid-cols-2)</p>
+                    </div>
+
+                    <div class="comp-item">
+                        <div class="comp-name">CustomEmpty · CustomDescriptions · CustomAvatar</div>
+                        <p class="comp-path">
+                            <code>custom-empty</code> · <code>custom-descriptions</code> ·
+                            <code>custom-avatar</code>
+                        </p>
+                        <p class="comp-desc">
+                            Empty state list, chi tiết key-value, avatar user/menu.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Navigation -->
+            <section id="navigation">
+                <h2>Điều hướng</h2>
+                <div class="card-doc">
+                    <div class="comp-item">
+                        <div class="comp-name">Sidebar nav (layout)</div>
+                        <p class="comp-path">
+                            <code>@/components/layout/sidebar/SidebarNavItem</code>
+                        </p>
+                        <p class="comp-desc">
+                            Active state Style A: <code>bg-blue-50</code>, text/icon
+                            <code>hub-primary</code>, thanh indicator trái 4px. Không dùng indigo.
+                        </p>
+                        <div class="comp-demo demo-surface">
+                            <nav class="demo-nav" aria-label="Demo sidebar">
+                                <div class="demo-nav-item demo-nav-active">▌ Dashboard</div>
+                                <div class="demo-nav-item">Scraping</div>
+                                <div class="demo-nav-item">Schedule</div>
+                            </nav>
+                        </div>
+                    </div>
+
+                    <div class="comp-item">
+                        <div class="comp-name">
+                            CustomBreadcrumb · CustomTabs · CustomSteps · CustomPagination
+                        </div>
+                        <p class="comp-path">
+                            <code>custom-breadcrumb</code> · <code>custom-tabs</code> ·
+                            <code>custom-steps</code> · <code>custom-pagination</code>
+                        </p>
+                        <p class="comp-desc">
+                            Breadcrumb header, tab view module, wizard nhiều bước, phân trang bảng.
+                            Tabs ink bar primary blue.
+                        </p>
+                        <p class="comp-mobile">Tabs: scroll ngang · Steps: vertical trên mobile</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="mobile">
+                <h2>Mobile guidelines</h2>
+                <div class="card-doc">
+                    <ul>
+                        <li>
+                            <strong>CustomFilter</strong>: search full width; select trong panel
+                            collapse; badge <code>bg-hub-primary</code>
+                        </li>
+                        <li>
+                            <strong>CustomButton</strong> CTA: <code>block touchFriendly</code> full
+                            width khi là action chính
+                        </li>
+                        <li>
+                            <strong>CustomModal</strong>: <code>calc(100vw - 32px)</code>; form 1
+                            cột; scroll trong body
+                        </li>
+                        <li>
+                            <strong>CustomTable</strong>: <code>scroll.x</code> hoặc ListItem qua
+                            TableContainer
+                        </li>
+                        <li>
+                            <strong>CustomStatistic.Group</strong>: grid 2 cột; tối đa 2 hàng KPI
+                            trước main
+                        </li>
+                        <li>
+                            <strong>Touch</strong>: Input/Button ≥ 44px (<code>touchFriendly</code>
+                            / ConfigProvider <code>controlHeightLG</code>)
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="index">
+                <h2>Danh mục đầy đủ</h2>
+                <p class="comp-desc" style="margin-bottom: 1rem">
+                    52 exports từ <code>@/components/custom</code> — luôn import qua barrel, không
+                    import sâu file con.
+                </p>
+                <div class="card-doc" style="overflow-x: auto">
+                    <table class="index">
+                        <thead>
+                            <tr>
+                                <th>Component</th>
+                                <th>Mô tả ngắn</th>
+                                <th>Folder</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>CustomAlert</td>
+                                <td>Inline info/success</td>
+                                <td><code>custom-alert</code></td>
+                            </tr>
+                            <tr>
+                                <td>CustomAvatar</td>
+                                <td>Avatar user</td>
+                                <td><code>custom-avatar</code></td>
+                            </tr>
+                            <tr>
+                                <td>CustomBackTop</td>
+                                <td>Scroll to top</td>
+                                <td><code>custom-back-top</code></td>
+                            </tr>
+                            <tr>
+                                <td>CustomBadge</td>
+                                <td>Count badge</td>
+                                <td><code>custom-badge</code></td>
+                            </tr>
+                            <tr>
+                                <td>CustomBreadcrumb</td>
+                                <td>Đường dẫn trang</td>
+                                <td><code>custom-breadcrumb</code></td>
+                            </tr>
+                            <tr>
+                                <td>CustomButton</td>
+                                <td>CTA + touchFriendly</td>
+                                <td><code>custom-button</code></td>
+                            </tr>
+                            <tr>
+                                <td>CustomCard</td>
+                                <td>Surface card chính</td>
+                                <td><code>custom-card</code></td>
+                            </tr>
+                            <tr>
+                                <td>CustomCheckbox</td>
+                                <td>Checkbox / group</td>
+                                <td><code>custom-checkbox</code></td>
+                            </tr>
+                            <tr>
+                                <td>TableContainer</td>
+                                <td>List page orchestrator</td>
+                                <td><code>custom-container</code></td>
+                            </tr>
+                            <tr>
+                                <td>CustomDataTable</td>
+                                <td>Bảng mở rộng</td>
+                                <td><code>custom-data-table</code></td>
+                            </tr>
+                            <tr>
+                                <td>CustomDatePicker</td>
+                                <td>Ngày giờ</td>
+                                <td><code>custom-date-picker</code></td>
+                            </tr>
+                            <tr>
+                                <td>CustomDescriptions</td>
+                                <td>Key-value detail</td>
+                                <td><code>custom-descriptions</code></td>
+                            </tr>
+                            <tr>
+                                <td>CustomDivider</td>
+                                <td>Section split</td>
+                                <td><code>custom-divider</code></td>
+                            </tr>
+                            <tr>
+                                <td>CustomDrawer</td>
+                                <td>Panel phụ · full mobile</td>
+                                <td><code>custom-drawer</code></td>
+                            </tr>
+                            <tr>
+                                <td>CustomDropdown</td>
+                                <td>Action menu</td>
+                                <td><code>custom-dropdown</code></td>
+                            </tr>
+                            <tr>
+                                <td>CustomElement</td>
+                                <td>Container/Card shell</td>
+                                <td><code>custom-element</code></td>
+                            </tr>
+                            <tr>
+                                <td>CustomEmpty</td>
+                                <td>Empty state</td>
+                                <td><code>custom-empty</code></td>
+                            </tr>
+                            <tr>
+                                <td>CustomFilter</td>
+                                <td>Search + select filter</td>
+                                <td><code>custom-filter</code></td>
+                            </tr>
+                            <tr>
+                                <td>CustomFlex</td>
+                                <td>Flex layout</td>
+                                <td><code>custom-flex</code></td>
+                            </tr>
+                            <tr>
+                                <td>CustomFloatButton</td>
+                                <td>FAB</td>
+                                <td><code>custom-float-button</code></td>
+                            </tr>
+                            <tr>
+                                <td>CustomForm</td>
+                                <td>Form wrapper</td>
+                                <td><code>custom-form</code></td>
+                            </tr>
+                            <tr>
+                                <td>CustomFormModal</td>
+                                <td>Modal + Spin form</td>
+                                <td><code>custom-form-modal</code></td>
+                            </tr>
+                            <tr>
+                                <td>CreateFormModal</td>
+                                <td>Create preset</td>
+                                <td><code>custom-form-modal</code></td>
+                            </tr>
+                            <tr>
+                                <td>EditFormModal</td>
+                                <td>Edit preset</td>
+                                <td><code>custom-form-modal</code></td>
+                            </tr>
+                            <tr>
+                                <td>CustomGrid</td>
+                                <td>Grid layout</td>
+                                <td><code>custom-grid</code></td>
+                            </tr>
+                            <tr>
+                                <td>CustomInput</td>
+                                <td>Input + touchFriendly</td>
+                                <td><code>custom-input</code></td>
+                            </tr>
+                            <tr>
+                                <td>CustomLightBox</td>
+                                <td>Ảnh fullscreen</td>
+                                <td><code>custom-light-box</code></td>
+                            </tr>
+                            <tr>
+                                <td>CustomLink</td>
+                                <td>Link primary #2563EB</td>
+                                <td><code>custom-link</code></td>
+                            </tr>
+                            <tr>
+                                <td>CustomList</td>
+                                <td>List Ant Design</td>
+                                <td><code>custom-list</code></td>
+                            </tr>
+                            <tr>
+                                <td>CustomModal</td>
+                                <td>Modal responsive</td>
+                                <td><code>custom-modal</code></td>
+                            </tr>
+                            <tr>
+                                <td>CustomPagination</td>
+                                <td>Phân trang</td>
+                                <td><code>custom-pagination</code></td>
+                            </tr>
+                            <tr>
+                                <td>CustomPicker</td>
+                                <td>Picker chung</td>
+                                <td><code>custom-picker</code></td>
+                            </tr>
+                            <tr>
+                                <td>CustomPopconfirm</td>
+                                <td>Confirm xóa</td>
+                                <td><code>custom-popconfirm</code></td>
+                            </tr>
+                            <tr>
+                                <td>CustomPopover</td>
+                                <td>Popover</td>
+                                <td><code>custom-popover</code></td>
+                            </tr>
+                            <tr>
+                                <td>CustomResult</td>
+                                <td>Result page</td>
+                                <td><code>custom-result</code></td>
+                            </tr>
+                            <tr>
+                                <td>CustomRowCol</td>
+                                <td>Row / Col</td>
+                                <td><code>custom-row-col</code></td>
+                            </tr>
+                            <tr>
+                                <td>CustomSegmented</td>
+                                <td>Segment control</td>
+                                <td><code>custom-segmented</code></td>
+                            </tr>
+                            <tr>
+                                <td>CustomSelect</td>
+                                <td>Select / multi</td>
+                                <td><code>custom-select</code></td>
+                            </tr>
+                            <tr>
+                                <td>CustomSlider</td>
+                                <td>Slider</td>
+                                <td><code>custom-slider</code></td>
+                            </tr>
+                            <tr>
+                                <td>CustomSpace</td>
+                                <td>Spacing</td>
+                                <td><code>custom-space</code></td>
+                            </tr>
+                            <tr>
+                                <td>CustomSpin</td>
+                                <td>Loading</td>
+                                <td><code>custom-spin</code></td>
+                            </tr>
+                            <tr>
+                                <td>CustomStatistic</td>
+                                <td>KPI + Group grid</td>
+                                <td><code>custom-statistic</code></td>
+                            </tr>
+                            <tr>
+                                <td>CustomSteps</td>
+                                <td>Wizard steps</td>
+                                <td><code>custom-steps</code></td>
+                            </tr>
+                            <tr>
+                                <td>CustomSwitch</td>
+                                <td>Toggle</td>
+                                <td><code>custom-switch</code></td>
+                            </tr>
+                            <tr>
+                                <td>CustomTable</td>
+                                <td>Table + actions</td>
+                                <td><code>custom-table</code></td>
+                            </tr>
+                            <tr>
+                                <td>CustomTabs</td>
+                                <td>Tab view</td>
+                                <td><code>custom-tabs</code></td>
+                            </tr>
+                            <tr>
+                                <td>CustomTag</td>
+                                <td>Status tag preset</td>
+                                <td><code>custom-tag</code></td>
+                            </tr>
+                            <tr>
+                                <td>CustomToggle</td>
+                                <td>Toggle variant</td>
+                                <td><code>custom-toggle</code></td>
+                            </tr>
+                            <tr>
+                                <td>CustomTooltip</td>
+                                <td>Tooltip</td>
+                                <td><code>custom-tooltip</code></td>
+                            </tr>
+                            <tr>
+                                <td>CustomTypography</td>
+                                <td>Text styles</td>
+                                <td><code>custom-typography</code></td>
+                            </tr>
+                            <tr>
+                                <td>CustomUpload</td>
+                                <td>File upload</td>
+                                <td><code>custom-upload</code></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="rules">
+                <h2>Do / Don't</h2>
+                <div class="rules">
+                    <div class="rule do">
+                        <strong>Do</strong> Luôn import từ <code>@/components/custom</code>
+                    </div>
+                    <div class="rule do">
+                        <strong>Do</strong> Bọc list trong TableContainer / CustomCard
+                    </div>
+                    <div class="rule do">
+                        <strong>Do</strong> Constants vào <code>custom-components.constant.ts</code>
+                    </div>
+                    <div class="rule do">
+                        <strong>Do</strong> Dùng <code>hubVariant="cta"</code> cho action cam,
+                        <code>status</code> trên CustomTag
+                    </div>
+                    <div class="rule dont">
+                        <strong>Don't</strong> Import Ant Design trực tiếp khi đã có wrapper
+                    </div>
+                    <div class="rule dont"><strong>Don't</strong> Nested card trong card</div>
+                    <div class="rule dont">
+                        <strong>Don't</strong> Gradient/glass trên layout shell
+                    </div>
+                    <div class="rule dont">
+                        <strong>Don't</strong> Hardcode <code>#1840DC</code> / indigo — dùng
+                        <code>hub-primary</code>
+                    </div>
+                </div>
+            </section>
+
+            <p class="footer-links">
+                <a href="style-a-minimal-swiss.html">Style A</a> ·
+                <a href="dashboard-design-system.md">Dashboard system</a> ·
+                <a href="style-options.html">So sánh A–F</a>
+            </p>
+        </main>
+    </body>
+</html>

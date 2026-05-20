@@ -1,5 +1,6 @@
 'use client';
 
+import { CUSTOM_ELEMENT_CARD_CLASS_NAME, CUSTOM_ELEMENT_CONTAINER_CLASS_NAME } from '@/constants';
 import { ElementType } from '@/enums';
 import { Card, Flex, Space, Spin } from 'antd';
 import { ReactNode } from 'react';
@@ -32,8 +33,10 @@ export const CustomElement = ({
             const isTitle = Boolean(title);
 
             return (
-                <Card>
-                    {Boolean(description) && <p className="text-gray-500 text-sm">{description}</p>}
+                <Card className="border-hub-border-card bg-hub-surface">
+                    {Boolean(description) && (
+                        <p className="text-sm text-hub-muted">{description}</p>
+                    )}
                     <Flex
                         align="center"
                         className="mt-0"
@@ -41,8 +44,8 @@ export const CustomElement = ({
                     >
                         {typeof title === 'string' ? (
                             <div>
-                                <h2 className="text-lg font-bold text-slate-800">{title}</h2>
-                                <p className="text-sm text-slate-500 mt-1">{description}</p>
+                                <h2 className="text-lg font-bold text-hub-title">{title}</h2>
+                                <p className="mt-1 text-sm text-hub-muted">{description}</p>
                             </div>
                         ) : (
                             title
@@ -59,7 +62,9 @@ export const CustomElement = ({
                 <Space
                     size="middle"
                     direction="vertical"
-                    className={`${className ? className : 'bg-white'} w-full p-3 md:rounded-xl`}
+                    className={[CUSTOM_ELEMENT_CONTAINER_CLASS_NAME, className]
+                        .filter(Boolean)
+                        .join(' ')}
                 >
                     <Spin spinning={loading}>{children}</Spin>
                 </Space>
@@ -74,7 +79,9 @@ export const CustomElement = ({
                     actions={actions}
                     variant={variant}
                     styles={{ body: { padding: '12px 24px' } }}
-                    className={`${className ? className : 'bg-white'} md:rounded-xl`}
+                    className={[CUSTOM_ELEMENT_CARD_CLASS_NAME, className]
+                        .filter(Boolean)
+                        .join(' ')}
                 >
                     <Space direction="vertical" size="middle" className="w-full max-w-full">
                         {children}

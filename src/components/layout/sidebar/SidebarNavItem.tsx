@@ -1,6 +1,12 @@
 'use client';
 
 import { CustomButton } from '@/components/custom';
+import {
+    SIDEBAR_NAV_ACTIVE_CLASS_NAME,
+    SIDEBAR_NAV_ACTIVE_INDICATOR_CLASS_NAME,
+    SIDEBAR_NAV_ICON_ACTIVE_CLASS_NAME,
+    SIDEBAR_NAV_SUB_ACTIVE_CLASS_NAME,
+} from '@/constants';
 import { SidebarItem } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { Fragment } from 'react';
@@ -31,24 +37,24 @@ export const SidebarNavItem = ({
             type="text"
             onClick={() => onItemClick(item)}
             title={isCollapsed ? item.label : ''}
-            className={`w-full flex items-center justify-between px-3 py-3 md:py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group relative overflow-hidden h-auto ${
+            className={`group relative flex h-auto w-full items-center justify-between overflow-hidden rounded-lg px-3 py-3 text-sm font-medium transition-all duration-200 md:py-2.5 ${
                 isActive && !hasChildren
-                    ? 'bg-indigo-50/80 text-indigo-700 shadow-sm'
+                    ? SIDEBAR_NAV_ACTIVE_CLASS_NAME
                     : isActive && hasChildren
-                      ? 'text-indigo-700 bg-slate-50'
-                      : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                      ? 'bg-hub-bg text-hub-primary'
+                      : 'text-hub-muted hover:bg-hub-bg hover:text-hub-text'
             }`}
         >
             {isActive && !hasChildren && (
-                <div className="absolute left-0 top-1/2 -translate-y-1/2 h-5 w-1 bg-indigo-600 rounded-r-full"></div>
+                <span className={SIDEBAR_NAV_ACTIVE_INDICATOR_CLASS_NAME} aria-hidden />
             )}
 
             <div
-                className={`flex items-center gap-3 relative z-10 ${isActive && !hasChildren ? 'pl-2' : ''} ${isCollapsed ? 'md:justify-center md:w-full' : ''} transition-all duration-200`}
+                className={`relative z-10 flex items-center gap-3 transition-all duration-200 ${isActive && !hasChildren ? 'pl-2' : ''} ${isCollapsed ? 'md:w-full md:justify-center' : ''}`}
             >
                 <Icon
                     icon={item.icon}
-                    className={`flex-shrink-0 w-5 h-5 transition-colors duration-200 ${isActive ? 'text-indigo-600' : 'text-slate-400 group-hover:text-slate-600'}`}
+                    className={`h-5 w-5 flex-shrink-0 transition-colors duration-200 ${isActive ? SIDEBAR_NAV_ICON_ACTIVE_CLASS_NAME : 'text-hub-muted group-hover:text-hub-text'}`}
                 />
                 <span className={`whitespace-nowrap ${isCollapsed ? 'md:hidden' : 'block'}`}>
                     {item.label}
@@ -58,7 +64,7 @@ export const SidebarNavItem = ({
             {hasChildren && (
                 <Icon
                     icon="lucide:chevron-down"
-                    className={`w-4 h-4 transition-transform duration-200 ${isExpanded ? 'rotate-180 text-indigo-500' : 'text-slate-400'} ${isCollapsed ? 'md:hidden' : 'block'}`}
+                    className={`h-4 w-4 transition-transform duration-200 ${isExpanded ? 'rotate-180 text-hub-primary' : 'text-hub-muted'} ${isCollapsed ? 'md:hidden' : 'block'}`}
                 />
             )}
         </CustomButton>
@@ -69,7 +75,7 @@ export const SidebarNavItem = ({
 
         return (
             <div
-                className={`mt-1 space-y-1 pl-2 border-l border-slate-200 ${isCollapsed ? 'md:hidden' : 'ml-4'}`}
+                className={`mt-1 space-y-1 border-l border-hub-border pl-2 ${isCollapsed ? 'md:hidden' : 'ml-4'}`}
             >
                 {item.children?.map((child: SidebarItem) => {
                     const isSubActive = activeMenu === child.href;
@@ -78,16 +84,18 @@ export const SidebarNavItem = ({
                             type="text"
                             key={child.href || child.label}
                             onClick={() => onSubItemClick(child)}
-                            className={`w-full flex items-center justify-start gap-3 px-3 py-2.5 md:py-2 rounded-md text-sm transition-all duration-200 h-auto ${
+                            className={`flex h-auto w-full items-center justify-start gap-3 rounded-md px-3 py-2.5 text-sm transition-all duration-200 md:py-2 ${
                                 isSubActive
-                                    ? 'text-indigo-600 bg-indigo-50 font-medium'
-                                    : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'
+                                    ? SIDEBAR_NAV_SUB_ACTIVE_CLASS_NAME
+                                    : 'text-hub-muted hover:bg-hub-bg hover:text-hub-text'
                             }`}
                         >
                             <Icon
                                 icon={child.icon}
-                                className={`flex-shrink-0 w-4 h-4 transition-colors duration-200 ${
-                                    isSubActive ? 'text-indigo-600' : 'text-slate-400'
+                                className={`h-4 w-4 flex-shrink-0 transition-colors duration-200 ${
+                                    isSubActive
+                                        ? SIDEBAR_NAV_ICON_ACTIVE_CLASS_NAME
+                                        : 'text-hub-muted'
                                 }`}
                             />
                             <span className="truncate">{child.label}</span>
