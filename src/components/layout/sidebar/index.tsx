@@ -5,8 +5,8 @@ import { SidebarItem } from '@/interfaces';
 import { usePathname, useRouter } from 'next/navigation';
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 
-import { SidebarDesktop } from '@/components/layout/sidebar/SidebarDesktop';
-import { SidebarMobile } from '@/components/layout/sidebar/SidebarMobile';
+import { SidebarDesktop } from './SidebarDesktop';
+import { SidebarMobile } from './SidebarMobile';
 
 type SidebarProps = {
     mobileOpen: boolean;
@@ -20,6 +20,8 @@ export const Sidebar = ({ mobileOpen, setMobileOpen, collapsed, setCollapsed }: 
     const pathname = usePathname();
 
     const [expandedMenus, setExpandedMenus] = useState<string[]>([]);
+
+    const activeMenu = useMemo(() => pathname, [pathname]);
 
     useEffect(() => {
         if (mobileOpen) {
@@ -65,13 +67,16 @@ export const Sidebar = ({ mobileOpen, setMobileOpen, collapsed, setCollapsed }: 
 
     const handleMenuClick = useCallback(
         (item: SidebarItem) => {
-            if (item.children) {
-                toggleSubMenu(item);
-            } else if (item.href) {
+            if (item.href) {
                 router.push(item.href);
                 if (window.innerWidth < 768) {
                     setMobileOpen(false);
                 }
+                return;
+            }
+
+            if (item.children?.length) {
+                toggleSubMenu(item);
             }
         },
         [router, setMobileOpen, toggleSubMenu],
@@ -105,8 +110,6 @@ export const Sidebar = ({ mobileOpen, setMobileOpen, collapsed, setCollapsed }: 
             setCollapsed(false);
         }
     }, [collapsed, setCollapsed]);
-
-    const activeMenu = useMemo(() => pathname, [pathname]);
 
     return (
         <Fragment key="sidebar">
