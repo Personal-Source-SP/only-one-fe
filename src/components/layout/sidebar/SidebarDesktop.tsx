@@ -1,7 +1,5 @@
-import { CustomButton } from '@/components/custom';
 import { SIDEBAR_ITEMS } from '@/constants';
 import { SidebarItem } from '@/interfaces';
-import { Icon } from '@iconify/react';
 
 import { SidebarNavItem } from '@/components/layout/sidebar/SidebarNavItem';
 import { SidebarLogo } from '@/components/layout/sidebar/SidebarLogo';
@@ -10,7 +8,6 @@ import { SidebarProfile } from '@/components/layout/sidebar/SidebarProfile';
 type SidebarDesktopProps = {
     collapsed: boolean;
     handleLogoClick: () => void;
-    handleToggleCollapse: () => void;
     handleMenuClick: (item: SidebarItem) => void;
     isItemActive: (item: SidebarItem) => boolean;
 };
@@ -18,7 +15,6 @@ type SidebarDesktopProps = {
 export const SidebarDesktop = ({
     collapsed,
     handleLogoClick,
-    handleToggleCollapse,
     handleMenuClick,
     isItemActive,
 }: SidebarDesktopProps) => {
@@ -29,8 +25,8 @@ export const SidebarDesktop = ({
             className="flex h-full w-full flex-col overflow-hidden rounded-hub-shell border border-hub-border bg-hub-surface shadow-sm"
         >
             <div
-                className={`flex h-16 shrink-0 items-center border-b border-hub-border ${
-                    collapsed ? 'justify-center px-2' : 'relative justify-center px-4'
+                className={`flex h-16 shrink-0 items-center justify-center border-b border-hub-border ${
+                    collapsed ? 'px-2' : 'px-4'
                 }`}
             >
                 <div
@@ -39,15 +35,6 @@ export const SidebarDesktop = ({
                 >
                     <SidebarLogo compact={collapsed} />
                 </div>
-                {!collapsed && (
-                    <CustomButton
-                        type="text"
-                        title="Collapse sidebar"
-                        onClick={handleToggleCollapse}
-                        icon={<Icon icon="lucide:panel-left-close" className="w-5 h-5" />}
-                        className="absolute right-4 flex items-center justify-center rounded-lg p-1.5 text-hub-muted transition-all duration-200 hover:bg-hub-bg hover:text-hub-text"
-                    />
-                )}
             </div>
 
             <nav className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto px-2 py-4 md:px-3">

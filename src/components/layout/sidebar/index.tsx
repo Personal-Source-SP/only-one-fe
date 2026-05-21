@@ -74,10 +74,6 @@ export const Sidebar = ({ mobileOpen, setMobileOpen, collapsed, setCollapsed }: 
         [pathname],
     );
 
-    const handleToggleCollapse = useCallback(() => {
-        setCollapsed(!collapsed);
-    }, [collapsed, setCollapsed]);
-
     const handleLogoClick = useCallback(() => {
         if (collapsed) {
             setCollapsed(false);
@@ -89,10 +85,9 @@ export const Sidebar = ({ mobileOpen, setMobileOpen, collapsed, setCollapsed }: 
             collapsed,
             handleLogoClick,
             handleMenuClick,
-            handleToggleCollapse,
             isItemActive,
         }),
-        [collapsed, handleLogoClick, handleMenuClick, handleToggleCollapse, isItemActive],
+        [collapsed, handleLogoClick, handleMenuClick, isItemActive],
     );
 
     const mobileProps = useMemo(

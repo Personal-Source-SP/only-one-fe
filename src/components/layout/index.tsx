@@ -27,7 +27,7 @@ export const MainLayout = ({ children }: PropsWithChildren) => {
     const { handleCustomMutationData: syncGoogleAuth } = useCustomMutationData();
 
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+    const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
     const [showNotifications, setShowNotifications] = useState(false);
 
     useEffect(() => {
@@ -136,6 +136,8 @@ export const MainLayout = ({ children }: PropsWithChildren) => {
                     pageTitle={informationPage?.label}
                     mobileMenuOpen={mobileMenuOpen}
                     showNotifications={showNotifications}
+                    sidebarCollapsed={sidebarCollapsed}
+                    onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
                     setMobileMenuOpen={setMobileMenuOpen}
                     setShowNotifications={setShowNotifications}
                 />

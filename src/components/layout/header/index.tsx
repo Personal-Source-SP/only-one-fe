@@ -18,6 +18,8 @@ type HeaderProps = {
     pageTitle?: string;
     mobileMenuOpen: boolean;
     showNotifications: boolean;
+    sidebarCollapsed: boolean;
+    onToggleSidebar: () => void;
     setMobileMenuOpen: (open: boolean) => void;
     setShowNotifications: (show: boolean) => void;
 };
@@ -34,6 +36,8 @@ export const Header = ({
     pageTitle,
     mobileMenuOpen,
     showNotifications,
+    sidebarCollapsed,
+    onToggleSidebar,
     setMobileMenuOpen,
     setShowNotifications,
 }: HeaderProps) => {
@@ -100,6 +104,10 @@ export const Header = ({
     };
 
     const renderNavbarLeft = () => {
+        const sidebarToggleIcon = sidebarCollapsed
+            ? 'lucide:panel-left-open'
+            : 'lucide:panel-left-close';
+
         return (
             <CustomFlex align="center" className="min-w-0 flex-1 gap-2 md:gap-3">
                 <CustomButton
@@ -109,6 +117,14 @@ export const Header = ({
                     className="min-h-11 min-w-11 shrink-0 md:hidden"
                     onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                     icon={<Icon icon="lucide:menu" className="text-xl" />}
+                />
+                <CustomButton
+                    type="text"
+                    shape="circle"
+                    title={sidebarCollapsed ? 'Mở sidebar' : 'Thu gọn sidebar'}
+                    className="hidden min-h-11 min-w-11 shrink-0 items-center justify-center text-hub-muted transition-colors hover:bg-hub-bg hover:text-hub-text md:inline-flex"
+                    onClick={onToggleSidebar}
+                    icon={<Icon icon={sidebarToggleIcon} className="text-xl" />}
                 />
                 {renderPageHeading()}
             </CustomFlex>
