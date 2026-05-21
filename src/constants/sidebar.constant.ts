@@ -9,6 +9,7 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
     {
         label: 'Google Drive',
         icon: 'flat-color-icons:google',
+        sectionHref: '/google/drive/folders',
         children: [
             {
                 label: 'Thư mục',
@@ -33,6 +34,7 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
     {
         label: 'Cào dữ liệu',
         icon: 'noto:package',
+        sectionHref: '/scraping/data-providers',
         children: [
             {
                 label: 'Nhà cung cấp',
@@ -63,6 +65,7 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
     {
         label: 'Lịch biểu',
         icon: 'noto:alarm-clock',
+        sectionHref: '/schedule/executions',
         children: [
             {
                 label: 'Lịch biểu thực thi',
@@ -81,6 +84,7 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
     {
         label: 'Mô phỏng',
         icon: 'noto:globe-with-meridians',
+        sectionHref: '/simulation/contexts',
         children: [
             {
                 label: 'Ngữ cảnh mô phỏng',
@@ -99,6 +103,7 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
     {
         label: 'Cloud Data',
         icon: 'mdi:cloud-outline',
+        sectionHref: '/cloud-data/providers',
         children: [
             {
                 label: 'Nhà cung cấp cloud',
@@ -117,6 +122,7 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
     {
         label: 'Quản lý',
         icon: 'flat-color-icons:settings',
+        sectionHref: '/setting/users',
         children: [
             {
                 label: 'Người dùng',

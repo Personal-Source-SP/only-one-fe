@@ -1,6 +1,5 @@
 'use client';
 
-import { CUSTOM_INPUT_CLASS_NAME, CUSTOM_INPUT_HUB_CLASS_NAME } from '@/constants';
 import { Input, InputNumber, InputNumberProps, InputProps } from 'antd';
 
 export type CustomInputProps = InputProps & {
@@ -14,8 +13,10 @@ export type CustomInputNumberProps = InputNumberProps & {
 export const CustomInput = Object.assign(
     ({ touchFriendly = false, className, ...props }: CustomInputProps) => {
         const mergedClassName = [
-            CUSTOM_INPUT_HUB_CLASS_NAME,
-            touchFriendly ? CUSTOM_INPUT_CLASS_NAME : '',
+            '[&_.ant-input]:rounded-hub [&_.ant-input]:border-hub-border',
+            touchFriendly
+                ? 'min-h-11 sm:min-h-10 [&_.ant-input]:min-h-11 sm:[&_.ant-input]:min-h-10'
+                : '',
             className,
         ]
             .filter(Boolean)
@@ -36,8 +37,10 @@ export const CustomInputNumber = ({
     ...props
 }: CustomInputNumberProps) => {
     const mergedClassName = [
-        CUSTOM_INPUT_HUB_CLASS_NAME,
-        touchFriendly ? CUSTOM_INPUT_CLASS_NAME : '',
+        '[&_.ant-input]:rounded-hub [&_.ant-input]:border-hub-border',
+        touchFriendly
+            ? 'min-h-11 sm:min-h-10 [&_.ant-input]:min-h-11 sm:[&_.ant-input]:min-h-10'
+            : '',
         className,
     ]
         .filter(Boolean)

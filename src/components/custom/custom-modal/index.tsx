@@ -1,10 +1,5 @@
 'use client';
 
-import {
-    CUSTOM_MODAL_BODY_CLASS_NAME,
-    CUSTOM_MODAL_MOBILE_WRAP_CLASS_NAME,
-    HUB_MODAL_WIDTH,
-} from '@/constants';
 import { Grid, Modal, ModalProps } from 'antd';
 import { ReactNode, useMemo } from 'react';
 
@@ -28,10 +23,11 @@ export const CustomModal = ({ modalProps, children }: CustomModalProps) => {
             getContainer: modalProps.getContainer ?? false,
             maskClosable: modalProps.maskClosable ?? false,
             style: { top: isMobile ? undefined : 20, ...(modalProps.style ?? {}) },
-            width: isMobile ? 'calc(100vw - 32px)' : (modalProps.width ?? HUB_MODAL_WIDTH),
+            width: isMobile ? 'calc(100vw - 32px)' : (modalProps.width ?? 1200),
             wrapClassName: [
                 'fixed-modal',
-                isMobile ? CUSTOM_MODAL_MOBILE_WRAP_CLASS_NAME : '',
+                '[&_.ant-modal-header]:border-b [&_.ant-modal-header]:border-hub-border [&_.ant-modal-header]:!pb-3 [&_.ant-modal-footer]:flex [&_.ant-modal-footer]:justify-end [&_.ant-modal-footer]:gap-3 [&_.ant-modal-footer]:border-t [&_.ant-modal-footer]:border-hub-border',
+                isMobile ? '[&_.ant-modal]:!max-w-[calc(100vw-32px)]' : '',
                 modalProps.wrapClassName,
             ]
                 .filter(Boolean)
@@ -44,7 +40,9 @@ export const CustomModal = ({ modalProps, children }: CustomModalProps) => {
 
     return (
         <Modal {...mergedModalProps}>
-            <section className={CUSTOM_MODAL_BODY_CLASS_NAME}>{children}</section>
+            <section className="!max-h-[calc(100vh-200px)] !overflow-y-auto px-4 py-3 md:px-5 md:py-4">
+                {children}
+            </section>
         </Modal>
     );
 };

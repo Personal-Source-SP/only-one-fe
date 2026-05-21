@@ -6,7 +6,8 @@ import { useCustomModal } from '@/hooks';
 import { FormFieldItem } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { useApiUrl } from '@refinedev/core';
-import { Button, Flex, Form, Row, Space, Spin } from 'antd';
+import { CustomButton } from '@/components/custom';
+import { Flex, Form, Row, Space, Spin } from 'antd';
 import { useSession } from 'next-auth/react';
 import { ReactNode, useCallback, useEffect, useState } from 'react';
 
@@ -81,16 +82,16 @@ export const CreateFormDialog = ({
     const renderFooter = useCallback(() => {
         return (
             <Flex align="center" justify="end" className="w-full" gap={16}>
-                <Button
+                <CustomButton
                     type="primary"
                     htmlType="submit"
-                    className="w-full"
+                    className="!w-auto min-w-[7rem]"
                     icon={<Icon icon="lucide:plus" />}
                     loading={formLoading || isSubmitting}
                     onClick={() => formProps.form?.submit()}
                 >
                     <span>Tạo mới</span>
-                </Button>
+                </CustomButton>
             </Flex>
         );
     }, [formProps, formLoading, isSubmitting]);

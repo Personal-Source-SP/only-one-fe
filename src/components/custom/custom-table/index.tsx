@@ -176,7 +176,7 @@ export const CustomTable = ({
     return (
         <Table<any>
             {...tableProps}
-            bordered
+            className="hub-data-table w-full"
             rowKey="id"
             loading={loading}
             pagination={false}

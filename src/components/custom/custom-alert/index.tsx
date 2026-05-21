@@ -1,6 +1,5 @@
 'use client';
 
-import { CUSTOM_ALERT_INFO_CLASS_NAME, CUSTOM_ALERT_SUCCESS_CLASS_NAME } from '@/constants';
 import { CustomAlertType } from '@/interfaces';
 import { Alert, AlertProps } from 'antd';
 
@@ -18,7 +17,9 @@ export const CustomAlert = ({
     showIcon = true,
 }: CustomAlertProps) => {
     const typeClassName =
-        type === 'success' ? CUSTOM_ALERT_SUCCESS_CLASS_NAME : CUSTOM_ALERT_INFO_CLASS_NAME;
+        type === 'success'
+            ? '!border-green-200 !bg-green-50 [&_.ant-alert-message]:!text-green-800'
+            : '!border-hub-border !bg-hub-active [&_.ant-alert-message]:!text-hub-text';
 
     return (
         <section className="mb-4 mt-2">

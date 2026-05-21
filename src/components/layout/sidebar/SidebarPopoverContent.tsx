@@ -1,5 +1,4 @@
 import { CustomButton } from '@/components/custom';
-import { SIDEBAR_NAV_ICON_ACTIVE_CLASS_NAME, SIDEBAR_NAV_SUB_ACTIVE_CLASS_NAME } from '@/constants';
 import { SidebarItem } from '@/interfaces';
 import { Icon } from '@iconify/react';
 
@@ -31,14 +30,14 @@ export const SidebarPopoverContent = ({
                         onClick={() => handleMenuClick(child)}
                         className={`flex h-auto w-full items-center justify-start gap-2 rounded-md px-3 py-1.5 text-sm transition-colors ${
                             isSubActive
-                                ? SIDEBAR_NAV_SUB_ACTIVE_CLASS_NAME
+                                ? 'bg-hub-active font-medium text-hub-primary'
                                 : 'text-hub-muted hover:bg-hub-bg hover:text-hub-text'
                         }`}
                     >
                         <Icon
                             icon={child.icon}
                             className={`h-4 w-4 flex-shrink-0 ${
-                                isSubActive ? SIDEBAR_NAV_ICON_ACTIVE_CLASS_NAME : 'text-hub-muted'
+                                isSubActive ? 'text-hub-primary' : 'text-hub-muted'
                             }`}
                         />
                         <span className="truncate">{child.label}</span>

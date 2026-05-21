@@ -5,10 +5,10 @@
 @tailwind utilities;
 
 :root {
-    /* Style A — Sage Mist */
-    --hub-primary: #5b7f72;
-    --hub-secondary: #7a9b8e;
-    --hub-cta: #d97706;
+    /* Style A — Brand Orange */
+    --hub-primary: #ea580c;
+    --hub-secondary: #f97316;
+    --hub-cta: #c2410c;
     --hub-bg: #f8faf9;
     --hub-surface: #ffffff;
     --hub-border: #e2e8e6;
@@ -17,7 +17,7 @@
     --hub-title: #1e293b;
     --hub-muted: #64748b;
     --hub-success: #16a34a;
-    --hub-active: #eff5f2;
+    --hub-active: #fff7ed;
 
     --foreground-rgb: 51, 65, 85;
     --background-start-rgb: 248, 250, 249;
@@ -65,6 +65,167 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
     background: #bdc1c6;
+}
+
+/* App shell — fallback when Tailwind class is not emitted from constants-only strings */
+@media (min-width: 768px) {
+    [data-hub-shell='sidebar'] {
+        border-radius: 24px;
+    }
+
+    [data-hub-shell='header'] {
+        border-radius: 24px;
+    }
+}
+
+/* Section tabs — pill style, brand orange, wrap without scroll */
+.hub-section-tabs.ant-tabs {
+    width: 100%;
+}
+
+.hub-section-tabs .ant-tabs-nav {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.hub-section-tabs .ant-tabs-nav::before {
+    display: none;
+}
+
+.hub-section-tabs .ant-tabs-nav-operations {
+    display: none !important;
+}
+
+.hub-section-tabs .ant-tabs-nav-wrap {
+    overflow: visible !important;
+}
+
+.hub-section-tabs .ant-tabs-nav-list {
+    flex-wrap: wrap !important;
+    gap: 4px;
+}
+
+.hub-section-tabs .ant-tabs-ink-bar {
+    display: none !important;
+}
+
+.hub-section-tabs .ant-tabs-tab {
+    margin: 0 !important;
+    padding: 8px 14px !important;
+    border: none !important;
+    border-radius: 8px !important;
+    background: transparent !important;
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease;
+}
+
+.hub-section-tabs .ant-tabs-tab:hover {
+    background: var(--hub-bg) !important;
+}
+
+.hub-section-tabs .ant-tabs-tab-btn {
+    color: var(--hub-muted) !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    line-height: 1.25 !important;
+    outline: none !important;
+    transition: color 0.2s ease;
+}
+
+.hub-section-tabs .ant-tabs-tab:hover .ant-tabs-tab-btn {
+    color: var(--hub-text) !important;
+}
+
+.hub-section-tabs .ant-tabs-tab-active {
+    background: var(--hub-active) !important;
+}
+
+.hub-section-tabs .ant-tabs-tab-active .ant-tabs-tab-btn {
+    color: var(--hub-primary) !important;
+    font-weight: 600 !important;
+}
+
+.hub-section-tabs .ant-tabs-tab:focus-visible {
+    outline: 2px solid rgb(234 88 12 / 0.35) !important;
+    outline-offset: 2px;
+}
+
+@media (min-width: 768px) {
+    .hub-section-tabs .ant-tabs-tab {
+        padding: 9px 16px !important;
+    }
+
+    .hub-section-tabs .ant-tabs-tab-btn {
+        font-size: 14px !important;
+    }
+}
+
+/* Data table — single outer border from section; internal grid lines only */
+.hub-data-table.ant-table-wrapper {
+    margin: 0 !important;
+}
+
+.hub-data-table .ant-table {
+    margin: 0 !important;
+    background: var(--hub-surface) !important;
+}
+
+.hub-data-table .ant-table-container {
+    border: none !important;
+    border-radius: 0 !important;
+}
+
+.hub-data-table .ant-table-content > table {
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+}
+
+.hub-data-table .ant-table-thead > tr > th {
+    padding: 11px 14px !important;
+    border-bottom: 1px solid var(--hub-border-card) !important;
+    border-right: 1px solid var(--hub-border-card) !important;
+    background: var(--hub-bg) !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+}
+
+.hub-data-table .ant-table-thead > tr > th::before {
+    display: none !important;
+}
+
+.hub-data-table .ant-table-thead > tr > th:last-child {
+    border-right: none !important;
+}
+
+.hub-data-table .ant-table-tbody > tr > td {
+    padding: 11px 14px !important;
+    border-bottom: 1px solid var(--hub-border-card) !important;
+    border-right: 1px solid var(--hub-border-card) !important;
+    font-size: 13px !important;
+}
+
+.hub-data-table .ant-table-tbody > tr > td:last-child {
+    border-right: none !important;
+}
+
+.hub-data-table .ant-table-tbody > tr:last-child > td {
+    border-bottom: none !important;
+}
+
+.hub-data-table .ant-table-placeholder > td {
+    border-bottom: none !important;
+    padding: 32px 16px !important;
+}
+
+/* Sidebar nav — left align when expanded */
+[data-hub-shell='sidebar'] nav .ant-btn:not(.sidebar-nav-collapsed) {
+    justify-content: flex-start !important;
+    text-align: left;
+}
+
+[data-hub-shell='sidebar'] nav .ant-btn.sidebar-nav-collapsed {
+    justify-content: center !important;
 }
 
 /* Sidebar navigation — Style A */
@@ -121,7 +282,7 @@ body {
 .ant-select-focused .ant-select-selector,
 .ant-picker-focused {
     @apply !border-hub-primary !shadow-none;
-    box-shadow: 0 0 0 2px rgb(91 127 114 / 0.15) !important;
+    box-shadow: 0 0 0 2px rgb(234 88 12 / 0.15) !important;
 }
 
 /* Responsive: preserve card padding on mobile (override legacy zero-padding) */

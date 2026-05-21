@@ -16,9 +16,16 @@ export interface SidebarItem {
     label: string;
     icon: string;
     href?: string;
+    sectionHref?: string;
     checkAdmin?: boolean;
     description?: string;
     children?: SidebarItem[];
+}
+
+export interface SectionTab {
+    href: string;
+    icon?: string;
+    label: string;
 }
 
 export interface Option {

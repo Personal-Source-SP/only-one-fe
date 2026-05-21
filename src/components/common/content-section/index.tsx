@@ -1,6 +1,5 @@
 'use client';
 
-import { CUSTOM_ELEMENT_CARD_CLASS_NAME, CUSTOM_ELEMENT_CONTAINER_CLASS_NAME } from '@/constants';
 import { ElementType } from '@/enums';
 import { Card, Flex, Space, Spin } from 'antd';
 import { ReactNode } from 'react';
@@ -62,7 +61,10 @@ export const ContentSection = ({
                 <Space
                     size="middle"
                     direction="vertical"
-                    className={[CUSTOM_ELEMENT_CONTAINER_CLASS_NAME, className]
+                    className={[
+                        'w-full bg-hub-surface p-3 md:rounded-xl md:border md:border-hub-border-card',
+                        className,
+                    ]
                         .filter(Boolean)
                         .join(' ')}
                 >
@@ -79,7 +81,10 @@ export const ContentSection = ({
                     actions={actions}
                     variant={variant}
                     styles={{ body: { padding: '12px 24px' } }}
-                    className={[CUSTOM_ELEMENT_CARD_CLASS_NAME, className]
+                    className={[
+                        'w-full bg-hub-surface md:rounded-xl md:border md:border-hub-border-card',
+                        className,
+                    ]
                         .filter(Boolean)
                         .join(' ')}
                 >

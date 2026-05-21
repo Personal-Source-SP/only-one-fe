@@ -3,11 +3,10 @@
 import {
     DataNotFound,
     FilterPanel,
-    FilterPanelToolbar,
     PaginationControls,
+    TableSectionToolbar,
 } from '@/components/common';
 import { CustomCard, CustomTable } from '@/components/custom';
-import { CUSTOM_TABLE_SECTION_CLASS_NAME } from '@/constants';
 import { useMainContext } from '@/contexts/MainContext';
 import { CustomFilterType } from '@/enums';
 import { useDebounceSearch, useTableContainer } from '@/hooks';
@@ -233,24 +232,26 @@ export const DataTableContainer = ({
 
         return (
             <section className="w-full">
-                <CustomCard paddingSize="default">{renderTitleAndActions}</CustomCard>
+                <CustomCard paddingSize="sm">{renderTitleAndActions}</CustomCard>
             </section>
         );
     };
 
     const renderTableFilterSection = !!filterItems.length && (
         <>
-            <div className="flex justify-end px-4 pt-4 md:px-6">
-                <FilterPanelToolbar
+            <div className="flex justify-end px-3 pt-3 md:px-4 md:pt-3">
+                <TableSectionToolbar
                     filterValues={filters}
                     hasFilters
                     isOpen={filterOpen}
+                    isRefreshing={tableQuery?.isFetching}
                     panelId={filterPanelId}
+                    onRefresh={() => tableQuery?.refetch()}
                     onToggle={() => setFilterOpen((open) => !open)}
                 />
             </div>
             {filterOpen && (
-                <div className="px-4 pb-3 md:px-6">
+                <div className="px-3 pb-2 md:px-4 md:pb-3">
                     <FilterPanel
                         borderless
                         filterActions={filterItems}
@@ -266,72 +267,74 @@ export const DataTableContainer = ({
 
     return (
         <Spin spinning={loading}>
-            <Space size={12} direction="vertical" className="w-full">
+            <Space size={8} direction="vertical" className="w-full">
                 {renderHeaderSection()}
-                <section className={CUSTOM_TABLE_SECTION_CLASS_NAME}>
+                <section className="w-full overflow-hidden rounded-hub-card border border-hub-border-card bg-hub-surface">
                     {renderTableFilterSection}
-                    <div className="p-4 md:p-6">
-                        {childrenTop && <>{childrenTop}</>}
+                    {childrenTop && <div className="px-3 py-2 md:px-4 md:py-3">{childrenTop}</div>}
 
-                        {!!columns?.length && (
-                            <>
-                                {isMobile ? (
-                                    <div className="custom-scroll min-h-[200px] max-h-[calc(100vh-300px)] overflow-y-auto">
-                                        {tableQuery?.isLoading ? (
-                                            <Flex align="center" className="py-12" justify="center">
-                                                <Spin size="large" />
-                                            </Flex>
-                                        ) : normalizedDataSource.length > 0 ? (
-                                            <div className="space-y-0 pb-2 pr-1">
-                                                {normalizedDataSource.map((record: any) => (
-                                                    <ListItem
-                                                        key={record.id}
-                                                        actionItems={actionItems}
-                                                        columns={columns}
-                                                        currentPage={currentPage}
-                                                        disabled={onDisableRowSelection?.(record)}
-                                                        record={record}
-                                                        resource={resource}
-                                                        selected={selectedRowKeys.includes(
-                                                            record.id,
-                                                        )}
-                                                        setCurrentPage={setCurrentPage}
-                                                        onRefetch={tableQuery?.refetch}
-                                                        onSelectChange={
-                                                            onRowSelectionChange
-                                                                ? handleListItemSelect
-                                                                : undefined
-                                                        }
-                                                    />
-                                                ))}
-                                            </div>
-                                        ) : (
-                                            <div className="py-12">
-                                                <DataNotFound />
-                                            </div>
-                                        )}
+                    {!!columns?.length && (
+                        <>
+                            {isMobile ? (
+                                <div className="custom-scroll min-h-[200px] max-h-[calc(100vh-300px)] overflow-y-auto px-3 py-2 md:px-4 md:py-3">
+                                    {tableQuery?.isLoading ? (
+                                        <Flex align="center" className="py-12" justify="center">
+                                            <Spin size="large" />
+                                        </Flex>
+                                    ) : normalizedDataSource.length > 0 ? (
+                                        <div className="space-y-0 pb-2 pr-1">
+                                            {normalizedDataSource.map((record: any) => (
+                                                <ListItem
+                                                    key={record.id}
+                                                    actionItems={actionItems}
+                                                    columns={columns}
+                                                    currentPage={currentPage}
+                                                    disabled={onDisableRowSelection?.(record)}
+                                                    record={record}
+                                                    resource={resource}
+                                                    selected={selectedRowKeys.includes(record.id)}
+                                                    setCurrentPage={setCurrentPage}
+                                                    onRefetch={tableQuery?.refetch}
+                                                    onSelectChange={
+                                                        onRowSelectionChange
+                                                            ? handleListItemSelect
+                                                            : undefined
+                                                    }
+                                                />
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <div className="py-8">
+                                            <DataNotFound />
+                                        </div>
+                                    )}
+                                </div>
+                            ) : (
+                                <div className="px-3 py-2 md:px-4 md:py-3">
+                                    <div className="w-full overflow-hidden rounded-lg">
+                                        <CustomTable
+                                            actionItems={actionItems}
+                                            columns={columns}
+                                            loading={tableQuery?.isLoading}
+                                            resource={resource}
+                                            setCurrentPage={setCurrentPage}
+                                            setPageSize={setPageSize}
+                                            setSorters={setSorters}
+                                            tableProps={responsiveTableProps}
+                                            onDisableRowSelection={onDisableRowSelection}
+                                            onRefetch={tableQuery?.refetch}
+                                            onRowSelectionChange={onRowSelectionChange}
+                                        />
                                     </div>
-                                ) : (
-                                    <CustomTable
-                                        actionItems={actionItems}
-                                        columns={columns}
-                                        loading={tableQuery?.isLoading}
-                                        resource={resource}
-                                        setCurrentPage={setCurrentPage}
-                                        setPageSize={setPageSize}
-                                        setSorters={setSorters}
-                                        tableProps={responsiveTableProps}
-                                        onDisableRowSelection={onDisableRowSelection}
-                                        onRefetch={tableQuery?.refetch}
-                                        onRowSelectionChange={onRowSelectionChange}
-                                    />
-                                )}
-                            </>
-                        )}
+                                </div>
+                            )}
+                        </>
+                    )}
 
-                        {childrenBottom && <>{childrenBottom}</>}
-                    </div>
-                    <footer className="border-t border-hub-border-card px-4 py-3 md:px-6">
+                    {childrenBottom && (
+                        <div className="px-3 py-2 md:px-4 md:py-3">{childrenBottom}</div>
+                    )}
+                    <footer className="border-t border-hub-border-card px-3 py-2 md:px-4 md:py-2.5">
                         {pagination}
                     </footer>
                 </section>

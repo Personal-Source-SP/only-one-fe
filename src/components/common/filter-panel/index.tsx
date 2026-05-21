@@ -1,15 +1,6 @@
 'use client';
 
 import { CustomButton, CustomInput, CustomSelect } from '@/components/custom';
-import {
-    CUSTOM_FILTER_BADGE_CLASS_NAME,
-    CUSTOM_FILTER_LABEL_CLASS_NAME,
-    CUSTOM_FILTER_PANEL_CLASS_NAME,
-    CUSTOM_FILTER_SEARCH_LABEL,
-    CUSTOM_FILTER_TOGGLE_COLLAPSE_LABEL,
-    CUSTOM_FILTER_TOGGLE_EXPAND_LABEL,
-    CUSTOM_FILTER_TOOLBAR_TOGGLE_CLASS_NAME,
-} from '@/constants';
 import { CustomFilterType } from '@/enums';
 import { FilterItem } from '@/interfaces';
 import { Icon } from '@iconify/react';
@@ -35,9 +26,7 @@ export const FilterPanelToolbar = ({
     const generatedPanelId = useId();
     const resolvedPanelId = panelId ?? generatedPanelId;
     const hasActiveFilters = Boolean(filterValues?.length);
-    const toggleLabel = isOpen
-        ? CUSTOM_FILTER_TOGGLE_COLLAPSE_LABEL
-        : CUSTOM_FILTER_TOGGLE_EXPAND_LABEL;
+    const toggleLabel = isOpen ? 'Thu gọn bộ lọc' : 'Bộ lọc';
 
     if (!hasFilters) {
         return null;
@@ -49,14 +38,16 @@ export const FilterPanelToolbar = ({
             aria-controls={resolvedPanelId}
             aria-expanded={isOpen}
             aria-label={toggleLabel}
-            className={CUSTOM_FILTER_TOOLBAR_TOGGLE_CLASS_NAME}
+            className="rounded-lg border border-hub-border bg-hub-surface px-3 text-hub-text shadow-none hover:!border-hub-primary hover:!text-hub-primary"
             icon={<Icon className="text-hub-muted" icon="lucide:filter" />}
             type="default"
             onClick={onToggle}
         >
             {toggleLabel}
             {hasActiveFilters && (
-                <span className={CUSTOM_FILTER_BADGE_CLASS_NAME}>{filterValues?.length}</span>
+                <span className="ml-1 min-w-5 rounded-full bg-hub-primary px-1.5 py-0.5 text-center text-[10px] text-white">
+                    {filterValues?.length}
+                </span>
             )}
         </CustomButton>
     );
@@ -89,11 +80,11 @@ const renderFilterItem = (filterItem: FilterItem, index: number, stacked: boolea
         case CustomFilterType.SEARCH: {
             return (
                 <Col key={index} span={stacked ? 24 : span}>
-                    <label className={CUSTOM_FILTER_LABEL_CLASS_NAME}>
-                        {title || CUSTOM_FILTER_SEARCH_LABEL}
+                    <label className="mb-1 block text-sm font-semibold text-hub-muted">
+                        {title || 'Tìm kiếm'}
                     </label>
                     <CustomInput
-                        placeholder={placeholder ?? CUSTOM_FILTER_SEARCH_LABEL}
+                        placeholder={placeholder ?? 'Tìm kiếm'}
                         prefix={<Icon className="text-hub-muted" icon="lucide:search" />}
                         touchFriendly={stacked}
                         onChange={(e: ChangeEvent<HTMLInputElement>) =>
@@ -107,7 +98,9 @@ const renderFilterItem = (filterItem: FilterItem, index: number, stacked: boolea
         case CustomFilterType.SELECT: {
             return (
                 <Col key={index} span={stacked ? 24 : span}>
-                    <label className={CUSTOM_FILTER_LABEL_CLASS_NAME}>{title || placeholder}</label>
+                    <label className="mb-1 block text-sm font-semibold text-hub-muted">
+                        {title || placeholder}
+                    </label>
                     <CustomSelect
                         allowClear={allowClear ?? false}
                         maxTagCount={1}
@@ -139,7 +132,7 @@ export const FilterPanel = ({
 
     const panelClassName = borderless
         ? 'rounded-none border-none bg-transparent p-0 shadow-none'
-        : CUSTOM_FILTER_PANEL_CLASS_NAME;
+        : 'w-full rounded-xl border border-hub-border-card bg-hub-surface p-4';
 
     if (!filterActions.length) {
         return null;
@@ -169,6 +162,61 @@ export const FilterPanel = ({
                         )}
                     </Row>
                 </section>
+            )}
+        </div>
+    );
+};
+
+type TableSectionToolbarProps = {
+    filterValues?: CrudFilter[];
+    hasFilters: boolean;
+    isOpen: boolean;
+    isRefreshing?: boolean;
+    panelId?: string;
+    onRefresh?: () => void;
+    onToggle: () => void;
+};
+
+export const TableSectionToolbar = ({
+    filterValues,
+    hasFilters,
+    isOpen,
+    isRefreshing = false,
+    panelId,
+    onRefresh,
+    onToggle,
+}: TableSectionToolbarProps) => {
+    if (!onRefresh && !hasFilters) {
+        return null;
+    }
+
+    return (
+        <div className="flex items-center justify-end gap-2">
+            {onRefresh && (
+                <CustomButton
+                    touchFriendly
+                    aria-label="Làm mới"
+                    className="rounded-lg border border-hub-border bg-hub-surface px-3 text-hub-text shadow-none hover:!border-hub-primary hover:!text-hub-primary"
+                    data-i18n-key="table.toolbar.refresh"
+                    icon={
+                        <Icon
+                            className={`text-hub-muted ${isRefreshing ? 'animate-spin' : ''}`}
+                            icon="lucide:refresh-cw"
+                        />
+                    }
+                    loading={isRefreshing}
+                    type="default"
+                    onClick={onRefresh}
+                />
+            )}
+            {hasFilters && (
+                <FilterPanelToolbar
+                    filterValues={filterValues}
+                    hasFilters={hasFilters}
+                    isOpen={isOpen}
+                    panelId={panelId}
+                    onToggle={onToggle}
+                />
             )}
         </div>
     );

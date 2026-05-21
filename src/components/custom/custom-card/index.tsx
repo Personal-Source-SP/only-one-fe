@@ -1,17 +1,16 @@
 'use client';
 
-import {
-    CUSTOM_CARD_BASE_CLASS_NAME,
-    CUSTOM_CARD_DEFAULT_FOOTER_CLASS_NAME,
-    CUSTOM_CARD_DEFAULT_HEADER_CLASS_NAME,
-    CUSTOM_CARD_DESCRIPTION_CLASS_NAME,
-    CUSTOM_CARD_PADDING_CLASS_MAP,
-    CUSTOM_CARD_SHADOW_CLASS_NAME,
-    CUSTOM_CARD_TITLE_CLASS_NAME,
-} from '@/constants';
 import { CustomCardPadding, CustomCardShadow } from '@/interfaces';
 import { Card, CardProps } from 'antd';
 import { ReactNode, useMemo } from 'react';
+
+const CUSTOM_CARD_PADDING_CLASS_MAP: Record<CustomCardPadding, string> = {
+    none: '[&_.ant-card-body]:p-0',
+    sm: '[&_.ant-card-body]:p-4',
+    default: '[&_.ant-card-body]:p-6',
+    lg: '[&_.ant-card-body]:p-8',
+    responsive: '[&_.ant-card-body]:p-4 sm:[&_.ant-card-body]:p-6 lg:[&_.ant-card-body]:p-8',
+};
 
 type CustomCardProps = CardProps & {
     footer?: ReactNode;
@@ -28,12 +27,12 @@ export type { CustomCardProps };
 const renderTitleContent = (title: ReactNode, description: ReactNode) => (
     <div className="flex flex-col gap-1">
         {typeof title === 'string' ? (
-            <span className={CUSTOM_CARD_TITLE_CLASS_NAME}>{title}</span>
+            <span className="text-lg font-medium text-hub-title">{title}</span>
         ) : (
             title
         )}
         {typeof description === 'string' ? (
-            <p className={CUSTOM_CARD_DESCRIPTION_CLASS_NAME}>{description}</p>
+            <p className="text-sm text-hub-muted">{description}</p>
         ) : (
             description
         )}
@@ -65,7 +64,7 @@ export const CustomCard = ({
 
         if (!title) {
             return typeof description === 'string' ? (
-                <p className={CUSTOM_CARD_DESCRIPTION_CLASS_NAME}>{description}</p>
+                <p className="text-sm text-hub-muted">{description}</p>
             ) : (
                 description
             );
@@ -75,8 +74,8 @@ export const CustomCard = ({
     }, [description, title]);
 
     const mergedClassName = [
-        CUSTOM_CARD_BASE_CLASS_NAME,
-        shadow === 'sm' ? CUSTOM_CARD_SHADOW_CLASS_NAME : '',
+        'w-full rounded-hub-card border border-hub-border-card bg-hub-surface',
+        shadow === 'sm' ? 'shadow-sm' : '',
         CUSTOM_CARD_PADDING_CLASS_MAP[paddingSize],
         className,
     ]
@@ -85,14 +84,12 @@ export const CustomCard = ({
 
     return (
         <Card className={mergedClassName} styles={styles} title={resolvedTitle} {...cardProps}>
-            {header && (
-                <header className={headerClassName ?? CUSTOM_CARD_DEFAULT_HEADER_CLASS_NAME}>
-                    {header}
-                </header>
-            )}
+            {header && <header className={headerClassName ?? 'mb-6 sm:mb-8'}>{header}</header>}
             {children}
             {footer && (
-                <footer className={footerClassName ?? CUSTOM_CARD_DEFAULT_FOOTER_CLASS_NAME}>
+                <footer
+                    className={footerClassName ?? 'mt-6 text-center text-sm text-hub-muted sm:mt-8'}
+                >
                     {footer}
                 </footer>
             )}

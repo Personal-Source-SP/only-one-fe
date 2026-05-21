@@ -1,9 +1,8 @@
 'use client';
 
-import { SIDEBAR_ITEMS } from '@/constants';
 import { SidebarItem } from '@/interfaces';
 import { usePathname, useRouter } from 'next/navigation';
-import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
+import { Fragment, useCallback, useEffect, useMemo } from 'react';
 
 import { SidebarDesktop } from './SidebarDesktop';
 import { SidebarMobile } from './SidebarMobile';
@@ -15,13 +14,21 @@ type SidebarProps = {
     setCollapsed: (collapsed: boolean) => void;
 };
 
+const resolveItemHref = (item: SidebarItem): string | undefined => {
+    if (item.href) {
+        return item.href;
+    }
+
+    if (item.sectionHref) {
+        return item.sectionHref;
+    }
+
+    return item.children?.[0]?.href;
+};
+
 export const Sidebar = ({ mobileOpen, setMobileOpen, collapsed, setCollapsed }: SidebarProps) => {
     const router = useRouter();
     const pathname = usePathname();
-
-    const [expandedMenus, setExpandedMenus] = useState<string[]>([]);
-
-    const activeMenu = useMemo(() => pathname, [pathname]);
 
     useEffect(() => {
         if (mobileOpen) {
@@ -34,71 +41,37 @@ export const Sidebar = ({ mobileOpen, setMobileOpen, collapsed, setCollapsed }: 
         };
     }, [mobileOpen]);
 
-    useEffect(() => {
-        const findExpandedMenus = (items: SidebarItem[]): string[] => {
-            const expanded: string[] = [];
-            items.forEach((item) => {
-                if (item.children) {
-                    const hasActiveChild = item.children.some((child) => child.href === pathname);
-                    if (hasActiveChild) {
-                        expanded.push(item.href || item.label);
-                    }
-                }
-            });
-            return expanded;
-        };
-        setExpandedMenus(findExpandedMenus(SIDEBAR_ITEMS));
-    }, [pathname]);
-
-    const toggleSubMenu = useCallback(
-        (item: SidebarItem) => {
-            const menuKey = item.href || item.label;
-            if (collapsed && window.innerWidth >= 768) {
-                setCollapsed(false);
-                setExpandedMenus((prev) => [...prev, menuKey]);
-                return;
-            }
-            setExpandedMenus((prev) =>
-                prev.includes(menuKey) ? prev.filter((key) => key !== menuKey) : [...prev, menuKey],
-            );
-        },
-        [collapsed, setCollapsed],
-    );
-
     const handleMenuClick = useCallback(
         (item: SidebarItem) => {
-            if (item.href) {
-                router.push(item.href);
+            const href = resolveItemHref(item);
+
+            if (href) {
+                router.push(href);
                 if (window.innerWidth < 768) {
                     setMobileOpen(false);
                 }
-                return;
-            }
-
-            if (item.children?.length) {
-                toggleSubMenu(item);
             }
         },
-        [router, setMobileOpen, toggleSubMenu],
+        [router, setMobileOpen],
     );
 
     const isItemActive = useCallback(
         (item: SidebarItem): boolean => {
-            if (item.href === pathname) return true;
-            if (item.children) {
-                return item.children.some((child) => child.href === pathname);
+            if (item.href === pathname) {
+                return true;
             }
+
+            if (item.children?.length) {
+                return item.children.some(
+                    (child) =>
+                        child.href === pathname ||
+                        (child.href && pathname.startsWith(`${child.href}/`)),
+                );
+            }
+
             return false;
         },
         [pathname],
-    );
-
-    const isMenuExpanded = useCallback(
-        (item: SidebarItem): boolean => {
-            const menuKey = item.href || item.label;
-            return expandedMenus.includes(menuKey);
-        },
-        [expandedMenus],
     );
 
     const handleToggleCollapse = useCallback(() => {
@@ -111,26 +84,37 @@ export const Sidebar = ({ mobileOpen, setMobileOpen, collapsed, setCollapsed }: 
         }
     }, [collapsed, setCollapsed]);
 
+    const desktopProps = useMemo(
+        () => ({
+            collapsed,
+            handleLogoClick,
+            handleMenuClick,
+            handleToggleCollapse,
+            isItemActive,
+        }),
+        [collapsed, handleLogoClick, handleMenuClick, handleToggleCollapse, isItemActive],
+    );
+
+    const mobileProps = useMemo(
+        () => ({
+            mobileOpen,
+            setMobileOpen,
+            handleMenuClick,
+            isItemActive,
+        }),
+        [mobileOpen, setMobileOpen, handleMenuClick, isItemActive],
+    );
+
+    const sidebarColumnClassName = collapsed ? 'md:w-16' : 'md:w-64';
+
     return (
         <Fragment key="sidebar">
-            <SidebarMobile
-                mobileOpen={mobileOpen}
-                activeMenu={activeMenu}
-                isItemActive={isItemActive}
-                setMobileOpen={setMobileOpen}
-                isMenuExpanded={isMenuExpanded}
-                handleMenuClick={handleMenuClick}
-            />
-
-            <SidebarDesktop
-                collapsed={collapsed}
-                activeMenu={activeMenu}
-                isItemActive={isItemActive}
-                isMenuExpanded={isMenuExpanded}
-                handleLogoClick={handleLogoClick}
-                handleMenuClick={handleMenuClick}
-                handleToggleCollapse={handleToggleCollapse}
-            />
+            <SidebarMobile {...mobileProps} />
+            <div
+                className={`hidden h-full shrink-0 transition-[width] duration-300 md:flex md:flex-col ${sidebarColumnClassName}`}
+            >
+                <SidebarDesktop {...desktopProps} />
+            </div>
         </Fragment>
     );
 };

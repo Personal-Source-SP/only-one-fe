@@ -14,10 +14,7 @@ export const FormModalLayout = ({ formLoading, modalProps, children }: FormModal
     return (
         <CustomModal modalProps={{ ...modalProps, destroyOnHidden: true }}>
             <Spin spinning={formLoading}>
-                <Space
-                    direction="vertical"
-                    className="h-full w-full overflow-x-hidden px-3 md:px-6"
-                >
+                <Space direction="vertical" className="h-full w-full overflow-x-hidden">
                     {children}
                 </Space>
             </Spin>

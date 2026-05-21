@@ -1,6 +1,5 @@
 'use client';
 
-import { CUSTOM_DIVIDER_CLASS_NAME } from '@/constants';
 import { Divider, DividerProps } from 'antd';
 import { ReactNode } from 'react';
 
@@ -18,7 +17,12 @@ export const CustomDivider = ({
 }: CustomDividerProps) => {
     const content = label ?? children;
 
-    const mergedClassName = [CUSTOM_DIVIDER_CLASS_NAME, className].filter(Boolean).join(' ');
+    const mergedClassName = [
+        '!my-0 !border-hub-border [&_.ant-divider-inner-text]:text-sm [&_.ant-divider-inner-text]:text-hub-muted',
+        className,
+    ]
+        .filter(Boolean)
+        .join(' ');
 
     return (
         <Divider className={mergedClassName} {...dividerProps}>

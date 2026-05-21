@@ -1,6 +1,5 @@
 'use client';
 
-import { CUSTOM_STATISTIC_ITEM_CLASS_NAME } from '@/constants';
 import { Statistic, StatisticProps } from 'antd';
 import { Children, ReactNode, isValidElement } from 'react';
 
@@ -32,7 +31,10 @@ export const CustomStatistic = Object.assign(
                     }
 
                     return (
-                        <div key={child.key ?? index} className={CUSTOM_STATISTIC_ITEM_CLASS_NAME}>
+                        <div
+                            key={child.key ?? index}
+                            className="rounded-hub border border-hub-border-card bg-hub-surface p-4"
+                        >
                             {child}
                         </div>
                     );

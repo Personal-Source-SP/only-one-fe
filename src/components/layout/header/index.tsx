@@ -1,10 +1,11 @@
+'use client';
+
 import {
     CustomAvatar,
     CustomBadge,
     CustomButton,
     CustomDropdown,
     CustomFlex,
-    CustomInput,
     MenuProps,
 } from '@/components/custom';
 import { KEY_SESSION_STORAGE } from '@/constants';
@@ -15,11 +16,8 @@ import { usePathname } from 'next/navigation';
 type HeaderProps = {
     pageDescription?: string;
     pageTitle?: string;
-    showSearch: boolean;
     mobileMenuOpen: boolean;
     showNotifications: boolean;
-    sidebarCollapsed?: boolean;
-    setShowSearch: (show: boolean) => void;
     setMobileMenuOpen: (open: boolean) => void;
     setShowNotifications: (show: boolean) => void;
 };
@@ -34,11 +32,8 @@ interface SettingItem {
 export const Header = ({
     pageDescription,
     pageTitle,
-    showSearch,
     mobileMenuOpen,
     showNotifications,
-    sidebarCollapsed = false,
-    setShowSearch,
     setMobileMenuOpen,
     setShowNotifications,
 }: HeaderProps) => {
@@ -111,7 +106,7 @@ export const Header = ({
                     touchFriendly
                     type="text"
                     shape="circle"
-                    className="shrink-0 min-h-11 min-w-11 md:hidden"
+                    className="min-h-11 min-w-11 shrink-0 md:hidden"
                     onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                     icon={<Icon icon="lucide:menu" className="text-xl" />}
                 />
@@ -123,23 +118,6 @@ export const Header = ({
     const renderNavbarRight = () => {
         return (
             <CustomFlex align="center" gap={8} className="shrink-0 md:gap-4">
-                <CustomButton
-                    touchFriendly
-                    type="text"
-                    shape="circle"
-                    className="min-h-11 min-w-11 md:hidden"
-                    onClick={() => setShowSearch(!showSearch)}
-                    icon={<Icon icon="lucide:search" className="text-xl text-hub-muted" />}
-                />
-
-                <div className="relative hidden md:block">
-                    <CustomInput
-                        type="text"
-                        placeholder="Tìm kiếm..."
-                        className="rounded-full bg-hub-bg py-2 pl-10 pr-4 w-48 text-sm focus:outline-none focus:ring-2 focus:ring-hub-primary/20 lg:w-64"
-                    />
-                </div>
-
                 <CustomBadge size="small" count={7}>
                     <CustomButton
                         type="text"
@@ -166,9 +144,8 @@ export const Header = ({
 
     return (
         <section
-            className={`fixed top-0 z-40 flex h-14 items-center justify-between gap-3 border-b border-hub-border bg-hub-surface px-4 md:h-16 ${
-                sidebarCollapsed ? 'md:left-16 md:right-0' : 'md:left-64 md:right-0'
-            } left-0 right-0`}
+            data-hub-shell="header"
+            className="z-30 flex h-14 shrink-0 items-center justify-between gap-3 bg-hub-surface px-4 max-md:fixed max-md:left-0 max-md:right-0 max-md:top-0 max-md:border-b max-md:border-hub-border md:relative md:z-10 md:h-16 md:overflow-hidden md:rounded-hub-shell md:border md:border-hub-border md:shadow-sm"
         >
             {renderNavbarLeft()}
             {renderNavbarRight()}

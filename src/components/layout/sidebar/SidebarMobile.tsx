@@ -9,29 +9,25 @@ import { SidebarNavItem } from './SidebarNavItem';
 import { SidebarProfile } from './SidebarProfile';
 
 type SidebarMobileProps = {
-    activeMenu: string;
     mobileOpen: boolean;
     setMobileOpen: (open: boolean) => void;
     handleMenuClick: (item: SidebarItem) => void;
     isItemActive: (item: SidebarItem) => boolean;
-    isMenuExpanded: (item: SidebarItem) => boolean;
 };
 
 export const SidebarMobile = ({
     mobileOpen,
-    activeMenu,
     setMobileOpen,
     handleMenuClick,
     isItemActive,
-    isMenuExpanded,
 }: SidebarMobileProps) => {
     return (
         <Fragment key="sidebar-mobile">
             <div
                 aria-hidden="true"
                 onClick={() => setMobileOpen(false)}
-                className={`fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-40 md:hidden transition-opacity duration-300 ${
-                    mobileOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+                className={`fixed inset-0 z-40 bg-slate-900/60 backdrop-blur-sm transition-opacity duration-300 md:hidden ${
+                    mobileOpen ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'
                 }`}
             />
             <CustomDrawer
@@ -41,9 +37,9 @@ export const SidebarMobile = ({
                 placement="left"
                 open={mobileOpen}
                 onClose={() => setMobileOpen(false)}
-                className="md:hidden [&_.ant-drawer-body]:!p-0 [&_.ant-drawer-body]:!h-full [&_.ant-drawer-body]:!flex [&_.ant-drawer-body]:!flex-col"
+                className="md:hidden [&_.ant-drawer-body]:!flex [&_.ant-drawer-body]:!h-full [&_.ant-drawer-body]:!flex-col [&_.ant-drawer-body]:!p-0"
             >
-                <div className="flex flex-shrink-0 items-center justify-between border-b border-hub-border">
+                <div className="flex shrink-0 items-center justify-between border-b border-hub-border">
                     <div className="flex h-16 items-center px-4">
                         <SidebarLogo />
                     </div>
@@ -58,24 +54,21 @@ export const SidebarMobile = ({
                     />
                 </div>
 
-                <nav className="flex-1 py-4 overflow-y-auto px-3 min-h-0">
+                <nav className="min-h-0 flex-1 overflow-y-auto px-3 py-4">
                     <div className="space-y-1.5">
                         {SIDEBAR_ITEMS.map((item) => (
                             <SidebarNavItem
                                 key={item.href || item.label}
                                 item={item}
-                                isActive={isItemActive(item)}
-                                isExpanded={isMenuExpanded(item)}
                                 isCollapsed={false}
-                                activeMenu={activeMenu}
+                                isActive={isItemActive(item)}
                                 onItemClick={handleMenuClick}
-                                onSubItemClick={handleMenuClick}
                             />
                         ))}
                     </div>
                 </nav>
 
-                <div className="flex-shrink-0">
+                <div className="shrink-0">
                     <SidebarProfile isCollapsed={false} />
                 </div>
             </CustomDrawer>

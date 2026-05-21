@@ -9,7 +9,7 @@ import { useCustomMutationData, useSearchParamsString } from '@/hooks';
 import { exchangeCodeForTokens, findInformationPage, getUserInfoFromGoogle } from '@/libs';
 import { usePathname, useRouter } from 'next/navigation';
 import { PropsWithChildren, Suspense, useEffect, useRef, useState } from 'react';
-import { Footer, Header, NotificationsPanel, ScrollToTop, Search, Sidebar } from '.';
+import { Footer, Header, NotificationsPanel, ScrollToTop, Sidebar } from '.';
 
 export const MainLayout = ({ children }: PropsWithChildren) => {
     const router = useRouter();
@@ -22,9 +22,8 @@ export const MainLayout = ({ children }: PropsWithChildren) => {
     const { handleLoading, handleMessage } = useMainContext();
     const { handleCustomMutationData: syncGoogleAuth } = useCustomMutationData();
 
-    const [showSearch, setShowSearch] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
+    const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
     const [showNotifications, setShowNotifications] = useState(false);
 
     useEffect(() => {
@@ -119,27 +118,20 @@ export const MainLayout = ({ children }: PropsWithChildren) => {
     };
 
     return (
-        <main className="flex h-screen bg-background overflow-hidden animate-in fade-in duration-300">
+        <main className="flex h-screen overflow-hidden animate-in fade-in duration-300 bg-hub-bg md:gap-3 md:p-3">
             <Sidebar
-                mobileOpen={mobileMenuOpen}
-                setMobileOpen={setMobileMenuOpen}
                 collapsed={sidebarCollapsed}
+                mobileOpen={mobileMenuOpen}
                 setCollapsed={setSidebarCollapsed}
+                setMobileOpen={setMobileMenuOpen}
             />
 
-            <div
-                className={`flex-1 flex flex-col transition-all duration-300 overflow-hidden ${
-                    sidebarCollapsed ? 'md:ml-16' : 'md:ml-64'
-                }`}
-            >
+            <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
                 <Header
                     pageDescription={informationPage?.description}
                     pageTitle={informationPage?.label}
-                    showSearch={showSearch}
                     mobileMenuOpen={mobileMenuOpen}
-                    sidebarCollapsed={sidebarCollapsed}
                     showNotifications={showNotifications}
-                    setShowSearch={setShowSearch}
                     setMobileMenuOpen={setMobileMenuOpen}
                     setShowNotifications={setShowNotifications}
                 />
@@ -148,14 +140,12 @@ export const MainLayout = ({ children }: PropsWithChildren) => {
                     <NotificationsPanel onClose={() => setShowNotifications(false)} />
                 )}
 
-                <Search showSearch={showSearch} setShowSearch={setShowSearch} />
-
                 <Suspense fallback={<Loading />}>
-                    <div className="flex min-h-0 w-full max-w-full flex-1 flex-col overflow-x-hidden overflow-y-auto p-0 pt-14 md:p-4 md:pt-16">
+                    <div className="flex min-h-0 w-full max-w-full flex-1 flex-col overflow-x-hidden overflow-y-auto px-4 pb-4 max-md:pt-14">
                         <CustomSpace
                             size="middle"
                             direction="vertical"
-                            className="p-0 md:p-4 mb-4 w-full flex-1"
+                            className="mb-3 w-full flex-1 p-0 md:pt-3"
                         >
                             {children}
                         </CustomSpace>

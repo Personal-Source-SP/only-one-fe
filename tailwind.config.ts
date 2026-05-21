@@ -5,7 +5,19 @@ const config: Config = {
         './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
         './src/components/**/*.{js,ts,jsx,tsx,mdx}',
         './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+        './src/constants/**/*.{js,ts,tsx}',
+        './src/contexts/**/*.{js,ts,jsx,tsx}',
+        './src/libs/**/*.{js,ts,tsx}',
         './node_modules/antd/dist/antd.min.js',
+    ],
+    safelist: [
+        'rounded-hub',
+        'rounded-hub-card',
+        'rounded-hub-shell',
+        'rounded-r-hub-card',
+        'rounded-b-hub-card',
+        'hub-section-tabs',
+        'shadow-sm',
     ],
     theme: {
         extend: {
@@ -29,6 +41,7 @@ const config: Config = {
             borderRadius: {
                 hub: '8px',
                 'hub-card': '12px',
+                'hub-shell': '24px',
             },
             backgroundImage: {
                 'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',

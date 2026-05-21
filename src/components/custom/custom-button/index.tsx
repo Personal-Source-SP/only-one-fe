@@ -1,6 +1,5 @@
 'use client';
 
-import { CUSTOM_BUTTON_CTA_CLASS_NAME, CUSTOM_BUTTON_TOUCH_CLASS_NAME } from '@/constants';
 import { CustomButtonHubVariant } from '@/interfaces';
 import { Button, ButtonProps } from 'antd';
 
@@ -14,8 +13,10 @@ export type { CustomButtonProps };
 export const CustomButton = Object.assign(
     ({ hubVariant, touchFriendly = false, className, ...props }: CustomButtonProps) => {
         const mergedClassName = [
-            hubVariant === 'cta' ? CUSTOM_BUTTON_CTA_CLASS_NAME : '',
-            touchFriendly ? CUSTOM_BUTTON_TOUCH_CLASS_NAME : '',
+            hubVariant === 'cta'
+                ? '!border-hub-cta !bg-hub-cta !text-white hover:!opacity-90 focus-visible:!outline-hub-cta'
+                : '',
+            touchFriendly ? 'min-h-11 sm:min-h-9' : '',
             className,
         ]
             .filter(Boolean)

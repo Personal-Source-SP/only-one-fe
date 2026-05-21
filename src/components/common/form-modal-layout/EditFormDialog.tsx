@@ -5,7 +5,8 @@ import { MessageType } from '@/enums';
 import { useCustomModal } from '@/hooks';
 import { FormFieldItem } from '@/interfaces';
 import { Icon } from '@iconify/react';
-import { Button, Flex, Form, Row, Space, Spin } from 'antd';
+import { CustomButton } from '@/components/custom';
+import { Flex, Form, Row, Space, Spin } from 'antd';
 import { ReactNode, useCallback, useEffect } from 'react';
 
 import { renderFormFields } from './FormFields';
@@ -77,16 +78,16 @@ export const EditFormDialog = ({
     const renderFooter = useCallback(() => {
         return (
             <Flex align="center" justify="end" className="w-full" gap={16}>
-                <Button
+                <CustomButton
                     type="primary"
                     htmlType="submit"
-                    className="w-full"
+                    className="!w-auto min-w-[7rem]"
                     loading={formLoading}
                     icon={<Icon icon="lucide:pencil" />}
                     onClick={() => formProps.form?.submit()}
                 >
                     <span>Cập nhật</span>
-                </Button>
+                </CustomButton>
             </Flex>
         );
     }, [formProps, formLoading]);

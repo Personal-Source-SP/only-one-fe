@@ -1,29 +1,46 @@
-import { CustomSpace } from '@/components/custom';
-import { Icon } from '@iconify/react';
+import Image from 'next/image';
 
 export const Loading = () => {
     return (
-        <div className="fixed inset-0 flex items-center justify-center bg-gradient-to-b from-blue-50 to-white">
-            <div className="text-center">
-                <div className="relative w-24 h-24 md:w-32 md:h-32 mx-auto mb-8">
-                    <div className="w-full h-full rounded-full bg-blue-500 flex items-center justify-center shadow-lg">
-                        <Icon icon="lucide:circle" className="text-white text-4xl md:text-5xl" />
-                    </div>
+        <div
+            aria-busy="true"
+            role="status"
+            aria-labelledby="hub-loading-title"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-hub-bg"
+        >
+            <div className="flex flex-col items-center gap-6 px-6 text-center">
+                <div className="relative flex h-20 w-20 items-center justify-center md:h-24 md:w-24">
+                    <span
+                        aria-hidden
+                        className="absolute inset-0 animate-spin rounded-full border-4 border-hub-border border-t-hub-primary"
+                    />
+                    <Image
+                        priority
+                        alt=""
+                        src="/favicon.ico"
+                        width={40}
+                        height={40}
+                        className="relative z-10 rounded-md"
+                    />
                 </div>
 
-                {/* Main message */}
-                <h1 className="text-2xl md:text-3xl font-semibold text-gray-800 mb-2">
-                    Chỉ một chút nữa thôi!
-                </h1>
-
-                <p className="text-base md:text-lg text-gray-600">
-                    Chúng tôi đang chuẩn bị mọi thứ cho bạn!
-                </p>
-
-                {/* Background spinner (static) */}
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <div className="w-48 h-48 md:w-64 md:h-64 border-4 border-blue-200 rounded-full" />
+                <div>
+                    <h1
+                        id="hub-loading-title"
+                        className="text-xl font-semibold text-hub-title md:text-2xl"
+                    >
+                        Chỉ một chút nữa thôi!
+                    </h1>
+                    <p className="mt-2 text-sm text-hub-muted md:text-base">
+                        Chúng tôi đang chuẩn bị mọi thứ cho bạn!
+                    </p>
                 </div>
+                <span className="sr-only" data-i18n-key="loading.title">
+                    loading.title
+                </span>
+                <span className="sr-only" data-i18n-key="loading.subtitle">
+                    loading.subtitle
+                </span>
             </div>
         </div>
     );
