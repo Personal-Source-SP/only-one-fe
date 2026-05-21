@@ -9,7 +9,11 @@ import { useCustomMutationData, useSearchParamsString } from '@/hooks';
 import { exchangeCodeForTokens, findInformationPage, getUserInfoFromGoogle } from '@/libs';
 import { usePathname, useRouter } from 'next/navigation';
 import { PropsWithChildren, Suspense, useEffect, useRef, useState } from 'react';
-import { Header, NotificationsPanel, ScrollToTop, Sidebar } from '.';
+
+import { Header } from './header';
+import { NotificationsPanel } from './notifications-panel';
+import { ScrollToTop } from './scroll-to-top';
+import { Sidebar } from './sidebar';
 
 export const MainLayout = ({ children }: PropsWithChildren) => {
     const router = useRouter();
