@@ -1,7 +1,7 @@
 'use client';
 
+import { useBreakpointStore } from '@/stores';
 import { Modal, ModalProps } from 'antd';
-import { CustomGrid } from '../custom-grid';
 import { ReactNode, useMemo } from 'react';
 
 export type CustomModalProps = {
@@ -10,8 +10,7 @@ export type CustomModalProps = {
 };
 
 export const CustomModal = ({ modalProps, children }: CustomModalProps) => {
-    const screens = CustomGrid.useBreakpoint();
-    const isMobile = !screens.md;
+    const isMobile = useBreakpointStore((s) => s.isMobile);
 
     const mergedModalProps = useMemo(
         () => ({

@@ -1,11 +1,12 @@
 'use client';
 
+import { CustomFlex, CustomRow } from '@/components/custom';
 import { FilterItem } from '@/interfaces';
-import { CustomFlex, CustomGrid, CustomRow } from '@/components/custom';
+import { useBreakpointStore } from '@/stores';
 import { useId } from 'react';
 
-import { FilterPanelToolbar } from './FilterPanelToolbar';
 import { renderFilterItem } from './FilterPanelItem';
+import { FilterPanelToolbar } from './FilterPanelToolbar';
 
 type FilterPanelProps = {
     filterActions: FilterItem[];
@@ -28,8 +29,7 @@ export const FilterPanel = ({
 }: FilterPanelProps) => {
     const generatedId = useId();
     const panelId = panelIdProp ?? generatedId;
-    const screens = CustomGrid.useBreakpoint();
-    const stacked = !screens.lg;
+    const stacked = useBreakpointStore((s) => s.isBelowLg);
 
     const panelClassName = borderless
         ? 'rounded-none border-none bg-transparent p-0 shadow-none'

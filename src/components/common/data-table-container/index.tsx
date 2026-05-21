@@ -10,7 +10,6 @@ import {
     ColumnsType,
     CustomCard,
     CustomDivider,
-    CustomGrid,
     CustomSpace,
     CustomSpin,
     CustomTable,
@@ -20,6 +19,7 @@ import { useMainContext } from '@/contexts/MainContext';
 import { CustomFilterType } from '@/enums';
 import { useDebounceSearch, useTableContainer } from '@/hooks';
 import { ActionTableItem, FilterItem, SearchFilterItem } from '@/interfaces';
+import { useBreakpointStore } from '@/stores';
 import { CrudFilter, LogicalFilter } from '@refinedev/core';
 import { ReactNode, useId, useMemo, useState } from 'react';
 import { ListItem } from './ListItem';
@@ -61,8 +61,7 @@ export const DataTableContainer = ({
     const { scrollToTop } = useMainContext();
 
     const filterPanelId = useId();
-    const screens = CustomGrid.useBreakpoint();
-    const isMobile = !screens.md;
+    const isMobile = useBreakpointStore((s) => s.isMobile);
 
     const [filterOpen, setFilterOpen] = useState(false);
     const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([]);

@@ -1,9 +1,11 @@
 'use client';
 
-import { plusJakartaSans } from '@/constants';
-import { useThemeStore } from '@/stores/useThemeStore';
 import { CustomApp, CustomConfigProvider, theme } from '@/components/custom';
+import { plusJakartaSans } from '@/constants';
+import { useThemeStore } from '@/stores';
 import { type PropsWithChildren } from 'react';
+
+import { BreakpointStoreSync } from './BreakpointStoreSync';
 
 type ColorModeContextProviderProps = {
     defaultMode?: string;
@@ -110,7 +112,9 @@ export const ColorModeContextProvider = ({
                 },
             }}
         >
-            <CustomApp>{children}</CustomApp>
+            <CustomApp>
+                <BreakpointStoreSync>{children}</BreakpointStoreSync>
+            </CustomApp>
         </CustomConfigProvider>
     );
 };

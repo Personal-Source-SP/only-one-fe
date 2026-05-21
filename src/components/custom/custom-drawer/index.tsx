@@ -1,13 +1,12 @@
 'use client';
 
+import { useBreakpointStore } from '@/stores';
 import { Drawer, DrawerProps } from 'antd';
-import { CustomGrid } from '../custom-grid';
 
 export type CustomDrawerProps = DrawerProps;
 
 export const CustomDrawer = ({ width, styles, ...props }: CustomDrawerProps) => {
-    const screens = CustomGrid.useBreakpoint();
-    const isMobile = !screens.md;
+    const isMobile = useBreakpointStore((s) => s.isMobile);
 
     return (
         <Drawer
