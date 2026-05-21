@@ -1,6 +1,13 @@
 'use client';
 
-import { CustomAvatar, CustomButton, CustomFlex, CustomSpace } from '@/components/custom';
+import {
+    CustomAvatar,
+    CustomButton,
+    CustomDivider,
+    CustomFlex,
+    CustomSpace,
+    CustomTypography,
+} from '@/components/custom';
 import { KEY_SESSION_STORAGE } from '@/constants';
 import { useMainContext } from '@/contexts/MainContext';
 import { Theme } from '@/enums';
@@ -8,6 +15,8 @@ import { Icon } from '@iconify/react';
 import { signOut, useSession } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
 import { Fragment, useCallback } from 'react';
+
+const COPYRIGHT_YEAR = new Date().getFullYear();
 
 type SidebarProfileProps = {
     isCollapsed: boolean;
@@ -79,6 +88,33 @@ export const SidebarProfile = ({ isCollapsed }: SidebarProfileProps) => {
                     </Fragment>
                 )}
             </CustomFlex>
+            {!isCollapsed && (
+                <footer aria-label="Copyright" className="mt-2">
+                    <CustomDivider className="!mb-2.5 !border-hub-border/50" />
+                    <CustomFlex align="center" gap={6} justify="center">
+                        <CustomTypography.Text
+                            type="secondary"
+                            className="!m-0 !text-xs tabular-nums leading-tight"
+                        >
+                            &copy; {COPYRIGHT_YEAR}
+                        </CustomTypography.Text>
+                        <CustomTypography.Text
+                            aria-hidden
+                            type="secondary"
+                            className="!m-0 !text-xs leading-tight opacity-50"
+                        >
+                            ·
+                        </CustomTypography.Text>
+                        <CustomTypography.Text
+                            strong
+                            type="secondary"
+                            className="!m-0 !text-xs leading-tight"
+                        >
+                            O-O Hub
+                        </CustomTypography.Text>
+                    </CustomFlex>
+                </footer>
+            )}
         </div>
     );
 };

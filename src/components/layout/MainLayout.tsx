@@ -9,7 +9,7 @@ import { useCustomMutationData, useSearchParamsString } from '@/hooks';
 import { exchangeCodeForTokens, findInformationPage, getUserInfoFromGoogle } from '@/libs';
 import { usePathname, useRouter } from 'next/navigation';
 import { PropsWithChildren, Suspense, useEffect, useRef, useState } from 'react';
-import { Footer, Header, NotificationsPanel, ScrollToTop, Sidebar } from '.';
+import { Header, NotificationsPanel, ScrollToTop, Sidebar } from '.';
 
 export const MainLayout = ({ children }: PropsWithChildren) => {
     const router = useRouter();
@@ -141,17 +141,10 @@ export const MainLayout = ({ children }: PropsWithChildren) => {
                 )}
 
                 <Suspense fallback={<Loading />}>
-                    <div className="flex min-h-0 w-full max-w-full flex-1 flex-col overflow-x-hidden overflow-y-auto px-4 pb-4 max-md:pt-14">
-                        <CustomSpace
-                            size="middle"
-                            direction="vertical"
-                            className="mb-3 w-full flex-1 p-0 md:pt-3"
-                        >
+                    <div className="flex min-h-0 w-full max-w-full flex-1 flex-col overflow-x-hidden overflow-y-auto mt-4">
+                        <CustomSpace size="middle" direction="vertical" className="w-full flex-1">
                             {children}
                         </CustomSpace>
-                        <div className="shrink-0">
-                            <Footer />
-                        </div>
                     </div>
                 </Suspense>
 
