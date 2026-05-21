@@ -6,13 +6,13 @@ import {
     PaginationControls,
     TableSectionToolbar,
 } from '@/components/common';
-import { CustomCard, CustomTable } from '@/components/custom';
+import { CustomCard, CustomDivider, CustomSpace, CustomTable } from '@/components/custom';
 import { useMainContext } from '@/contexts/MainContext';
 import { CustomFilterType } from '@/enums';
 import { useDebounceSearch, useTableContainer } from '@/hooks';
 import { ActionTableItem, FilterItem, SearchFilterItem } from '@/interfaces';
 import { CrudFilter, LogicalFilter } from '@refinedev/core';
-import { Flex, Grid, Space, Spin } from 'antd';
+import { Grid, Spin } from 'antd';
 import { ColumnsType, TableProps } from 'antd/es/table';
 import { ReactNode, useId, useMemo, useState } from 'react';
 import { ListItem } from './ListItem';
@@ -53,10 +53,10 @@ export const DataTableContainer = ({
 }: DataTableContainerProps) => {
     const { scrollToTop } = useMainContext();
 
+    const filterPanelId = useId();
     const screens = Grid.useBreakpoint();
     const isMobile = !screens.md;
 
-    const filterPanelId = useId();
     const [filterOpen, setFilterOpen] = useState(false);
     const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([]);
 
@@ -172,173 +172,162 @@ export const DataTableContainer = ({
         onRowSelectionChange?.(newSelectedRows);
     };
 
-    const hasPageHeadingText =
-        Boolean(description) || (typeof title === 'string' ? Boolean(title) : Boolean(title));
-    const hasHeaderSection = hasPageHeadingText || Boolean(actionButtons?.length);
-
-    const renderTitleAndActions = (
-        <header className="flex w-full flex-col gap-3 md:flex-row md:items-start md:justify-between">
-            {hasPageHeadingText &&
-                (typeof title === 'string' ? (
-                    <div className="min-w-0 md:max-w-[65%]">
-                        {title && (
-                            <h2 className="!m-0 whitespace-pre-line break-words text-base font-bold">
-                                {title}
-                            </h2>
-                        )}
-                        {description && (
-                            <p className="mt-1 !mb-0 whitespace-pre-line break-words text-sm font-normal text-hub-muted">
-                                {description}
-                            </p>
-                        )}
-                    </div>
-                ) : (
-                    <div className="w-full">{title}</div>
-                ))}
-
-            {Boolean(actionButtons?.length) && (
-                <Space
-                    className="w-full md:w-auto md:justify-end"
-                    direction="horizontal"
-                    size={8}
-                    wrap
-                >
-                    {actionButtons}
-                </Space>
-            )}
-        </header>
-    );
-
-    const pagination = (
-        <PaginationControls
-            itemsPerPage={pageSize}
-            currentPage={currentPage}
-            totalItems={tableQuery?.data?.meta?.totalItems ?? 0}
-            onPageChange={(page) => {
-                setCurrentPage(page);
-                scrollToTop();
-            }}
-            onItemsPerPageChange={(currentPageSize) => {
-                setCurrentPage(1);
-                setPageSize(currentPageSize);
-            }}
-        />
-    );
-
     const renderHeaderSection = () => {
-        if (!hasHeaderSection) {
-            return null;
-        }
+        const hasPageHeadingText =
+            Boolean(description) || (typeof title === 'string' ? Boolean(title) : Boolean(title));
+
+        const hasHeaderSection = hasPageHeadingText || Boolean(actionButtons?.length);
+        if (!hasHeaderSection) return null;
 
         return (
             <section className="w-full">
-                <CustomCard paddingSize="sm">{renderTitleAndActions}</CustomCard>
+                <CustomCard paddingSize="sm">
+                    <header className="flex w-full flex-col gap-3 md:flex-row md:items-start md:justify-between">
+                        {hasPageHeadingText &&
+                            (typeof title === 'string' ? (
+                                <div className="min-w-0 md:max-w-[65%]">
+                                    {title && (
+                                        <h2 className="!m-0 whitespace-pre-line break-words text-base font-bold">
+                                            {title}
+                                        </h2>
+                                    )}
+                                    {description && (
+                                        <p className="mt-1 !mb-0 whitespace-pre-line break-words text-sm font-normal text-hub-muted">
+                                            {description}
+                                        </p>
+                                    )}
+                                </div>
+                            ) : (
+                                <div className="w-full">{title}</div>
+                            ))}
+
+                        {Boolean(actionButtons?.length) && (
+                            <CustomSpace
+                                wrap
+                                size={8}
+                                direction="horizontal"
+                                className="w-full md:w-auto md:justify-end"
+                            >
+                                {actionButtons}
+                            </CustomSpace>
+                        )}
+                    </header>
+                </CustomCard>
             </section>
         );
     };
 
-    const renderTableFilterSection = !!filterItems.length && (
-        <>
-            <div className="flex justify-end px-3 pt-3 md:px-4 md:pt-3">
-                <TableSectionToolbar
-                    filterValues={filters}
-                    hasFilters
-                    isOpen={filterOpen}
-                    isRefreshing={tableQuery?.isFetching}
-                    panelId={filterPanelId}
-                    onRefresh={() => tableQuery?.refetch()}
-                    onToggle={() => setFilterOpen((open) => !open)}
-                />
-            </div>
-            {filterOpen && (
-                <div className="px-3 pb-2 md:px-4 md:pb-3">
-                    <FilterPanel
-                        borderless
-                        filterActions={filterItems}
-                        hideToolbar
+    const renderTableFilterSection = () => {
+        if (!filterItems.length) return null;
+
+        return (
+            <CustomSpace size="middle" direction="vertical" className="w-full pt-3">
+                <div className="flex w-full justify-end">
+                    <TableSectionToolbar
+                        hasFilters
                         isOpen={filterOpen}
+                        filterValues={filters}
                         panelId={filterPanelId}
+                        isRefreshing={tableQuery?.isFetching}
+                        onRefresh={() => tableQuery?.refetch()}
                         onToggle={() => setFilterOpen((open) => !open)}
                     />
                 </div>
-            )}
-        </>
-    );
+
+                {filterOpen && (
+                    <FilterPanel
+                        borderless
+                        hideToolbar
+                        isOpen={filterOpen}
+                        panelId={filterPanelId}
+                        filterActions={filterItems}
+                        onToggle={() => setFilterOpen((open) => !open)}
+                    />
+                )}
+
+                <CustomDivider className="!border-hub-border/50" />
+            </CustomSpace>
+        );
+    };
 
     return (
-        <Spin spinning={loading}>
-            <Space size={8} direction="vertical" className="w-full">
+        <Spin spinning={loading || tableQuery?.isLoading}>
+            <CustomSpace size="middle" direction="vertical" className="w-full">
                 {renderHeaderSection()}
-                <section className="w-full overflow-hidden rounded-hub-card border border-hub-border-card bg-hub-surface">
-                    {renderTableFilterSection}
-                    {childrenTop && <div className="px-3 py-2 md:px-4 md:py-3">{childrenTop}</div>}
 
-                    {!!columns?.length && (
-                        <>
-                            {isMobile ? (
-                                <div className="custom-scroll min-h-[200px] max-h-[calc(100vh-300px)] overflow-y-auto px-3 py-2 md:px-4 md:py-3">
-                                    {tableQuery?.isLoading ? (
-                                        <Flex align="center" className="py-12" justify="center">
-                                            <Spin size="large" />
-                                        </Flex>
-                                    ) : normalizedDataSource.length > 0 ? (
-                                        <div className="space-y-0 pb-2 pr-1">
-                                            {normalizedDataSource.map((record: any) => (
-                                                <ListItem
-                                                    key={record.id}
-                                                    actionItems={actionItems}
-                                                    columns={columns}
-                                                    currentPage={currentPage}
-                                                    disabled={onDisableRowSelection?.(record)}
-                                                    record={record}
-                                                    resource={resource}
-                                                    selected={selectedRowKeys.includes(record.id)}
-                                                    setCurrentPage={setCurrentPage}
-                                                    onRefetch={tableQuery?.refetch}
-                                                    onSelectChange={
-                                                        onRowSelectionChange
-                                                            ? handleListItemSelect
-                                                            : undefined
-                                                    }
-                                                />
-                                            ))}
-                                        </div>
-                                    ) : (
-                                        <div className="py-8">
-                                            <DataNotFound />
-                                        </div>
-                                    )}
-                                </div>
-                            ) : (
-                                <div className="px-3 py-2 md:px-4 md:py-3">
-                                    <div className="w-full overflow-hidden rounded-lg">
-                                        <CustomTable
-                                            actionItems={actionItems}
+                <CustomSpace
+                    size="middle"
+                    direction="vertical"
+                    className="w-full overflow-hidden rounded-hub-card border border-hub-border-card bg-hub-surface px-3 md:px-4"
+                >
+                    {renderTableFilterSection()}
+
+                    {childrenTop}
+
+                    {!!columns?.length &&
+                        (isMobile ? (
+                            <div className="custom-scroll min-h-[200px] max-h-[calc(100vh-300px)] w-full overflow-y-auto">
+                                {normalizedDataSource.length ? (
+                                    normalizedDataSource.map((record: any) => (
+                                        <ListItem
+                                            key={record.id}
+                                            record={record}
                                             columns={columns}
-                                            loading={tableQuery?.isLoading}
                                             resource={resource}
-                                            setCurrentPage={setCurrentPage}
-                                            setPageSize={setPageSize}
-                                            setSorters={setSorters}
-                                            tableProps={responsiveTableProps}
-                                            onDisableRowSelection={onDisableRowSelection}
+                                            actionItems={actionItems}
+                                            currentPage={currentPage}
                                             onRefetch={tableQuery?.refetch}
-                                            onRowSelectionChange={onRowSelectionChange}
+                                            selected={selectedRowKeys.includes(record.id)}
+                                            setCurrentPage={setCurrentPage}
+                                            disabled={onDisableRowSelection?.(record)}
+                                            onSelectChange={
+                                                onRowSelectionChange
+                                                    ? handleListItemSelect
+                                                    : undefined
+                                            }
                                         />
+                                    ))
+                                ) : (
+                                    <div className="py-8">
+                                        <DataNotFound />
                                     </div>
-                                </div>
-                            )}
-                        </>
-                    )}
+                                )}
+                            </div>
+                        ) : (
+                            <CustomTable
+                                columns={columns}
+                                resource={resource}
+                                actionItems={actionItems}
+                                loading={tableQuery?.isLoading}
+                                onRefetch={tableQuery?.refetch}
+                                tableProps={responsiveTableProps}
+                                setSorters={setSorters}
+                                setPageSize={setPageSize}
+                                setCurrentPage={setCurrentPage}
+                                onDisableRowSelection={onDisableRowSelection}
+                                onRowSelectionChange={onRowSelectionChange}
+                            />
+                        ))}
 
-                    {childrenBottom && (
-                        <div className="px-3 py-2 md:px-4 md:py-3">{childrenBottom}</div>
-                    )}
-                    <footer className="border-t border-hub-border-card px-3 py-2 md:px-4 md:py-2.5">
-                        {pagination}
+                    {childrenBottom}
+
+                    <footer className="w-full border-t border-hub-border-card py-2 md:py-2.5">
+                        <PaginationControls
+                            itemsPerPage={pageSize}
+                            currentPage={currentPage}
+                            totalItems={tableQuery?.data?.meta?.totalItems ?? 0}
+                            onPageChange={(page) => {
+                                setCurrentPage(page);
+                                scrollToTop();
+                            }}
+                            onItemsPerPageChange={(currentPageSize) => {
+                                setCurrentPage(1);
+                                setPageSize(currentPageSize);
+                            }}
+                        />
                     </footer>
-                </section>
-            </Space>
+                </CustomSpace>
+            </CustomSpace>
         </Spin>
     );
 };
