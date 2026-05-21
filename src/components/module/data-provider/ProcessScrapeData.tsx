@@ -315,25 +315,25 @@ export const ProcessScrapeData = ({
             <CustomSpace direction="vertical" className="w-full h-full">
                 <CustomCard className="shadow-sm" variant="borderless">
                     <div className="grid gap-6 grid-cols-4">
-                        <CustomCard className="text-center bg-blue-50 border-blue-200">
+                        <CustomCard className="text-center bg-hub-active border-hub-border">
                             <p className="text-sm text-gray-600 font-bold mt-1">
                                 Số nhà cung cấp xử lý
                             </p>
                             <div className="text-blue-600 text-2xl font-bold">{process ?? 0}</div>
                         </CustomCard>
-                        <CustomCard className="text-center bg-blue-50 border-blue-200">
+                        <CustomCard className="text-center bg-hub-active border-hub-border">
                             <p className="text-sm text-gray-600 font-bold mt-1">
                                 Số nhà cung cấp thành công
                             </p>
                             <div className="text-blue-600 text-2xl font-bold">{success ?? 0}</div>
                         </CustomCard>
-                        <CustomCard className="text-center bg-blue-50 border-blue-200">
+                        <CustomCard className="text-center bg-hub-active border-hub-border">
                             <p className="text-sm text-gray-600 font-bold mt-1">
                                 Số nhà cung cấp lỗi
                             </p>
                             <div className="text-blue-600 text-2xl font-bold">{error ?? 0}</div>
                         </CustomCard>
-                        <CustomCard className="text-center bg-blue-50 border-blue-200">
+                        <CustomCard className="text-center bg-hub-active border-hub-border">
                             <p className="text-sm text-gray-600 font-bold mt-1">
                                 Tổng số dữ liệu tìm thấy
                             </p>

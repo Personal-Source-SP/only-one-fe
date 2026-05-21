@@ -3,52 +3,99 @@
 import { CustomButton, CustomInput, CustomSelect } from '@/components/custom';
 import {
     CUSTOM_FILTER_BADGE_CLASS_NAME,
-    CUSTOM_FILTER_CLEAR_LABEL,
     CUSTOM_FILTER_LABEL_CLASS_NAME,
     CUSTOM_FILTER_PANEL_CLASS_NAME,
     CUSTOM_FILTER_SEARCH_LABEL,
     CUSTOM_FILTER_TOGGLE_COLLAPSE_LABEL,
     CUSTOM_FILTER_TOGGLE_EXPAND_LABEL,
+    CUSTOM_FILTER_TOOLBAR_TOGGLE_CLASS_NAME,
 } from '@/constants';
 import { CustomFilterType } from '@/enums';
 import { FilterItem } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { CrudFilter } from '@refinedev/core';
-import { Col, Flex, Grid, Row, Space } from 'antd';
-import { ChangeEvent, useMemo, useState } from 'react';
+import { Col, Flex, Grid, Row } from 'antd';
+import { ChangeEvent, useId } from 'react';
+
+type FilterPanelToolbarProps = {
+    filterValues?: CrudFilter[];
+    hasFilters: boolean;
+    isOpen: boolean;
+    panelId?: string;
+    onToggle: () => void;
+};
+
+export const FilterPanelToolbar = ({
+    filterValues,
+    hasFilters,
+    isOpen,
+    panelId,
+    onToggle,
+}: FilterPanelToolbarProps) => {
+    const generatedPanelId = useId();
+    const resolvedPanelId = panelId ?? generatedPanelId;
+    const hasActiveFilters = Boolean(filterValues?.length);
+    const toggleLabel = isOpen
+        ? CUSTOM_FILTER_TOGGLE_COLLAPSE_LABEL
+        : CUSTOM_FILTER_TOGGLE_EXPAND_LABEL;
+
+    if (!hasFilters) {
+        return null;
+    }
+
+    return (
+        <CustomButton
+            touchFriendly
+            aria-controls={resolvedPanelId}
+            aria-expanded={isOpen}
+            aria-label={toggleLabel}
+            className={CUSTOM_FILTER_TOOLBAR_TOGGLE_CLASS_NAME}
+            icon={<Icon className="text-hub-muted" icon="lucide:filter" />}
+            type="default"
+            onClick={onToggle}
+        >
+            {toggleLabel}
+            {hasActiveFilters && (
+                <span className={CUSTOM_FILTER_BADGE_CLASS_NAME}>{filterValues?.length}</span>
+            )}
+        </CustomButton>
+    );
+};
 
 type FilterPanelProps = {
     filterActions: FilterItem[];
     borderless?: boolean;
-    filterValues?: CrudFilter[];
-    onClearFilters?: () => void;
+    hideToolbar?: boolean;
+    isOpen: boolean;
+    onToggle: () => void;
+    panelId?: string;
 };
 
-const renderFilterItem = (filterItem: FilterItem, index: number, isMobile: boolean) => {
+const renderFilterItem = (filterItem: FilterItem, index: number, stacked: boolean) => {
     const {
-        type,
-        span,
-        value,
+        allowClear,
+        mode,
+        onChange,
         options,
         placeholder,
         showSearch,
-        allowClear,
-        mode,
+        span,
         title,
-        onChange,
+        type,
+        value,
     } = filterItem;
 
     switch (type) {
         case CustomFilterType.SEARCH: {
             return (
-                <Col span={isMobile ? 24 : span} key={index}>
+                <Col key={index} span={stacked ? 24 : span}>
                     <label className={CUSTOM_FILTER_LABEL_CLASS_NAME}>
                         {title || CUSTOM_FILTER_SEARCH_LABEL}
                     </label>
                     <CustomInput
-                        touchFriendly={isMobile}
                         placeholder={placeholder ?? CUSTOM_FILTER_SEARCH_LABEL}
-                        prefix={<Icon icon="lucide:search" className="text-hub-muted" />}
+                        prefix={<Icon className="text-hub-muted" icon="lucide:search" />}
+                        touchFriendly={stacked}
                         onChange={(e: ChangeEvent<HTMLInputElement>) =>
                             onChange?.(e.target.value.trim())
                         }
@@ -59,16 +106,16 @@ const renderFilterItem = (filterItem: FilterItem, index: number, isMobile: boole
 
         case CustomFilterType.SELECT: {
             return (
-                <Col span={isMobile ? 24 : span} key={index}>
+                <Col key={index} span={stacked ? 24 : span}>
                     <label className={CUSTOM_FILTER_LABEL_CLASS_NAME}>{title || placeholder}</label>
                     <CustomSelect
-                        mode={mode}
-                        value={value}
+                        allowClear={allowClear ?? false}
                         maxTagCount={1}
+                        mode={mode}
                         options={options}
                         placeholder={placeholder}
                         showSearch={showSearch ?? false}
-                        allowClear={allowClear ?? false}
+                        value={value}
                         onChange={(selectedValue) => onChange?.(selectedValue)}
                     />
                 </Col>
@@ -78,39 +125,18 @@ const renderFilterItem = (filterItem: FilterItem, index: number, isMobile: boole
 };
 
 export const FilterPanel = ({
-    filterActions,
     borderless = false,
-    filterValues,
-    onClearFilters,
+    filterActions,
+    hideToolbar = false,
+    isOpen,
+    onToggle,
+    panelId: panelIdProp,
 }: FilterPanelProps) => {
+    const generatedId = useId();
+    const panelId = panelIdProp ?? generatedId;
     const screens = Grid.useBreakpoint();
-    const isMobile = !screens.md;
+    const stacked = !screens.lg;
 
-    const [collapsed, setCollapsed] = useState(false);
-
-    const [searchFilter, selectFilters] = useMemo(
-        () =>
-            filterActions?.reduce<[FilterItem | undefined, FilterItem[]]>(
-                ([search, selects], filter) => {
-                    if (filter.type === CustomFilterType.SEARCH) {
-                        return [filter, selects];
-                    }
-                    if (filter.type === CustomFilterType.SELECT) {
-                        return [search, [...selects, filter]];
-                    }
-                    return [search, selects];
-                },
-                [undefined, []],
-            ),
-        [filterActions],
-    );
-
-    const handleClearFilters = () => {
-        setCollapsed(false);
-        onClearFilters?.();
-    };
-
-    const hasActiveFilters = Boolean(filterValues?.length);
     const panelClassName = borderless
         ? 'rounded-none border-none bg-transparent p-0 shadow-none'
         : CUSTOM_FILTER_PANEL_CLASS_NAME;
@@ -119,90 +145,31 @@ export const FilterPanel = ({
         return null;
     }
 
-    if (!isMobile) {
-        return (
-            <section className={panelClassName}>
-                <Row align="bottom" gutter={[16, 16]}>
-                    {filterActions.map((filter, index) => renderFilterItem(filter, index, false))}
-                    {onClearFilters && (
-                        <Col flex="none">
-                            <CustomButton type="default" onClick={handleClearFilters}>
-                                {CUSTOM_FILTER_CLEAR_LABEL}
-                            </CustomButton>
-                        </Col>
-                    )}
-                </Row>
-            </section>
-        );
-    }
-
     return (
-        <Space direction="vertical" size="middle" className="w-full">
-            <Flex
-                align="center"
-                className="w-full"
-                gap={8}
-                justify={searchFilter ? 'space-between' : 'end'}
-            >
-                {searchFilter && (
-                    <CustomInput
-                        touchFriendly
-                        className="w-full"
-                        placeholder={searchFilter.placeholder ?? CUSTOM_FILTER_SEARCH_LABEL}
-                        prefix={<Icon icon="lucide:search" className="text-hub-muted" />}
-                        onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                            searchFilter.onChange?.(e.target.value.trim())
-                        }
+        <div className="w-full">
+            {!hideToolbar && (
+                <Flex className="w-full" justify="end">
+                    <FilterPanelToolbar
+                        hasFilters
+                        isOpen={isOpen}
+                        panelId={panelId}
+                        onToggle={onToggle}
                     />
-                )}
+                </Flex>
+            )}
 
-                <Space direction="horizontal" size={8}>
-                    {!!selectFilters.length && (
-                        <CustomButton
-                            touchFriendly
-                            type="default"
-                            icon={<Icon icon="lucide:filter" />}
-                            onClick={() => setCollapsed(!collapsed)}
-                            className="rounded-lg border border-hub-border px-3"
-                        >
-                            <span>
-                                {collapsed
-                                    ? CUSTOM_FILTER_TOGGLE_COLLAPSE_LABEL
-                                    : CUSTOM_FILTER_TOGGLE_EXPAND_LABEL}
-                            </span>
-                            {hasActiveFilters && (
-                                <span className={CUSTOM_FILTER_BADGE_CLASS_NAME}>
-                                    {filterValues?.length}
-                                </span>
-                            )}
-                        </CustomButton>
-                    )}
-
-                    {(hasActiveFilters || searchFilter) && (
-                        <CustomButton
-                            type="text"
-                            onClick={handleClearFilters}
-                            disabled={!hasActiveFilters}
-                            icon={
-                                <Icon icon="lucide:refresh-cw" className="h-4 w-4 text-hub-muted" />
-                            }
-                            aria-label={CUSTOM_FILTER_CLEAR_LABEL}
-                        />
-                    )}
-                </Space>
-            </Flex>
-
-            {collapsed && !!selectFilters.length && (
+            {isOpen && (
                 <section
                     className={`${panelClassName} animate-in slide-in-from-top-2 duration-200`}
+                    id={panelId}
                 >
-                    <Row gutter={[16, 8]}>
-                        {selectFilters.map((filter, index) =>
-                            renderFilterItem(filter, index, true),
+                    <Row align="bottom" gutter={[16, 16]}>
+                        {filterActions.map((filter, index) =>
+                            renderFilterItem(filter, index, stacked),
                         )}
                     </Row>
                 </section>
             )}
-        </Space>
+        </div>
     );
 };

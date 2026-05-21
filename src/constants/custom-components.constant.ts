@@ -1,17 +1,18 @@
 import { CustomCardPadding, CustomLinkVariant } from '@/interfaces';
 
-// --- Style A design tokens (Minimal & Swiss) ---
-export const HUB_COLOR_PRIMARY = '#2563EB';
-export const HUB_COLOR_CTA = '#F97316';
-export const HUB_COLOR_BG = '#F8FAFC';
+// --- Style A design tokens (Sage Mist) ---
+export const HUB_COLOR_PRIMARY = '#5B7F72';
+export const HUB_COLOR_SECONDARY = '#7A9B8E';
+export const HUB_COLOR_CTA = '#D97706';
+export const HUB_COLOR_BG = '#F8FAF9';
 export const HUB_COLOR_SURFACE = '#FFFFFF';
-export const HUB_COLOR_BORDER = '#E2E8F0';
-export const HUB_COLOR_BORDER_CARD = '#F0F0F0';
-export const HUB_COLOR_TEXT = '#1E293B';
-export const HUB_COLOR_TITLE = '#111527';
+export const HUB_COLOR_BORDER = '#E2E8E6';
+export const HUB_COLOR_BORDER_CARD = '#ECEFED';
+export const HUB_COLOR_TEXT = '#334155';
+export const HUB_COLOR_TITLE = '#1E293B';
 export const HUB_COLOR_MUTED = '#64748B';
 export const HUB_COLOR_SUCCESS = '#16A34A';
-export const HUB_COLOR_ACTIVE_BG = '#EFF6FF';
+export const HUB_COLOR_ACTIVE_BG = '#EFF5F2';
 export const HUB_RADIUS = 8;
 export const HUB_RADIUS_CARD = 12;
 export const HUB_MODAL_WIDTH = 1200;
@@ -63,6 +64,12 @@ export const CUSTOM_INPUT_HUB_CLASS_NAME =
 export const CUSTOM_INPUT_CLASS_NAME =
     'min-h-11 sm:min-h-10 [&_.ant-input]:min-h-11 sm:[&_.ant-input]:min-h-10';
 
+/** i18n keys (fallback labels below until i18n provider is wired) */
+export const I18N_KEY_FILTER_CLEAR = 'common.filter.clear';
+export const I18N_KEY_FILTER_COLLAPSE = 'common.filter.collapse';
+export const I18N_KEY_FILTER_SEARCH = 'common.filter.search';
+export const I18N_KEY_FILTER_TOGGLE = 'common.filter.toggle';
+
 export const CUSTOM_FILTER_CLEAR_LABEL = 'Xóa lọc';
 
 export const CUSTOM_FILTER_SEARCH_LABEL = 'Tìm kiếm';
@@ -80,6 +87,12 @@ export const CUSTOM_FILTER_LABEL_CLASS_NAME = 'mb-1 block text-sm font-semibold 
 export const CUSTOM_FILTER_BADGE_CLASS_NAME =
     'ml-1 min-w-5 rounded-full bg-hub-primary px-1.5 py-0.5 text-center text-[10px] text-white';
 
+export const CUSTOM_FILTER_TOOLBAR_TOGGLE_CLASS_NAME =
+    'rounded-lg border border-hub-border bg-hub-surface px-3 text-hub-text shadow-none hover:!border-hub-primary hover:!text-hub-primary';
+
+export const CUSTOM_TABLE_SECTION_CLASS_NAME =
+    'w-full overflow-hidden rounded-hub-card border border-hub-border-card bg-hub-surface';
+
 // --- CustomModal ---
 export const CUSTOM_MODAL_BODY_CLASS_NAME = '!max-h-[calc(100vh-200px)] !overflow-y-auto';
 
@@ -87,7 +100,7 @@ export const CUSTOM_MODAL_MOBILE_WRAP_CLASS_NAME = '[&_.ant-modal]:!max-w-[calc(
 
 // --- CustomAlert ---
 export const CUSTOM_ALERT_INFO_CLASS_NAME =
-    '!border-blue-200 !bg-blue-50 [&_.ant-alert-message]:!text-blue-800';
+    '!border-hub-border !bg-hub-active [&_.ant-alert-message]:!text-hub-text';
 
 export const CUSTOM_ALERT_SUCCESS_CLASS_NAME =
     '!border-green-200 !bg-green-50 [&_.ant-alert-message]:!text-green-800';
@@ -97,7 +110,7 @@ export const CUSTOM_TAG_STATUS_CLASS_MAP = {
     active: 'border-green-200 bg-green-100 text-green-800',
     draft: 'border-slate-200 bg-slate-100 text-slate-600',
     error: 'border-red-200 bg-red-100 text-red-800',
-    running: 'border-blue-200 bg-blue-100 text-blue-800',
+    running: 'border-hub-border bg-hub-active text-hub-text',
     warning: 'border-amber-200 bg-amber-100 text-amber-800',
 } as const;
 

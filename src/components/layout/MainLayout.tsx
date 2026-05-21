@@ -9,7 +9,7 @@ import { useCustomMutationData, useSearchParamsString } from '@/hooks';
 import { exchangeCodeForTokens, findInformationPage, getUserInfoFromGoogle } from '@/libs';
 import { usePathname, useRouter } from 'next/navigation';
 import { PropsWithChildren, Suspense, useEffect, useRef, useState } from 'react';
-import { Breadcrumb, Footer, Header, NotificationsPanel, ScrollToTop, Search, Sidebar } from '.';
+import { Footer, Header, NotificationsPanel, ScrollToTop, Search, Sidebar } from '.';
 
 export const MainLayout = ({ children }: PropsWithChildren) => {
     const router = useRouter();
@@ -120,7 +120,6 @@ export const MainLayout = ({ children }: PropsWithChildren) => {
 
     return (
         <main className="flex h-screen bg-background overflow-hidden animate-in fade-in duration-300">
-            {/* Sidebar */}
             <Sidebar
                 mobileOpen={mobileMenuOpen}
                 setMobileOpen={setMobileMenuOpen}
@@ -133,10 +132,10 @@ export const MainLayout = ({ children }: PropsWithChildren) => {
                     sidebarCollapsed ? 'md:ml-16' : 'md:ml-64'
                 }`}
             >
-                {/* Header */}
                 <Header
+                    pageDescription={informationPage?.description}
+                    pageTitle={informationPage?.label}
                     showSearch={showSearch}
-                    showBreadcrumb={false}
                     mobileMenuOpen={mobileMenuOpen}
                     sidebarCollapsed={sidebarCollapsed}
                     showNotifications={showNotifications}
@@ -145,15 +144,12 @@ export const MainLayout = ({ children }: PropsWithChildren) => {
                     setShowNotifications={setShowNotifications}
                 />
 
-                {/* Notifications Panel */}
                 {showNotifications && (
                     <NotificationsPanel onClose={() => setShowNotifications(false)} />
                 )}
 
-                {/* Mobile search bar */}
                 <Search showSearch={showSearch} setShowSearch={setShowSearch} />
 
-                {/* Page Content */}
                 <Suspense fallback={<Loading />}>
                     <div className="flex min-h-0 w-full max-w-full flex-1 flex-col overflow-x-hidden overflow-y-auto p-0 pt-14 md:p-4 md:pt-16">
                         <CustomSpace
@@ -161,25 +157,6 @@ export const MainLayout = ({ children }: PropsWithChildren) => {
                             direction="vertical"
                             className="p-0 md:p-4 mb-4 w-full flex-1"
                         >
-                            {informationPage && (
-                                <section className="px-4 md:px-0">
-                                    <div className="flex items-start justify-between gap-4 md:gap-6">
-                                        <CustomSpace direction="vertical" size={4}>
-                                            <h1 className="text-xl sm:text-2xl font-bold !m-0">
-                                                {informationPage?.label}
-                                            </h1>
-                                            {informationPage?.description && (
-                                                <p className="text-sm sm:text-base text-hub-muted !m-0">
-                                                    {informationPage?.description}
-                                                </p>
-                                            )}
-                                        </CustomSpace>
-                                        <div className="hidden rounded-lg border border-hub-border bg-hub-surface px-3 py-2 md:flex md:items-center">
-                                            <Breadcrumb className="!block" />
-                                        </div>
-                                    </div>
-                                </section>
-                            )}
                             {children}
                         </CustomSpace>
                         <div className="shrink-0">
@@ -188,7 +165,6 @@ export const MainLayout = ({ children }: PropsWithChildren) => {
                     </div>
                 </Suspense>
 
-                {/* Scroll to Top */}
                 <ScrollToTop />
             </div>
         </main>

@@ -1,8 +1,11 @@
 # app-layout-shell Specification
 
 ## Purpose
+
 TBD - created by archiving change minimal-swiss-ui-system. Update Purpose after archive.
+
 ## Requirements
+
 ### Requirement: Desktop layout shell structure
 
 On viewports ≥1024px, the protected app layout MUST render a fixed sidebar, fixed header (64px), and main content area occupying at least 70% of the viewport width beside the sidebar.
@@ -54,17 +57,22 @@ Layout shell regions (sidebar, header, main background) MUST use hub background 
 
 ### Requirement: Navigation active state
 
-Active navigation items MUST use primary blue (`#2563EB`) with a left accent bar (4px) and light blue background (`#EFF6FF`); inactive items MUST use muted text color.
+Active navigation items MUST use primary sage (`#5B7F72`) with a left accent bar (4px) and light sage background (`#EFF5F2` / hub active token); inactive items MUST use muted text color.
 
 #### Scenario: Active nav item styling
 
 - **WHEN** a route matches the current `SidebarNavItem`
-- **THEN** the item MUST show primary color label, `#EFF6FF` background, and a 4px left border in primary blue
+- **THEN** the item MUST show primary sage label, hub active background token, and a 4px left border in primary sage
 
 #### Scenario: No indigo accent in nav
 
 - **WHEN** any sidebar or popover navigation renders
 - **THEN** indigo Tailwind classes MUST NOT be used for active or hover states
+
+#### Scenario: No legacy blue active background
+
+- **WHEN** sidebar active state renders
+- **THEN** `bg-blue-50` and primary blue `#2563EB` MUST NOT be used for active styling
 
 ### Requirement: Responsive tap targets in layout chrome
 
@@ -83,18 +91,3 @@ Public auth pages (`AuthLayout`) MUST use the same hub background, surface card,
 
 - **WHEN** the login route renders
 - **THEN** the auth card MUST use hub surface white, hub border, and 12px card radius without decorative gradients on the shell
-
-### Requirement: Shell supports page-owned breadcrumb placement
-
-The app layout shell MUST allow protected pages to own breadcrumb rendering inside page content while preventing duplicate breadcrumb display in the global header region.
-
-#### Scenario: Page renders custom breadcrumb
-
-- **WHEN** a protected page declares breadcrumb in its own content
-- **THEN** shell-level header breadcrumb slot MUST remain hidden for that page context
-
-#### Scenario: Backward-compatible shell behavior
-
-- **WHEN** a protected page does not provide page-level breadcrumb
-- **THEN** existing shell behavior for header and content spacing MUST remain unchanged
-

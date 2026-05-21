@@ -1,8 +1,5 @@
-# data-providers-page-layout-sections Specification
+## MODIFIED Requirements
 
-## Purpose
-TBD - created by archiving change realign-data-providers-layout. Update Purpose after archive.
-## Requirements
 ### Requirement: Data providers page uses explicit content sections
 
 The data providers page MUST render distinct content sections for action list, filter toolbar, optional expanded filters, and data table. Page-level title and description MUST NOT appear in main content because they are shown in the app header.
@@ -34,19 +31,3 @@ The page MUST preserve existing Refine table behaviors while changing the visual
 
 - **WHEN** the user clicks any action button rendered in the heading/actions section
 - **THEN** the related modal or action flow MUST execute with unchanged business behavior
-
-### Requirement: Table section uses flat layout without card wrapper
-
-List/table pages using `DataTableContainer` MUST render the data table (or mobile list) in a flat section without an Ant Design `CustomCard` wrapper.
-
-#### Scenario: No CustomCard around table on desktop
-
-- **WHEN** the data providers table renders on viewport ≥ 1024px
-- **THEN** the table MUST NOT be nested inside `CustomCard`
-- **AND** pagination MUST render in a footer area below the table within the same flat section (e.g. top border separator)
-
-#### Scenario: Mobile list without card wrapper
-
-- **WHEN** the table container renders mobile list view
-- **THEN** the list MUST remain inside the flat table section without an additional card chrome layer
-

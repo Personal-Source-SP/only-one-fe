@@ -12,6 +12,7 @@ const config: Config = {
             colors: {
                 hub: {
                     primary: 'var(--hub-primary)',
+                    secondary: 'var(--hub-secondary)',
                     cta: 'var(--hub-cta)',
                     bg: 'var(--hub-bg)',
                     surface: 'var(--hub-surface)',

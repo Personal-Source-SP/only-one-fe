@@ -457,13 +457,13 @@ export const SyncLocal = ({
             <CustomSpace direction="vertical" className="w-full h-full">
                 <CustomCard className="shadow-sm" variant="borderless">
                     <div className="grid gap-6 grid-cols-3">
-                        <CustomCard className="text-center bg-blue-50 border-blue-200">
+                        <CustomCard className="text-center bg-hub-active border-hub-border">
                             <p className="text-sm text-gray-600 font-bold mt-1">Tổng số lượng</p>
                             <div className="text-blue-600 text-2xl font-bold">
                                 {totalCount ?? 0}
                             </div>
                         </CustomCard>
-                        <CustomCard className="text-center bg-blue-50 border-blue-200">
+                        <CustomCard className="text-center bg-hub-active border-hub-border">
                             <p className="text-sm text-gray-600 font-bold mt-1">Tổng kích thước</p>
                             <div className="text-blue-600 text-2xl font-bold">{totalSize ?? 0}</div>
                         </CustomCard>
