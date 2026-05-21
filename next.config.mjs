@@ -3,8 +3,8 @@ import process from 'node:process';
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     async rewrites() {
-        const raw = (process.env.API_INTERNAL_URL || 'http://localhost:3004').replace(/\/$/, '');
-        const apiOrigin = raw.replace(/\/api\/v1\/?$/, '') || 'http://localhost:3004';
+        const raw = (process.env.API_INTERNAL_URL || 'http://localhost:3001').replace(/\/$/, '');
+        const apiOrigin = raw.replace(/\/api\/v1\/?$/, '') || 'http://localhost:3001';
 
         return [
             {

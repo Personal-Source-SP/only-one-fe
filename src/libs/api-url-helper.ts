@@ -1,4 +1,4 @@
-const DEFAULT_API_BASE_URL = 'http://localhost:3004/api/v1';
+const DEFAULT_API_BASE_URL = 'http://localhost:3001/api/v1';
 
 const toApiBaseUrl = (url?: string): string => {
     if (!url) return DEFAULT_API_BASE_URL;
