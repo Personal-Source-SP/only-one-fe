@@ -6,14 +6,21 @@ import {
     PaginationControls,
     TableSectionToolbar,
 } from '@/components/common';
-import { CustomCard, CustomDivider, CustomSpace, CustomTable } from '@/components/custom';
+import {
+    ColumnsType,
+    CustomCard,
+    CustomDivider,
+    CustomGrid,
+    CustomSpace,
+    CustomSpin,
+    CustomTable,
+    TableProps,
+} from '@/components/custom';
 import { useMainContext } from '@/contexts/MainContext';
 import { CustomFilterType } from '@/enums';
 import { useDebounceSearch, useTableContainer } from '@/hooks';
 import { ActionTableItem, FilterItem, SearchFilterItem } from '@/interfaces';
 import { CrudFilter, LogicalFilter } from '@refinedev/core';
-import { Grid, Spin } from 'antd';
-import { ColumnsType, TableProps } from 'antd/es/table';
 import { ReactNode, useId, useMemo, useState } from 'react';
 import { ListItem } from './ListItem';
 
@@ -54,7 +61,7 @@ export const DataTableContainer = ({
     const { scrollToTop } = useMainContext();
 
     const filterPanelId = useId();
-    const screens = Grid.useBreakpoint();
+    const screens = CustomGrid.useBreakpoint();
     const isMobile = !screens.md;
 
     const [filterOpen, setFilterOpen] = useState(false);
@@ -251,7 +258,7 @@ export const DataTableContainer = ({
     };
 
     return (
-        <Spin spinning={loading || tableQuery?.isLoading}>
+        <CustomSpin spinning={loading || tableQuery?.isLoading}>
             <CustomSpace size="middle" direction="vertical" className="w-full">
                 {renderHeaderSection()}
 
@@ -328,6 +335,6 @@ export const DataTableContainer = ({
                     </footer>
                 </CustomSpace>
             </CustomSpace>
-        </Spin>
+        </CustomSpin>
     );
 };

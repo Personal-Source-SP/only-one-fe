@@ -1,14 +1,13 @@
 'use client';
 
 import { DATE_FORMAT_SHORT, DATE_FORMAT_TIME } from '@/constants';
-import { DatePicker, Form } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
 import { debounce } from 'lodash';
 import { useCallback } from 'react';
+import { CustomForm } from '../custom-form';
+import { CustomPicker } from '../custom-picker';
 
-const { RangePicker } = DatePicker;
-
-type CustomDatePickerProps = {
+export type CustomDatePickerProps = {
     name: string;
     label: string;
     setDateRange: (dateRange: [string, string]) => void;
@@ -84,8 +83,8 @@ export const CustomDatePicker = ({
     );
 
     return (
-        <Form.Item label={label} name={name}>
-            <RangePicker
+        <CustomForm.Item label={label} name={name}>
+            <CustomPicker.RangePicker
                 presets={presets}
                 showTime={showTime}
                 allowClear={allowClear}
@@ -100,6 +99,6 @@ export const CustomDatePicker = ({
                     }
                 }}
             />
-        </Form.Item>
+        </CustomForm.Item>
     );
 };

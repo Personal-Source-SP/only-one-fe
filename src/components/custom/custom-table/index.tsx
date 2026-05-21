@@ -5,9 +5,18 @@ import { MessageType, SortOrder } from '@/enums';
 import { ActionTableItem, NBaseApi } from '@/interfaces';
 import { DeleteOutlined } from '@ant-design/icons';
 import { CrudSort, useDelete } from '@refinedev/core';
-import { Button, Popconfirm, Space, Table } from 'antd';
-import { ColumnsType, TablePaginationConfig, TableProps } from 'antd/es/table';
-import { FilterValue, SorterResult, TableCurrentDataSource } from 'antd/es/table/interface';
+import { Table } from 'antd';
+import { CustomButton } from '../custom-button';
+import { CustomPopconfirm } from '../custom-popconfirm';
+import { CustomSpace } from '../custom-space';
+import type {
+    ColumnsType,
+    FilterValue,
+    SorterResult,
+    TableCurrentDataSource,
+    TablePaginationConfig,
+    TableProps,
+} from '../custom-antd-types';
 import { useMemo } from 'react';
 
 type CustomTableProps = {
@@ -113,9 +122,9 @@ export const CustomTable = ({
 
     const renderAction = (record: any) => {
         return (
-            <Space direction="horizontal" size={4}>
+            <CustomSpace direction="horizontal" size={4}>
                 {actionItems?.map((action) => (
-                    <Button
+                    <CustomButton
                         type="text"
                         size="small"
                         icon={action.icon}
@@ -125,7 +134,7 @@ export const CustomTable = ({
                 ))}
 
                 {Boolean(onRefetch && resource) && (
-                    <Popconfirm
+                    <CustomPopconfirm
                         okType="danger"
                         okText="Xóa"
                         cancelText="Hủy"
@@ -133,15 +142,15 @@ export const CustomTable = ({
                         description="Bạn có chắc chắn muốn xóa dữ liệu này không?"
                         onConfirm={() => handleDelete?.(record)}
                     >
-                        <Button
+                        <CustomButton
                             type="text"
                             size="small"
                             title={'Xóa'}
                             icon={<DeleteOutlined style={{ color: '#ef4444' }} />}
                         />
-                    </Popconfirm>
+                    </CustomPopconfirm>
                 )}
-            </Space>
+            </CustomSpace>
         );
     };
 

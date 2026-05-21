@@ -1,4 +1,3 @@
-import { theme } from 'antd';
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import RefineContext from '@/contexts/RefineContext';
 import { AntdRegistry } from '@ant-design/nextjs-registry';

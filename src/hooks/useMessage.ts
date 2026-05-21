@@ -1,4 +1,4 @@
-import { App } from 'antd';
+import { useCustomApp } from '@/components/custom';
 import { useCallback } from 'react';
 
 type MessageType = 'success' | 'error' | 'info' | 'warning' | 'loading';
@@ -16,7 +16,7 @@ type LoadingMessageConfig = {
 };
 
 export const useMessage = () => {
-    const { message } = App.useApp();
+    const { message } = useCustomApp();
 
     const showMessage = useCallback(
         (type: MessageType, config: MessageConfig) => {

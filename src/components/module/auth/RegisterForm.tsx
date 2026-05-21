@@ -1,21 +1,24 @@
 'use client';
 
 import { CustomButton, CustomForm, CustomInput } from '@/components/custom';
-import { notification } from 'antd';
+import { useMainContext } from '@/contexts/MainContext';
+import { NotificationType } from '@/enums';
 import { IAuth } from '@/interfaces';
 import { useCallback } from 'react';
 
 import { AuthSocialLogin } from './AuthSocialLogin';
 
 export const RegisterForm = () => {
+    const { handleNotification } = useMainContext();
     const [form] = CustomForm.useForm<IAuth.IRegisterFormValues>();
 
     const handleRegister = useCallback(async (_values: IAuth.IRegisterFormValues) => {
-        notification.info({
+        handleNotification({
+            type: NotificationType.INFO,
             message: 'Tính năng đang được phát triển',
             description: 'Đăng ký tài khoản sẽ sớm được hỗ trợ.',
         });
-    }, []);
+    }, [handleNotification]);
 
     return (
         <>

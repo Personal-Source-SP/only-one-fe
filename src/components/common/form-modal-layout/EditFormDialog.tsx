@@ -5,8 +5,14 @@ import { MessageType } from '@/enums';
 import { useCustomModal } from '@/hooks';
 import { FormFieldItem } from '@/interfaces';
 import { Icon } from '@iconify/react';
-import { CustomButton } from '@/components/custom';
-import { Flex, Form, Row, Space, Spin } from 'antd';
+import {
+    CustomButton,
+    CustomFlex,
+    CustomForm,
+    CustomRow,
+    CustomSpace,
+    CustomSpin,
+} from '@/components/custom';
 import { ReactNode, useCallback, useEffect } from 'react';
 
 import { renderFormFields } from './FormFields';
@@ -77,7 +83,7 @@ export const EditFormDialog = ({
 
     const renderFooter = useCallback(() => {
         return (
-            <Flex align="center" justify="end" className="w-full" gap={16}>
+            <CustomFlex align="center" justify="end" className="w-full" gap={16}>
                 <CustomButton
                     type="primary"
                     htmlType="submit"
@@ -88,7 +94,7 @@ export const EditFormDialog = ({
                 >
                     <span>Cập nhật</span>
                 </CustomButton>
-            </Flex>
+            </CustomFlex>
         );
     }, [formProps, formLoading]);
 
@@ -109,11 +115,11 @@ export const EditFormDialog = ({
                 },
             }}
         >
-            <Spin spinning={formLoading}>
-                <Space direction="vertical" className="w-full h-full overflow-x-hidden">
+            <CustomSpin spinning={formLoading}>
+                <CustomSpace direction="vertical" className="w-full h-full overflow-x-hidden">
                     {topRender && topRender}
 
-                    <Form
+                    <CustomForm
                         {...formProps}
                         layout="vertical"
                         className="[&_.ant-form-item]:!mb-2"
@@ -123,14 +129,14 @@ export const EditFormDialog = ({
                             formProps?.onFinish?.(request);
                         }}
                     >
-                        <Row gutter={[8, 8]}>
+                        <CustomRow gutter={[8, 8]}>
                             {formFields.map((formField) => renderFormFields(formField, formProps))}
-                        </Row>
-                    </Form>
+                        </CustomRow>
+                    </CustomForm>
 
                     {bottomRender && bottomRender}
-                </Space>
-            </Spin>
+                </CustomSpace>
+            </CustomSpin>
         </FormModalLayout>
     );
 };

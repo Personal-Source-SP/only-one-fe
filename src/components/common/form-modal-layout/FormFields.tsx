@@ -1,9 +1,20 @@
 'use client';
 
+import {
+    CustomCol,
+    CustomFlex,
+    CustomForm,
+    CustomInput,
+    CustomSelect,
+    CustomSpace,
+    CustomToggle,
+    CustomUpload,
+    FormProps,
+    UploadFile,
+} from '@/components/custom';
 import { CodeDisplay } from '@/components/module/code-display';
 import { FormFieldItem } from '@/interfaces';
 import { Icon } from '@iconify/react';
-import { Col, Flex, Form, FormProps, Input, Select, Space, Switch, Upload, UploadFile } from 'antd';
 import { ChangeEvent } from 'react';
 
 export const renderFormFields = (formField: FormFieldItem, formProps: FormProps<any>) => {
@@ -22,7 +33,7 @@ export const renderFormFields = (formField: FormFieldItem, formProps: FormProps<
         case 'input': {
             const { placeholder, addonAfter, addonBefore } = formField.inputProps ?? {};
             formFieldElement = (
-                <Input
+                <CustomInput
                     addonAfter={addonAfter}
                     addonBefore={addonBefore}
                     placeholder={placeholder}
@@ -38,7 +49,7 @@ export const renderFormFields = (formField: FormFieldItem, formProps: FormProps<
         case 'select': {
             const { placeholder, options, allowClear, showSearch } = formField.selectProps ?? {};
             formFieldElement = (
-                <Select
+                <CustomSelect
                     options={options ?? []}
                     placeholder={placeholder}
                     disabled={formField.disabled ?? false}
@@ -53,7 +64,7 @@ export const renderFormFields = (formField: FormFieldItem, formProps: FormProps<
         case 'textarea': {
             const { placeholder, rows } = formField.textareaProps ?? {};
             formFieldElement = (
-                <Input.TextArea
+                <CustomInput.TextArea
                     rows={rows ?? 4}
                     placeholder={placeholder}
                     disabled={formField.disabled ?? false}
@@ -68,7 +79,7 @@ export const renderFormFields = (formField: FormFieldItem, formProps: FormProps<
 
         case 'switch': {
             formFieldElement = (
-                <Switch
+                <CustomToggle
                     disabled={formField.disabled ?? false}
                     onChange={(value) => formField.onChange?.(value, formProps?.form)}
                 />
@@ -102,14 +113,14 @@ export const renderFormFields = (formField: FormFieldItem, formProps: FormProps<
         case 'upload': {
             const { accept, maxCount, multiple } = formField.uploadProps ?? {};
             formFieldElement = (
-                <Upload.Dragger
+                <CustomUpload.Dragger
                     accept={accept}
                     maxCount={maxCount ?? 1}
                     beforeUpload={() => false}
                     multiple={multiple ?? false}
                     disabled={formField.disabled ?? false}
                 >
-                    <Space size="small" direction="vertical" align="center">
+                    <CustomSpace size="small" direction="vertical" align="center">
                         <p className="ant-upload-drag-icon">
                             <Icon icon="lucide:upload" style={{ fontSize: '48px' }} />
                         </p>
@@ -119,8 +130,8 @@ export const renderFormFields = (formField: FormFieldItem, formProps: FormProps<
                         <p className="ant-upload-hint text-gray-500">
                             {accept ? `Định dạng hỗ trợ: ${accept}` : 'Chọn file để tải lên'}
                         </p>
-                    </Space>
-                </Upload.Dragger>
+                    </CustomSpace>
+                </CustomUpload.Dragger>
             );
             Object.assign(formItemProps, {
                 valuePropName: 'fileList',
@@ -137,24 +148,24 @@ export const renderFormFields = (formField: FormFieldItem, formProps: FormProps<
     }
 
     return (
-        <Col span={formField.span ?? 24} key={formField.name} hidden={formField.hidden ?? false}>
+        <CustomCol span={formField.span ?? 24} key={formField.name} hidden={formField.hidden ?? false}>
             {formField.elementTopRender && formField.elementTopRender}
 
             {formField.type === 'switch' ? (
-                <Flex align="center" justify="space-between">
+                <CustomFlex align="center" justify="space-between">
                     <div>
                         <p className="font-medium !my-0">{formField.label}</p>
                         <p className="text-sm text-gray-500 !my-0">
                             {formField.switchProps?.placeholder}
                         </p>
                     </div>
-                    <Form.Item {...formItemProps}>{formFieldElement}</Form.Item>
-                </Flex>
+                    <CustomForm.Item {...formItemProps}>{formFieldElement}</CustomForm.Item>
+                </CustomFlex>
             ) : (
-                <Form.Item {...formItemProps}>{formFieldElement}</Form.Item>
+                <CustomForm.Item {...formItemProps}>{formFieldElement}</CustomForm.Item>
             )}
 
             {formField.elementBottomRender && formField.elementBottomRender}
-        </Col>
+        </CustomCol>
     );
 };

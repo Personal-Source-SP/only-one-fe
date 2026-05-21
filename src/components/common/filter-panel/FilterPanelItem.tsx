@@ -4,7 +4,7 @@ import { CustomInput, CustomSelect } from '@/components/custom';
 import { CustomFilterType } from '@/enums';
 import { FilterItem } from '@/interfaces';
 import { Icon } from '@iconify/react';
-import { Col } from 'antd';
+import { CustomCol } from '@/components/custom';
 import { ChangeEvent } from 'react';
 
 export const renderFilterItem = (filterItem: FilterItem, index: number, stacked: boolean) => {
@@ -24,7 +24,7 @@ export const renderFilterItem = (filterItem: FilterItem, index: number, stacked:
     switch (type) {
         case CustomFilterType.SEARCH: {
             return (
-                <Col key={index} span={stacked ? 24 : span}>
+                <CustomCol key={index} span={stacked ? 24 : span}>
                     <label className="mb-1 block text-sm font-semibold text-hub-muted">
                         {title || 'Tìm kiếm'}
                     </label>
@@ -36,13 +36,13 @@ export const renderFilterItem = (filterItem: FilterItem, index: number, stacked:
                             onChange?.(e.target.value.trim())
                         }
                     />
-                </Col>
+                </CustomCol>
             );
         }
 
         case CustomFilterType.SELECT: {
             return (
-                <Col key={index} span={stacked ? 24 : span}>
+                <CustomCol key={index} span={stacked ? 24 : span}>
                     <label className="mb-1 block text-sm font-semibold text-hub-muted">
                         {title || placeholder}
                     </label>
@@ -56,7 +56,7 @@ export const renderFilterItem = (filterItem: FilterItem, index: number, stacked:
                         value={value}
                         onChange={(selectedValue) => onChange?.(selectedValue)}
                     />
-                </Col>
+                </CustomCol>
             );
         }
     }

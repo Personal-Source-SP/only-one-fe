@@ -1,7 +1,12 @@
-import { Col, Flex, Form, Switch } from 'antd';
-import { ReactNode } from 'react';
+'use client';
 
-type CustomSwitchProps = {
+import { Switch } from 'antd';
+import { ReactNode } from 'react';
+import { CustomCol } from '../custom-row-col';
+import { CustomFlex } from '../custom-flex';
+import { CustomForm } from '../custom-form';
+
+export type CustomSwitchProps = {
     formFields: string[];
     fieldLabel: ReactNode;
     span?: number;
@@ -19,16 +24,16 @@ export const CustomSwitch = ({
     disabled,
 }: CustomSwitchProps) => {
     return (
-        <Col span={span ?? 12} className="!mb-2">
-            <Flex align="center" gap={10} className="!mb-0">
-                <Form.Item name={formFields} valuePropName="checked">
+        <CustomCol span={span ?? 12} className="!mb-2">
+            <CustomFlex align="center" gap={10} className="!mb-0">
+                <CustomForm.Item name={formFields} valuePropName="checked">
                     <Switch onChange={onChange} disabled={disabled} />
-                </Form.Item>
+                </CustomForm.Item>
                 <span className="mb-1">{fieldLabel}</span>
-            </Flex>
+            </CustomFlex>
             {!!fieldPlaceholder && (
                 <p className="text-sm text-gray-500 !my-0">{fieldPlaceholder}</p>
             )}
-        </Col>
+        </CustomCol>
     );
 };

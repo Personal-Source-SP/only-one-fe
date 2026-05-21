@@ -3,10 +3,12 @@
 import { Loading } from '@/components/common';
 import { SocketProvider } from '@/contexts/SocketContext';
 import { MessageType, NotificationType, Theme } from '@/enums';
-import { message, notification } from 'antd';
-
-import { NoticeType } from 'antd/es/message/interface';
-import { IconType } from 'antd/es/notification/interface';
+import {
+    IconType,
+    NoticeType,
+    useCustomMessage,
+    useCustomNotification,
+} from '@/components/custom';
 import { createContext, PropsWithChildren, useContext, useState } from 'react';
 
 import { MainLayout } from '@/components/layout';
@@ -43,8 +45,8 @@ export const MainProvider = ({
     const [loading, setLoading] = useState(false);
     const [theme, setTheme] = useState<Theme>(Theme.LIGHT);
 
-    const [messageApi, messageContextHolder] = message.useMessage();
-    const [notificationApi, notificationContextHolder] = notification.useNotification();
+    const [messageApi, messageContextHolder] = useCustomMessage();
+    const [notificationApi, notificationContextHolder] = useCustomNotification();
 
     const handleLoading = (loading: boolean) => {
         setLoading(loading);

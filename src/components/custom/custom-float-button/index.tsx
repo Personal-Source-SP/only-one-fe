@@ -11,7 +11,7 @@ type FloatButtonItem = {
     };
 };
 
-type CustomFloatButtonProps = {
+export type CustomFloatButtonProps = {
     items: FloatButtonItem[];
     open?: boolean;
     icon?: string;

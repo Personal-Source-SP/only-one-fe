@@ -1,10 +1,15 @@
 'use client';
 
-import { Button, Divider, Flex, Input, Select, SelectProps, Space } from 'antd';
+import { Select, SelectProps } from 'antd';
+import { CustomButton } from '../custom-button';
+import { CustomDivider } from '../custom-divider';
+import { CustomFlex } from '../custom-flex';
+import { CustomInput } from '../custom-input';
+import { CustomSpace } from '../custom-space';
 import { debounce } from 'lodash';
 import { useCallback, type ReactNode, type UIEvent } from 'react';
 
-type CustomSelectProps = SelectProps & {
+export type CustomSelectProps = SelectProps & {
     debounceTime?: number;
     onPopupScroll?: () => void;
     onInputChange?: (value: string) => void;
@@ -38,15 +43,15 @@ export const CustomSelect = ({
             return (
                 <>
                     {menu}
-                    <Space direction="vertical" size={10} className="w-full p-3">
-                        <Divider className="!my-0" />
-                        <Flex align="center" gap={10}>
-                            <Input
+                    <CustomSpace direction="vertical" size={10} className="w-full p-3">
+                        <CustomDivider className="!my-0" />
+                        <CustomFlex align="center" gap={10}>
+                            <CustomInput
                                 disabled={props.disabled}
                                 className="flex-1"
                                 placeholder=" Nhập giá trị"
                             />
-                            <Button
+                            <CustomButton
                                 type="primary"
                                 disabled={props.disabled}
                                 onClick={(e) => {
@@ -56,9 +61,9 @@ export const CustomSelect = ({
                                 }}
                             >
                                 Xác nhận
-                            </Button>
-                        </Flex>
-                    </Space>
+                            </CustomButton>
+                        </CustomFlex>
+                    </CustomSpace>
                 </>
             );
         },

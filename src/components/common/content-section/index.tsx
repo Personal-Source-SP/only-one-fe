@@ -1,7 +1,7 @@
 'use client';
 
+import { CustomCard, CustomFlex, CustomSpace, CustomSpin } from '@/components/custom';
 import { ElementType } from '@/enums';
-import { Card, Flex, Space, Spin } from 'antd';
 import { ReactNode } from 'react';
 
 type ContentSectionProps = {
@@ -32,11 +32,11 @@ export const ContentSection = ({
             const isTitle = Boolean(title);
 
             return (
-                <Card className="border-hub-border-card bg-hub-surface">
+                <CustomCard className="border-hub-border-card bg-hub-surface">
                     {Boolean(description) && (
                         <p className="text-sm text-hub-muted">{description}</p>
                     )}
-                    <Flex
+                    <CustomFlex
                         align="center"
                         className="mt-0"
                         justify={isTitle ? 'space-between' : 'end'}
@@ -49,16 +49,16 @@ export const ContentSection = ({
                         ) : (
                             title
                         )}
-                        {Boolean(actions?.length) && <Space size="small">{actions}</Space>}
-                    </Flex>
+                        {Boolean(actions?.length) && <CustomSpace size="small">{actions}</CustomSpace>}
+                    </CustomFlex>
                     {Boolean(children) && children}
-                </Card>
+                </CustomCard>
             );
         }
 
         case ElementType.CONTAINER: {
             return (
-                <Space
+                <CustomSpace
                     size="middle"
                     direction="vertical"
                     className={[
@@ -68,14 +68,14 @@ export const ContentSection = ({
                         .filter(Boolean)
                         .join(' ')}
                 >
-                    <Spin spinning={loading}>{children}</Spin>
-                </Space>
+                    <CustomSpin spinning={loading}>{children}</CustomSpin>
+                </CustomSpace>
             );
         }
 
         case ElementType.CARD: {
             return (
-                <Card
+                <CustomCard
                     title={header}
                     loading={loading}
                     actions={actions}
@@ -88,10 +88,10 @@ export const ContentSection = ({
                         .filter(Boolean)
                         .join(' ')}
                 >
-                    <Space direction="vertical" size="middle" className="w-full max-w-full">
+                    <CustomSpace direction="vertical" size="middle" className="w-full max-w-full">
                         {children}
-                    </Space>
-                </Card>
+                    </CustomSpace>
+                </CustomCard>
             );
         }
     }

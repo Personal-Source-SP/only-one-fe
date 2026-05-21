@@ -1,7 +1,7 @@
 'use client';
 
 import { FilterItem } from '@/interfaces';
-import { Flex, Grid, Row } from 'antd';
+import { CustomFlex, CustomGrid, CustomRow } from '@/components/custom';
 import { useId } from 'react';
 
 import { FilterPanelToolbar } from './FilterPanelToolbar';
@@ -28,7 +28,7 @@ export const FilterPanel = ({
 }: FilterPanelProps) => {
     const generatedId = useId();
     const panelId = panelIdProp ?? generatedId;
-    const screens = Grid.useBreakpoint();
+    const screens = CustomGrid.useBreakpoint();
     const stacked = !screens.lg;
 
     const panelClassName = borderless
@@ -42,14 +42,14 @@ export const FilterPanel = ({
     return (
         <div className="w-full">
             {!hideToolbar && (
-                <Flex className="w-full" justify="end">
+                <CustomFlex className="w-full" justify="end">
                     <FilterPanelToolbar
                         hasFilters
                         isOpen={isOpen}
                         panelId={panelId}
                         onToggle={onToggle}
                     />
-                </Flex>
+                </CustomFlex>
             )}
 
             {isOpen && (
@@ -57,11 +57,11 @@ export const FilterPanel = ({
                     className={`${panelClassName} animate-in slide-in-from-top-2 duration-200`}
                     id={panelId}
                 >
-                    <Row align="bottom" gutter={[16, 16]}>
+                    <CustomRow align="bottom" gutter={[16, 16]}>
                         {filterActions.map((filter, index) =>
                             renderFilterItem(filter, index, stacked),
                         )}
-                    </Row>
+                    </CustomRow>
                 </section>
             )}
         </div>

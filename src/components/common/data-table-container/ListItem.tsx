@@ -1,13 +1,21 @@
 'use client';
 
+import {
+    ColumnsType,
+    CustomButton,
+    CustomCard,
+    CustomCheckbox,
+    CustomDescriptions,
+    CustomDropdown,
+    CustomFlex,
+    CustomPopconfirm,
+    ItemType,
+} from '@/components/custom';
 import { useMainContext } from '@/contexts/MainContext';
 import { MessageType } from '@/enums';
 import { ActionTableItem } from '@/interfaces';
 import { DeleteOutlined, MoreOutlined } from '@ant-design/icons';
 import { useDelete } from '@refinedev/core';
-import { Button, Card, Checkbox, Descriptions, Divider, Dropdown, Flex, Popconfirm } from 'antd';
-import { ItemType } from 'antd/es/menu/interface';
-import { ColumnsType } from 'antd/es/table';
 
 type ListItemProps = {
     record: any;
@@ -28,11 +36,9 @@ export const ListItem = ({
     resource,
     selected,
     disabled,
-    currentPage,
     actionItems,
     onRefetch,
     onSelectChange,
-    setCurrentPage,
 }: ListItemProps) => {
     const { handleMessage } = useMainContext();
 
@@ -92,17 +98,17 @@ export const ListItem = ({
         .filter((item): item is { key: any; label: string; children: any } => item !== null);
 
     return (
-        <Card
+        <CustomCard
             hoverable
             size="small"
             className={`mb-3 transition-all duration-200 ${selected ? 'ring-2 ring-blue-400 shadow-md' : 'shadow-sm hover:shadow-md'}`}
-            bodyStyle={{ padding: 0 }}
+            styles={{ body: { padding: 0 } }}
         >
             <div className="p-4">
-                <Flex gap={12} align="flex-start">
+                <CustomFlex gap={12} align="flex-start">
                     {onSelectChange && (
                         <div className="pt-1">
-                            <Checkbox
+                            <CustomCheckbox
                                 checked={selected}
                                 disabled={disabled}
                                 onChange={(e) => onSelectChange(record, e.target.checked)}
@@ -110,7 +116,7 @@ export const ListItem = ({
                         </div>
                     )}
                     <div className="flex-1 min-w-0">
-                        <Flex gap={8} align="center" justify="space-between" className="mb-3">
+                        <CustomFlex gap={8} align="center" justify="space-between" className="mb-3">
                             {firstColumnValue && (
                                 <div className="font-semibold text-lg text-gray-900 dark:text-gray-100 break-words leading-tight flex-1">
                                     {firstColumnValue}
@@ -118,7 +124,7 @@ export const ListItem = ({
                             )}
 
                             {hasActions && (
-                                <Dropdown
+                                <CustomDropdown
                                     trigger={['click']}
                                     menu={{
                                         items: [
@@ -136,7 +142,7 @@ export const ListItem = ({
                                                       {
                                                           key: 'delete',
                                                           label: (
-                                                              <Popconfirm
+                                                              <CustomPopconfirm
                                                                   okType="danger"
                                                                   okText="Xóa"
                                                                   cancelText="Hủy"
@@ -147,7 +153,7 @@ export const ListItem = ({
                                                                   <span className="text-red-500">
                                                                       Xóa
                                                                   </span>
-                                                              </Popconfirm>
+                                                              </CustomPopconfirm>
                                                           ),
                                                           icon: (
                                                               <DeleteOutlined className="text-red-500" />
@@ -159,7 +165,7 @@ export const ListItem = ({
                                         ] as ItemType[],
                                     }}
                                 >
-                                    <Button
+                                    <CustomButton
                                         size="small"
                                         type="default"
                                         className="flex items-center justify-center min-w-[32px]"
@@ -169,28 +175,30 @@ export const ListItem = ({
                                             />
                                         }
                                     />
-                                </Dropdown>
+                                </CustomDropdown>
                             )}
-                        </Flex>
+                        </CustomFlex>
 
                         {descriptionsItems.length > 0 && (
-                            <Descriptions
+                            <CustomDescriptions
                                 size="small"
                                 column={1}
                                 items={descriptionsItems}
-                                labelStyle={{
-                                    fontWeight: 500,
-                                    width: '120px',
-                                    paddingBottom: '8px',
-                                }}
-                                contentStyle={{
-                                    paddingBottom: '8px',
+                                styles={{
+                                    label: {
+                                        fontWeight: 500,
+                                        width: '120px',
+                                        paddingBottom: '8px',
+                                    },
+                                    content: {
+                                        paddingBottom: '8px',
+                                    },
                                 }}
                             />
                         )}
                     </div>
-                </Flex>
+                </CustomFlex>
             </div>
-        </Card>
+        </CustomCard>
     );
 };

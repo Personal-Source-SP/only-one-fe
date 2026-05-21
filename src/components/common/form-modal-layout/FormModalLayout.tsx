@@ -1,7 +1,6 @@
 'use client';
 
-import { CustomModal } from '@/components/custom';
-import { ModalProps, Space, Spin } from 'antd';
+import { CustomModal, CustomSpace, CustomSpin, ModalProps } from '@/components/custom';
 import { ReactNode } from 'react';
 
 type FormModalLayoutProps = {
@@ -13,11 +12,11 @@ type FormModalLayoutProps = {
 export const FormModalLayout = ({ formLoading, modalProps, children }: FormModalLayoutProps) => {
     return (
         <CustomModal modalProps={{ ...modalProps, destroyOnHidden: true }}>
-            <Spin spinning={formLoading}>
-                <Space direction="vertical" className="h-full w-full overflow-x-hidden">
+            <CustomSpin spinning={formLoading}>
+                <CustomSpace direction="vertical" className="h-full w-full overflow-x-hidden">
                     {children}
-                </Space>
-            </Spin>
+                </CustomSpace>
+            </CustomSpin>
         </CustomModal>
     );
 };

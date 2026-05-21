@@ -2,7 +2,7 @@
 
 import { plusJakartaSans } from '@/constants';
 import { useThemeStore } from '@/stores/useThemeStore';
-import { App as AntdApp, ConfigProvider, theme } from 'antd';
+import { CustomApp, CustomConfigProvider, theme } from '@/components/custom';
 import { type PropsWithChildren } from 'react';
 
 type ColorModeContextProviderProps = {
@@ -17,7 +17,7 @@ export const ColorModeContextProvider = ({
     const { defaultAlgorithm } = theme;
 
     return (
-        <ConfigProvider
+        <CustomConfigProvider
             theme={{
                 algorithm: defaultAlgorithm,
                 hashed: false,
@@ -110,7 +110,7 @@ export const ColorModeContextProvider = ({
                 },
             }}
         >
-            <AntdApp>{children}</AntdApp>
-        </ConfigProvider>
+            <CustomApp>{children}</CustomApp>
+        </CustomConfigProvider>
     );
 };

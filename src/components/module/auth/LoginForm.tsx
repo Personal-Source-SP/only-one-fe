@@ -2,7 +2,8 @@
 
 import { useCallback, useState } from 'react';
 
-import { notification } from 'antd';
+import { useMainContext } from '@/contexts/MainContext';
+import { NotificationType } from '@/enums';
 import { useLogin } from '@refinedev/core';
 import { useRouter } from 'next/navigation';
 
@@ -22,6 +23,7 @@ export const LoginForm = () => {
     const { isPending, mutate: login } = useLogin();
 
     const router = useRouter();
+    const { handleNotification } = useMainContext();
 
     const [rememberMe, setRememberMe] = useState(false);
 
@@ -47,14 +49,15 @@ export const LoginForm = () => {
                         }
                     },
                     onError: (error) => {
-                        notification.error({
+                        handleNotification({
+                            type: NotificationType.ERROR,
                             message: mapNextAuthSignInErrorMessage(error?.message),
                         });
                     },
                 },
             );
         },
-        [login, router],
+        [handleNotification, login, router],
     );
 
     return (
