@@ -1,7 +1,7 @@
 import { plusJakartaSans } from '@/constants';
+import { AntdRegistryProvider } from '@/contexts';
 import RefineContext from '@/contexts/RefineContext';
 import { getSafeServerSession } from '@/libs/auth-session-helper';
-import { AntdRegistry } from '@ant-design/nextjs-registry';
 import type { Metadata } from 'next';
 import { NavigationGuardProvider } from 'next-navigation-guard';
 import { cookies } from 'next/headers';
@@ -30,11 +30,11 @@ export default async function RootLayout({ children }: PropsWithChildren) {
             >
                 <Suspense>
                     <NavigationGuardProvider>
-                        <AntdRegistry>
+                        <AntdRegistryProvider>
                             <RefineContext session={session} defaultMode={theme?.value}>
                                 {children}
                             </RefineContext>
-                        </AntdRegistry>
+                        </AntdRegistryProvider>
                     </NavigationGuardProvider>
                 </Suspense>
             </body>

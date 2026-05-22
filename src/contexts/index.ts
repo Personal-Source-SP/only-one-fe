@@ -1,3 +1,4 @@
+export * from './AntdRegistryProvider';
 export * from './MainContext';
 export * from './SocketContext';
 export * from './RefineContext';
