@@ -1,6 +1,6 @@
 'use client';
 
-import { FormModalLayout } from '@/components/common';
+import { FormModalLayout, StatusTag } from '@/components/common';
 import {
     CustomButton,
     CustomCard,
@@ -15,8 +15,6 @@ import {
     CustomToggle,
     CustomTypography,
 } from '@/components/custom';
-import { MessageType } from '@/enums';
-import { StatusTag } from '@/components/common';
 import { CodeDisplay } from '@/components/module/code-display';
 import {
     DEFAULT_API_FUNCTION_GENERATOR,
@@ -24,7 +22,7 @@ import {
     DEFAULT_PARSER_FUNCTION_GENERATOR,
 } from '@/constants';
 import { useMainContext } from '@/contexts/MainContext';
-import { DataProviderStatus, NotificationType, ScraperServiceEnum } from '@/enums';
+import { DataProviderStatus, MessageType, NotificationType, ScraperServiceEnum } from '@/enums';
 import { useCustomModal, useCustomMutationData } from '@/hooks';
 import { NBaseApi, NDataProvider, Option } from '@/interfaces';
 
@@ -131,8 +129,6 @@ export const ScrapeSetting = ({
 
     const { handleCustomMutationData: handleUpdate } = useCustomMutationData();
     const { handleCustomMutationData: handleCreate } = useCustomMutationData();
-
-    console.log(url, htmlContentString);
 
     const handleTestParser = async () => {
         if (!url && !htmlContentString) {
