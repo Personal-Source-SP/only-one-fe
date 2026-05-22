@@ -6,6 +6,7 @@ import { useThemeStore } from '@/stores';
 import { type PropsWithChildren } from 'react';
 
 import { BreakpointStoreSync } from './BreakpointStoreSync';
+import { HubThemePaletteProvider } from './HubThemePaletteContext';
 
 type ColorModeContextProviderProps = {
     defaultMode?: string;
@@ -113,7 +114,9 @@ export const ColorModeContextProvider = ({
             }}
         >
             <CustomApp>
-                <BreakpointStoreSync>{children}</BreakpointStoreSync>
+                <HubThemePaletteProvider>
+                    <BreakpointStoreSync>{children}</BreakpointStoreSync>
+                </HubThemePaletteProvider>
             </CustomApp>
         </CustomConfigProvider>
     );

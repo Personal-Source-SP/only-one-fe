@@ -37,7 +37,7 @@ export const FilterPanelToolbar = ({
             aria-controls={resolvedPanelId}
             aria-expanded={isOpen}
             aria-label={toggleLabel}
-            className="rounded-lg border border-hub-border bg-hub-surface px-3 text-hub-text shadow-none hover:!border-hub-primary hover:!text-hub-primary"
+            className="rounded-lg border border-hub-border bg-hub-section px-3 text-hub-text shadow-none hover:!border-hub-primary hover:!text-hub-primary"
             icon={<Icon className="text-hub-muted" icon="lucide:filter" />}
             type="default"
             onClick={onToggle}

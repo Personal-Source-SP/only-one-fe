@@ -37,7 +37,7 @@ export const TableSectionToolbar = ({
                 <CustomButton
                     touchFriendly
                     aria-label="Làm mới"
-                    className="rounded-lg border border-hub-border bg-hub-surface px-3 text-hub-text shadow-none hover:!border-hub-primary hover:!text-hub-primary"
+                    className="rounded-lg border border-hub-border bg-hub-section px-3 text-hub-text shadow-none hover:!border-hub-primary hover:!text-hub-primary"
                     data-i18n-key="table.toolbar.refresh"
                     icon={
                         <Icon

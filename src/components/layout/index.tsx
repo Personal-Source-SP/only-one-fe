@@ -132,14 +132,14 @@ export const MainLayout = ({ children }: PropsWithChildren) => {
 
             <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
                 <Header
-                    pageDescription={informationPage?.description}
-                    pageTitle={informationPage?.label}
                     mobileMenuOpen={mobileMenuOpen}
-                    showNotifications={showNotifications}
                     sidebarCollapsed={sidebarCollapsed}
-                    onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
+                    showNotifications={showNotifications}
+                    pageTitle={informationPage?.label}
+                    pageDescription={informationPage?.description}
                     setMobileMenuOpen={setMobileMenuOpen}
                     setShowNotifications={setShowNotifications}
+                    onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
                 />
 
                 {showNotifications && (

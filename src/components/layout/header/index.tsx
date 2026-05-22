@@ -11,7 +11,7 @@ import {
 import { KEY_SESSION_STORAGE } from '@/constants';
 import { Icon } from '@iconify/react';
 import { signOut } from 'next-auth/react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 type HeaderProps = {
     pageDescription?: string;
@@ -42,6 +42,7 @@ export const Header = ({
     setShowNotifications,
 }: HeaderProps) => {
     const pathname = usePathname();
+    const router = useRouter();
 
     const settingItem: SettingItem[] = [
         {
@@ -52,7 +53,7 @@ export const Header = ({
         {
             label: 'Cài đặt',
             icon: 'lucide:settings',
-            onClick: () => {},
+            onClick: () => router.push('/setting/appearance'),
         },
         {
             label: 'Đăng xuất',

@@ -33,7 +33,7 @@ export const FilterPanel = ({
 
     const panelClassName = borderless
         ? 'rounded-none border-none bg-transparent p-0 shadow-none'
-        : 'w-full rounded-xl border border-hub-border-card bg-hub-surface p-4';
+        : 'w-full rounded-xl border border-hub-border-card bg-hub-section p-4';
 
     if (!filterActions.length) {
         return null;

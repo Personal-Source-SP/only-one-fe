@@ -1,4 +1,9 @@
-import { plusJakartaSans } from '@/constants';
+import {
+    HUB_THEME_PALETTE,
+    HUB_THEME_PALETTE_IDS,
+    HUB_THEME_STORAGE_KEY,
+    plusJakartaSans,
+} from '@/constants';
 import { AntdRegistryProvider } from '@/contexts';
 import RefineContext from '@/contexts/RefineContext';
 import { getSafeServerSession } from '@/libs/auth-session-helper';
@@ -23,8 +28,13 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 
     const session = await getSafeServerSession();
 
+    const hubThemeBootstrapScript = `(function(){try{var k=${JSON.stringify(HUB_THEME_STORAGE_KEY)};var allowed=${JSON.stringify(HUB_THEME_PALETTE_IDS)};var v=localStorage.getItem(k);if(!v)return;var p=JSON.parse(v);if(allowed.indexOf(p)!==-1){document.documentElement.setAttribute("data-hub-theme",p)}}catch(e){}})();`;
+
     return (
-        <html lang="en" suppressHydrationWarning>
+        <html lang="en" data-hub-theme={HUB_THEME_PALETTE} suppressHydrationWarning>
+            <head>
+                <script dangerouslySetInnerHTML={{ __html: hubThemeBootstrapScript }} />
+            </head>
             <body
                 className={`${plusJakartaSans.variable} ${plusJakartaSans.className} overflow-x-hidden`}
             >

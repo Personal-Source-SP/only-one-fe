@@ -38,7 +38,7 @@ export const SectionTabLayout = ({ children }: PropsWithChildren) => {
         <>
             <nav
                 aria-label="Section navigation"
-                className="mb-3 w-full overflow-hidden rounded-hub-card border border-hub-border-card bg-hub-surface p-1.5 shadow-sm md:p-2"
+                className="mb-3 w-full overflow-hidden rounded-hub-card border border-hub-border-card bg-hub-section p-1.5 shadow-sm md:p-2"
             >
                 <CustomTabs
                     activeKey={activeKey}

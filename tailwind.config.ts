@@ -18,6 +18,7 @@ const config: Config = {
         'rounded-b-hub-card',
         'hub-section-tabs',
         'shadow-sm',
+        'bg-hub-section',
     ],
     theme: {
         extend: {
@@ -27,6 +28,7 @@ const config: Config = {
                     secondary: 'var(--hub-secondary)',
                     cta: 'var(--hub-cta)',
                     bg: 'var(--hub-bg)',
+                    section: 'var(--hub-section)',
                     surface: 'var(--hub-surface)',
                     border: 'var(--hub-border)',
                     'border-card': 'var(--hub-border-card)',

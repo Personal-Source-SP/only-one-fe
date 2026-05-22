@@ -130,6 +130,12 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
                 href: '/setting/users',
                 description: 'Quản lý người dùng hệ thống',
             },
+            {
+                label: 'Giao diện',
+                icon: 'noto:artist-palette',
+                href: '/setting/appearance',
+                description: 'Tông màu và hiển thị giao diện',
+            },
         ],
     },
 ];
