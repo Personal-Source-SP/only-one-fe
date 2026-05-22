@@ -1,4 +1,4 @@
-import { hasSessionCookieName, usesSecureSessionCookie } from '@/libs';
+import { hasSessionCookieName, usesSecureSessionCookie } from '@/libs/auth-session-cookie';
 import { getToken } from 'next-auth/jwt';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';

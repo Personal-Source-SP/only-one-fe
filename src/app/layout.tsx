@@ -1,6 +1,6 @@
 import { plusJakartaSans } from '@/constants';
 import RefineContext from '@/contexts/RefineContext';
-import { getSafeServerSession } from '@/libs';
+import { getSafeServerSession } from '@/libs/auth-session-helper';
 import { AntdRegistry } from '@ant-design/nextjs-registry';
 import type { Metadata } from 'next';
 import { NavigationGuardProvider } from 'next-navigation-guard';

@@ -2,7 +2,6 @@ import { KEY_LOCAL_STORAGE, KEY_SESSION_STORAGE } from '@/constants';
 import { NBaseApi } from '@/interfaces';
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
 import { isEmpty } from 'lodash';
-import { stringify } from 'querystring';
 
 export class BaseApi {
     private httpClient: AxiosInstance;
@@ -251,7 +250,7 @@ export class BaseApi {
     generateQueryString = (params?: Record<string, any>): string => {
         if (isEmpty(params)) return '';
 
-        return stringify(params);
+        return this.generateSearchParams(params).toString();
     };
 
     handleAxiosError(error: unknown): string {
