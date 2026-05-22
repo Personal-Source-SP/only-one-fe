@@ -30,14 +30,15 @@ type DataTableContainerProps = {
     description: string;
 
     loading?: boolean;
+    resource?: string;
     actionButtons?: ReactNode[];
     columns?: ColumnsType<any>;
-    resource?: string;
     actionItems?: ActionTableItem[];
     childrenTop?: ReactNode;
     filterSearch?: SearchFilterItem;
     childrenBottom?: ReactNode;
     customFilterItems?: FilterItem[];
+    customFilterActions?: ReactNode;
     onDisableRowSelection?: (record: any) => boolean;
     onRowSelectionChange?: (selectedRows: any[]) => void;
 };
@@ -45,16 +46,17 @@ type DataTableContainerProps = {
 export const DataTableContainer = ({
     tableContainerData,
     title,
-    loading = false,
     description,
+    loading = false,
+    resource,
     actionButtons,
     columns,
-    resource,
     actionItems,
     childrenTop,
     filterSearch,
     childrenBottom,
     customFilterItems,
+    customFilterActions,
     onRowSelectionChange,
     onDisableRowSelection,
 }: DataTableContainerProps) => {
@@ -182,7 +184,7 @@ export const DataTableContainer = ({
         return (
             <section className="w-full">
                 <CustomCard paddingSize="sm">
-                    <header className="flex w-full flex-col gap-3 md:flex-row md:items-start md:justify-between">
+                    <header className="flex w-full flex-col gap-3 md:flex-row md:items-center md:justify-between">
                         <div className="min-w-0 md:max-w-[65%]">
                             {typeof title === 'string' ? (
                                 <h2 className="!m-0 whitespace-pre-line break-words text-base font-bold">
@@ -200,8 +202,9 @@ export const DataTableContainer = ({
                             <CustomSpace
                                 wrap
                                 size={8}
+                                align="center"
                                 direction="horizontal"
-                                className="w-full md:w-auto md:justify-end"
+                                className="w-full md:w-auto md:shrink-0 md:justify-end"
                             >
                                 {actionButtons}
                             </CustomSpace>
@@ -217,6 +220,8 @@ export const DataTableContainer = ({
 
         return (
             <CustomSpace size="middle" direction="vertical" className="w-full pt-3">
+                {customFilterActions}
+
                 <div className="flex w-full justify-end">
                     <TableSectionToolbar
                         hasFilters

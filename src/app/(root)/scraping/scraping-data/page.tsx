@@ -1,18 +1,11 @@
 'use client';
 
 import { DataTableContainer, MediaLightbox } from '@/components/common';
-import {
-    ColumnsType,
-    CustomButton,
-    CustomFlex,
-    CustomSegmented,
-    CustomSpace,
-} from '@/components/custom';
-import { MessageType } from '@/enums';
+import { ColumnsType, CustomButton, CustomFlex, CustomSelect } from '@/components/custom';
 import { ProcessScrapeData } from '@/components/module/data-provider';
 import { FileGroups } from '@/components/module/file-group';
 import { useMainContext } from '@/contexts/MainContext';
-import { CustomFilterType, DisplayMode, ViewFileMode } from '@/enums';
+import { CustomFilterType, DisplayMode, MessageType, ViewFileMode } from '@/enums';
 import {
     useCustomDelete,
     useCustomModal,
@@ -225,52 +218,6 @@ const ScrapingDataPage = () => {
         },
     ];
 
-    const handlePhotoClick = (scrapingDataId: string) => {
-        const index = photoItems?.findIndex((photo) => photo.id === scrapingDataId);
-        if (index !== undefined) {
-            setIsLightboxOpen(true);
-            setCurrentPhotoIndex(index);
-        }
-    };
-
-    const tableTitle = useMemo(
-        () => (
-            <div className="flex flex-col gap-3">
-                <h2 className="!m-0 whitespace-pre-line break-words text-base font-bold">
-                    Danh sách dữ liệu cào
-                </h2>
-                <CustomSpace align="center" className="rounded-md">
-                    <CustomSegmented
-                        size="middle"
-                        value={displayMode}
-                        onChange={(val) => setDisplayMode(val as DisplayMode)}
-                        options={[
-                            {
-                                value: DisplayMode.LIST,
-                                label: (
-                                    <span className="flex items-center gap-2">
-                                        <Icon icon="lucide:list" />
-                                        Hiển thị dạng danh sách
-                                    </span>
-                                ),
-                            },
-                            {
-                                value: DisplayMode.TABLE,
-                                label: (
-                                    <span className="flex items-center gap-2">
-                                        <Icon icon="lucide:table" />
-                                        Hiển thị dạng bảng
-                                    </span>
-                                ),
-                            },
-                        ]}
-                    />
-                </CustomSpace>
-            </div>
-        ),
-        [displayMode],
-    );
-
     const actionButtons: ReactNode[] = [
         <CustomButton
             type="primary"
@@ -302,12 +249,20 @@ const ScrapingDataPage = () => {
         </CustomButton>,
     ];
 
+    const handlePhotoClick = (scrapingDataId: string) => {
+        const index = photoItems?.findIndex((photo) => photo.id === scrapingDataId);
+        if (index !== undefined) {
+            setIsLightboxOpen(true);
+            setCurrentPhotoIndex(index);
+        }
+    };
+
     return (
         <>
             <DataTableContainer
                 resource="scraping-data"
                 actionItems={actionItems}
-                title={tableTitle}
+                title="Danh sách dữ liệu cào"
                 description="Xem và quản lý dữ liệu đã được cào"
                 actionButtons={actionButtons}
                 customFilterItems={customFilterItems}
@@ -332,6 +287,35 @@ const ScrapingDataPage = () => {
                     const dataProviderIds = selectedRows?.map((item) => item.id ?? '');
                     setSelectedDataProviderIds(dataProviderIds ?? []);
                 }}
+                customFilterActions={
+                    <CustomSelect
+                        key="display-mode"
+                        value={displayMode}
+                        placeholder="Chế độ hiển thị"
+                        className="w-[120px] shrink-0 sm:w-[130px]"
+                        onChange={(val) => setDisplayMode(val as DisplayMode)}
+                        options={[
+                            {
+                                value: DisplayMode.LIST,
+                                label: (
+                                    <span className="flex items-center gap-2">
+                                        <Icon icon="lucide:list" className="shrink-0 text-base" />
+                                        Danh sách
+                                    </span>
+                                ),
+                            },
+                            {
+                                value: DisplayMode.TABLE,
+                                label: (
+                                    <span className="flex items-center gap-2">
+                                        <Icon icon="lucide:table" className="shrink-0 text-base" />
+                                        Bảng
+                                    </span>
+                                ),
+                            },
+                        ]}
+                    />
+                }
             />
 
             <MediaLightbox
