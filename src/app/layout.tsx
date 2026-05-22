@@ -1,15 +1,13 @@
-import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
+import { plusJakartaSans } from '@/constants';
 import RefineContext from '@/contexts/RefineContext';
+import { getSafeServerSession } from '@/libs';
 import { AntdRegistry } from '@ant-design/nextjs-registry';
 import type { Metadata } from 'next';
-import { getServerSession } from 'next-auth';
 import { NavigationGuardProvider } from 'next-navigation-guard';
-import { plusJakartaSans } from '@/constants';
 import { cookies } from 'next/headers';
 import { PropsWithChildren, Suspense } from 'react';
 
 import '@/styles/globals.css';
-import 'antd/dist/reset.css';
 
 export const metadata: Metadata = {
     title: 'O-O Hub',
@@ -23,7 +21,7 @@ export default async function RootLayout({ children }: PropsWithChildren) {
     const cookieStore = await cookies();
     const theme = cookieStore.get('theme');
 
-    const session = await getServerSession(authOptions);
+    const session = await getSafeServerSession();
 
     return (
         <html lang="en" suppressHydrationWarning>

@@ -141,5 +141,5 @@ export const authOptions: NextAuthOptions = {
         // maxAge: 1 * 60 * 60,
         // maxAge: 60,
     },
-    debug: true,
+    debug: process.env.NODE_ENV === 'development',
 };

@@ -1,17 +1,11 @@
-const DEFAULT_API_BASE_URL = 'http://localhost:3001/api/v1';
-
-const toApiBaseUrl = (url?: string): string => {
-    if (!url) return DEFAULT_API_BASE_URL;
-
+const toApiBaseUrl = (url: string): string => {
     const trimmed = url.replace(/\/$/, '');
-
     return trimmed.endsWith('/api/v1') ? trimmed : `${trimmed}/api/v1`;
 };
 
 export const getApiBaseUrl = (): string => {
-    if (typeof window === 'undefined') {
-        return toApiBaseUrl(process.env.API_INTERNAL_URL || process.env.NEXT_PUBLIC_API_URL);
-    }
+    const url = process.env.NEXT_PUBLIC_API_URL;
+    if (!url) throw new Error('NEXT_PUBLIC_API_URL is not defined');
 
-    return toApiBaseUrl(process.env.NEXT_PUBLIC_API_URL);
+    return toApiBaseUrl(url);
 };
