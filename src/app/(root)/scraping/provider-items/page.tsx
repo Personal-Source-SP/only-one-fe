@@ -1,15 +1,9 @@
 'use client';
 
-import {
-    ContentSection,
-    CreateFormDialog,
-    DataTableContainer,
-    EditFormDialog,
-} from '@/components/common';
+import { CreateFormDialog, DataTableContainer, EditFormDialog } from '@/components/common';
 import { ColumnsType, CustomButton, CustomSpace, CustomToggle } from '@/components/custom';
-import { MessageType } from '@/enums';
 import { ProcessScrapeData } from '@/components/module/data-provider';
-import { CustomFilterType, DataProviderStatus, ElementType } from '@/enums';
+import { CustomFilterType, DataProviderStatus, MessageType } from '@/enums';
 import {
     useCustomMutationData,
     useSelectCloudDataProvider,
@@ -20,7 +14,7 @@ import {
 import { ActionTableItem, FilterItem, FormFieldItem, NDataProvider } from '@/interfaces';
 import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
-import { useState } from 'react';
+import { ReactNode, useState } from 'react';
 
 const DataProviderItemPage = () => {
     const [loading, setLoading] = useState(false);
@@ -36,9 +30,7 @@ const DataProviderItemPage = () => {
 
     const { handleCustomMutationData: handleUpdate } = useCustomMutationData();
 
-    const tableContainerData = useTableContainer({
-        resource: 'data-provider-items',
-    });
+    const tableContainerData = useTableContainer({ resource: 'data-provider-items' });
 
     const columns: ColumnsType<NDataProvider.IDataProviderItem> = [
         {
@@ -248,33 +240,37 @@ const DataProviderItemPage = () => {
         });
     };
 
-    return (
-        <CustomSpace size="middle" direction="vertical" className="w-full h-full">
-            <ContentSection
-                elementType={ElementType.TITLE}
-                actions={[
-                    <CustomButton
-                        type="primary"
-                        key="scrape-data"
-                        title="Cào dữ liệu"
-                        icon={<Icon icon="lucide:file-text" />}
-                        onClick={() => setOpenProcessScrapeDataModal(true)}
-                    />,
-                    <CustomButton
-                        type="primary"
-                        key="add-data-provider-item"
-                        title="Thêm đối tượng nhà cung cấp"
-                        icon={<Icon icon="lucide:plus" />}
-                        onClick={() => setOpenCreateItemModal(true)}
-                    />,
-                ]}
-            />
+    const actionButtons: ReactNode[] = [
+        <CustomButton
+            type="primary"
+            key="scrape-data"
+            title="Cào dữ liệu"
+            icon={<Icon icon="lucide:file-text" />}
+            onClick={() => setOpenProcessScrapeDataModal(true)}
+        >
+            Cào
+        </CustomButton>,
+        <CustomButton
+            type="primary"
+            key="add-data-provider-item"
+            title="Thêm đối tượng nhà cung cấp"
+            icon={<Icon icon="lucide:plus" />}
+            onClick={() => setOpenCreateItemModal(true)}
+        >
+            Thêm
+        </CustomButton>,
+    ];
 
+    return (
+        <>
             <DataTableContainer
                 loading={loading}
                 columns={columns}
                 actionItems={actionItems}
                 resource="data-provider-items"
+                title="Danh sách đối tượng nhà cung cấp"
+                description="Quản lý các đối tượng thuộc nhà cung cấp"
+                actionButtons={actionButtons}
                 customFilterItems={customFilterItems}
                 tableContainerData={tableContainerData}
                 filterSearch={{ placeholder: 'Tìm kiếm đối tượng nhà cung cấp', span: 12 }}
@@ -324,7 +320,7 @@ const DataProviderItemPage = () => {
                     selectedDataProviderItemIds={selectedDataProviderItemIds}
                 />
             )}
-        </CustomSpace>
+        </>
     );
 };
 

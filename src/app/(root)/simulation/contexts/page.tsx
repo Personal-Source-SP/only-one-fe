@@ -1,20 +1,19 @@
 'use client';
 
 import {
-    ContentSection,
     CreateFormDialog,
     DataTableContainer,
     EditFormDialog,
     StatusTag,
 } from '@/components/common';
-import { ColumnsType, CustomButton, CustomSpace } from '@/components/custom';
+import { ColumnsType, CustomButton } from '@/components/custom';
 import { MessageType } from '@/enums';
-import { ElementType, SimulationService } from '@/enums';
+import { SimulationService } from '@/enums';
 import { useCustomMutationData, useTableContainer } from '@/hooks';
 import { ActionTableItem, FormFieldItem, NSimulation } from '@/interfaces';
 import { enumToOptions, formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
-import { useState } from 'react';
+import { ReactNode, useState } from 'react';
 
 const SimulationContextsPage = () => {
     const [loading, setLoading] = useState(false);
@@ -162,26 +161,28 @@ const SimulationContextsPage = () => {
         });
     };
 
-    return (
-        <CustomSpace size="middle" direction="vertical" className="w-full h-full">
-            <ContentSection
-                elementType={ElementType.TITLE}
-                actions={[
-                    <CustomButton
-                        type="primary"
-                        title="Thêm ngữ cảnh mô phỏng"
-                        key="add-simulation-context"
-                        icon={<Icon icon="lucide:plus" />}
-                        onClick={() => setOpenCreateItemModal(true)}
-                    />,
-                ]}
-            />
+    const actionButtons: ReactNode[] = [
+        <CustomButton
+            type="primary"
+            title="Thêm ngữ cảnh mô phỏng"
+            key="add-simulation-context"
+            icon={<Icon icon="lucide:plus" />}
+            onClick={() => setOpenCreateItemModal(true)}
+        >
+            Thêm
+        </CustomButton>,
+    ];
 
+    return (
+        <>
             <DataTableContainer
                 loading={loading}
                 columns={columns}
                 actionItems={actionItems}
                 resource="simulation-contexts"
+                title="Danh sách ngữ cảnh mô phỏng"
+                description="Quản lý các ngữ cảnh mô phỏng"
+                actionButtons={actionButtons}
                 tableContainerData={tableContainerData}
                 filterSearch={{ placeholder: 'Tìm kiếm ngữ cảnh mô phỏng' }}
             />
@@ -222,7 +223,7 @@ const SimulationContextsPage = () => {
                     tableContainerData?.tableQuery?.refetch();
                 }}
             />
-        </CustomSpace>
+        </>
     );
 };
 

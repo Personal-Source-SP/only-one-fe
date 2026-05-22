@@ -1,7 +1,7 @@
 'use client';
 
 import { DataTableContainer, StatusTag } from '@/components/common';
-import { ColumnsType, CustomSpace } from '@/components/custom';
+import { ColumnsType } from '@/components/custom';
 import { ViewJobEvent } from '@/components/module/schedule';
 import { ScheduleJobEventType } from '@/enums';
 import { useTableContainer } from '@/hooks';
@@ -82,10 +82,12 @@ const ScheduleJobEventsPage = () => {
     ];
 
     return (
-        <CustomSpace size="middle" direction="vertical" className="w-full h-full">
+        <>
             <DataTableContainer
                 columns={columns}
                 actionItems={actionItems}
+                title="Danh sách sự kiện lịch biểu"
+                description="Xem và quản lý các sự kiện lịch biểu"
                 tableContainerData={tableContainerData}
                 filterSearch={{ placeholder: 'Tìm kiếm sự kiện lịch biểu thực thi' }}
             />
@@ -97,7 +99,7 @@ const ScheduleJobEventsPage = () => {
                     onClose={() => setSelectedJobEvent(undefined)}
                 />
             )}
-        </CustomSpace>
+        </>
     );
 };
 

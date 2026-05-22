@@ -1,20 +1,19 @@
 'use client';
 
 import {
-    ContentSection,
     CreateFormDialog,
     DataTableContainer,
     EditFormDialog,
     StatusTag,
 } from '@/components/common';
-import { ColumnsType, CustomButton, CustomSpace } from '@/components/custom';
+import { ColumnsType, CustomButton } from '@/components/custom';
 import { MessageType } from '@/enums';
-import { ElementType, SimulationItemStatus } from '@/enums';
+import { SimulationItemStatus } from '@/enums';
 import { useCustomMutationData, useSelectSimulationContext, useTableContainer } from '@/hooks';
 import { ActionTableItem, FormFieldItem, NSimulation } from '@/interfaces';
 import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
-import { FC, useState } from 'react';
+import { FC, ReactNode, useState } from 'react';
 
 const SimulationItemsPage: FC = () => {
     const [loading, setLoading] = useState(false);
@@ -155,26 +154,28 @@ const SimulationItemsPage: FC = () => {
         });
     };
 
-    return (
-        <CustomSpace size="middle" direction="vertical" className="w-full h-full">
-            <ContentSection
-                elementType={ElementType.TITLE}
-                actions={[
-                    <CustomButton
-                        type="primary"
-                        title="Thêm mô phỏng"
-                        key="add-simulation-item"
-                        icon={<Icon icon="lucide:plus" />}
-                        onClick={() => setOpenCreateItemModal(true)}
-                    />,
-                ]}
-            />
+    const actionButtons: ReactNode[] = [
+        <CustomButton
+            type="primary"
+            title="Thêm mô phỏng"
+            key="add-simulation-item"
+            icon={<Icon icon="lucide:plus" />}
+            onClick={() => setOpenCreateItemModal(true)}
+        >
+            Thêm
+        </CustomButton>,
+    ];
 
+    return (
+        <>
             <DataTableContainer
                 loading={loading}
                 columns={columns}
                 actionItems={actionItems}
                 resource="simulation-items"
+                title="Danh sách đối tượng mô phỏng"
+                description="Quản lý các đối tượng mô phỏng"
+                actionButtons={actionButtons}
                 tableContainerData={tableContainerData}
                 filterSearch={{ placeholder: 'Tìm kiếm mô phỏng' }}
             />
@@ -215,7 +216,7 @@ const SimulationItemsPage: FC = () => {
                     tableContainerData?.tableQuery?.refetch();
                 }}
             />
-        </CustomSpace>
+        </>
     );
 };
 

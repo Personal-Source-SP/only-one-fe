@@ -14,7 +14,7 @@ import { useTableContainer } from '@/hooks';
 import { FormFieldItem, NDataProvider } from '@/interfaces';
 import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
-import { Fragment, ReactNode, useState } from 'react';
+import { ReactNode, useState } from 'react';
 
 const ItemPage = () => {
     const [openCreateItemModal, setOpenCreateItemModal] = useState(false);
@@ -172,11 +172,12 @@ const ItemPage = () => {
     ];
 
     return (
-        <Fragment key="items-page">
+        <>
             <DataTableContainer
                 resource="items"
                 columns={columns}
                 title="Danh sách đối tượng"
+                description="Quản lý các đối tượng được cào"
                 actionButtons={actionButtons}
                 tableContainerData={tableContainerData}
                 filterSearch={{ placeholder: 'Tìm kiếm đối tượng' }}
@@ -235,7 +236,7 @@ const ItemPage = () => {
                     onClose={() => setOpenProcessScrapeDataModal(false)}
                 />
             )}
-        </Fragment>
+        </>
     );
 };
 

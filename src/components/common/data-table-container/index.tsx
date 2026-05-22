@@ -26,10 +26,10 @@ import { ListItem } from './ListItem';
 
 type DataTableContainerProps = {
     tableContainerData: ReturnType<typeof useTableContainer>;
+    title: string | ReactNode;
+    description: string;
 
-    title?: string | ReactNode;
     loading?: boolean;
-    description?: string;
     actionButtons?: ReactNode[];
     columns?: ColumnsType<any>;
     resource?: string;
@@ -179,33 +179,22 @@ export const DataTableContainer = ({
     };
 
     const renderHeaderSection = () => {
-        const hasPageHeadingText =
-            Boolean(description) || (typeof title === 'string' ? Boolean(title) : Boolean(title));
-
-        const hasHeaderSection = hasPageHeadingText || Boolean(actionButtons?.length);
-        if (!hasHeaderSection) return null;
-
         return (
             <section className="w-full">
                 <CustomCard paddingSize="sm">
                     <header className="flex w-full flex-col gap-3 md:flex-row md:items-start md:justify-between">
-                        {hasPageHeadingText &&
-                            (typeof title === 'string' ? (
-                                <div className="min-w-0 md:max-w-[65%]">
-                                    {title && (
-                                        <h2 className="!m-0 whitespace-pre-line break-words text-base font-bold">
-                                            {title}
-                                        </h2>
-                                    )}
-                                    {description && (
-                                        <p className="mt-1 !mb-0 whitespace-pre-line break-words text-sm font-normal text-hub-muted">
-                                            {description}
-                                        </p>
-                                    )}
-                                </div>
+                        <div className="min-w-0 md:max-w-[65%]">
+                            {typeof title === 'string' ? (
+                                <h2 className="!m-0 whitespace-pre-line break-words text-base font-bold">
+                                    {title}
+                                </h2>
                             ) : (
-                                <div className="w-full">{title}</div>
-                            ))}
+                                title
+                            )}
+                            <p className="mt-1 !mb-0 whitespace-pre-line break-words text-sm font-normal text-hub-muted">
+                                {description}
+                            </p>
+                        </div>
 
                         {Boolean(actionButtons?.length) && (
                             <CustomSpace

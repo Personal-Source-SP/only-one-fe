@@ -1,25 +1,14 @@
 'use client';
 
-import {
-    ContentSection,
-    CreateFormDialog,
-    DataTableContainer,
-    StatusTag,
-} from '@/components/common';
-import {
-    ColumnsType,
-    CustomButton,
-    CustomFlex,
-    CustomSpace,
-    CustomTooltip,
-} from '@/components/custom';
-import { ElementType, MimeType } from '@/enums';
+import { CreateFormDialog, DataTableContainer, StatusTag } from '@/components/common';
+import { ColumnsType, CustomButton, CustomFlex, CustomTooltip } from '@/components/custom';
+import { MimeType } from '@/enums';
 import { useSelectCloudDataProvider, useTableContainer } from '@/hooks';
 import { FormFieldItem, NCloudData } from '@/interfaces';
 import { formatDate, formatFileSize } from '@/libs';
 import { Icon } from '@iconify/react';
 import Link from 'next/link';
-import { useMemo, useState } from 'react';
+import { ReactNode, useMemo, useState } from 'react';
 
 const CloudDataItem = () => {
     const [openCreateItemModal, setOpenCreateItemModal] = useState(false);
@@ -145,24 +134,26 @@ const CloudDataItem = () => {
         [cloudDataProviderOptions],
     );
 
-    return (
-        <CustomSpace size="middle" direction="vertical" className="w-full h-full">
-            <ContentSection
-                elementType={ElementType.TITLE}
-                actions={[
-                    <CustomButton
-                        type="primary"
-                        title="Thêm dữ liệu"
-                        key="add-cloud-data-item"
-                        icon={<Icon icon="lucide:plus" />}
-                        onClick={() => setOpenCreateItemModal(true)}
-                    />,
-                ]}
-            />
+    const actionButtons: ReactNode[] = [
+        <CustomButton
+            type="primary"
+            title="Thêm dữ liệu"
+            key="add-cloud-data-item"
+            icon={<Icon icon="lucide:plus" />}
+            onClick={() => setOpenCreateItemModal(true)}
+        >
+            Thêm
+        </CustomButton>,
+    ];
 
+    return (
+        <>
             <DataTableContainer
                 columns={columns}
                 resource="cloud-data-items"
+                title="Danh sách dữ liệu cloud"
+                description="Xem và quản lý dữ liệu trên cloud"
+                actionButtons={actionButtons}
                 tableContainerData={tableContainerData}
                 filterSearch={{ placeholder: 'Tìm kiếm dữ liệu đám mây' }}
             />
@@ -189,7 +180,7 @@ const CloudDataItem = () => {
                     return formData;
                 }}
             />
-        </CustomSpace>
+        </>
     );
 };
 

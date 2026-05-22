@@ -1,19 +1,18 @@
 'use client';
 
 import {
-    ContentSection,
     CreateFormDialog,
     DataTableContainer,
     EditFormDialog,
     StatusTag,
 } from '@/components/common';
-import { ColumnsType, CustomButton, CustomSpace } from '@/components/custom';
-import { CloudDataProviderType, ElementType } from '@/enums';
+import { ColumnsType, CustomButton } from '@/components/custom';
+import { CloudDataProviderType } from '@/enums';
 import { useTableContainer } from '@/hooks';
 import { ActionTableItem, FormFieldItem, NCloudData } from '@/interfaces';
 import { capitalizeFirstLetter, enumToOptions, formatDate, formatFileSize } from '@/libs';
 import { Icon } from '@iconify/react';
-import { useState } from 'react';
+import { ReactNode, useState } from 'react';
 
 const CloudDataProvider = () => {
     const [openCreateItemModal, setOpenCreateItemModal] = useState(false);
@@ -127,25 +126,27 @@ const CloudDataProvider = () => {
         },
     ];
 
-    return (
-        <CustomSpace size="middle" direction="vertical" className="w-full h-full">
-            <ContentSection
-                elementType={ElementType.TITLE}
-                actions={[
-                    <CustomButton
-                        type="primary"
-                        title="Thêm nhà cung cấp"
-                        key="add-cloud-data-provider"
-                        icon={<Icon icon="lucide:plus" />}
-                        onClick={() => setOpenCreateItemModal(true)}
-                    />,
-                ]}
-            />
+    const actionButtons: ReactNode[] = [
+        <CustomButton
+            type="primary"
+            title="Thêm nhà cung cấp"
+            key="add-cloud-data-provider"
+            icon={<Icon icon="lucide:plus" />}
+            onClick={() => setOpenCreateItemModal(true)}
+        >
+            Thêm
+        </CustomButton>,
+    ];
 
+    return (
+        <>
             <DataTableContainer
                 columns={columns}
                 actionItems={actionItems}
                 resource="cloud-data-providers"
+                title="Danh sách nhà cung cấp cloud"
+                description="Quản lý các nhà cung cấp dịch vụ cloud"
+                actionButtons={actionButtons}
                 tableContainerData={tableContainerData}
                 filterSearch={{ placeholder: 'Tìm kiếm nhà cung cấp' }}
             />
@@ -184,7 +185,7 @@ const CloudDataProvider = () => {
                     tableContainerData?.tableQuery?.refetch();
                 }}
             />
-        </CustomSpace>
+        </>
     );
 };
 

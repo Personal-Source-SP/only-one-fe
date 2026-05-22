@@ -144,6 +144,8 @@ export const ViewScheduleJobList = ({ isOpen, scheduleId, onClose }: ViewSchedul
             <DataTableContainer
                 columns={columns}
                 customFilterItems={customFilterItems}
+                title="Danh sách công việc lịch biểu"
+                description="Danh sách các công việc thuộc lịch biểu thực thi được chọn"
                 tableContainerData={tableContainerData}
                 loading={tableContainerData.tableQuery.isLoading}
             />

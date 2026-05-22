@@ -315,19 +315,17 @@ const DataProviderPage = () => {
 
     return (
         <>
-            <section className="mt-2 md:mt-4">
-                <DataTableContainer
-                    columns={columns}
-                    resource="data-providers"
-                    actionItems={actionItems}
-                    title="Danh sách nhà cung cấp"
-                    actionButtons={actionButtons}
-                    customFilterItems={customFilterItems}
-                    tableContainerData={tableContainerData}
-                    filterSearch={{ placeholder: 'Tìm kiếm nhà cung cấp', span: 12 }}
-                    description="Danh sách nhà cung cấp được sử dụng để cào dữ liệu và tìm kiếm dữ liệu"
-                />
-            </section>
+            <DataTableContainer
+                columns={columns}
+                resource="data-providers"
+                actionItems={actionItems}
+                title="Danh sách nhà cung cấp"
+                actionButtons={actionButtons}
+                customFilterItems={customFilterItems}
+                tableContainerData={tableContainerData}
+                filterSearch={{ placeholder: 'Tìm kiếm nhà cung cấp', span: 12 }}
+                description="Danh sách nhà cung cấp được sử dụng để cào dữ liệu và tìm kiếm dữ liệu"
+            />
 
             <CreateFormDialog
                 resource="data-providers"

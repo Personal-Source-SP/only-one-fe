@@ -1,15 +1,15 @@
 'use client';
 
-import { ContentSection, DataTableContainer } from '@/components/common';
-import { ColumnsType, CustomButton, CustomSpace } from '@/components/custom';
+import { DataTableContainer } from '@/components/common';
+import { ColumnsType, CustomButton } from '@/components/custom';
 import { FolderModal } from '@/components/module/folders';
 import { SyncGoogleDrive } from '@/components/module/sync-google-drive';
-import { ElementType, GoogleDriveType } from '@/enums';
+import { GoogleDriveType } from '@/enums';
 import { useCustomModal, useSelectGoogleFolder, useTableContainer } from '@/hooks';
 import { NGoogle } from '@/interfaces';
 import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
-import { useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 
 const FolderPage = () => {
     const [isOpenSyncFile, setIsOpenSyncFile] = useState(false);
@@ -79,24 +79,26 @@ const FolderPage = () => {
         },
     ];
 
-    return (
-        <CustomSpace size="middle" direction="vertical" className="w-full h-full">
-            <ContentSection
-                elementType={ElementType.TITLE}
-                actions={[
-                    <CustomButton
-                        type="primary"
-                        key="sync google drive"
-                        title="Đồng bộ từ Google Drive"
-                        icon={<Icon icon="ic:baseline-sync" />}
-                        onClick={() => setIsOpenSyncFile(true)}
-                    />,
-                ]}
-            />
+    const actionButtons: ReactNode[] = [
+        <CustomButton
+            type="primary"
+            key="sync-google-drive"
+            title="Đồng bộ từ Google Drive"
+            icon={<Icon icon="ic:baseline-sync" />}
+            onClick={() => setIsOpenSyncFile(true)}
+        >
+            Đồng bộ
+        </CustomButton>,
+    ];
 
+    return (
+        <>
             <DataTableContainer
                 columns={columns}
                 resource="google-folder"
+                title="Danh sách thư mục"
+                description="Quản lý các thư mục trong Google Drive"
+                actionButtons={actionButtons}
                 tableContainerData={tableContainerData}
                 actionItems={[
                     {
@@ -125,7 +127,7 @@ const FolderPage = () => {
                 queryLoading={queryFolderOptions?.isLoading}
                 onSuccess={() => tableContainerData?.tableQuery?.refetch()}
             />
-        </CustomSpace>
+        </>
     );
 };
 

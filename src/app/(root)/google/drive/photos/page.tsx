@@ -1,19 +1,12 @@
 'use client';
 
-import { ContentSection, DataTableContainer, MediaLightbox } from '@/components/common';
-import { CustomButton, CustomSpace } from '@/components/custom';
-import {
-    CustomFilterType,
-    ElementType,
-    GoogleDriveType,
-    MimeType,
-    QualityMode,
-    ViewFileMode,
-} from '@/enums';
+import { DataTableContainer, MediaLightbox } from '@/components/common';
+import { CustomButton } from '@/components/custom';
+import { CustomFilterType, GoogleDriveType, MimeType, QualityMode, ViewFileMode } from '@/enums';
 import type { FileItem, FilterItem, NGoogle } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { isNumber } from 'lodash';
-import { useEffect, useMemo, useState } from 'react';
+import { ReactNode, useEffect, useMemo, useState } from 'react';
 
 import { FileGroups } from '@/components/module/file-group';
 import { SyncGoogleDrive } from '@/components/module/sync-google-drive';
@@ -183,37 +176,43 @@ const PhotosPage = () => {
         },
     ];
 
-    return (
-        <CustomSpace size="middle" direction="vertical" className="w-full h-full">
-            <ContentSection
-                elementType={ElementType.TITLE}
-                actions={[
-                    <CustomButton
-                        type="primary"
-                        key="slideshow"
-                        title="Trình chiếu"
-                        icon={<Icon icon="lucide:play" />}
-                        onClick={() => setIsLightboxOpen(true)}
-                    />,
-                    <CustomButton
-                        type="primary"
-                        key="sync google drive"
-                        title="Đồng bộ từ Google Drive"
-                        icon={<Icon icon="ic:baseline-sync" />}
-                        onClick={() => setIsOpenSyncFile(true)}
-                    />,
-                    <CustomButton
-                        type="primary"
-                        key="sync-local"
-                        title="Đồng bộ từ máy tính"
-                        icon={<Icon icon="lucide:folder-plus" />}
-                        onClick={() => setIsOpenSyncLocal(true)}
-                    />,
-                ]}
-            />
+    const actionButtons: ReactNode[] = [
+        <CustomButton
+            type="primary"
+            key="slideshow"
+            title="Trình chiếu"
+            icon={<Icon icon="lucide:play" />}
+            onClick={() => setIsLightboxOpen(true)}
+        >
+            Trình chiếu
+        </CustomButton>,
+        <CustomButton
+            type="primary"
+            key="sync-google-drive"
+            title="Đồng bộ từ Google Drive"
+            icon={<Icon icon="ic:baseline-sync" />}
+            onClick={() => setIsOpenSyncFile(true)}
+        >
+            Đồng bộ Drive
+        </CustomButton>,
+        <CustomButton
+            type="primary"
+            key="sync-local"
+            title="Đồng bộ từ máy tính"
+            icon={<Icon icon="lucide:folder-plus" />}
+            onClick={() => setIsOpenSyncLocal(true)}
+        >
+            Đồng bộ máy
+        </CustomButton>,
+    ];
 
+    return (
+        <>
             <DataTableContainer
                 resource="google-file"
+                title="Danh sách ảnh"
+                description="Xem và quản lý ảnh từ Google Drive"
+                actionButtons={actionButtons}
                 customFilterItems={filterItems}
                 tableContainerData={tableContainerData}
                 filterSearch={{
@@ -257,7 +256,7 @@ const PhotosPage = () => {
                 onClose={() => setIsOpenSyncLocal(false)}
                 queryLoading={queryGoogleAuths?.isLoading || queryFolderOptions?.isLoading}
             />
-        </CustomSpace>
+        </>
     );
 };
 

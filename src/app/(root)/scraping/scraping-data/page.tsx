@@ -1,6 +1,6 @@
 'use client';
 
-import { ContentSection, DataTableContainer, MediaLightbox } from '@/components/common';
+import { DataTableContainer, MediaLightbox } from '@/components/common';
 import {
     ColumnsType,
     CustomButton,
@@ -12,7 +12,7 @@ import { MessageType } from '@/enums';
 import { ProcessScrapeData } from '@/components/module/data-provider';
 import { FileGroups } from '@/components/module/file-group';
 import { useMainContext } from '@/contexts/MainContext';
-import { CustomFilterType, DisplayMode, ElementType, ViewFileMode } from '@/enums';
+import { CustomFilterType, DisplayMode, ViewFileMode } from '@/enums';
 import {
     useCustomDelete,
     useCustomModal,
@@ -24,7 +24,7 @@ import { ActionTableItem, FileItem, FilterItem, NBaseApi, NDataProvider } from '
 import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
 import Link from 'next/link';
-import { useMemo, useState } from 'react';
+import { ReactNode, useMemo, useState } from 'react';
 
 const ScrapingDataPage = () => {
     const { handleMessage } = useMainContext();
@@ -233,68 +233,83 @@ const ScrapingDataPage = () => {
         }
     };
 
-    return (
-        <CustomSpace size="middle" direction="vertical" className="w-full h-full">
-            <ContentSection
-                title={
-                    <CustomSpace align="center" className="rounded-md">
-                        <CustomSegmented
-                            size="middle"
-                            value={displayMode}
-                            onChange={(val) => setDisplayMode(val as DisplayMode)}
-                            options={[
-                                {
-                                    value: DisplayMode.LIST,
-                                    label: (
-                                        <span className="flex items-center gap-2">
-                                            <Icon icon="lucide:list" />
-                                            Hiển thị dạng danh sách
-                                        </span>
-                                    ),
-                                },
-                                {
-                                    value: DisplayMode.TABLE,
-                                    label: (
-                                        <span className="flex items-center gap-2">
-                                            <Icon icon="lucide:table" />
-                                            Hiển thị dạng bảng
-                                        </span>
-                                    ),
-                                },
-                            ]}
-                        />
-                    </CustomSpace>
-                }
-                elementType={ElementType.TITLE}
-                actions={[
-                    <CustomButton
-                        type="primary"
-                        key="scrape-data"
-                        title="Cào dữ liệu"
-                        icon={<Icon icon="lucide:file-text" />}
-                        onClick={() => setOpenProcessScrapeDataModal(true)}
-                    />,
-                    <CustomButton
-                        type="primary"
-                        key="slideshow"
-                        title="Trình chiếu"
-                        icon={<Icon icon="lucide:play" />}
-                        onClick={() => setIsLightboxOpen(true)}
-                    />,
-                    <CustomButton
-                        type="primary"
-                        key="delete-data"
-                        title="Xóa dữ liệu"
-                        icon={<Icon icon="lucide:trash" />}
-                        disabled={!selectedDataProviderIds?.length}
-                        onClick={() => handleDelete(selectedDataProviderIds)}
-                    />,
-                ]}
-            />
+    const tableTitle = useMemo(
+        () => (
+            <div className="flex flex-col gap-3">
+                <h2 className="!m-0 whitespace-pre-line break-words text-base font-bold">
+                    Danh sách dữ liệu cào
+                </h2>
+                <CustomSpace align="center" className="rounded-md">
+                    <CustomSegmented
+                        size="middle"
+                        value={displayMode}
+                        onChange={(val) => setDisplayMode(val as DisplayMode)}
+                        options={[
+                            {
+                                value: DisplayMode.LIST,
+                                label: (
+                                    <span className="flex items-center gap-2">
+                                        <Icon icon="lucide:list" />
+                                        Hiển thị dạng danh sách
+                                    </span>
+                                ),
+                            },
+                            {
+                                value: DisplayMode.TABLE,
+                                label: (
+                                    <span className="flex items-center gap-2">
+                                        <Icon icon="lucide:table" />
+                                        Hiển thị dạng bảng
+                                    </span>
+                                ),
+                            },
+                        ]}
+                    />
+                </CustomSpace>
+            </div>
+        ),
+        [displayMode],
+    );
 
+    const actionButtons: ReactNode[] = [
+        <CustomButton
+            type="primary"
+            key="scrape-data"
+            title="Cào dữ liệu"
+            icon={<Icon icon="lucide:file-text" />}
+            onClick={() => setOpenProcessScrapeDataModal(true)}
+        >
+            Cào
+        </CustomButton>,
+        <CustomButton
+            type="primary"
+            key="slideshow"
+            title="Trình chiếu"
+            icon={<Icon icon="lucide:play" />}
+            onClick={() => setIsLightboxOpen(true)}
+        >
+            Trình chiếu
+        </CustomButton>,
+        <CustomButton
+            type="primary"
+            key="delete-data"
+            title="Xóa dữ liệu"
+            icon={<Icon icon="lucide:trash" />}
+            disabled={!selectedDataProviderIds?.length}
+            onClick={() => handleDelete(selectedDataProviderIds)}
+        >
+            Xóa
+        </CustomButton>,
+    ];
+
+    return (
+        <>
             <DataTableContainer
                 resource="scraping-data"
                 actionItems={actionItems}
+                title={tableTitle}
+                description="Xem và quản lý dữ liệu đã được cào"
+                actionButtons={actionButtons}
                 customFilterItems={customFilterItems}
                 tableContainerData={tableContainerData}
                 columns={displayMode === DisplayMode.TABLE ? columns : undefined}
@@ -336,7 +351,7 @@ const ScrapingDataPage = () => {
                     }}
                 />
             )}
-        </CustomSpace>
+        </>
     );
 };
 

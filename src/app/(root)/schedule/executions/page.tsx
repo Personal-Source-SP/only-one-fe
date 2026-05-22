@@ -1,16 +1,15 @@
 'use client';
 
 import {
-    ContentSection,
     CreateFormDialog,
     DataTableContainer,
     EditFormDialog,
     StatusTag,
 } from '@/components/common';
-import { ColumnsType, CustomButton, CustomSpace, CustomToggle } from '@/components/custom';
+import { ColumnsType, CustomButton, CustomToggle } from '@/components/custom';
 import { MessageType } from '@/enums';
 import { NextRunTimes, ViewScheduleJobList } from '@/components/module/schedule';
-import { CronExpression, ElementType, ExecutionServiceEnum, ScheduleType } from '@/enums';
+import { CronExpression, ExecutionServiceEnum, ScheduleType } from '@/enums';
 import {
     useCustomMutationData,
     useSelectDataProvider,
@@ -20,7 +19,7 @@ import {
 import { ActionTableItem, FormFieldItem, NSchedule } from '@/interfaces';
 import { capitalizeFirstLetter, enumToOptions, formatDate, getEnumKeyByValue } from '@/libs';
 import { Icon } from '@iconify/react';
-import { useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 
 const ScheduleExecutionPage = () => {
     const [loading, setLoading] = useState(false);
@@ -330,26 +329,28 @@ const ScheduleExecutionPage = () => {
         });
     };
 
-    return (
-        <CustomSpace size="middle" direction="vertical" className="w-full h-full">
-            <ContentSection
-                elementType={ElementType.TITLE}
-                actions={[
-                    <CustomButton
-                        type="primary"
-                        key="add-schedule-execution"
-                        title="Thêm lịch biểu thực thi"
-                        icon={<Icon icon="lucide:plus" />}
-                        onClick={() => setOpenCreateItemModal(true)}
-                    />,
-                ]}
-            />
+    const actionButtons: ReactNode[] = [
+        <CustomButton
+            type="primary"
+            key="add-schedule-execution"
+            title="Thêm lịch biểu thực thi"
+            icon={<Icon icon="lucide:plus" />}
+            onClick={() => setOpenCreateItemModal(true)}
+        >
+            Thêm
+        </CustomButton>,
+    ];
 
+    return (
+        <>
             <DataTableContainer
                 loading={loading}
                 columns={columns}
                 resource="schedules"
                 actionItems={actionItems}
+                title="Danh sách lịch biểu thực thi"
+                description="Quản lý các lịch biểu thực thi công việc"
+                actionButtons={actionButtons}
                 tableContainerData={tableContainerData}
                 filterSearch={{ placeholder: 'Tìm kiếm lịch biểu thực thi' }}
             />
@@ -391,7 +392,7 @@ const ScheduleExecutionPage = () => {
                     onClose={() => setSelectedScheduleId(undefined)}
                 />
             )}
-        </CustomSpace>
+        </>
     );
 };
 
