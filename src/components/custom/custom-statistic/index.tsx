@@ -31,10 +31,7 @@ export const CustomStatistic = Object.assign(
                     }
 
                     return (
-                        <div
-                            key={child.key ?? index}
-                            className="rounded-hub border border-hub-border-card bg-hub-section p-4"
-                        >
+                        <div key={child.key ?? index} className="hub-section-panel rounded-hub p-4">
                             {child}
                         </div>
                     );

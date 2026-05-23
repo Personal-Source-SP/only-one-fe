@@ -1,10 +1,8 @@
 'use client';
 
+import { CustomCol, CustomFlex, CustomForm } from '@/components/custom';
 import { Switch } from 'antd';
 import { ReactNode } from 'react';
-import { CustomCol } from '../custom-row-col';
-import { CustomFlex } from '../custom-flex';
-import { CustomForm } from '../custom-form';
 
 export type CustomSwitchProps = {
     formFields: string[];
@@ -32,7 +30,7 @@ export const CustomSwitch = ({
                 <span className="mb-1">{fieldLabel}</span>
             </CustomFlex>
             {!!fieldPlaceholder && (
-                <p className="text-sm text-gray-500 !my-0">{fieldPlaceholder}</p>
+                <p className="!my-0 text-sm text-hub-muted">{fieldPlaceholder}</p>
             )}
         </CustomCol>
     );

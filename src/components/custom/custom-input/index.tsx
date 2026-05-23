@@ -1,6 +1,11 @@
 'use client';
 
-import { CustomSpace } from '@/components/custom';
+import {
+    CustomSpace,
+    HUB_ANTD_INPUT_CLASS,
+    HUB_ANTD_INPUT_NUMBER_CLASS,
+    mergeHubAntdClass,
+} from '@/components/custom';
 import { Input, InputNumber, InputNumberProps, InputProps } from 'antd';
 
 export type CustomInputProps = InputProps & {
@@ -13,15 +18,13 @@ export type CustomInputNumberProps = InputNumberProps & {
 
 export const CustomInput = Object.assign(
     ({ touchFriendly = false, addonAfter, addonBefore, className, ...props }: CustomInputProps) => {
-        const mergedClassName = [
-            '[&_.ant-input]:rounded-hub [&_.ant-input]:border-hub-border',
+        const mergedClassName = mergeHubAntdClass(
+            HUB_ANTD_INPUT_CLASS,
             touchFriendly
                 ? 'min-h-11 sm:min-h-10 [&_.ant-input]:min-h-11 sm:[&_.ant-input]:min-h-10'
-                : '',
+                : undefined,
             className,
-        ]
-            .filter(Boolean)
-            .join(' ');
+        );
 
         const input = <Input className={mergedClassName || undefined} {...props} />;
 
@@ -49,15 +52,13 @@ export const CustomInputNumber = ({
     className,
     ...props
 }: CustomInputNumberProps) => {
-    const mergedClassName = [
-        '[&_.ant-input]:rounded-hub [&_.ant-input]:border-hub-border',
+    const mergedClassName = mergeHubAntdClass(
+        HUB_ANTD_INPUT_NUMBER_CLASS,
         touchFriendly
             ? 'min-h-11 sm:min-h-10 [&_.ant-input]:min-h-11 sm:[&_.ant-input]:min-h-10'
-            : '',
+            : undefined,
         className,
-    ]
-        .filter(Boolean)
-        .join(' ');
+    );
 
     return <InputNumber className={mergedClassName || undefined} {...props} />;
 };

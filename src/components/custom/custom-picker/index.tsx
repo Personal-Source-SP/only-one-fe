@@ -1,9 +1,23 @@
 'use client';
 
-import { DatePicker, DatePickerProps } from 'antd';
+import { HUB_ANTD_PICKER_CLASS, mergeHubAntdClass } from '@/components/custom';
+import { DatePicker, type DatePickerProps } from 'antd';
+import type { RangePickerProps } from 'antd/es/date-picker';
 
 export type CustomPickerProps = DatePickerProps;
 
-export const CustomPicker = Object.assign((props: CustomPickerProps) => <DatePicker {...props} />, {
-    RangePicker: DatePicker.RangePicker,
-});
+export type CustomRangePickerProps = RangePickerProps;
+
+export const CustomPicker = Object.assign(
+    ({ className, ...props }: CustomPickerProps) => (
+        <DatePicker {...props} className={mergeHubAntdClass(HUB_ANTD_PICKER_CLASS, className)} />
+    ),
+    {
+        RangePicker: ({ className, ...props }: CustomRangePickerProps) => (
+            <DatePicker.RangePicker
+                {...props}
+                className={mergeHubAntdClass(HUB_ANTD_PICKER_CLASS, className)}
+            />
+        ),
+    },
+);

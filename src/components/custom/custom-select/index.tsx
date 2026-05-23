@@ -6,6 +6,8 @@ import {
     CustomFlex,
     CustomInput,
     CustomSpace,
+    HUB_ANTD_SELECT_CLASS,
+    mergeHubAntdClass,
 } from '@/components/custom';
 import { Select, SelectProps } from 'antd';
 import { debounce } from 'lodash';
@@ -72,6 +74,7 @@ export const CustomSelect = ({
     return (
         <Select
             {...props}
+            className={mergeHubAntdClass(HUB_ANTD_SELECT_CLASS, props.className)}
             disabled={disabled ?? false}
             onPopupScroll={debouncedHandlePopupScroll}
             {...(onInputChange ? { popupRender: renderPopup } : {})}

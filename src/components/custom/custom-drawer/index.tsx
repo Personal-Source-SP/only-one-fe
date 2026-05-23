@@ -12,7 +12,20 @@ export const CustomDrawer = ({ width, styles, ...props }: CustomDrawerProps) => 
         <Drawer
             width={isMobile ? '100%' : width}
             styles={{
-                body: { padding: isMobile ? 16 : 24 },
+                body: {
+                    background: 'var(--hub-section)',
+                    padding: isMobile ? 16 : 24,
+                    ...styles?.body,
+                },
+                content: {
+                    background: 'var(--hub-surface)',
+                    ...styles?.content,
+                },
+                header: {
+                    background: 'var(--hub-surface)',
+                    borderBottom: '1px solid var(--hub-border)',
+                    ...styles?.header,
+                },
                 ...styles,
             }}
             {...props}
