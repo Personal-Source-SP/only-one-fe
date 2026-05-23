@@ -74,7 +74,7 @@ export const CustomCard = ({
     }, [description, title]);
 
     const mergedClassName = [
-        'w-full rounded-hub-card border border-hub-border-card bg-hub-section',
+        'hub-section-panel w-full rounded-hub-card',
         shadow === 'sm' ? 'shadow-sm' : '',
         CUSTOM_CARD_PADDING_CLASS_MAP[paddingSize],
         className,

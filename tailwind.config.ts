@@ -19,6 +19,8 @@ const config: Config = {
         'hub-section-tabs',
         'shadow-sm',
         'bg-hub-section',
+        'bg-hub-section-muted',
+        'hub-section-panel',
     ],
     theme: {
         extend: {
@@ -29,6 +31,7 @@ const config: Config = {
                     cta: 'var(--hub-cta)',
                     bg: 'var(--hub-bg)',
                     section: 'var(--hub-section)',
+                    'section-muted': 'var(--hub-section-muted)',
                     surface: 'var(--hub-surface)',
                     border: 'var(--hub-border)',
                     'border-card': 'var(--hub-border-card)',

@@ -32,7 +32,7 @@ export const ContentSection = ({
             const isTitle = Boolean(title);
 
             return (
-                <CustomCard className="border-hub-border-card bg-hub-section">
+                <CustomCard className="hub-section-panel">
                     {Boolean(description) && (
                         <p className="text-sm text-hub-muted">{description}</p>
                     )}
@@ -63,10 +63,7 @@ export const ContentSection = ({
                 <CustomSpace
                     size="middle"
                     direction="vertical"
-                    className={[
-                        'w-full bg-hub-section p-3 md:rounded-xl md:border md:border-hub-border-card',
-                        className,
-                    ]
+                    className={['hub-section-panel w-full p-3 md:rounded-xl', className]
                         .filter(Boolean)
                         .join(' ')}
                 >
@@ -83,10 +80,7 @@ export const ContentSection = ({
                     actions={actions}
                     variant={variant}
                     styles={{ body: { padding: '12px 24px' } }}
-                    className={[
-                        'w-full bg-hub-section md:rounded-xl md:border md:border-hub-border-card',
-                        className,
-                    ]
+                    className={['hub-section-panel w-full md:rounded-xl', className]
                         .filter(Boolean)
                         .join(' ')}
                 >

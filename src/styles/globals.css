@@ -17,61 +17,79 @@
     --hub-active: #fff7ed;
 }
 
-/* Canvas (nền app) · section (card/block nội dung) · surface (header/sidebar) */
+/*
+ * Elevation (sáng → tối): surface (shell trắng) > section (card) > section-muted (header bảng) > bg (canvas)
+ * Section luôn sáng hơn canvas — tránh trùng tông như screenshot.
+ */
+:root {
+    --hub-shadow: 0 1px 2px rgb(15 23 42 / 0.05), 0 6px 20px rgb(15 23 42 / 0.07);
+    --hub-shadow-sm: 0 1px 2px rgb(15 23 42 / 0.04);
+}
+
 :root,
 [data-hub-theme='warm-stone'] {
-    --hub-bg: #f0ebe5;
-    --hub-section: #fffdfb;
+    --hub-bg: #ddd4cb;
+    --hub-section-muted: #ebe4dc;
+    --hub-section: #faf7f4;
     --hub-surface: #ffffff;
-    --hub-border: #ddd5cb;
-    --hub-border-card: #e8e2d8;
+    --hub-border: #cfc4b8;
+    --hub-border-card: #e0d6cc;
+    --hub-active: #ffedd5;
     --foreground-rgb: 51, 65, 85;
-    --background-start-rgb: 240, 235, 229;
-    --background-end-rgb: 240, 235, 229;
+    --background-start-rgb: 221, 212, 203;
+    --background-end-rgb: 221, 212, 203;
 }
 
 [data-hub-theme='slate-canvas'] {
-    --hub-bg: #eef2f6;
-    --hub-section: #ffffff;
+    --hub-bg: #dfe3eb;
+    --hub-section-muted: #e9edf3;
+    --hub-section: #f8fafc;
     --hub-surface: #ffffff;
-    --hub-border: #d8e0e8;
-    --hub-border-card: #e2e8f0;
-    --foreground-rgb: 51, 65, 85;
-    --background-start-rgb: 238, 242, 246;
-    --background-end-rgb: 238, 242, 246;
+    --hub-border: #c5cdd8;
+    --hub-border-card: #d8dee8;
+    --hub-active: #e0e7ff;
+    --foreground-rgb: 30, 41, 59;
+    --background-start-rgb: 223, 227, 235;
+    --background-end-rgb: 223, 227, 235;
 }
 
 [data-hub-theme='cool-mist'] {
-    --hub-bg: #e8eef4;
-    --hub-section: #f8fafc;
+    --hub-bg: #d4e5f4;
+    --hub-section-muted: #e3f0fb;
+    --hub-section: #f0f9ff;
     --hub-surface: #ffffff;
-    --hub-border: #d1dae6;
-    --hub-border-card: #dde4ed;
-    --foreground-rgb: 51, 65, 85;
-    --background-start-rgb: 232, 238, 244;
-    --background-end-rgb: 232, 238, 244;
+    --hub-border: #b8d0e6;
+    --hub-border-card: #cce3f4;
+    --hub-active: #dbeafe;
+    --foreground-rgb: 30, 58, 95;
+    --background-start-rgb: 212, 229, 244;
+    --background-end-rgb: 212, 229, 244;
 }
 
 [data-hub-theme='orange-canvas'] {
-    --hub-bg: #f5ede6;
-    --hub-section: #fffaf7;
+    --hub-bg: #edd9c8;
+    --hub-section-muted: #f5e8dc;
+    --hub-section: #fffbf7;
     --hub-surface: #ffffff;
-    --hub-border: #e8ddd2;
-    --hub-border-card: #f0e6dc;
-    --foreground-rgb: 51, 65, 85;
-    --background-start-rgb: 245, 237, 230;
-    --background-end-rgb: 245, 237, 230;
+    --hub-border: #dfc4ad;
+    --hub-border-card: #ecd9c8;
+    --hub-active: #ffedd5;
+    --foreground-rgb: 67, 42, 24;
+    --background-start-rgb: 237, 217, 200;
+    --background-end-rgb: 237, 217, 200;
 }
 
 [data-hub-theme='neutral-gray'] {
-    --hub-bg: #eceef1;
-    --hub-section: #fafafa;
+    --hub-bg: #e2e5ea;
+    --hub-section-muted: #eceef2;
+    --hub-section: #f9fafb;
     --hub-surface: #ffffff;
-    --hub-border: #d8dce3;
-    --hub-border-card: #e4e7ec;
-    --foreground-rgb: 51, 65, 85;
-    --background-start-rgb: 236, 238, 241;
-    --background-end-rgb: 236, 238, 241;
+    --hub-border: #c4c8d0;
+    --hub-border-card: #d8dce3;
+    --hub-active: #f4f4f5;
+    --foreground-rgb: 39, 39, 42;
+    --background-start-rgb: 226, 229, 234;
+    --background-end-rgb: 226, 229, 234;
 }
 
 body {
@@ -95,6 +113,12 @@ body {
     .hub-focus-ring:focus-visible {
         outline: 2px solid var(--hub-primary);
         outline-offset: 2px;
+    }
+
+    .hub-section-panel {
+        background-color: var(--hub-section);
+        border: 1px solid var(--hub-border-card);
+        box-shadow: var(--hub-shadow);
     }
 }
 
@@ -171,7 +195,7 @@ body {
 }
 
 .hub-section-tabs .ant-tabs-tab:hover {
-    background: var(--hub-bg) !important;
+    background: var(--hub-section-muted) !important;
 }
 
 .hub-section-tabs .ant-tabs-tab-btn {
@@ -235,7 +259,8 @@ body {
     padding: 11px 14px !important;
     border-bottom: 1px solid var(--hub-border-card) !important;
     border-right: 1px solid var(--hub-border-card) !important;
-    background: var(--hub-bg) !important;
+    background: var(--hub-section-muted) !important;
+    color: var(--hub-title) !important;
     font-size: 13px !important;
     font-weight: 600 !important;
 }
@@ -252,7 +277,12 @@ body {
     padding: 11px 14px !important;
     border-bottom: 1px solid var(--hub-border-card) !important;
     border-right: 1px solid var(--hub-border-card) !important;
+    background: var(--hub-section) !important;
     font-size: 13px !important;
+}
+
+.hub-data-table .ant-table-tbody > tr:hover > td {
+    background: var(--hub-section-muted) !important;
 }
 
 .hub-data-table .ant-table-tbody > tr > td:last-child {

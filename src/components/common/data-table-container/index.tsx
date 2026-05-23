@@ -258,7 +258,7 @@ export const DataTableContainer = ({
                 <CustomSpace
                     size="middle"
                     direction="vertical"
-                    className="w-full overflow-hidden rounded-hub-card border border-hub-border-card bg-hub-section px-3 md:px-4"
+                    className="hub-section-panel w-full overflow-hidden rounded-hub-card px-3 md:px-4"
                 >
                     {renderTableFilterSection()}
 

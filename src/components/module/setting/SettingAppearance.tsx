@@ -37,7 +37,7 @@ export const SettingAppearance = () => {
                                     'flex w-full cursor-pointer flex-col gap-3 rounded-hub-card border p-4 text-left transition-colors duration-200',
                                     isActive
                                         ? 'border-hub-primary bg-hub-active shadow-sm'
-                                        : 'border-hub-border-card bg-hub-section hover:border-hub-primary/40 hover:bg-hub-bg',
+                                        : 'border-hub-border-card bg-hub-section hover:border-hub-primary/40 hover:bg-hub-section-muted',
                                 ].join(' ')}
                             >
                                 <span
@@ -47,6 +47,10 @@ export const SettingAppearance = () => {
                                     <span
                                         className="flex-1"
                                         style={{ backgroundColor: option.preview.bg }}
+                                    />
+                                    <span
+                                        className="flex-1"
+                                        style={{ backgroundColor: option.preview.muted }}
                                     />
                                     <span
                                         className="flex-1 border-x border-hub-border-card"

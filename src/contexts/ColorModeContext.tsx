@@ -29,7 +29,7 @@ export const ColorModeContextProvider = ({
                     borderRadiusLG: 12,
                     borderRadiusSM: 4,
                     colorBgContainer: '#FFFFFF',
-                    colorBgLayout: '#F8FAF9',
+                    colorBgLayout: '#F8FAFC',
                     colorBorder: '#E2E8E6',
                     colorBorderSecondary: '#ECEFED',
                     colorError: '#DC2626',
@@ -75,7 +75,7 @@ export const ColorModeContextProvider = ({
                         boxShadow: 'none',
                     },
                     Layout: {
-                        bodyBg: '#F8FAF9',
+                        bodyBg: 'transparent',
                         headerBg: '#FFFFFF',
                         siderBg: '#FFFFFF',
                     },
@@ -98,7 +98,7 @@ export const ColorModeContextProvider = ({
                         optionSelectedBg: '#FFF7ED',
                     },
                     Table: {
-                        headerBg: '#F8FAF9',
+                        headerBg: '#F1F5F9',
                         headerColor: '#1E293B',
                     },
                     Tabs: {
