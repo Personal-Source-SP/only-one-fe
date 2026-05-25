@@ -1,24 +1,13 @@
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
-import {
-    hasSessionCookieName,
-    hasSessionCookieNames,
-    usesSecureSessionCookie,
-} from '@/libs/auth-session-cookie';
+import { hasSessionCookieNames, usesSecureSessionCookie } from '@/libs/auth-session-cookie';
 import type { GetServerSidePropsContext } from 'next';
 import { cookies, headers } from 'next/headers';
+import { redirect } from 'next/navigation';
 import type { Session } from 'next-auth';
 import { getServerSession } from 'next-auth';
 import { getToken } from 'next-auth/jwt';
 
-const clearSessionCookies = async (): Promise<void> => {
-    const cookieStore = await cookies();
-
-    cookieStore.getAll().forEach((cookie) => {
-        if (hasSessionCookieName(cookie.name)) {
-            cookieStore.delete(cookie.name);
-        }
-    });
-};
+const SESSION_CLEANUP_PATH = '/auth/cleanup-session';
 
 export const getSafeServerSession = async (): Promise<Session | null> => {
     const cookieStore = await cookies();
@@ -40,9 +29,11 @@ export const getSafeServerSession = async (): Promise<Session | null> => {
     });
 
     if (!token) {
-        await clearSessionCookies();
+        const searchParams = new URLSearchParams({
+            callbackUrl: '/login',
+        });
 
-        return null;
+        redirect(`${SESSION_CLEANUP_PATH}?${searchParams.toString()}`);
     }
 
     return getServerSession(authOptions);
