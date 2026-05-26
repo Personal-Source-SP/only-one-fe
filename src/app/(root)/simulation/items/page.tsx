@@ -15,6 +15,33 @@ import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
 import { FC, ReactNode, useState } from 'react';
 
+export const columns: ColumnsType<NSimulation.ISimulationItem> = [
+    {
+        title: 'STT',
+        key: 'index',
+        dataIndex: 'index',
+        width: 60,
+        align: 'center',
+        render: (_: any, __: any, index: number) => index + 1,
+    },
+    {
+        title: 'Trạng thái',
+        dataIndex: 'status',
+        key: 'status',
+        width: 130,
+        align: 'center',
+        render: (status: string) => <StatusTag status={status} />,
+    },
+    {
+        title: 'Hết hạn',
+        dataIndex: 'expiresAt',
+        key: 'expiresAt',
+        width: 200,
+        sorter: true,
+        render: (expiresAt: Date) => formatDate(expiresAt),
+    },
+];
+
 const SimulationItemsPage: FC = () => {
     const [loading, setLoading] = useState(false);
     const [openCreateItemModal, setOpenCreateItemModal] = useState(false);
@@ -28,80 +55,6 @@ const SimulationItemsPage: FC = () => {
     const tableContainerData = useTableContainer({
         resource: 'simulation-items',
     });
-
-    const columns: ColumnsType<NSimulation.ISimulationItem> = [
-        {
-            title: 'STT',
-            key: 'index',
-            dataIndex: 'index',
-            width: 60,
-            align: 'center',
-            render: (_: any, __: any, index: number) => index + 1,
-        },
-        {
-            title: 'Trạng thái',
-            dataIndex: 'status',
-            key: 'status',
-            width: 130,
-            align: 'center',
-            render: (status: string) => <StatusTag status={status} />,
-        },
-        {
-            title: 'Hết hạn',
-            dataIndex: 'expiresAt',
-            key: 'expiresAt',
-            width: 200,
-            sorter: true,
-            render: (expiresAt: Date) => formatDate(expiresAt),
-        },
-    ];
-
-    const formFields: FormFieldItem[] = [
-        {
-            type: 'select',
-            name: 'simulationContextId',
-            label: 'Ngữ cảnh',
-            rules: [{ required: true, message: 'Vui lòng chọn ngữ cảnh' }],
-            selectProps: {
-                options: simulationContextOptions,
-            },
-            onChange: (value, form) => {
-                const contextSelected = simulationContextQuery?.data?.data?.find(
-                    (item: NSimulation.ISimulationContext) => item.id === value,
-                );
-                if (!contextSelected) return;
-
-                form?.setFieldsValue({
-                    payload: JSON.stringify(contextSelected.defaultPayload ?? { referenceUrl: '' }),
-                });
-            },
-        },
-        {
-            type: 'code-display',
-            name: 'payload',
-            label: 'Payload',
-            rules: [{ required: true, message: 'Vui lòng nhập payload' }],
-            codeProps: {
-                language: 'json',
-            },
-        },
-    ];
-
-    const actionItems: ActionTableItem[] = [
-        {
-            key: 'start',
-            label: 'Start',
-            icon: <Icon icon="lucide:play" />,
-            onClick: (record) =>
-                handleSimulationItemAction(record?.id, SimulationItemStatus.PROCESSING),
-        },
-        {
-            key: 'edit',
-            label: 'Chỉnh sửa',
-            icon: <Icon icon="lucide:edit" />,
-            onClick: (record) => setEditItemId(record?.id),
-        },
-    ];
 
     const handleSimulationItemAction = (id: string, status: SimulationItemStatus) => {
         if (!id) return;
@@ -154,6 +107,53 @@ const SimulationItemsPage: FC = () => {
         });
     };
 
+    const formFields: FormFieldItem[] = [
+        {
+            type: 'select',
+            name: 'simulationContextId',
+            label: 'Ngữ cảnh',
+            rules: [{ required: true, message: 'Vui lòng chọn ngữ cảnh' }],
+            selectProps: {
+                options: simulationContextOptions ?? [],
+            },
+            onChange: (value, form) => {
+                const contextSelected = simulationContextQuery?.data?.data?.find(
+                    (item) => item.id === value,
+                );
+                if (!contextSelected) return;
+
+                form?.setFieldsValue({
+                    payload: JSON.stringify(contextSelected.defaultPayload ?? { referenceUrl: '' }),
+                });
+            },
+        },
+        {
+            type: 'code-display',
+            name: 'payload',
+            label: 'Payload',
+            rules: [{ required: true, message: 'Vui lòng nhập payload' }],
+            codeProps: {
+                language: 'json',
+            },
+        },
+    ];
+
+    const actionItems: ActionTableItem[] = [
+        {
+            key: 'start',
+            label: 'Start',
+            icon: <Icon icon="lucide:play" />,
+            onClick: (record) =>
+                handleSimulationItemAction(record?.id, SimulationItemStatus.PROCESSING),
+        },
+        {
+            key: 'edit',
+            label: 'Chỉnh sửa',
+            icon: <Icon icon="lucide:edit" />,
+            onClick: (record) => setEditItemId(record?.id),
+        },
+    ];
+
     const actionButtons: ReactNode[] = [
         <CustomButton
             type="primary"
@@ -166,6 +166,16 @@ const SimulationItemsPage: FC = () => {
         </CustomButton>,
     ];
 
+    const filterSearch = {
+        placeholder: 'Tìm kiếm mô phỏng',
+    };
+
+    const initialValues = {
+        payload: JSON.stringify({
+            referenceUrl: '',
+        }),
+    };
+
     return (
         <>
             <DataTableContainer
@@ -177,7 +187,7 @@ const SimulationItemsPage: FC = () => {
                 description="Quản lý các đối tượng mô phỏng"
                 actionButtons={actionButtons}
                 tableContainerData={tableContainerData}
-                filterSearch={{ placeholder: 'Tìm kiếm mô phỏng' }}
+                filterSearch={filterSearch}
             />
 
             <CreateFormDialog
@@ -189,11 +199,7 @@ const SimulationItemsPage: FC = () => {
                     setOpenCreateItemModal(false);
                     tableContainerData?.tableQuery?.refetch();
                 }}
-                initialValues={{
-                    payload: JSON.stringify({
-                        referenceUrl: '',
-                    }),
-                }}
+                initialValues={initialValues}
                 onTransformValues={(values) => {
                     try {
                         return {

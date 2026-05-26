@@ -1,4 +1,9 @@
-import { DataProviderSearchStatus, DataProviderStatus, ProductMappingStatus } from '@/enums';
+import {
+    DataProviderSearchStatus,
+    DataProviderStatus,
+    LocalFolderRegistrationStatusEnum,
+    ProductMappingStatus,
+} from '@/enums';
 import { Abstract } from '@/interfaces';
 import { NCloudData } from './cloud-data';
 
@@ -58,6 +63,41 @@ export declare namespace NDataProvider {
 
     interface UpdateTargetConfigRequest extends ITargetConfig {
         scraperService?: string;
+    }
+
+    interface ILocalFolderSelection {
+        name: string;
+        itemUrl: string;
+        identifier: string;
+        path?: string;
+    }
+
+    interface CreateLocalFolderItemRequest {
+        code: string;
+        name: string;
+    }
+
+    interface CreateLocalFolderProviderItemRequest {
+        itemId: string;
+        itemUrl: string;
+        dataProviderId: string;
+    }
+
+    interface RegisterLocalFolderRequest {
+        itemUrl: string;
+        itemCode: string;
+        itemName: string;
+        folderName: string;
+        folderPath?: string;
+        dataProviderId: string;
+        folderIdentifier: string;
+    }
+
+    interface RegisterLocalFolderResponse {
+        itemId: string;
+        itemUrl: string;
+        itemStatus: LocalFolderRegistrationStatusEnum;
+        dataProviderItemId: string;
     }
 
     interface IDataProvider extends Abstract {

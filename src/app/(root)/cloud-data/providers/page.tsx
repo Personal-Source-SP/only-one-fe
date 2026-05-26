@@ -14,6 +14,99 @@ import { capitalizeFirstLetter, enumToOptions, formatDate, formatFileSize } from
 import { Icon } from '@iconify/react';
 import { ReactNode, useState } from 'react';
 
+export const columns: ColumnsType<NCloudData.ICloudDataProvider> = [
+    {
+        title: 'STT',
+        key: 'index',
+        dataIndex: 'index',
+        width: 60,
+        align: 'center',
+        render: (_: any, __: any, index: number) => index + 1,
+    },
+    {
+        title: 'Tên kho',
+        dataIndex: 'name',
+        key: 'name',
+        width: 200,
+        ellipsis: true,
+    },
+    {
+        title: 'Loại',
+        dataIndex: 'type',
+        key: 'type',
+        width: 150,
+        render: (type: CloudDataProviderType) => <StatusTag status={capitalizeFirstLetter(type)} />,
+    },
+    {
+        title: 'Trạng thái',
+        dataIndex: 'isActive',
+        key: 'isActive',
+        width: 150,
+        align: 'center',
+        render: (isActive: boolean) => <StatusTag status={isActive ? 'active' : 'inactive'} />,
+    },
+    {
+        title: 'Tổng số dữ liệu',
+        dataIndex: 'totalItems',
+        key: 'totalItems',
+        width: 150,
+        align: 'center',
+        render: (totalItems: number) => totalItems?.toLocaleString() ?? 0,
+    },
+    {
+        title: 'Tổng dung lượng',
+        dataIndex: 'totalSize',
+        key: 'totalSize',
+        width: 150,
+        align: 'center',
+        render: (totalSize: number) => formatFileSize(totalSize),
+    },
+    {
+        title: 'Ngày tạo',
+        dataIndex: 'createdAt',
+        key: 'createdAt',
+        width: 200,
+        sorter: true,
+        render: (createdAt: Date) => formatDate(createdAt),
+    },
+];
+
+export const formFields: FormFieldItem[] = [
+    {
+        type: 'input',
+        name: 'name',
+        label: 'Tên nhà cung cấp',
+        rules: [{ required: true, message: 'Vui lòng nhập tên nhà cung cấp' }],
+    },
+    {
+        type: 'select',
+        name: 'type',
+        label: 'Loại',
+        disabled: true,
+        rules: [{ required: true, message: 'Vui lòng chọn loại nhà cung cấp' }],
+        selectProps: {
+            options: enumToOptions(CloudDataProviderType) ?? [],
+        },
+    },
+    {
+        type: 'code-display',
+        name: 'config',
+        label: 'Cấu hình',
+        codeProps: {
+            language: 'json',
+        },
+        disabled: true,
+    },
+    {
+        type: 'switch',
+        name: 'isActive',
+        label: 'Trạng thái',
+        switchProps: {
+            placeholder: 'Trạng thái của nhà cung cấp',
+        },
+    },
+];
+
 const CloudDataProvider = () => {
     const [openCreateItemModal, setOpenCreateItemModal] = useState(false);
     const [editItemId, setEditItemId] = useState<string | undefined>(undefined);
@@ -21,101 +114,6 @@ const CloudDataProvider = () => {
     const tableContainerData = useTableContainer({
         resource: 'cloud-data-providers',
     });
-
-    const columns: ColumnsType<NCloudData.ICloudDataProvider> = [
-        {
-            title: 'STT',
-            key: 'index',
-            dataIndex: 'index',
-            width: 60,
-            align: 'center',
-            render: (_: any, __: any, index: number) => index + 1,
-        },
-        {
-            title: 'Tên kho',
-            dataIndex: 'name',
-            key: 'name',
-            width: 200,
-            ellipsis: true,
-        },
-        {
-            title: 'Loại',
-            dataIndex: 'type',
-            key: 'type',
-            width: 150,
-            render: (type: CloudDataProviderType) => (
-                <StatusTag status={capitalizeFirstLetter(type)} />
-            ),
-        },
-        {
-            title: 'Trạng thái',
-            dataIndex: 'isActive',
-            key: 'isActive',
-            width: 150,
-            align: 'center',
-            render: (isActive: boolean) => <StatusTag status={isActive ? 'active' : 'inactive'} />,
-        },
-        {
-            title: 'Tổng số dữ liệu',
-            dataIndex: 'totalItems',
-            key: 'totalItems',
-            width: 150,
-            align: 'center',
-            render: (totalItems: number) => totalItems?.toLocaleString() ?? 0,
-        },
-        {
-            title: 'Tổng dung lượng',
-            dataIndex: 'totalSize',
-            key: 'totalSize',
-            width: 150,
-            align: 'center',
-            render: (totalSize: number) => formatFileSize(totalSize),
-        },
-        {
-            title: 'Ngày tạo',
-            dataIndex: 'createdAt',
-            key: 'createdAt',
-            width: 200,
-            sorter: true,
-            render: (createdAt: Date) => formatDate(createdAt),
-        },
-    ];
-
-    const formFields: FormFieldItem[] = [
-        {
-            type: 'input',
-            name: 'name',
-            label: 'Tên nhà cung cấp',
-            rules: [{ required: true, message: 'Vui lòng nhập tên nhà cung cấp' }],
-        },
-        {
-            type: 'select',
-            name: 'type',
-            label: 'Loại',
-            disabled: true,
-            rules: [{ required: true, message: 'Vui lòng chọn loại nhà cung cấp' }],
-            selectProps: {
-                options: enumToOptions(CloudDataProviderType) ?? [],
-            },
-        },
-        {
-            type: 'code-display',
-            name: 'config',
-            label: 'Cấu hình',
-            codeProps: {
-                language: 'json',
-            },
-            disabled: true,
-        },
-        {
-            type: 'switch',
-            name: 'isActive',
-            label: 'Trạng thái',
-            switchProps: {
-                placeholder: 'Trạng thái của nhà cung cấp',
-            },
-        },
-    ];
 
     const actionItems: ActionTableItem[] = [
         {
@@ -138,6 +136,18 @@ const CloudDataProvider = () => {
         </CustomButton>,
     ];
 
+    const filterSearch = {
+        placeholder: 'Tìm kiếm nhà cung cấp',
+    };
+
+    const initialValues = {
+        isActive: true,
+        type: CloudDataProviderType.TELEGRAM,
+        config: JSON.stringify({
+            channelId: '',
+        }),
+    };
+
     return (
         <>
             <DataTableContainer
@@ -148,7 +158,7 @@ const CloudDataProvider = () => {
                 description="Quản lý các nhà cung cấp dịch vụ cloud"
                 actionButtons={actionButtons}
                 tableContainerData={tableContainerData}
-                filterSearch={{ placeholder: 'Tìm kiếm nhà cung cấp' }}
+                filterSearch={filterSearch}
             />
 
             <CreateFormDialog
@@ -156,13 +166,7 @@ const CloudDataProvider = () => {
                 open={openCreateItemModal}
                 title="Thêm mới nhà cung cấp"
                 resource="cloud-data-providers"
-                initialValues={{
-                    isActive: true,
-                    type: CloudDataProviderType.TELEGRAM,
-                    config: JSON.stringify({
-                        channelId: '',
-                    }),
-                }}
+                initialValues={initialValues}
                 onClose={() => {
                     setOpenCreateItemModal(false);
                     tableContainerData?.tableQuery?.refetch();

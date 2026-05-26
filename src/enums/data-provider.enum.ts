@@ -23,3 +23,8 @@ export enum ScraperServiceEnum {
     LOCAL = 'local',
     GENERIC = 'generic',
 }
+
+export enum LocalFolderRegistrationStatusEnum {
+    CREATED = 'created',
+    REUSED = 'reused',
+}

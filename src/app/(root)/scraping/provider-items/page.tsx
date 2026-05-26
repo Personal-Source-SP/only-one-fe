@@ -16,6 +16,24 @@ import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
 import { ReactNode, useState } from 'react';
 
+type SelectOptions = NonNullable<NonNullable<FormFieldItem['selectProps']>['options']>;
+
+type DataProviderItemColumnsParams = {
+    onSwitchStatus: (id: string, active: boolean) => void;
+};
+
+type DataProviderItemFormFieldsParams = {
+    itemOptions: SelectOptions;
+    dataProviderOptions: SelectOptions;
+    cloudDataProviderOptions: SelectOptions;
+    dataProviderRecords: NDataProvider.IDataProvider[];
+};
+
+type DataProviderItemFilterItemsParams = {
+    itemOptions: SelectOptions;
+    dataProviderOptions: SelectOptions;
+};
+
 const DataProviderItemPage = () => {
     const [loading, setLoading] = useState(false);
     const [openCreateItemModal, setOpenCreateItemModal] = useState(false);
@@ -31,6 +49,43 @@ const DataProviderItemPage = () => {
     const { handleCustomMutationData: handleUpdate } = useCustomMutationData();
 
     const tableContainerData = useTableContainer({ resource: 'data-provider-items' });
+
+    const handleSwitchStatus = (id: string, active: boolean) => {
+        setLoading(true);
+
+        handleUpdate({
+            values: {},
+            method: 'put',
+            url: `data-provider-items/${id}/switch-status/${active}`,
+            successNotification: (data) => {
+                if (!data?.data?.isSuccess) {
+                    setLoading(false);
+
+                    return {
+                        type: MessageType.ERROR,
+                        message: 'Chuyển trạng thái thất bại',
+                        description: data?.data?.message ?? 'Chuyển trạng thái thất bại',
+                    };
+                }
+
+                tableContainerData?.tableQuery?.refetch();
+
+                return {
+                    type: MessageType.SUCCESS,
+                    message: 'Chuyển trạng thái thành công',
+                };
+            },
+            errorNotification: (error) => {
+                setLoading(false);
+
+                return {
+                    type: MessageType.ERROR,
+                    message: 'Chuyển trạng thái thất bại',
+                    description: error?.message ?? 'Chuyển trạng thái thất bại',
+                };
+            },
+        });
+    };
 
     const columns: ColumnsType<NDataProvider.IDataProviderItem> = [
         {
@@ -203,43 +258,6 @@ const DataProviderItemPage = () => {
         },
     ];
 
-    const handleSwitchStatus = (id: string, active: boolean) => {
-        setLoading(true);
-
-        handleUpdate({
-            values: {},
-            method: 'put',
-            url: `data-provider-items/${id}/switch-status/${active}`,
-            successNotification: (data) => {
-                if (!data?.data?.isSuccess) {
-                    setLoading(false);
-
-                    return {
-                        type: MessageType.ERROR,
-                        message: 'Chuyển trạng thái thất bại',
-                        description: data?.data?.message ?? 'Chuyển trạng thái thất bại',
-                    };
-                }
-
-                tableContainerData?.tableQuery?.refetch();
-
-                return {
-                    type: MessageType.SUCCESS,
-                    message: 'Chuyển trạng thái thành công',
-                };
-            },
-            errorNotification: (error) => {
-                setLoading(false);
-
-                return {
-                    type: MessageType.ERROR,
-                    message: 'Chuyển trạng thái thất bại',
-                    description: error?.message ?? 'Chuyển trạng thái thất bại',
-                };
-            },
-        });
-    };
-
     const actionButtons: ReactNode[] = [
         <CustomButton
             type="primary"
@@ -261,6 +279,11 @@ const DataProviderItemPage = () => {
         </CustomButton>,
     ];
 
+    const filterSearch = {
+        placeholder: 'Tìm kiếm đối tượng nhà cung cấp',
+        span: 12,
+    };
+
     return (
         <>
             <DataTableContainer
@@ -273,7 +296,7 @@ const DataProviderItemPage = () => {
                 actionButtons={actionButtons}
                 customFilterItems={customFilterItems}
                 tableContainerData={tableContainerData}
-                filterSearch={{ placeholder: 'Tìm kiếm đối tượng nhà cung cấp', span: 12 }}
+                filterSearch={filterSearch}
                 onRowSelectionChange={(selectedRows: NDataProvider.IDataProviderItem[]) => {
                     const dataProviderItemsIds = selectedRows
                         ?.filter((item) => item.dataProvider?.status === DataProviderStatus.READY)

@@ -15,6 +15,20 @@ import { SyncLocal } from '@/components/module/sync-local';
 import { useCustomData, useSelectGoogleFolder, useTableContainer } from '@/hooks';
 import { getDriveImageUrl, isExpiredToken } from '@/libs';
 
+type FilterOptions = NonNullable<FilterItem['options']>;
+
+type PhotoFilterItemsParams = {
+    columns: number;
+    viewMode: ViewFileMode;
+    qualityMode: QualityMode;
+    folderOptions: FilterOptions;
+    googleAuthOptions: FilterOptions;
+    onAuthChange: (value: string[]) => void;
+    onFolderChange: (value: string[]) => void;
+    onViewModeChange: (value: ViewFileMode) => void;
+    onQualityModeChange: (value: QualityMode) => void;
+    onColumnsChange: (value: number) => void;
+};
 const PhotosPage = () => {
     const [columns, setColumns] = useState(4);
     const [viewMode, setViewMode] = useState<ViewFileMode>(ViewFileMode.ALL);
@@ -113,40 +127,57 @@ const PhotosPage = () => {
         }
     };
 
-    const filterItems: FilterItem[] = [
+    const viewModeOptions: FilterOptions = [
+        { value: ViewFileMode.ALL, label: 'Xem tất cả' },
+        { value: ViewFileMode.DATE, label: 'Xem theo ngày' },
+        { value: ViewFileMode.FOLDER, label: 'Xem theo thư mục' },
+    ];
+
+    const qualityModeOptions: FilterOptions = [
+        { value: QualityMode.HIGH, label: 'Nét' },
+        { value: QualityMode.LOW, label: 'Thường' },
+    ];
+
+    const columnOptions: FilterOptions = [1, 2, 3, 4, 8].map((item) => ({
+        value: item,
+        label: item.toString(),
+    }));
+
+    const filterItems = (({
+        columns,
+        viewMode,
+        qualityMode,
+        folderOptions,
+        googleAuthOptions,
+        onAuthChange,
+        onFolderChange,
+        onViewModeChange,
+        onQualityModeChange,
+        onColumnsChange,
+    }: PhotoFilterItemsParams): FilterItem[] => [
         {
             span: 4,
             value: viewMode,
             placeholder: 'Chế độ xem',
             type: CustomFilterType.SELECT,
-            onChange: (value: ViewFileMode) => setViewMode(value),
-            options: [
-                { value: ViewFileMode.ALL, label: 'Xem tất cả' },
-                { value: ViewFileMode.DATE, label: 'Xem theo ngày' },
-                { value: ViewFileMode.FOLDER, label: 'Xem theo thư mục' },
-            ],
+            onChange: (value: ViewFileMode) => onViewModeChange(value),
+            options: viewModeOptions,
         },
         {
             span: 4,
             value: qualityMode,
             placeholder: 'Độ nét',
             type: CustomFilterType.SELECT,
-            onChange: (value: QualityMode) => setQualityMode(value),
-            options: [
-                { value: QualityMode.HIGH, label: 'Nét' },
-                { value: QualityMode.LOW, label: 'Thường' },
-            ],
+            onChange: (value: QualityMode) => onQualityModeChange(value),
+            options: qualityModeOptions,
         },
         {
             span: 2,
             value: columns,
             placeholder: 'Số cột',
             type: CustomFilterType.SELECT,
-            onChange: (value: number) => setColumns(value),
-            options: [1, 2, 3, 4, 8].map((item) => ({
-                value: item,
-                label: item.toString(),
-            })),
+            onChange: (value: number) => onColumnsChange(value),
+            options: columnOptions,
         },
         {
             span: 12,
@@ -155,11 +186,8 @@ const PhotosPage = () => {
             showSearch: true,
             placeholder: 'Thư mục',
             type: CustomFilterType.SELECT,
-            options: folderOptions ?? [],
-            onChange: (value: string[]) => {
-                setFilters([{ field: 'folderId', operator: 'eq', value }]);
-                setCurrentPage(1);
-            },
+            options: folderOptions,
+            onChange: (value: string[]) => onFolderChange(value),
         },
         {
             span: 12,
@@ -168,13 +196,27 @@ const PhotosPage = () => {
             showSearch: true,
             placeholder: 'Email',
             type: CustomFilterType.SELECT,
-            options: googleAuthOptions ?? [],
-            onChange: (value: string[]) => {
-                setFilters([{ field: 'googleAuthId', operator: 'eq', value }]);
-                setCurrentPage(1);
-            },
+            options: googleAuthOptions,
+            onChange: (value: string[]) => onAuthChange(value),
         },
-    ];
+    ])({
+        columns,
+        viewMode,
+        qualityMode,
+        folderOptions: folderOptions ?? [],
+        googleAuthOptions: googleAuthOptions ?? [],
+        onAuthChange: (value) => {
+            setFilters([{ field: 'googleAuthId', operator: 'eq', value }]);
+            setCurrentPage(1);
+        },
+        onFolderChange: (value) => {
+            setFilters([{ field: 'folderId', operator: 'eq', value }]);
+            setCurrentPage(1);
+        },
+        onViewModeChange: setViewMode,
+        onQualityModeChange: setQualityMode,
+        onColumnsChange: setColumns,
+    });
 
     const actionButtons: ReactNode[] = [
         <CustomButton
@@ -206,6 +248,12 @@ const PhotosPage = () => {
         </CustomButton>,
     ];
 
+    const filterSearch = {
+        span: 14,
+        name: 'name',
+        placeholder: 'Tìm kiếm ảnh',
+    };
+
     return (
         <>
             <DataTableContainer
@@ -215,11 +263,7 @@ const PhotosPage = () => {
                 actionButtons={actionButtons}
                 customFilterItems={filterItems}
                 tableContainerData={tableContainerData}
-                filterSearch={{
-                    span: 14,
-                    name: 'name',
-                    placeholder: 'Tìm kiếm ảnh',
-                }}
+                filterSearch={filterSearch}
                 childrenTop={
                     <FileGroups
                         columns={columns}

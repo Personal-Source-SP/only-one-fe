@@ -19,6 +19,77 @@ import { Icon } from '@iconify/react';
 import Link from 'next/link';
 import { ReactNode, useMemo, useState } from 'react';
 
+type FilterOptions = NonNullable<FilterItem['options']>;
+
+type ScrapingDataFilterItemsParams = {
+    columnDisplay: number;
+    viewMode: ViewFileMode;
+    displayMode: DisplayMode;
+    itemOptions: FilterOptions;
+    dataProviderOptions: FilterOptions;
+    onViewModeChange: (value: ViewFileMode) => void;
+    onColumnDisplayChange: (value: number) => void;
+};
+
+type DisplayModeActionParams = {
+    displayMode: DisplayMode;
+    onChange: (value: DisplayMode) => void;
+};
+
+export const columns: ColumnsType<NDataProvider.IScrapingData> = [
+    {
+        title: 'Đối tượng',
+        dataIndex: 'item',
+        key: 'item',
+        ellipsis: true,
+        width: '25%',
+        render: (item: NDataProvider.IItem) => item?.name ?? '---',
+    },
+    {
+        title: 'ID dữ liệu',
+        dataIndex: 'dataId',
+        key: 'dataId',
+        ellipsis: true,
+        sorter: true,
+        width: '20%',
+        render: (dataId: string) => dataId ?? '---',
+    },
+    {
+        title: 'Loại',
+        dataIndex: 'type',
+        key: 'type',
+        sorter: true,
+        width: '20%',
+        render: (type: string) => type ?? '---',
+    },
+    {
+        title: 'Ngày sửa đổi',
+        dataIndex: 'lastModified',
+        key: 'lastModified',
+        sorter: true,
+        width: '20%',
+        render: (lastModified: Date) => formatDate(lastModified),
+    },
+    {
+        title: 'URL',
+        dataIndex: 'url',
+        key: 'url',
+        sorter: true,
+        width: '15%',
+        align: 'center',
+        render: (url: string) =>
+            url ? (
+                <CustomFlex align="center" justify="center">
+                    <Link href={url} target="_blank" rel="noopener noreferrer">
+                        <img src={url} alt="Xem" className="!h-20" />
+                    </Link>
+                </CustomFlex>
+            ) : (
+                '---'
+            ),
+    },
+];
+
 const ScrapingDataPage = () => {
     const { handleMessage } = useMainContext();
 
@@ -91,123 +162,116 @@ const ScrapingDataPage = () => {
         }));
     }, [tableContainerData?.tableQuery?.data?.data]);
 
-    const customFilterItems: FilterItem[] = useMemo(() => {
-        const customFilterItems: FilterItem[] = [
-            {
-                span: displayMode === DisplayMode.TABLE ? 6 : 4,
-                field: 'dataProviderId',
-                title: 'Nhà cung cấp',
-                showSearch: true,
-                allowClear: true,
-                type: CustomFilterType.SELECT,
-                options: dataProviderOptions ?? [],
-            },
-            {
-                span: displayMode === DisplayMode.TABLE ? 6 : 4,
-                field: 'itemId',
-                title: 'Đối tượng',
-                showSearch: true,
-                type: CustomFilterType.SELECT,
-                options: itemOptions ?? [],
-            },
-            {
-                span: displayMode === DisplayMode.TABLE ? 6 : 4,
-                field: 'type',
-                title: 'Loại dữ liệu',
-                showSearch: true,
-                type: CustomFilterType.SELECT,
-                options: [
-                    { label: 'Ảnh', value: 'image' },
-                    { label: 'Video', value: 'video' },
-                    { label: 'Tài liệu', value: 'document' },
-                ],
-            },
-        ];
+    const dataTypeOptions: FilterOptions = [
+        { label: 'Ảnh', value: 'image' },
+        { label: 'Video', value: 'video' },
+        { label: 'Tài liệu', value: 'document' },
+    ];
 
-        if (displayMode === DisplayMode.LIST) {
-            customFilterItems.push(
-                {
-                    span: 4,
-                    value: viewMode,
-                    placeholder: 'Chế độ xem',
-                    type: CustomFilterType.SELECT,
-                    onChange: (value: ViewFileMode) => setViewMode(value),
-                    options: [
-                        { value: ViewFileMode.ALL, label: 'Xem tất cả' },
-                        { value: ViewFileMode.DATE, label: 'Xem theo ngày' },
-                        { value: ViewFileMode.FOLDER, label: 'Xem theo thư mục' },
-                    ],
-                },
-                {
-                    span: 2,
-                    value: columnDisplay,
-                    placeholder: 'Số cột',
-                    type: CustomFilterType.SELECT,
-                    onChange: (value: number) => setColumnDisplay(value),
-                    options: [1, 2, 3, 4, 8].map((item) => ({
-                        value: item,
-                        label: item.toString(),
-                    })),
-                },
-            );
-        }
+    const viewModeOptions: FilterOptions = [
+        { value: ViewFileMode.ALL, label: 'Xem tất cả' },
+        { value: ViewFileMode.DATE, label: 'Xem theo ngày' },
+        { value: ViewFileMode.FOLDER, label: 'Xem theo thư mục' },
+    ];
 
-        return customFilterItems;
-    }, [columnDisplay, viewMode, displayMode, dataProviderOptions]);
+    const columnDisplayOptions: FilterOptions = [1, 2, 3, 4, 8].map((item) => ({
+        value: item,
+        label: item.toString(),
+    }));
 
-    const columns: ColumnsType<NDataProvider.IScrapingData> = [
+    const displayModeOptions = [
         {
-            title: 'Đối tượng',
-            dataIndex: 'item',
-            key: 'item',
-            ellipsis: true,
-            width: '25%',
-            render: (item: NDataProvider.IItem) => item?.name ?? '---',
+            value: DisplayMode.LIST,
+            label: (
+                <span className="flex items-center gap-2">
+                    <Icon icon="lucide:list" className="shrink-0 text-base" />
+                    Danh sách
+                </span>
+            ),
         },
         {
-            title: 'ID dữ liệu',
-            dataIndex: 'dataId',
-            key: 'dataId',
-            ellipsis: true,
-            sorter: true,
-            width: '20%',
-            render: (dataId: string) => dataId ?? '---',
-        },
-        {
-            title: 'Loại',
-            dataIndex: 'type',
-            key: 'type',
-            sorter: true,
-            width: '20%',
-            render: (type: string) => type ?? '---',
-        },
-        {
-            title: 'Ngày sửa đổi',
-            dataIndex: 'lastModified',
-            key: 'lastModified',
-            sorter: true,
-            width: '20%',
-            render: (lastModified: Date) => formatDate(lastModified),
-        },
-        {
-            title: 'URL',
-            dataIndex: 'url',
-            key: 'url',
-            sorter: true,
-            width: '15%',
-            align: 'center',
-            render: (url: string) =>
-                url ? (
-                    <CustomFlex align="center" justify="center">
-                        <Link href={url} target="_blank" rel="noopener noreferrer">
-                            <img src={url} alt="Xem" className="!h-20" />
-                        </Link>
-                    </CustomFlex>
-                ) : (
-                    '---'
-                ),
+            value: DisplayMode.TABLE,
+            label: (
+                <span className="flex items-center gap-2">
+                    <Icon icon="lucide:table" className="shrink-0 text-base" />
+                    Bảng
+                </span>
+            ),
         },
     ];
+
+    const customFilterItems = useMemo(
+        () =>
+            (({
+                columnDisplay,
+                viewMode,
+                displayMode,
+                itemOptions,
+                dataProviderOptions,
+                onViewModeChange,
+                onColumnDisplayChange,
+            }: ScrapingDataFilterItemsParams): FilterItem[] => {
+                const filterItems: FilterItem[] = [
+                    {
+                        span: displayMode === DisplayMode.TABLE ? 6 : 4,
+                        field: 'dataProviderId',
+                        title: 'Nhà cung cấp',
+                        showSearch: true,
+                        allowClear: true,
+                        type: CustomFilterType.SELECT,
+                        options: dataProviderOptions,
+                    },
+                    {
+                        span: displayMode === DisplayMode.TABLE ? 6 : 4,
+                        field: 'itemId',
+                        title: 'Đối tượng',
+                        showSearch: true,
+                        type: CustomFilterType.SELECT,
+                        options: itemOptions,
+                    },
+                    {
+                        span: displayMode === DisplayMode.TABLE ? 6 : 4,
+                        field: 'type',
+                        title: 'Loại dữ liệu',
+                        showSearch: true,
+                        type: CustomFilterType.SELECT,
+                        options: dataTypeOptions,
+                    },
+                ];
+
+                if (displayMode === DisplayMode.LIST) {
+                    filterItems.push(
+                        {
+                            span: 4,
+                            value: viewMode,
+                            placeholder: 'Chế độ xem',
+                            type: CustomFilterType.SELECT,
+                            onChange: (value: ViewFileMode) => onViewModeChange(value),
+                            options: viewModeOptions,
+                        },
+                        {
+                            span: 2,
+                            value: columnDisplay,
+                            placeholder: 'Số cột',
+                            type: CustomFilterType.SELECT,
+                            onChange: (value: number) => onColumnDisplayChange(value),
+                            options: columnDisplayOptions,
+                        },
+                    );
+                }
+
+                return filterItems;
+            })({
+                columnDisplay,
+                viewMode,
+                displayMode,
+                itemOptions: itemOptions ?? [],
+                dataProviderOptions: dataProviderOptions ?? [],
+                onViewModeChange: setViewMode,
+                onColumnDisplayChange: setColumnDisplay,
+            }),
+        [columnDisplay, viewMode, displayMode, itemOptions, dataProviderOptions],
+    );
 
     const actionItems: ActionTableItem[] = [
         {
@@ -249,6 +313,22 @@ const ScrapingDataPage = () => {
         </CustomButton>,
     ];
 
+    const filterSearch = {
+        placeholder: 'Tìm kiếm lịch sử dữ liệu',
+        span: displayMode === DisplayMode.TABLE ? 8 : 6,
+    };
+
+    const customFilterActions: ReactNode = (
+        <CustomSelect
+            key="display-mode"
+            value={displayMode}
+            placeholder="Chế độ hiển thị"
+            className="w-[120px] shrink-0 sm:w-[130px]"
+            onChange={(value) => setDisplayMode(value as DisplayMode)}
+            options={displayModeOptions}
+        />
+    );
+
     const handlePhotoClick = (scrapingDataId: string) => {
         const index = photoItems?.findIndex((photo) => photo.id === scrapingDataId);
         if (index !== undefined) {
@@ -268,10 +348,7 @@ const ScrapingDataPage = () => {
                 customFilterItems={customFilterItems}
                 tableContainerData={tableContainerData}
                 columns={displayMode === DisplayMode.TABLE ? columns : undefined}
-                filterSearch={{
-                    placeholder: 'Tìm kiếm lịch sử dữ liệu',
-                    span: displayMode === DisplayMode.TABLE ? 8 : 6,
-                }}
+                filterSearch={filterSearch}
                 childrenTop={
                     displayMode === DisplayMode.LIST && (
                         <FileGroups
@@ -287,35 +364,7 @@ const ScrapingDataPage = () => {
                     const dataProviderIds = selectedRows?.map((item) => item.id ?? '');
                     setSelectedDataProviderIds(dataProviderIds ?? []);
                 }}
-                customFilterActions={
-                    <CustomSelect
-                        key="display-mode"
-                        value={displayMode}
-                        placeholder="Chế độ hiển thị"
-                        className="w-[120px] shrink-0 sm:w-[130px]"
-                        onChange={(val) => setDisplayMode(val as DisplayMode)}
-                        options={[
-                            {
-                                value: DisplayMode.LIST,
-                                label: (
-                                    <span className="flex items-center gap-2">
-                                        <Icon icon="lucide:list" className="shrink-0 text-base" />
-                                        Danh sách
-                                    </span>
-                                ),
-                            },
-                            {
-                                value: DisplayMode.TABLE,
-                                label: (
-                                    <span className="flex items-center gap-2">
-                                        <Icon icon="lucide:table" className="shrink-0 text-base" />
-                                        Bảng
-                                    </span>
-                                ),
-                            },
-                        ]}
-                    />
-                }
+                customFilterActions={customFilterActions}
             />
 
             <MediaLightbox

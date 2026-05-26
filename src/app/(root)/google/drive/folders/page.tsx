@@ -11,6 +11,54 @@ import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
 import { ReactNode, useEffect, useState } from 'react';
 
+export const columns: ColumnsType<NGoogle.IGoogleDriveFolder> = [
+    {
+        title: 'Tên thư mục',
+        dataIndex: 'name',
+        key: 'name',
+        ellipsis: true,
+        sorter: true,
+    },
+    {
+        title: 'Ngày tạo',
+        dataIndex: 'createdAt',
+        key: 'createdAt',
+        sorter: true,
+        render: (createdAt: Date) => formatDate(createdAt),
+    },
+    {
+        key: 'lastModified',
+        title: 'Ngày chỉnh sửa',
+        dataIndex: 'lastModified',
+        sorter: true,
+        render: (lastModified: Date) => formatDate(lastModified),
+    },
+    {
+        key: 'isTrashed',
+        title: 'Đã xóa',
+        align: 'center',
+        dataIndex: 'isTrashed',
+        render: (isTrashed: boolean) =>
+            isTrashed ? (
+                <Icon icon="lucide:check" className="w-full" />
+            ) : (
+                <Icon icon="lucide:x" className="w-full" />
+            ),
+    },
+    {
+        key: 'isStarred',
+        title: 'Gắn sao',
+        align: 'center',
+        dataIndex: 'isStarred',
+        render: (isStarred: boolean) =>
+            isStarred ? (
+                <Icon icon="lucide:check" className="w-full" />
+            ) : (
+                <Icon icon="lucide:x" className="w-full" />
+            ),
+    },
+];
+
 const FolderPage = () => {
     const [isOpenSyncFile, setIsOpenSyncFile] = useState(false);
 
@@ -31,51 +79,12 @@ const FolderPage = () => {
         queryFolderOptions?.refetch();
     }, []);
 
-    const columns: ColumnsType<NGoogle.IGoogleDriveFolder> = [
+    const actionItems = [
         {
-            title: 'Tên thư mục',
-            dataIndex: 'name',
-            key: 'name',
-            ellipsis: true,
-            sorter: true,
-        },
-        {
-            title: 'Ngày tạo',
-            dataIndex: 'createdAt',
-            key: 'createdAt',
-            sorter: true,
-            render: (createdAt: Date) => formatDate(createdAt),
-        },
-        {
-            key: 'lastModified',
-            title: 'Ngày chỉnh sửa',
-            dataIndex: 'lastModified',
-            sorter: true,
-            render: (lastModified: Date) => formatDate(lastModified),
-        },
-        {
-            key: 'isTrashed',
-            title: 'Đã xóa',
-            align: 'center',
-            dataIndex: 'isTrashed',
-            render: (isTrashed: boolean) =>
-                isTrashed ? (
-                    <Icon icon="lucide:check" className="w-full" />
-                ) : (
-                    <Icon icon="lucide:x" className="w-full" />
-                ),
-        },
-        {
-            key: 'isStarred',
-            title: 'Gắn sao',
-            align: 'center',
-            dataIndex: 'isStarred',
-            render: (isStarred: boolean) =>
-                isStarred ? (
-                    <Icon icon="lucide:check" className="w-full" />
-                ) : (
-                    <Icon icon="lucide:x" className="w-full" />
-                ),
+            key: 'edit',
+            label: 'Chỉnh sửa',
+            icon: <Icon icon="lucide:edit" />,
+            onClick: (record: NGoogle.IGoogleDriveFolder) => modalPropsData?.show?.(record?.id),
         },
     ];
 
@@ -91,6 +100,10 @@ const FolderPage = () => {
         </CustomButton>,
     ];
 
+    const filterSearch = {
+        placeholder: 'Tìm kiếm thư mục',
+    };
+
     return (
         <>
             <DataTableContainer
@@ -99,18 +112,9 @@ const FolderPage = () => {
                 title="Danh sách thư mục"
                 description="Quản lý các thư mục trong Google Drive"
                 actionButtons={actionButtons}
+                actionItems={actionItems}
                 tableContainerData={tableContainerData}
-                actionItems={[
-                    {
-                        key: 'edit',
-                        label: 'Chỉnh sửa',
-                        icon: <Icon icon="lucide:edit" />,
-                        onClick: (record) => modalPropsData?.show?.(record?.id),
-                    },
-                ]}
-                filterSearch={{
-                    placeholder: 'Tìm kiếm thư mục',
-                }}
+                filterSearch={filterSearch}
             />
 
             <FolderModal

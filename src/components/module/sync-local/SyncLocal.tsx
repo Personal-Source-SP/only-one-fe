@@ -7,24 +7,23 @@ import {
     CustomCard,
     CustomCheckbox,
     CustomCol,
-    CustomPicker,
+    CustomDataTable,
     CustomFlex,
     CustomForm,
     CustomInputNumber,
     CustomModal,
+    CustomPicker,
     CustomResult,
     CustomRow,
     CustomSelect,
     CustomSpace,
     CustomSpin,
     CustomSteps,
-    CustomDataTable,
     StepsProps,
     TableProps,
 } from '@/components/custom';
-import { MessageType } from '@/enums';
 import { useMainContext } from '@/contexts/MainContext';
-import { GoogleDriveType, MimeType } from '@/enums';
+import { GoogleDriveType, MessageType, MimeType } from '@/enums';
 import { useCustomMutationData } from '@/hooks';
 import { NGoogle, Option } from '@/interfaces';
 import { formatDate } from '@/libs';
@@ -78,8 +77,8 @@ export const SyncLocal = ({
     const [form] = CustomForm.useForm<IFormValues>();
 
     const [loading, setLoading] = useState(false);
-    const [isPermissionsGranted, setIsPermissionsGranted] = useState(false);
     const [directoryHandle, setDirectoryHandle] = useState<any>(null);
+    const [isPermissionsGranted, setIsPermissionsGranted] = useState(false);
 
     const [type, setType] = useState(GoogleDriveType.FILE);
     const [fileTypes, setFileTypes] = useState<MimeType[]>([]);

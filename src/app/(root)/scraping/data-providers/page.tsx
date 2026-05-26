@@ -15,23 +15,125 @@ import {
     DataProviderSearchStatus,
     DataProviderStatus,
 } from '@/enums';
-import {
-    useCustomModal,
-    useSelectDataProvider,
-    useSelectDataProviderItem,
-    useTableContainer,
-} from '@/hooks';
+import { useCustomModal, useSelectDataProvider, useTableContainer } from '@/hooks';
 import { ActionTableItem, FilterItem, FormFieldItem, NDataProvider } from '@/interfaces';
 import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
 import { ReactNode, useState } from 'react';
+
+export const columns: ColumnsType<NDataProvider.IDataProvider> = [
+    {
+        title: 'Tên',
+        dataIndex: 'name',
+        key: 'name',
+        ellipsis: true,
+        sorter: true,
+        width: '15%',
+    },
+    {
+        title: 'Mã',
+        dataIndex: 'identifier',
+        key: 'identifier',
+        ellipsis: true,
+        sorter: true,
+        width: '10%',
+    },
+    {
+        title: 'URL cơ sở',
+        dataIndex: 'baseUrl',
+        key: 'baseUrl',
+        ellipsis: true,
+        sorter: true,
+        width: '20%',
+    },
+    {
+        key: 'status',
+        title: 'Trạng thái',
+        dataIndex: 'status',
+        render: (status: DataProviderStatus) => <StatusTag status={status} />,
+        width: '10%',
+    },
+    {
+        title: 'Ngày tạo',
+        dataIndex: 'createdAt',
+        key: 'createdAt',
+        sorter: true,
+        render: (createdAt: Date) => formatDate(createdAt),
+        width: '20%',
+    },
+    {
+        key: 'targetConfig',
+        title: 'Cào',
+        align: 'center',
+        dataIndex: 'targetConfig',
+        render: (targetConfig: NDataProvider.ITargetConfig) =>
+            targetConfig ? (
+                <Icon icon="lucide:check" className="w-full" />
+            ) : (
+                <Icon icon="lucide:x" className="w-full" />
+            ),
+        width: '10%',
+    },
+    {
+        key: 'searchConfig',
+        title: 'Tìm kiếm',
+        align: 'center',
+        dataIndex: 'searchConfig',
+        render: (searchConfig: NDataProvider.ISearchConfig) =>
+            searchConfig ? (
+                <Icon icon="lucide:check" className="w-full" />
+            ) : (
+                <Icon icon="lucide:x" className="w-full" />
+            ),
+        width: '15%',
+    },
+];
+
+export const importDataColumns: ColumnType<NDataProvider.IImportDataProvider>[] = [
+    {
+        title: 'Tên nhà cung cấp',
+        dataIndex: 'dataProviderName',
+        key: 'dataProviderName',
+        ellipsis: true,
+        width: '25%',
+    },
+    {
+        title: 'Mã nhà cung cấp',
+        dataIndex: 'dataProviderIdentifier',
+        key: 'dataProviderIdentifier',
+        align: 'center',
+        ellipsis: true,
+        width: '15%',
+    },
+    {
+        title: 'URL đối tượng',
+        dataIndex: 'itemUrl',
+        key: 'itemUrl',
+        align: 'center',
+        width: '30%',
+    },
+    {
+        title: 'Tên đối tượng',
+        dataIndex: 'itemName',
+        key: 'itemName',
+        ellipsis: true,
+        width: '20%',
+    },
+    {
+        title: 'Mã đối tượng',
+        dataIndex: 'itemCode',
+        key: 'itemCode',
+        align: 'center',
+        ellipsis: true,
+        width: '10%',
+    },
+];
 
 const DataProviderPage = () => {
     const [openCreateItemModal, setOpenCreateItemModal] = useState(false);
     const [openImportItemModal, setOpenImportItemModal] = useState(false);
 
     const [editItemId, setEditItemId] = useState<string>();
-    const [selectedId, setSelectedId] = useState<string>();
 
     const [openProcessScrapeDataModal, setOpenProcessScrapeDataModal] = useState(false);
     const [selectedDataProviderIds, setSelectedDataProviderIds] = useState<string[]>([]);
@@ -39,121 +141,7 @@ const DataProviderPage = () => {
     const tableContainerData = useTableContainer({ resource: 'data-providers' });
     const modalPropsData = useCustomModal({ action: 'edit', resource: 'data-providers' });
 
-    const { options: dataProviderItems } = useSelectDataProviderItem({
-        id: selectedId,
-        type: 'data-provider',
-    });
-
     const { options: dataProviders, query: dataProviderQuery } = useSelectDataProvider();
-
-    const columns: ColumnsType<NDataProvider.IDataProvider> = [
-        {
-            title: 'Tên',
-            dataIndex: 'name',
-            key: 'name',
-            ellipsis: true,
-            sorter: true,
-            width: '15%',
-        },
-        {
-            title: 'Mã',
-            dataIndex: 'identifier',
-            key: 'identifier',
-            ellipsis: true,
-            sorter: true,
-            width: '10%',
-        },
-        {
-            title: 'URL cơ sở',
-            dataIndex: 'baseUrl',
-            key: 'baseUrl',
-            ellipsis: true,
-            sorter: true,
-            width: '20%',
-        },
-        {
-            key: 'status',
-            title: 'Trạng thái',
-            dataIndex: 'status',
-            render: (status: DataProviderStatus) => <StatusTag status={status} />,
-            width: '10%',
-        },
-        {
-            title: 'Ngày tạo',
-            dataIndex: 'createdAt',
-            key: 'createdAt',
-            sorter: true,
-            render: (createdAt: Date) => formatDate(createdAt),
-            width: '20%',
-        },
-        {
-            key: 'targetConfig',
-            title: 'Cào',
-            align: 'center',
-            dataIndex: 'targetConfig',
-            render: (targetConfig: NDataProvider.ITargetConfig) =>
-                targetConfig ? (
-                    <Icon icon="lucide:check" className="w-full" />
-                ) : (
-                    <Icon icon="lucide:x" className="w-full" />
-                ),
-            width: '10%',
-        },
-        {
-            key: 'searchConfig',
-            title: 'Tìm kiếm',
-            align: 'center',
-            dataIndex: 'searchConfig',
-            render: (searchConfig: NDataProvider.ISearchConfig) =>
-                searchConfig ? (
-                    <Icon icon="lucide:check" className="w-full" />
-                ) : (
-                    <Icon icon="lucide:x" className="w-full" />
-                ),
-            width: '15%',
-        },
-    ];
-
-    const importDataColumns: ColumnType<NDataProvider.IImportDataProvider>[] = [
-        {
-            title: 'Tên nhà cung cấp',
-            dataIndex: 'dataProviderName',
-            key: 'dataProviderName',
-            ellipsis: true,
-            width: '25%',
-        },
-        {
-            title: 'Mã nhà cung cấp',
-            dataIndex: 'dataProviderIdentifier',
-            key: 'dataProviderIdentifier',
-            align: 'center',
-            ellipsis: true,
-            width: '15%',
-        },
-        {
-            title: 'URL đối tượng',
-            dataIndex: 'itemUrl',
-            key: 'itemUrl',
-            align: 'center',
-            width: '30%',
-        },
-        {
-            title: 'Tên đối tượng',
-            dataIndex: 'itemName',
-            key: 'itemName',
-            ellipsis: true,
-            width: '20%',
-        },
-        {
-            title: 'Mã đối tượng',
-            dataIndex: 'itemCode',
-            key: 'itemCode',
-            align: 'center',
-            ellipsis: true,
-            width: '10%',
-        },
-    ];
-
     const formFields: FormFieldItem[] = [
         {
             span: 12,
@@ -213,13 +201,67 @@ const DataProviderPage = () => {
                 const parentDataProvider = dataProviderQuery?.data?.data?.find(
                     (item) => item.id === value,
                 );
-
                 form?.setFieldValue('identifier', parentDataProvider?.identifier ?? '');
             },
             selectProps: {
                 options: dataProviders ?? [],
             },
         },
+    ];
+
+    const actionItems: ActionTableItem[] = [
+        {
+            key: 'edit',
+            label: 'Chỉnh sửa',
+            icon: <Icon icon="tabler:edit" />,
+            onClick: (record: NDataProvider.IDataProvider) => setEditItemId(record?.id),
+        },
+        {
+            key: 'scrape-unconfigured',
+            label: 'Cấu hình dữ liệu',
+            icon: <Icon icon="tabler:database-cog" />,
+            onClick: (record: NDataProvider.IDataProvider) => {
+                modalPropsData?.show?.(record?.id);
+            },
+        },
+        {
+            key: 'search-configured',
+            label: 'Cấu hình tìm kiếm',
+            icon: <Icon icon="tabler:search" />,
+            onClick: (record: NDataProvider.IDataProvider) => {
+                modalPropsData?.show?.(record?.id);
+            },
+        },
+    ];
+
+    const actionButtons: ReactNode[] = [
+        <CustomButton
+            type="primary"
+            key="scrape-data"
+            title="Cào dữ liệu"
+            icon={<Icon icon="lucide:file-text" />}
+            onClick={() => setOpenProcessScrapeDataModal(true)}
+        >
+            Cào
+        </CustomButton>,
+        <CustomButton
+            type="primary"
+            title="Nhập nhà cung cấp"
+            key="import-data-provider"
+            icon={<Icon icon="lucide:import" />}
+            onClick={() => setOpenImportItemModal(true)}
+        >
+            Nhập
+        </CustomButton>,
+        <CustomButton
+            type="primary"
+            key="add-data-provider"
+            title="Thêm nhà cung cấp"
+            icon={<Icon icon="lucide:plus" />}
+            onClick={() => setOpenCreateItemModal(true)}
+        >
+            Thêm
+        </CustomButton>,
     ];
 
     const customFilterItems: FilterItem[] = [
@@ -256,62 +298,10 @@ const DataProviderPage = () => {
         },
     ];
 
-    const actionItems: ActionTableItem[] = [
-        {
-            key: 'edit',
-            label: 'Chỉnh sửa',
-            icon: <Icon icon="tabler:edit" />,
-            onClick: (record: NDataProvider.IDataProvider) => setEditItemId(record?.id),
-        },
-        {
-            key: 'scrape-unconfigured',
-            label: 'Cấu hình dữ liệu',
-            icon: <Icon icon="tabler:database-cog" />,
-            onClick: (record: NDataProvider.IDataProvider) => {
-                setSelectedId(record?.id);
-                modalPropsData?.show?.(record?.id);
-            },
-        },
-        {
-            key: 'search-configured',
-            label: 'Cấu hình tìm kiếm',
-            icon: <Icon icon="tabler:search" />,
-            onClick: (record: NDataProvider.IDataProvider) => {
-                setSelectedId(record?.id);
-                modalPropsData?.show?.(record?.id);
-            },
-        },
-    ];
-
-    const actionButtons: ReactNode[] = [
-        <CustomButton
-            type="primary"
-            key="scrape-data"
-            title="Cào dữ liệu"
-            icon={<Icon icon="lucide:file-text" />}
-            onClick={() => setOpenProcessScrapeDataModal(true)}
-        >
-            Cào
-        </CustomButton>,
-        <CustomButton
-            type="primary"
-            title="Nhập nhà cung cấp"
-            key="import-data-provider"
-            icon={<Icon icon="lucide:import" />}
-            onClick={() => setOpenImportItemModal(true)}
-        >
-            Nhập
-        </CustomButton>,
-        <CustomButton
-            type="primary"
-            key="add-data-provider"
-            title="Thêm nhà cung cấp"
-            icon={<Icon icon="lucide:plus" />}
-            onClick={() => setOpenCreateItemModal(true)}
-        >
-            Thêm
-        </CustomButton>,
-    ];
+    const filterSearch = {
+        placeholder: 'Tìm kiếm nhà cung cấp',
+        span: 12,
+    };
 
     return (
         <>
@@ -323,7 +313,7 @@ const DataProviderPage = () => {
                 actionButtons={actionButtons}
                 customFilterItems={customFilterItems}
                 tableContainerData={tableContainerData}
-                filterSearch={{ placeholder: 'Tìm kiếm nhà cung cấp', span: 12 }}
+                filterSearch={filterSearch}
                 description="Danh sách nhà cung cấp được sử dụng để cào dữ liệu và tìm kiếm dữ liệu"
             />
 
@@ -352,10 +342,8 @@ const DataProviderPage = () => {
             <ScrapeSetting
                 key="scrape-setting"
                 modalPropsData={modalPropsData}
-                dataProviderItemOptions={dataProviderItems}
                 onClose={() => {
                     modalPropsData?.close();
-                    setSelectedId(undefined);
                     tableContainerData?.tableQuery?.refetch();
                 }}
             />

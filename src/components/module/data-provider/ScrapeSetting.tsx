@@ -23,23 +23,23 @@ import {
 } from '@/constants';
 import { useMainContext } from '@/contexts/MainContext';
 import { DataProviderStatus, MessageType, NotificationType, ScraperServiceEnum } from '@/enums';
-import { useCustomModal, useCustomMutationData } from '@/hooks';
-import { NBaseApi, NDataProvider, Option } from '@/interfaces';
+import { useCustomModal, useCustomMutationData, useSelectDataProviderItem } from '@/hooks';
+import { NBaseApi, NDataProvider } from '@/interfaces';
 
 import { isEmpty, isNumber } from 'lodash';
-import { Fragment, useState } from 'react';
+import { Fragment, useMemo, useState } from 'react';
 import { ScrapeFormItem } from './ScrapeFormItem';
 
 type DataProviderForm = NDataProvider.IDataProvider & {
     url: string;
     extractData: Record<string, unknown>;
     additionalUrls?: string[];
+    expectedCurrency?: string;
     screenShotImage?: string;
 };
 
 type ScrapeSettingProps = {
     modalPropsData: ReturnType<typeof useCustomModal>;
-    dataProviderItemOptions: Option[];
     onClose: () => void;
 };
 
@@ -76,11 +76,7 @@ export const FORM_FIELDS = {
     ADDITIONAL_EXTRACT_DATA: 'additionalExtractData',
 };
 
-export const ScrapeSetting = ({
-    modalPropsData,
-    dataProviderItemOptions,
-    onClose,
-}: ScrapeSettingProps) => {
+export const ScrapeSetting = ({ modalPropsData, onClose }: ScrapeSettingProps) => {
     const { handleNotification } = useMainContext();
     const { formProps, modalProps, formLoading } = modalPropsData;
 
@@ -88,7 +84,7 @@ export const ScrapeSetting = ({
     const [isTestHtmlContent, setIsTestHtmlContent] = useState<boolean>(false);
 
     const form = formProps?.form;
-    const dataProvider = formProps?.initialValues;
+    const dataProvider = formProps?.initialValues as DataProviderForm | undefined;
     const isParentProvider = dataProvider?.parentId ? false : true;
 
     const url = CustomForm.useWatch([FORM_FIELDS.URL], { form, preserve: true });
@@ -129,6 +125,30 @@ export const ScrapeSetting = ({
 
     const { handleCustomMutationData: handleUpdate } = useCustomMutationData();
     const { handleCustomMutationData: handleCreate } = useCustomMutationData();
+    const { options: dataProviderItemOptions, query: dataProviderItemQuery } =
+        useSelectDataProviderItem({
+            id: dataProvider?.id,
+            type: 'data-provider',
+            enabled: !!dataProvider?.id,
+        });
+
+    const initialValues = useMemo(() => {
+        if (isEmpty(formProps?.initialValues?.targetConfig)) {
+            return {
+                scraperService: ScraperServiceEnum.API,
+                targetConfig: {
+                    maxResults: 10,
+                    retryDelay: 1000,
+                    retryAttempts: 3,
+                    mainContentSelector: '',
+                    isGetParentElement: false,
+                    functionGenerator: DEFAULT_API_FUNCTION_GENERATOR,
+                },
+            };
+        }
+
+        return formProps?.initialValues;
+    }, [formProps?.initialValues]);
 
     const handleTestParser = async () => {
         if (!url && !htmlContentString) {
@@ -280,6 +300,11 @@ export const ScrapeSetting = ({
         onClose();
     };
 
+    const handleLocalFolderRegistered = (response: NDataProvider.RegisterLocalFolderResponse) => {
+        dataProviderItemQuery?.refetch();
+        form?.setFieldValue([FORM_FIELDS.URL], response.itemUrl);
+    };
+
     const renderTitle = () => {
         if (!dataProvider) return <></>;
 
@@ -416,7 +441,9 @@ export const ScrapeSetting = ({
                     headers={headers}
                     cookies={cookies}
                     formUrls={formUrls}
+                    dataProvider={dataProvider}
                     scraperService={scraperService}
+                    onRegistered={handleLocalFolderRegistered}
                     renderFormUrl={renderFormUrl}
                 />
             </Fragment>
@@ -555,23 +582,9 @@ export const ScrapeSetting = ({
                 {...formProps}
                 layout="vertical"
                 disabled={!isParentProvider}
+                initialValues={initialValues}
                 className="[&_.ant-form-item]:!mb-2"
                 onFinish={(values) => handleUpdateTargetConfig(values as DataProviderForm)}
-                initialValues={
-                    isEmpty(formProps?.initialValues?.targetConfig)
-                        ? {
-                              scraperService: ScraperServiceEnum.API,
-                              targetConfig: {
-                                  maxResults: 10,
-                                  retryDelay: 1000,
-                                  retryAttempts: 3,
-                                  mainContentSelector: '',
-                                  isGetParentElement: false,
-                                  functionGenerator: DEFAULT_API_FUNCTION_GENERATOR,
-                              },
-                          }
-                        : formProps?.initialValues
-                }
             >
                 {renderFormTargetConfiguration()}
                 {renderFunctionGenerator()}

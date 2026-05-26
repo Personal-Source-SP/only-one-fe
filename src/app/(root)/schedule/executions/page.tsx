@@ -53,6 +53,106 @@ const ScheduleExecutionPage = () => {
         }
     }, [type]);
 
+    const executionServiceOptions = [
+        {
+            label: 'Nhà cung cấp',
+            value: ExecutionServiceEnum.DATA_PROVIDER,
+        },
+    ];
+
+    const scheduleTypeOptions = [
+        {
+            label: 'Toàn bộ',
+            value: ScheduleType.GLOBAL,
+        },
+        {
+            label: 'Nhà cung cấp',
+            value: ScheduleType.DATA_PROVIDER,
+        },
+        {
+            label: 'Đối tượng',
+            value: ScheduleType.ITEM,
+        },
+    ];
+
+    const handleSwitchStatus = (id: string, active: boolean) => {
+        setLoading(true);
+
+        handleCustomMutationData({
+            values: {},
+            method: 'put',
+            url: `schedules/${id}/switch-status/${active}`,
+            successNotification: (data) => {
+                if (!data?.data?.isSuccess) {
+                    setLoading(false);
+
+                    return {
+                        type: MessageType.ERROR,
+                        message: 'Chuyển trạng thái thất bại',
+                        description: data?.data?.message ?? 'Chuyển trạng thái thất bại',
+                    };
+                }
+
+                setLoading(false);
+
+                tableContainerData?.tableQuery?.refetch();
+
+                return {
+                    type: MessageType.SUCCESS,
+                    message: 'Chuyển trạng thái thành công',
+                };
+            },
+            errorNotification: (error) => {
+                setLoading(false);
+
+                return {
+                    type: MessageType.ERROR,
+                    message: 'Chuyển trạng thái thất bại',
+                    description: error?.message ?? 'Chuyển trạng thái thất bại',
+                };
+            },
+        });
+    };
+
+    const handleManualTrigger = (id: string) => {
+        setLoading(true);
+
+        handleCustomMutationData({
+            values: {},
+            method: 'post',
+            url: `schedules/${id}/manual-trigger`,
+            successNotification: (data) => {
+                if (!data?.data?.isSuccess) {
+                    setLoading(false);
+
+                    return {
+                        type: MessageType.ERROR,
+                        message: 'Chạy thủ công thất bại',
+                        description: data?.data?.message ?? 'Chạy thủ công thất bại',
+                    };
+                }
+
+                setLoading(false);
+
+                tableContainerData?.tableQuery?.refetch();
+
+                return {
+                    type: MessageType.SUCCESS,
+                    message: 'Chạy thủ công thành công',
+                };
+            },
+            errorNotification: (error) => {
+                setLoading(false);
+
+                return {
+                    type: MessageType.ERROR,
+                    message: 'Chạy thủ công thất bại',
+                    description: error?.message ?? 'Chạy thủ công thất bại',
+                };
+            },
+        });
+    };
+
     const columns: ColumnsType<NSchedule.ISchedule> = [
         {
             title: 'STT',
@@ -86,8 +186,8 @@ const ScheduleExecutionPage = () => {
             key: 'cronExpression',
             width: 150,
             ellipsis: true,
-            render: (cronExpression: string) =>
-                capitalizeFirstLetter(getEnumKeyByValue(CronExpression, cronExpression) ?? '---'),
+            render: (value: string) =>
+                capitalizeFirstLetter(getEnumKeyByValue(CronExpression, value) ?? '---'),
         },
         {
             title: 'Chạy gần nhất',
@@ -137,12 +237,7 @@ const ScheduleExecutionPage = () => {
             name: 'executionService',
             rules: [{ required: true, message: 'Vui lòng chọn dịch vụ thực thi' }],
             selectProps: {
-                options: [
-                    {
-                        label: 'Nhà cung cấp',
-                        value: ExecutionServiceEnum.DATA_PROVIDER,
-                    },
-                ],
+                options: executionServiceOptions,
             },
         },
         {
@@ -152,20 +247,7 @@ const ScheduleExecutionPage = () => {
             onChange: (value) => setType(value as ScheduleType),
             rules: [{ required: true, message: 'Vui lòng chọn loại lịch biểu' }],
             selectProps: {
-                options: [
-                    {
-                        label: 'Toàn bộ',
-                        value: ScheduleType.GLOBAL,
-                    },
-                    {
-                        label: 'Nhà cung cấp',
-                        value: ScheduleType.DATA_PROVIDER,
-                    },
-                    {
-                        label: 'Đối tượng',
-                        value: ScheduleType.ITEM,
-                    },
-                ],
+                options: scheduleTypeOptions,
             },
         },
         {
@@ -251,84 +333,6 @@ const ScheduleExecutionPage = () => {
         },
     ];
 
-    const handleSwitchStatus = (id: string, active: boolean) => {
-        setLoading(true);
-
-        handleCustomMutationData({
-            values: {},
-            method: 'put',
-            url: `schedules/${id}/switch-status/${active}`,
-            successNotification: (data) => {
-                if (!data?.data?.isSuccess) {
-                    setLoading(false);
-
-                    return {
-                        type: MessageType.ERROR,
-                        message: 'Chuyển trạng thái thất bại',
-                        description: data?.data?.message ?? 'Chuyển trạng thái thất bại',
-                    };
-                }
-
-                setLoading(false);
-
-                tableContainerData?.tableQuery?.refetch();
-
-                return {
-                    type: MessageType.SUCCESS,
-                    message: 'Chuyển trạng thái thành công',
-                };
-            },
-            errorNotification: (error) => {
-                setLoading(false);
-
-                return {
-                    type: MessageType.ERROR,
-                    message: 'Chuyển trạng thái thất bại',
-                    description: error?.message ?? 'Chuyển trạng thái thất bại',
-                };
-            },
-        });
-    };
-
-    const handleManualTrigger = (id: string) => {
-        setLoading(true);
-
-        handleCustomMutationData({
-            values: {},
-            method: 'post',
-            url: `schedules/${id}/manual-trigger`,
-            successNotification: (data) => {
-                if (!data?.data?.isSuccess) {
-                    setLoading(false);
-
-                    return {
-                        type: MessageType.ERROR,
-                        message: 'Chạy thủ công thất bại',
-                        description: data?.data?.message ?? 'Chạy thủ công thất bại',
-                    };
-                }
-
-                setLoading(false);
-
-                tableContainerData?.tableQuery?.refetch();
-
-                return {
-                    type: MessageType.SUCCESS,
-                    message: 'Chạy thủ công thành công',
-                };
-            },
-            errorNotification: (error) => {
-                setLoading(false);
-
-                return {
-                    type: MessageType.ERROR,
-                    message: 'Chạy thủ công thất bại',
-                    description: error?.message ?? 'Chạy thủ công thất bại',
-                };
-            },
-        });
-    };
-
     const actionButtons: ReactNode[] = [
         <CustomButton
             type="primary"
@@ -341,6 +345,18 @@ const ScheduleExecutionPage = () => {
         </CustomButton>,
     ];
 
+    const filterSearch = {
+        placeholder: 'Tìm kiếm lịch biểu thực thi',
+    };
+
+    const initialValues = {
+        enabled: true,
+        type: ScheduleType.GLOBAL,
+        minScrapeIntervalMinutes: 3,
+        executionService: ExecutionServiceEnum.DATA_PROVIDER,
+        cronExpression: CronExpression['MỖI NGÀY LÚC 8 GIỜ TỐI'],
+    };
+
     return (
         <>
             <DataTableContainer
@@ -352,7 +368,7 @@ const ScheduleExecutionPage = () => {
                 description="Quản lý các lịch biểu thực thi công việc"
                 actionButtons={actionButtons}
                 tableContainerData={tableContainerData}
-                filterSearch={{ placeholder: 'Tìm kiếm lịch biểu thực thi' }}
+                filterSearch={filterSearch}
             />
 
             <CreateFormDialog
@@ -361,13 +377,7 @@ const ScheduleExecutionPage = () => {
                 open={openCreateItemModal}
                 title="Thêm mới lịch biểu thực thi"
                 bottomRender={<NextRunTimes cron={cronExpression} />}
-                initialValues={{
-                    enabled: true,
-                    type: ScheduleType.GLOBAL,
-                    minScrapeIntervalMinutes: 3,
-                    executionService: ExecutionServiceEnum.DATA_PROVIDER,
-                    cronExpression: CronExpression['MỖI NGÀY LÚC 8 GIỜ TỐI'],
-                }}
+                initialValues={initialValues}
                 onClose={() => {
                     setOpenCreateItemModal(false);
                     tableContainerData?.tableQuery?.refetch();
