@@ -5,7 +5,9 @@ const toApiBaseUrl = (url: string): string => {
 
 export const getApiBaseUrl = (): string => {
     const url = process.env.NEXT_PUBLIC_API_URL;
-    if (!url) throw new Error('NEXT_PUBLIC_API_URL is not defined');
+    if (!url) {
+        return '';
+    }
 
     return toApiBaseUrl(url);
 };
