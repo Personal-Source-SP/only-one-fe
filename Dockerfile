@@ -46,7 +46,6 @@ RUN if [ -f .env.sample ]; then \
 
 # Gộp các bước build thành một RUN để giảm số layer Docker
 RUN npm run build && \
-    (npm run clean:cache || true) && \
     rm -f .env.local
 
 # ==========================================
