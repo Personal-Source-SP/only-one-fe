@@ -1,3 +1,5 @@
+'use client';
+
 import { CHEERIO_COMPLETION_ITEMS } from './utils/completion';
 import { cheerioTypes } from './utils/type';
 import { Editor, useMonaco } from '@monaco-editor/react';
