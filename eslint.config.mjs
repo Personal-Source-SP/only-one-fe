@@ -69,8 +69,7 @@ export default [
                     patterns: [
                         {
                             group: ['antd/*', 'antd/es/*'],
-                            message:
-                                'Import antd subpaths only inside src/components/custom/**.',
+                            message: 'Import antd subpaths only inside src/components/custom/**.',
                         },
                         {
                             group: [
@@ -132,7 +131,6 @@ export default [
                                 '@/hooks/*',
                                 '@/constants/*',
                                 '@/services/*',
-                                '@/components/custom/*',
                                 '@/components/common/*',
                                 '@/components/module/*/*',
                             ],

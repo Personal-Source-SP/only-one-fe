@@ -1,9 +1,8 @@
 'use client';
 
-import { DataTableContainer, MediaLightbox } from '@/components/common';
+import { DataTableContainer, MediaLightbox, FileGroups } from '@/components/common';
 import { ColumnsType, CustomButton, CustomFlex, CustomSelect } from '@/components/custom';
-import { ProcessScrapeData } from '@/components/module/data-provider';
-import { FileGroups } from '@/components/module/file-group';
+import { ProcessScrapeData } from '@/app/(root)/scraping/components';
 import { useMainContext } from '@/contexts/MainContext';
 import { CustomFilterType, DisplayMode, MessageType, ViewFileMode } from '@/enums';
 import {
@@ -29,11 +28,6 @@ type ScrapingDataFilterItemsParams = {
     dataProviderOptions: FilterOptions;
     onViewModeChange: (value: ViewFileMode) => void;
     onColumnDisplayChange: (value: number) => void;
-};
-
-type DisplayModeActionParams = {
-    displayMode: DisplayMode;
-    onChange: (value: DisplayMode) => void;
 };
 
 export const columns: ColumnsType<NDataProvider.IScrapingData> = [

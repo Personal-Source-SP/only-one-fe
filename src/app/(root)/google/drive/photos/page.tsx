@@ -1,16 +1,15 @@
 'use client';
 
-import { DataTableContainer, MediaLightbox } from '@/components/common';
+import { DataTableContainer, MediaLightbox, FileGroups } from '@/components/common';
 import { CustomButton } from '@/components/custom';
 import { CustomFilterType, GoogleDriveType, MimeType, QualityMode, ViewFileMode } from '@/enums';
 import type { FileItem, FilterItem, NGoogle } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { isNumber } from 'lodash';
-import { ReactNode, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
-import { FileGroups } from '@/components/module/file-group';
-import { SyncGoogleDrive } from '@/components/module/sync-google-drive';
-import { SyncLocal } from '@/components/module/sync-local';
+import { SyncGoogleDrive } from '@/app/(root)/google/drive/components/sync-google-drive';
+import { SyncLocal } from '@/app/(root)/google/drive/components/sync-local';
 
 import { useCustomData, useSelectGoogleFolder, useTableContainer } from '@/hooks';
 import { getDriveImageUrl, isExpiredToken } from '@/libs';
@@ -29,6 +28,7 @@ type PhotoFilterItemsParams = {
     onQualityModeChange: (value: QualityMode) => void;
     onColumnsChange: (value: number) => void;
 };
+
 const PhotosPage = () => {
     const [columns, setColumns] = useState(4);
     const [viewMode, setViewMode] = useState<ViewFileMode>(ViewFileMode.ALL);
@@ -218,7 +218,7 @@ const PhotosPage = () => {
         onColumnsChange: setColumns,
     });
 
-    const actionButtons: ReactNode[] = [
+    const actionButtons = [
         <CustomButton
             type="primary"
             key="slideshow"

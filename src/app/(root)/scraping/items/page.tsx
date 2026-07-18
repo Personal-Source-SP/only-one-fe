@@ -7,8 +7,7 @@ import {
     StatusTag,
 } from '@/components/common';
 import { ColumnType, ColumnsType, CustomButton, CustomTag } from '@/components/custom';
-import { ProcessScrapeData } from '@/components/module/data-provider';
-import { ImportData } from '@/components/module/import-data';
+import { ProcessScrapeData, ImportData } from '@/app/(root)/scraping/components';
 import { DataImportType, ProductMappingStatus } from '@/enums';
 import { useTableContainer } from '@/hooks';
 import { ActionTableItem, FormFieldItem, NDataProvider } from '@/interfaces';

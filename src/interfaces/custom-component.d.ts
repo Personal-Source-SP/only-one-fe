@@ -1,4 +1,4 @@
-import { CodeDisplayProps } from '@/components/module/code-display';
+import { CodeDisplayProps } from '@/components/common';
 import { Option } from '@/interfaces';
 import type { FormInstance, Rule } from '@/components/custom';
 import { ReactNode } from 'react';

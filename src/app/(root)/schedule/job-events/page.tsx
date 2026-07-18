@@ -2,7 +2,7 @@
 
 import { DataTableContainer, StatusTag } from '@/components/common';
 import { ColumnsType } from '@/components/custom';
-import { ViewJobEvent } from '@/components/module/schedule';
+import { ViewJobEvent } from '@/app/(root)/schedule/components/ViewJobEvent';
 import { ScheduleJobEventType } from '@/enums';
 import { useTableContainer } from '@/hooks';
 import { ActionTableItem, NSchedule } from '@/interfaces';

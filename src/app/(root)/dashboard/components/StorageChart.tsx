@@ -10,7 +10,7 @@ type StorageChartProps = {
     total: string;
 };
 
-export const StorageChart = ({ data, total }: StorageChartProps) => {
+export const StorageChart = memo(({ data, total }: StorageChartProps) => {
     return (
         <div className="w-full h-64 relative">
             <ResponsiveContainer width="100%" height="100%">
@@ -58,4 +58,6 @@ export const StorageChart = ({ data, total }: StorageChartProps) => {
             </div>
         </div>
     );
-};
+});
+
+StorageChart.displayName = 'StorageChart';

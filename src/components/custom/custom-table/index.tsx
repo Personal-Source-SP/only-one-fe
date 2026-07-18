@@ -6,9 +6,9 @@ import { ActionTableItem, NBaseApi } from '@/interfaces';
 import { DeleteOutlined } from '@ant-design/icons';
 import { CrudSort, useDelete } from '@refinedev/core';
 import { Table } from 'antd';
-import { CustomButton } from '../custom-button';
-import { CustomPopconfirm } from '../custom-popconfirm';
-import { CustomSpace } from '../custom-space';
+import { CustomButton } from '@/components/custom/custom-button';
+import { CustomPopconfirm } from '@/components/custom/custom-popconfirm';
+import { CustomSpace } from '@/components/custom/custom-space';
 import type {
     ColumnsType,
     FilterValue,
@@ -16,7 +16,7 @@ import type {
     TableCurrentDataSource,
     TablePaginationConfig,
     TableProps,
-} from '../custom-antd-types';
+} from '@/components/custom/custom-antd-types';
 import { useMemo } from 'react';
 
 type CustomTableProps = {

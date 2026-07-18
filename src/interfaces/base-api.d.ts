@@ -1,3 +1,6 @@
+type SortBy<T> = [keyof T & string, 'ASC' | 'DESC'][];
+type Column<T> = keyof T & string;
+
 export declare namespace NBaseApi {
     interface IRequest {
         baseURL: string;

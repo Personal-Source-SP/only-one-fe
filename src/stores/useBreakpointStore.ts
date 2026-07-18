@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { Breakpoint } from 'antd/es/_util/responsiveObserver';
+import type { Breakpoint } from '@/components/custom';
 
 type Screens = Partial<Record<Breakpoint, boolean>>;
 

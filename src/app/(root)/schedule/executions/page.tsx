@@ -8,7 +8,8 @@ import {
 } from '@/components/common';
 import { ColumnsType, CustomButton, CustomToggle } from '@/components/custom';
 import { MessageType } from '@/enums';
-import { NextRunTimes, ViewScheduleJobList } from '@/components/module/schedule';
+import { NextRunTimes } from '@/app/(root)/schedule/components/NextRunTimes';
+import { ViewScheduleJobList } from '@/app/(root)/schedule/components/ViewScheduleJobList';
 import { CronExpression, ExecutionServiceEnum, ScheduleType } from '@/enums';
 import {
     useCustomMutationData,

@@ -4,8 +4,8 @@ import { DATE_FORMAT_SHORT, DATE_FORMAT_TIME } from '@/constants';
 import dayjs, { Dayjs } from 'dayjs';
 import { debounce } from 'lodash';
 import { useCallback } from 'react';
-import { CustomForm } from '../custom-form';
-import { CustomPicker } from '../custom-picker';
+import { CustomForm } from '@/components/custom/custom-form';
+import { CustomPicker } from '@/components/custom/custom-picker';
 
 export type CustomDatePickerProps = {
     name: string;

@@ -1,13 +1,12 @@
 'use client';
 
 import { CustomButton, CustomCard, CustomSpace } from '@/components/custom';
-import { ActivityChart } from '@/components/module/activity-chart';
-import { StorageChart } from '@/components/module/storage-chart';
 import { Icon } from '@iconify/react';
 import Link from 'next/link';
+import { ActivityChart } from './components/ActivityChart';
+import { StorageChart } from './components/StorageChart';
 
 const DashboardPage = () => {
-    // Note: Removed framer-motion variants
     const recentFiles = [
         {
             id: 1,

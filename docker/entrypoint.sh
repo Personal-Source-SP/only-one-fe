@@ -5,7 +5,9 @@ echo "=========================================="
 echo "Starting Next.js Application"
 echo "=========================================="
 
-# Load environment variables từ file nếu tồn tại
+# Runtime env injection: Tạo .env từ .env.sample bằng cách substitute các biến
+# môi trường của container vào template. Khác với build-time (Dockerfile) tạo .env.local
+# để next build có thể đọc, đây là runtime để next server đọc khi khởi động.
 if [ -f .env.sample ]; then
     echo "📝 Creating .env from template..."
     envsubst < .env.sample > .env
@@ -25,9 +27,9 @@ echo "   Port:        ${PORT}"
 echo "   Hostname:    ${HOSTNAME}"
 echo "=========================================="
 
-echo "🔧 Environment variables (full):"
-printenv | while IFS='=' read -r name value; do
-    echo "   $name=$value"
+echo "🔧 Environment variables (keys only):"
+printenv | cut -d= -f1 | while read -r name; do
+    echo "   $name"
 done
 echo "=========================================="
 

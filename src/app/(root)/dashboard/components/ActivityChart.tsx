@@ -18,7 +18,7 @@ type ActivityChartProps = {
     }[];
 };
 
-export const ActivityChart = ({ data }: ActivityChartProps) => {
+export const ActivityChart = memo(({ data }: ActivityChartProps) => {
     return (
         <div className="w-full h-64">
             <ResponsiveContainer width="100%" height="100%">
@@ -79,4 +79,6 @@ export const ActivityChart = ({ data }: ActivityChartProps) => {
             </ResponsiveContainer>
         </div>
     );
-};
+});
+
+ActivityChart.displayName = 'ActivityChart';

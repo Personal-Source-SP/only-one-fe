@@ -1,6 +1,6 @@
 'use client';
 
-import { FormModalLayout, StatusTag } from '@/components/common';
+import { FormModalLayout, StatusTag, CodeDisplay } from '@/components/common';
 import {
     CustomButton,
     CustomCard,
@@ -15,7 +15,7 @@ import {
     CustomToggle,
     CustomTypography,
 } from '@/components/custom';
-import { CodeDisplay } from '@/components/module/code-display';
+
 import {
     DEFAULT_API_FUNCTION_GENERATOR,
     DEFAULT_HTML_CONTENT_STRING,

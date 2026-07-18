@@ -2,7 +2,7 @@
 
 import { CreateFormDialog, DataTableContainer, EditFormDialog } from '@/components/common';
 import { ColumnsType, CustomButton, CustomSpace, CustomToggle } from '@/components/custom';
-import { ProcessScrapeData } from '@/components/module/data-provider';
+import { ProcessScrapeData } from '@/app/(root)/scraping/components';
 import { CustomFilterType, DataProviderStatus, MessageType } from '@/enums';
 import {
     useCustomMutationData,
@@ -17,22 +17,6 @@ import { Icon } from '@iconify/react';
 import { ReactNode, useState } from 'react';
 
 type SelectOptions = NonNullable<NonNullable<FormFieldItem['selectProps']>['options']>;
-
-type DataProviderItemColumnsParams = {
-    onSwitchStatus: (id: string, active: boolean) => void;
-};
-
-type DataProviderItemFormFieldsParams = {
-    itemOptions: SelectOptions;
-    dataProviderOptions: SelectOptions;
-    cloudDataProviderOptions: SelectOptions;
-    dataProviderRecords: NDataProvider.IDataProvider[];
-};
-
-type DataProviderItemFilterItemsParams = {
-    itemOptions: SelectOptions;
-    dataProviderOptions: SelectOptions;
-};
 
 const DataProviderItemPage = () => {
     const [loading, setLoading] = useState(false);

@@ -24,23 +24,18 @@ export const isExpiredToken = (expiresAt: Date): boolean => {
     return new Date(expiresAt).getTime() <= now + 30 * 1000;
 };
 
+/**
+ * Exchange OAuth authorization code lấy tokens.
+ * Gọi qua server-side API Route /api/google/exchange-token để GOOGLE_CLIENT_SECRET
+ * không bao giờ xuất hiện trong client-side bundle.
+ */
 export const exchangeCodeForTokens = async (
     code: string,
     redirectUri: string,
 ): Promise<NGoogle.IGoogleExchangeCodeRequest | null> => {
-    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '';
-    const clientSecret = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET || '';
-
-    const body = new URLSearchParams({
+    const res = await axios.post('/api/google/exchange-token', {
         code,
-        client_id: clientId,
-        client_secret: clientSecret,
-        redirect_uri: redirectUri,
-        grant_type: 'authorization_code',
-    });
-
-    const res = await axios.post('https://oauth2.googleapis.com/token', body.toString(), {
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        redirectUri,
     });
 
     if (res.status !== 200) {
@@ -50,9 +45,17 @@ export const exchangeCodeForTokens = async (
     return res.data as NGoogle.IGoogleExchangeCodeRequest;
 };
 
+/**
+ * Refresh access token.
+ * NOTE: Hiện tại chưa có caller trong codebase. Nếu cần dùng, tạo server-side API Route
+ * tương tự exchange-token để tránh lộ GOOGLE_CLIENT_SECRET.
+ * TODO: Chuyển hàm này sang sử dụng /api/google/refresh-token khi có caller.
+ */
 export const refreshAccessToken = async (
     refreshToken: string,
 ): Promise<NGoogle.IGoogleExchangeCodeRequest | null> => {
+    // TODO: Move to server-side API Route to avoid exposing GOOGLE_CLIENT_SECRET.
+    // See: src/app/api/google/exchange-token/route.ts as reference.
     const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '';
     const clientSecret = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET || '';
 

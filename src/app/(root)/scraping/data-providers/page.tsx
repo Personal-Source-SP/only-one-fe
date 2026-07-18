@@ -7,8 +7,7 @@ import {
     StatusTag,
 } from '@/components/common';
 import { ColumnType, ColumnsType, CustomButton } from '@/components/custom';
-import { ProcessScrapeData, ScrapeSetting } from '@/components/module/data-provider';
-import { ImportData } from '@/components/module/import-data';
+import { ProcessScrapeData, ScrapeSetting, ImportData } from '@/app/(root)/scraping/components';
 import {
     CustomFilterType,
     DataImportType,

@@ -10,7 +10,7 @@ import {
     CustomRow,
     FormInstance,
 } from '@/components/custom';
-import { CodeDisplay } from '@/components/module/code-display';
+import { CodeDisplay } from '@/components/common';
 import { LinkOutlined, MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { Fragment, JSX } from 'react';
 import { FORM_FIELDS } from './ScrapeSetting';

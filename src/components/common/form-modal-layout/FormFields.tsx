@@ -12,7 +12,7 @@ import {
     FormProps,
     UploadFile,
 } from '@/components/custom';
-import { CodeDisplay } from '@/components/module/code-display';
+import { CodeDisplay } from '@/components/common';
 import { FormFieldItem } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { ChangeEvent } from 'react';
@@ -148,7 +148,11 @@ export const renderFormFields = (formField: FormFieldItem, formProps: FormProps<
     }
 
     return (
-        <CustomCol span={formField.span ?? 24} key={formField.name} hidden={formField.hidden ?? false}>
+        <CustomCol
+            span={formField.span ?? 24}
+            key={formField.name}
+            hidden={formField.hidden ?? false}
+        >
             {formField.elementTopRender && formField.elementTopRender}
 
             {formField.type === 'switch' ? (

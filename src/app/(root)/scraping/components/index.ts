@@ -5,3 +5,4 @@ export * from './ScrapeApiForm';
 export * from './ScrapeGenericForm';
 export * from './ScrapeFormItem';
 export * from './ScrapeSetting';
+export * from './ImportData';
