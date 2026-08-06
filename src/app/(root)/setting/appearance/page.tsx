@@ -1,21 +1,14 @@
 'use client';
 
 import { ContentSection } from '@/components/common';
-import { HUB_THEME_PALETTE_OPTIONS, HubThemePalette } from '@/constants';
-import { useHubThemePalette } from '@/contexts/HubThemePaletteContext';
+import { HUB_THEME_PALETTE_OPTIONS } from '@/constants';
 import { ElementType } from '@/enums';
 import { Icon } from '@iconify/react';
-import { useCallback } from 'react';
+
+import { useSettingAppearancePage } from './hooks';
 
 const SettingAppearancePage = () => {
-    const { palette, setPalette } = useHubThemePalette();
-
-    const handleSelectPalette = useCallback(
-        (next: HubThemePalette) => {
-            setPalette(next);
-        },
-        [setPalette],
-    );
+    const { palette, handleSelectPalette } = useSettingAppearancePage();
 
     return (
         <ContentSection

@@ -1,150 +1,30 @@
 'use client';
 
-import {
-    CreateFormDialog,
-    DataTableContainer,
-    EditFormDialog,
-    StatusTag,
-} from '@/components/common';
-import { ColumnType, ColumnsType, CustomButton, CustomTag } from '@/components/custom';
-import { ProcessScrapeData, ImportData } from '@/app/(root)/scraping/components';
-import { DataImportType, ProductMappingStatus } from '@/enums';
-import { useTableContainer } from '@/hooks';
-import { ActionTableItem, FormFieldItem, NDataProvider } from '@/interfaces';
-import { formatDate } from '@/libs';
+import { ReactNode } from 'react';
 import { Icon } from '@iconify/react';
-import { ReactNode, useState } from 'react';
+import { CreateFormDialog, DataTableContainer, EditFormDialog } from '@/components/common';
+import { ColumnType, CustomButton } from '@/components/custom';
+import { DataImportType } from '@/enums';
+import { ActionTableItem, NDataProvider } from '@/interfaces';
 
-export const columns: ColumnsType<NDataProvider.IItem> = [
-    {
-        title: 'Tên thư mục',
-        dataIndex: 'name',
-        key: 'name',
-        ellipsis: true,
-        sorter: true,
-        width: '25%',
-    },
-    {
-        key: 'mappingStatus',
-        title: 'Trạng thái ánh xạ',
-        dataIndex: 'mappingStatus',
-        render: (mappingStatus: ProductMappingStatus) => <StatusTag status={mappingStatus} />,
-        width: '15%',
-    },
-    {
-        key: 'code',
-        title: 'Mã',
-        align: 'center',
-        dataIndex: 'code',
-        render: (code: string) => <StatusTag status={code} />,
-        width: '15%',
-    },
-    {
-        key: 'tags',
-        title: 'Tags',
-        align: 'center',
-        dataIndex: 'tags',
-        render: (tags: string[]) =>
-            tags?.map((tag) => (
-                <span key={tag}>
-                    <CustomTag color="blue" className="text-sm font-medium">
-                        {tag}
-                    </CustomTag>
-                </span>
-            )),
-        width: '20%',
-    },
-    {
-        title: 'Ngày tạo',
-        dataIndex: 'createdAt',
-        key: 'createdAt',
-        sorter: true,
-        render: (createdAt: Date) => formatDate(createdAt),
-        width: '25%',
-    },
-];
-
-export const importDataColumns: ColumnType<NDataProvider.IItem>[] = [
-    {
-        title: 'Tên đối tượng',
-        dataIndex: 'name',
-        key: 'name',
-        ellipsis: true,
-        width: '50%',
-    },
-    {
-        title: 'Mã',
-        dataIndex: 'code',
-        key: 'code',
-        width: '15%',
-        align: 'center',
-        ellipsis: true,
-    },
-    {
-        title: 'Trạng thái ánh xạ',
-        dataIndex: 'mappingStatus',
-        key: 'mappingStatus',
-        align: 'center',
-        width: '35%',
-        render: (mappingStatus: ProductMappingStatus) => <StatusTag status={mappingStatus} />,
-    },
-];
-
-export const formFields: FormFieldItem[] = [
-    {
-        name: 'name',
-        type: 'input',
-        label: 'Tên đối tượng',
-        rules: [
-            { required: true, message: 'Vui lòng nhập tên đối tượng' },
-            { max: 255, message: 'Tên đối tượng không được vượt quá 255 ký tự' },
-        ],
-    },
-    {
-        name: 'code',
-        type: 'input',
-        label: 'Mã',
-        rules: [
-            { required: true, message: 'Vui lòng nhập mã đối tượng' },
-            { max: 20, message: 'Mã đối tượng không được vượt quá 20 ký tự' },
-        ],
-    },
-    {
-        name: 'tags',
-        type: 'input',
-        label: 'Tags',
-        tooltip: 'Tags (cách nhau bằng dấu phẩy ",")',
-        rules: [
-            {
-                validator: (_: any, value: string) => {
-                    if (
-                        value &&
-                        typeof value === 'string' &&
-                        value.split(',').some((tag) => tag.trim().length === 0 && tag !== '')
-                    ) {
-                        return Promise.reject(new Error('CustomTag không được bỏ trống!'));
-                    }
-                    return Promise.resolve();
-                },
-            },
-        ],
-        inputProps: {
-            placeholder: 'Nhập các tag, mỗi tag cách nhau bằng dấu phẩy ","',
-        },
-    },
-];
+import { columns, filterSearch, formFields, importDataColumns } from './constants';
+import { useItemPage } from './hooks';
+import { ImportData, ProcessScrapeData } from './components';
 
 const ItemPage = () => {
-    const [openCreateItemModal, setOpenCreateItemModal] = useState(false);
-    const [openImportItemModal, setOpenImportItemModal] = useState(false);
-    const [editItemId, setEditItemId] = useState<string | undefined>(undefined);
-
-    const [selectedItemIds, setSelectedItemIds] = useState<string[]>([]);
-    const [openProcessScrapeDataModal, setOpenProcessScrapeDataModal] = useState(false);
-
-    const tableContainerData = useTableContainer({
-        resource: 'items',
-    });
+    const {
+        openCreateItemModal,
+        setOpenCreateItemModal,
+        openImportItemModal,
+        setOpenImportItemModal,
+        editItemId,
+        setEditItemId,
+        selectedItemIds,
+        setSelectedItemIds,
+        openProcessScrapeDataModal,
+        setOpenProcessScrapeDataModal,
+        tableContainerData,
+    } = useItemPage();
 
     const actionButtons: ReactNode[] = [
         <CustomButton
@@ -184,10 +64,6 @@ const ItemPage = () => {
             onClick: (record) => setEditItemId(record?.id),
         },
     ];
-
-    const filterSearch = {
-        placeholder: 'Tìm kiếm đối tượng',
-    };
 
     return (
         <>

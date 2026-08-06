@@ -1,5 +1,6 @@
 'use client';
 
+import { ChangeEvent } from 'react';
 import {
     CustomButton,
     CustomCard,
@@ -14,7 +15,6 @@ import {
 import {
     AppstoreOutlined,
     BgColorsOutlined,
-    CheckOutlined,
     CheckSquareOutlined,
     DeleteOutlined,
     FilterOutlined,
@@ -23,297 +23,44 @@ import {
     SearchOutlined,
     TagOutlined,
 } from '@ant-design/icons';
-import { ChangeEvent, useEffect, useState } from 'react';
 
-interface Note {
-    id: number;
-    title: string;
-    content: string;
-    color: string;
-    isPinned: boolean;
-    isChecklist: boolean;
-    modified: string;
-}
+import { labelOptions, sortMenu } from './constants';
+import { useGoogleKeepPage } from './hooks';
+import { ColorPicker } from './components';
 
 const GoogleKeepPage = () => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [searchQuery, setSearchQuery] = useState('');
-    const [selectedNote, setSelectedNote] = useState<Note | null>(null);
-    const [newNoteExpanded, setNewNoteExpanded] = useState(false);
-    const [newNoteTitle, setNewNoteTitle] = useState('');
-    const [newNoteContent, setNewNoteContent] = useState('');
-
-    // Mock data
-    const [notes, setNotes] = useState<Note[]>([
-        {
-            id: 1,
-            title: 'Họp nhóm dự án',
-            content:
-                'Thảo luận về tiến độ và phân công công việc cho tuần tới. Cần hoàn thành báo cáo trước thứ 6.',
-            color: '#FEF3C7',
-            isPinned: true,
-            isChecklist: false,
-            modified: '1 giờ trước',
-        },
-        {
-            id: 2,
-            title: 'Danh sách mua sắm',
-            content: '- Sữa\n- Trứng\n- Bánh mì\n- Rau xanh\n- Trái cây',
-            color: '#DCFCE7',
-            isPinned: false,
-            isChecklist: true,
-            modified: '3 giờ trước',
-        },
-        {
-            id: 3,
-            title: 'Ý tưởng cho dự án mới',
-            content:
-                'Tích hợp AI vào hệ thống quản lý khách hàng để tự động hóa phân loại và phản hồi email.',
-            color: '#DBEAFE',
-            isPinned: true,
-            isChecklist: false,
-            modified: '1 ngày trước',
-        },
-        {
-            id: 4,
-            title: '',
-            content: 'Gọi điện cho khách hàng A vào thứ 2 tuần sau.',
-            color: '#FEE2E2',
-            isPinned: false,
-            isChecklist: false,
-            modified: '2 ngày trước',
-        },
-        {
-            id: 5,
-            title: 'Lịch hẹn tháng 6',
-            content:
-                '- 5/6: Họp với đối tác\n- 10/6: Đi khám sức khỏe\n- 15/6: Deadline dự án X\n- 20/6: Sinh nhật mẹ',
-            color: '#FEFCE8',
-            isPinned: false,
-            isChecklist: true,
-            modified: '3 ngày trước',
-        },
-        {
-            id: 6,
-            title: 'Ý tưởng tên sản phẩm',
-            content: '1. FlexiSync\n2. ConnectHub\n3. IntegrateFlow\n4. SmartBridge\n5. LinkMaster',
-            color: '#F3E8FF',
-            isPinned: false,
-            isChecklist: false,
-            modified: '1 tuần trước',
-        },
-        {
-            id: 7,
-            title: 'Mục tiêu quý 3',
-            content:
-                '- Tăng doanh số 15%\n- Ra mắt tính năng mới\n- Mở rộng thị trường khu vực B\n- Tuyển thêm 2 nhân viên marketing',
-            color: '#E0F2FE',
-            isPinned: false,
-            isChecklist: true,
-            modified: '1 tuần trước',
-        },
-    ]);
-
-    // Filter notes based on search query
-    const filteredNotes = notes.filter(
-        (note) =>
-            note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            note.content.toLowerCase().includes(searchQuery.toLowerCase()),
-    );
-
-    // Separate pinned and unpinned notes
-    const pinnedNotes = filteredNotes.filter((note) => note.isPinned);
-    const unpinnedNotes = filteredNotes.filter((note) => !note.isPinned);
-
-    const handleNoteClick = (note: Note) => {
-        setSelectedNote(note);
-        setIsModalOpen(true);
-    };
-
-    // Add new state for note color picker
-    const [showColorPicker, setShowColorPicker] = useState(false);
-    const [selectedColor, setSelectedColor] = useState('#FFFFFF');
-
-    // Add color options
-    const colorOptions = [
-        { value: '#FFFFFF', label: 'Mặc định' },
-        { value: '#FEF3C7', label: 'Vàng nhạt' },
-        { value: '#DCFCE7', label: 'Xanh lá nhạt' },
-        { value: '#DBEAFE', label: 'Xanh dương nhạt' },
-        { value: '#FEE2E2', label: 'Đỏ nhạt' },
-        { value: '#F3E8FF', label: 'Tím nhạt' },
-        { value: '#E0F2FE', label: 'Xanh da trời' },
-        { value: '#FEFCE8', label: 'Vàng nghệ' },
-    ];
-
-    // Add new state for note labels
-    const [noteLabels, setNoteLabels] = useState<{
-        [key: number]: string[];
-    }>({
-        1: ['Công việc', 'Quan trọng'],
-        3: ['Ý tưởng'],
-        5: ['Cá nhân'],
-    });
-
-    // Add label options
-    const labelOptions = ['Công việc', 'Cá nhân', 'Ý tưởng', 'Quan trọng', 'Dự án', 'Mua sắm'];
-
-    const handleCreateNote = () => {
-        if (newNoteTitle.trim() === '' && newNoteContent.trim() === '') return;
-
-        const newNote: Note = {
-            id: Date.now(),
-            title: newNoteTitle,
-            content: newNoteContent,
-            color: selectedColor,
-            isPinned: false,
-            isChecklist: false,
-            modified: 'Vừa xong',
-        };
-
-        setNotes([newNote, ...notes]);
-        setNewNoteTitle('');
-        setNewNoteContent('');
-        setNewNoteExpanded(false);
-        setSelectedColor('#FFFFFF');
-    };
-
-    const handleColorSelect = (color: string) => {
-        setSelectedColor(color);
-        setShowColorPicker(false);
-
-        if (selectedNote) {
-            // Update the selected note's color
-            setNotes(
-                notes.map((note) => (note.id === selectedNote.id ? { ...note, color } : note)),
-            );
-            setSelectedNote({ ...selectedNote, color });
-        }
-    };
-
-    const handleAddLabel = (noteId: number, label: string) => {
-        const currentLabels = noteLabels[noteId] || [];
-        if (!currentLabels.includes(label)) {
-            setNoteLabels({
-                ...noteLabels,
-                [noteId]: [...currentLabels, label],
-            });
-        }
-    };
-
-    const handleRemoveLabel = (noteId: number, label: string) => {
-        const currentLabels = noteLabels[noteId] || [];
-        setNoteLabels({
-            ...noteLabels,
-            [noteId]: currentLabels.filter((l) => l !== label),
-        });
-    };
-
-    const handleDeleteNote = (id: number) => {
-        setNotes(notes.filter((note) => note.id !== id));
-        if (selectedNote?.id === id) {
-            setIsModalOpen(false);
-        }
-    };
-
-    const handleTogglePin = (id: number) => {
-        setNotes(
-            notes.map((note) => (note.id === id ? { ...note, isPinned: !note.isPinned } : note)),
-        );
-
-        if (selectedNote?.id === id) {
-            setSelectedNote({ ...selectedNote, isPinned: !selectedNote.isPinned });
-        }
-    };
-
-    // Masonry layout columns based on screen size
-    const [columns, setColumns] = useState(4);
-
-    useEffect(() => {
-        const updateColumns = () => {
-            const width = window.innerWidth;
-            if (width < 640) {
-                setColumns(1); // Mobile: 1 column
-            } else if (width < 768) {
-                setColumns(2); // Small tablet: 2 columns
-            } else if (width < 1024) {
-                setColumns(3); // Tablet: 3 columns
-            } else {
-                setColumns(4); // Desktop: 4 columns
-            }
-        };
-
-        window.addEventListener('resize', updateColumns);
-        updateColumns(); // Initial check
-
-        return () => window.removeEventListener('resize', updateColumns);
-    }, []);
-
-    // CustomDropdown menu for sorting
-    const sortMenu = [
-        { key: 'date', label: 'Ngày chỉnh sửa' },
-        { key: 'title', label: 'Tiêu đề' },
-        { key: 'color', label: 'Màu sắc' },
-    ];
-
-    // Color picker popover
-    const ColorPicker = ({
-        value,
-        onSelect,
-        noteColor,
-    }: {
-        value: string;
-        onSelect: (color: string) => void;
-        noteColor?: string;
-    }) => (
-        <div
-            style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(4, 1fr)',
-                gap: 8,
-                padding: 8,
-                background: '#fff',
-                borderRadius: 8,
-                boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-                zIndex: 1000,
-            }}
-        >
-            {colorOptions.map((color) => (
-                <div
-                    key={color.value}
-                    style={{
-                        width: 28,
-                        height: 28,
-                        borderRadius: '50%',
-                        border: '1px solid #eee',
-                        background: color.value,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        cursor: 'pointer',
-                        position: 'relative',
-                    }}
-                    title={color.label}
-                    onClick={() => onSelect(color.value)}
-                >
-                    {(value === color.value || noteColor === color.value) && (
-                        <CheckOutlined style={{ color: '#333', fontSize: 16 }} />
-                    )}
-                </div>
-            ))}
-        </div>
-    );
+    const {
+        isModalOpen,
+        setIsModalOpen,
+        searchQuery,
+        setSearchQuery,
+        selectedNote,
+        newNoteExpanded,
+        setNewNoteExpanded,
+        newNoteTitle,
+        setNewNoteTitle,
+        newNoteContent,
+        setNewNoteContent,
+        showColorPicker,
+        setShowColorPicker,
+        selectedColor,
+        setSelectedColor,
+        noteLabels,
+        setNoteLabels,
+        pinnedNotes,
+        unpinnedNotes,
+        handleNoteClick,
+        handleCreateNote,
+        handleColorSelect,
+        handleRemoveLabel,
+        handleDeleteNote,
+        handleTogglePin,
+    } = useGoogleKeepPage();
 
     return (
         <div className="flex flex-col gap-4 p-4 sm:gap-6 sm:p-6 lg:gap-8">
             {/* Toolbar */}
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 8,
-                }}
-            >
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 <div
                     style={{
                         display: 'flex',
@@ -482,7 +229,6 @@ const GoogleKeepPage = () => {
                                 >
                                     {note.content}
                                 </div>
-                                {/* Display labels if any */}
                                 {noteLabels[note.id] && noteLabels[note.id].length > 0 && (
                                     <div style={{ marginTop: 12 }}>
                                         {noteLabels[note.id].map((label, idx) => (
@@ -575,7 +321,6 @@ const GoogleKeepPage = () => {
                             >
                                 {note.content}
                             </div>
-                            {/* Display labels if any */}
                             {noteLabels[note.id] && noteLabels[note.id].length > 0 && (
                                 <div style={{ marginTop: 12 }}>
                                     {noteLabels[note.id].map((label, idx) => (
@@ -671,7 +416,6 @@ const GoogleKeepPage = () => {
                             >
                                 {selectedNote.content}
                             </div>
-                            {/* Display labels */}
                             {noteLabels[selectedNote.id] &&
                                 noteLabels[selectedNote.id].length > 0 && (
                                     <div style={{ marginBottom: 12 }}>
@@ -689,7 +433,6 @@ const GoogleKeepPage = () => {
                                         ))}
                                     </div>
                                 )}
-                            {/* Add label dropdown */}
                             <div style={{ marginBottom: 12 }}>
                                 <CustomSelect
                                     mode="multiple"

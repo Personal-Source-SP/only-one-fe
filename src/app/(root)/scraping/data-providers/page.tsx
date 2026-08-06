@@ -1,212 +1,40 @@
 'use client';
 
-import {
-    CreateFormDialog,
-    DataTableContainer,
-    EditFormDialog,
-    StatusTag,
-} from '@/components/common';
-import { ColumnType, ColumnsType, CustomButton } from '@/components/custom';
-import { ProcessScrapeData, ScrapeSetting, ImportData } from '@/app/(root)/scraping/components';
-import {
-    CustomFilterType,
-    DataImportType,
-    DataProviderSearchStatus,
-    DataProviderStatus,
-} from '@/enums';
-import { useCustomModal, useSelectDataProvider, useTableContainer } from '@/hooks';
-import { ActionTableItem, FilterItem, FormFieldItem, NDataProvider } from '@/interfaces';
-import { formatDate } from '@/libs';
+import { ReactNode } from 'react';
 import { Icon } from '@iconify/react';
-import { ReactNode, useState } from 'react';
+import { CreateFormDialog, DataTableContainer, EditFormDialog } from '@/components/common';
+import { ColumnType, CustomButton } from '@/components/custom';
+import { DataImportType } from '@/enums';
+import { ActionTableItem, NDataProvider } from '@/interfaces';
 
-export const columns: ColumnsType<NDataProvider.IDataProvider> = [
-    {
-        title: 'Tên',
-        dataIndex: 'name',
-        key: 'name',
-        ellipsis: true,
-        sorter: true,
-        width: '15%',
-    },
-    {
-        title: 'Mã',
-        dataIndex: 'identifier',
-        key: 'identifier',
-        ellipsis: true,
-        sorter: true,
-        width: '10%',
-    },
-    {
-        title: 'URL cơ sở',
-        dataIndex: 'baseUrl',
-        key: 'baseUrl',
-        ellipsis: true,
-        sorter: true,
-        width: '20%',
-    },
-    {
-        key: 'status',
-        title: 'Trạng thái',
-        dataIndex: 'status',
-        render: (status: DataProviderStatus) => <StatusTag status={status} />,
-        width: '10%',
-    },
-    {
-        title: 'Ngày tạo',
-        dataIndex: 'createdAt',
-        key: 'createdAt',
-        sorter: true,
-        render: (createdAt: Date) => formatDate(createdAt),
-        width: '20%',
-    },
-    {
-        key: 'targetConfig',
-        title: 'Cào',
-        align: 'center',
-        dataIndex: 'targetConfig',
-        render: (targetConfig: NDataProvider.ITargetConfig) =>
-            targetConfig ? (
-                <Icon icon="lucide:check" className="w-full" />
-            ) : (
-                <Icon icon="lucide:x" className="w-full" />
-            ),
-        width: '10%',
-    },
-    {
-        key: 'searchConfig',
-        title: 'Tìm kiếm',
-        align: 'center',
-        dataIndex: 'searchConfig',
-        render: (searchConfig: NDataProvider.ISearchConfig) =>
-            searchConfig ? (
-                <Icon icon="lucide:check" className="w-full" />
-            ) : (
-                <Icon icon="lucide:x" className="w-full" />
-            ),
-        width: '15%',
-    },
-];
-
-export const importDataColumns: ColumnType<NDataProvider.IImportDataProvider>[] = [
-    {
-        title: 'Tên nhà cung cấp',
-        dataIndex: 'dataProviderName',
-        key: 'dataProviderName',
-        ellipsis: true,
-        width: '25%',
-    },
-    {
-        title: 'Mã nhà cung cấp',
-        dataIndex: 'dataProviderIdentifier',
-        key: 'dataProviderIdentifier',
-        align: 'center',
-        ellipsis: true,
-        width: '15%',
-    },
-    {
-        title: 'URL đối tượng',
-        dataIndex: 'itemUrl',
-        key: 'itemUrl',
-        align: 'center',
-        width: '30%',
-    },
-    {
-        title: 'Tên đối tượng',
-        dataIndex: 'itemName',
-        key: 'itemName',
-        ellipsis: true,
-        width: '20%',
-    },
-    {
-        title: 'Mã đối tượng',
-        dataIndex: 'itemCode',
-        key: 'itemCode',
-        align: 'center',
-        ellipsis: true,
-        width: '10%',
-    },
-];
+import {
+    columns,
+    customFilterItems,
+    filterSearch,
+    getFormFields,
+    importDataColumns,
+} from './constants';
+import { useDataProviderPage } from './hooks';
+import { ImportData, ProcessScrapeData, ScrapeSetting } from './components';
 
 const DataProviderPage = () => {
-    const [openCreateItemModal, setOpenCreateItemModal] = useState(false);
-    const [openImportItemModal, setOpenImportItemModal] = useState(false);
+    const {
+        openCreateItemModal,
+        setOpenCreateItemModal,
+        openImportItemModal,
+        setOpenImportItemModal,
+        editItemId,
+        setEditItemId,
+        openProcessScrapeDataModal,
+        setOpenProcessScrapeDataModal,
+        selectedDataProviderIds,
+        tableContainerData,
+        modalPropsData,
+        dataProviders,
+        dataProviderQuery,
+    } = useDataProviderPage();
 
-    const [editItemId, setEditItemId] = useState<string>();
-
-    const [openProcessScrapeDataModal, setOpenProcessScrapeDataModal] = useState(false);
-    const [selectedDataProviderIds, setSelectedDataProviderIds] = useState<string[]>([]);
-
-    const tableContainerData = useTableContainer({ resource: 'data-providers' });
-    const modalPropsData = useCustomModal({ action: 'edit', resource: 'data-providers' });
-
-    const { options: dataProviders, query: dataProviderQuery } = useSelectDataProvider();
-    const formFields: FormFieldItem[] = [
-        {
-            span: 12,
-            name: 'name',
-            type: 'input',
-            label: 'Tên nhà cung cấp',
-            rules: [
-                { required: true, message: 'Vui lòng nhập tên nhà cung cấp' },
-                { max: 255, message: 'Tên nhà cung cấp không được vượt quá 255 ký tự' },
-            ],
-        },
-        {
-            span: 12,
-            name: 'identifier',
-            type: 'input',
-            label: 'Mã nhà cung cấp',
-            rules: [
-                { required: true, message: 'Vui lòng nhập mã nhà cung cấp' },
-                { max: 20, message: 'Mã nhà cung cấp không được vượt quá 20 ký tự' },
-                {
-                    pattern: /^[a-z0-9-]+$/,
-                    message: 'Mã nhà cung cấp chỉ được chứa chữ cái thường, số và dấu gạch ngang',
-                },
-            ],
-        },
-        {
-            name: 'baseUrl',
-            type: 'input',
-            label: 'URL cơ sở',
-            rules: [
-                { required: true, message: 'Vui lòng nhập URL cơ sở' },
-                {
-                    validator: (_, value) => {
-                        if (!value) return Promise.resolve();
-                        if (!/^.*[^/]$/.test(value)) {
-                            return Promise.reject('URL cơ sở không được kết thúc bằng /');
-                        }
-                        return Promise.resolve();
-                    },
-                },
-                {
-                    validator: (_, value) => {
-                        if (!value) return Promise.resolve();
-                        if (!/^(?!.*www\.).*$/.test(value)) {
-                            return Promise.reject('URL cơ sở không được chứa www');
-                        }
-                        return Promise.resolve();
-                    },
-                },
-            ],
-        },
-        {
-            type: 'select',
-            name: 'parentId',
-            label: 'Nhà cung cấp cha',
-            onChange: (value, form) => {
-                const parentDataProvider = dataProviderQuery?.data?.data?.find(
-                    (item) => item.id === value,
-                );
-                form?.setFieldValue('identifier', parentDataProvider?.identifier ?? '');
-            },
-            selectProps: {
-                options: dataProviders ?? [],
-            },
-        },
-    ];
+    const formFields = getFormFields(dataProviders ?? [], dataProviderQuery);
 
     const actionItems: ActionTableItem[] = [
         {
@@ -262,45 +90,6 @@ const DataProviderPage = () => {
             Thêm
         </CustomButton>,
     ];
-
-    const customFilterItems: FilterItem[] = [
-        {
-            span: 6,
-            showSearch: true,
-            allowClear: true,
-            field: 'status',
-            title: 'Trạng thái cào dữ liệu',
-            type: CustomFilterType.SELECT,
-            options: [
-                { label: 'Sẵn sàng', value: DataProviderStatus.READY },
-                { label: 'Lỗi', value: DataProviderStatus.ERROR },
-                { label: 'Đang kiểm tra', value: DataProviderStatus.TESTING },
-                { label: 'Chưa cấu hình', value: DataProviderStatus.UNCONFIGURED },
-            ],
-        },
-        {
-            span: 6,
-            showSearch: true,
-            allowClear: true,
-            title: 'Trạng thái tìm kiếm',
-            field: 'searchStatus',
-            type: CustomFilterType.SELECT,
-            options: [
-                { label: 'Sẵn sàng', value: DataProviderSearchStatus.READY },
-                { label: 'Lỗi', value: DataProviderSearchStatus.ERROR },
-                { label: 'Đang kiểm tra', value: DataProviderSearchStatus.TESTING },
-                {
-                    label: 'Chưa cấu hình',
-                    value: DataProviderSearchStatus.UNCONFIGURED,
-                },
-            ],
-        },
-    ];
-
-    const filterSearch = {
-        placeholder: 'Tìm kiếm nhà cung cấp',
-        span: 12,
-    };
 
     return (
         <>

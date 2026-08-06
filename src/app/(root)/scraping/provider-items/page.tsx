@@ -1,216 +1,49 @@
 'use client';
 
-import { CreateFormDialog, DataTableContainer, EditFormDialog } from '@/components/common';
-import { ColumnsType, CustomButton, CustomSpace, CustomToggle } from '@/components/custom';
-import { ProcessScrapeData } from '@/app/(root)/scraping/components';
-import { CustomFilterType, DataProviderStatus, MessageType } from '@/enums';
-import {
-    useCustomMutationData,
-    useSelectCloudDataProvider,
-    useSelectDataProvider,
-    useSelectItem,
-    useTableContainer,
-} from '@/hooks';
-import { ActionTableItem, FilterItem, FormFieldItem, NDataProvider } from '@/interfaces';
-import { formatDate } from '@/libs';
+import { ReactNode } from 'react';
 import { Icon } from '@iconify/react';
-import { ReactNode, useState } from 'react';
+import { CreateFormDialog, DataTableContainer, EditFormDialog } from '@/components/common';
+import { CustomButton } from '@/components/custom';
+import { DataProviderStatus } from '@/enums';
+import { ActionTableItem, NDataProvider } from '@/interfaces';
 
-type SelectOptions = NonNullable<NonNullable<FormFieldItem['selectProps']>['options']>;
+import {
+    createFormInitialValues,
+    filterSearch,
+    getColumns,
+    getCustomFilterItems,
+    getFormFields,
+} from './constants';
+import { useDataProviderItemPage } from './hooks';
+import { ProcessScrapeData } from './components';
 
 const DataProviderItemPage = () => {
-    const [loading, setLoading] = useState(false);
-    const [openCreateItemModal, setOpenCreateItemModal] = useState(false);
-    const [editItemId, setEditItemId] = useState<string | undefined>(undefined);
+    const {
+        loading,
+        openCreateItemModal,
+        setOpenCreateItemModal,
+        editItemId,
+        setEditItemId,
+        openProcessScrapeDataModal,
+        setOpenProcessScrapeDataModal,
+        selectedDataProviderItemIds,
+        setSelectedDataProviderItemIds,
+        itemOptions,
+        cloudDataProviderOptions,
+        dataProviderOptions,
+        dataProviderQuery,
+        tableContainerData,
+        handleSwitchStatus,
+    } = useDataProviderItemPage();
 
-    const [openProcessScrapeDataModal, setOpenProcessScrapeDataModal] = useState(false);
-    const [selectedDataProviderItemIds, setSelectedDataProviderItemIds] = useState<string[]>([]);
-
-    const { options: itemOptions } = useSelectItem();
-    const { options: cloudDataProviderOptions } = useSelectCloudDataProvider();
-    const { options: dataProviderOptions, query: dataProviderQuery } = useSelectDataProvider();
-
-    const { handleCustomMutationData: handleUpdate } = useCustomMutationData();
-
-    const tableContainerData = useTableContainer({ resource: 'data-provider-items' });
-
-    const handleSwitchStatus = (id: string, active: boolean) => {
-        setLoading(true);
-
-        handleUpdate({
-            values: {},
-            method: 'put',
-            url: `data-provider-items/${id}/switch-status/${active}`,
-            successNotification: (data) => {
-                if (!data?.data?.isSuccess) {
-                    setLoading(false);
-
-                    return {
-                        type: MessageType.ERROR,
-                        message: 'Chuyển trạng thái thất bại',
-                        description: data?.data?.message ?? 'Chuyển trạng thái thất bại',
-                    };
-                }
-
-                tableContainerData?.tableQuery?.refetch();
-
-                return {
-                    type: MessageType.SUCCESS,
-                    message: 'Chuyển trạng thái thành công',
-                };
-            },
-            errorNotification: (error) => {
-                setLoading(false);
-
-                return {
-                    type: MessageType.ERROR,
-                    message: 'Chuyển trạng thái thất bại',
-                    description: error?.message ?? 'Chuyển trạng thái thất bại',
-                };
-            },
-        });
-    };
-
-    const columns: ColumnsType<NDataProvider.IDataProviderItem> = [
-        {
-            title: 'STT',
-            key: 'index',
-            dataIndex: 'index',
-            align: 'center',
-            width: 50,
-            render: (_: any, __: any, index: number) => index + 1,
-        },
-        {
-            title: 'Tên đối tượng / Nhà cung cấp / URL đối tượng',
-            dataIndex: 'itemAndProviderAndUrl',
-            key: 'itemAndProviderAndUrl',
-            ellipsis: true,
-            width: 200,
-            render: (_: any, record: NDataProvider.IDataProviderItem) => {
-                return (
-                    <div className="text-sm">
-                        <p>
-                            <strong>Nhà cung cấp:</strong> {record?.dataProvider?.name ?? '---'}
-                        </p>
-                        <p>
-                            <strong>URL đối tượng:</strong> {record?.itemUrl ?? '---'}
-                        </p>
-                        <p>
-                            <strong>Đối tượng:</strong> {record?.item?.name ?? '---'}
-                        </p>
-                    </div>
-                );
-            },
-        },
-        {
-            title: 'Ngày cào gần nhất',
-            dataIndex: 'lastScrapedTimestamp',
-            key: 'lastScrapedTimestamp',
-            sorter: true,
-            width: 150,
-            render: (lastScrapedTimestamp: Date) => formatDate(lastScrapedTimestamp),
-        },
-        {
-            title: 'Ngày tạo',
-            dataIndex: 'createdAt',
-            key: 'createdAt',
-            sorter: true,
-            width: 150,
-            render: (createdAt: Date) => formatDate(createdAt),
-        },
-        {
-            title: 'Trạng thái',
-            dataIndex: 'isActive',
-            key: 'isActive',
-            align: 'center',
-            width: 100,
-            render: (isActive: boolean, record: NDataProvider.IDataProviderItem) => (
-                <CustomToggle
-                    size="small"
-                    checked={isActive}
-                    onChange={(checked) => handleSwitchStatus(record?.id ?? '', checked)}
-                />
-            ),
-        },
-        {
-            title: 'Lưu vào kho dữ liệu',
-            dataIndex: 'isSavedToCloudData',
-            key: 'isSavedToCloudData',
-            align: 'center',
-            width: 100,
-            render: (isSavedToCloudData: boolean, record: NDataProvider.IDataProviderItem) => (
-                <CustomSpace>
-                    <CustomToggle size="small" checked={isSavedToCloudData} disabled />
-                    <p>{record?.cloudDataProvider?.name ?? '---'}</p>
-                </CustomSpace>
-            ),
-        },
-    ];
-
-    const formFields: FormFieldItem[] = [
-        {
-            name: 'itemId',
-            type: 'select',
-            label: 'Tên đối tượng',
-            rules: [{ required: true, message: 'Vui lòng chọn đối tượng' }],
-            selectProps: {
-                options: itemOptions ?? [],
-            },
-        },
-        {
-            type: 'select',
-            name: 'dataProviderId',
-            label: 'Tên nhà cung cấp',
-            rules: [{ required: true, message: 'Vui lòng chọn nhà cung cấp' }],
-            onChange: (value, form) => {
-                const dataProvider = dataProviderQuery?.data?.data?.find(
-                    (option) => option.id === value,
-                );
-                form?.setFieldValue('itemUrl', dataProvider?.baseUrl ?? '');
-            },
-            selectProps: {
-                options: dataProviderOptions ?? [],
-            },
-        },
-        {
-            name: 'itemUrl',
-            type: 'input',
-            label: 'URL cơ sở',
-            rules: [{ required: true, message: 'Vui lòng nhập URL đối tượng' }],
-        },
-        {
-            type: 'select',
-            name: 'cloudDataProviderId',
-            label: 'Nhà cung cấp kho dữ liệu',
-            selectProps: {
-                options: cloudDataProviderOptions ?? [],
-            },
-        },
-        {
-            type: 'switch',
-            name: 'autoProcessScraping',
-            label: 'Tự động cào dữ liệu',
-            switchProps: {
-                placeholder: 'Tự động cào khi thêm đối tượng nhà cung cấp',
-            },
-        },
-        {
-            type: 'switch',
-            name: 'checkDuplicateData',
-            label: 'Kiểm tra dữ liệu trùng lặp',
-            switchProps: {
-                placeholder: 'Kiểm tra dữ liệu trùng lặp khi cào dữ liệu',
-            },
-        },
-        {
-            type: 'switch',
-            name: 'isSavedToCloudData',
-            label: 'Lưu vào kho dữ liệu',
-            switchProps: {
-                placeholder: 'Lưu vào kho dữ liệu khi cào dữ liệu',
-            },
-        },
-    ];
+    const columns = getColumns(handleSwitchStatus);
+    const formFields = getFormFields(
+        itemOptions ?? [],
+        cloudDataProviderOptions ?? [],
+        dataProviderOptions ?? [],
+        dataProviderQuery,
+    );
+    const customFilterItems = getCustomFilterItems(dataProviderOptions ?? [], itemOptions ?? []);
 
     const actionItems: ActionTableItem[] = [
         {
@@ -218,27 +51,6 @@ const DataProviderItemPage = () => {
             label: 'Chỉnh sửa',
             icon: <Icon icon="lucide:edit" />,
             onClick: (record) => setEditItemId(record?.id),
-        },
-    ];
-
-    const customFilterItems: FilterItem[] = [
-        {
-            span: 6,
-            operation: 'in',
-            mode: 'multiple',
-            title: 'Nhà cung cấp',
-            field: 'dataProviderId',
-            type: CustomFilterType.SELECT,
-            options: dataProviderOptions ?? [],
-        },
-        {
-            span: 6,
-            operation: 'in',
-            field: 'itemId',
-            mode: 'multiple',
-            title: 'Đối tượng',
-            type: CustomFilterType.SELECT,
-            options: itemOptions ?? [],
         },
     ];
 
@@ -262,11 +74,6 @@ const DataProviderItemPage = () => {
             Thêm
         </CustomButton>,
     ];
-
-    const filterSearch = {
-        placeholder: 'Tìm kiếm đối tượng nhà cung cấp',
-        span: 12,
-    };
 
     return (
         <>
@@ -298,10 +105,7 @@ const DataProviderItemPage = () => {
                 open={openCreateItemModal}
                 resource="data-provider-items"
                 title="Thêm mới đối tượng nhà cung cấp"
-                initialValues={{
-                    autoProcessScraping: true,
-                    checkDuplicateData: true,
-                }}
+                initialValues={createFormInitialValues}
                 onClose={() => {
                     setOpenCreateItemModal(false);
                     tableContainerData?.tableQuery?.refetch();

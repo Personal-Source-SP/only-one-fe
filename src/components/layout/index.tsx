@@ -31,7 +31,7 @@ export const MainLayout = ({ children }: PropsWithChildren) => {
     const [showNotifications, setShowNotifications] = useState(false);
 
     useEffect(() => {
-        const params = new URLSearchParams(searchParamsString);
+        const params = new URLSearchParams(searchParamsString as Record<string, string>);
 
         const code = params.get('code');
         const error = params.get('error');

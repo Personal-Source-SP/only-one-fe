@@ -33,6 +33,7 @@ export * from './custom-result';
 export * from './custom-row-col';
 export * from './custom-segmented';
 export * from './custom-select';
+export * from './custom-skeleton';
 export * from './custom-slider';
 export * from './custom-space';
 export * from './custom-spin';
