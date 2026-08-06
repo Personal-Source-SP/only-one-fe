@@ -15,7 +15,6 @@ import { useCallback, type ReactElement, type UIEvent } from 'react';
 
 export type CustomSelectProps = SelectProps & {
     debounceTime?: number;
-    onPopupScroll?: () => void;
     onInputChange?: (value: string) => void;
 };
 
@@ -27,16 +26,8 @@ export const CustomSelect = ({
     ...props
 }: CustomSelectProps) => {
     const debouncedHandlePopupScroll = useCallback(
-        debounce((e: UIEvent<HTMLElement>) => {
-            if (!onPopupScroll) return;
-
-            const target = e.target as HTMLElement;
-            if (!target) return;
-
-            const { scrollTop, clientHeight, scrollHeight } = target;
-            if (scrollTop + clientHeight >= scrollHeight) {
-                onPopupScroll?.();
-            }
+        debounce((e: UIEvent<HTMLDivElement>) => {
+            onPopupScroll?.(e);
         }, debounceTime),
         [onPopupScroll, debounceTime],
     );

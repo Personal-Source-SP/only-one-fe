@@ -390,21 +390,31 @@ export function ListTable<RecordType extends BaseRecord = BaseRecord>({
         };
     }, [pagination, tableProps.pagination]);
 
-    return (
-        <CustomTable<RecordType>
-            tableLayout="fixed"
-            locale={{ emptyText: <CustomEmpty description="Không có dữ liệu" /> }}
-            style={{
+    const mergedTableProps = useMemo<TableProps<any>>(
+        () => ({
+            ...tableProps,
+            ...restProps,
+            tableLayout: 'fixed',
+            locale: { emptyText: <CustomEmpty description="Không có dữ liệu" /> },
+            style: {
                 ...tableProps.style,
                 ...restProps.style,
-            }}
-            className={`overflow-hidden rounded-lg border border-solid border-gray-200 dark:border-gray-800 ${className}`.trim()}
-            {...tableProps}
-            {...restProps}
-            scroll={mergedScroll}
-            loading={mergedLoading}
+            },
+            className:
+                `overflow-hidden rounded-lg border border-solid border-gray-200 dark:border-gray-800 ${className}`.trim(),
+            scroll: mergedScroll,
+            pagination: mergedPagination,
+        }),
+        [tableProps, restProps, className, mergedScroll, mergedPagination],
+    );
+
+    return (
+        <CustomTable
+            loading={Boolean(mergedLoading)}
             columns={columnsWithActions}
-            pagination={mergedPagination}
+            tableProps={mergedTableProps}
+            resource={deleteResource}
+            onRefetch={tableQuery?.refetch}
         />
     );
 }

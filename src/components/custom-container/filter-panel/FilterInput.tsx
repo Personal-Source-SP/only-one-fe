@@ -1,7 +1,7 @@
 'use client';
 
 import { CustomInput } from '@/components/custom';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import type { FilterValue, IFilterField } from './index';
 
 interface FilterInputProps {
@@ -11,6 +11,10 @@ interface FilterInputProps {
 
 export const FilterInput = ({ field, onChange }: FilterInputProps) => {
     const [innerValue, setInnerValue] = useState<string>((field.value as string) ?? '');
+
+    useEffect(() => {
+        setInnerValue((field.value as string) ?? '');
+    }, [field.value]);
 
     const handleChange = useCallback(
         (e: React.ChangeEvent<HTMLInputElement>) => {

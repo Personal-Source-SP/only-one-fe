@@ -26,9 +26,9 @@ type CustomTableProps = {
     resource?: string;
     currentPage?: number;
     actionItems?: ActionTableItem[];
-    setCurrentPage: (page: number) => void;
-    setPageSize: (pageSize: number) => void;
-    setSorters: (sorter: CrudSort[]) => void;
+    setCurrentPage?: (page: number) => void;
+    setPageSize?: (pageSize: number) => void;
+    setSorters?: (sorter: CrudSort[]) => void;
     onRefetch?: () => void;
     onRowSelectionChange?: (selectedRows: any[]) => void;
     onDisableRowSelection?: (record: any) => boolean;
@@ -105,7 +105,7 @@ export const CustomTable = ({
                     });
 
                     if (currentPage && currentPage > 1 && tableProps.dataSource?.length === 1) {
-                        setCurrentPage(currentPage - 1);
+                        setCurrentPage?.(currentPage - 1);
                     } else {
                         onRefetch?.();
                     }
@@ -161,24 +161,24 @@ export const CustomTable = ({
         __: TableCurrentDataSource<any>,
     ) => {
         if (pagination.current && pagination.pageSize) {
-            setPageSize(pagination.pageSize);
-            setCurrentPage(pagination.current);
+            setPageSize?.(pagination.pageSize);
+            setCurrentPage?.(pagination.current);
         }
 
         if (sorterParam) {
             const currentSorter = Array.isArray(sorterParam) ? sorterParam[0] : sorterParam;
             if (currentSorter && currentSorter.field && currentSorter.order) {
-                setSorters([
+                setSorters?.([
                     {
                         field: String(currentSorter.field),
                         order: currentSorter.order === SortOrder.NEWEST ? 'asc' : 'desc',
                     },
                 ]);
             } else {
-                setSorters([]);
+                setSorters?.([]);
             }
         } else {
-            setSorters([]);
+            setSorters?.([]);
         }
     };
 

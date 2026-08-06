@@ -65,12 +65,14 @@ export const ListWrapper = ({
     const permissions = usePagePermissions(permissionGroup);
 
     const finalErrorMessage = useMemo(() => {
-        if (errorMessage) return errorMessage;
+        if (typeof errorMessage === 'string') return errorMessage;
+        if (errorMessage) return String(errorMessage);
         return 'Tải dữ liệu không thành công';
     }, [errorMessage]);
 
     const finalErrorDescription = useMemo(() => {
-        if (errorDescription) return errorDescription;
+        if (typeof errorDescription === 'string') return errorDescription;
+        if (errorDescription) return String(errorDescription);
         if (error && error.message) return error.message;
         return undefined;
     }, [errorDescription, error]);
@@ -128,7 +130,7 @@ export const ListWrapper = ({
             <CustomAlert
                 showIcon
                 type="error"
-                message={finalErrorMessage}
+                title={finalErrorMessage}
                 description={finalErrorDescription}
             />
         );
