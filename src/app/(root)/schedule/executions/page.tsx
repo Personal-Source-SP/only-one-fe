@@ -1,113 +1,94 @@
 'use client';
 
-import { ReactNode } from 'react';
-import { Icon } from '@iconify/react';
-import { CreateFormDialog, DataTableContainer, EditFormDialog } from '@/components/common';
+import { useMemo } from 'react';
+import { PlusOutlined } from '@ant-design/icons';
 import { CustomButton } from '@/components/custom';
-import { ActionTableItem } from '@/interfaces';
+import {
+    FilterPanel,
+    ListTable,
+    ListWrapper,
+    type CardAction,
+    type IFilterField,
+} from '@/components/custom-container';
 
-import { filterSearch, getColumns, getFormFields, initialValues } from './constants';
+import { getColumns } from './constants';
 import { useScheduleExecutionPage } from './hooks';
-import { NextRunTimes, ViewScheduleJobList } from './components';
+import { ScheduleExecutionFormModal, ViewScheduleJobList } from './components';
+import type { ScheduleExecutionRecord } from './types';
 
 const ScheduleExecutionPage = () => {
     const {
         loading,
-        openCreateItemModal,
-        setOpenCreateItemModal,
-        editItemId,
-        setEditItemId,
-        type,
-        setType,
-        cronExpression,
-        setCronExpression,
+        tableProps,
+        tableQuery,
+        debouncedSearch,
+        createModalForm,
+        editModalForm,
         selectedScheduleId,
         setSelectedScheduleId,
         itemOptions,
         dataProviderOptions,
-        tableContainerData,
         handleSwitchStatus,
-        handleManualTrigger,
     } = useScheduleExecutionPage();
 
-    const columns = getColumns(handleSwitchStatus);
-    const formFields = getFormFields(
-        type,
-        setType,
-        setCronExpression,
-        dataProviderOptions ?? [],
-        itemOptions ?? [],
+    const columns = useMemo(() => getColumns(handleSwitchStatus), [handleSwitchStatus]);
+
+    const actions = useMemo<CardAction[]>(
+        () => [
+            {
+                component: (
+                    <CustomButton
+                        type="primary"
+                        icon={<PlusOutlined />}
+                        onClick={() => createModalForm.show()}
+                    >
+                        Thêm lịch biểu thực thi
+                    </CustomButton>
+                ),
+            },
+        ],
+        [createModalForm],
     );
 
-    const actionItems: ActionTableItem[] = [
-        {
-            key: 'edit',
-            label: 'Chỉnh sửa',
-            icon: <Icon icon="lucide:edit" />,
-            onClick: (record) => setEditItemId(record?.id),
-        },
-        {
-            key: 'manual-trigger',
-            label: 'Chạy thủ công',
-            icon: <Icon icon="lucide:play" />,
-            onClick: (record) => handleManualTrigger(record?.id),
-        },
-        {
-            key: 'view-schedule-job-list',
-            label: 'Xem danh sách công việc',
-            icon: <Icon icon="lucide:list" />,
-            onClick: (record) => setSelectedScheduleId(record?.id),
-        },
-    ];
-
-    const actionButtons: ReactNode[] = [
-        <CustomButton
-            type="primary"
-            key="add-schedule-execution"
-            title="Thêm lịch biểu thực thi"
-            icon={<Icon icon="lucide:plus" />}
-            onClick={() => setOpenCreateItemModal(true)}
-        >
-            Thêm
-        </CustomButton>,
-    ];
+    const filters = useMemo<IFilterField[]>(
+        () => [
+            {
+                name: 'search',
+                type: 'input',
+                placeholder: 'Tìm kiếm lịch biểu...',
+                onChange: (value) => debouncedSearch(value?.toString() ?? ''),
+            },
+        ],
+        [debouncedSearch],
+    );
 
     return (
         <>
-            <DataTableContainer
-                loading={loading}
-                columns={columns}
-                resource="schedules"
-                actionItems={actionItems}
-                title="Danh sách lịch biểu thực thi"
-                description="Quản lý các lịch biểu thực thi công việc"
-                actionButtons={actionButtons}
-                tableContainerData={tableContainerData}
-                filterSearch={filterSearch}
+            <ListWrapper
+                actions={actions}
+                error={tableQuery.error}
+                isLoading={loading || tableQuery.isLoading}
+                filters={<FilterPanel fields={filters} />}
+            >
+                <ListTable<ScheduleExecutionRecord>
+                    columns={columns}
+                    tableProps={tableProps}
+                    tableQuery={tableQuery}
+                    deleteResource="schedules"
+                    onEdit={(record) => editModalForm.show(record.id)}
+                />
+            </ListWrapper>
+
+            <ScheduleExecutionFormModal
+                modalForm={createModalForm}
+                itemOptions={itemOptions ?? []}
+                dataProviderOptions={dataProviderOptions ?? []}
             />
 
-            <CreateFormDialog
-                resource="schedules"
-                formFields={formFields}
-                open={openCreateItemModal}
-                title="Thêm mới lịch biểu thực thi"
-                bottomRender={<NextRunTimes cron={cronExpression} />}
-                initialValues={initialValues}
-                onClose={() => {
-                    setOpenCreateItemModal(false);
-                    tableContainerData?.tableQuery?.refetch();
-                }}
-            />
-
-            <EditFormDialog
-                resource="schedules"
-                id={editItemId ?? ''}
-                formFields={formFields}
-                title="Chỉnh sửa lịch biểu thực thi"
-                onClose={() => {
-                    setEditItemId(undefined);
-                    tableContainerData?.tableQuery?.refetch();
-                }}
+            <ScheduleExecutionFormModal
+                modalForm={editModalForm}
+                itemOptions={itemOptions ?? []}
+                dataProviderOptions={dataProviderOptions ?? []}
             />
 
             {!!selectedScheduleId && (

@@ -1,7 +1,7 @@
 'use client';
 
 import { CustomLink } from '@/components/custom';
-import { AuthCard } from '@/app/(public)/components/auth';
+import { AuthCard } from '@/app/(public)/_components/auth';
 
 import { RegisterForm } from './components';
 

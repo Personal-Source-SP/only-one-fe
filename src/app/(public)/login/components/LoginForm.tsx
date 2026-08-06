@@ -6,7 +6,7 @@ import {
     CustomInput,
     CustomLink,
 } from '@/components/custom';
-import { AuthSocialLogin } from '@/app/(public)/components/auth/AuthSocialLogin';
+import { AuthSocialLogin } from '@/app/(public)/_components/auth/AuthSocialLogin';
 import { useLoginPage } from '@/app/(public)/login/hooks';
 
 export const LoginForm = () => {

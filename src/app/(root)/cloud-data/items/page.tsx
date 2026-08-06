@@ -1,68 +1,73 @@
 'use client';
 
-import { ReactNode } from 'react';
-import { Icon } from '@iconify/react';
-import { CreateFormDialog, DataTableContainer } from '@/components/common';
+import { useMemo } from 'react';
+import { PlusOutlined } from '@ant-design/icons';
 import { CustomButton } from '@/components/custom';
+import {
+    FilterPanel,
+    ListTable,
+    ListWrapper,
+    type CardAction,
+    type IFilterField,
+} from '@/components/custom-container';
 
-import { columns, filterSearch, getCreateFormFields } from './constants';
+import { columns } from './constants';
 import { useCloudDataItemPage } from './hooks';
+import { CloudItemFormModal } from './components';
+import type { CloudItemRecord } from './types';
 
 const CloudDataItem = () => {
-    const {
-        openCreateItemModal,
-        setOpenCreateItemModal,
-        tableContainerData,
-        cloudDataProviderOptions,
-    } = useCloudDataItemPage();
+    const { tableProps, tableQuery, debouncedSearch, createModalForm, cloudDataProviderOptions } =
+        useCloudDataItemPage();
 
-    const createFormFields = getCreateFormFields(cloudDataProviderOptions ?? []);
+    const actions = useMemo<CardAction[]>(
+        () => [
+            {
+                component: (
+                    <CustomButton
+                        type="primary"
+                        icon={<PlusOutlined />}
+                        onClick={() => createModalForm.show()}
+                    >
+                        Thêm dữ liệu
+                    </CustomButton>
+                ),
+            },
+        ],
+        [createModalForm],
+    );
 
-    const actionButtons: ReactNode[] = [
-        <CustomButton
-            type="primary"
-            title="Thêm dữ liệu"
-            key="add-cloud-data-item"
-            icon={<Icon icon="lucide:plus" />}
-            onClick={() => setOpenCreateItemModal(true)}
-        >
-            Thêm
-        </CustomButton>,
-    ];
+    const filters = useMemo<IFilterField[]>(
+        () => [
+            {
+                name: 'search',
+                type: 'input',
+                placeholder: 'Tìm kiếm dữ liệu đám mây...',
+                onChange: (value) => debouncedSearch(value?.toString() ?? ''),
+            },
+        ],
+        [debouncedSearch],
+    );
 
     return (
         <>
-            <DataTableContainer
-                columns={columns}
-                resource="cloud-data-items"
-                title="Danh sách dữ liệu cloud"
-                description="Xem và quản lý dữ liệu trên cloud"
-                actionButtons={actionButtons}
-                tableContainerData={tableContainerData}
-                filterSearch={filterSearch}
-            />
+            <ListWrapper
+                actions={actions}
+                error={tableQuery.error}
+                isLoading={tableQuery.isLoading}
+                filters={<FilterPanel fields={filters} />}
+            >
+                <ListTable<CloudItemRecord>
+                    columns={columns}
+                    tableProps={tableProps}
+                    tableQuery={tableQuery}
+                    deleteResource="cloud-data-items"
+                />
+            </ListWrapper>
 
-            <CreateFormDialog
-                open={openCreateItemModal}
-                formFields={createFormFields}
-                title="Thêm mới dữ liệu đám mây"
-                resource="cloud-data-items/upload"
-                onClose={() => {
-                    setOpenCreateItemModal(false);
-                    tableContainerData?.tableQuery?.refetch();
-                }}
-                onTransformValues={(values) => {
-                    const fileList = values.file as any[];
-                    if (!fileList?.length || !fileList[0]?.originFileObj) {
-                        return values;
-                    }
-
-                    const formData = new FormData();
-                    formData.append('file', fileList[0].originFileObj);
-                    formData.append('cloudDataProviderId', values.cloudDataProviderId);
-
-                    return formData;
-                }}
+            <CloudItemFormModal
+                modalForm={createModalForm}
+                cloudDataProviderOptions={cloudDataProviderOptions ?? []}
             />
         </>
     );

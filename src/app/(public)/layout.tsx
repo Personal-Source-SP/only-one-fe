@@ -1,4 +1,4 @@
-import { AuthLayout } from '@/app/(public)/components/auth';
+import { AuthLayout } from '@/app/(public)/_components/auth';
 import { MainProvider } from '@/contexts/MainContext';
 import type { Metadata } from 'next';
 import { ReactNode } from 'react';

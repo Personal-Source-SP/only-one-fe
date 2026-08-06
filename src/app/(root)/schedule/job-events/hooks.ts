@@ -1,21 +1,24 @@
 'use client';
 
 import { useState } from 'react';
-import { useTableContainer } from '@/hooks';
-import { NSchedule } from '@/interfaces';
+import { useCustomTable } from '@/hooks';
+import type { JobEventRecord } from './types';
 
 export const useScheduleJobEventsPage = () => {
-    const [selectedJobEvent, setSelectedJobEvent] = useState<
-        NSchedule.IScheduleJobEvent | undefined
-    >(undefined);
+    const [selectedJobEvent, setSelectedJobEvent] = useState<JobEventRecord | undefined>(undefined);
 
-    const tableContainerData = useTableContainer({
-        resource: 'schedule-job-events',
-    });
+    const { tableProps, tableQuery, debouncedSearch, setFilters, setCurrentPage } =
+        useCustomTable<JobEventRecord>({
+            resource: 'schedule-job-events',
+        });
 
     return {
+        tableProps,
+        tableQuery,
+        debouncedSearch,
+        setFilters,
+        setCurrentPage,
         selectedJobEvent,
         setSelectedJobEvent,
-        tableContainerData,
     };
 };

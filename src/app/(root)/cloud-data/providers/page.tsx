@@ -1,85 +1,73 @@
 'use client';
 
-import { ReactNode } from 'react';
-import { Icon } from '@iconify/react';
-import { CreateFormDialog, DataTableContainer, EditFormDialog } from '@/components/common';
+import { useMemo } from 'react';
+import { PlusOutlined } from '@ant-design/icons';
 import { CustomButton } from '@/components/custom';
-import { ActionTableItem } from '@/interfaces';
+import {
+    FilterPanel,
+    ListTable,
+    ListWrapper,
+    type CardAction,
+    type IFilterField,
+} from '@/components/custom-container';
 
-import { columns, filterSearch, formFields, initialValues } from './constants';
+import { columns } from './constants';
 import { useCloudDataProviderPage } from './hooks';
+import { CloudProviderFormModal } from './components';
+import type { CloudProviderRecord } from './types';
 
 const CloudDataProvider = () => {
-    const {
-        openCreateItemModal,
-        setOpenCreateItemModal,
-        editItemId,
-        setEditItemId,
-        tableContainerData,
-    } = useCloudDataProviderPage();
+    const { tableProps, tableQuery, debouncedSearch, createModalForm, editModalForm } =
+        useCloudDataProviderPage();
 
-    const actionItems: ActionTableItem[] = [
-        {
-            key: 'edit',
-            label: 'Chỉnh sửa',
-            icon: <Icon icon="lucide:edit" />,
-            onClick: (record) => setEditItemId(record?.id),
-        },
-    ];
+    const actions = useMemo<CardAction[]>(
+        () => [
+            {
+                component: (
+                    <CustomButton
+                        type="primary"
+                        icon={<PlusOutlined />}
+                        onClick={() => createModalForm.show()}
+                    >
+                        Thêm nhà cung cấp
+                    </CustomButton>
+                ),
+            },
+        ],
+        [createModalForm],
+    );
 
-    const actionButtons: ReactNode[] = [
-        <CustomButton
-            type="primary"
-            title="Thêm nhà cung cấp"
-            key="add-cloud-data-provider"
-            icon={<Icon icon="lucide:plus" />}
-            onClick={() => setOpenCreateItemModal(true)}
-        >
-            Thêm
-        </CustomButton>,
-    ];
+    const filters = useMemo<IFilterField[]>(
+        () => [
+            {
+                name: 'search',
+                type: 'input',
+                placeholder: 'Tìm kiếm nhà cung cấp...',
+                onChange: (value) => debouncedSearch(value?.toString() ?? ''),
+            },
+        ],
+        [debouncedSearch],
+    );
 
     return (
         <>
-            <DataTableContainer
-                columns={columns}
-                actionItems={actionItems}
-                resource="cloud-data-providers"
-                title="Danh sách nhà cung cấp cloud"
-                description="Quản lý các nhà cung cấp dịch vụ cloud"
-                actionButtons={actionButtons}
-                tableContainerData={tableContainerData}
-                filterSearch={filterSearch}
-            />
+            <ListWrapper
+                actions={actions}
+                error={tableQuery.error}
+                isLoading={tableQuery.isLoading}
+                filters={<FilterPanel fields={filters} />}
+            >
+                <ListTable<CloudProviderRecord>
+                    columns={columns}
+                    tableProps={tableProps}
+                    tableQuery={tableQuery}
+                    deleteResource="cloud-data-providers"
+                    onEdit={(record) => editModalForm.show(record.id)}
+                />
+            </ListWrapper>
 
-            <CreateFormDialog
-                formFields={formFields}
-                open={openCreateItemModal}
-                title="Thêm mới nhà cung cấp"
-                resource="cloud-data-providers"
-                initialValues={initialValues}
-                onClose={() => {
-                    setOpenCreateItemModal(false);
-                    tableContainerData?.tableQuery?.refetch();
-                }}
-                onTransformValues={(values) => {
-                    return {
-                        ...values,
-                        config: JSON.parse(values.config),
-                    };
-                }}
-            />
-
-            <EditFormDialog
-                id={editItemId ?? ''}
-                formFields={formFields}
-                resource="cloud-data-providers"
-                title="Chỉnh sửa nhà cung cấp"
-                onClose={() => {
-                    setEditItemId(undefined);
-                    tableContainerData?.tableQuery?.refetch();
-                }}
-            />
+            <CloudProviderFormModal modalForm={createModalForm} />
+            <CloudProviderFormModal modalForm={editModalForm} />
         </>
     );
 };

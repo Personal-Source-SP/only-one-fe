@@ -2,42 +2,88 @@
 
 import { useState } from 'react';
 import { MessageType } from '@/enums';
-import { useCustomMutationData, useTableContainer } from '@/hooks';
+import { useCustomModalForm, useCustomMutationData, useCustomTable } from '@/hooks';
+import type { SimulationContextFormValues, SimulationContextRecord } from './types';
 
 export const useSimulationContextsPage = () => {
     const [loading, setLoading] = useState(false);
-    const [openCreateItemModal, setOpenCreateItemModal] = useState(false);
-    const [editItemId, setEditItemId] = useState<string | undefined>(undefined);
-
     const { handleCustomMutationData } = useCustomMutationData();
-    const tableContainerData = useTableContainer({
+
+    const { tableProps, tableQuery, debouncedSearch, setFilters, setCurrentPage } =
+        useCustomTable<SimulationContextRecord>({
+            resource: 'simulation-contexts',
+        });
+
+    const createModalForm = useCustomModalForm<
+        SimulationContextRecord,
+        SimulationContextFormValues,
+        SimulationContextRecord
+    >({
+        action: 'create',
         resource: 'simulation-contexts',
+        onMutationSuccess: async () => {
+            await tableQuery.refetch();
+        },
+        onFinish: (values) => {
+            try {
+                return {
+                    ...values,
+                    defaultPayload: values.defaultPayload
+                        ? JSON.parse(values.defaultPayload)
+                        : undefined,
+                };
+            } catch {
+                return values;
+            }
+        },
+    });
+
+    const editModalForm = useCustomModalForm<
+        SimulationContextRecord,
+        SimulationContextFormValues,
+        SimulationContextRecord
+    >({
+        action: 'edit',
+        resource: 'simulation-contexts',
+        onMutationSuccess: async () => {
+            await tableQuery.refetch();
+        },
+        initialValuesMapper: (record) => ({
+            name: record.name,
+            description: record.description,
+            defaultPayload:
+                typeof record.defaultPayload === 'object'
+                    ? JSON.stringify(record.defaultPayload, null, 2)
+                    : record.defaultPayload,
+        }),
+        onFinish: (values) => {
+            try {
+                return {
+                    ...values,
+                    defaultPayload: values.defaultPayload
+                        ? JSON.parse(values.defaultPayload)
+                        : undefined,
+                };
+            } catch {
+                return values;
+            }
+        },
     });
 
     const handleCreateSimulationItem = (id: string) => {
         setLoading(true);
 
         handleCustomMutationData({
+            values: { simulationContextId: id },
             method: 'post',
             url: 'simulation-items',
-            values: { simulationContextId: id },
-            successNotification: (data) => {
-                if (!data?.data?.isSuccess) {
-                    setLoading(false);
-
-                    return {
-                        type: MessageType.ERROR,
-                        message: 'Tạo mô phỏng thất bại',
-                        description: data?.data?.message ?? 'Tạo mô phỏng thất bại',
-                    };
-                }
-
+            successNotification: () => {
                 setLoading(false);
-                tableContainerData?.tableQuery?.refetch();
+                tableQuery?.refetch();
 
                 return {
                     type: MessageType.SUCCESS,
-                    message: 'Tạo mô phỏng thành công',
+                    message: 'Tạo đối tượng mô phỏng thành công',
                 };
             },
             errorNotification: (error) => {
@@ -45,8 +91,8 @@ export const useSimulationContextsPage = () => {
 
                 return {
                     type: MessageType.ERROR,
-                    message: 'Tạo mô phỏng thất bại',
-                    description: error?.message ?? 'Tạo mô phỏng thất bại',
+                    message: 'Tạo đối tượng mô phỏng thất bại',
+                    description: error?.message ?? 'Tạo đối tượng mô phỏng thất bại',
                 };
             },
         });
@@ -54,11 +100,13 @@ export const useSimulationContextsPage = () => {
 
     return {
         loading,
-        openCreateItemModal,
-        setOpenCreateItemModal,
-        editItemId,
-        setEditItemId,
-        tableContainerData,
+        tableProps,
+        tableQuery,
+        debouncedSearch,
+        setFilters,
+        setCurrentPage,
+        createModalForm,
+        editModalForm,
         handleCreateSimulationItem,
     };
 };

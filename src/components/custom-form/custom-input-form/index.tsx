@@ -55,9 +55,7 @@ export const CustomInputForm = ({
             case CustomInputFormType.Html:
                 return <HtmlEditor {...htmlEditorProps} />;
             case CustomInputFormType.Number:
-                return (
-                    <CustomInputNumber<number> size="large" className="w-full" {...numberProps} />
-                );
+                return <CustomInputNumber size="large" className="w-full" {...numberProps} />;
             case CustomInputFormType.Password:
                 return <CustomInput.Password size="large" {...passwordProps} />;
             case CustomInputFormType.TextArea:

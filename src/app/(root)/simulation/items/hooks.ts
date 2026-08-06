@@ -2,58 +2,102 @@
 
 import { useState } from 'react';
 import { MessageType, SimulationItemStatus } from '@/enums';
-import { useCustomMutationData, useSelectSimulationContext, useTableContainer } from '@/hooks';
+import {
+    useCustomModalForm,
+    useCustomMutationData,
+    useCustomTable,
+    useSelectSimulationContext,
+} from '@/hooks';
+import type { SimulationItemFormValues, SimulationItemRecord } from './types';
 
 export const useSimulationItemsPage = () => {
     const [loading, setLoading] = useState(false);
-    const [openCreateItemModal, setOpenCreateItemModal] = useState(false);
-    const [editItemId, setEditItemId] = useState<string | undefined>(undefined);
 
-    const { handleCustomMutationData } = useCustomMutationData();
     const { options: simulationContextOptions, query: simulationContextQuery } =
         useSelectSimulationContext();
+    const { handleCustomMutationData } = useCustomMutationData();
 
-    const tableContainerData = useTableContainer({
+    const { tableProps, tableQuery, debouncedSearch, setFilters, setCurrentPage } =
+        useCustomTable<SimulationItemRecord>({
+            resource: 'simulation-items',
+        });
+
+    const createModalForm = useCustomModalForm<
+        SimulationItemRecord,
+        SimulationItemFormValues,
+        SimulationItemRecord
+    >({
+        action: 'create',
         resource: 'simulation-items',
+        onMutationSuccess: async () => {
+            await tableQuery.refetch();
+        },
+        onFinish: (values) => {
+            try {
+                return {
+                    ...values,
+                    payload: values.payload ? JSON.parse(values.payload) : undefined,
+                };
+            } catch {
+                return values;
+            }
+        },
+    });
+
+    const editModalForm = useCustomModalForm<
+        SimulationItemRecord,
+        SimulationItemFormValues,
+        SimulationItemRecord
+    >({
+        action: 'edit',
+        resource: 'simulation-items',
+        onMutationSuccess: async () => {
+            await tableQuery.refetch();
+        },
+        initialValuesMapper: (record) => ({
+            name: record.name,
+            simulationContextId: record.simulationContextId,
+            payload:
+                typeof record.payload === 'object'
+                    ? JSON.stringify(record.payload, null, 2)
+                    : record.payload,
+        }),
+        onFinish: (values) => {
+            try {
+                return {
+                    ...values,
+                    payload: values.payload ? JSON.parse(values.payload) : undefined,
+                };
+            } catch {
+                return values;
+            }
+        },
     });
 
     const handleSimulationItemAction = (id: string, status: SimulationItemStatus) => {
-        if (!id) return;
-
-        const actionMessages: Record<string, { success: string; failed: string }> = {
-            [SimulationItemStatus.PROCESSING]: {
-                success: 'Bắt đầu mô phỏng thành công',
-                failed: 'Bắt đầu mô phỏng thất bại',
-            },
-        };
-
-        const action: Record<string, string> = {
-            [SimulationItemStatus.PROCESSING]: 'run',
-        };
-
         setLoading(true);
 
         handleCustomMutationData({
-            values: {},
-            method: 'post',
-            url: `simulation-items/${id}/${action[status]}`,
+            values: { status },
+            method: 'put',
+            url: `simulation-items/${id}/action`,
             successNotification: (data) => {
                 if (!data?.data?.isSuccess) {
                     setLoading(false);
 
                     return {
                         type: MessageType.ERROR,
-                        message: actionMessages[status]?.failed,
-                        description: data?.data?.message ?? actionMessages[status]?.failed,
+                        message: 'Thao tác thất bại',
+                        description: data?.data?.message ?? 'Thao tác thất bại',
                     };
                 }
 
                 setLoading(false);
-                tableContainerData?.tableQuery?.refetch();
+                tableQuery?.refetch();
 
                 return {
                     type: MessageType.SUCCESS,
-                    message: actionMessages[status].success,
+                    message: 'Thao tác thành công',
                 };
             },
             errorNotification: (error) => {
@@ -61,8 +105,8 @@ export const useSimulationItemsPage = () => {
 
                 return {
                     type: MessageType.ERROR,
-                    message: actionMessages[status].failed,
-                    description: error?.message ?? actionMessages[status].failed,
+                    message: 'Thao tác thất bại',
+                    description: error?.message ?? 'Thao tác thất bại',
                 };
             },
         });
@@ -70,13 +114,15 @@ export const useSimulationItemsPage = () => {
 
     return {
         loading,
-        openCreateItemModal,
-        setOpenCreateItemModal,
-        editItemId,
-        setEditItemId,
+        tableProps,
+        tableQuery,
+        debouncedSearch,
+        setFilters,
+        setCurrentPage,
+        createModalForm,
+        editModalForm,
         simulationContextOptions,
         simulationContextQuery,
-        tableContainerData,
         handleSimulationItemAction,
     };
 };

@@ -1,22 +1,27 @@
 'use client';
 
-import { ReactNode } from 'react';
-import { Icon } from '@iconify/react';
-import { DataTableContainer, FileGroups, MediaLightbox } from '@/components/common';
+import { useMemo } from 'react';
+import { PlusOutlined } from '@ant-design/icons';
+import { FileGroups, MediaLightbox } from '@/components/common';
 import { CustomButton, CustomSelect } from '@/components/custom';
+import {
+    FilterPanel,
+    ListTable,
+    ListWrapper,
+    type CardAction,
+    type IFilterField,
+} from '@/components/custom-container';
 import { DisplayMode } from '@/enums';
-import { ActionTableItem, NDataProvider } from '@/interfaces';
 
-import { columns, displayModeOptions, getFilterSearch } from './constants';
+import { columns, displayModeOptions } from './constants';
 import { useScrapingDataPage } from './hooks';
 import { ProcessScrapeData } from './components';
+import type { ScrapingDataRecord } from './types';
 
 const ScrapingDataPage = () => {
     const {
         openProcessScrapeDataModal,
         setOpenProcessScrapeDataModal,
-        selectedDataProviderIds,
-        setSelectedDataProviderIds,
         columnDisplay,
         viewMode,
         displayMode,
@@ -28,90 +33,90 @@ const ScrapingDataPage = () => {
         handleDelete,
         modalPropsData,
         photoItems,
-        customFilterItems,
         handlePhotoClick,
     } = useScrapingDataPage();
 
-    const actionItems: ActionTableItem[] = [
-        {
-            key: 'edit',
-            label: 'Chỉnh sửa',
-            icon: <Icon icon="lucide:edit" />,
-            onClick: (record: NDataProvider.IScrapingData) => modalPropsData?.show?.(record?.id),
-        },
-    ];
+    const actions = useMemo<CardAction[]>(
+        () => [
+            {
+                component: (
+                    <CustomButton
+                        type="primary"
+                        icon={<PlusOutlined />}
+                        onClick={() => setOpenProcessScrapeDataModal(true)}
+                    >
+                        Cào dữ liệu
+                    </CustomButton>
+                ),
+            },
+            {
+                component: (
+                    <CustomButton type="primary" onClick={() => setIsLightboxOpen(true)}>
+                        Trình chiếu
+                    </CustomButton>
+                ),
+            },
+            {
+                component: (
+                    <CustomSelect
+                        value={displayMode}
+                        className="w-[130px]"
+                        onChange={(value) => setDisplayMode(value as DisplayMode)}
+                        options={displayModeOptions}
+                    />
+                ),
+            },
+        ],
+        [displayMode, setDisplayMode, setOpenProcessScrapeDataModal, setIsLightboxOpen],
+    );
 
-    const actionButtons: ReactNode[] = [
-        <CustomButton
-            type="primary"
-            key="scrape-data"
-            title="Cào dữ liệu"
-            icon={<Icon icon="lucide:file-text" />}
-            onClick={() => setOpenProcessScrapeDataModal(true)}
-        >
-            Cào
-        </CustomButton>,
-        <CustomButton
-            type="primary"
-            key="slideshow"
-            title="Trình chiếu"
-            icon={<Icon icon="lucide:play" />}
-            onClick={() => setIsLightboxOpen(true)}
-        >
-            Trình chiếu
-        </CustomButton>,
-        <CustomButton
-            type="primary"
-            key="delete-data"
-            title="Xóa dữ liệu"
-            icon={<Icon icon="lucide:trash" />}
-            disabled={!selectedDataProviderIds?.length}
-            onClick={() => handleDelete(selectedDataProviderIds)}
-        >
-            Xóa
-        </CustomButton>,
-    ];
-
-    const customFilterActions: ReactNode = (
-        <CustomSelect
-            key="display-mode"
-            value={displayMode}
-            placeholder="Chế độ hiển thị"
-            className="w-[120px] shrink-0 sm:w-[130px]"
-            onChange={(value) => setDisplayMode(value as DisplayMode)}
-            options={displayModeOptions}
-        />
+    const filters = useMemo<IFilterField[]>(
+        () => [
+            {
+                name: 'search',
+                type: 'input',
+                placeholder: 'Tìm kiếm dữ liệu cào...',
+                onChange: (value) => {
+                    tableContainerData.setCurrentPage(1);
+                    tableContainerData.setFilters([
+                        {
+                            field: 'dataId',
+                            operator: 'contains',
+                            value: value?.toString() ?? '',
+                        },
+                    ]);
+                },
+            },
+        ],
+        [tableContainerData],
     );
 
     return (
         <>
-            <DataTableContainer
-                resource="scraping-data"
-                actionItems={actionItems}
-                title="Danh sách dữ liệu cào"
-                description="Xem và quản lý dữ liệu đã được cào"
-                actionButtons={actionButtons}
-                customFilterItems={customFilterItems}
-                tableContainerData={tableContainerData}
-                columns={displayMode === DisplayMode.TABLE ? columns : undefined}
-                filterSearch={getFilterSearch(displayMode)}
-                childrenTop={
-                    displayMode === DisplayMode.LIST && (
-                        <FileGroups
-                            data={photoItems}
-                            displayMode={viewMode}
-                            columns={columnDisplay}
-                            onClickFile={handlePhotoClick}
-                            onDeleteFile={(fileId: string) => handleDelete([fileId])}
-                        />
-                    )
-                }
-                onRowSelectionChange={(selectedRows: NDataProvider.IDataProvider[]) => {
-                    const dataProviderIds = selectedRows?.map((item) => item.id ?? '');
-                    setSelectedDataProviderIds(dataProviderIds ?? []);
-                }}
-                customFilterActions={customFilterActions}
-            />
+            <ListWrapper
+                actions={actions}
+                error={tableContainerData?.tableQuery?.error}
+                isLoading={tableContainerData?.tableQuery?.isLoading}
+                filters={<FilterPanel fields={filters} />}
+            >
+                {displayMode === DisplayMode.TABLE ? (
+                    <ListTable<ScrapingDataRecord>
+                        columns={columns}
+                        tableProps={tableContainerData.tableProps as any}
+                        tableQuery={tableContainerData.tableQuery as any}
+                        deleteResource="scraping-data"
+                        onEdit={(record) => modalPropsData?.show?.(record.id)}
+                    />
+                ) : (
+                    <FileGroups
+                        data={photoItems}
+                        displayMode={viewMode}
+                        columns={columnDisplay}
+                        onClickFile={handlePhotoClick}
+                        onDeleteFile={(fileId: string) => handleDelete([fileId])}
+                    />
+                )}
+            </ListWrapper>
 
             <MediaLightbox
                 isOpen={isLightboxOpen}

@@ -1,98 +1,73 @@
 'use client';
 
-import { ReactNode } from 'react';
-import { Icon } from '@iconify/react';
-import { CreateFormDialog, DataTableContainer, EditFormDialog } from '@/components/common';
+import { useMemo } from 'react';
+import { PlusOutlined } from '@ant-design/icons';
 import { CustomButton } from '@/components/custom';
-import { ActionTableItem } from '@/interfaces';
+import {
+    FilterPanel,
+    ListTable,
+    ListWrapper,
+    type CardAction,
+    type IFilterField,
+} from '@/components/custom-container';
 
-import { columns, filterSearch, formFields, initialValues } from './constants';
+import { columns } from './constants';
 import { useSimulationContextsPage } from './hooks';
+import { SimulationContextFormModal } from './components';
+import type { SimulationContextRecord } from './types';
 
 const SimulationContextsPage = () => {
-    const {
-        loading,
-        openCreateItemModal,
-        setOpenCreateItemModal,
-        editItemId,
-        setEditItemId,
-        tableContainerData,
-        handleCreateSimulationItem,
-    } = useSimulationContextsPage();
+    const { loading, tableProps, tableQuery, debouncedSearch, createModalForm, editModalForm } =
+        useSimulationContextsPage();
 
-    const actionItems: ActionTableItem[] = [
-        {
-            key: 'edit',
-            label: 'Chỉnh sửa',
-            icon: <Icon icon="lucide:edit" />,
-            onClick: (record) => setEditItemId(record?.id),
-        },
-        {
-            key: 'create-simulation-items',
-            label: 'Tạo mô phỏng',
-            icon: <Icon icon="lucide:plus" />,
-            onClick: (record) => handleCreateSimulationItem(record?.id),
-        },
-    ];
+    const actions = useMemo<CardAction[]>(
+        () => [
+            {
+                component: (
+                    <CustomButton
+                        type="primary"
+                        icon={<PlusOutlined />}
+                        onClick={() => createModalForm.show()}
+                    >
+                        Thêm ngữ cảnh
+                    </CustomButton>
+                ),
+            },
+        ],
+        [createModalForm],
+    );
 
-    const actionButtons: ReactNode[] = [
-        <CustomButton
-            type="primary"
-            title="Thêm ngữ cảnh mô phỏng"
-            key="add-simulation-context"
-            icon={<Icon icon="lucide:plus" />}
-            onClick={() => setOpenCreateItemModal(true)}
-        >
-            Thêm
-        </CustomButton>,
-    ];
+    const filters = useMemo<IFilterField[]>(
+        () => [
+            {
+                name: 'search',
+                type: 'input',
+                placeholder: 'Tìm kiếm ngữ cảnh...',
+                onChange: (value) => debouncedSearch(value?.toString() ?? ''),
+            },
+        ],
+        [debouncedSearch],
+    );
 
     return (
         <>
-            <DataTableContainer
-                loading={loading}
-                columns={columns}
-                actionItems={actionItems}
-                resource="simulation-contexts"
-                title="Danh sách ngữ cảnh mô phỏng"
-                description="Quản lý các ngữ cảnh mô phỏng"
-                actionButtons={actionButtons}
-                tableContainerData={tableContainerData}
-                filterSearch={filterSearch}
-            />
+            <ListWrapper
+                actions={actions}
+                error={tableQuery.error}
+                isLoading={loading || tableQuery.isLoading}
+                filters={<FilterPanel fields={filters} />}
+            >
+                <ListTable<SimulationContextRecord>
+                    columns={columns}
+                    tableProps={tableProps}
+                    tableQuery={tableQuery}
+                    deleteResource="simulation-contexts"
+                    onEdit={(record) => editModalForm.show(record.id)}
+                />
+            </ListWrapper>
 
-            <CreateFormDialog
-                formFields={formFields}
-                open={openCreateItemModal}
-                resource="simulation-contexts"
-                title="Thêm mới ngữ cảnh mô phỏng"
-                onClose={() => {
-                    setOpenCreateItemModal(false);
-                    tableContainerData?.tableQuery?.refetch();
-                }}
-                initialValues={initialValues}
-                onTransformValues={(values) => {
-                    try {
-                        return {
-                            ...values,
-                            defaultPayload: JSON.parse(values.defaultPayload),
-                        };
-                    } catch {
-                        return values;
-                    }
-                }}
-            />
-
-            <EditFormDialog
-                id={editItemId ?? ''}
-                formFields={formFields}
-                resource="simulation-contexts"
-                title="Chỉnh sửa ngữ cảnh mô phỏng"
-                onClose={() => {
-                    setEditItemId(undefined);
-                    tableContainerData?.tableQuery?.refetch();
-                }}
-            />
+            <SimulationContextFormModal modalForm={createModalForm} />
+            <SimulationContextFormModal modalForm={editModalForm} />
         </>
     );
 };

@@ -12,9 +12,10 @@ export type CustomInputProps = InputProps & {
     touchFriendly?: boolean;
 };
 
-export type CustomInputNumberProps = InputNumberProps & {
-    touchFriendly?: boolean;
-};
+export type CustomInputNumberProps<T extends string | number = string | number> =
+    InputNumberProps<T> & {
+        touchFriendly?: boolean;
+    };
 
 export const CustomInput = Object.assign(
     ({ touchFriendly = false, addonAfter, addonBefore, className, ...props }: CustomInputProps) => {
@@ -47,11 +48,11 @@ export const CustomInput = Object.assign(
     },
 );
 
-export const CustomInputNumber = ({
+export function CustomInputNumber<T extends string | number = string | number>({
     touchFriendly = false,
     className,
     ...props
-}: CustomInputNumberProps) => {
+}: CustomInputNumberProps<T>) {
     const mergedClassName = mergeHubAntdClass(
         HUB_ANTD_INPUT_NUMBER_CLASS,
         touchFriendly
@@ -60,5 +61,5 @@ export const CustomInputNumber = ({
         className,
     );
 
-    return <InputNumber className={mergedClassName || undefined} {...props} />;
-};
+    return <InputNumber<T> className={mergedClassName || undefined} {...props} />;
+}

@@ -1,103 +1,86 @@
 'use client';
 
-import { ReactNode } from 'react';
-import { Icon } from '@iconify/react';
-import { CreateFormDialog, DataTableContainer, EditFormDialog } from '@/components/common';
+import { useMemo } from 'react';
+import { PlusOutlined } from '@ant-design/icons';
 import { CustomButton } from '@/components/custom';
-import { SimulationItemStatus } from '@/enums';
-import { ActionTableItem } from '@/interfaces';
+import {
+    FilterPanel,
+    ListTable,
+    ListWrapper,
+    type CardAction,
+    type IFilterField,
+} from '@/components/custom-container';
 
-import { columns, filterSearch, getFormFields, initialValues } from './constants';
+import { columns } from './constants';
 import { useSimulationItemsPage } from './hooks';
+import { SimulationItemFormModal } from './components';
+import type { SimulationItemRecord } from './types';
 
 const SimulationItemsPage = () => {
     const {
         loading,
-        openCreateItemModal,
-        setOpenCreateItemModal,
-        editItemId,
-        setEditItemId,
+        tableProps,
+        tableQuery,
+        debouncedSearch,
+        createModalForm,
+        editModalForm,
         simulationContextOptions,
-        simulationContextQuery,
-        tableContainerData,
-        handleSimulationItemAction,
     } = useSimulationItemsPage();
 
-    const formFields = getFormFields(simulationContextOptions ?? [], simulationContextQuery);
+    const actions = useMemo<CardAction[]>(
+        () => [
+            {
+                component: (
+                    <CustomButton
+                        type="primary"
+                        icon={<PlusOutlined />}
+                        onClick={() => createModalForm.show()}
+                    >
+                        Thêm mô phỏng
+                    </CustomButton>
+                ),
+            },
+        ],
+        [createModalForm],
+    );
 
-    const actionItems: ActionTableItem[] = [
-        {
-            key: 'start',
-            label: 'Start',
-            icon: <Icon icon="lucide:play" />,
-            onClick: (record) =>
-                handleSimulationItemAction(record?.id, SimulationItemStatus.PROCESSING),
-        },
-        {
-            key: 'edit',
-            label: 'Chỉnh sửa',
-            icon: <Icon icon="lucide:edit" />,
-            onClick: (record) => setEditItemId(record?.id),
-        },
-    ];
-
-    const actionButtons: ReactNode[] = [
-        <CustomButton
-            type="primary"
-            title="Thêm mô phỏng"
-            key="add-simulation-item"
-            icon={<Icon icon="lucide:plus" />}
-            onClick={() => setOpenCreateItemModal(true)}
-        >
-            Thêm
-        </CustomButton>,
-    ];
+    const filters = useMemo<IFilterField[]>(
+        () => [
+            {
+                name: 'search',
+                type: 'input',
+                placeholder: 'Tìm kiếm mô phỏng...',
+                onChange: (value) => debouncedSearch(value?.toString() ?? ''),
+            },
+        ],
+        [debouncedSearch],
+    );
 
     return (
         <>
-            <DataTableContainer
-                loading={loading}
-                columns={columns}
-                actionItems={actionItems}
-                resource="simulation-items"
-                title="Danh sách đối tượng mô phỏng"
-                description="Quản lý các đối tượng mô phỏng"
-                actionButtons={actionButtons}
-                tableContainerData={tableContainerData}
-                filterSearch={filterSearch}
+            <ListWrapper
+                actions={actions}
+                error={tableQuery.error}
+                isLoading={loading || tableQuery.isLoading}
+                filters={<FilterPanel fields={filters} />}
+            >
+                <ListTable<SimulationItemRecord>
+                    columns={columns}
+                    tableProps={tableProps}
+                    tableQuery={tableQuery}
+                    deleteResource="simulation-items"
+                    onEdit={(record) => editModalForm.show(record.id)}
+                />
+            </ListWrapper>
+
+            <SimulationItemFormModal
+                modalForm={createModalForm}
+                simulationContextOptions={simulationContextOptions ?? []}
             />
 
-            <CreateFormDialog
-                formFields={formFields}
-                open={openCreateItemModal}
-                title="Thêm mới mô phỏng"
-                resource="simulation-items"
-                onClose={() => {
-                    setOpenCreateItemModal(false);
-                    tableContainerData?.tableQuery?.refetch();
-                }}
-                initialValues={initialValues}
-                onTransformValues={(values) => {
-                    try {
-                        return {
-                            ...values,
-                            payload: JSON.parse(values.payload),
-                        };
-                    } catch {
-                        return values;
-                    }
-                }}
-            />
-
-            <EditFormDialog
-                id={editItemId ?? ''}
-                formFields={formFields}
-                title="Chỉnh sửa mô phỏng"
-                resource="simulation-items"
-                onClose={() => {
-                    setEditItemId(undefined);
-                    tableContainerData?.tableQuery?.refetch();
-                }}
+            <SimulationItemFormModal
+                modalForm={editModalForm}
+                simulationContextOptions={simulationContextOptions ?? []}
             />
         </>
     );

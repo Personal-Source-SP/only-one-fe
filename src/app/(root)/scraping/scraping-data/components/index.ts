@@ -1,1 +1,1 @@
-export { ProcessScrapeData } from '@/app/(root)/scraping/components';
+export { ProcessScrapeData } from './ProcessScrapeData';

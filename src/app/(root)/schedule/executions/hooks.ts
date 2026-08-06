@@ -3,20 +3,18 @@
 import { useEffect, useState } from 'react';
 import { MessageType, ScheduleType } from '@/enums';
 import {
+    useCustomModalForm,
     useCustomMutationData,
+    useCustomTable,
     useSelectDataProvider,
     useSelectItem,
-    useTableContainer,
 } from '@/hooks';
+import type { ScheduleExecutionFormValues, ScheduleExecutionRecord } from './types';
 
 export const useScheduleExecutionPage = () => {
     const [loading, setLoading] = useState(false);
-    const [openCreateItemModal, setOpenCreateItemModal] = useState(false);
-    const [editItemId, setEditItemId] = useState<string | undefined>(undefined);
-
     const [type, setType] = useState<ScheduleType | undefined>(undefined);
     const [cronExpression, setCronExpression] = useState<string | undefined>(undefined);
-
     const [selectedScheduleId, setSelectedScheduleId] = useState<string | undefined>(undefined);
 
     const { handleCustomMutationData } = useCustomMutationData();
@@ -26,8 +24,42 @@ export const useScheduleExecutionPage = () => {
         enabled: false,
     });
 
-    const tableContainerData = useTableContainer({
+    const { tableProps, tableQuery, debouncedSearch, setFilters, setCurrentPage } =
+        useCustomTable<ScheduleExecutionRecord>({
+            resource: 'schedules',
+        });
+
+    const createModalForm = useCustomModalForm<
+        ScheduleExecutionRecord,
+        ScheduleExecutionFormValues,
+        ScheduleExecutionRecord
+    >({
+        action: 'create',
         resource: 'schedules',
+        onMutationSuccess: async () => {
+            await tableQuery.refetch();
+        },
+    });
+
+    const editModalForm = useCustomModalForm<
+        ScheduleExecutionRecord,
+        ScheduleExecutionFormValues,
+        ScheduleExecutionRecord
+    >({
+        action: 'edit',
+        resource: 'schedules',
+        onMutationSuccess: async () => {
+            await tableQuery.refetch();
+        },
+        initialValuesMapper: (record) => ({
+            name: record.name ?? '',
+            type: record.type,
+            cronExpression: record.cronExpression,
+            dataProviderId:
+                record.dataProviderId ?? (record.payload?.dataProviderId as string | undefined),
+            itemId: record.itemId ?? (record.payload?.itemId as string | undefined),
+            isActive: record.enabled ?? record.isActive ?? true,
+        }),
     });
 
     useEffect(() => {
@@ -60,7 +92,7 @@ export const useScheduleExecutionPage = () => {
                 }
 
                 setLoading(false);
-                tableContainerData?.tableQuery?.refetch();
+                tableQuery?.refetch();
 
                 return {
                     type: MessageType.SUCCESS,
@@ -98,7 +130,7 @@ export const useScheduleExecutionPage = () => {
                 }
 
                 setLoading(false);
-                tableContainerData?.tableQuery?.refetch();
+                tableQuery?.refetch();
 
                 return {
                     type: MessageType.SUCCESS,
@@ -119,10 +151,13 @@ export const useScheduleExecutionPage = () => {
 
     return {
         loading,
-        openCreateItemModal,
-        setOpenCreateItemModal,
-        editItemId,
-        setEditItemId,
+        tableProps,
+        tableQuery,
+        debouncedSearch,
+        setFilters,
+        setCurrentPage,
+        createModalForm,
+        editModalForm,
         type,
         setType,
         cronExpression,
@@ -131,7 +166,6 @@ export const useScheduleExecutionPage = () => {
         setSelectedScheduleId,
         itemOptions,
         dataProviderOptions,
-        tableContainerData,
         handleSwitchStatus,
         handleManualTrigger,
     };

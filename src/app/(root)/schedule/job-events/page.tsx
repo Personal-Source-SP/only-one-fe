@@ -1,36 +1,49 @@
 'use client';
 
-import { Icon } from '@iconify/react';
-import { DataTableContainer } from '@/components/common';
-import { ActionTableItem } from '@/interfaces';
+import { useMemo } from 'react';
+import { EyeOutlined } from '@ant-design/icons';
+import {
+    FilterPanel,
+    ListTable,
+    ListWrapper,
+    type IFilterField,
+} from '@/components/custom-container';
 
-import { columns, filterSearch } from './constants';
+import { columns } from './constants';
 import { useScheduleJobEventsPage } from './hooks';
 import { ViewJobEvent } from './components';
+import type { JobEventRecord } from './types';
 
 const ScheduleJobEventsPage = () => {
-    const { selectedJobEvent, setSelectedJobEvent, tableContainerData } =
+    const { tableProps, tableQuery, debouncedSearch, selectedJobEvent, setSelectedJobEvent } =
         useScheduleJobEventsPage();
 
-    const actionItems: ActionTableItem[] = [
-        {
-            key: 'view',
-            label: 'Xem',
-            icon: <Icon icon="lucide:eye" />,
-            onClick: (record) => setSelectedJobEvent(record),
-        },
-    ];
+    const filters = useMemo<IFilterField[]>(
+        () => [
+            {
+                name: 'search',
+                type: 'input',
+                placeholder: 'Tìm kiếm sự kiện lịch biểu...',
+                onChange: (value) => debouncedSearch(value?.toString() ?? ''),
+            },
+        ],
+        [debouncedSearch],
+    );
 
     return (
         <>
-            <DataTableContainer
-                columns={columns}
-                actionItems={actionItems}
-                title="Danh sách sự kiện lịch biểu"
-                description="Xem và quản lý các sự kiện lịch biểu"
-                tableContainerData={tableContainerData}
-                filterSearch={filterSearch}
-            />
+            <ListWrapper
+                error={tableQuery.error}
+                isLoading={tableQuery.isLoading}
+                filters={<FilterPanel fields={filters} />}
+            >
+                <ListTable<JobEventRecord>
+                    columns={columns}
+                    tableProps={tableProps}
+                    tableQuery={tableQuery}
+                    onView={(record) => setSelectedJobEvent(record)}
+                />
+            </ListWrapper>
 
             {!!selectedJobEvent && (
                 <ViewJobEvent

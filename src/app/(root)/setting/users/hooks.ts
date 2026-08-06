@@ -1,19 +1,42 @@
 'use client';
 
-import { useCustomModal, useTableContainer } from '@/hooks';
+import { useCustomModalForm, useCustomTable } from '@/hooks';
+import type { UserFormValues, UserRecord } from './types';
 
 export const useUsersPage = () => {
-    const tableContainerData = useTableContainer({
+    const { tableProps, tableQuery, debouncedSearch, setFilters, setCurrentPage } =
+        useCustomTable<UserRecord>({
+            resource: 'users',
+        });
+
+    const createModalForm = useCustomModalForm<UserRecord, UserFormValues, UserRecord>({
+        action: 'create',
         resource: 'users',
+        onMutationSuccess: async () => {
+            await tableQuery.refetch();
+        },
     });
 
-    const modalPropsData = useCustomModal({
+    const editModalForm = useCustomModalForm<UserRecord, UserFormValues, UserRecord>({
         action: 'edit',
         resource: 'users',
+        onMutationSuccess: async () => {
+            await tableQuery.refetch();
+        },
+        initialValuesMapper: (record) => ({
+            userName: record.userName,
+            email: record.email,
+            isActive: record.isActive,
+        }),
     });
 
     return {
-        tableContainerData,
-        modalPropsData,
+        tableProps,
+        tableQuery,
+        debouncedSearch,
+        setFilters,
+        setCurrentPage,
+        createModalForm,
+        editModalForm,
     };
 };

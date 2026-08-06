@@ -1,108 +1,84 @@
 'use client';
 
-import { ReactNode } from 'react';
-import { Icon } from '@iconify/react';
-import { CreateFormDialog, DataTableContainer, EditFormDialog } from '@/components/common';
+import { useMemo } from 'react';
+import { PlusOutlined } from '@ant-design/icons';
 import { ColumnType, CustomButton } from '@/components/custom';
+import {
+    FilterPanel,
+    ListTable,
+    ListWrapper,
+    type CardAction,
+    type IFilterField,
+} from '@/components/custom-container';
 import { DataImportType } from '@/enums';
-import { ActionTableItem, NDataProvider } from '@/interfaces';
 
-import { columns, filterSearch, formFields, importDataColumns } from './constants';
+import { columns, importDataColumns } from './constants';
 import { useItemPage } from './hooks';
-import { ImportData, ProcessScrapeData } from './components';
+import { ImportData, ItemFormModal, ProcessScrapeData } from './components';
+import type { ItemRecord } from './types';
 
 const ItemPage = () => {
     const {
-        openCreateItemModal,
-        setOpenCreateItemModal,
+        tableProps,
+        tableQuery,
+        debouncedSearch,
+        createModalForm,
+        editModalForm,
         openImportItemModal,
         setOpenImportItemModal,
-        editItemId,
-        setEditItemId,
         selectedItemIds,
-        setSelectedItemIds,
         openProcessScrapeDataModal,
         setOpenProcessScrapeDataModal,
-        tableContainerData,
     } = useItemPage();
 
-    const actionButtons: ReactNode[] = [
-        <CustomButton
-            type="primary"
-            key="scrape-data"
-            title="Cào dữ liệu"
-            icon={<Icon icon="lucide:file-text" />}
-            onClick={() => setOpenProcessScrapeDataModal(true)}
-        >
-            Cào
-        </CustomButton>,
-        <CustomButton
-            type="primary"
-            key="import-item"
-            title="Nhập đối tượng"
-            icon={<Icon icon="lucide:file-text" />}
-            onClick={() => setOpenImportItemModal(true)}
-        >
-            Nhập
-        </CustomButton>,
-        <CustomButton
-            type="primary"
-            key="add-item"
-            title="Thêm đối tượng"
-            icon={<Icon icon="lucide:plus" />}
-            onClick={() => setOpenCreateItemModal(true)}
-        >
-            Thêm
-        </CustomButton>,
-    ];
+    const actions = useMemo<CardAction[]>(
+        () => [
+            {
+                component: (
+                    <CustomButton
+                        type="primary"
+                        icon={<PlusOutlined />}
+                        onClick={() => createModalForm.show()}
+                    >
+                        Thêm đối tượng
+                    </CustomButton>
+                ),
+            },
+        ],
+        [createModalForm],
+    );
 
-    const actionItems: ActionTableItem[] = [
-        {
-            key: 'edit',
-            label: 'Chỉnh sửa',
-            icon: <Icon icon="lucide:edit" />,
-            onClick: (record) => setEditItemId(record?.id),
-        },
-    ];
+    const filters = useMemo<IFilterField[]>(
+        () => [
+            {
+                name: 'search',
+                type: 'input',
+                placeholder: 'Tìm kiếm đối tượng...',
+                onChange: (value) => debouncedSearch(value?.toString() ?? ''),
+            },
+        ],
+        [debouncedSearch],
+    );
 
     return (
         <>
-            <DataTableContainer
-                resource="items"
-                columns={columns}
-                title="Danh sách đối tượng"
-                description="Quản lý các đối tượng được cào"
-                actionButtons={actionButtons}
-                actionItems={actionItems}
-                tableContainerData={tableContainerData}
-                filterSearch={filterSearch}
-                onRowSelectionChange={(selectedRows: NDataProvider.IDataProviderItem[]) => {
-                    const itemIds = selectedRows?.map((item) => item.id ?? '');
-                    setSelectedItemIds(itemIds ?? []);
-                }}
-            />
+            <ListWrapper
+                actions={actions}
+                error={tableQuery.error}
+                isLoading={tableQuery.isLoading}
+                filters={<FilterPanel fields={filters} />}
+            >
+                <ListTable<ItemRecord>
+                    columns={columns}
+                    tableProps={tableProps}
+                    tableQuery={tableQuery}
+                    deleteResource="items"
+                    onEdit={(record) => editModalForm.show(record.id)}
+                />
+            </ListWrapper>
 
-            <CreateFormDialog
-                resource="items"
-                formFields={formFields}
-                title="Thêm mới đối tượng"
-                open={openCreateItemModal}
-                onClose={() => {
-                    setOpenCreateItemModal(false);
-                    tableContainerData?.tableQuery?.refetch();
-                }}
-            />
-
-            <EditFormDialog
-                resource="items"
-                id={editItemId ?? ''}
-                formFields={formFields}
-                title="Chỉnh sửa đối tượng"
-                onClose={() => {
-                    setEditItemId(undefined);
-                    tableContainerData?.tableQuery?.refetch();
-                }}
-            />
+            <ItemFormModal modalForm={createModalForm} />
+            <ItemFormModal modalForm={editModalForm} />
 
             {openImportItemModal && (
                 <ImportData
@@ -110,7 +86,7 @@ const ItemPage = () => {
                     open={openImportItemModal}
                     dataType={DataImportType.ITEM}
                     onClose={() => setOpenImportItemModal(false)}
-                    onSuccess={() => tableContainerData?.tableQuery?.refetch()}
+                    onSuccess={() => tableQuery.refetch()}
                     columns={importDataColumns as unknown as ColumnType<Record<string, any>>[]}
                 />
             )}

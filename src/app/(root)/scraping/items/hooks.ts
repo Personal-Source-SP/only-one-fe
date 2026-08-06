@@ -1,30 +1,53 @@
 'use client';
 
 import { useState } from 'react';
-import { useTableContainer } from '@/hooks';
+import { useCustomModalForm, useCustomTable } from '@/hooks';
+import type { ItemFormValues, ItemRecord } from './types';
 
 export const useItemPage = () => {
-    const [openCreateItemModal, setOpenCreateItemModal] = useState(false);
     const [openImportItemModal, setOpenImportItemModal] = useState(false);
-    const [editItemId, setEditItemId] = useState<string | undefined>(undefined);
     const [selectedItemIds, setSelectedItemIds] = useState<string[]>([]);
     const [openProcessScrapeDataModal, setOpenProcessScrapeDataModal] = useState(false);
 
-    const tableContainerData = useTableContainer({
+    const { tableProps, tableQuery, debouncedSearch, setFilters, setCurrentPage } =
+        useCustomTable<ItemRecord>({
+            resource: 'items',
+        });
+
+    const createModalForm = useCustomModalForm<ItemRecord, ItemFormValues, ItemRecord>({
+        action: 'create',
         resource: 'items',
+        onMutationSuccess: async () => {
+            await tableQuery.refetch();
+        },
+    });
+
+    const editModalForm = useCustomModalForm<ItemRecord, ItemFormValues, ItemRecord>({
+        action: 'edit',
+        resource: 'items',
+        onMutationSuccess: async () => {
+            await tableQuery.refetch();
+        },
+        initialValuesMapper: (record) => ({
+            name: record.name,
+            code: record.code,
+            tags: Array.isArray(record.tags) ? record.tags.join(', ') : record.tags,
+        }),
     });
 
     return {
-        openCreateItemModal,
-        setOpenCreateItemModal,
+        tableProps,
+        tableQuery,
+        debouncedSearch,
+        setFilters,
+        setCurrentPage,
+        createModalForm,
+        editModalForm,
         openImportItemModal,
         setOpenImportItemModal,
-        editItemId,
-        setEditItemId,
         selectedItemIds,
         setSelectedItemIds,
         openProcessScrapeDataModal,
         setOpenProcessScrapeDataModal,
-        tableContainerData,
     };
 };

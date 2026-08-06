@@ -1,34 +1,74 @@
 'use client';
 
-import { Icon } from '@iconify/react';
-import { DataTableContainer } from '@/components/common';
-import { NUser } from '@/interfaces';
+import { useMemo } from 'react';
+import { PlusOutlined } from '@ant-design/icons';
+import { CustomButton } from '@/components/custom';
+import {
+    FilterPanel,
+    ListTable,
+    ListWrapper,
+    type CardAction,
+    type IFilterField,
+} from '@/components/custom-container';
 
-import { columns, filterSearch } from './constants';
+import { columns } from './constants';
 import { useUsersPage } from './hooks';
+import { UserFormModal } from './components';
+import type { UserRecord } from './types';
 
 const UsersPage = () => {
-    const { tableContainerData, modalPropsData } = useUsersPage();
+    const { tableProps, tableQuery, debouncedSearch, createModalForm, editModalForm } =
+        useUsersPage();
 
-    const actionItems = [
-        {
-            key: 'edit',
-            label: 'Chỉnh sửa',
-            icon: <Icon icon="lucide:edit" />,
-            onClick: (record: NUser.IUser) => modalPropsData?.show?.(record?.id),
-        },
-    ];
+    const actions = useMemo<CardAction[]>(
+        () => [
+            {
+                component: (
+                    <CustomButton
+                        type="primary"
+                        icon={<PlusOutlined />}
+                        onClick={() => createModalForm.show()}
+                    >
+                        Thêm người dùng
+                    </CustomButton>
+                ),
+            },
+        ],
+        [createModalForm],
+    );
+
+    const filters = useMemo<IFilterField[]>(
+        () => [
+            {
+                name: 'search',
+                type: 'input',
+                placeholder: 'Tìm kiếm người dùng...',
+                onChange: (value) => debouncedSearch(value?.toString() ?? ''),
+            },
+        ],
+        [debouncedSearch],
+    );
 
     return (
-        <DataTableContainer
-            resource="users"
-            columns={columns}
-            title="Danh sách người dùng"
-            description="Quản lý người dùng hệ thống"
-            actionItems={actionItems}
-            tableContainerData={tableContainerData}
-            filterSearch={filterSearch}
-        />
+        <>
+            <ListWrapper
+                actions={actions}
+                error={tableQuery.error}
+                isLoading={tableQuery.isLoading}
+                filters={<FilterPanel fields={filters} />}
+            >
+                <ListTable<UserRecord>
+                    columns={columns}
+                    tableProps={tableProps}
+                    tableQuery={tableQuery}
+                    deleteResource="users"
+                    onEdit={(record) => editModalForm.show(record.id)}
+                />
+            </ListWrapper>
+
+            <UserFormModal modalForm={createModalForm} />
+            <UserFormModal modalForm={editModalForm} />
+        </>
     );
 };
 

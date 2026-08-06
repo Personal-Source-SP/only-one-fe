@@ -3,17 +3,17 @@
 import { useState } from 'react';
 import { MessageType } from '@/enums';
 import {
+    useCustomModalForm,
     useCustomMutationData,
+    useCustomTable,
     useSelectCloudDataProvider,
     useSelectDataProvider,
     useSelectItem,
-    useTableContainer,
 } from '@/hooks';
+import type { ProviderItemFormValues, ProviderItemRecord } from './types';
 
 export const useDataProviderItemPage = () => {
     const [loading, setLoading] = useState(false);
-    const [openCreateItemModal, setOpenCreateItemModal] = useState(false);
-    const [editItemId, setEditItemId] = useState<string | undefined>(undefined);
     const [openProcessScrapeDataModal, setOpenProcessScrapeDataModal] = useState(false);
     const [selectedDataProviderItemIds, setSelectedDataProviderItemIds] = useState<string[]>([]);
 
@@ -22,7 +22,43 @@ export const useDataProviderItemPage = () => {
     const { options: dataProviderOptions, query: dataProviderQuery } = useSelectDataProvider();
 
     const { handleCustomMutationData: handleUpdate } = useCustomMutationData();
-    const tableContainerData = useTableContainer({ resource: 'data-provider-items' });
+    const { tableProps, tableQuery, debouncedSearch, setFilters, setCurrentPage } =
+        useCustomTable<ProviderItemRecord>({
+            resource: 'data-provider-items',
+        });
+
+    const createModalForm = useCustomModalForm<
+        ProviderItemRecord,
+        ProviderItemFormValues,
+        ProviderItemRecord
+    >({
+        action: 'create',
+        resource: 'data-provider-items',
+        onMutationSuccess: async () => {
+            await tableQuery.refetch();
+        },
+    });
+
+    const editModalForm = useCustomModalForm<
+        ProviderItemRecord,
+        ProviderItemFormValues,
+        ProviderItemRecord
+    >({
+        action: 'edit',
+        resource: 'data-provider-items',
+        onMutationSuccess: async () => {
+            await tableQuery.refetch();
+        },
+        initialValuesMapper: (record) => ({
+            itemId: record.itemId,
+            dataProviderId: record.dataProviderId,
+            itemUrl: record.itemUrl,
+            cloudDataProviderId: record.cloudDataProviderId,
+            autoProcessScraping: record.autoProcessScraping,
+            checkDuplicateData: record.checkDuplicateData,
+            isSavedToCloudData: record.isSavedToCloudData,
+        }),
+    });
 
     const handleSwitchStatus = (id: string, active: boolean) => {
         setLoading(true);
@@ -42,7 +78,8 @@ export const useDataProviderItemPage = () => {
                     };
                 }
 
-                tableContainerData?.tableQuery?.refetch();
+                tableQuery?.refetch();
+                setLoading(false);
 
                 return {
                     type: MessageType.SUCCESS,
@@ -63,10 +100,13 @@ export const useDataProviderItemPage = () => {
 
     return {
         loading,
-        openCreateItemModal,
-        setOpenCreateItemModal,
-        editItemId,
-        setEditItemId,
+        tableProps,
+        tableQuery,
+        debouncedSearch,
+        setFilters,
+        setCurrentPage,
+        createModalForm,
+        editModalForm,
         openProcessScrapeDataModal,
         setOpenProcessScrapeDataModal,
         selectedDataProviderItemIds,
@@ -75,7 +115,6 @@ export const useDataProviderItemPage = () => {
         cloudDataProviderOptions,
         dataProviderOptions,
         dataProviderQuery,
-        tableContainerData,
         handleSwitchStatus,
     };
 };

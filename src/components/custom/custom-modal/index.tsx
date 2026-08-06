@@ -5,26 +5,28 @@ import { useBreakpointStore } from '@/stores';
 import { Modal, ModalProps } from 'antd';
 import { ReactNode, useMemo } from 'react';
 
-export type CustomModalProps = {
-    modalProps: ModalProps;
-    children: ReactNode;
+export type CustomModalProps = ModalProps & {
+    modalProps?: ModalProps;
+    children?: ReactNode;
 };
 
-export const CustomModal = ({ modalProps, children }: CustomModalProps) => {
+export const CustomModal = ({ modalProps, children, ...restProps }: CustomModalProps) => {
     const isMobile = useBreakpointStore((s) => s.isMobile);
 
-    const mergedModalProps = useMemo(
+    const mergedProps = modalProps ? { ...modalProps, ...restProps } : restProps;
+
+    const finalModalProps = useMemo(
         () => ({
-            ...modalProps,
-            centered: isMobile,
-            destroyOnHidden: modalProps.destroyOnHidden ?? true,
+            ...mergedProps,
+            centered: mergedProps.centered ?? isMobile,
+            destroyOnHidden: mergedProps.destroyOnHidden ?? true,
             forceRender: true,
-            closable: modalProps.closable ?? false,
-            footer: modalProps.footer ?? false,
-            getContainer: modalProps.getContainer ?? false,
-            maskClosable: modalProps.maskClosable ?? false,
-            style: { top: isMobile ? undefined : 20, ...(modalProps.style ?? {}) },
-            width: isMobile ? 'calc(100vw - 32px)' : (modalProps.width ?? 1200),
+            closable: mergedProps.closable ?? false,
+            footer: mergedProps.footer ?? false,
+            getContainer: mergedProps.getContainer ?? false,
+            maskClosable: mergedProps.maskClosable ?? false,
+            style: { top: isMobile ? undefined : 20, ...(mergedProps.style ?? {}) },
+            width: isMobile ? 'calc(100vw - 32px)' : (mergedProps.width ?? 1200),
             wrapClassName: mergeHubAntdClass(
                 'fixed-modal',
                 HUB_ANTD_MODAL_WRAP_CLASS,
@@ -32,16 +34,16 @@ export const CustomModal = ({ modalProps, children }: CustomModalProps) => {
                 '[&_.ant-modal-footer]:flex [&_.ant-modal-footer]:justify-end [&_.ant-modal-footer]:gap-3 [&_.ant-modal-footer]:!border-t [&_.ant-modal-footer]:!border-solid [&_.ant-modal-footer]:!border-hub-border [&_.ant-modal-footer]:!py-3',
                 '[&_.ant-modal-body]:!p-0',
                 isMobile ? '[&_.ant-modal]:!max-w-[calc(100vw-32px)]' : '',
-                modalProps.wrapClassName,
+                mergedProps.wrapClassName,
             ),
         }),
-        [isMobile, modalProps],
+        [isMobile, mergedProps],
     );
 
-    if (!mergedModalProps.open) return null;
+    if (!finalModalProps.open) return null;
 
     return (
-        <Modal {...mergedModalProps}>
+        <Modal {...finalModalProps}>
             <section className="!max-h-[calc(100vh-200px)] !overflow-y-auto py-2 md:py-3">
                 {children}
             </section>
