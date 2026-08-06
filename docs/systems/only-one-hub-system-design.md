@@ -1,108 +1,126 @@
-# Only One Hub System Design
+﻿# Only One Hub – System Design
 
-## 1. Muc tieu tai lieu
+## 1. Mục tiêu tài liệu
 
-Tai lieu nay mo ta day du cau truc he thong frontend hien tai cua du an `only-one-fe` theo huong vua phan tich kien truc, vua chuyen hoa thanh blueprint de Google Studio co the generate ra mot app moi co cau truc, cach to chuc source, va hanh vi gan giong repo hien tai nhat co the.
+Tài liệu này mô tả đầy đủ cấu trúc hệ thống frontend **hiện tại** của dự án `only-one-fe`, dựa trên codebase thực tế. Mục tiêu là phục vụ hai nhu cầu song song:
 
-Tai lieu nay khong chi dung de "tao giao dien". Muc tieu cua no la tai lap:
+1. **Tài liệu kiến trúc nội bộ**: giúp thành viên mới hoặc AI assistant hiểu rõ cách hệ thống được tổ chức, quy ước đặt tên, phân tầng trách nhiệm, và luồng dữ liệu.
+2. **Blueprint để tái tạo**: nếu cần sinh một app mới có cùng phong cách, tài liệu này là source of truth để tái lập:
+   - kiểu dự án và công nghệ cốt lõi
+   - cách chia layer trong `src/`
+   - cách tổ chức route và layout với Next.js App Router
+   - cách đóng gói UI qua custom wrapper
+   - cách fetch dữ liệu và phân bổ trách nhiệm giữa page, hook, provider, service
+   - cách quản lý auth, session, state, context, responsive behavior
+   - conventions về naming, barrel export, alias import, enum, interface, component structure
 
-- kieu du an va cong nghe cot loi
-- cach chia layer trong `src/`
-- cach to chuc route va layout voi Next.js App Router
-- cach dong goi UI qua custom wrapper
-- cach fetch du lieu va phan bo trach nhiem giua page, hook, provider, service
-- cach quan ly auth, session, state, context, responsive behavior
-- conventions ve naming, barrel export, alias import, enum, interface, component structure
+---
 
-Neu Google Studio can mot "source of truth" de sinh ung dung moi, thi tai lieu nay chinh la ban mo ta he thong can phai tuan theo.
+## 2. Tổng quan hệ thống
 
-## 2. Tong quan he thong
+`Only One Hub` là một ứng dụng quản trị nội bộ theo kiểu **dashboard**, được xây dựng trên:
 
-`Only One Hub` la mot ung dung quan tri noi bo theo kieu dashboard, duoc xay dung tren `Next.js 16 App Router` va `React 19`, dung `TypeScript` strict, `Ant Design 5` cho component foundation, `Tailwind CSS` cho layout/responsive, `Refine.dev` cho CRUD/data orchestration, `NextAuth` cho authentication, `Zustand` cho state nhe, va `Socket.io` cho realtime updates.
+| Tầng | Công nghệ |
+|---|---|
+| Framework | `Next.js 16` + App Router |
+| UI Runtime | `React 19` |
+| Language | `TypeScript` (strict) |
+| UI Foundation | `Ant Design 5` |
+| Layout/Responsive | `Tailwind CSS 3` |
+| CSS Utility phụ | `DaisyUI 5` (devDependency) |
+| Data/CRUD | `@refinedev/core`, `@refinedev/antd`, `@refinedev/nextjs-router` |
+| Authentication | `NextAuth 4` |
+| HTTP Client | `Axios` |
+| State nhẹ | `Zustand 5` |
+| Realtime | `socket.io-client 4` |
+| i18n | `next-intl 4` |
+| Utilities | `dayjs`, `lodash`, `query-string`, `jwt-decode`, `immer` |
+| Media/UI | `react-photo-album`, `yet-another-react-lightbox`, `recharts` |
+| Editor | `@monaco-editor/react` |
+| Cloud | `firebase` |
+| Linting | `eslint 9`, `prettier`, `husky`, `lint-staged` |
 
-Ung dung duoc to chuc theo mo hinh:
+Ứng dụng được tổ chức theo mô hình:
 
-- `App Router shell` o tang route va layout
-- `Refine + data provider` o tang data CRUD
-- `custom wrapper layer` o tang UI foundation
-- `module layer` o tang feature-specific UI
-- `service + hook + interface + enum + constant` o tang domain/shared logic
-- `context + store` o tang runtime coordination
+- **App Router shell** ở tầng route và layout
+- **Refine + data provider** ở tầng data CRUD
+- **Custom wrapper layer** ở tầng UI foundation
+- **Service + hook + interface + enum + constant** ở tầng domain/shared logic
+- **Context + store** ở tầng runtime coordination
 
-Kieu ung dung nay khong phai mot marketing website, cung khong phai mot frontend thuong dung fetch tu do trong page. Day la mot admin-style frontend co kien truc co chu y, uu tien tai su dung, mo rong domain theo khu vuc chuc nang, va giu page o dang "mong".
+> Đây là admin-style frontend có kiến trúc có chủ ý, ưu tiên tái sử dụng, mở rộng domain theo khu vực chức năng, và giữ page ở dạng "mỏng".
 
-## 3. Cong nghe va tru cot kien truc
+---
 
-Google Studio phai sinh app theo dung nhung tru cot sau:
-
-- Framework: `Next.js 16` voi `App Router`, khong dung `Pages Router`
-- UI runtime: `React 19`
-- Language: `TypeScript`
-- UI foundation: `Ant Design 5`
-- Styling layout: `Tailwind CSS`
-- Shared component utilities: `DaisyUI` chi dong vai tro phu, khong thay the custom wrappers
-- Data management: `@refinedev/core`, `@refinedev/antd`, `@refinedev/nextjs-router`
-- Authentication: `NextAuth 4`
-- HTTP client: `Axios`
-- State management: `Zustand`
-- Realtime: `socket.io-client`
-- Utilities: `dayjs`, `lodash`, `query-string`
-
-Nhung tru cot nay dan den mot vai quyet dinh kien truc bat buoc:
-
-- moi feature di qua route tree cua App Router
-- moi page uu tien compose tu component co san thay vi viet UI thang trong page
-- moi CRUD resource uu tien di qua `Refine data provider`
-- auth/session di qua `NextAuth` va duoc bridge vao `Refine`
-- codebase dung `@/...` alias import thay vi relative import rong
-- module nao co nhieu file phai co `index.ts` barrel va uu tien `export * from`
-
-## 4. Nguyen tac kien truc bat buoc
-
-Google Studio phai coi cac nguyen tac sau la non-negotiable:
-
-1. Page phai mong.
-   `page.tsx` chu yeu compose hook, module component, va common/custom component. Khong dat business flow dai va UI phan manh truc tiep trong page neu co the tach ra.
-
-2. UI phai di qua wrapper layer truoc.
-   Uu tien `@/components/custom`, sau do den `@/components/common`, chi dung `antd` truc tiep khi wrapper chua ton tai va can mo rong layer `custom`.
-
-3. Feature duoc tach theo domain, khong tach theo technical vanity.
-   Vi du: `scraping`, `schedule`, `simulation`, `cloud-data`, `google`, `setting`.
-
-4. Shared contract phai tap trung.
-   Types o `@/interfaces`, enum o `@/enums`, constants o `@/constants`, hooks o `@/hooks`, services o `@/services`.
-
-5. Responsive la bat buoc.
-   UI phai hoat dong tot tren mobile, tablet, desktop; khong duoc generate layout chi dung cho desktop.
-
-6. Text UI phai co kha nang i18n.
-   Khi generate code moi, text khong nen hard-code vo toi va. Hay dat san cau truc de route all user-facing text qua i18n layer.
-
-7. Semantic HTML phai duoc uu tien.
-   Dung `section`, `nav`, `main`, `header`, `button`, `form` khi phu hop, tranh overuse `div`.
-
-## 5. Cau truc repo muc tieu
-
-Google Studio phai sinh repo theo khung sau:
+## 3. Cấu trúc repo thực tế
 
 ```text
 only-one-fe/
 ├── docs/
 │   └── systems/
+│       └── only-one-hub-system-design.md
+├── docker/
+├── openspec/
 ├── public/
 ├── src/
 │   ├── app/
 │   │   ├── (public)/
+│   │   │   ├── components/
+│   │   │   ├── forget-password/
+│   │   │   ├── login/
+│   │   │   ├── register/
+│   │   │   └── layout.tsx
 │   │   ├── (root)/
+│   │   │   ├── cloud-data/
+│   │   │   │   ├── items/
+│   │   │   │   ├── providers/
+│   │   │   │   └── layout.tsx
+│   │   │   ├── dashboard/
+│   │   │   ├── google/
+│   │   │   │   ├── drive/
+│   │   │   │   │   ├── components/
+│   │   │   │   │   ├── folders/
+│   │   │   │   │   └── photos/
+│   │   │   │   ├── keep/
+│   │   │   │   └── layout.tsx
+│   │   │   ├── schedule/
+│   │   │   │   ├── components/
+│   │   │   │   ├── executions/
+│   │   │   │   ├── job-events/
+│   │   │   │   └── layout.tsx
+│   │   │   ├── scraping/
+│   │   │   │   ├── components/
+│   │   │   │   ├── data-providers/
+│   │   │   │   ├── items/
+│   │   │   │   ├── provider-items/
+│   │   │   │   ├── scraping-data/
+│   │   │   │   └── layout.tsx
+│   │   │   ├── setting/
+│   │   │   │   ├── appearance/
+│   │   │   │   ├── users/
+│   │   │   │   ├── layout.tsx
+│   │   │   │   └── page.tsx
+│   │   │   ├── simulation/
+│   │   │   │   ├── contexts/
+│   │   │   │   ├── items/
+│   │   │   │   └── layout.tsx
+│   │   │   └── layout.tsx
 │   │   ├── api/
+│   │   │   ├── auth/        ← NextAuth handler
+│   │   │   ├── google/      ← Google API proxy
+│   │   │   ├── health/      ← health check
+│   │   │   └── proxy-image/ ← proxy remote image/media
+│   │   ├── auth/
+│   │   │   └── cleanup-session/
+│   │   ├── favicon.ico
+│   │   ├── forbidden.tsx
 │   │   ├── layout.tsx
+│   │   ├── not-found.tsx
 │   │   └── page.tsx
 │   ├── components/
 │   │   ├── common/
 │   │   ├── custom/
-│   │   ├── layout/
-│   │   └── module/
+│   │   └── layout/
 │   ├── constants/
 │   ├── contexts/
 │   ├── enums/
@@ -113,505 +131,573 @@ only-one-fe/
 │   ├── services/
 │   ├── stores/
 │   ├── styles/
-│   └── types/
-├── Dockerfile
+│   ├── types/
+│   └── middleware.ts
+├── .env
+├── .env.sample
+├── .eslintrc.json
 ├── eslint.config.mjs
+├── Dockerfile
 ├── next.config.mjs
 ├── package.json
+├── postcss.config.mjs
 ├── tailwind.config.ts
 └── tsconfig.json
 ```
 
-Y nghia tung tang:
+> **Ghi chú**: `components/module/<feature>` **không tồn tại** trong source hiện tại. Component theo domain được đặt trong `components/common/` (nếu tái sử dụng được) hoặc trong `app/(root)/<section>/components/` (nếu chỉ dùng cho một section).
 
-- `src/app`: route tree, layouts, API routes, shell-level composition
-- `src/components/custom`: wrappers quanh Ant Design va reusable UI foundations
-- `src/components/common`: reusable component da compose o muc chung
-- `src/components/layout`: header, sidebar, tabs, shell navigation, shared chrome
-- `src/components/module`: component theo tung feature/domain
-- `src/constants`: constants dung chung, navigation map, storage keys, theme config
-- `src/contexts`: context cho app shell, theme, socket, refine bootstrapping
-- `src/enums`: enums domain va UI mode
-- `src/hooks`: custom hooks, nhieu hook la adapter quanh Refine
-- `src/interfaces`: contracts TypeScript, namespace-based typing cho domain
-- `src/libs`: utility/helper thuần
-- `src/providers`: Refine providers, access control provider, data provider
-- `src/services`: class-based API services cho special-purpose flows
-- `src/stores`: Zustand stores
-- `src/styles`: globals va token-linked styling
-- `src/types`: type augmentation, nhu `next-auth.d.ts`
+---
 
-## 6. Kien truc route va layout
+## 4. Ý nghĩa từng tầng `src/`
+
+| Thư mục | Vai trò |
+|---|---|
+| `src/app` | Route tree, layouts, API routes, shell-level composition |
+| `src/components/custom` | Wrappers quanh Ant Design, reusable UI foundations |
+| `src/components/common` | Reusable component đã compose ở mức chung |
+| `src/components/layout` | Header, sidebar, tabs, shell navigation, shared chrome |
+| `src/constants` | Constants dùng chung, navigation map, storage keys, theme config |
+| `src/contexts` | Context cho app shell, theme, socket, refine bootstrapping |
+| `src/enums` | Enums domain và UI mode |
+| `src/hooks` | Custom hooks, nhiều hook là adapter quanh Refine |
+| `src/interfaces` | Contracts TypeScript, namespace-based typing cho domain |
+| `src/libs` | Utility/helper thuần |
+| `src/providers` | Refine providers, access control provider, data provider |
+| `src/services` | Class-based API services cho special-purpose flows |
+| `src/stores` | Zustand stores |
+| `src/styles` | globals.css và token-linked styling |
+| `src/types` | Type augmentation (`next-auth.d.ts`) |
+| `src/middleware.ts` | Next.js middleware (auth guard, redirect logic) |
+
+---
+
+## 5. Nguyên tắc kiến trúc bắt buộc
+
+1. **Page phải mỏng.** `page.tsx` chủ yếu compose hook, module component, và common/custom component. Không đặt business flow dài và UI phân mảnh trực tiếp trong page.
+
+2. **UI phải đi qua wrapper layer trước.** Ưu tiên `@/components/custom`, sau đó đến `@/components/common`, chỉ dùng `antd` trực tiếp khi wrapper chưa tồn tại và cần mở rộng layer `custom`.
+
+3. **Feature được tách theo domain, không tách theo technical vanity.** Ví dụ: `scraping`, `schedule`, `simulation`, `cloud-data`, `google`, `setting`.
+
+4. **Shared contract phải tập trung.** Types ở `@/interfaces`, enum ở `@/enums`, constants ở `@/constants`, hooks ở `@/hooks`, services ở `@/services`.
+
+5. **Responsive là bắt buộc.** UI phải hoạt động tốt trên mobile, tablet, desktop.
+
+6. **Text UI phải có khả năng i18n.** Dự án tích hợp `next-intl`. Text UI không nên hard-code trực tiếp; nên route qua i18n layer.
+
+7. **Semantic HTML phải được ưu tiên.** Dùng `section`, `nav`, `main`, `header`, `button`, `form` khi phù hợp, tránh overuse `div`.
+
+---
+
+## 6. Kiến trúc route và layout
 
 ### 6.1 App Router strategy
 
-Route phai theo `Next.js App Router` va tach thanh hai route group chinh:
+Route theo `Next.js App Router`, tách thành hai route group chính:
 
-- `src/app/(public)`
-- `src/app/(root)`
+- `src/app/(public)` — các route không cần đăng nhập
+- `src/app/(root)` — shell đã đăng nhập và tất cả khu vực quản trị chính
 
-Y nghia:
+Trang `src/app/page.tsx` đóng vai trò redirect entry point (redirect về `/dashboard`).
 
-- `(public)` chua cac route khong can dang nhap, nhu `login`, `register`, `forget-password`
-- `(root)` chua shell da dang nhap va tat ca khu vuc quan tri chinh
+### 6.2 Route manifest thực tế
 
-Trang `src/app/page.tsx` nen dong vai tro redirect entry point, vi du redirect ve `/dashboard`.
+**Public routes** (`src/app/(public)/`):
+```
+/login
+/register
+/forget-password
+```
 
-### 6.1.1 Route manifest can duoc tai lap
+**Protected routes** (`src/app/(root)/`):
+```
+/dashboard
 
-Google Studio nen scaffold it nhat cac route sau de hinh dang app giong source hien tai:
+/google/drive/folders
+/google/drive/photos
+/google/keep
 
-- Public:
-    - `/login`
-    - `/register`
-    - `/forget-password`
-- Root landing:
-    - `/dashboard`
-- Google:
-    - `/google/drive/folders`
-    - `/google/drive/photos`
-    - `/google/keep`
-- Scraping:
-    - `/scraping/data-providers`
-    - `/scraping/provider-items`
-    - `/scraping/items`
-    - `/scraping/scraping-data`
-- Schedule:
-    - `/schedule/executions`
-    - `/schedule/job-events`
-- Simulation:
-    - `/simulation/contexts`
-    - `/simulation/items`
-- Cloud Data:
-    - `/cloud-data/providers`
-    - `/cloud-data/items`
-- Setting:
-    - `/setting/users`
-    - `/setting/appearance`
+/scraping/data-providers
+/scraping/provider-items
+/scraping/items
+/scraping/scraping-data
 
-### 6.2 Protected app shell
+/schedule/executions
+/schedule/job-events
 
-Tat ca route trong `(root)` phai nam duoi mot shared layout de cung dung:
+/simulation/contexts
+/simulation/items
 
+/cloud-data/providers
+/cloud-data/items
+
+/setting                  ← có page.tsx riêng (redirect)
+/setting/users
+/setting/appearance
+```
+
+**API routes** (`src/app/api/`):
+```
+/api/auth/[...nextauth]   ← NextAuth handler
+/api/google/              ← Google API proxy
+/api/health               ← health check
+/api/proxy-image          ← proxy remote image/media
+```
+
+**Auth utility** (`src/app/auth/`):
+```
+/auth/cleanup-session     ← dọn session khi logout
+```
+
+**Trang đặc biệt:**
+```
+/forbidden                ← trang 403
+not-found.tsx             ← trang 404
+```
+
+### 6.3 Protected app shell
+
+Tất cả route trong `(root)` nằm dưới một shared layout để cùng dùng:
 - sidebar
 - header
-- notification area
+- notification panel
 - section tabs
 - theme context
 - auth-aware provider tree
-- socket-aware provider tree neu can
+- socket-aware provider tree
 
-Protected shell nen duoc hinh dung theo thu tu trach nhiem sau:
+**Provider tree thực tế** (từ ngoài vào trong):
+```
+app/layout.tsx
+  → AntdRegistryProvider
+  → MainContext (loading, message, notification)
+  → RefineContext
+      → SessionProvider (NextAuth)
+      → ColorModeContextProvider
+      → HubThemePaletteContext
+      → BreakpointStoreSync
+      → Refine
+          → routerProvider
+          → authProvider
+          → accessControlProvider
+          → notificationProvider
+          → dataProvider
+  → Protected route layout (sidebar, header, section-tabs)
+  → Section layout (section-specific tabs/chrome)
+  → Page
+```
 
-1. app-level provider tai `src/app/layout.tsx`
-2. main shell provider cho message/loading/global runtime
-3. session-aware refine bootstrap
-4. color mode / theme provider
-5. private layout chrome nhu sidebar, header, section tabs
-6. feature page content
+### 6.4 Section layout pattern
 
-### 6.3 Feature sections trong `(root)`
+Mỗi domain section trong `(root)` có `layout.tsx` riêng để xử lý section tabs, section-specific chrome, hoặc nested shell. Ví dụ:
 
-Google Studio nen sinh cac section theo domain co cau truc giong repo hien tai:
+- `(root)/scraping/layout.tsx`
+- `(root)/schedule/layout.tsx`
+- `(root)/simulation/layout.tsx`
+- `(root)/cloud-data/layout.tsx`
+- `(root)/google/layout.tsx`
+- `(root)/setting/layout.tsx`
 
-- `dashboard`
-- `google`
-- `scraping`
-- `schedule`
-- `simulation`
-- `cloud-data`
-- `setting`
+Một số section còn có thư mục `components/` cục bộ cho component chỉ dùng trong section đó.
 
-Moi section co the co `layout.tsx` rieng neu can section tabs, section-specific chrome, hoac nested shell.
+### 6.5 Navigation structure
 
-### 6.4 Navigation structure
+Sidebar là source of truth để biểu diễn IA của app, được cấu hình tập trung trong `src/constants/sidebar.constant.ts`.
 
-Sidebar la source of truth de bieu dien IA cua app. Cac nhom chuc nang chinh:
-
+Các nhóm chức năng chính:
 - Dashboard
-- Google Drive / Google Keep
-- Scraping
-- Schedule
-- Simulation
-- Cloud Data
-- Setting / User Management / Appearance
+- Google (Drive Folders / Drive Photos / Keep)
+- Scraping (Data Providers / Provider Items / Items / Scraping Data)
+- Schedule (Executions / Job Events)
+- Simulation (Contexts / Items)
+- Cloud Data (Providers / Items)
+- Setting (Users / Appearance)
 
-Google Studio nen xem sidebar config la noi dinh nghia:
+Không hard-code navigation ở nhiều nơi. Layout tabs và sidebar derive từ metadata chung trong `sidebar.constant.ts`.
 
-- top-level section
-- children pages
-- labels
-- icons
-- section entry href
-- page ordering
+---
 
-Khong nen hard-code navigation o nhieu noi. Layout tabs va sidebar nen derive tu metadata chung.
-
-## 7. Module phan he chuc nang
-
-Day la cac domain ma app can giu lai:
+## 7. Domain modules thực tế
 
 ### 7.1 Dashboard
-
-- trang tong quan
-- bieu do hoac cards thong ke
-- widgets hien thi nhanh
-- shell landing page sau khi dang nhap
+- Trang tổng quan, landing page sau đăng nhập
+- Stats cards, biểu đồ (`recharts`), widgets hiển thị nhanh
 
 ### 7.2 Google
-
-- Google Drive folders
-- Google Drive photos
-- Google Keep / storage-like views
-- co the co luong link tai khoan Google rieng voi auth chinh
+- `drive/folders` — quản lý Google Drive folders
+- `drive/photos` — xem ảnh từ Google Drive (photo album, lightbox)
+- `keep` — Google Keep / storage-like views
+- Có luồng link tài khoản Google riêng với auth chính
 
 ### 7.3 Scraping
-
-- data providers
-- provider items
-- scraped items
-- scraping data
-
-Day la khu vuc the hien ro pattern CRUD + filter + table/list + actions.
+- `data-providers` — quản lý data providers
+- `provider-items` — items thuộc provider
+- `items` — scraped items
+- `scraping-data` — raw scraping data
+- Khu vực thể hiện rõ pattern CRUD + filter + table/list + actions
 
 ### 7.4 Schedule
-
-- execution schedules
-- job events
-- cron-like orchestration views
+- `executions` — execution schedules
+- `job-events` — job events
+- Cron-like orchestration views, dùng `cron-parser`
 
 ### 7.5 Simulation
-
-- contexts
-- items
-- cac page mo phong hoac xu ly du lieu mo phong
+- `contexts` — simulation contexts
+- `items` — simulation items
 
 ### 7.6 Cloud Data
-
-- providers
-- items / stored cloud data
+- `providers` — cloud data providers
+- `items` — stored cloud data items
 
 ### 7.7 Setting
+- `users` — user management
+- `appearance` — theme/appearance settings
+- Setting root có `page.tsx` riêng (redirect sang sub-route)
 
-- users
-- appearance
-- potentially more admin configuration pages
+---
 
-Google Studio khong can generate 100% business logic backend, nhung phai giu dung domain partitioning va route skeleton de co cung hinh dang source.
+## 8. Kiến trúc UI và component layer
 
-## 8. Kien truc UI va component layer
+### 8.1 Layering thực tế
 
-### 8.1 Layering
+UI được tổ chức thành 3 lớp:
 
-UI duoc to chuc thanh 4 lop:
+1. `components/custom` — Ant Design wrappers
+2. `components/common` — reusable composed widgets
+3. `components/layout` — shell chrome
 
-1. `components/custom`
-2. `components/common`
-3. `components/layout`
-4. `components/module/<feature>`
+> Layer `components/module/<feature>` đã được mô tả trong tài liệu cũ nhưng **không tồn tại trong source hiện tại**. Component theo domain được đặt trong `components/common/` (nếu tái sử dụng được) hoặc trong `app/(root)/<section>/components/` (nếu chỉ dùng cho một section).
 
-### 8.2 `components/custom`
+### 8.2 `components/custom` – Ant Design wrappers
 
-Day la lop quan trong nhat de tai lap phong cach code hien tai.
+Đây là lớp quan trọng nhất của design system. Mỗi subfolder tương ứng với một Ant Design component được wrap lại:
 
-Vai tro:
+```
+custom/
+├── custom-alert/
+├── custom-app/
+├── custom-avatar/
+├── custom-back-top/
+├── custom-badge/
+├── custom-button/
+├── custom-card/
+├── custom-checkbox/
+├── custom-config-provider/
+├── custom-data-table/
+├── custom-date-picker/
+├── custom-descriptions/
+├── custom-divider/
+├── custom-drawer/
+├── custom-dropdown/
+├── custom-empty/
+├── custom-flex/
+├── custom-float-button/
+├── custom-form/
+├── custom-grid/
+├── custom-input/
+├── custom-link/
+├── custom-list/
+├── custom-message/
+├── custom-modal/
+├── custom-notification/
+├── custom-pagination/
+├── custom-picker/
+├── custom-popconfirm/
+├── custom-popover/
+├── custom-result/
+├── custom-row-col/
+├── custom-segmented/
+├── custom-select/
+├── custom-slider/
+├── custom-space/
+├── custom-spin/
+├── custom-statistic/
+├── custom-steps/
+├── custom-switch/
+├── custom-table/
+├── custom-tabs/
+├── custom-tag/
+├── custom-theme/
+├── custom-toggle/
+├── custom-tooltip/
+├── custom-typography/
+├── custom-upload/
+├── custom-antd-types.ts
+└── index.ts
+```
 
-- wrap Ant Design components
+Vai trò:
 - inject className chung, defaults, theme binding, typing conventions
-- dong vai tro "approved design system surface" cua du an
+- đóng vai trò "approved design system surface" của dự án
 
-Vi du nhung nhom component can ton tai:
+Page **không** import trực tiếp `antd` nếu đã có wrapper trong `custom`.
 
-- button
-- card
-- table
-- modal
-- input/select/filter
-- flex/layout helpers
-- config provider / theme wrapper
+### 8.3 `components/common` – Reusable composed widgets
 
-Google Studio khong nen de page import truc tiep `antd` neu da co wrapper trong `custom`.
+```
+common/
+├── code-display/
+├── content-section/
+├── data-not-found/
+├── data-table-container/
+├── empty/
+├── file-group/
+├── filter-panel/
+├── forbidden/
+├── form-modal-layout/
+├── loading/
+├── logo/
+├── media-lightbox/
+├── not-found/
+├── pagination-controls/
+├── stat-card/
+├── status-tag/
+├── unsaved-changes-notifier-app-router/
+└── index.ts
+```
 
-### 8.3 `components/common`
+### 8.4 `components/layout` – Shell chrome
 
-Day la lop reusable da duoc compose tu wrappers va utility chung, vi du:
+```
+layout/
+├── header/
+├── hub-theme-palette-action/
+├── notifications-panel/
+├── scroll-to-top/
+├── search/
+├── section-tabs/
+├── sidebar/
+└── index.tsx
+```
 
-- loading
-- status tag
-- data table container
-- filter panel
-- pagination controls
-- empty state
-- lightbox/media helpers
-
-### 8.4 `components/layout`
-
-Day la lop shell component:
-
-- header
-- sidebar
-- section tabs
-- notification / scroll to top / shell helpers
-
-### 8.5 `components/module/<feature>`
-
-Day la lop UI gan business domain nhat.
-
-Vi du:
-
-- `@/components/module/auth`
-- `@/components/module/data-provider`
-- `@/components/module/schedule`
-- `@/components/module/gallery`
-- `@/components/module/google-keep`
-
-Moi feature module phai co barrel rieng va export named symbols.
+---
 
 ## 9. Data architecture
 
-### 9.1 Refine la CRUD backbone
+### 9.1 Refine là CRUD backbone
 
-He thong hien tai uu tien dung `Refine.dev` de quan ly:
-
+Hệ thống hiện tại ưu tiên dùng `Refine.dev` để quản lý:
 - resource-based CRUD
-- table pagination
-- sorting
-- filtering
+- table pagination, sorting, filtering
 - form/modal integration
 - mutation workflow
 
-Google Studio phai giu lai mo hinh nay. Khong generate app theo kieu moi page tu goi `fetch()` rieng le neu resource do da phu hop voi `Refine`.
+Page không tự gọi `fetch()` riêng lẻ nếu resource đó đã phù hợp với `Refine`.
 
 ### 9.2 Data provider strategy
 
-`src/providers/data-provider.ts` dong vai tro adapter tu `Refine DataProvider` sang REST backend.
+`src/providers/data-provider.ts` đóng vai trò adapter từ `Refine DataProvider` sang REST backend.
 
-Trach nhiem cua data provider:
+Trách nhiệm:
+- Map filters thành query format backend yêu cầu
+- Map sorters thành query string
+- Map pagination thành `page`, `limit`, `sortBy`
+- Attach session token vào request
+- Normalize error thành shape hợp lệ cho Refine
 
-- map filters thanh query format backend yeu cau
-- map sorters thanh query string
-- map pagination thanh `page`, `limit`, `sortBy`
-- attach session token vao request
-- normalize error thanh shape hop le cho Refine
+Query contract:
+- Pagination: `page` và `limit`
+- Sort: danh sách `field:ORDER`
+- Filter: `filter.<field>=<operator>:<value>`
+- Quick search: `search` hoặc `q`
 
-Generator nen xem query contract mong muon la:
+### 9.3 Access control provider
 
-- pagination qua `page` va `limit`
-- sort qua danh sach `field:ORDER`
-- filter qua `filter.<field>=<operator>:<value>`
-- cho phep `search` hoac `q` cho quick search khi phu hop
+`src/providers/access-control-provider.ts` scaffold interface và điểm gắn vào `Refine`. Implementation hiện tại ở mức permissive, có thể mở rộng.
 
-### 9.3 Service layer strategy
+### 9.4 Service layer strategy
 
-Ben canh data provider, app van can `class-based services` trong `src/services`.
+`src/services/` chứa class-based services cho các flow không map đẹp vào CRUD resource:
 
-Service layer dung cho:
+```
+services/
+├── auth.service.ts     ← login, refresh token
+├── base.service.ts     ← base HTTP client (Axios wrapper)
+└── index.ts
+```
 
-- auth
-- refresh token
-- special-purpose endpoint
-- flows khong map dep vao CRUD resource
+Kiến trúc phân công:
+- CRUD page → ưu tiên `Refine` + hook wrappers
+- Special action → service class / custom hook
 
-Kien truc dung la:
+### 9.5 Hook adapter strategy
 
-- CRUD page -> uu tien `Refine` + hook wrappers
-- special action -> service class / custom hook
+`src/hooks/` chứa các hook là adapter quanh Refine:
 
-### 9.4 Hook adapter strategy
+```
+hooks/
+├── useCustomData.ts          ← custom useList/useOne wrapper
+├── useCustomDelete.ts        ← custom useDelete wrapper
+├── useCustomModal.ts         ← modal open/close + form state
+├── useCustomSelect.ts        ← custom useSelect wrapper
+├── useDebounceSearch.ts      ← debounced search input
+├── useHydratedStore.ts       ← SSR-safe Zustand access
+├── useLocalStorage.ts        ← localStorage abstraction
+├── useMessage.ts             ← Ant Design message API wrapper
+├── useSearchParamsString.ts  ← URLSearchParams helper
+├── useSocket.ts              ← Socket.io connection hook
+├── useTableContainer.ts      ← table state + pagination + filter
+└── index.ts
+```
 
-Nhieu hook trong repo la adapter quanh Refine. Google Studio nen sinh cac hook pattern sau:
+Page không phải biết quá nhiều chi tiết Refine; config phức tạp được đưa vào hook dùng chung.
 
-- `useTableContainer`
-- `useCustomModal`
-- `useCustomData`
-- `useCustomDelete`
-- `useCustomSelect`
+---
 
-Y nghia:
-
-- page khong phai biet qua nhieu chi tiet Refine
-- config phuc tap duoc dua vao hook dung chung
-- list page co UX va behavior dong nhat
-
-## 10. Authentication va session flow
+## 10. Authentication và session flow
 
 ### 10.1 Auth backbone
 
-Authentication backbone cua frontend la `NextAuth` voi `CredentialsProvider`.
+Authentication backbone là `NextAuth 4` với `CredentialsProvider`.
 
-Flow chuan:
-
-1. nguoi dung login tren route public
-2. `NextAuth` goi `authService.login(...)`
-3. backend tra `accessToken` + `refreshToken`
-4. frontend decode payload de tao user info session
-5. token duoc luu trong JWT session
-6. khi token het han, frontend refresh thong qua `authService.refreshToken(...)`
+Flow chuẩn:
+1. Người dùng login trên route public
+2. `NextAuth` gọi `authService.login(...)`
+3. Backend trả `accessToken` + `refreshToken`
+4. Frontend decode payload để tạo user info session
+5. Token được lưu trong JWT session
+6. Khi token hết hạn, frontend refresh thông qua `authService.refreshToken(...)`
 
 ### 10.2 Refine auth bridge
 
-Sau khi co session, `RefineContext` se bridge session sang `Refine authProvider` va `dataProvider`.
-
-Dieu nay cho phep:
-
-- protected routes co check auth
-- request CRUD gui kem bearer token
-- logout / unauthorized handling dong nhat
-
-Provider tree duoc khuyen nghi scaffold theo tinh than repo hien tai:
-
-```text
-app/layout.tsx
--> MainProvider
--> RefineContext
-   -> SessionProvider
-   -> ColorModeContextProvider
-   -> Refine
-      -> routerProvider
-      -> authProvider
-      -> accessControlProvider
-      -> notificationProvider
-      -> dataProvider
--> Protected route layout
--> Section layout
--> Page
-```
+Sau khi có session, `RefineContext` sẽ bridge session sang `Refine authProvider` và `dataProvider`. Điều này cho phép:
+- Protected routes có check auth
+- Request CRUD gửi kèm bearer token
+- Logout / unauthorized handling đồng nhất
 
 ### 10.3 Redirect behavior
 
-Google Studio phai giu dung nhung quy tac sau:
+| Trường hợp | Hành vi |
+|---|---|
+| Authenticated user vào public auth page | Redirect sang `/dashboard` |
+| Unauthenticated user vào protected page | Redirect sang `/login` |
+| Session hết hạn trong protected app | Sign out, redirect về `/login` |
+| Sau đăng nhập thành công | Restore `return_url` nếu có |
 
-- authenticated user vao public auth page -> redirect sang dashboard
-- unauthenticated user vao protected page -> redirect sang login
-- neu session het han trong protected app -> sign out va quay ve login
-- luu `return_url` de co the quay lai page dang xem sau dang nhap
+Middleware auth guard nằm ở `src/middleware.ts`.
 
-### 10.4 Google account integration
+### 10.4 Session cleanup
 
-Ngoai auth chinh, app con co integration voi Google APIs. Day nen duoc scaffold thanh mot luong lien ket tai khoan/authorization rieng, khong tron lan voi core login flow.
+`src/app/auth/cleanup-session/` xử lý việc dọn session khi logout hoặc phiên bị invalidate.
 
-## 11. State, context, va runtime coordination
+### 10.5 Google account integration
 
-App khong nen dua tat ca state vao mot noi. Hay chia trach nhiem:
+Ngoài auth chính, app còn có integration với Google APIs qua `src/app/api/google/`. Đây là luồng liên kết tài khoản/authorization riêng, không trộn lẫn với core login flow.
 
-### 11.1 Contexts
+---
 
-Dung cho runtime coordination va shell-wide behavior:
+## 11. State, context, và runtime coordination
 
-- `MainContext`: loading, message, notification, shell-level actions
-- `RefineContext`: bootstrap auth + refine + session bridge
-- `SocketContext`: realtime connection cho private area
-- theme-related contexts: color mode, palette, config provider coordination
+### 11.1 Contexts (`src/contexts/`)
 
-Neu co access control provider, hay scaffold san interface va diem gan vao `Refine`, nhung co the de implementation o muc permissive ban dau de phu hop hien trang source.
+```
+contexts/
+├── AntdRegistryProvider.tsx    ← Ant Design Next.js SSR registry
+├── BreakpointStoreSync.tsx     ← sync breakpoint vào Zustand store
+├── ColorModeContext.tsx        ← light/dark mode context
+├── HubThemePaletteContext.tsx  ← custom palette context
+├── MainContext.tsx             ← loading, message, notification, shell-level actions
+├── RefineContext.tsx           ← bootstrap auth + refine + session bridge
+├── SocketContext.tsx           ← realtime connection cho private area
+└── index.ts
+```
 
-### 11.2 Zustand stores
+### 11.2 Zustand stores (`src/stores/`)
 
-Dung cho shared state nhe, co xu huong UI-global:
-
-- breakpoint
-- theme mode
-- shell preference nho
+```
+stores/
+├── album.store.ts          ← Google Photos album state
+├── useBreakpointStore.ts   ← responsive breakpoint state
+├── useThemeStore.ts        ← theme mode state
+└── index.ts
+```
 
 ### 11.3 Local state
 
-State cuc bo o page/module van duoc khuyen dung cho:
-
+State cục bộ ở page/module vẫn được khuyến dùng cho:
 - modal open/close
 - selected row ids
 - local display mode
 - active tab/index
 
-Khong dua state cuc bo len global store neu khong can.
+Không đưa state cục bộ lên global store nếu không cần.
+
+---
 
 ## 12. Pattern cho page list/detail/form
 
-Google Studio nen tai lap dung pattern page pho bien trong repo:
-
 ### 12.1 List page pattern
 
-Mot list page thuong gom:
+Một list page thường gồm:
+- `useTableContainer` — tạo table state, pagination, filter
+- Các `useCustomSelect` hooks — load filter options
+- `useCustomDelete` — destructive action
+- `useCustomModal` — edit/create modal
+- `DataTableContainer` (từ `common`) — hiển thị table/list shell
+- Action buttons ở đầu trang
+- Filter items được mô tả bằng metadata
 
-- `useTableContainer` de tao table state
-- cac `useSelect...` hooks de load filter options
-- `useCustomDelete` cho destructive action
-- `useCustomModal` cho edit/create modal
-- `DataTableContainer` de hien thi table/list shell
-- action buttons o dau trang
-- filter items duoc mo ta bang metadata
-
-Page list phai ho tro:
-
-- server-side pagination
-- filter
-- sorter
-- row actions
-- responsive table/list presentation
-- batch action khi phu hop
+List page phải hỗ trợ:
+- Server-side pagination
+- Filter + sorter
+- Row actions
+- Responsive table/list presentation
+- Batch action khi phù hợp
 
 ### 12.2 Form modal pattern
 
-Neu feature co CRUD edit/create:
-
-- mo form bang custom modal hook
-- data submit di qua Refine mutation hoac service wrapper
-- success thi refresh table query
-- error thi show message thong nhat
+Khi feature có CRUD edit/create:
+- Mở form bằng custom modal hook
+- Data submit đi qua Refine mutation hoặc service wrapper
+- Success → refresh table query
+- Error → show message thống nhất
 
 ### 12.3 Display mode pattern
 
-Neu page co media/grid/list:
+Nếu page có media/grid/list:
+- Display mode là enum (từ `src/enums/gallery.enum.ts`)
+- Filter/layout controls đặt trong filter/action area
+- Reuse `media-lightbox`, `react-photo-album` khi cần
 
-- display mode la enum
-- filter/layout controls dat trong filter/action area
-- reuse lightbox/gallery component khi can
+---
 
-## 13. Styling, theming, va responsive behavior
+## 13. Styling, theming, và responsive behavior
 
 ### 13.1 Styling strategy
 
-Phai ket hop:
-
+Kết hợp:
 - `Ant Design` cho base component
 - `Tailwind CSS` cho spacing, layout, responsive utilities
-- CSS variables / theme tokens de dong bo theme
+- CSS variables / theme tokens để đồng bộ theme (trong `styles/globals.css`)
+- `DaisyUI` chỉ đóng vai trò phụ (devDependency)
 
-Khong uu tien viet plain CSS rieng le neu co the giai quyet bang Tailwind va wrapper composition.
+Không ưu tiên viết plain CSS riêng lẻ nếu có thể giải quyết bằng Tailwind và wrapper composition.
 
 ### 13.2 Theme strategy
 
-Nen co mot custom config provider de map Ant Design tokens voi palette/theme cua app. Theme logic khong nen rai rac tung page.
+- `custom-config-provider` map Ant Design tokens với palette/theme của app
+- `ColorModeContext` quản lý light/dark mode
+- `HubThemePaletteContext` quản lý custom color palette
+- `useThemeStore` (Zustand) lưu theme mode preference
+- Theme config tập trung ở `src/constants/hub-theme.constant.ts`
 
 ### 13.3 Responsive strategy
 
-Tat ca page va reusable component phai tu dong ho tro:
+Tất cả page và reusable component phải tự động hỗ trợ mobile, tablet, desktop.
 
-- mobile
-- tablet
-- desktop
+- `BreakpointStoreSync` đồng bộ breakpoint vào `useBreakpointStore`
+- Dùng flexible stack layout, responsive breakpoints
+- Alternate display modes khi dữ liệu quá rộng cho mobile
+- Sidebar phải có hành vi responsive (collapse trên mobile)
 
-Can tranh:
+---
 
-- table overflow khong kiem soat
-- action bar vo bo cuc tren mobile
-- sidebar chi hoat dong desktop
-
-Nen dung:
-
-- flexible stack layout
-- responsive breakpoints
-- alternate display modes khi du lieu qua rong
-
-## 14. Type system, naming, va export conventions
-
-Google Studio phai tao code theo dung conventions sau:
+## 14. Type system, naming, và export conventions
 
 ### 14.1 Alias import
 
-Uu tien `@/...` imports.
-
-Dung:
-
+Ưu tiên `@/...` imports:
 - `@/components/custom`
 - `@/components/common`
 - `@/hooks`
@@ -620,93 +706,173 @@ Dung:
 - `@/constants`
 - `@/enums`
 
-Khong import sau vao file con neu folder da co barrel goc.
+Không import sâu vào child file nếu folder đã có barrel gốc.
 
 ### 14.2 Barrel exports
 
-Moi folder shared/module quan trong phai co `index.ts`.
-
-Quy tac:
-
-- uu tien `export * from './Xxx'`
-- consumer import tu barrel
-- khong deep import vao child file khi da co barrel
+Mỗi folder shared/module quan trọng phải có `index.ts`:
+- Ưu tiên `export * from './Xxx'`
+- Consumer import từ barrel
+- Không deep import vào child file khi đã có barrel
 
 ### 14.3 Component exports
 
-Child component nen dung named export.
+- Child component dùng **named export**
+- App Router `page.tsx` và `layout.tsx` dùng **default export** theo convention Next.js
 
-App Router `page.tsx` va `layout.tsx` co the default export theo convention cua Next.js.
+### 14.4 Interfaces (`src/interfaces/`)
 
-### 14.4 Types
+```
+interfaces/
+├── auth.d.ts
+├── base-api.d.ts
+├── cloud-data.d.ts
+├── common.d.ts
+├── custom-component.d.ts
+├── data-provider.d.ts
+├── google.d.ts
+├── import-data.d.ts
+├── schedule.d.ts
+├── simulation.d.ts
+├── user.d.ts
+└── index.ts
+```
 
-Nen co:
+Conventions:
+- Interface/type rõ ràng cho props
+- Explicit request/response types cho API interactions
+- Enum cho domain constant thay vì union literal
+- Empty list check chuẩn: `!list?.length`
 
-- interface/type ro rang cho props
-- explicit request/response types cho API interactions
-- enum cho domain constant thay vi union literal khi phu hop
-- standardized empty list checks voi `!list?.length`
+### 14.5 Enums (`src/enums/`)
 
-### 14.5 Component structure
+```
+enums/
+├── cloud-data-provider.enum.ts
+├── common.enum.ts
+├── component.enum.ts
+├── cron-expression.enum.ts
+├── data-provider.enum.ts
+├── file.enum.ts
+├── gallery.enum.ts
+├── google-drive.enum.ts
+├── role.enum.ts
+├── schedule.enum.ts
+├── simulation.enum.ts
+├── socket.enum.ts
+└── index.ts
+```
 
-Trong `.tsx`, uu tien thu tu:
+### 14.6 Constants (`src/constants/`)
 
-- constants
-- state
-- memos
-- effects
-- callbacks
-- JSX
+```
+constants/
+├── auth-errors.constant.ts
+├── common.constant.ts
+├── data-provider.constant.ts
+├── font.constant.ts
+├── hub-theme.constant.ts
+├── sidebar.constant.ts     ← source of truth cho navigation
+├── socket.constant.ts
+└── index.ts
+```
 
-Neu component qua lon, phai tach theo subcomponent co trach nhiem ro.
+### 14.7 Component structure trong `.tsx`
 
-## 15. API boundary va infrastructure edge
+Ưu tiên thứ tự:
+1. Constants
+2. State
+3. Memos
+4. Effects
+5. Callbacks
+6. JSX
 
-Google Studio phai scaffold dung cac diem bien he thong:
+Nếu component quá lớn, phải tách theo subcomponent có trách nhiệm rõ.
 
-- `src/app/api/auth/[...nextauth]/route.ts` cho auth route handler
-- `src/app/api/health/route.ts` cho health check
-- `src/app/api/proxy-image/route.ts` neu can proxy remote image/media
-- `next.config.mjs` co rewrite phu hop cho backend REST
+---
 
-Frontend khong nen coi local API routes la backend business chinh. Chuc nang chinh van o external API server va frontend goi qua `NEXT_PUBLIC_API_URL`.
+## 15. Libs (`src/libs/`)
 
-## 16. Bien moi truong va runtime config
+```
+libs/
+├── api-url-helper.ts            ← build API URL
+├── auth-session-cookie.ts       ← cookie operations cho auth session
+├── auth-session-helper.ts       ← helper decode/validate session
+├── date-helper.ts               ← dayjs wrappers
+├── googleapis.ts                ← Google API client setup
+├── image-helper.ts              ← image URL, processing
+├── layout-helper.ts             ← layout calculation utilities
+├── local-folder-registration.ts ← local folder registration logic
+├── object-helper.ts             ← object manipulation
+├── string-helper.ts             ← string manipulation
+└── index.ts
+```
 
-Google Studio nen scaffold nhung env sau:
+---
 
-- `NEXT_PUBLIC_API_URL`
-- `NEXTAUTH_URL`
-- `NEXTAUTH_SECRET`
-- `NEXT_PUBLIC_SOCKET_URL`
-- `GOOGLE_CLIENT_ID`
-- `GOOGLE_CLIENT_SECRET`
-- cac `NEXT_PUBLIC_FIREBASE_*` neu van giu integration layer
-- `PORT`
+## 16. API boundary và infrastructure edge
 
-Luu y:
+| File | Mục đích |
+|---|---|
+| `src/app/api/auth/[...nextauth]/route.ts` | NextAuth handler |
+| `src/app/api/google/` | Google API proxy |
+| `src/app/api/health/route.ts` | Health check |
+| `src/app/api/proxy-image/route.ts` | Proxy remote image/media |
+| `src/middleware.ts` | Auth guard, redirect logic |
+| `next.config.mjs` | Rewrite phù hợp cho backend REST |
 
-- chi bien client moi duoc prefix `NEXT_PUBLIC_`
-- khong hard-code secrets
-- phai cho phep runtime config trong Docker/prod deployment
+Frontend không coi local API routes là backend business chính. Chức năng chính vẫn ở external API server và frontend gọi qua `NEXT_PUBLIC_API_URL`.
 
-## 17. Blueprint de generate feature moi
+---
 
-Khi generate mot feature section moi, Google Studio nen theo template:
+## 17. Biến môi trường và runtime config
 
-```text
+```
+# API
+NEXT_PUBLIC_API_URL=
+
+# Auth
+NEXTAUTH_URL=
+NEXTAUTH_SECRET=
+
+# Socket
+NEXT_PUBLIC_SOCKET_URL=
+
+# Google OAuth
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+
+# Firebase (nếu giữ integration layer)
+NEXT_PUBLIC_FIREBASE_API_KEY=
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
+NEXT_PUBLIC_FIREBASE_APP_ID=
+
+# Server
+PORT=
+```
+
+Lưu ý:
+- Chỉ biến client mới được prefix `NEXT_PUBLIC_`
+- Không hard-code secrets
+- Phải cho phép runtime config trong Docker/prod deployment (`next-runtime-env`)
+
+---
+
+## 18. Blueprint để generate feature mới
+
+Khi tạo một feature section mới, nên theo template:
+
+```
 src/app/(root)/<feature>/
 ├── layout.tsx
+├── components/               ← component cục bộ của section (tùy chọn)
 ├── <resource-a>/
 │   └── page.tsx
-├── <resource-b>/
-│   └── page.tsx
-
-src/components/module/<feature>/
-├── index.ts
-├── <FeaturePrimaryView>.tsx
-├── <FeatureFormModal>.tsx
-└── <FeatureHelper>.tsx
+└── <resource-b>/
+    └── page.tsx
 
 src/hooks/
 ├── useSelect<FeatureEntity>.ts
@@ -723,76 +889,63 @@ src/constants/
 └── <feature>.constant.ts
 
 src/services/
-└── <feature>.service.ts
+└── <feature>.service.ts       ← chỉ khi cần special-purpose flows
 ```
 
-Khong phai feature nao cung can day du moi file tren, nhung generator nen bat dau tu khung nay roi loai bo phan khong can thay vi tron tat ca logic vao page.
+> **Không** có `src/components/module/<feature>/` — component theo domain hiện đặt trong `components/common/` hoặc `app/(root)/<section>/components/`.
 
-## 18. Generator instructions cho Google Studio
+---
 
-Day la tap luat ma Google Studio phai tuan thu khi sinh app:
+## 19. Những điều không được generate sai
 
-1. Tao du an `Next.js App Router + TypeScript`.
-2. Dat toan bo source app trong `src/`.
-3. Tao route groups `(public)` va `(root)`.
-4. Tao app shell protected voi sidebar, header, va section-aware layouts.
-5. Tao layer `components/custom` lam wrapper chinh cho Ant Design.
-6. Tao `components/common` cho reusable composed widgets.
-7. Tao `components/module/<feature>` cho UI theo domain.
-8. Tao `providers/data-provider.ts` de Refine CRUD goi REST backend qua Axios.
-9. Tao `contexts/RefineContext.tsx` de bridge `NextAuth`, `Refine`, router provider, va data provider.
-10. Tao `services/auth.service.ts` va auth API route handler cho login/refresh flow.
-11. Tao `interfaces`, `enums`, `constants`, `hooks`, `stores`, `libs` thanh cac tang rieng biet.
-12. Dung alias import `@/...` va barrel export `index.ts`.
-13. Uu tien named export cho component va module files.
-14. Dam bao responsive tren mobile, tablet, desktop.
-15. Dung semantic HTML phu hop.
-16. Gan text UI vao i18n-ready layer.
-17. Khong deep import vao child files neu da co barrel.
-18. Khong dat business logic CRUD dai trong `page.tsx`.
-19. Khong bo qua custom wrapper layer de dung `antd` truc tiep mot cach tuy tien.
-20. Khong generate plain CSS neu Tailwind va wrapper co the giai quyet.
+- Tạo `pages/` router (phải dùng App Router)
+- Gom hết component vào `components/` mà không chia `custom/common/layout`
+- Để từng page tự fetch REST bằng cách riêng nếu đã có Refine
+- Import `antd` trực tiếp khắp nơi khi đã có custom wrapper
+- Bỏ qua `Refine` cho những resource CRUD chuẩn
+- Không có barrel files `index.ts`
+- Dùng deep relative imports dài
+- Hard-code navigation ở nhiều file thay vì dùng `sidebar.constant.ts`
+- Không có provider tree cho auth/theme/refine
+- Bỏ qua responsive handling
+- Bỏ qua phân route public/protected separation
+- Tạo `components/module/<feature>/` — không tồn tại trong source hiện tại
 
-## 19. Nhung dieu khong duoc generate sai
+---
 
-Google Studio can tranh cac sai lech sau:
+## 20. Tiêu chí thành công cho output được generate
 
-- tao `pages/` router
-- gom het tat ca component vao `components/` ma khong chia `custom/common/layout/module`
-- de tung page tu fetch REST bang cach rieng
-- import `antd` truc tiep khap noi
-- bo qua `Refine` cho nhung resource CRUD chuan
-- khong co barrel files
-- dung deep relative imports dai
-- hard-code navigation o nhieu file
-- khong co provider tree cho auth/theme/refine
-- bo qua responsive handling
-- bo qua phan route public/protected separation
+Bản generate được xem là đạt yêu cầu nếu:
 
-## 20. Tieu chi thanh cong cho output duoc generate
+- Nhìn vào cấu trúc folder có thể nhận ra đây là một repo cùng phong cách với `only-one-fe`
+- Route tree khớp với app dashboard protected/public hiện tại
+- Có đầy đủ shared layers và naming conventions
+- List pages có pattern CRUD/filter/table/action giống nhau
+- Auth flow, provider tree, và data provider được scaffolding đúng cho việc mở rộng tiếp
+- UI foundation thống nhất và không bị "copy-paste page by page"
+- Có thể tiếp tục phát triển thêm feature mà không cần refactor lại toàn bộ structure
 
-Ban generate duoc xem la dat yeu cau neu:
+---
 
-- nhin vao cau truc folder co the nhan ra day la mot repo cung phong cach voi `only-one-fe`
-- route tree khop voi app dashboard protected/public hien tai
-- co day du shared layers va naming conventions
-- list pages co pattern CRUD/filter/table/action giong nhau
-- auth flow, provider tree, va data provider duoc scaffolding dung cho viec mo rong tiep
-- UI foundation thong nhat va khong bi "copy-paste page by page"
-- co the tiep tuc phat trien them feature ma khong can refactor lai toan bo structure
+## 21. Kết luận
 
-## 21. Ket luan
+Hệ thống frontend hiện tại của `Only One Hub` là một **dashboard app được tổ chức theo hướng modular, domain-driven ở mức frontend**, với:
 
-He thong frontend hien tai cua `Only One Hub` la mot dashboard app duoc to chuc theo huong modular, domain-driven o muc frontend, voi Refine lam CRUD backbone, NextAuth lam auth backbone, Ant Design wrappers lam UI foundation, va App Router lam shell navigation backbone.
+- **Refine** làm CRUD backbone
+- **NextAuth** làm auth backbone
+- **Ant Design custom wrappers** làm UI foundation
+- **App Router** làm shell navigation backbone
+- **Zustand** làm lightweight state layer
+- **Socket.io** làm realtime layer
+- **next-intl** làm i18n layer
 
-Neu Google Studio tai lap dung:
+So với tài liệu phiên bản trước, điểm khác biệt chính trong cấu trúc **thực tế hiện tại**:
 
-- route groups
-- shared layers
-- custom wrappers
-- Refine data flow
-- auth/session bridge
-- naming/export conventions
-- responsive admin-shell behavior
-
-thi output sinh ra se co hinh dang, cach mo rong, va chat kien truc rat gan voi source hien tai.
+| Tài liệu cũ | Thực tế hiện tại |
+|---|---|
+| `components/module/<feature>/` | Không tồn tại — component domain đặt trong `components/common/` hoặc `app/(root)/<section>/components/` |
+| Không đề cập `middleware.ts` | `src/middleware.ts` tồn tại — xử lý auth guard |
+| Không đề cập `app/auth/` | `src/app/auth/cleanup-session/` tồn tại |
+| Không đề cập `next-intl` | Đã tích hợp `next-intl 4` |
+| Không đề cập `recharts`, `react-photo-album`, `monaco-editor` | Đã sử dụng trong production |
+| `src/app/api/google/` không đề cập | Tồn tại để proxy Google APIs |
