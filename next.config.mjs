@@ -2,6 +2,18 @@ import process from 'node:process';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+    experimental: {
+        optimizePackageImports: [
+            'antd',
+            '@ant-design/icons',
+            '@refinedev/antd',
+            '@refinedev/core',
+            '@iconify/react',
+            'lodash',
+            'recharts',
+            'dayjs',
+        ],
+    },
     async rewrites() {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         if (!apiUrl) return [];
