@@ -1,59 +1,81 @@
 'use client';
 
-import { ReactNode } from 'react';
+import { useMemo } from 'react';
 import { Icon } from '@iconify/react';
-import { DataTableContainer } from '@/components/common';
 import { CustomButton } from '@/components/custom';
+import {
+    FilterPanel,
+    ListTable,
+    ListWrapper,
+    type CardAction,
+    type IFilterField,
+} from '@/components/custom-container';
 import { GoogleDriveType } from '@/enums';
-import { NGoogle } from '@/interfaces';
+import type { NGoogle } from '@/interfaces';
 
-import { columns, filterSearch } from './constants';
+import { columns } from './constants';
 import { useGoogleFolderPage } from './hooks';
 import { FolderModal, SyncGoogleDrive } from './components';
 
 const FolderPage = () => {
     const {
+        tableProps,
+        tableQuery,
+        debouncedSearch,
         isOpenSyncFile,
         setIsOpenSyncFile,
-        tableContainerData,
         modalPropsData,
         folderOptions,
         queryFolderOptions,
     } = useGoogleFolderPage();
 
-    const actionItems = [
-        {
-            key: 'edit',
-            label: 'Chỉnh sửa',
-            icon: <Icon icon="lucide:edit" />,
-            onClick: (record: NGoogle.IGoogleDriveFolder) => modalPropsData?.show?.(record?.id),
-        },
-    ];
+    const actions = useMemo<CardAction[]>(
+        () => [
+            {
+                component: (
+                    <CustomButton
+                        type="primary"
+                        key="sync-google-drive"
+                        title="Đồng bộ từ Google Drive"
+                        icon={<Icon icon="ic:baseline-sync" />}
+                        onClick={() => setIsOpenSyncFile(true)}
+                    >
+                        Đồng bộ
+                    </CustomButton>
+                ),
+            },
+        ],
+        [setIsOpenSyncFile],
+    );
 
-    const actionButtons: ReactNode[] = [
-        <CustomButton
-            type="primary"
-            key="sync-google-drive"
-            title="Đồng bộ từ Google Drive"
-            icon={<Icon icon="ic:baseline-sync" />}
-            onClick={() => setIsOpenSyncFile(true)}
-        >
-            Đồng bộ
-        </CustomButton>,
-    ];
+    const filters = useMemo<IFilterField[]>(
+        () => [
+            {
+                name: 'search',
+                type: 'input',
+                placeholder: 'Tìm kiếm thư mục...',
+                onChange: (value) => debouncedSearch(value?.toString() ?? ''),
+            },
+        ],
+        [debouncedSearch],
+    );
 
     return (
         <>
-            <DataTableContainer
-                columns={columns}
-                resource="google-folder"
-                title="Danh sách thư mục"
-                description="Quản lý các thư mục trong Google Drive"
-                actionButtons={actionButtons}
-                actionItems={actionItems}
-                tableContainerData={tableContainerData}
-                filterSearch={filterSearch}
-            />
+            <ListWrapper
+                actions={actions}
+                error={tableQuery.error}
+                isLoading={tableQuery.isLoading}
+                filters={<FilterPanel fields={filters} />}
+            >
+                <ListTable<NGoogle.IGoogleDriveFolder>
+                    columns={columns}
+                    tableProps={tableProps}
+                    tableQuery={tableQuery}
+                    deleteResource="google-folder"
+                    onEdit={(record) => modalPropsData?.show?.(record?.id)}
+                />
+            </ListWrapper>
 
             <FolderModal
                 modalPropsData={modalPropsData}
@@ -67,7 +89,7 @@ const FolderPage = () => {
                 onClose={() => setIsOpenSyncFile(false)}
                 defaultFolderOptions={folderOptions || []}
                 queryLoading={queryFolderOptions?.isLoading}
-                onSuccess={() => tableContainerData?.tableQuery?.refetch()}
+                onSuccess={() => tableQuery?.refetch()}
             />
         </>
     );

@@ -1,14 +1,16 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useCustomModal, useSelectGoogleFolder, useTableContainer } from '@/hooks';
+import { useCustomModal, useCustomTable, useSelectGoogleFolder } from '@/hooks';
+import type { NGoogle } from '@/interfaces';
 
 export const useGoogleFolderPage = () => {
     const [isOpenSyncFile, setIsOpenSyncFile] = useState(false);
 
-    const tableContainerData = useTableContainer({
-        resource: 'google-folder',
-    });
+    const { tableProps, tableQuery, debouncedSearch, setFilters } =
+        useCustomTable<NGoogle.IGoogleDriveFolder>({
+            resource: 'google-folder',
+        });
 
     const modalPropsData = useCustomModal({
         action: 'edit',
@@ -24,9 +26,12 @@ export const useGoogleFolderPage = () => {
     }, []);
 
     return {
+        tableProps,
+        tableQuery,
+        debouncedSearch,
+        setFilters,
         isOpenSyncFile,
         setIsOpenSyncFile,
-        tableContainerData,
         modalPropsData,
         folderOptions,
         queryFolderOptions,

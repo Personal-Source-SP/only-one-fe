@@ -1,13 +1,19 @@
 'use client';
 
-import { DataTableContainer, FileGroups, MediaLightbox } from '@/components/common';
+import { useMemo } from 'react';
+import { Icon } from '@iconify/react';
+import { FileGroups, MediaLightbox } from '@/components/common';
 import { CustomButton } from '@/components/custom';
+import {
+    FilterPanel,
+    ListWrapper,
+    type CardAction,
+    type IFilterField,
+} from '@/components/custom-container';
 import { GoogleDriveType, QualityMode } from '@/enums';
 import type { NGoogle } from '@/interfaces';
 import { getDriveImageUrl } from '@/libs';
-import { Icon } from '@iconify/react';
 
-import { filterSearch } from './constants';
 import { usePhotosPage } from './hooks';
 import { SyncGoogleDrive, SyncLocal } from './components';
 
@@ -22,7 +28,9 @@ const PhotosPage = () => {
         isLightboxOpen,
         setIsLightboxOpen,
         currentPhotoIndex,
-        tableContainerData,
+        tableProps,
+        tableQuery,
+        debouncedSearch,
         googleDriveFiles,
         googleAuthNotExpired,
         photoItems,
@@ -33,57 +41,78 @@ const PhotosPage = () => {
         filterItems,
     } = usePhotosPage();
 
-    const { tableQuery } = tableContainerData;
+    const actions = useMemo<CardAction[]>(
+        () => [
+            {
+                component: (
+                    <CustomButton
+                        type="primary"
+                        key="slideshow"
+                        title="Trình chiếu"
+                        icon={<Icon icon="lucide:play" />}
+                        onClick={() => setIsLightboxOpen(true)}
+                    >
+                        Trình chiếu
+                    </CustomButton>
+                ),
+            },
+            {
+                component: (
+                    <CustomButton
+                        type="primary"
+                        key="sync-google-drive"
+                        title="Đồng bộ từ Google Drive"
+                        icon={<Icon icon="ic:baseline-sync" />}
+                        onClick={() => setIsOpenSyncFile(true)}
+                    >
+                        Đồng bộ Drive
+                    </CustomButton>
+                ),
+            },
+            {
+                component: (
+                    <CustomButton
+                        type="primary"
+                        key="sync-local"
+                        title="Đồng bộ từ máy tính"
+                        icon={<Icon icon="lucide:folder-plus" />}
+                        onClick={() => setIsOpenSyncLocal(true)}
+                    >
+                        Đồng bộ máy
+                    </CustomButton>
+                ),
+            },
+        ],
+        [setIsLightboxOpen, setIsOpenSyncFile, setIsOpenSyncLocal],
+    );
 
-    const actionButtons = [
-        <CustomButton
-            type="primary"
-            key="slideshow"
-            title="Trình chiếu"
-            icon={<Icon icon="lucide:play" />}
-            onClick={() => setIsLightboxOpen(true)}
-        >
-            Trình chiếu
-        </CustomButton>,
-        <CustomButton
-            type="primary"
-            key="sync-google-drive"
-            title="Đồng bộ từ Google Drive"
-            icon={<Icon icon="ic:baseline-sync" />}
-            onClick={() => setIsOpenSyncFile(true)}
-        >
-            Đồng bộ Drive
-        </CustomButton>,
-        <CustomButton
-            type="primary"
-            key="sync-local"
-            title="Đồng bộ từ máy tính"
-            icon={<Icon icon="lucide:folder-plus" />}
-            onClick={() => setIsOpenSyncLocal(true)}
-        >
-            Đồng bộ máy
-        </CustomButton>,
-    ];
+    const filters = useMemo<IFilterField[]>(
+        () => [
+            {
+                name: 'search',
+                type: 'input',
+                placeholder: 'Tìm kiếm ảnh...',
+                onChange: (value) => debouncedSearch(value?.toString() ?? ''),
+            },
+        ],
+        [debouncedSearch],
+    );
 
     return (
         <>
-            <DataTableContainer
-                resource="google-file"
-                title="Danh sách ảnh"
-                description="Xem và quản lý ảnh từ Google Drive"
-                actionButtons={actionButtons}
-                customFilterItems={filterItems}
-                tableContainerData={tableContainerData}
-                filterSearch={filterSearch}
-                childrenTop={
-                    <FileGroups
-                        columns={columns}
-                        data={photoItems}
-                        displayMode={viewMode}
-                        onClickFile={handlePhotoClick}
-                    />
-                }
-            />
+            <ListWrapper
+                actions={actions}
+                error={tableQuery.error}
+                isLoading={tableQuery.isLoading}
+                filters={<FilterPanel fields={filters} />}
+            >
+                <FileGroups
+                    columns={columns}
+                    data={photoItems}
+                    displayMode={viewMode}
+                    onClickFile={handlePhotoClick}
+                />
+            </ListWrapper>
 
             <MediaLightbox
                 isOpen={isLightboxOpen}

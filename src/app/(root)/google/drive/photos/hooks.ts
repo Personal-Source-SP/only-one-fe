@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { isNumber } from 'lodash';
 import { CustomFilterType, MimeType, QualityMode, ViewFileMode } from '@/enums';
-import { useCustomData, useSelectGoogleFolder, useTableContainer } from '@/hooks';
+import { useCustomData, useCustomTable, useSelectGoogleFolder } from '@/hooks';
 import { FileItem, FilterItem, NGoogle } from '@/interfaces';
 import { getDriveImageUrl, isExpiredToken } from '@/libs';
 
@@ -20,10 +20,13 @@ export const usePhotosPage = () => {
     const [isLightboxOpen, setIsLightboxOpen] = useState<boolean>(false);
     const [currentPhotoIndex, setCurrentPhotoIndex] = useState<number>(0);
 
-    const tableContainerData = useTableContainer({
-        resource: 'google-file',
-        defaultFilters: [{ field: 'mimeType', operator: 'contains', value: MimeType.IMAGE }],
-    });
+    const { tableProps, tableQuery, debouncedSearch, setFilters, setCurrentPage } =
+        useCustomTable<NGoogle.IGoogleDriveFile>({
+            resource: 'google-file',
+            filters: {
+                initial: [{ field: 'mimeType', operator: 'contains', value: MimeType.IMAGE }],
+            },
+        });
 
     const { result: googleAuthsResult, query: queryGoogleAuths } = useCustomData({
         url: 'google-auth',
@@ -33,8 +36,6 @@ export const usePhotosPage = () => {
     const { options: folderOptions, query: queryFolderOptions } = useSelectGoogleFolder({
         enabled: false,
     });
-
-    const { tableQuery, setCurrentPage, setFilters } = tableContainerData;
 
     const googleDriveFiles = useMemo<NGoogle.IGoogleDriveFile[]>(() => {
         if (!tableQuery?.data?.data?.length) return [];
@@ -161,8 +162,11 @@ export const usePhotosPage = () => {
 
     return {
         columns,
+        setColumns,
         viewMode,
+        setViewMode,
         qualityMode,
+        setQualityMode,
         isOpenSyncFile,
         setIsOpenSyncFile,
         isOpenSyncLocal,
@@ -170,7 +174,11 @@ export const usePhotosPage = () => {
         isLightboxOpen,
         setIsLightboxOpen,
         currentPhotoIndex,
-        tableContainerData,
+        tableProps,
+        tableQuery,
+        debouncedSearch,
+        setFilters,
+        setCurrentPage,
         googleDriveFiles,
         googleAuthNotExpired,
         photoItems,

@@ -1,7 +1,6 @@
 export * from './code-display';
 export * from './content-section';
 export * from './data-not-found';
-export * from './data-table-container';
 export * from './file-group';
 export * from './empty';
 export * from './filter-panel';
