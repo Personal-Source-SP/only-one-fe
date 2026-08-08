@@ -29,8 +29,8 @@ export const SidebarNavItem = ({
                     : 'justify-start px-3 text-left md:px-3'
             } ${
                 isActive
-                    ? 'bg-hub-active text-hub-primary'
-                    : 'text-hub-muted hover:bg-hub-bg hover:text-hub-text'
+                    ? 'bg-hub-active text-hub-primary font-semibold'
+                    : 'text-hub-muted hover:bg-hub-section-muted hover:text-hub-text'
             }`}
         >
             {isActive && !isCollapsed && (
