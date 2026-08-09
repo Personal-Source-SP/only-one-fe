@@ -20,6 +20,7 @@ import {
     DEFAULT_API_FUNCTION_GENERATOR,
     DEFAULT_HTML_CONTENT_STRING,
     DEFAULT_PARSER_FUNCTION_GENERATOR,
+    DEFAULT_SEARCH_FUNCTION_GENERATOR,
 } from '@/constants';
 import { useMainContext } from '@/contexts/MainContext';
 import { MessageType, NotificationType, ScraperServiceEnum } from '@/enums';
@@ -30,8 +31,11 @@ import { Icon } from '@iconify/react';
 import { isEmpty } from 'lodash';
 import { useEffect, useState } from 'react';
 
+export type SettingConfigType = 'target' | 'search';
+
 interface DataProviderSettingModalProps {
     open: boolean;
+    configType?: SettingConfigType;
     record: DataProviderRecord | null;
     onClose: () => void;
     onSuccess?: () => void;
@@ -39,6 +43,7 @@ interface DataProviderSettingModalProps {
 
 export const DataProviderSettingModal = ({
     open,
+    configType = 'target',
     record,
     onClose,
     onSuccess,
@@ -55,37 +60,61 @@ export const DataProviderSettingModal = ({
 
     const testUrl = CustomForm.useWatch('testUrl', form);
     const htmlContentString = CustomForm.useWatch('htmlContentString', form);
-    const functionGenerator = CustomForm.useWatch(['targetConfig', 'functionGenerator'], form);
+
+    const functionGeneratorField =
+        configType === 'search'
+            ? ['searchConfig', 'functionGenerator']
+            : ['targetConfig', 'functionGenerator'];
+    const functionGenerator = CustomForm.useWatch(functionGeneratorField, form);
 
     useEffect(() => {
         if (open && record) {
-            const initialTargetConfig = record.targetConfig ?? {
-                maxResults: 10,
-                retryDelay: 1000,
-                retryAttempts: 3,
-                mainContentSelector: '',
-                isGetParentElement: false,
-                functionGenerator:
-                    record.scraperService === ScraperServiceEnum.GENERIC
-                        ? DEFAULT_PARSER_FUNCTION_GENERATOR
-                        : DEFAULT_API_FUNCTION_GENERATOR,
-            };
+            if (configType === 'search') {
+                const initialSearchConfig = record.searchConfig ?? {
+                    searchUrlPattern: `${record.baseUrl || ''}/search?q={query}`,
+                    queryPlaceholder: '{query}',
+                    mainContentSelector: '',
+                    resultSelector: '',
+                    maxResults: 10,
+                    isGetParentElement: false,
+                    functionGenerator: DEFAULT_SEARCH_FUNCTION_GENERATOR,
+                };
 
-            form.setFieldsValue({
-                scraperService: record.scraperService || ScraperServiceEnum.API,
-                targetConfig: initialTargetConfig,
-                testUrl: record.baseUrl || '',
-                htmlContentString: DEFAULT_HTML_CONTENT_STRING,
-            });
+                form.setFieldsValue({
+                    searchConfig: initialSearchConfig,
+                    testUrl: initialSearchConfig.searchUrlPattern || record.baseUrl || '',
+                    htmlContentString: DEFAULT_HTML_CONTENT_STRING,
+                });
+            } else {
+                const initialTargetConfig = record.targetConfig ?? {
+                    maxResults: 10,
+                    retryDelay: 1000,
+                    retryAttempts: 3,
+                    mainContentSelector: '',
+                    isGetParentElement: false,
+                    functionGenerator:
+                        record.scraperService === ScraperServiceEnum.GENERIC
+                            ? DEFAULT_PARSER_FUNCTION_GENERATOR
+                            : DEFAULT_API_FUNCTION_GENERATOR,
+                };
+
+                form.setFieldsValue({
+                    scraperService: record.scraperService || ScraperServiceEnum.API,
+                    targetConfig: initialTargetConfig,
+                    testUrl: record.baseUrl || '',
+                    htmlContentString: DEFAULT_HTML_CONTENT_STRING,
+                });
+            }
             setTestResultData(null);
             setActiveTab('config');
         } else {
             form.resetFields();
             setTestResultData(null);
         }
-    }, [open, record, form]);
+    }, [open, record, configType, form]);
 
     const handleScraperServiceChange = (value: ScraperServiceEnum) => {
+        if (configType === 'search') return;
         const currentGenerator = form.getFieldValue(['targetConfig', 'functionGenerator']);
         if (isEmpty(currentGenerator)) {
             if (value === ScraperServiceEnum.GENERIC) {
@@ -115,15 +144,26 @@ export const DataProviderSettingModal = ({
 
         try {
             const values = await form.validateFields();
-            const payload = {
-                ...values.targetConfig,
-                url: values.testUrl,
-                htmlContentString: isTestHtmlContent ? values.htmlContentString : undefined,
-                scraperService: values.scraperService,
-            };
+            const isSearch = configType === 'search';
+            const endpoint = isSearch
+                ? 'parsers/test-search-function'
+                : 'parsers/test-parser-function';
+
+            const payload = isSearch
+                ? {
+                      ...values.searchConfig,
+                      url: values.testUrl,
+                      htmlContentString: isTestHtmlContent ? values.htmlContentString : undefined,
+                  }
+                : {
+                      ...values.targetConfig,
+                      url: values.testUrl,
+                      htmlContentString: isTestHtmlContent ? values.htmlContentString : undefined,
+                      scraperService: values.scraperService,
+                  };
 
             handleCustomMutationData({
-                url: 'parsers/test-parser-function',
+                url: endpoint,
                 values: payload,
                 successNotification: (data) => {
                     setIsLoading(false);
@@ -165,16 +205,24 @@ export const DataProviderSettingModal = ({
 
         try {
             const values = await form.validateFields();
-            const configPayload: NDataProvider.UpdateTargetConfigRequest = {
-                ...values.targetConfig,
-                scraperService: values.scraperService,
-            };
+            const isSearch = configType === 'search';
+
+            const endpoint = isSearch
+                ? `data-providers/${record.id}/search-config`
+                : `data-providers/${record.id}/target-config`;
+
+            const payload = isSearch
+                ? values.searchConfig
+                : {
+                      ...values.targetConfig,
+                      scraperService: values.scraperService,
+                  };
 
             setIsSaving(true);
             handleCustomMutationData({
                 method: 'put',
-                url: `data-providers/${record.id}/target-config`,
-                values: configPayload,
+                url: endpoint,
+                values: payload,
                 successNotification: (data) => {
                     setIsSaving(false);
                     if (data?.data?.isSuccess === false) {
@@ -189,7 +237,9 @@ export const DataProviderSettingModal = ({
                     onClose();
                     return {
                         type: MessageType.SUCCESS,
-                        message: 'Cập nhật cấu hình hàm cào thành công',
+                        message: isSearch
+                            ? 'Cập nhật cấu hình hàm tìm kiếm thành công'
+                            : 'Cập nhật cấu hình hàm cào thành công',
                     };
                 },
                 errorNotification: (error) => {
@@ -207,8 +257,8 @@ export const DataProviderSettingModal = ({
         }
     };
 
-    const renderConfigTab = () => (
-        <div className="space-y-4">
+    const renderTargetConfigFields = () => (
+        <>
             {/* Thông số cơ bản */}
             <div className="bg-hub-section/20 border border-hub-border/60 rounded-xl p-3 sm:p-4">
                 <h4 className="text-sm font-semibold text-hub-title mb-3 flex items-center gap-2">
@@ -385,6 +435,125 @@ export const DataProviderSettingModal = ({
                     />
                 </CustomForm.Item>
             </div>
+        </>
+    );
+
+    const renderSearchConfigFields = () => (
+        <>
+            {/* Cấu hình URL Tìm kiếm & Selectors */}
+            <div className="bg-hub-section/20 border border-hub-border/60 rounded-xl p-3 sm:p-4">
+                <h4 className="text-sm font-semibold text-hub-title mb-3 flex items-center gap-2">
+                    <Icon icon="lucide:search" className="text-hub-primary shrink-0" />
+                    <span>Mẫu URL Tìm kiếm & Selectors</span>
+                </h4>
+                <CustomRow gutter={[16, 12]}>
+                    <CustomCol xs={24} md={16}>
+                        <CustomForm.Item
+                            name={['searchConfig', 'searchUrlPattern']}
+                            label="URL Mẫu Tìm kiếm (searchUrlPattern)"
+                            rules={[{ required: true, message: 'Vui lòng nhập URL mẫu tìm kiếm' }]}
+                            className="!mb-0"
+                        >
+                            <CustomInput placeholder="https://shopee.vn/search?keyword={query}" />
+                        </CustomForm.Item>
+                    </CustomCol>
+
+                    <CustomCol xs={24} md={8}>
+                        <CustomForm.Item
+                            name={['searchConfig', 'queryPlaceholder']}
+                            label="Query Placeholder"
+                            rules={[{ required: true, message: 'Vui lòng nhập query placeholder' }]}
+                            className="!mb-0"
+                        >
+                            <CustomInput placeholder="{query}" />
+                        </CustomForm.Item>
+                    </CustomCol>
+
+                    <CustomCol xs={24} md={12}>
+                        <CustomForm.Item
+                            name={['searchConfig', 'mainContentSelector']}
+                            label="Selector khung kết quả chính"
+                            rules={[{ required: true, message: 'Vui lòng nhập selector chính' }]}
+                            className="!mb-0"
+                        >
+                            <CustomInput placeholder=".shopee-search-item-result" />
+                        </CustomForm.Item>
+                    </CustomCol>
+
+                    <CustomCol xs={24} md={12}>
+                        <CustomForm.Item
+                            name={['searchConfig', 'resultSelector']}
+                            label="Selector từng sản phẩm (resultSelector)"
+                            rules={[{ required: true, message: 'Vui lòng nhập result selector' }]}
+                            className="!mb-0"
+                        >
+                            <CustomInput placeholder=".shopee-search-item-result__item" />
+                        </CustomForm.Item>
+                    </CustomCol>
+                </CustomRow>
+            </div>
+
+            {/* Giới hạn & Tùy chọn */}
+            <div className="bg-hub-section/20 border border-hub-border/60 rounded-xl p-3 sm:p-4">
+                <h4 className="text-sm font-semibold text-hub-title mb-3 flex items-center gap-2">
+                    <Icon icon="lucide:sliders" className="text-hub-primary shrink-0" />
+                    <span>Giới hạn kết quả & Tùy chọn</span>
+                </h4>
+                <CustomRow gutter={[16, 12]}>
+                    <CustomCol xs={24} sm={12}>
+                        <CustomForm.Item
+                            name={['searchConfig', 'maxResults']}
+                            label="Số kết quả tối đa (trang đầu)"
+                            className="!mb-0"
+                        >
+                            <CustomInputNumber min={1} className="w-full" placeholder="10" />
+                        </CustomForm.Item>
+                    </CustomCol>
+
+                    <CustomCol xs={24} sm={12}>
+                        <div className="flex items-center justify-between p-3 rounded-lg bg-hub-card border border-hub-border/50 mt-6">
+                            <span className="text-sm text-hub-title font-medium">
+                                Lấy phần tử cha (isGetParentElement)
+                            </span>
+                            <CustomForm.Item
+                                name={['searchConfig', 'isGetParentElement']}
+                                valuePropName="checked"
+                                noStyle
+                            >
+                                <CustomSwitch />
+                            </CustomForm.Item>
+                        </div>
+                    </CustomCol>
+                </CustomRow>
+            </div>
+
+            {/* Code Search Parser */}
+            <div className="bg-hub-section/20 border border-hub-border/60 rounded-xl p-3 sm:p-4">
+                <h4 className="text-sm font-semibold text-hub-title mb-3 flex items-center gap-2">
+                    <Icon icon="lucide:code-2" className="text-hub-primary shrink-0" />
+                    <span>Mã nguồn Hàm Tìm kiếm (functionGenerator)</span>
+                </h4>
+                <CustomForm.Item
+                    name={['searchConfig', 'functionGenerator']}
+                    rules={[{ required: true, message: 'Vui lòng nhập hàm tìm kiếm' }]}
+                    className="!mb-0"
+                >
+                    <CodeDisplay
+                        isDisplayLanguage
+                        language="javascript"
+                        code={functionGenerator || ''}
+                        onCodeChange={(newCode: string) => {
+                            form.setFieldValue(['searchConfig', 'functionGenerator'], newCode);
+                        }}
+                    />
+                </CustomForm.Item>
+            </div>
+        </>
+    );
+
+    const renderConfigTab = () => (
+        <div className="space-y-4">
+            {configType === 'search' ? renderSearchConfigFields() : renderTargetConfigFields()}
         </div>
     );
 
@@ -393,11 +562,19 @@ export const DataProviderSettingModal = ({
             <div className="bg-hub-section/20 border border-hub-border/60 rounded-xl p-3 sm:p-4">
                 <h4 className="text-sm font-semibold text-hub-title mb-3 flex items-center gap-2">
                     <Icon icon="lucide:flask-conical" className="text-hub-primary shrink-0" />
-                    <span>Thử nghiệm hàm cào (Test Parser)</span>
+                    <span>
+                        {configType === 'search'
+                            ? 'Thử nghiệm hàm tìm kiếm (Test Search)'
+                            : 'Thử nghiệm hàm cào (Test Parser)'}
+                    </span>
                 </h4>
 
-                <CustomForm.Item name="testUrl" label="URL thử nghiệm" className="!mb-3">
-                    <CustomInput placeholder="https://shopee.vn/product/123" />
+                <CustomForm.Item
+                    name="testUrl"
+                    label={configType === 'search' ? 'URL / Keyword thử nghiệm' : 'URL thử nghiệm'}
+                    className="!mb-3"
+                >
+                    <CustomInput placeholder="https://shopee.vn/search?keyword=ao-thun" />
                 </CustomForm.Item>
 
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
@@ -457,12 +634,20 @@ export const DataProviderSettingModal = ({
         </div>
     );
 
-    const renderTitle = () => (
-        <div className="flex items-center gap-2 text-sm sm:text-base font-semibold truncate pr-4">
-            <Icon icon="lucide:code-2" className="text-hub-primary text-lg sm:text-xl shrink-0" />
-            <span className="truncate">Cấu hình hàm cào: {record?.name || ''}</span>
-        </div>
-    );
+    const renderTitle = () => {
+        const titleText =
+            configType === 'search'
+                ? `Cấu hình hàm tìm kiếm: ${record?.name || ''}`
+                : `Cấu hình hàm cào: ${record?.name || ''}`;
+        const iconName = configType === 'search' ? 'lucide:search' : 'lucide:code-2';
+
+        return (
+            <div className="flex items-center gap-2 text-sm sm:text-base font-semibold truncate pr-4">
+                <Icon icon={iconName} className="text-hub-primary text-lg sm:text-xl shrink-0" />
+                <span className="truncate">{titleText}</span>
+            </div>
+        );
+    };
 
     const renderFooter = () => (
         <CustomFlex justify="end" gap={8} className="w-full flex-row">

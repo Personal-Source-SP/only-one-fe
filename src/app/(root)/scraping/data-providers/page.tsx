@@ -28,6 +28,7 @@ const DataProviderPage = () => {
         editModalForm,
         dataProviders,
         settingRecord,
+        settingConfigType,
         debouncedSearch,
         openSettingModal,
         closeSettingModal,
@@ -82,7 +83,7 @@ const DataProviderPage = () => {
                 <CustomButton
                     type="text"
                     title="Cấu hình hàm cào"
-                    onClick={() => openSettingModal(record)}
+                    onClick={() => openSettingModal(record, 'target')}
                     icon={
                         targetConfig ? (
                             <Icon
@@ -102,22 +103,39 @@ const DataProviderPage = () => {
             title: 'Tìm kiếm',
             align: 'center',
             dataIndex: 'searchConfig',
-            render: (searchConfig: NDataProvider.ISearchConfig) =>
-                searchConfig ? (
-                    <Icon icon="lucide:check" className="w-full" />
-                ) : (
-                    <Icon icon="lucide:x" className="w-full" />
-                ),
+            render: (searchConfig: NDataProvider.ISearchConfig, record) => (
+                <CustomButton
+                    type="text"
+                    title="Cấu hình hàm tìm kiếm"
+                    onClick={() => openSettingModal(record, 'search')}
+                    icon={
+                        searchConfig ? (
+                            <Icon
+                                icon="lucide:check-circle-2"
+                                className="w-5 h-5 text-emerald-500"
+                            />
+                        ) : (
+                            <Icon icon="lucide:search" className="w-5 h-5 text-amber-500" />
+                        )
+                    }
+                />
+            ),
             width: '15%',
         },
     ];
 
     const customRowActions: TableCustomAction<DataProviderRecord>[] = [
         {
-            key: 'setting-function',
+            key: 'setting-target-function',
             icon: <Icon icon="lucide:settings" />,
             tooltip: 'Cấu hình hàm cào',
-            onClick: (record) => openSettingModal(record),
+            onClick: (record) => openSettingModal(record, 'target'),
+        },
+        {
+            key: 'setting-search-function',
+            icon: <Icon icon="lucide:search" />,
+            tooltip: 'Cấu hình hàm tìm kiếm',
+            onClick: (record) => openSettingModal(record, 'search'),
         },
     ];
 
@@ -172,6 +190,7 @@ const DataProviderPage = () => {
             <DataProviderSettingModal
                 open={!!settingRecord}
                 record={settingRecord}
+                configType={settingConfigType}
                 onClose={closeSettingModal}
                 onSuccess={() => tableQuery.refetch()}
             />

@@ -3,16 +3,25 @@
 import { useState } from 'react';
 import { useCustomModalForm, useCustomTable, useSelectDataProvider } from '@/hooks';
 import type { DataProviderFormValues, DataProviderRecord } from './types';
+import type { SettingConfigType } from './components/DataProviderSettingModal';
+
+export interface SettingModalState {
+    record: DataProviderRecord;
+    configType: SettingConfigType;
+}
 
 export const useDataProviderPage = () => {
-    const [settingRecord, setSettingRecord] = useState<DataProviderRecord | null>(null);
+    const [settingModalState, setSettingModalState] = useState<SettingModalState | null>(null);
 
-    const openSettingModal = (record: DataProviderRecord) => {
-        setSettingRecord(record);
+    const openSettingModal = (
+        record: DataProviderRecord,
+        configType: SettingConfigType = 'target',
+    ) => {
+        setSettingModalState({ record, configType });
     };
 
     const closeSettingModal = () => {
-        setSettingRecord(null);
+        setSettingModalState(null);
     };
 
     const { tableProps, tableQuery, debouncedSearch, setFilters, setCurrentPage } =
@@ -58,7 +67,9 @@ export const useDataProviderPage = () => {
         createModalForm,
         editModalForm,
         dataProviders,
-        settingRecord,
+        settingModalState,
+        settingRecord: settingModalState?.record || null,
+        settingConfigType: settingModalState?.configType || 'target',
         setFilters,
         setCurrentPage,
         debouncedSearch,

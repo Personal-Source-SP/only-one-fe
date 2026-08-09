@@ -2,7 +2,7 @@ import { DeleteOutlined } from '@ant-design/icons';
 import type { useTableReturnType } from '@refinedev/antd';
 import type { BaseRecord } from '@refinedev/core';
 import { get, isEmpty, isNil } from 'lodash';
-import type { ReactNode } from 'react';
+import type { Key, MouseEvent, ReactNode } from 'react';
 
 import type { ColumnType, ColumnsType, MenuProps } from '@/components/custom-antd';
 import {
@@ -17,6 +17,14 @@ import { getRecordId } from './utils';
 
 const { Text } = CustomTypography;
 
+type ActionMenuItem = NonNullable<MenuProps['items']>[number] & {
+    key?: Key;
+    label?: ReactNode;
+    icon?: ReactNode;
+    danger?: boolean;
+    onClick?: (info?: { domEvent?: MouseEvent<HTMLElement>; key?: Key }) => void;
+};
+
 export interface MobileCardListProps<RecordType extends BaseRecord> {
     columns?: ColumnsType<RecordType>;
     dataSource: readonly RecordType[] | undefined;
@@ -25,9 +33,9 @@ export interface MobileCardListProps<RecordType extends BaseRecord> {
     handleCloseDropdown: () => void;
     setOpenDropdownId: (id: string | number | undefined) => void;
     getCustomActionItems: (record: RecordType) => MenuProps['items'];
-    renderMobileCard?: (record: RecordType, actionItems: MenuProps['items']) => ReactNode;
     handleDelete?: (ids: string[]) => void;
     onDeleteSuccess?: () => void | Promise<void>;
+    renderMobileCard?: (record: RecordType, actionItems: MenuProps['items']) => ReactNode;
 }
 
 export function MobileCardList<RecordType extends BaseRecord>({
@@ -39,19 +47,20 @@ export function MobileCardList<RecordType extends BaseRecord>({
     handleDelete,
     onDeleteSuccess,
 }: MobileCardListProps<RecordType>) {
+    const getActionButtonLabel = (item: ActionMenuItem) => {
+        if (typeof item.label === 'string') return item.label;
+        if (item.key === 'view') return 'Xem chi tiết';
+        if (item.key === 'edit') return 'Chỉnh sửa';
+        return item.label;
+    };
+
     const renderActions = (record: RecordType, actions: MenuProps['items']) => {
         if (isEmpty(actions)) return null;
 
-        const actionArray = (actions || []) as Array<any>;
+        const actionArray = (actions || []) as ActionMenuItem[];
 
         return (
-            <CustomFlex
-                justify="end"
-                align="center"
-                gap={8}
-                wrap="wrap"
-                className="mt-2.5 border-t border-hub-border-card/60 pt-3"
-            >
+            <div className="mt-2.5 border-t border-hub-border-card/60 pt-3 grid grid-cols-2 gap-2 w-full [&>:last-child:nth-child(odd)]:col-span-2">
                 {actionArray.map((item) => {
                     if (!item) return null;
 
@@ -61,8 +70,8 @@ export function MobileCardList<RecordType extends BaseRecord>({
                                 key="delete"
                                 okText="Xác nhận"
                                 cancelText="Hủy"
-                                okButtonProps={{ danger: true }}
                                 title="Xác nhận xóa"
+                                okButtonProps={{ danger: true }}
                                 description="Bạn có chắc chắn muốn xóa mục này không?"
                                 onConfirm={async () => {
                                     const id = getRecordId(record);
@@ -73,39 +82,38 @@ export function MobileCardList<RecordType extends BaseRecord>({
                                     }
                                 }}
                             >
-                                <CustomButton size="small" danger icon={<DeleteOutlined />}>
+                                <CustomButton
+                                    danger
+                                    size="small"
+                                    icon={<DeleteOutlined />}
+                                    className="w-full justify-center"
+                                >
                                     Xóa
                                 </CustomButton>
                             </CustomPopconfirm>
                         );
                     }
 
-                    const buttonLabel =
-                        typeof item.label === 'string'
-                            ? item.label
-                            : item.key === 'view'
-                              ? 'Xem chi tiết'
-                              : item.key === 'edit'
-                                ? 'Chỉnh sửa'
-                                : item.label;
+                    const buttonLabel = getActionButtonLabel(item);
 
                     return (
                         <CustomButton
-                            key={item.key}
                             size="small"
                             type="default"
-                            danger={item.danger}
+                            key={item.key}
                             icon={item.icon}
+                            danger={item.danger}
+                            className="w-full justify-center text-xs"
                             onClick={(e) => {
                                 e.stopPropagation();
                                 item.onClick?.({ domEvent: e, key: item.key });
                             }}
                         >
-                            {buttonLabel}
+                            <span className="truncate">{buttonLabel}</span>
                         </CustomButton>
                     );
                 })}
-            </CustomFlex>
+            </div>
         );
     };
 
@@ -153,8 +161,8 @@ export function MobileCardList<RecordType extends BaseRecord>({
                         return (
                             <CustomFlex
                                 gap={16}
-                                justify="space-between"
                                 align="center"
+                                justify="space-between"
                                 key={col.key ?? (col.dataIndex as string | number) ?? colIndex}
                                 className="border-b border-hub-border-card/40 pb-2 last:border-0 last:pb-0"
                             >
