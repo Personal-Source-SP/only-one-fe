@@ -1,6 +1,5 @@
 'use client';
 
-import { CustomRow } from '@/components/custom-antd';
 import {
     CustomInputForm,
     CustomModalForm,
@@ -105,11 +104,23 @@ export const ProviderItemFormModal = ({
                 }}
             />
 
-            <CustomRow gutter={16} className="mt-2">
-                <CustomSwitchForm name="autoProcessScraping" label="Tự động cào dữ liệu" />
-                <CustomSwitchForm name="checkDuplicateData" label="Kiểm tra dữ liệu trùng lặp" />
-                <CustomSwitchForm name="isSavedToCloudData" label="Lưu vào kho dữ liệu" />
-            </CustomRow>
+            <div className="flex flex-col gap-1 mt-2">
+                <CustomSwitchForm
+                    name="autoProcessScraping"
+                    label="Tự động cào dữ liệu"
+                    description="Tự động lên lịch cào dữ liệu định kỳ từ nhà cung cấp"
+                />
+                <CustomSwitchForm
+                    name="checkDuplicateData"
+                    label="Kiểm tra dữ liệu trùng lặp"
+                    description="Kiểm tra và loại bỏ dữ liệu trùng lặp trước khi lưu"
+                />
+                <CustomSwitchForm
+                    name="isSavedToCloudData"
+                    label="Lưu vào kho dữ liệu"
+                    description="Tự động đồng bộ dữ liệu đã cào vào kho dữ liệu cloud"
+                />
+            </div>
         </CustomModalForm>
     );
 };

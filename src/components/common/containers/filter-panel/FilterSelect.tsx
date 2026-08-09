@@ -19,13 +19,13 @@ export const FilterSelect = ({ field, onChange }: FilterSelectProps) => {
 
     return (
         <CustomSelect
-            id={`filter-${field.name}`}
             allowClear
             value={field.value}
             options={field.options}
-            placeholder={typeof field.placeholder === 'string' ? field.placeholder : undefined}
             onChange={handleChange}
-            className={`min-w-44 ${field.className ?? ''}`.trim()}
+            id={`filter-${field.name}`}
+            className={`w-full sm:min-w-44 sm:w-auto ${field.className ?? ''}`.trim()}
+            placeholder={typeof field.placeholder === 'string' ? field.placeholder : undefined}
             {...field.selectProps}
         />
     );

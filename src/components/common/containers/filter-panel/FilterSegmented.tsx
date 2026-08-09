@@ -26,11 +26,11 @@ export const FilterSegmented = ({ field, onChange }: FilterSegmentedProps) => {
 
     return (
         <CustomSegmented
-            id={`filter-${field.name}`}
-            value={field.value as string | number}
             options={validOptions}
             onChange={handleChange}
-            className={`${field.className ?? ''}`.trim()}
+            id={`filter-${field.name}`}
+            value={field.value as string | number}
+            className={`w-full sm:w-auto max-w-full overflow-x-auto ${field.className ?? ''}`.trim()}
             {...field.segmentedProps}
         />
     );

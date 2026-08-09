@@ -1,7 +1,15 @@
 'use client';
 
+import { DownOutlined } from '@ant-design/icons';
 import type { HttpError } from '@refinedev/core';
-import { CustomAlert, CustomCard, CustomSkeleton, CustomSpace } from '@/components/custom-antd';
+import {
+    CustomCard,
+    CustomButton,
+    CustomDropdown,
+    CustomSkeleton,
+    CustomSpace,
+    type MenuProps,
+} from '@/components/custom-antd';
 import { ReactNode, useMemo } from 'react';
 
 import { usePagePermissions } from '@/hooks';
@@ -13,6 +21,21 @@ export type CardAction = {
 
     /** Required permission for showing this action */
     permissionAction?: 'create' | 'update' | 'delete' | 'read';
+
+    /** Optional menu label for mobile actions dropdown */
+    label?: ReactNode;
+
+    /** Optional menu icon for mobile actions dropdown */
+    icon?: ReactNode;
+
+    /** Optional click handler for mobile actions dropdown */
+    onClick?: () => void;
+
+    /** Unique key for dropdown menu item */
+    key?: string;
+
+    /** Danger styling for dropdown menu item */
+    danger?: boolean;
 };
 
 export type ListWrapperProps = {
@@ -27,6 +50,9 @@ export type ListWrapperProps = {
 
     /** Actions displayed in the top-right corner above the filter table */
     actions?: CardAction[];
+
+    /** Custom title for mobile actions dropdown (default: "Thao tác") */
+    mobileActionsTitle?: ReactNode;
 
     /** Error message to show when the list fails to load */
     errorDescription?: ReactNode;
@@ -57,6 +83,7 @@ export const ListWrapper = ({
     children,
     permissionGroup,
     actions = [],
+    mobileActionsTitle,
     errorDescription,
     errorMessage,
     filters,
@@ -95,32 +122,68 @@ export const ListWrapper = ({
         [actions, permissions],
     );
 
+    const mobileActionMenuItems = useMemo<MenuProps['items']>(() => {
+        return allowedActions.map((action, index) => {
+            if (action.label) {
+                return {
+                    label: action.label,
+                    icon: action.icon,
+                    danger: action.danger,
+                    onClick: action.onClick,
+                    key: action.key ?? String(index),
+                };
+            }
+            return {
+                key: action.key ?? String(index),
+                label: (
+                    <div className="w-full flex items-center [&_button]:!w-full [&_button]:!justify-start [&_button]:!border-none [&_button]:!shadow-none [&_button]:!bg-transparent [&_button]:!p-0 [&_button]:!h-auto [&_button]:!text-inherit">
+                        {action.component}
+                    </div>
+                ),
+            };
+        });
+    }, [allowedActions]);
+
     const header = useMemo(() => {
         const hasHeader = Boolean(filters || allowedActions.length > 0);
         if (!hasHeader) return null;
 
         return (
-            <div className="flex w-full flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-                {filters && <div className="w-full min-w-0 flex-1">{filters}</div>}
+            <div className="flex w-full items-center justify-end md:justify-between gap-2">
+                {filters && <div className="min-w-0 md:flex-1 shrink-0 md:shrink">{filters}</div>}
 
                 {allowedActions.length > 0 && (
-                    <div className="flex w-full shrink-0 items-center justify-center lg:w-auto lg:justify-end lg:self-center">
-                        <CustomSpace
-                            wrap
-                            size="large"
-                            className="w-full justify-center lg:w-auto lg:justify-end"
-                        >
+                    <>
+                        {/* Desktop View (md and above): Render all action components inline */}
+                        <div className="hidden md:flex md:items-center md:justify-end gap-2 md:w-auto shrink-0">
                             {allowedActions.map((action, index) => (
-                                <div key={index} className="w-full sm:w-auto">
+                                <div key={index} className="shrink-0">
                                     {action.component}
                                 </div>
                             ))}
-                        </CustomSpace>
-                    </div>
+                        </div>
+
+                        {/* Mobile View (< md): Always render a "Thao tác" Dropdown button on the right */}
+                        <div className="flex md:hidden items-center justify-end shrink-0">
+                            <CustomDropdown
+                                trigger={['click']}
+                                placement="bottomRight"
+                                menu={{ items: mobileActionMenuItems }}
+                            >
+                                <CustomButton
+                                    type="primary"
+                                    className="flex items-center justify-center gap-1 shrink-0"
+                                >
+                                    <span>{mobileActionsTitle ?? 'Thao tác'}</span>
+                                    <DownOutlined className="text-xs ml-0.5" />
+                                </CustomButton>
+                            </CustomDropdown>
+                        </div>
+                    </>
                 )}
             </div>
         );
-    }, [allowedActions, filters]);
+    }, [allowedActions, filters, mobileActionMenuItems, mobileActionsTitle]);
 
     if (isLoading) {
         return (
@@ -133,10 +196,10 @@ export const ListWrapper = ({
     if (hasError) {
         return (
             <DataNotFound
+                onRetry={onRetry}
                 icon="lucide:alert-triangle"
                 title={finalErrorMessage}
                 message={finalErrorDescription}
-                onRetry={onRetry}
             />
         );
     }

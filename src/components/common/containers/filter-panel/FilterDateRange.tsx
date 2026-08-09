@@ -46,15 +46,15 @@ export const FilterDateRange = ({ field, onChange }: FilterDateRangeProps) => {
 
     return (
         <CustomPicker.RangePicker
-            id={`filter-${field.name}`}
             allowClear
+            id={`filter-${field.name}`}
+            onChange={handleChange as any}
             value={field.value as [Dayjs, Dayjs] | null}
             presets={field.rangePickerProps?.presets ?? defaultPresets}
+            className={`w-full sm:w-64 ${field.className ?? ''}`.trim()}
             placeholder={
                 Array.isArray(field.placeholder) ? field.placeholder : ['Từ ngày', 'Đến ngày']
             }
-            onChange={handleChange as any}
-            className={`w-64 ${field.className ?? ''}`.trim()}
             {...field.rangePickerProps}
         />
     );

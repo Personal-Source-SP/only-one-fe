@@ -44,7 +44,7 @@ export const CustomModal = ({ modalProps, children, ...restProps }: CustomModalP
 
     return (
         <Modal {...finalModalProps}>
-            <section className="!max-h-[calc(100vh-200px)] !overflow-y-auto py-2 md:py-3">
+            <section className="!max-h-[calc(100vh-160px)] !overflow-y-auto py-2 md:py-3 pr-1 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-hub-border/60 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent [scrollbar-width:thin] [scrollbar-color:var(--hub-border)_transparent]">
                 {children}
             </section>
         </Modal>

@@ -27,12 +27,12 @@ export const FilterInput = ({ field, onChange }: FilterInputProps) => {
 
     return (
         <CustomInput
-            id={`filter-${field.name}`}
             allowClear
             value={innerValue}
-            placeholder={typeof field.placeholder === 'string' ? field.placeholder : undefined}
             onChange={handleChange}
-            className={`w-48 ${field.className ?? ''}`.trim()}
+            id={`filter-${field.name}`}
+            className={`w-full sm:w-48 lg:w-64 ${field.className ?? ''}`.trim()}
+            placeholder={typeof field.placeholder === 'string' ? field.placeholder : undefined}
             {...field.inputProps}
         />
     );

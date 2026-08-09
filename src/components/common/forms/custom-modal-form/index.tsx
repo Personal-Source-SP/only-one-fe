@@ -13,7 +13,6 @@ import { useEffect, useMemo, type ReactNode } from 'react';
 import type { BaseRecord } from '@refinedev/core';
 
 import type { UseCustomModalFormResponse } from '@/hooks';
-import { normalizeResourceKey } from '@/utilities';
 
 const { useBreakpoint } = CustomGrid;
 
@@ -57,8 +56,6 @@ export const CustomModalForm = <
     const screens = useBreakpoint();
     const open = modalProps.open;
 
-    const resourceKey = useMemo(() => normalizeResourceKey(resource), [resource]);
-
     const initialValues = useMemo(() => {
         if (mode === 'create') return createInitialValues;
         return formProps.initialValues as TValues;
@@ -100,10 +97,10 @@ export const CustomModalForm = <
     return (
         <CustomModal
             {...modalProps}
+            zIndex={zIndex}
             footer={modalFooter}
             destroyOnClose={destroyOnClose}
             width={screens.md ? width : '100%'}
-            zIndex={zIndex}
             confirmLoading={modalProps.confirmLoading}
             title={title !== undefined ? title : defaultTitle}
         >
@@ -114,6 +111,7 @@ export const CustomModalForm = <
                     layout="vertical"
                     initialValues={initialValues}
                     onFinish={formProps.onFinish}
+                    className={`[&_.ant-form-item]:mb-4 ${formProps?.className ?? ''}`.trim()}
                 >
                     {children}
                 </CustomForm>
