@@ -13,6 +13,9 @@ import { Icon } from '@iconify/react';
 import { signOut } from 'next-auth/react';
 import { usePathname, useRouter } from 'next/navigation';
 
+import { getSectionTabs } from '@/libs';
+import { useMemo } from 'react';
+
 type HeaderProps = {
     pageDescription?: string;
     pageTitle?: string;
@@ -41,47 +44,128 @@ export const Header = ({
     setMobileMenuOpen,
     setShowNotifications,
 }: HeaderProps) => {
-    const pathname = usePathname();
     const router = useRouter();
+    const pathname = usePathname();
 
-    const settingItem: SettingItem[] = [
-        {
-            label: 'Thông tin tài khoản',
-            icon: 'lucide:user',
-            onClick: () => {},
-        },
-        {
-            label: 'Cài đặt',
-            icon: 'lucide:settings',
-            onClick: () => router.push('/setting/appearance'),
-        },
-        {
-            label: 'Đăng xuất',
-            icon: 'lucide:log-out',
-            onClick: () => {
-                sessionStorage.setItem(KEY_SESSION_STORAGE.RETURN_URL, pathname);
-                signOut({
-                    redirect: true,
-                    callbackUrl: '/login',
-                });
+    const tabs = useMemo(() => getSectionTabs(pathname), [pathname]);
+
+    const activeTab = useMemo(
+        () => tabs?.find((tab) => pathname === tab.href || pathname.startsWith(`${tab.href}/`)),
+        [pathname, tabs],
+    );
+
+    const settingItem = useMemo<SettingItem[]>(
+        () => [
+            {
+                label: 'Thông tin tài khoản',
+                icon: 'lucide:user',
+                onClick: () => {},
             },
-        },
-    ];
+            {
+                label: 'Cài đặt',
+                icon: 'lucide:settings',
+                onClick: () => router.push('/setting/appearance'),
+            },
+            {
+                label: 'Đăng xuất',
+                icon: 'lucide:log-out',
+                onClick: () => {
+                    sessionStorage.setItem(KEY_SESSION_STORAGE.RETURN_URL, pathname);
+                    signOut({
+                        redirect: true,
+                        callbackUrl: '/login',
+                    });
+                },
+            },
+        ],
+        [pathname, router],
+    );
 
-    const menuItems: MenuProps['items'] = settingItem.map((item) => ({
-        key: item.label,
-        disabled: item.disabled,
-        label: (
-            <div className="flex items-center gap-2" onClick={item.onClick}>
-                <Icon icon={item.icon} />
-                <span>{item.label}</span>
-            </div>
-        ),
-    }));
+    const menuItems = useMemo<MenuProps['items']>(() => {
+        const items = settingItem.map((item) => ({
+            key: item.label,
+            disabled: item.disabled,
+            label: (
+                <div className="flex items-center gap-2" onClick={item.onClick}>
+                    <Icon icon={item.icon} />
+                    <span>{item.label}</span>
+                </div>
+            ),
+        }));
+        return items;
+    }, [settingItem]);
+
+    const sectionDropdownItems = useMemo<MenuProps['items']>(() => {
+        if (!tabs || tabs.length <= 1) return [];
+        const items = tabs.map((tab) => {
+            const isActive = tab.href === activeTab?.href;
+            return {
+                key: tab.href,
+                label: (
+                    <div
+                        className={`flex items-center justify-between gap-3 py-1 px-1 min-w-[140px] ${
+                            isActive ? 'font-semibold text-hub-primary' : 'text-hub-text'
+                        }`}
+                        onClick={() => router.push(tab.href)}
+                    >
+                        <span>{tab.label}</span>
+                        {isActive && (
+                            <Icon icon="lucide:check" className="text-hub-primary text-base" />
+                        )}
+                    </div>
+                ),
+            };
+        });
+        return items;
+    }, [activeTab, router, tabs]);
+
+    const mobileTitle = useMemo(() => {
+        if (activeTab && pageTitle && pageTitle !== activeTab.label) {
+            return `${pageTitle} · ${activeTab.label}`;
+        }
+        return activeTab?.label ?? pageTitle ?? '';
+    }, [activeTab, pageTitle]);
 
     const renderPageHeading = () => {
         if (!pageTitle) {
             return null;
+        }
+
+        if (tabs && tabs.length > 1) {
+            return (
+                <div className="min-w-0 flex-1 md:max-w-[min(100%,28rem)] lg:max-w-[min(100%,36rem)]">
+                    <CustomDropdown
+                        menu={{ items: sectionDropdownItems }}
+                        placement="bottomLeft"
+                        trigger={['click']}
+                    >
+                        <button
+                            type="button"
+                            className="group flex items-center gap-1 rounded-lg text-left transition-colors hover:bg-hub-section-muted max-md:py-1 max-md:px-1.5 md:pointer-events-none md:p-0"
+                        >
+                            <h1
+                                className="!m-0 max-w-[190px] truncate text-base font-semibold text-hub-title sm:max-w-[260px] sm:text-lg md:max-w-none md:text-xl"
+                                title={mobileTitle}
+                            >
+                                <span className="md:hidden">{mobileTitle}</span>
+                                <span className="hidden md:inline">{pageTitle}</span>
+                            </h1>
+                            <Icon
+                                icon="lucide:chevron-down"
+                                className="text-base text-hub-muted transition-transform group-hover:text-hub-text shrink-0 md:hidden"
+                            />
+                        </button>
+                    </CustomDropdown>
+                    {pageDescription && (
+                        <p
+                            className="!m-0 mt-0.5 line-clamp-1 text-xs text-hub-muted sm:text-sm max-md:hidden md:block"
+                            title={pageDescription}
+                        >
+                            {pageDescription}
+                        </p>
+                    )}
+                </div>
+            );
         }
 
         return (

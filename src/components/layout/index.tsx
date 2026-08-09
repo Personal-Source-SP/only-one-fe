@@ -147,7 +147,7 @@ export const MainLayout = ({ children }: PropsWithChildren) => {
                 )}
 
                 <Suspense fallback={<Loading />}>
-                    <div className="flex min-h-0 w-full max-w-full flex-1 flex-col overflow-x-hidden overflow-y-auto mt-4">
+                    <div className="flex min-h-0 w-full max-w-full flex-1 flex-col overflow-x-hidden overflow-y-auto max-md:pt-[4.25rem] max-md:px-3 max-md:pb-4 md:mt-4">
                         <CustomSpace size="middle" direction="vertical" className="w-full flex-1">
                             {children}
                         </CustomSpace>

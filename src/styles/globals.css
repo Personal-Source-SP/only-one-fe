@@ -152,7 +152,7 @@ body {
     }
 }
 
-/* Section tabs — pill style, brand orange, wrap without scroll */
+/* Section tabs — pill style, brand orange, mobile scrollable & segmented fill */
 .hub-section-tabs.ant-tabs {
     width: 100%;
 }
@@ -160,6 +160,7 @@ body {
 .hub-section-tabs .ant-tabs-nav {
     margin: 0 !important;
     padding: 0 !important;
+    width: 100%;
 }
 
 .hub-section-tabs .ant-tabs-nav::before {
@@ -171,12 +172,22 @@ body {
 }
 
 .hub-section-tabs .ant-tabs-nav-wrap {
-    overflow: visible !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    -webkit-overflow-scrolling: touch;
+}
+
+.hub-section-tabs .ant-tabs-nav-wrap::-webkit-scrollbar {
+    display: none;
 }
 
 .hub-section-tabs .ant-tabs-nav-list {
-    flex-wrap: wrap !important;
+    display: flex !important;
+    flex-wrap: nowrap !important;
     gap: 4px;
+    width: 100%;
 }
 
 .hub-section-tabs .ant-tabs-ink-bar {
@@ -189,9 +200,22 @@ body {
     border: none !important;
     border-radius: 8px !important;
     background: transparent !important;
+    flex-shrink: 0;
+    white-space: nowrap;
+    text-align: center;
+    justify-content: center;
     transition:
         background-color 0.2s ease,
         color 0.2s ease;
+}
+
+/* Segmented fill mode for short tab lists (<= 3 tabs) */
+.hub-section-tabs-fill .ant-tabs-nav-list {
+    width: 100%;
+}
+
+.hub-section-tabs-fill .ant-tabs-tab {
+    flex: 1 1 0%;
 }
 
 .hub-section-tabs .ant-tabs-tab:hover {
