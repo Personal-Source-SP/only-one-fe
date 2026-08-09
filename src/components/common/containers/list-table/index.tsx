@@ -3,7 +3,9 @@
 import type { ColumnType, ColumnsType, MenuProps, TableProps } from '@/components/custom-antd';
 import {
     CustomButton,
+    CustomCard,
     CustomDropdown,
+    CustomGrid,
     CustomPopconfirm,
     CustomTable,
 } from '@/components/custom-antd';
@@ -16,6 +18,8 @@ import { useCallback, useMemo, useRef, useState } from 'react';
 import { DataNotFound, PaginationControls } from '@/components/common';
 import { useCustomDelete, usePagePermissions } from '@/hooks';
 import { evaluateShow } from '@/utilities';
+import { MobileCardList } from './mobile-card-list';
+import { getRecordId } from './utils';
 
 const tableHeaderCellProps: { style: CSSProperties } = {
     style: {
@@ -75,6 +79,9 @@ export interface ListTableProps<RecordType extends BaseRecord> extends TableProp
 
     /** Retry callback for empty/error state */
     onRetry?: () => void;
+
+    /** Render custom card trên màn hình nhỏ. Khuyến khích sử dụng CustomCard. Nếu không có sẽ hiển thị bảng cuộn ngang */
+    renderMobileCard?: (record: RecordType, actionItems: MenuProps['items']) => ReactNode;
 }
 
 export function ListTable<RecordType extends BaseRecord = BaseRecord>({
@@ -97,12 +104,15 @@ export function ListTable<RecordType extends BaseRecord = BaseRecord>({
     emptyTitle,
     emptyMessage,
     onRetry,
+    renderMobileCard,
     ...restProps
 }: ListTableProps<RecordType>) {
     const keepOpenRef = useRef(false);
     const permissions = usePagePermissions(permissionGroup);
 
     const [openDropdownId, setOpenDropdownId] = useState<string | number>();
+    const screens = CustomGrid.useBreakpoint();
+    const isMobile = (screens.xs || screens.sm) && !screens.md;
 
     const { handleDelete } = useCustomDelete({
         resource: deleteResource ?? '',
@@ -175,9 +185,12 @@ export function ListTable<RecordType extends BaseRecord = BaseRecord>({
                                 description="Bạn có chắc chắn muốn xóa mục này không?"
                                 onCancel={handleCloseDropdown}
                                 onConfirm={async () => {
-                                    handleDelete([(record as any).id ?? (record as any)._id]);
-                                    if (onDeleteSuccess) await onDeleteSuccess();
-                                    await tableQuery?.refetch();
+                                    const id = getRecordId(record);
+                                    if (id != null && id !== '') {
+                                        handleDelete([String(id)]);
+                                        if (onDeleteSuccess) await onDeleteSuccess();
+                                        await tableQuery?.refetch();
+                                    }
                                     handleCloseDropdown();
                                 }}
                             >
@@ -233,16 +246,16 @@ export function ListTable<RecordType extends BaseRecord = BaseRecord>({
             hasView,
             hasEdit,
             hasDelete,
+            keepOpenRef,
             showView,
             showEdit,
             showDelete,
+            tableQuery,
             customRowActions,
-            keepOpenRef,
             onView,
             onEdit,
             handleDelete,
             onDeleteSuccess,
-            tableQuery,
             handleCloseDropdown,
         ],
     );
@@ -298,7 +311,7 @@ export function ListTable<RecordType extends BaseRecord = BaseRecord>({
                 const actionItems = getCustomActionItems(record);
                 if (!actionItems?.length) return null;
 
-                const recordId = (record as any).id ?? (record as any)._id;
+                const recordId = getRecordId(record);
                 const isOpen = recordId != null && openDropdownId === recordId;
 
                 return (
@@ -447,11 +460,26 @@ export function ListTable<RecordType extends BaseRecord = BaseRecord>({
 
     return (
         <div className="w-full">
-            <CustomTable
-                columns={columnsWithActions}
-                tableProps={mergedTableProps}
-                loading={Boolean(mergedLoading)}
-            />
+            {isMobile ? (
+                <MobileCardList
+                    dataSource={mergedTableProps.dataSource}
+                    columns={columns}
+                    renderMobileCard={renderMobileCard}
+                    getCustomActionItems={getCustomActionItems}
+                    openDropdownId={openDropdownId}
+                    setOpenDropdownId={setOpenDropdownId}
+                    keepOpenRef={keepOpenRef}
+                    customRowActions={customRowActions}
+                    handleCloseDropdown={handleCloseDropdown}
+                />
+            ) : (
+                <CustomTable
+                    columns={columnsWithActions}
+                    tableProps={mergedTableProps}
+                    loading={Boolean(mergedLoading)}
+                />
+            )}
+
             {paginationData && (
                 <PaginationControls
                     className="pt-4"
