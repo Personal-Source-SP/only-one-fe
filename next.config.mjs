@@ -3,6 +3,7 @@ import process from 'node:process';
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     experimental: {
+        reactCompiler: true,
         optimizePackageImports: [
             'antd',
             '@ant-design/icons',

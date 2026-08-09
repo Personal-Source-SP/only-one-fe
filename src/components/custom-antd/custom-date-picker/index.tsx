@@ -3,7 +3,7 @@
 import { DATE_FORMAT_SHORT, DATE_FORMAT_TIME } from '@/constants';
 import dayjs, { Dayjs } from 'dayjs';
 import { debounce } from 'lodash';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { CustomForm } from '@/components/custom-antd/custom-form';
 import { CustomPicker } from '@/components/custom-antd/custom-picker';
 
@@ -59,9 +59,9 @@ export const CustomDatePicker = ({
         },
     ];
 
-    const setDateRangeValue = useCallback(
-        debounce(
-            (range: [string, string]) => {
+    const setDateRangeValue = useMemo(
+        () =>
+            debounce((range: [string, string]) => {
                 const format = showTime ? DATE_FORMAT_TIME : DATE_FORMAT_SHORT;
 
                 const startDate = dayjs(range[0], format);
@@ -75,11 +75,8 @@ export const CustomDatePicker = ({
                         endDate.endOf('d').toISOString(),
                     ]);
                 }
-            },
-            500,
-            { leading: true },
-        ),
-        [showTime],
+            }, 500),
+        [showTime, setDateRange],
     );
 
     return (

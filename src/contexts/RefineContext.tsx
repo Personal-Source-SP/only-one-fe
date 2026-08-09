@@ -200,6 +200,7 @@ const App = ({ children, defaultMode }: PropsWithChildren<AppProps>) => {
                 authProvider={authProvider}
                 routerProvider={routerProvider}
                 accessControlProvider={accessControlProvider}
+                // eslint-disable-next-line react-compiler/react-compiler
                 notificationProvider={useNotificationProvider}
                 dataProvider={RestServer(apiUrl, createSessionAxiosInstance(session))}
                 resources={[

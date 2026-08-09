@@ -2,6 +2,7 @@ import js from '@eslint/js';
 import typescriptEslint from '@typescript-eslint/eslint-plugin';
 import typescriptParser from '@typescript-eslint/parser';
 import noRelativeImportPaths from 'eslint-plugin-no-relative-import-paths';
+import reactCompiler from 'eslint-plugin-react-compiler';
 import prettier from 'eslint-plugin-prettier';
 import prettierConfig from 'eslint-config-prettier';
 import globals from 'globals';
@@ -30,9 +31,11 @@ export default [
         plugins: {
             '@typescript-eslint': typescriptEslint,
             'no-relative-import-paths': noRelativeImportPaths,
+            'react-compiler': reactCompiler,
             prettier: prettier,
         },
         rules: {
+            'react-compiler/react-compiler': 'error',
             'no-unused-vars': 'off',
             '@typescript-eslint/no-unused-vars': 'off',
             '@typescript-eslint/no-explicit-any': 'off',

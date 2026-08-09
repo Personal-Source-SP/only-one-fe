@@ -11,7 +11,7 @@ import {
 } from '@/components/custom-antd';
 import { Select, SelectProps } from 'antd';
 import { debounce } from 'lodash';
-import { useCallback, type ReactElement, type UIEvent } from 'react';
+import { useCallback, useMemo, type ReactElement, type UIEvent } from 'react';
 
 export type CustomSelectProps = SelectProps & {
     debounceTime?: number;
@@ -25,10 +25,11 @@ export const CustomSelect = ({
     onInputChange,
     ...props
 }: CustomSelectProps) => {
-    const debouncedHandlePopupScroll = useCallback(
-        debounce((e: UIEvent<HTMLDivElement>) => {
-            onPopupScroll?.(e);
-        }, debounceTime),
+    const debouncedHandlePopupScroll = useMemo(
+        () =>
+            debounce((e: UIEvent<HTMLDivElement>) => {
+                onPopupScroll?.(e);
+            }, debounceTime),
         [onPopupScroll, debounceTime],
     );
 
