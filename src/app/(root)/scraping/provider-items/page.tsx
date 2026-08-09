@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
-import { CustomButton } from '@/components/custom-antd';
+import { ColumnsType, CustomButton, CustomSpace, CustomToggle } from '@/components/custom-antd';
 import {
     FilterPanel,
     ListTable,
@@ -10,8 +10,9 @@ import {
     type CardAction,
     type IFilterField,
 } from '@/components/common';
+import type { NDataProvider } from '@/interfaces';
+import { formatDate } from '@/libs';
 
-import { getColumns } from './constants';
 import { useDataProviderItemPage } from './hooks';
 import { ProcessScrapeData, ProviderItemFormModal } from './components';
 import type { ProviderItemRecord } from './types';
@@ -35,7 +36,74 @@ const DataProviderItemPage = () => {
         handleSwitchStatus,
     } = useDataProviderItemPage();
 
-    const columns = useMemo(() => getColumns(handleSwitchStatus), [handleSwitchStatus]);
+    const columns = useMemo<ColumnsType<NDataProvider.IDataProviderItem>>(
+        () => [
+            {
+                title: 'Thông tin đối tượng',
+                dataIndex: 'itemAndProviderAndUrl',
+                key: 'itemAndProviderAndUrl',
+                ellipsis: true,
+                width: 200,
+                render: (_: any, record: NDataProvider.IDataProviderItem) => (
+                    <div className="text-sm">
+                        <p>
+                            <strong>Nhà cung cấp:</strong> {record?.dataProvider?.name ?? '---'}
+                        </p>
+                        <p>
+                            <strong>URL đối tượng:</strong> {record?.itemUrl ?? '---'}
+                        </p>
+                        <p>
+                            <strong>Đối tượng:</strong> {record?.item?.name ?? '---'}
+                        </p>
+                    </div>
+                ),
+            },
+            {
+                title: 'Ngày cào gần nhất',
+                dataIndex: 'lastScrapedTimestamp',
+                key: 'lastScrapedTimestamp',
+                sorter: true,
+                width: 150,
+                render: (lastScrapedTimestamp: Date) => formatDate(lastScrapedTimestamp),
+            },
+            {
+                title: 'Ngày tạo',
+                dataIndex: 'createdAt',
+                key: 'createdAt',
+                sorter: true,
+                width: 150,
+                render: (createdAt: Date) => formatDate(createdAt),
+            },
+            {
+                title: 'Trạng thái',
+                dataIndex: 'isActive',
+                key: 'isActive',
+                align: 'center',
+                width: 100,
+                render: (isActive: boolean, record: NDataProvider.IDataProviderItem) => (
+                    <CustomToggle
+                        size="small"
+                        checked={isActive}
+                        onChange={(checked) => handleSwitchStatus(record?.id ?? '', checked)}
+                    />
+                ),
+            },
+            {
+                title: 'Lưu vào kho dữ liệu',
+                dataIndex: 'isSavedToCloudData',
+                key: 'isSavedToCloudData',
+                align: 'center',
+                width: 100,
+                render: (isSavedToCloudData: boolean, record: NDataProvider.IDataProviderItem) => (
+                    <CustomSpace>
+                        <CustomToggle size="small" checked={isSavedToCloudData} disabled />
+                        <p>{record?.cloudDataProvider?.name ?? '---'}</p>
+                    </CustomSpace>
+                ),
+            },
+        ],
+        [handleSwitchStatus],
+    );
 
     const actions = useMemo<CardAction[]>(
         () => [
