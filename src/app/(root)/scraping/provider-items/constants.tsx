@@ -9,15 +9,7 @@ export const getColumns = (
     handleSwitchStatus: (id: string, active: boolean) => void,
 ): ColumnsType<NDataProvider.IDataProviderItem> => [
     {
-        title: 'STT',
-        key: 'index',
-        dataIndex: 'index',
-        align: 'center',
-        width: 50,
-        render: (_: any, __: any, index: number) => index + 1,
-    },
-    {
-        title: 'Tên đối tượng / Nhà cung cấp / URL đối tượng',
+        title: 'Thông tin đối tượng',
         dataIndex: 'itemAndProviderAndUrl',
         key: 'itemAndProviderAndUrl',
         ellipsis: true,
