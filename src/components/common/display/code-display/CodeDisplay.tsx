@@ -191,7 +191,7 @@ export const CodeDisplay = ({
                     className="text-xs text-gray-600 px-1.5"
                     title="Sao chép mã"
                 >
-                    <span className="hidden sm:inline">Sao chép</span>
+                    <span className="hidden xs:inline">Sao chép</span>
                 </CustomButton>
 
                 <CustomButton
@@ -203,7 +203,7 @@ export const CodeDisplay = ({
                     icon={isExpanded ? <CompressOutlined /> : <ExpandAltOutlined />}
                     title={isExpanded ? 'Thu gọn' : 'Mở rộng'}
                 >
-                    <span className="hidden sm:inline">{isExpanded ? 'Thu gọn' : 'Mở rộng'}</span>
+                    <span className="hidden xs:inline">{isExpanded ? 'Thu gọn' : 'Mở rộng'}</span>
                 </CustomButton>
 
                 <CustomButton
@@ -215,7 +215,7 @@ export const CodeDisplay = ({
                     disabled={!isEditing || language !== 'json'}
                     title="Định dạng mã"
                 >
-                    <span className="hidden sm:inline">Định dạng</span>
+                    <span className="hidden xs:inline">Định dạng</span>
                 </CustomButton>
 
                 <CustomButton
@@ -226,7 +226,7 @@ export const CodeDisplay = ({
                     icon={isEditing ? <CheckOutlined /> : <EditOutlined />}
                     title={isEditing ? 'Lưu' : 'Chỉnh sửa'}
                 >
-                    <span className="hidden sm:inline">{isEditing ? 'Lưu' : 'Chỉnh sửa'}</span>
+                    <span className="hidden xs:inline">{isEditing ? 'Lưu' : 'Chỉnh sửa'}</span>
                 </CustomButton>
             </div>
         );

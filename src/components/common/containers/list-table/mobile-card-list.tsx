@@ -30,8 +30,6 @@ export interface MobileCardListProps<RecordType extends BaseRecord> {
     dataSource: readonly RecordType[] | undefined;
     customRowActions: TableCustomAction<RecordType>[];
     tableQuery?: useTableReturnType<RecordType>['tableQuery'];
-    handleCloseDropdown: () => void;
-    setOpenDropdownId: (id: string | number | undefined) => void;
     getCustomActionItems: (record: RecordType) => MenuProps['items'];
     handleDelete?: (ids: string[]) => void;
     onDeleteSuccess?: () => void | Promise<void>;
@@ -136,11 +134,12 @@ export function MobileCardList<RecordType extends BaseRecord>({
         return (
             <CustomFlex vertical gap={10} className="w-full">
                 {/* Mobile Card Header */}
-                <CustomFlex
-                    align="center"
-                    justify="space-between"
-                    className="border-b border-hub-border-card/60 pb-2.5"
-                >
+                <CustomFlex vertical gap={2} className="border-b border-hub-border-card/60 pb-2.5">
+                    {firstCol.title && (
+                        <Text className="text-xs font-medium text-hub-muted">
+                            {firstCol.title as ReactNode}
+                        </Text>
+                    )}
                     <Text className="text-base font-semibold text-hub-title overflow-hidden text-ellipsis whitespace-nowrap">
                         {firstValue as ReactNode}
                     </Text>

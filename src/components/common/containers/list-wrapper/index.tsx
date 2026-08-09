@@ -10,7 +10,7 @@ import {
     CustomSpace,
     type MenuProps,
 } from '@/components/custom-antd';
-import { ReactNode, useMemo } from 'react';
+import { cloneElement, isValidElement, ReactElement, ReactNode, useMemo } from 'react';
 
 import { usePagePermissions } from '@/hooks';
 import { DataNotFound } from '@/components/common';
@@ -144,46 +144,66 @@ export const ListWrapper = ({
         });
     }, [allowedActions]);
 
+    const mobileActionsButton = useMemo(() => {
+        if (allowedActions.length === 0) return null;
+
+        return (
+            <CustomDropdown
+                trigger={['click']}
+                placement="bottomRight"
+                menu={{ items: mobileActionMenuItems }}
+            >
+                <CustomButton
+                    type="primary"
+                    className="flex items-center justify-center gap-1 shrink-0"
+                >
+                    <span>{mobileActionsTitle ?? 'Thao tác'}</span>
+                    <DownOutlined className="text-xs ml-0.5" />
+                </CustomButton>
+            </CustomDropdown>
+        );
+    }, [allowedActions.length, mobileActionMenuItems, mobileActionsTitle]);
+
     const header = useMemo(() => {
         const hasHeader = Boolean(filters || allowedActions.length > 0);
         if (!hasHeader) return null;
 
-        return (
-            <div className="flex w-full items-center justify-end md:justify-between gap-2">
-                {filters && <div className="min-w-0 md:flex-1 shrink-0 md:shrink">{filters}</div>}
+        const clonedFilters =
+            filters && isValidElement(filters) && mobileActionsButton
+                ? cloneElement(filters as ReactElement<any>, {
+                      extraActions: mobileActionsButton,
+                  })
+                : filters;
 
-                {allowedActions.length > 0 && (
-                    <>
-                        {/* Desktop View (md and above): Render all action components inline */}
-                        <div className="hidden md:flex md:items-center md:justify-end gap-2 md:w-auto shrink-0">
+        return (
+            <div className="w-full">
+                {/* Desktop View (md and above): Render all filters on left, all actions on right */}
+                <div className="hidden md:flex w-full items-center justify-between gap-2">
+                    {filters && <div className="flex-1 min-w-0">{filters}</div>}
+                    {allowedActions.length > 0 && (
+                        <div className="flex items-center justify-end gap-2 shrink-0">
                             {allowedActions.map((action, index) => (
                                 <div key={index} className="shrink-0">
                                     {action.component}
                                 </div>
                             ))}
                         </div>
+                    )}
+                </div>
 
-                        {/* Mobile View (< md): Always render a "Thao tác" Dropdown button on the right */}
-                        <div className="flex md:hidden items-center justify-end shrink-0">
-                            <CustomDropdown
-                                trigger={['click']}
-                                placement="bottomRight"
-                                menu={{ items: mobileActionMenuItems }}
-                            >
-                                <CustomButton
-                                    type="primary"
-                                    className="flex items-center justify-center gap-1 shrink-0"
-                                >
-                                    <span>{mobileActionsTitle ?? 'Thao tác'}</span>
-                                    <DownOutlined className="text-xs ml-0.5" />
-                                </CustomButton>
-                            </CustomDropdown>
-                        </div>
-                    </>
-                )}
+                {/* Mobile View (< md): 2-row layout handled by clonedFilters or fallback */}
+                <div className="flex md:hidden flex-col gap-2.5 w-full">
+                    {clonedFilters
+                        ? clonedFilters
+                        : mobileActionsButton && (
+                              <div className="flex items-center justify-end w-full">
+                                  {mobileActionsButton}
+                              </div>
+                          )}
+                </div>
             </div>
         );
-    }, [allowedActions, filters, mobileActionMenuItems, mobileActionsTitle]);
+    }, [allowedActions, filters, mobileActionsButton]);
 
     if (isLoading) {
         return (
@@ -222,7 +242,7 @@ export const ListWrapper = ({
             styles={{ body: { padding: 0 } }}
             className={`overflow-hidden ${className}`.trim()}
         >
-            <CustomSpace direction="vertical" size="middle" className="w-full p-5">
+            <CustomSpace direction="vertical" size="middle" className="w-full p-3 sm:p-5">
                 {header}
                 {children}
             </CustomSpace>

@@ -469,9 +469,7 @@ export function ListTable<RecordType extends BaseRecord = BaseRecord>({
                     handleDelete={handleDelete}
                     onDeleteSuccess={onDeleteSuccess}
                     renderMobileCard={renderMobileCard}
-                    setOpenDropdownId={setOpenDropdownId}
                     getCustomActionItems={getCustomActionItems}
-                    handleCloseDropdown={handleCloseDropdown}
                 />
             ) : (
                 <CustomTable

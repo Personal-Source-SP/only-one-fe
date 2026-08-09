@@ -90,6 +90,9 @@ export interface FilterPanelProps {
     /** Legacy alias for enableMobileModal */
     enableMobileDrawer?: boolean;
 
+    /** Extra mobile action component (e.g. mobile actions dropdown) to render on the secondary mobile bar */
+    extraActions?: ReactNode;
+
     /** Optional callback when resetting filters in modal */
     onResetFilters?: () => void;
 }
@@ -101,15 +104,30 @@ export const FilterPanel = ({
     mobileDrawerTitle,
     enableMobileModal,
     enableMobileDrawer,
+    extraActions,
     onResetFilters,
 }: FilterPanelProps) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
+    const primaryFields = useMemo(() => fields.filter((f) => f.isPrimary), [fields]);
+    const secondaryFields = useMemo(() => fields.filter((f) => !f.isPrimary), [fields]);
+    const hasSecondaryFilters = useMemo(() => secondaryFields.length > 0, [secondaryFields]);
+
+    const showFilterButton = useMemo(
+        () => hasSecondaryFilters || primaryFields.length === 0,
+        [hasSecondaryFilters, primaryFields.length],
+    );
+
+    const modalFields = useMemo(
+        () => (primaryFields.length > 0 ? secondaryFields : fields),
+        [primaryFields.length, secondaryFields, fields],
+    );
+
     const isMobileModalActive = useMemo(() => {
         const isEnabled = enableMobileModal ?? enableMobileDrawer;
         if (isEnabled === false) return false;
-        return fields.length > 0;
-    }, [enableMobileModal, enableMobileDrawer, fields.length]);
+        return modalFields.length > 0;
+    }, [enableMobileModal, enableMobileDrawer, modalFields.length]);
 
     const activeCount = useMemo(() => {
         return fields.reduce((count, field) => {
@@ -172,25 +190,45 @@ export const FilterPanel = ({
                 ))}
             </div>
 
-            {/* Mobile Layout (< md): Single "Lọc" button containing all filters in Modal */}
-            <div className="flex md:hidden items-center justify-end gap-2">
-                <CustomButton
-                    className="shrink-0"
-                    ghost={activeCount > 0}
-                    icon={<FilterOutlined />}
-                    onClick={() => setIsModalOpen(true)}
-                    type={activeCount > 0 ? 'primary' : 'default'}
-                >
-                    <span className="text-xs font-medium">Lọc</span>
-                    {activeCount > 0 && (
-                        <CustomBadge
-                            className="ml-1"
-                            overflowCount={99}
-                            count={activeCount}
-                            style={{ backgroundColor: 'var(--hub-primary)' }}
-                        />
-                    )}
-                </CustomButton>
+            {/* Mobile Layout (< md): Row 1 primary fields (w-full) + Row 2 controls bar */}
+            <div className="flex md:hidden flex-col gap-2.5 w-full">
+                {primaryFields.length > 0 && (
+                    <div className="flex flex-col gap-2 w-full">
+                        {primaryFields.map((field) => (
+                            <div key={field.name} className="w-full min-w-0">
+                                {renderFilterControl(field)}
+                            </div>
+                        ))}
+                    </div>
+                )}
+
+                {(showFilterButton || extraActions) && (
+                    <div className="flex items-center justify-between gap-2 w-full">
+                        <div className="flex items-center gap-2 shrink-0">
+                            {showFilterButton && (
+                                <CustomButton
+                                    className="shrink-0"
+                                    ghost={activeCount > 0}
+                                    icon={<FilterOutlined />}
+                                    onClick={() => setIsModalOpen(true)}
+                                    type={activeCount > 0 ? 'primary' : 'default'}
+                                >
+                                    <span className="text-xs font-medium">Lọc</span>
+                                    {activeCount > 0 && (
+                                        <CustomBadge
+                                            className="ml-1"
+                                            overflowCount={99}
+                                            count={activeCount}
+                                            style={{ backgroundColor: 'var(--hub-primary)' }}
+                                        />
+                                    )}
+                                </CustomButton>
+                            )}
+                        </div>
+
+                        {extraActions && <div className="shrink-0 ml-auto">{extraActions}</div>}
+                    </div>
+                )}
             </div>
 
             {/* Mobile Filter Modal */}
@@ -229,7 +267,7 @@ export const FilterPanel = ({
                     width={520}
                 >
                     <div className="flex flex-col gap-2.5 px-3 py-2">
-                        {fields.map((field) => {
+                        {modalFields.map((field) => {
                             const fieldLabel =
                                 field.label ??
                                 (typeof field.placeholder === 'string' ? field.placeholder : null);

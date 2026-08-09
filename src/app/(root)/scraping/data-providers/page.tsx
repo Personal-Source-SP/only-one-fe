@@ -10,7 +10,7 @@ import {
     type TableCustomAction,
 } from '@/components/common';
 import { CustomButton, type ColumnsType } from '@/components/custom-antd';
-import { DataProviderStatus } from '@/enums';
+import { DataProviderSearchStatus, DataProviderStatus } from '@/enums';
 import type { NDataProvider } from '@/interfaces';
 import { formatDate } from '@/libs';
 import { PlusOutlined } from '@ant-design/icons';
@@ -30,6 +30,8 @@ const DataProviderPage = () => {
         settingRecord,
         settingConfigType,
         debouncedSearch,
+        setFilters,
+        setCurrentPage,
         openSettingModal,
         closeSettingModal,
     } = useDataProviderPage();
@@ -157,8 +159,51 @@ const DataProviderPage = () => {
         {
             name: 'search',
             type: 'input',
+            isPrimary: true,
             placeholder: 'Tìm kiếm nhà cung cấp...',
             onChange: (value) => debouncedSearch(value?.toString() ?? ''),
+        },
+        {
+            name: 'status',
+            type: 'select',
+            placeholder: 'Trạng thái cào',
+            options: [
+                { label: 'Sẵn sàng', value: DataProviderStatus.READY },
+                { label: 'Lỗi', value: DataProviderStatus.ERROR },
+                { label: 'Đang kiểm tra', value: DataProviderStatus.TESTING },
+                { label: 'Chưa cấu hình', value: DataProviderStatus.UNCONFIGURED },
+            ],
+            onChange: (val) => {
+                setFilters([
+                    {
+                        field: 'status',
+                        operator: 'eq',
+                        value: val ?? undefined,
+                    },
+                ]);
+                setCurrentPage(1);
+            },
+        },
+        {
+            name: 'searchStatus',
+            type: 'select',
+            placeholder: 'Trạng thái tìm kiếm',
+            options: [
+                { label: 'Sẵn sàng', value: DataProviderSearchStatus.READY },
+                { label: 'Lỗi', value: DataProviderSearchStatus.ERROR },
+                { label: 'Đang kiểm tra', value: DataProviderSearchStatus.TESTING },
+                { label: 'Chưa cấu hình', value: DataProviderSearchStatus.UNCONFIGURED },
+            ],
+            onChange: (val) => {
+                setFilters([
+                    {
+                        field: 'searchStatus',
+                        operator: 'eq',
+                        value: val ?? undefined,
+                    },
+                ]);
+                setCurrentPage(1);
+            },
         },
     ];
 
