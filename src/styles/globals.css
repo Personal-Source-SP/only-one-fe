@@ -235,14 +235,14 @@ body {
     }
 }
 
-/* Data table — single outer border from section; internal grid lines only */
+/* Data table — Clean Modern SaaS Style (Borderless vertical gridlines, thin horizontal dividers) */
 .hub-data-table.ant-table-wrapper {
     margin: 0 !important;
 }
 
 .hub-data-table .ant-table {
     margin: 0 !important;
-    background: var(--hub-section) !important;
+    background: var(--hub-surface) !important;
 }
 
 .hub-data-table .ant-table-container {
@@ -256,10 +256,11 @@ body {
 }
 
 .hub-data-table .ant-table-thead > tr > th {
-    padding: 11px 14px !important;
+    padding: 13px 16px !important;
     border-bottom: 1px solid var(--hub-border-card) !important;
-    border-right: 1px solid var(--hub-border-card) !important;
-    background: var(--hub-section-muted) !important;
+    border-right: none !important;
+    border-left: none !important;
+    background: var(--hub-surface) !important;
     color: var(--hub-title) !important;
     font-size: 13px !important;
     font-weight: 600 !important;
@@ -269,24 +270,19 @@ body {
     display: none !important;
 }
 
-.hub-data-table .ant-table-thead > tr > th:last-child {
-    border-right: none !important;
-}
-
 .hub-data-table .ant-table-tbody > tr > td {
-    padding: 11px 14px !important;
+    padding: 14px 16px !important;
     border-bottom: 1px solid var(--hub-border-card) !important;
-    border-right: 1px solid var(--hub-border-card) !important;
-    background: var(--hub-section) !important;
-    font-size: 13px !important;
+    border-right: none !important;
+    border-left: none !important;
+    background: var(--hub-surface) !important;
+    color: var(--hub-text) !important;
+    font-size: 13.5px !important;
+    transition: background-color 0.15s ease !important;
 }
 
 .hub-data-table .ant-table-tbody > tr:hover > td {
     background: var(--hub-section-muted) !important;
-}
-
-.hub-data-table .ant-table-tbody > tr > td:last-child {
-    border-right: none !important;
 }
 
 .hub-data-table .ant-table-tbody > tr:last-child > td {
@@ -295,7 +291,7 @@ body {
 
 .hub-data-table .ant-table-placeholder > td {
     border-bottom: none !important;
-    padding: 32px 16px !important;
+    padding: 40px 16px !important;
 }
 
 /* Sidebar nav — left align when expanded */

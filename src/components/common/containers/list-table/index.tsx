@@ -422,7 +422,7 @@ export function ListTable<RecordType extends BaseRecord = BaseRecord>({
                 ...restProps.style,
             },
             className:
-                `overflow-hidden rounded-lg border border-solid border-gray-200 dark:border-gray-800 ${className}`.trim(),
+                `overflow-hidden rounded-xl border border-solid border-hub-border-card shadow-sm ${className}`.trim(),
             scroll: mergedScroll,
             pagination: mergedPagination,
         }),
@@ -462,14 +462,15 @@ export function ListTable<RecordType extends BaseRecord = BaseRecord>({
         <div className="w-full">
             {isMobile ? (
                 <MobileCardList
-                    dataSource={mergedTableProps.dataSource}
                     columns={columns}
-                    renderMobileCard={renderMobileCard}
-                    getCustomActionItems={getCustomActionItems}
-                    openDropdownId={openDropdownId}
-                    setOpenDropdownId={setOpenDropdownId}
-                    keepOpenRef={keepOpenRef}
+                    tableQuery={tableQuery}
                     customRowActions={customRowActions}
+                    dataSource={mergedTableProps.dataSource}
+                    handleDelete={handleDelete}
+                    onDeleteSuccess={onDeleteSuccess}
+                    renderMobileCard={renderMobileCard}
+                    setOpenDropdownId={setOpenDropdownId}
+                    getCustomActionItems={getCustomActionItems}
                     handleCloseDropdown={handleCloseDropdown}
                 />
             ) : (
