@@ -9,10 +9,11 @@ import {
 } from '@/components/custom-antd';
 import { FileItemsPerPage } from '@/enums';
 
-type PaginationControlsProps = {
+export type PaginationControlsProps = {
     totalItems: number;
     currentPage: number;
     itemsPerPage: number;
+    className?: string;
     onPageChange: (page: number) => void;
     onItemsPerPageChange: (value: number) => void;
 };
@@ -21,18 +22,19 @@ export const PaginationControls = ({
     totalItems,
     currentPage,
     itemsPerPage,
+    className = '',
     onPageChange,
     onItemsPerPageChange,
 }: PaginationControlsProps) => {
     const items: MenuProps['items'] = [
-        { key: FileItemsPerPage.TEN.toString(), label: '10 ảnh/trang' },
-        { key: FileItemsPerPage.TWENTY.toString(), label: '20 ảnh/trang' },
-        { key: FileItemsPerPage.FIFTY.toString(), label: '50 ảnh/trang' },
-        { key: FileItemsPerPage.HUNDRED.toString(), label: '100 ảnh/trang' },
+        { key: FileItemsPerPage.TEN.toString(), label: '10/trang' },
+        { key: FileItemsPerPage.TWENTY.toString(), label: '20/trang' },
+        { key: FileItemsPerPage.FIFTY.toString(), label: '50/trang' },
+        { key: FileItemsPerPage.HUNDRED.toString(), label: '100/trang' },
     ];
 
     return (
-        <CustomFlex justify="space-between" align="center" gap={16}>
+        <CustomFlex justify="space-between" align="center" gap={16} className={className}>
             <CustomDropdown
                 menu={{
                     items,
@@ -41,7 +43,7 @@ export const PaginationControls = ({
                     onClick: ({ key }) => onItemsPerPageChange(Number(key)),
                 }}
             >
-                <CustomButton>{itemsPerPage} ảnh/trang</CustomButton>
+                <CustomButton>{itemsPerPage}/trang</CustomButton>
             </CustomDropdown>
 
             <CustomPagination

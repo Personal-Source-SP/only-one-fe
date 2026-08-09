@@ -1,19 +1,19 @@
 'use client';
 
-import { DeleteOutlined, EditOutlined, EllipsisOutlined, EyeOutlined } from '@ant-design/icons';
-import type { useTableReturnType } from '@refinedev/antd';
-import type { BaseRecord } from '@refinedev/core';
+import type { ColumnType, ColumnsType, MenuProps, TableProps } from '@/components/custom-antd';
 import {
     CustomButton,
     CustomDropdown,
-    CustomEmpty,
     CustomPopconfirm,
     CustomTable,
 } from '@/components/custom-antd';
-import type { ColumnType, ColumnsType, MenuProps, TableProps } from '@/components/custom-antd';
+import { DeleteOutlined, EditOutlined, EllipsisOutlined, EyeOutlined } from '@ant-design/icons';
+import type { useTableReturnType } from '@refinedev/antd';
+import type { BaseRecord } from '@refinedev/core';
 import type { CSSProperties, ReactNode } from 'react';
 import { useCallback, useMemo, useRef, useState } from 'react';
 
+import { DataNotFound, PaginationControls } from '@/components/common';
 import { useCustomDelete, usePagePermissions } from '@/hooks';
 import { evaluateShow } from '@/utilities';
 
@@ -63,6 +63,18 @@ export interface ListTableProps<RecordType extends BaseRecord> extends TableProp
     /** Edit callback */
     onEdit?: (record: RecordType) => void;
     showEdit?: boolean | ((record: RecordType) => boolean);
+
+    /** Whether to use custom PaginationControls UI below table */
+    usePaginationControls?: boolean;
+
+    /** Custom title for DataNotFound empty state */
+    emptyTitle?: string;
+
+    /** Custom message for DataNotFound empty state */
+    emptyMessage?: string;
+
+    /** Retry callback for empty/error state */
+    onRetry?: () => void;
 }
 
 export function ListTable<RecordType extends BaseRecord = BaseRecord>({
@@ -81,6 +93,10 @@ export function ListTable<RecordType extends BaseRecord = BaseRecord>({
     showView,
     onEdit,
     showEdit,
+    usePaginationControls = true,
+    emptyTitle,
+    emptyMessage,
+    onRetry,
     ...restProps
 }: ListTableProps<RecordType>) {
     const keepOpenRef = useRef(false);
@@ -345,31 +361,49 @@ export function ListTable<RecordType extends BaseRecord = BaseRecord>({
         };
     }, [restProps.scroll, tableProps.scroll]);
 
-    const mergedPagination = useMemo(() => {
+    const basePaginationObj = useMemo(() => {
         if (pagination === false || tableProps.pagination === false) {
-            return false;
+            return null;
         }
 
-        const basePagination = pagination || tableProps.pagination;
-        if (!basePagination) return false;
+        const basePag = pagination || tableProps.pagination;
+        if (!basePag) return null;
+
+        return basePag;
+    }, [pagination, tableProps.pagination]);
+
+    const mergedPagination = useMemo(() => {
+        if (!basePaginationObj) return false;
+
+        // If usePaginationControls is active, disable standard Antd pagination inside table
+        if (usePaginationControls) return false;
 
         return {
-            ...basePagination,
+            ...basePaginationObj,
             showSizeChanger: true,
             style: {
-                ...basePagination.style,
+                ...basePaginationObj.style,
                 marginInlineEnd: 16,
             },
             showTotal: (total: number) => `Tổng số: ${total} mục`,
         };
-    }, [pagination, tableProps.pagination]);
+    }, [basePaginationObj, usePaginationControls]);
 
     const mergedTableProps = useMemo<TableProps<any>>(
         () => ({
             ...tableProps,
             ...restProps,
             tableLayout: 'fixed',
-            locale: { emptyText: <CustomEmpty description="Không có dữ liệu" /> },
+            locale: {
+                emptyText: (
+                    <DataNotFound
+                        compact
+                        title={emptyTitle ?? 'Không có dữ liệu'}
+                        message={emptyMessage ?? 'Chưa có bản ghi nào phù hợp.'}
+                        onRetry={onRetry}
+                    />
+                ),
+            },
             style: {
                 ...tableProps.style,
                 ...restProps.style,
@@ -379,14 +413,55 @@ export function ListTable<RecordType extends BaseRecord = BaseRecord>({
             scroll: mergedScroll,
             pagination: mergedPagination,
         }),
-        [tableProps, restProps, className, mergedScroll, mergedPagination],
+        [
+            tableProps,
+            restProps,
+            className,
+            emptyTitle,
+            emptyMessage,
+            mergedScroll,
+            mergedPagination,
+            onRetry,
+        ],
     );
 
+    const paginationData = useMemo(() => {
+        if (!usePaginationControls || !basePaginationObj) return null;
+
+        const total = basePaginationObj.total ?? 0;
+        const current = basePaginationObj.current ?? 1;
+        const pageSize = basePaginationObj.pageSize ?? 10;
+
+        return {
+            total,
+            current,
+            pageSize,
+            onChange: (page: number) => {
+                basePaginationObj.onChange?.(page, pageSize);
+            },
+            onItemsPerPageChange: (size: number) => {
+                basePaginationObj.onChange?.(1, size);
+            },
+        };
+    }, [usePaginationControls, basePaginationObj]);
+
     return (
-        <CustomTable
-            columns={columnsWithActions}
-            tableProps={mergedTableProps}
-            loading={Boolean(mergedLoading)}
-        />
+        <div className="w-full">
+            <CustomTable
+                columns={columnsWithActions}
+                tableProps={mergedTableProps}
+                loading={Boolean(mergedLoading)}
+            />
+            {paginationData && (
+                <PaginationControls
+                    className="pt-4"
+                    totalItems={paginationData.total}
+                    currentPage={paginationData.current}
+                    itemsPerPage={paginationData.pageSize}
+                    onPageChange={paginationData.onChange}
+                    onItemsPerPageChange={paginationData.onItemsPerPageChange}
+                />
+            )}
+        </div>
     );
 }

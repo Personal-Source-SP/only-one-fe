@@ -5,6 +5,7 @@ import { CustomAlert, CustomCard, CustomSkeleton, CustomSpace } from '@/componen
 import { ReactNode, useMemo } from 'react';
 
 import { usePagePermissions } from '@/hooks';
+import { DataNotFound } from '@/components/common';
 
 export type CardAction = {
     /** Button or action component (for example: <Button>Create</Button>) */
@@ -47,6 +48,9 @@ export type ListWrapperProps = {
 
     /** The error object from query (e.g. tableQuery.error) */
     error?: HttpError | Error | null;
+
+    /** Optional retry callback for error state */
+    onRetry?: () => void;
 };
 
 export const ListWrapper = ({
@@ -60,6 +64,7 @@ export const ListWrapper = ({
     withCard = true,
     className = '',
     error,
+    onRetry,
 }: ListWrapperProps) => {
     const hasError = Boolean(error);
     const permissions = usePagePermissions(permissionGroup);
@@ -127,11 +132,11 @@ export const ListWrapper = ({
 
     if (hasError) {
         return (
-            <CustomAlert
-                showIcon
-                type="error"
+            <DataNotFound
+                icon="lucide:alert-triangle"
                 title={finalErrorMessage}
-                description={finalErrorDescription}
+                message={finalErrorDescription}
+                onRetry={onRetry}
             />
         );
     }
