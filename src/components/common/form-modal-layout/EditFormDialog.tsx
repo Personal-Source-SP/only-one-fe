@@ -12,7 +12,7 @@ import {
     CustomRow,
     CustomSpace,
     CustomSpin,
-} from '@/components/custom';
+} from '@/components/custom-antd';
 import { ReactNode, useCallback, useEffect } from 'react';
 
 import { renderFormFields } from './FormFields';

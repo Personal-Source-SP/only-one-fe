@@ -5,7 +5,7 @@ import {
     CustomModalForm,
     CustomSelectInput,
     CustomSwitchForm,
-} from '@/components/custom-form';
+} from '@/components/common';
 import type { UseCustomModalFormResponse } from '@/hooks';
 import { FormRuleType } from '@/utilities';
 import type {

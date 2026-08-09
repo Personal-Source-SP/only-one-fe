@@ -10,7 +10,7 @@ import {
     CustomSpace,
     CustomTag,
     CustomTypography,
-} from '@/components/custom';
+} from '@/components/custom-antd';
 import { useMainContext } from '@/contexts/MainContext';
 import { NotificationType } from '@/enums';
 import {

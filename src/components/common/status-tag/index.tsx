@@ -76,4 +76,4 @@ export const StatusTag = ({ status }: StatusTagProps) => {
         </CustomTag>
     );
 };
-import { CustomTag } from '@/components/custom';
+import { CustomTag } from '@/components/custom-antd';

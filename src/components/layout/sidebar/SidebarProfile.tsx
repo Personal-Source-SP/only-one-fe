@@ -7,7 +7,7 @@ import {
     CustomFlex,
     CustomSpace,
     CustomTypography,
-} from '@/components/custom';
+} from '@/components/custom-antd';
 import { KEY_SESSION_STORAGE } from '@/constants';
 import { useMainContext } from '@/contexts/MainContext';
 import { Theme } from '@/enums';

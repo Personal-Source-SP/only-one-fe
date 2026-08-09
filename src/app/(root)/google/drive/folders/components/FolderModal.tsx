@@ -9,7 +9,7 @@ import {
     CustomSelect,
     CustomSpace,
     CustomSpin,
-} from '@/components/custom';
+} from '@/components/custom-antd';
 import { Icon } from '@iconify/react';
 
 import { FieldsEnum } from '@/app/(root)/google/drive/folders/constants';

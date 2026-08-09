@@ -2,12 +2,7 @@
 
 import { useMemo } from 'react';
 import { EyeOutlined } from '@ant-design/icons';
-import {
-    FilterPanel,
-    ListTable,
-    ListWrapper,
-    type IFilterField,
-} from '@/components/custom-container';
+import { FilterPanel, ListTable, ListWrapper, type IFilterField } from '@/components/common';
 
 import { columns } from './constants';
 import { useScheduleJobEventsPage } from './hooks';

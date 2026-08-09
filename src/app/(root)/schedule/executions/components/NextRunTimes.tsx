@@ -1,4 +1,10 @@
-import { CustomCard, CustomCol, CustomRow, CustomTag, CustomTypography } from '@/components/custom';
+import {
+    CustomCard,
+    CustomCol,
+    CustomRow,
+    CustomTag,
+    CustomTypography,
+} from '@/components/custom-antd';
 import { CronExpressionParser } from 'cron-parser';
 import { Fragment } from 'react';
 

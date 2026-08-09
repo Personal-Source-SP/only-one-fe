@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Icon } from '@iconify/react';
-import { ColumnsType, CustomFlex } from '@/components/custom';
+import { ColumnsType, CustomFlex } from '@/components/custom-antd';
 import { DisplayMode, ViewFileMode } from '@/enums';
 import { FilterItem, NDataProvider } from '@/interfaces';
 import { formatDate } from '@/libs';

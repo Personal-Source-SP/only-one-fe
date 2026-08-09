@@ -1,6 +1,6 @@
 'use client';
 
-import { CustomButton, CustomInput } from '@/components/custom';
+import { CustomButton, CustomInput } from '@/components/custom-antd';
 import { Icon } from '@iconify/react';
 
 type SearchProps = {

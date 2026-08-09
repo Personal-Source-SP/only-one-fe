@@ -2,15 +2,16 @@
 
 import { useMemo } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
-import { FileGroups, MediaLightbox } from '@/components/common';
-import { CustomButton, CustomSelect } from '@/components/custom';
 import {
+    FileGroups,
     FilterPanel,
     ListTable,
     ListWrapper,
+    MediaLightbox,
     type CardAction,
     type IFilterField,
-} from '@/components/custom-container';
+} from '@/components/common';
+import { CustomButton, CustomSelect } from '@/components/custom-antd';
 import { DisplayMode } from '@/enums';
 
 import { columns, displayModeOptions } from './constants';

@@ -1,6 +1,6 @@
 'use client';
 
-import { CustomInputForm, CustomModalForm } from '@/components/custom-form';
+import { CustomInputForm, CustomModalForm } from '@/components/common';
 import type { UseCustomModalFormResponse } from '@/hooks';
 import { FormRuleType } from '@/utilities';
 import type { ItemFormValues, ItemRecord } from '@/app/(root)/scraping/items/types';

@@ -1,5 +1,5 @@
 import type { CrudSort } from '@refinedev/core';
-import type { SorterResult, TablePaginationConfig } from '@/components/custom';
+import type { SorterResult, TablePaginationConfig } from '@/components/custom-antd';
 import { useCallback } from 'react';
 
 type UseTableChangeProps<TData> = {

@@ -24,7 +24,7 @@ import {
     CustomTag,
     StepsProps,
     TableProps,
-} from '@/components/custom';
+} from '@/components/custom-antd';
 import { MessageType } from '@/enums';
 import { useMainContext } from '@/contexts/MainContext';
 import { GoogleDriveType, MimeType } from '@/enums';

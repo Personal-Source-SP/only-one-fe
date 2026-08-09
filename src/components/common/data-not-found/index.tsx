@@ -1,6 +1,6 @@
 'use client';
 
-import { CustomButton, CustomCard } from '@/components/custom';
+import { CustomButton, CustomCard } from '@/components/custom-antd';
 import { Icon } from '@iconify/react';
 
 type DataNotFoundProps = {

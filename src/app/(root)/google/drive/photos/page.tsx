@@ -2,14 +2,15 @@
 
 import { useMemo } from 'react';
 import { Icon } from '@iconify/react';
-import { FileGroups, MediaLightbox } from '@/components/common';
-import { CustomButton } from '@/components/custom';
 import {
+    FileGroups,
     FilterPanel,
     ListWrapper,
+    MediaLightbox,
     type CardAction,
     type IFilterField,
-} from '@/components/custom-container';
+} from '@/components/common';
+import { CustomButton } from '@/components/custom-antd';
 import { GoogleDriveType, QualityMode } from '@/enums';
 import type { NGoogle } from '@/interfaces';
 import { getDriveImageUrl } from '@/libs';

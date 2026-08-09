@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { ColumnsType, CustomFlex, CustomTooltip } from '@/components/custom';
+import { ColumnsType, CustomFlex, CustomTooltip } from '@/components/custom-antd';
 import { StatusTag } from '@/components/common';
 import { MimeType } from '@/enums';
 import { FormFieldItem, NCloudData } from '@/interfaces';

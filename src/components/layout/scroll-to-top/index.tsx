@@ -1,6 +1,6 @@
 'use client';
 
-import { CustomBackTop } from '@/components/custom';
+import { CustomBackTop } from '@/components/custom-antd';
 import { Icon } from '@iconify/react';
 
 import { useMainContext } from '@/contexts/MainContext';

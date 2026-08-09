@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { Icon } from '@iconify/react';
-import { CustomButton, CustomCard, CustomSpace } from '@/components/custom';
+import { CustomButton, CustomCard, CustomSpace } from '@/components/custom-antd';
 
 import { activityData, recentFiles, recentNotes, recentPhotos, storageData } from './constants';
 import { ActivityChart, StorageChart } from './components';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ColumnType, ColumnsType } from '@/components/custom';
+import { ColumnType, ColumnsType } from '@/components/custom-antd';
 import { StatusTag } from '@/components/common';
 import { CustomFilterType, DataProviderSearchStatus, DataProviderStatus } from '@/enums';
 import { FilterItem, FormFieldItem, NDataProvider } from '@/interfaces';

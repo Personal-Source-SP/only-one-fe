@@ -1,6 +1,6 @@
 'use client';
 
-import { CustomTabs } from '@/components/custom';
+import { CustomTabs } from '@/components/custom-antd';
 import { getSectionTabs } from '@/libs';
 import { usePathname, useRouter } from 'next/navigation';
 import { PropsWithChildren, useCallback, useMemo } from 'react';

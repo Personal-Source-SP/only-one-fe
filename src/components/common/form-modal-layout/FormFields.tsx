@@ -11,7 +11,7 @@ import {
     CustomUpload,
     FormProps,
     UploadFile,
-} from '@/components/custom';
+} from '@/components/custom-antd';
 import { CodeDisplay } from '@/components/common';
 import { FormFieldItem } from '@/interfaces';
 import { Icon } from '@iconify/react';

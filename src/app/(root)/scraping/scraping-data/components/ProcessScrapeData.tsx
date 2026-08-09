@@ -18,7 +18,7 @@ import {
     CustomToggle,
     CustomTooltip,
     StepsProps,
-} from '@/components/custom';
+} from '@/components/custom-antd';
 import { MessageType, MimeType } from '@/enums';
 import { useCustomMutationData, useSelectDataProviderItem, useSelectItem } from '@/hooks';
 import { NBaseApi, NDataProvider } from '@/interfaces';

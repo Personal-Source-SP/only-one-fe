@@ -63,13 +63,13 @@ export default [
                         {
                             name: 'antd',
                             message:
-                                'Import Ant Design only via @/components/custom (wrapper layer).',
+                                'Import Ant Design only via @/components/custom-antd (wrapper layer).',
                         },
                     ],
                     patterns: [
                         {
                             group: ['antd/*', 'antd/es/*'],
-                            message: 'Import antd subpaths only inside src/components/custom/**.',
+                            message: 'Import antd subpaths only inside src/components/custom-antd/**.',
                         },
                         {
                             group: [
@@ -78,12 +78,12 @@ export default [
                                 '@/hooks/*',
                                 '@/constants/*',
                                 '@/services/*',
-                                '@/components/custom/*',
+                                '@/components/custom-antd/*',
                                 '@/components/common/*',
                                 '@/components/module/*/*',
                             ],
                             message:
-                                'Import from barrel root (@/interfaces, @/enums, @/hooks, @/constants, @/services, @/components/custom, @/components/common, or @/components/module/<feature>).',
+                                'Import from barrel root (@/interfaces, @/enums, @/hooks, @/constants, @/services, @/components/custom-antd, @/components/common, or @/components/module/<feature>).',
                         },
                     ],
                 },
@@ -111,14 +111,14 @@ export default [
             'src/hooks/**/*.{ts,tsx}',
             'src/providers/**/*.{ts,tsx}',
             'src/interfaces/**/*.d.ts',
-            'src/components/custom/**/*.{ts,tsx}',
+            'src/components/custom-antd/**/*.{ts,tsx}',
         ],
         rules: {
             'no-restricted-syntax': 'off',
         },
     },
     {
-        files: ['src/components/custom/**/*.{ts,tsx}'],
+        files: ['src/components/custom-antd/**/*.{ts,tsx}'],
         rules: {
             'no-restricted-imports': [
                 'error',
@@ -135,7 +135,7 @@ export default [
                                 '@/components/module/*/*',
                             ],
                             message:
-                                'Import from barrel root (@/interfaces, @/enums, @/hooks, @/constants, @/services, @/components/custom, @/components/common, or @/components/module/<feature>).',
+                                'Import from barrel root (@/interfaces, @/enums, @/hooks, @/constants, @/services, @/components/custom-antd, @/components/common, or @/components/module/<feature>).',
                         },
                     ],
                 },

@@ -1,6 +1,6 @@
 'use client';
 
-import { CustomInputForm, CustomModalForm, CustomSelectInput } from '@/components/custom-form';
+import { CustomInputForm, CustomModalForm, CustomSelectInput } from '@/components/common';
 import type { UseCustomModalFormResponse } from '@/hooks';
 import { FormRuleType } from '@/utilities';
 import type {

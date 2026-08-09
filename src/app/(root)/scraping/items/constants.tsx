@@ -1,5 +1,5 @@
 import React from 'react';
-import { ColumnType, ColumnsType, CustomTag } from '@/components/custom';
+import { ColumnType, ColumnsType, CustomTag } from '@/components/custom-antd';
 import { StatusTag } from '@/components/common';
 import { ProductMappingStatus } from '@/enums';
 import { FormFieldItem, NDataProvider } from '@/interfaces';

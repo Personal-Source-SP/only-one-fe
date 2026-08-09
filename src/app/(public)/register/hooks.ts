@@ -3,7 +3,7 @@
 import { useCallback } from 'react';
 import { useMainContext } from '@/contexts/MainContext';
 import { NotificationType } from '@/enums';
-import { CustomForm } from '@/components/custom';
+import { CustomForm } from '@/components/custom-antd';
 import { IAuth } from '@/interfaces';
 
 export const useRegisterPage = () => {

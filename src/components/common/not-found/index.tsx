@@ -1,6 +1,6 @@
 'use client';
 
-import { CustomButton, CustomSpace } from '@/components/custom';
+import { CustomButton, CustomSpace } from '@/components/custom-antd';
 import { Icon } from '@iconify/react';
 import Link from 'next/link';
 

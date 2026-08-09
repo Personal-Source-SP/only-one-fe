@@ -1,4 +1,4 @@
-import { CustomButton, CustomEmpty } from '@/components/custom';
+import { CustomButton, CustomEmpty } from '@/components/custom-antd';
 import {
     DatabaseOutlined,
     FileOutlined,

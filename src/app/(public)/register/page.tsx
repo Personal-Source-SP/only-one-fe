@@ -1,6 +1,6 @@
 'use client';
 
-import { CustomLink } from '@/components/custom';
+import { CustomLink } from '@/components/custom-antd';
 import { AuthCard } from '@/app/(public)/_components/auth';
 
 import { RegisterForm } from './components';

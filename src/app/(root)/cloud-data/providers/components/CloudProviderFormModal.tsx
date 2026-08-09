@@ -5,7 +5,7 @@ import {
     CustomModalForm,
     CustomSelectInput,
     CustomSwitchForm,
-} from '@/components/custom-form';
+} from '@/components/common';
 import { CloudDataProviderType } from '@/enums';
 import type { UseCustomModalFormResponse } from '@/hooks';
 import { enumToOptions } from '@/libs';

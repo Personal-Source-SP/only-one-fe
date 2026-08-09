@@ -1,6 +1,6 @@
 'use client';
 
-import { CustomModal, CustomSpace, CustomSpin, ModalProps } from '@/components/custom';
+import { CustomModal, CustomSpace, CustomSpin, ModalProps } from '@/components/custom-antd';
 import { ReactNode } from 'react';
 
 type FormModalLayoutProps = {

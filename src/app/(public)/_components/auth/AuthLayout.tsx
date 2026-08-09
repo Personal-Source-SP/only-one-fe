@@ -1,4 +1,4 @@
-import { CustomSpace } from '@/components/custom';
+import { CustomSpace } from '@/components/custom-antd';
 import { PropsWithChildren } from 'react';
 
 export const AuthLayout = ({ children }: PropsWithChildren) => {

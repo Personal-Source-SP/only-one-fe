@@ -5,7 +5,7 @@ import {
     CustomForm,
     CustomInput,
     CustomLink,
-} from '@/components/custom';
+} from '@/components/custom-antd';
 import { AuthSocialLogin } from '@/app/(public)/_components/auth/AuthSocialLogin';
 import { useLoginPage } from '@/app/(public)/login/hooks';
 

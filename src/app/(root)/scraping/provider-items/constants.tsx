@@ -1,5 +1,5 @@
 import React from 'react';
-import { ColumnsType, CustomSpace, CustomToggle } from '@/components/custom';
+import { ColumnsType, CustomSpace, CustomToggle } from '@/components/custom-antd';
 import { CustomFilterType } from '@/enums';
 import { FilterItem, FormFieldItem, NDataProvider } from '@/interfaces';
 import { formatDate } from '@/libs';

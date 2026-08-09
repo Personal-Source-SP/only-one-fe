@@ -1,5 +1,5 @@
 import React from 'react';
-import { ColumnsType, CustomToggle } from '@/components/custom';
+import { ColumnsType, CustomToggle } from '@/components/custom-antd';
 import { StatusTag } from '@/components/common';
 import { CronExpression, ExecutionServiceEnum, ScheduleType } from '@/enums';
 import { FormFieldItem, NSchedule } from '@/interfaces';

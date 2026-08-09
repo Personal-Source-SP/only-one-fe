@@ -1,6 +1,6 @@
 'use client';
 
-import { CustomCard, CustomFlex, CustomSpace, CustomSpin } from '@/components/custom';
+import { CustomCard, CustomFlex, CustomSpace, CustomSpin } from '@/components/custom-antd';
 import { ElementType } from '@/enums';
 import { ReactNode } from 'react';
 

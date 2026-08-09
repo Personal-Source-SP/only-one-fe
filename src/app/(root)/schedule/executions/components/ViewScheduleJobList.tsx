@@ -1,14 +1,14 @@
 'use client';
 
 import { useMemo } from 'react';
-import { StatusTag } from '@/components/common';
-import { ColumnsType, CustomModal } from '@/components/custom';
 import {
     FilterPanel,
     ListTable,
     ListWrapper,
+    StatusTag,
     type IFilterField,
-} from '@/components/custom-container';
+} from '@/components/common';
+import { ColumnsType, CustomModal } from '@/components/custom-antd';
 import { ScheduleJobTriggerType, ScheduleJobType, ScheduleType } from '@/enums';
 import { useCustomTable } from '@/hooks';
 import { NSchedule } from '@/interfaces';

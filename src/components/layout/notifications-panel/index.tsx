@@ -1,6 +1,6 @@
 'use client';
 
-import { CustomAvatar, CustomButton, CustomCard, CustomSpace } from '@/components/custom';
+import { CustomAvatar, CustomButton, CustomCard, CustomSpace } from '@/components/custom-antd';
 import { NotificationTab, NotificationType } from '@/enums';
 import { useTableContainer } from '@/hooks';
 import { Notification } from '@/interfaces';

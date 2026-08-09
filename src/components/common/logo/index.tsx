@@ -1,4 +1,4 @@
-import { CustomFlex } from '@/components/custom';
+import { CustomFlex } from '@/components/custom-antd';
 import { Icon } from '@iconify/react';
 
 type LogoProps = {

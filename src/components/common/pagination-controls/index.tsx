@@ -6,7 +6,7 @@ import {
     CustomFlex,
     CustomPagination,
     MenuProps,
-} from '@/components/custom';
+} from '@/components/custom-antd';
 import { FileItemsPerPage } from '@/enums';
 
 type PaginationControlsProps = {

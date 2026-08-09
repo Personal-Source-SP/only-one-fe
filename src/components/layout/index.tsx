@@ -1,7 +1,7 @@
 'use client';
 
 import { Loading } from '@/components/common';
-import { CustomSpace } from '@/components/custom';
+import { CustomSpace } from '@/components/custom-antd';
 import { SIDEBAR_ITEMS } from '@/constants';
 import { useMainContext } from '@/contexts/MainContext';
 import { MessageType } from '@/enums';

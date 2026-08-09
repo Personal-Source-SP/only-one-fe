@@ -1,6 +1,6 @@
 'use client';
 
-import { CustomDescriptions, CustomModal, CustomTabs } from '@/components/custom';
+import { CustomDescriptions, CustomModal, CustomTabs } from '@/components/custom-antd';
 import { StatusTag } from '@/components/common';
 import { NSchedule } from '@/interfaces';
 import { calculateDuration, formatDate } from '@/libs';

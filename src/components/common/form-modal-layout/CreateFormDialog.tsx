@@ -13,7 +13,7 @@ import {
     CustomRow,
     CustomSpace,
     CustomSpin,
-} from '@/components/custom';
+} from '@/components/custom-antd';
 import { useSession } from 'next-auth/react';
 import { ReactNode, useCallback, useEffect, useState } from 'react';
 

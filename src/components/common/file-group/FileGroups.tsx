@@ -6,7 +6,7 @@ import {
     CustomSpin,
     CustomTag,
     CustomTooltip,
-} from '@/components/custom';
+} from '@/components/custom-antd';
 import { Empty } from '@/components/common';
 import { MimeType } from '@/enums';
 import { ViewFileMode } from '@/enums';

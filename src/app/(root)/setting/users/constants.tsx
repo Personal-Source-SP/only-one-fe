@@ -1,5 +1,5 @@
 import React from 'react';
-import { ColumnsType } from '@/components/custom';
+import { ColumnsType } from '@/components/custom-antd';
 import { NGoogle, NUser } from '@/interfaces';
 import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';

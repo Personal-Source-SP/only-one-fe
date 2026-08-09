@@ -21,7 +21,7 @@ import {
     CustomSteps,
     StepsProps,
     TableProps,
-} from '@/components/custom';
+} from '@/components/custom-antd';
 import { useMainContext } from '@/contexts/MainContext';
 import { GoogleDriveType, MessageType, MimeType } from '@/enums';
 import { useCustomMutationData } from '@/hooks';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ColumnsType } from '@/components/custom';
+import { ColumnsType } from '@/components/custom-antd';
 import { StatusTag } from '@/components/common';
 import { CloudDataProviderType } from '@/enums';
 import { FormFieldItem, NCloudData } from '@/interfaces';

@@ -1,7 +1,7 @@
 import { getErrorNotification, getSuccessNotification, NotificationAction } from '@/utilities';
 import { useModalForm } from '@refinedev/antd';
 import type { BaseRecord, GetOneResponse, HttpError } from '@refinedev/core';
-import type { ButtonProps, FormInstance, FormProps } from '@/components/custom';
+import type { ButtonProps, FormInstance, FormProps } from '@/components/custom-antd';
 import type { FormMode } from './useCustomDrawerForm';
 
 type ModalFormProps<TVariables> = FormProps<TVariables>;
