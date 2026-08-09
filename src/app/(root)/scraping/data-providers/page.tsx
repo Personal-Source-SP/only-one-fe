@@ -1,19 +1,22 @@
 'use client';
 
-import { useMemo } from 'react';
-import { PlusOutlined } from '@ant-design/icons';
-import { CustomButton } from '@/components/custom-antd';
 import {
     FilterPanel,
     ListTable,
     ListWrapper,
+    StatusTag,
     type CardAction,
     type IFilterField,
 } from '@/components/common';
+import { CustomButton, type ColumnsType } from '@/components/custom-antd';
+import { DataProviderStatus } from '@/enums';
+import type { NDataProvider } from '@/interfaces';
+import { formatDate } from '@/libs';
+import { PlusOutlined } from '@ant-design/icons';
+import { Icon } from '@iconify/react';
 
-import { columns } from './constants';
-import { useDataProviderPage } from './hooks';
 import { DataProviderFormModal } from './components';
+import { useDataProviderPage } from './hooks';
 import type { DataProviderRecord } from './types';
 
 const DataProviderPage = () => {
@@ -26,34 +29,96 @@ const DataProviderPage = () => {
         debouncedSearch,
     } = useDataProviderPage();
 
-    const actions = useMemo<CardAction[]>(
-        () => [
-            {
-                component: (
-                    <CustomButton
-                        type="primary"
-                        icon={<PlusOutlined />}
-                        onClick={() => createModalForm.show()}
-                    >
-                        Thêm nhà cung cấp
-                    </CustomButton>
+    const columns: ColumnsType<DataProviderRecord> = [
+        {
+            title: 'Tên',
+            dataIndex: 'name',
+            key: 'name',
+            ellipsis: true,
+            sorter: true,
+            width: '15%',
+        },
+        {
+            title: 'Mã',
+            dataIndex: 'identifier',
+            key: 'identifier',
+            ellipsis: true,
+            sorter: true,
+            width: '10%',
+        },
+        {
+            title: 'URL cơ sở',
+            dataIndex: 'baseUrl',
+            key: 'baseUrl',
+            ellipsis: true,
+            sorter: true,
+            width: '20%',
+        },
+        {
+            key: 'status',
+            title: 'Trạng thái',
+            dataIndex: 'status',
+            render: (status: DataProviderStatus) => <StatusTag status={status} />,
+            width: '10%',
+        },
+        {
+            title: 'Ngày tạo',
+            dataIndex: 'createdAt',
+            key: 'createdAt',
+            sorter: true,
+            render: (createdAt: Date) => formatDate(createdAt),
+            width: '20%',
+        },
+        {
+            key: 'targetConfig',
+            title: 'Cào',
+            align: 'center',
+            dataIndex: 'targetConfig',
+            render: (targetConfig: NDataProvider.ITargetConfig) =>
+                targetConfig ? (
+                    <Icon icon="lucide:check" className="w-full" />
+                ) : (
+                    <Icon icon="lucide:x" className="w-full" />
                 ),
-            },
-        ],
-        [createModalForm],
-    );
+            width: '10%',
+        },
+        {
+            key: 'searchConfig',
+            title: 'Tìm kiếm',
+            align: 'center',
+            dataIndex: 'searchConfig',
+            render: (searchConfig: NDataProvider.ISearchConfig) =>
+                searchConfig ? (
+                    <Icon icon="lucide:check" className="w-full" />
+                ) : (
+                    <Icon icon="lucide:x" className="w-full" />
+                ),
+            width: '15%',
+        },
+    ];
 
-    const filters = useMemo<IFilterField[]>(
-        () => [
-            {
-                name: 'search',
-                type: 'input',
-                placeholder: 'Tìm kiếm nhà cung cấp...',
-                onChange: (value) => debouncedSearch(value?.toString() ?? ''),
-            },
-        ],
-        [debouncedSearch],
-    );
+    const actions: CardAction[] = [
+        {
+            component: (
+                <CustomButton
+                    type="primary"
+                    icon={<PlusOutlined />}
+                    onClick={() => createModalForm.show()}
+                >
+                    Thêm nhà cung cấp
+                </CustomButton>
+            ),
+        },
+    ];
+
+    const filters: IFilterField[] = [
+        {
+            name: 'search',
+            type: 'input',
+            placeholder: 'Tìm kiếm nhà cung cấp...',
+            onChange: (value) => debouncedSearch(value?.toString() ?? ''),
+        },
+    ];
 
     return (
         <>

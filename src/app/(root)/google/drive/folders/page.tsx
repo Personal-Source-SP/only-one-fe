@@ -1,8 +1,7 @@
 'use client';
 
-import { useMemo } from 'react';
 import { Icon } from '@iconify/react';
-import { CustomButton } from '@/components/custom-antd';
+import { ColumnsType, CustomButton } from '@/components/custom-antd';
 import {
     FilterPanel,
     ListTable,
@@ -12,8 +11,8 @@ import {
 } from '@/components/common';
 import { GoogleDriveType } from '@/enums';
 import type { NGoogle } from '@/interfaces';
+import { formatDate } from '@/libs';
 
-import { columns } from './constants';
 import { useGoogleFolderPage } from './hooks';
 import { FolderModal, SyncGoogleDrive } from './components';
 
@@ -29,36 +28,78 @@ const FolderPage = () => {
         queryFolderOptions,
     } = useGoogleFolderPage();
 
-    const actions = useMemo<CardAction[]>(
-        () => [
-            {
-                component: (
-                    <CustomButton
-                        type="primary"
-                        key="sync-google-drive"
-                        title="Đồng bộ từ Google Drive"
-                        icon={<Icon icon="ic:baseline-sync" />}
-                        onClick={() => setIsOpenSyncFile(true)}
-                    >
-                        Đồng bộ
-                    </CustomButton>
+    const columns: ColumnsType<NGoogle.IGoogleDriveFolder> = [
+        {
+            title: 'Tên thư mục',
+            dataIndex: 'name',
+            key: 'name',
+            ellipsis: true,
+            sorter: true,
+        },
+        {
+            title: 'Ngày tạo',
+            dataIndex: 'createdAt',
+            key: 'createdAt',
+            sorter: true,
+            render: (createdAt: Date) => formatDate(createdAt),
+        },
+        {
+            key: 'lastModified',
+            title: 'Ngày chỉnh sửa',
+            dataIndex: 'lastModified',
+            sorter: true,
+            render: (lastModified: Date) => formatDate(lastModified),
+        },
+        {
+            key: 'isTrashed',
+            title: 'Đã xóa',
+            align: 'center',
+            dataIndex: 'isTrashed',
+            render: (isTrashed: boolean) =>
+                isTrashed ? (
+                    <Icon icon="lucide:check" className="w-full" />
+                ) : (
+                    <Icon icon="lucide:x" className="w-full" />
                 ),
-            },
-        ],
-        [setIsOpenSyncFile],
-    );
+        },
+        {
+            key: 'isStarred',
+            title: 'Gắn sao',
+            align: 'center',
+            dataIndex: 'isStarred',
+            render: (isStarred: boolean) =>
+                isStarred ? (
+                    <Icon icon="lucide:check" className="w-full" />
+                ) : (
+                    <Icon icon="lucide:x" className="w-full" />
+                ),
+        },
+    ];
 
-    const filters = useMemo<IFilterField[]>(
-        () => [
-            {
-                name: 'search',
-                type: 'input',
-                placeholder: 'Tìm kiếm thư mục...',
-                onChange: (value) => debouncedSearch(value?.toString() ?? ''),
-            },
-        ],
-        [debouncedSearch],
-    );
+    const actions: CardAction[] = [
+        {
+            component: (
+                <CustomButton
+                    type="primary"
+                    key="sync-google-drive"
+                    title="Đồng bộ từ Google Drive"
+                    icon={<Icon icon="ic:baseline-sync" />}
+                    onClick={() => setIsOpenSyncFile(true)}
+                >
+                    Đồng bộ
+                </CustomButton>
+            ),
+        },
+    ];
+
+    const filters: IFilterField[] = [
+        {
+            name: 'search',
+            type: 'input',
+            placeholder: 'Tìm kiếm thư mục...',
+            onChange: (value) => debouncedSearch(value?.toString() ?? ''),
+        },
+    ];
 
     return (
         <>

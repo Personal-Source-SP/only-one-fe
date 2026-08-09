@@ -1,6 +1,5 @@
 'use client';
 
-import { useMemo } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
 import { ColumnsType, CustomButton, CustomSpace, CustomToggle } from '@/components/custom-antd';
 import {
@@ -36,131 +35,122 @@ const DataProviderItemPage = () => {
         handleSwitchStatus,
     } = useDataProviderItemPage();
 
-    const columns = useMemo<ColumnsType<NDataProvider.IDataProviderItem>>(
-        () => [
-            {
-                title: 'Thông tin đối tượng',
-                dataIndex: 'itemAndProviderAndUrl',
-                key: 'itemAndProviderAndUrl',
-                ellipsis: true,
-                width: 200,
-                render: (_: any, record: NDataProvider.IDataProviderItem) => (
-                    <div className="text-sm">
-                        <p>
-                            <strong>Nhà cung cấp:</strong> {record?.dataProvider?.name ?? '---'}
-                        </p>
-                        <p>
-                            <strong>URL đối tượng:</strong> {record?.itemUrl ?? '---'}
-                        </p>
-                        <p>
-                            <strong>Đối tượng:</strong> {record?.item?.name ?? '---'}
-                        </p>
-                    </div>
-                ),
-            },
-            {
-                title: 'Ngày cào gần nhất',
-                dataIndex: 'lastScrapedTimestamp',
-                key: 'lastScrapedTimestamp',
-                sorter: true,
-                width: 150,
-                render: (lastScrapedTimestamp: Date) => formatDate(lastScrapedTimestamp),
-            },
-            {
-                title: 'Ngày tạo',
-                dataIndex: 'createdAt',
-                key: 'createdAt',
-                sorter: true,
-                width: 150,
-                render: (createdAt: Date) => formatDate(createdAt),
-            },
-            {
-                title: 'Trạng thái',
-                dataIndex: 'isActive',
-                key: 'isActive',
-                align: 'center',
-                width: 100,
-                render: (isActive: boolean, record: NDataProvider.IDataProviderItem) => (
-                    <CustomToggle
-                        size="small"
-                        checked={isActive}
-                        onChange={(checked) => handleSwitchStatus(record?.id ?? '', checked)}
-                    />
-                ),
-            },
-            {
-                title: 'Lưu vào kho dữ liệu',
-                dataIndex: 'isSavedToCloudData',
-                key: 'isSavedToCloudData',
-                align: 'center',
-                width: 100,
-                render: (isSavedToCloudData: boolean, record: NDataProvider.IDataProviderItem) => (
-                    <CustomSpace>
-                        <CustomToggle size="small" checked={isSavedToCloudData} disabled />
-                        <p>{record?.cloudDataProvider?.name ?? '---'}</p>
-                    </CustomSpace>
-                ),
-            },
-        ],
-        [handleSwitchStatus],
-    );
+    const columns: ColumnsType<NDataProvider.IDataProviderItem> = [
+        {
+            title: 'Thông tin đối tượng',
+            dataIndex: 'itemAndProviderAndUrl',
+            key: 'itemAndProviderAndUrl',
+            ellipsis: true,
+            width: 200,
+            render: (_: any, record: NDataProvider.IDataProviderItem) => (
+                <div className="text-sm">
+                    <p>
+                        <strong>Nhà cung cấp:</strong> {record?.dataProvider?.name ?? '---'}
+                    </p>
+                    <p>
+                        <strong>URL đối tượng:</strong> {record?.itemUrl ?? '---'}
+                    </p>
+                    <p>
+                        <strong>Đối tượng:</strong> {record?.item?.name ?? '---'}
+                    </p>
+                </div>
+            ),
+        },
+        {
+            title: 'Ngày cào gần nhất',
+            dataIndex: 'lastScrapedTimestamp',
+            key: 'lastScrapedTimestamp',
+            sorter: true,
+            width: 150,
+            render: (lastScrapedTimestamp: Date) => formatDate(lastScrapedTimestamp),
+        },
+        {
+            title: 'Ngày tạo',
+            dataIndex: 'createdAt',
+            key: 'createdAt',
+            sorter: true,
+            width: 150,
+            render: (createdAt: Date) => formatDate(createdAt),
+        },
+        {
+            title: 'Trạng thái',
+            dataIndex: 'isActive',
+            key: 'isActive',
+            align: 'center',
+            width: 100,
+            render: (isActive: boolean, record: NDataProvider.IDataProviderItem) => (
+                <CustomToggle
+                    size="small"
+                    checked={isActive}
+                    onChange={(checked) => handleSwitchStatus(record?.id ?? '', checked)}
+                />
+            ),
+        },
+        {
+            title: 'Lưu vào kho dữ liệu',
+            dataIndex: 'isSavedToCloudData',
+            key: 'isSavedToCloudData',
+            align: 'center',
+            width: 100,
+            render: (isSavedToCloudData: boolean, record: NDataProvider.IDataProviderItem) => (
+                <CustomSpace>
+                    <CustomToggle size="small" checked={isSavedToCloudData} disabled />
+                    <p>{record?.cloudDataProvider?.name ?? '---'}</p>
+                </CustomSpace>
+            ),
+        },
+    ];
 
-    const actions = useMemo<CardAction[]>(
-        () => [
-            {
-                component: (
-                    <CustomButton
-                        type="primary"
-                        icon={<PlusOutlined />}
-                        onClick={() => createModalForm.show()}
-                    >
-                        Thêm đối tượng nhà cung cấp
-                    </CustomButton>
-                ),
-            },
-        ],
-        [createModalForm],
-    );
+    const actions: CardAction[] = [
+        {
+            component: (
+                <CustomButton
+                    type="primary"
+                    icon={<PlusOutlined />}
+                    onClick={() => createModalForm.show()}
+                >
+                    Thêm đối tượng nhà cung cấp
+                </CustomButton>
+            ),
+        },
+    ];
 
-    const filters = useMemo<IFilterField[]>(
-        () => [
-            {
-                name: 'search',
-                type: 'input',
-                placeholder: 'Tìm kiếm đối tượng nhà cung cấp...',
-                onChange: (value) => debouncedSearch(value?.toString() ?? ''),
-            },
-            {
-                name: 'dataProviderId',
-                type: 'select',
-                options: dataProviderOptions ?? [],
-                placeholder: 'Chọn nhà cung cấp',
-                onChange: (val) =>
-                    setFilters([
-                        {
-                            field: 'dataProviderId',
-                            operator: 'eq',
-                            value: val,
-                        },
-                    ]),
-            },
-            {
-                name: 'itemId',
-                type: 'select',
-                options: itemOptions ?? [],
-                placeholder: 'Chọn đối tượng',
-                onChange: (val) =>
-                    setFilters([
-                        {
-                            field: 'itemId',
-                            operator: 'eq',
-                            value: val,
-                        },
-                    ]),
-            },
-        ],
-        [debouncedSearch, dataProviderOptions, itemOptions, setFilters],
-    );
+    const filters: IFilterField[] = [
+        {
+            name: 'search',
+            type: 'input',
+            placeholder: 'Tìm kiếm đối tượng nhà cung cấp...',
+            onChange: (value) => debouncedSearch(value?.toString() ?? ''),
+        },
+        {
+            name: 'dataProviderId',
+            type: 'select',
+            options: dataProviderOptions ?? [],
+            placeholder: 'Chọn nhà cung cấp',
+            onChange: (val) =>
+                setFilters([
+                    {
+                        field: 'dataProviderId',
+                        operator: 'eq',
+                        value: val,
+                    },
+                ]),
+        },
+        {
+            name: 'itemId',
+            type: 'select',
+            options: itemOptions ?? [],
+            placeholder: 'Chọn đối tượng',
+            onChange: (val) =>
+                setFilters([
+                    {
+                        field: 'itemId',
+                        operator: 'eq',
+                        value: val,
+                    },
+                ]),
+        },
+    ];
 
     return (
         <>
