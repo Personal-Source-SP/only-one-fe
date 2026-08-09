@@ -4,3 +4,4 @@ export * from './form-rules';
 export * from './logger';
 export * from './notification';
 export * from './resource';
+export * from './show';

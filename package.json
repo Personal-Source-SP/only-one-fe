@@ -11,7 +11,8 @@
         "lint:fix": "eslint \"**/*.{js,jsx,ts,tsx}\" --fix",
         "prettier": "prettier --write '**/*.{js,jsx,ts,tsx}'",
         "prepare": "husky",
-        "format": "prettier --write '**/*.{js,jsx,ts,tsx}'"
+        "format": "prettier --write '**/*.{js,jsx,ts,tsx}'",
+        "postinstall": "node -e \"const fs=require('fs');const p='node_modules/prettier/plugins/estree.mjs';if(fs.existsSync(p)){let c=fs.readFileSync(p,'utf8');if(c.includes('fc=(e,[t])=>')){fs.writeFileSync(p,c.replace('fc=(e,[t])=>','fc=(e,[t={}]=[])=>'),'utf8');}}\""
     },
     "dependencies": {
         "@ant-design/icons": "^6.0.0",
@@ -67,7 +68,7 @@
         "husky": "^9.1.7",
         "lint-staged": "^16.4.0",
         "postcss": "^8.5.26",
-        "prettier": "^3.9.6",
+        "prettier": "^3.5.3",
         "tailwindcss": "^3.4.19",
         "typescript": "^6.0.3"
     },

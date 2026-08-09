@@ -11,14 +11,7 @@ import { FilterSegmented } from './FilterSegmented';
 import { FilterSelect } from './FilterSelect';
 
 export type FilterValue =
-    | string
-    | number
-    | boolean
-    | string[]
-    | number[]
-    | [Dayjs, Dayjs]
-    | null
-    | undefined;
+    string | number | boolean | string[] | number[] | [Dayjs, Dayjs] | null | undefined;
 
 export interface FilterOption {
     label: ReactNode;

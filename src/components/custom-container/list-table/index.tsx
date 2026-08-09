@@ -15,11 +15,12 @@ import type { CSSProperties, ReactNode } from 'react';
 import { useCallback, useMemo, useRef, useState } from 'react';
 
 import { useCustomDelete, usePagePermissions } from '@/hooks';
+import { evaluateShow } from '@/utilities';
 
-const tableHeaderCellProps = {
+const tableHeaderCellProps: { style: CSSProperties } = {
     style: {
         paddingInline: 16,
-    } satisfies CSSProperties,
+    },
 };
 
 export interface TableCustomAction<RecordType> {
@@ -30,7 +31,7 @@ export interface TableCustomAction<RecordType> {
     keepOpen?: boolean;
     width?: number | string;
     allowedRoles?: string[];
-    permissionAction?: 'read' | 'create' | 'update' | 'delete' | 'operate';
+    show?: boolean | ((record: RecordType) => boolean);
     onClick: (record: RecordType) => void;
     render?: (record: RecordType, closeDropdown: () => void) => ReactNode;
 }
@@ -47,18 +48,21 @@ export interface ListTableProps<RecordType extends BaseRecord> extends TableProp
 
     /** Resource path for automatic delete handling. */
     deleteResource?: string;
+    showDelete?: boolean | ((record: RecordType) => boolean);
+
+    /** Called after automatic delete succeeds. */
+    onDeleteSuccess?: () => void | Promise<void>;
 
     /** Additional custom actions */
     customRowActions?: TableCustomAction<RecordType>[];
 
     /** View detail callback */
     onView?: (record: RecordType) => void;
+    showView?: boolean | ((record: RecordType) => boolean);
 
     /** Edit callback */
     onEdit?: (record: RecordType) => void;
-
-    /** Called after automatic delete succeeds. */
-    onDeleteSuccess?: () => void | Promise<void>;
+    showEdit?: boolean | ((record: RecordType) => boolean);
 }
 
 export function ListTable<RecordType extends BaseRecord = BaseRecord>({
@@ -66,14 +70,17 @@ export function ListTable<RecordType extends BaseRecord = BaseRecord>({
     tableQuery,
     permissionGroup,
     deleteResource,
+    showDelete,
+    onDeleteSuccess,
     customRowActions = [],
     columns,
     loading,
     pagination,
     className = '',
     onView,
+    showView,
     onEdit,
-    onDeleteSuccess,
+    showEdit,
     ...restProps
 }: ListTableProps<RecordType>) {
     const keepOpenRef = useRef(false);
@@ -86,56 +93,15 @@ export function ListTable<RecordType extends BaseRecord = BaseRecord>({
     });
 
     const hasView = useMemo(() => !!onView && permissions.canRead, [onView, permissions.canRead]);
-
     const hasEdit = useMemo(() => !!onEdit && permissions.canEdit, [onEdit, permissions.canEdit]);
-
     const hasDelete = useMemo(
         () => !!deleteResource && permissions.canDelete,
         [deleteResource, permissions.canDelete],
     );
 
-    const allowedCustomRowActions = useMemo(
-        () =>
-            customRowActions.filter((action) => {
-                if (!action.permissionAction) {
-                    return true;
-                }
-
-                if (action.permissionAction === 'read') {
-                    return permissions.canRead;
-                }
-
-                if (action.permissionAction === 'create') {
-                    return permissions.canCreate;
-                }
-
-                if (action.permissionAction === 'update') {
-                    return permissions.canEdit;
-                }
-
-                if (action.permissionAction === 'delete') {
-                    return permissions.canDelete;
-                }
-
-                if (action.permissionAction === 'operate') {
-                    return permissions.canOperator;
-                }
-
-                return false;
-            }),
-        [
-            customRowActions,
-            permissions.canCreate,
-            permissions.canDelete,
-            permissions.canEdit,
-            permissions.canOperator,
-            permissions.canRead,
-        ],
-    );
-
     const showActionsColumn = useMemo(
-        () => hasView || hasEdit || hasDelete || !!allowedCustomRowActions.length,
-        [hasView, hasEdit, hasDelete, allowedCustomRowActions],
+        () => hasView || hasEdit || hasDelete || !!customRowActions.length,
+        [hasView, hasEdit, hasDelete, customRowActions.length],
     );
 
     const handleCloseDropdown = useCallback(() => {
@@ -156,7 +122,11 @@ export function ListTable<RecordType extends BaseRecord = BaseRecord>({
         (record: RecordType): MenuProps['items'] => {
             const items: MenuProps['items'] = [];
 
-            if (hasView) {
+            const canShowView = hasView && evaluateShow(showView, record);
+            const canShowEdit = hasEdit && evaluateShow(showEdit, record);
+            const canShowDelete = hasDelete && evaluateShow(showDelete, record);
+
+            if (canShowView) {
                 items.push({
                     key: 'view',
                     icon: <EyeOutlined />,
@@ -165,7 +135,7 @@ export function ListTable<RecordType extends BaseRecord = BaseRecord>({
                 });
             }
 
-            if (hasEdit) {
+            if (canShowEdit) {
                 items.push({
                     key: 'edit',
                     icon: <EditOutlined />,
@@ -174,7 +144,7 @@ export function ListTable<RecordType extends BaseRecord = BaseRecord>({
                 });
             }
 
-            if (hasDelete) {
+            if (canShowDelete) {
                 items.push({
                     danger: true,
                     key: 'delete',
@@ -207,8 +177,9 @@ export function ListTable<RecordType extends BaseRecord = BaseRecord>({
                 });
             }
 
-            if (allowedCustomRowActions.length) {
-                const customItems = allowedCustomRowActions
+            if (customRowActions.length) {
+                const customItems = customRowActions
+                    .filter((action) => evaluateShow(action.show, record))
                     .map((action) => {
                         const rendered = action.render
                             ? action.render(record, handleCloseDropdown)
@@ -246,7 +217,10 @@ export function ListTable<RecordType extends BaseRecord = BaseRecord>({
             hasView,
             hasEdit,
             hasDelete,
-            allowedCustomRowActions,
+            showView,
+            showEdit,
+            showDelete,
+            customRowActions,
             keepOpenRef,
             onView,
             onEdit,
@@ -330,7 +304,7 @@ export function ListTable<RecordType extends BaseRecord = BaseRecord>({
                         menu={{
                             items: actionItems,
                             onClick: (info) => {
-                                const customAction = allowedCustomRowActions.find(
+                                const customAction = customRowActions.find(
                                     (act) => act.key === info.key,
                                 );
 
@@ -354,7 +328,7 @@ export function ListTable<RecordType extends BaseRecord = BaseRecord>({
         handleCloseDropdown,
         showActionsColumn,
         openDropdownId,
-        allowedCustomRowActions,
+        customRowActions,
     ]);
 
     const mergedLoading = useMemo(
@@ -410,11 +384,9 @@ export function ListTable<RecordType extends BaseRecord = BaseRecord>({
 
     return (
         <CustomTable
-            loading={Boolean(mergedLoading)}
             columns={columnsWithActions}
             tableProps={mergedTableProps}
-            resource={deleteResource}
-            onRefetch={tableQuery?.refetch}
+            loading={Boolean(mergedLoading)}
         />
     );
 }
