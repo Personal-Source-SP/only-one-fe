@@ -1,9 +1,20 @@
 'use client';
 
+import { useState } from 'react';
 import { useCustomModalForm, useCustomTable, useSelectDataProvider } from '@/hooks';
 import type { DataProviderFormValues, DataProviderRecord } from './types';
 
 export const useDataProviderPage = () => {
+    const [settingRecord, setSettingRecord] = useState<DataProviderRecord | null>(null);
+
+    const openSettingModal = (record: DataProviderRecord) => {
+        setSettingRecord(record);
+    };
+
+    const closeSettingModal = () => {
+        setSettingRecord(null);
+    };
+
     const { tableProps, tableQuery, debouncedSearch, setFilters, setCurrentPage } =
         useCustomTable<DataProviderRecord>({
             resource: 'data-providers',
@@ -44,11 +55,14 @@ export const useDataProviderPage = () => {
     return {
         tableProps,
         tableQuery,
-        debouncedSearch,
-        setFilters,
-        setCurrentPage,
         createModalForm,
         editModalForm,
         dataProviders,
+        settingRecord,
+        setFilters,
+        setCurrentPage,
+        debouncedSearch,
+        openSettingModal,
+        closeSettingModal,
     };
 };

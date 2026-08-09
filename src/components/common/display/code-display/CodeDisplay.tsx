@@ -5,7 +5,6 @@ import {
     CustomButton,
     CustomCard,
     CustomDivider,
-    CustomFlex,
     CustomInput,
     CustomSpace,
     CustomTag,
@@ -48,21 +47,21 @@ export type CodeDisplayProps = {
 };
 
 const JS_BEAUTIFY_OPTIONS: jsBeautify.JSBeautifyOptions = {
-    indent_size: 2, // Number of spaces for each indentation level
-    indent_char: ' ', // Character used for indentation (space)
-    max_preserve_newlines: 2, // Maximum number of empty lines to preserve
-    preserve_newlines: true, // Preserve empty lines
-    keep_array_indentation: false, // Don't preserve array indentation
-    break_chained_methods: false, // Don't break line between chained methods
-    brace_style: 'collapse', // Brace style (collapse: closing brace on same line)
-    space_before_conditional: true, // Add space before conditional
-    unescape_strings: false, // Don't convert escape characters in strings
-    jslint_happy: false, // Don't follow jslint rules
-    end_with_newline: true, // End file with newline
-    wrap_line_length: 0, // No line length limit
-    comma_first: false, // Don't put comma at start of line
-    e4x: false, // No E4X support
-    indent_empty_lines: false, // Don't indent empty lines
+    indent_size: 2,
+    indent_char: ' ',
+    max_preserve_newlines: 2,
+    preserve_newlines: true,
+    keep_array_indentation: false,
+    break_chained_methods: false,
+    brace_style: 'collapse',
+    space_before_conditional: true,
+    unescape_strings: false,
+    jslint_happy: false,
+    end_with_newline: true,
+    wrap_line_length: 0,
+    comma_first: false,
+    e4x: false,
+    indent_empty_lines: false,
 };
 
 const HTML_BEAUTIFY_OPTIONS: jsBeautify.HTMLBeautifyOptions = {
@@ -141,30 +140,29 @@ export const CodeDisplay = ({
     const handleFormat = (currentCode: string, isOnCodeChange = false) => {
         switch (language) {
             case 'json': {
-                const parsed = JSON.parse(currentCode);
-                const formattedCode = JSON.stringify(parsed, null, 2);
-
-                setEditedCode(formattedCode);
-                if (isOnCodeChange) onCodeChange?.(formattedCode);
-
+                try {
+                    const parsed = JSON.parse(currentCode);
+                    const formattedCode = JSON.stringify(parsed, null, 2);
+                    setEditedCode(formattedCode);
+                    if (isOnCodeChange) onCodeChange?.(formattedCode);
+                } catch (e) {
+                    setEditedCode(currentCode);
+                    if (isOnCodeChange) onCodeChange?.(currentCode);
+                }
                 break;
             }
 
             case 'javascript': {
                 const formattedCode = jsBeautify.js_beautify(currentCode, JS_BEAUTIFY_OPTIONS);
-
                 setEditedCode(formattedCode);
                 if (isOnCodeChange) onCodeChange?.(formattedCode);
-
                 break;
             }
 
             case 'html': {
                 const formattedCode = jsBeautify.html_beautify(currentCode, HTML_BEAUTIFY_OPTIONS);
-
                 setEditedCode(formattedCode);
                 if (isOnCodeChange) onCodeChange?.(formattedCode);
-
                 break;
             }
         }
@@ -180,81 +178,84 @@ export const CodeDisplay = ({
         handleFormat(editedCode, true);
     };
 
-    const renderLanguage = () => {
-        if (!isDisplayLanguage) return <></>;
-
-        return (
-            <CustomSpace>
-                {processingTime && (
-                    <>
-                        <CustomTypography.Text
-                            type="secondary"
-                            className="text-sm font-medium uppercase"
-                        >
-                            Thời gian xử lý
-                        </CustomTypography.Text>
-                        <CustomBadge
-                            color="#52c41a"
-                            count={`${processingTime ? (processingTime / 1000).toFixed(2) : 0}s`}
-                        />
-                        <div className="text-sm text-gray-600 p-0 m-0">|</div>
-                    </>
-                )}
-
-                <CustomTypography.Text type="secondary" className="text-sm font-medium uppercase">
-                    {language}
-                </CustomTypography.Text>
-                <CustomBadge count={editedCode.split('\n').length} />
-            </CustomSpace>
-        );
-    };
-
     const renderActions = () => {
         if (compareCode) return <></>;
 
         return (
-            <CustomSpace size={4}>
+            <div className="flex flex-wrap items-center gap-1">
                 <CustomButton
                     type="text"
                     size="small"
                     onClick={handleCopy}
                     icon={<CopyOutlined />}
-                    className="text-sm text-gray-600"
+                    className="text-xs text-gray-600 px-1.5"
+                    title="Sao chép mã"
                 >
-                    Sao chép
+                    <span className="hidden sm:inline">Sao chép</span>
                 </CustomButton>
 
                 <CustomButton
                     type="text"
                     size="small"
                     disabled={isEditing}
-                    className="text-sm text-gray-600"
+                    className="text-xs text-gray-600 px-1.5"
                     onClick={() => setIsExpanded(!isExpanded)}
                     icon={isExpanded ? <CompressOutlined /> : <ExpandAltOutlined />}
+                    title={isExpanded ? 'Thu gọn' : 'Mở rộng'}
                 >
-                    {isExpanded ? 'Thu gọn' : 'Mở rộng'}
+                    <span className="hidden sm:inline">{isExpanded ? 'Thu gọn' : 'Mở rộng'}</span>
                 </CustomButton>
 
                 <CustomButton
                     type="text"
                     size="small"
                     icon={<FormatPainterOutlined />}
-                    className="text-sm text-gray-600"
+                    className="text-xs text-gray-600 px-1.5"
                     onClick={() => handleFormat(editedCode)}
                     disabled={!isEditing || language !== 'json'}
+                    title="Định dạng mã"
                 >
-                    Định dạng
+                    <span className="hidden sm:inline">Định dạng</span>
                 </CustomButton>
 
                 <CustomButton
                     type="text"
                     size="small"
-                    className="text-sm text-gray-600"
+                    className="text-xs text-gray-600 px-1.5"
                     onClick={isEditing ? handleSave : handleEdit}
                     icon={isEditing ? <CheckOutlined /> : <EditOutlined />}
+                    title={isEditing ? 'Lưu' : 'Chỉnh sửa'}
                 >
-                    {isEditing ? 'Lưu' : 'Chỉnh sửa'}
+                    <span className="hidden sm:inline">{isEditing ? 'Lưu' : 'Chỉnh sửa'}</span>
                 </CustomButton>
+            </div>
+        );
+    };
+
+    const renderLanguage = () => {
+        if (!isDisplayLanguage) return <></>;
+
+        return (
+            <CustomSpace className="shrink-0">
+                {processingTime && (
+                    <>
+                        <CustomTypography.Text
+                            type="secondary"
+                            className="text-xs font-medium uppercase"
+                        >
+                            Thời gian
+                        </CustomTypography.Text>
+                        <CustomBadge
+                            color="#52c41a"
+                            count={`${processingTime ? (processingTime / 1000).toFixed(2) : 0}s`}
+                        />
+                        <div className="text-xs text-gray-600 p-0 m-0">|</div>
+                    </>
+                )}
+
+                <CustomTypography.Text type="secondary" className="text-xs font-medium uppercase">
+                    {language}
+                </CustomTypography.Text>
             </CustomSpace>
         );
     };
@@ -264,7 +265,7 @@ export const CodeDisplay = ({
             return (
                 <pre
                     style={preStyle}
-                    className="m-0 font-mono text-sm leading-normal whitespace-pre-wrap break-words"
+                    className="m-0 font-mono text-sm leading-normal whitespace-pre-wrap break-words overflow-x-auto max-w-full"
                 >
                     <code
                         className="text-gray-700"
@@ -320,32 +321,32 @@ export const CodeDisplay = ({
     const renderTitle = () => {
         return (
             <>
-                <CustomDivider className="!mt-2" />
-                <div className="mb-3">
-                    {!!title && (
-                        <CustomTypography.Text className="text-sm font-medium mb-2">{`${title}:`}</CustomTypography.Text>
-                    )}
-                </div>
+                <CustomDivider className="!mt-2 !mb-2" />
+                {!!title && (
+                    <div className="mb-2">
+                        <CustomTypography.Text className="text-sm font-medium">{`${title}:`}</CustomTypography.Text>
+                    </div>
+                )}
             </>
         );
     };
 
     return (
-        <section className="w-full">
-            <CustomCard style={codeCardStyle} loading={loading}>
-                <CustomFlex justify={compareCode ? 'end' : 'space-between'} align="center">
+        <section className="w-full max-w-full overflow-hidden">
+            <CustomCard style={codeCardStyle} loading={loading} className="[&_.ant-card-body]:!p-3">
+                <div className="flex flex-wrap items-center justify-between gap-2">
                     {renderActions()}
                     {renderLanguage()}
-                </CustomFlex>
+                </div>
 
                 {renderTitle()}
 
                 {compareCode ? (
                     <>
-                        <CustomFlex justify="space-between" align="center" className="mb-2">
+                        <div className="flex justify-between items-center mb-2">
                             <CustomTag color="#2db7f5">{`Version ${compareVersion}`}</CustomTag>
                             <CustomTag color="#f50">Current version</CustomTag>
-                        </CustomFlex>
+                        </div>
 
                         <ReactDiffViewer
                             splitView={true}

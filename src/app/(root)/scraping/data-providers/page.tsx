@@ -7,6 +7,7 @@ import {
     StatusTag,
     type CardAction,
     type IFilterField,
+    type TableCustomAction,
 } from '@/components/common';
 import { CustomButton, type ColumnsType } from '@/components/custom-antd';
 import { DataProviderStatus } from '@/enums';
@@ -15,7 +16,7 @@ import { formatDate } from '@/libs';
 import { PlusOutlined } from '@ant-design/icons';
 import { Icon } from '@iconify/react';
 
-import { DataProviderFormModal } from './components';
+import { DataProviderFormModal, DataProviderSettingModal } from './components';
 import { useDataProviderPage } from './hooks';
 import type { DataProviderRecord } from './types';
 
@@ -26,7 +27,10 @@ const DataProviderPage = () => {
         createModalForm,
         editModalForm,
         dataProviders,
+        settingRecord,
         debouncedSearch,
+        openSettingModal,
+        closeSettingModal,
     } = useDataProviderPage();
 
     const columns: ColumnsType<DataProviderRecord> = [
@@ -74,12 +78,23 @@ const DataProviderPage = () => {
             title: 'Cào',
             align: 'center',
             dataIndex: 'targetConfig',
-            render: (targetConfig: NDataProvider.ITargetConfig) =>
-                targetConfig ? (
-                    <Icon icon="lucide:check" className="w-full" />
-                ) : (
-                    <Icon icon="lucide:x" className="w-full" />
-                ),
+            render: (targetConfig: NDataProvider.ITargetConfig, record) => (
+                <CustomButton
+                    type="text"
+                    title="Cấu hình hàm cào"
+                    onClick={() => openSettingModal(record)}
+                    icon={
+                        targetConfig ? (
+                            <Icon
+                                icon="lucide:check-circle-2"
+                                className="w-5 h-5 text-emerald-500"
+                            />
+                        ) : (
+                            <Icon icon="lucide:settings" className="w-5 h-5 text-amber-500" />
+                        )
+                    }
+                />
+            ),
             width: '10%',
         },
         {
@@ -94,6 +109,15 @@ const DataProviderPage = () => {
                     <Icon icon="lucide:x" className="w-full" />
                 ),
             width: '15%',
+        },
+    ];
+
+    const customRowActions: TableCustomAction<DataProviderRecord>[] = [
+        {
+            key: 'setting-function',
+            icon: <Icon icon="lucide:settings" />,
+            tooltip: 'Cấu hình hàm cào',
+            onClick: (record) => openSettingModal(record),
         },
     ];
 
@@ -134,6 +158,7 @@ const DataProviderPage = () => {
                     tableQuery={tableQuery}
                     deleteResource="data-providers"
                     onEdit={(record) => editModalForm.show(record.id)}
+                    customRowActions={customRowActions}
                 />
             </ListWrapper>
 
@@ -143,6 +168,13 @@ const DataProviderPage = () => {
             />
 
             <DataProviderFormModal modalForm={editModalForm} parentOptions={dataProviders ?? []} />
+
+            <DataProviderSettingModal
+                open={!!settingRecord}
+                record={settingRecord}
+                onClose={closeSettingModal}
+                onSuccess={() => tableQuery.refetch()}
+            />
         </>
     );
 };
