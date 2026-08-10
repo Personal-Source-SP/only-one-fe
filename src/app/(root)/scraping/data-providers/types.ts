@@ -1,4 +1,4 @@
-import { NDataProvider } from '@/interfaces';
+import type { NDataProvider } from '@/interfaces';
 
 export interface DataProviderFormValues {
     name: string;
@@ -9,3 +9,5 @@ export interface DataProviderFormValues {
 
 export type DataProviderRecord = NDataProvider.IDataProvider;
 export type ImportDataProviderRecord = NDataProvider.IImportDataProvider;
+
+export type SettingConfigType = 'target' | 'search';

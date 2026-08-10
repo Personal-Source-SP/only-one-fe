@@ -2,8 +2,7 @@
 
 import { useState } from 'react';
 import { useCustomModalForm, useCustomTable, useSelectDataProvider } from '@/hooks';
-import type { DataProviderFormValues, DataProviderRecord } from './types';
-import type { SettingConfigType } from './components/DataProviderSettingModal';
+import type { DataProviderFormValues, DataProviderRecord, SettingConfigType } from './types';
 
 export interface SettingModalState {
     record: DataProviderRecord;
