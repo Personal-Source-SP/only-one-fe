@@ -1,5 +1,6 @@
 'use client';
 
+import type { FC, JSX } from 'react';
 import type {
     DataProviderRecord,
     SettingConfigType,
@@ -15,7 +16,9 @@ export interface DataProviderSettingModalProps {
     onSuccess?: () => void;
 }
 
-export const DataProviderSettingModal = (props: DataProviderSettingModalProps) => {
+export const DataProviderSettingModal: FC<DataProviderSettingModalProps> = (
+    props: DataProviderSettingModalProps,
+): JSX.Element => {
     if (props.configType === 'search') {
         return <DataProviderSearchModal {...props} />;
     }

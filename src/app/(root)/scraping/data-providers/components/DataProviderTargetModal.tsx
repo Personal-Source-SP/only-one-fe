@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type FC, type JSX } from 'react';
 import { CodeDisplay } from '@/components/common';
 import {
     CustomButton,
@@ -37,12 +37,12 @@ export interface DataProviderTargetModalProps {
     onSuccess?: () => void;
 }
 
-export const DataProviderTargetModal = ({
+export const DataProviderTargetModal: FC<DataProviderTargetModalProps> = ({
     open,
     record,
     onClose,
     onSuccess,
-}: DataProviderTargetModalProps) => {
+}: DataProviderTargetModalProps): JSX.Element => {
     const { handleNotification } = useMainContext();
     const { handleCustomMutationData } = useCustomMutationData();
 
@@ -57,7 +57,7 @@ export const DataProviderTargetModal = ({
     const htmlContentString = CustomForm.useWatch('htmlContentString', form);
     const functionGenerator = CustomForm.useWatch(['targetConfig', 'functionGenerator'], form);
 
-    useEffect(() => {
+    useEffect((): void => {
         if (open && record) {
             const initialTargetConfig = record.targetConfig ?? {
                 maxResults: 10,
@@ -85,7 +85,7 @@ export const DataProviderTargetModal = ({
         }
     }, [open, record, form]);
 
-    const handleScraperServiceChange = (value: ScraperServiceEnum) => {
+    const handleScraperServiceChange = (value: ScraperServiceEnum): void => {
         const currentGenerator = form.getFieldValue(['targetConfig', 'functionGenerator']);
         if (isEmpty(currentGenerator)) {
             if (value === ScraperServiceEnum.GENERIC) {
@@ -102,7 +102,7 @@ export const DataProviderTargetModal = ({
         }
     };
 
-    const handleTestParser = async () => {
+    const handleTestParser = async (): Promise<void> => {
         if (!testUrl && !htmlContentString) {
             handleNotification({
                 type: NotificationType.ERROR,
@@ -160,7 +160,7 @@ export const DataProviderTargetModal = ({
         }
     };
 
-    const handleSaveConfig = async () => {
+    const handleSaveConfig = async (): Promise<void> => {
         if (!record?.id) return;
 
         try {
@@ -207,14 +207,14 @@ export const DataProviderTargetModal = ({
         }
     };
 
-    const renderTitle = () => (
+    const renderTitle = (): JSX.Element => (
         <div className="flex items-center gap-2 text-sm sm:text-base font-semibold truncate pr-4">
             <Icon icon="lucide:code-2" className="text-hub-primary text-lg sm:text-xl shrink-0" />
             <span className="truncate">{`Cấu hình hàm cào: ${record?.name || ''}`}</span>
         </div>
     );
 
-    const renderFooter = () => (
+    const renderFooter = (): JSX.Element => (
         <CustomFlex justify="end" gap={8} className="w-full flex-row">
             <CustomButton
                 onClick={onClose}
@@ -236,7 +236,7 @@ export const DataProviderTargetModal = ({
         </CustomFlex>
     );
 
-    const renderTargetConfigTab = () => (
+    const renderTargetConfigTab = (): JSX.Element => (
         <div className="space-y-4">
             {/* Thông số cơ bản */}
             <div className="bg-hub-section/20 border border-hub-border/60 rounded-xl p-3 sm:p-4">
@@ -408,7 +408,7 @@ export const DataProviderTargetModal = ({
                         isDisplayLanguage
                         language="javascript"
                         code={functionGenerator || ''}
-                        onCodeChange={(newCode: string) => {
+                        onCodeChange={(newCode: string): void => {
                             form.setFieldValue(['targetConfig', 'functionGenerator'], newCode);
                         }}
                     />
@@ -467,7 +467,7 @@ export const DataProviderTargetModal = ({
                 <CustomTabs
                     items={tabItems}
                     activeKey={activeTab}
-                    onChange={(key) => setActiveTab(key)}
+                    onChange={(key: string): void => setActiveTab(key)}
                     className="[&_.ant-tabs-nav]:sticky [&_.ant-tabs-nav]:top-0 [&_.ant-tabs-nav]:z-10 [&_.ant-tabs-nav]:bg-hub-surface [&_.ant-tabs-nav]:!mb-4 [&_.ant-tabs-nav]:py-2 [&_.ant-tabs-nav-list]:w-full [&_.ant-tabs-tab]:flex-1 [&_.ant-tabs-tab]:justify-center"
                 />
             </CustomForm>

@@ -1,5 +1,6 @@
 'use client';
 
+import type { FC, JSX } from 'react';
 import { CodeDisplay } from '@/components/common';
 import {
     CustomButton,
@@ -24,7 +25,7 @@ export interface TestConfigTabProps {
     onTestParser: () => void;
 }
 
-export const TestConfigTab = ({
+export const TestConfigTab: FC<TestConfigTabProps> = ({
     form,
     title = 'Thử nghiệm parser',
     inputLabel = 'URL thử nghiệm',
@@ -34,7 +35,7 @@ export const TestConfigTab = ({
     htmlContentString,
     onTestHtmlContentChange,
     onTestParser,
-}: TestConfigTabProps) => {
+}: TestConfigTabProps): JSX.Element => {
     return (
         <div className="space-y-4">
             <div className="bg-hub-section/20 border border-hub-border/60 rounded-xl p-3 sm:p-4">
@@ -79,7 +80,7 @@ export const TestConfigTab = ({
                             expanded
                             language="html"
                             code={htmlContentString || ''}
-                            onCodeChange={(newCode: string) => {
+                            onCodeChange={(newCode: string): void => {
                                 form.setFieldValue('htmlContentString', newCode);
                             }}
                         />
