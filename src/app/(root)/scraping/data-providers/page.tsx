@@ -26,7 +26,6 @@ const DataProviderPage = () => {
         tableQuery,
         createModalForm,
         editModalForm,
-        dataProviders,
         settingRecord,
         settingConfigType,
         debouncedSearch,
@@ -225,12 +224,9 @@ const DataProviderPage = () => {
                 />
             </ListWrapper>
 
-            <DataProviderFormModal
-                modalForm={createModalForm}
-                parentOptions={dataProviders ?? []}
-            />
+            <DataProviderFormModal modalForm={createModalForm} />
 
-            <DataProviderFormModal modalForm={editModalForm} parentOptions={dataProviders ?? []} />
+            <DataProviderFormModal modalForm={editModalForm} />
 
             <DataProviderSettingModal
                 open={!!settingRecord}

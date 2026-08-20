@@ -109,12 +109,9 @@ export declare namespace NDataProvider {
         targetConfig?: ITargetConfig;
         lastSuccessfulScrapeAt?: Date;
         searchConfig?: ISearchConfig;
-        parentId?: string;
         searchService: string;
         searchStatus: DataProviderSearchStatus;
         dataProviderItems?: IDataProviderItem[];
-        parent?: IDataProvider;
-        children?: IDataProvider[];
     }
 
     interface IDataProviderItem extends Abstract {

@@ -4,7 +4,6 @@ export interface DataProviderFormValues {
     name: string;
     identifier: string;
     baseUrl: string;
-    parentId?: string;
 }
 
 export type DataProviderRecord = NDataProvider.IDataProvider;

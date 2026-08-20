@@ -1,6 +1,6 @@
 'use client';
 
-import { CustomInputForm, CustomModalForm, CustomSelectInput } from '@/components/common';
+import { CustomInputForm, CustomModalForm } from '@/components/common';
 import type { UseCustomModalFormResponse } from '@/hooks';
 import { FormRuleType } from '@/utilities';
 import type {
@@ -14,14 +14,10 @@ interface DataProviderFormModalProps {
         DataProviderFormValues,
         DataProviderRecord
     >;
-    parentOptions?: { label: string; value: string }[];
 }
 
-export const DataProviderFormModal = ({
-    modalForm,
-    parentOptions = [],
-}: DataProviderFormModalProps) => {
-    const { mode, formProps } = modalForm;
+export const DataProviderFormModal = ({ modalForm }: DataProviderFormModalProps) => {
+    const { mode } = modalForm;
 
     return (
         <CustomModalForm<DataProviderRecord, DataProviderFormValues, DataProviderRecord>
@@ -32,7 +28,6 @@ export const DataProviderFormModal = ({
                 name: '',
                 identifier: '',
                 baseUrl: '',
-                parentId: undefined,
             }}
         >
             <CustomInputForm
@@ -99,24 +94,6 @@ export const DataProviderFormModal = ({
                 ]}
                 inputProps={{ placeholder: 'https://shopee.vn' }}
             />
-
-            {parentOptions.length > 0 && (
-                <CustomSelectInput
-                    name="parentId"
-                    label="Nhà cung cấp cha"
-                    selectProps={{
-                        options: parentOptions,
-                        placeholder: 'Chọn nhà cung cấp cha (nếu có)',
-                        allowClear: true,
-                        onChange: (value) => {
-                            const selectedParent = parentOptions.find((opt) => opt.value === value);
-                            if (selectedParent) {
-                                formProps.form?.setFieldValue('identifier', selectedParent.label);
-                            }
-                        },
-                    }}
-                />
-            )}
         </CustomModalForm>
     );
 };

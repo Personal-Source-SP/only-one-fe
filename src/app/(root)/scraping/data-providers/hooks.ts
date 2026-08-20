@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useCustomModalForm, useCustomTable, useSelectDataProvider } from '@/hooks';
+import { useCustomModalForm, useCustomTable } from '@/hooks';
 import type { DataProviderFormValues, DataProviderRecord, SettingConfigType } from './types';
 
 export interface SettingModalState {
@@ -27,8 +27,6 @@ export const useDataProviderPage = () => {
         useCustomTable<DataProviderRecord>({
             resource: 'data-providers',
         });
-
-    const { options: dataProviders } = useSelectDataProvider();
 
     const createModalForm = useCustomModalForm<
         DataProviderRecord,
@@ -56,7 +54,6 @@ export const useDataProviderPage = () => {
             name: record.name,
             identifier: record.identifier,
             baseUrl: record.baseUrl,
-            parentId: record.parentId,
         }),
     });
 
@@ -65,7 +62,6 @@ export const useDataProviderPage = () => {
         tableQuery,
         createModalForm,
         editModalForm,
-        dataProviders,
         settingModalState,
         settingRecord: settingModalState?.record || null,
         settingConfigType: settingModalState?.configType || 'target',

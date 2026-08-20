@@ -1,0 +1,95 @@
+{
+  "version": 1,
+  "skills": {
+    "grill-me": {
+      "name": "grill-me",
+      "description": "Interview the user relentlessly about a plan or design until reaching shared understanding.",
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "skillPath": "skills/productivity/grill-me/SKILL.md",
+      "computedHash": "caaf8b8de1684f96e26b28f3c29189db5c89cce4b73e1c93d86164f66ef88637",
+      "installedAt": "2026-08-19T14:03:12.994Z",
+      "updatedAt": "2026-08-20T13:33:04.884Z"
+    },
+    "interview-me": {
+      "name": "interview-me",
+      "description": "Conduct a one-question-at-a-time interview extracting root needs until ~95% confidence.",
+      "source": "addyosmani/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/interview-me/SKILL.md",
+      "computedHash": "1d94741d10d2c826cd0c191aea3981ee94c8abb27ef2a166f6a372117d06448f",
+      "installedAt": "2026-08-19T14:03:13.332Z",
+      "updatedAt": "2026-08-20T13:33:04.927Z"
+    },
+    "idea-refine": {
+      "name": "idea-refine",
+      "description": "Refine rough ideas through structured divergent and convergent thinking.",
+      "source": "addyosmani/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/idea-refine/SKILL.md",
+      "computedHash": "79e773058963adc7646b0115b4f8a4afc974c5ff95843e4ef1cafff3cb51899e",
+      "installedAt": "2026-08-19T14:03:13.601Z",
+      "updatedAt": "2026-08-20T13:33:04.965Z"
+    },
+    "frontend-ui-engineering": {
+      "name": "frontend-ui-engineering",
+      "description": "Component architecture, design systems, 5-state matrix, and WCAG accessibility.",
+      "source": "addyosmani/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/frontend-ui-engineering/SKILL.md",
+      "computedHash": "2b74ac4862be3902ec918dceac9366a6fe83b9e003601c0deaf6be09c1766aca",
+      "installedAt": "2026-08-19T14:03:13.908Z",
+      "updatedAt": "2026-08-20T13:33:06.298Z"
+    },
+    "performance-optimization": {
+      "name": "performance-optimization",
+      "description": "Optimize web performance, Core Web Vitals, N+1 query detection, and caching.",
+      "source": "addyosmani/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/performance-optimization/SKILL.md",
+      "computedHash": "e2def7de6cfcdaa6577f4f76839a4001c42c947eb636395b27c450d514ddd188",
+      "installedAt": "2026-08-19T14:03:14.830Z",
+      "updatedAt": "2026-08-20T13:33:07.277Z"
+    },
+    "code-simplification": {
+      "name": "code-simplification",
+      "description": "Simplify code, apply Chesterton Fence and Rule of 500, eliminate dead code.",
+      "source": "addyosmani/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/code-simplification/SKILL.md",
+      "computedHash": "f0c5ed754057eb0c1e027e2587f59de816651feb5e837242296c43ea21cf621d",
+      "installedAt": "2026-08-19T14:03:15.128Z",
+      "updatedAt": "2026-08-20T13:33:07.318Z"
+    },
+    "debugging-and-error-recovery": {
+      "name": "debugging-and-error-recovery",
+      "description": "Perform systematic 5-step Root Cause Analysis for bugs and failures.",
+      "source": "addyosmani/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/debugging-and-error-recovery/SKILL.md",
+      "computedHash": "67ce2c9442da0c5a6e3515617fc9c4003cfe232ef7c7210da342f40f508f9958",
+      "installedAt": "2026-08-19T14:03:15.418Z",
+      "updatedAt": "2026-08-20T13:33:07.360Z"
+    },
+    "doubt-driven-development": {
+      "name": "doubt-driven-development",
+      "description": "Stress-test code designs by questioning assumptions and identifying edge cases.",
+      "source": "addyosmani/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/doubt-driven-development/SKILL.md",
+      "computedHash": "0a058297aa6bdf90b0ff45c3537af4cb0005f4af6b0d202fc07b7b5984db50ea",
+      "installedAt": "2026-08-19T14:03:15.465Z",
+      "updatedAt": "2026-08-20T13:33:07.411Z"
+    },
+    "source-driven-development": {
+      "name": "source-driven-development",
+      "description": "Enforce source-verified APIs and grounded documentation.",
+      "source": "addyosmani/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/source-driven-development/SKILL.md",
+      "computedHash": "719d4e54083c90ded62112fb41df3dbc4619309118ee0e6aa4d846f92d8204af",
+      "installedAt": "2026-08-19T14:03:15.774Z",
+      "updatedAt": "2026-08-20T13:33:07.448Z"
+    }
+  }
+}
