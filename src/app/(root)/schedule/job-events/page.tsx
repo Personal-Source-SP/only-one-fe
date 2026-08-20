@@ -9,18 +9,17 @@ import {
     type IFilterField,
 } from '@/components/common';
 import { ScheduleJobEventType } from '@/enums';
-import type { NSchedule } from '@/interfaces';
 import { formatDate } from '@/libs';
 
 import { useScheduleJobEventsPage } from './hooks';
 import { ViewJobEvent } from './components';
 import type { JobEventRecord } from './types';
 
-const ScheduleJobEventsPage = () => {
+const JobEvents = () => {
     const { tableProps, tableQuery, debouncedSearch, selectedJobEvent, setSelectedJobEvent } =
         useScheduleJobEventsPage();
 
-    const columns: ColumnsType<NSchedule.IScheduleJobEvent> = [
+    const columns: ColumnsType<JobEventRecord> = [
         {
             title: 'STT',
             key: 'index',
@@ -106,4 +105,4 @@ const ScheduleJobEventsPage = () => {
     );
 };
 
-export default ScheduleJobEventsPage;
+export default JobEvents;

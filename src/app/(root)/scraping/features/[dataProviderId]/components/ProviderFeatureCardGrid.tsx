@@ -1,16 +1,18 @@
 'use client';
 
 import type { FC, JSX } from 'react';
-import type { FeatureModalTab } from '@/app/(root)/scraping/features/[dataProviderId]/types';
 import { DataProviderFeatureStatus, DataProviderFeatureType } from '@/enums';
-import type { NDataProvider } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { ProviderFeatureCard } from './ProviderFeatureCard';
+import type {
+    FeatureModalTab,
+    IDataProviderFeature,
+} from '@/app/(root)/scraping/features/[dataProviderId]/types';
 
 interface ProviderFeatureCardGridProps {
-    features: NDataProvider.IDataProviderFeature[];
+    features: IDataProviderFeature[];
     onSwitchStatus: (featureId: string, currentStatus: DataProviderFeatureStatus) => void;
-    onOpenModal: (feature: NDataProvider.IDataProviderFeature, tab: FeatureModalTab) => void;
+    onOpenModal: (feature: IDataProviderFeature, tab: FeatureModalTab) => void;
     onAddFeature: () => void;
 }
 

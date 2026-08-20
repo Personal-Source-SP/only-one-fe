@@ -1,27 +1,33 @@
+import type { IDataProvider } from '@/app/(root)/scraping/data-providers/types';
+import type { IItem } from '@/app/(root)/scraping/items/types';
+import type {
+    IDataProviderItem,
+    RegisterLocalFolderRequest,
+    RegisterLocalFolderResponse,
+} from '@/app/(root)/scraping/provider-items/types';
 import { LocalFolderRegistrationStatusEnum } from '@/enums';
-import { NDataProvider } from '@/interfaces';
 import { deburr, find, kebabCase, toLower } from 'lodash';
 
 type BuildLocalFolderRegistrationInput = {
-    dataProvider: NDataProvider.IDataProvider;
+    dataProvider: IDataProvider;
     folderName: string;
     folderPath?: string;
 };
 
 type ResolveLocalFolderRecordStateInput = {
-    items: NDataProvider.IItem[];
-    providerItems: NDataProvider.IDataProviderItem[];
-    request: NDataProvider.RegisterLocalFolderRequest;
+    items: IItem[];
+    providerItems: IDataProviderItem[];
+    request: RegisterLocalFolderRequest;
 };
 
 type ResolveLocalFolderRecordStateResponse = {
-    existingItem?: NDataProvider.IItem;
-    existingProviderItem?: NDataProvider.IDataProviderItem;
+    existingItem?: IItem;
+    existingProviderItem?: IDataProviderItem;
 };
 
 type BuildLocalFolderSuccessResponseInput = {
     itemId: string;
-    request: NDataProvider.RegisterLocalFolderRequest;
+    request: RegisterLocalFolderRequest;
     createdItem: boolean;
     dataProviderItemId: string;
 };
@@ -40,39 +46,39 @@ export const buildLocalFolderRegistrationRequest = ({
     folderName,
     folderPath,
     dataProvider,
-}: BuildLocalFolderRegistrationInput): NDataProvider.RegisterLocalFolderRequest => {
+}: BuildLocalFolderRegistrationInput): RegisterLocalFolderRequest => {
     const normalizedFolderName = folderName.trim();
     const normalizedFolderPath = folderPath?.trim();
-    const folderReference = normalizedFolderPath || normalizedFolderName;
-    const folderIdentifier = normalizeLocalFolderIdentifier(folderReference);
+    const folderIdentifier = normalizeLocalFolderIdentifier(normalizedFolderName);
+    const itemUrl = buildLocalFolderItemUrl(dataProvider.baseUrl, folderIdentifier);
 
     return {
-        itemUrl: buildLocalFolderItemUrl(dataProvider.baseUrl, folderIdentifier),
-        itemCode: folderIdentifier,
+        itemUrl,
+        folderIdentifier,
+        dataProviderId: dataProvider.id,
+        itemCode: normalizedFolderName,
         itemName: normalizedFolderName,
         folderName: normalizedFolderName,
         folderPath: normalizedFolderPath || undefined,
-        dataProviderId: dataProvider.id,
-        folderIdentifier,
     };
 };
 
 export const resolveLocalFolderRecordState = ({
     items,
-    request,
     providerItems,
+    request,
 }: ResolveLocalFolderRecordStateInput): ResolveLocalFolderRecordStateResponse => {
-    const existingItem = find(items, (item) => {
-        if (item.code === request.itemCode) {
-            return true;
-        }
+    const targetItemCode = toLower(request.itemCode ?? '');
+    const targetItemUrl = toLower(request.itemUrl ?? '');
 
-        return toLower(item.name) === toLower(request.itemName);
-    });
+    const existingItem = find(items, (item) => toLower(item.code ?? '') === targetItemCode);
 
-    const existingProviderItem = find(providerItems, (providerItem) => {
-        return providerItem.itemUrl === request.itemUrl;
-    });
+    const existingProviderItem = find(
+        providerItems,
+        (providerItem) =>
+            providerItem.dataProviderId === request.dataProviderId &&
+            toLower(providerItem.itemUrl ?? '') === targetItemUrl,
+    );
 
     return {
         existingItem,
@@ -85,13 +91,13 @@ export const buildLocalFolderSuccessResponse = ({
     request,
     createdItem,
     dataProviderItemId,
-}: BuildLocalFolderSuccessResponseInput): NDataProvider.RegisterLocalFolderResponse => {
+}: BuildLocalFolderSuccessResponseInput): RegisterLocalFolderResponse => {
     return {
         itemId,
+        dataProviderItemId,
         itemUrl: request.itemUrl,
         itemStatus: createdItem
             ? LocalFolderRegistrationStatusEnum.CREATED
             : LocalFolderRegistrationStatusEnum.REUSED,
-        dataProviderItemId,
     };
 };

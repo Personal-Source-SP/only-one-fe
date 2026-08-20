@@ -11,7 +11,6 @@ import {
     type IFilterField,
 } from '@/components/common';
 import { SimulationService } from '@/enums';
-import type { NSimulation } from '@/interfaces';
 import { formatDate } from '@/libs';
 
 import { useSimulationContextsPage } from './hooks';
@@ -22,7 +21,7 @@ const SimulationContextsPage = () => {
     const { loading, tableProps, tableQuery, debouncedSearch, createModalForm, editModalForm } =
         useSimulationContextsPage();
 
-    const columns: ColumnsType<NSimulation.ISimulationContext> = [
+    const columns: ColumnsType<SimulationContextRecord> = [
         {
             title: 'STT',
             key: 'index',

@@ -21,7 +21,13 @@ import {
 } from '@/components/custom-antd';
 import { MessageType, MimeType } from '@/enums';
 import { useCustomMutationData, useSelectDataProviderItem, useSelectItem } from '@/hooks';
-import { NBaseApi, NDataProvider } from '@/interfaces';
+import type { IItem } from '@/app/(root)/scraping/items/types';
+import type { IDataProviderItem } from '@/app/(root)/scraping/provider-items/types';
+import type {
+    IScrapeDataRequest,
+    IScrapeDataResponse,
+} from '@/app/(root)/scraping/scraping-data/types';
+import type { NBaseApi } from '@/interfaces';
 import { Icon } from '@iconify/react';
 
 import dayjs from 'dayjs';
@@ -46,7 +52,7 @@ export const ProcessScrapeData = ({
     selectedDataProviderItemIds,
     onClose,
 }: ProcessScrapeDataProps) => {
-    const [form] = CustomForm.useForm<NDataProvider.IScrapeDataRequest>();
+    const [form] = CustomForm.useForm<IScrapeDataRequest>();
 
     const [pageSize, setPageSize] = useState(50);
     const [isLoading, setIsLoading] = useState(false);
@@ -56,9 +62,7 @@ export const ProcessScrapeData = ({
     const [error, setError] = useState(0);
     const [process, setProcess] = useState(0);
     const [success, setSuccess] = useState(0);
-    const [previewData, setPreviewData] = useState<
-        NDataProvider.IScrapeDataResponse['successData']
-    >([]);
+    const [previewData, setPreviewData] = useState<IScrapeDataResponse['successData']>([]);
 
     const itemIds = CustomForm.useWatch('itemIds', form);
     const dataProviderItemIds = CustomForm.useWatch('dataProviderItemIds', form);
@@ -68,8 +72,8 @@ export const ProcessScrapeData = ({
             enabled: false,
             id: itemIds?.length === 1 ? itemIds[0] : undefined,
             type: itemIds?.length ? 'items' : 'data-provider-items',
-            optionValue: (item: NDataProvider.IDataProviderItem) => item.id ?? '',
-            optionLabel: (item: NDataProvider.IDataProviderItem) => item.itemUrl ?? '',
+            optionValue: (item: IDataProviderItem) => item.id ?? '',
+            optionLabel: (item: IDataProviderItem) => item.itemUrl ?? '',
         });
 
     const { options: itemOptions } = useSelectItem();
@@ -93,7 +97,7 @@ export const ProcessScrapeData = ({
         },
     ];
 
-    const columns: ColumnType<NDataProvider.IItem>[] = [
+    const columns: ColumnType<IItem>[] = [
         {
             title: 'Nhà cung cấp',
             dataIndex: 'dataProviderName',
@@ -145,7 +149,7 @@ export const ProcessScrapeData = ({
     const handleProcessScrapeData = async () => {
         setIsLoading(true);
 
-        let values: NDataProvider.IScrapeDataRequest;
+        let values: IScrapeDataRequest;
         try {
             values = await form.validateFields();
         } catch (error) {
@@ -161,8 +165,7 @@ export const ProcessScrapeData = ({
                 },
                 url: 'scraping-data/process-scrape-data',
                 successNotification(data) {
-                    const response =
-                        data?.data as NBaseApi.IResponse<NDataProvider.IScrapeDataResponse>;
+                    const response = data?.data as NBaseApi.IResponse<IScrapeDataResponse>;
 
                     if (!response?.data) {
                         setIsLoading(false);

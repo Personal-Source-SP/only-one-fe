@@ -9,7 +9,6 @@ import {
     type CardAction,
     type IFilterField,
 } from '@/components/common';
-import type { NDataProvider } from '@/interfaces';
 import { formatDate } from '@/libs';
 
 import { useDataProviderItemPage } from './hooks';
@@ -35,24 +34,27 @@ const DataProviderItemPage = () => {
         handleSwitchStatus,
     } = useDataProviderItemPage();
 
-    const columns: ColumnsType<NDataProvider.IDataProviderItem> = [
+    const columns: ColumnsType<ProviderItemRecord> = [
         {
             title: 'Thông tin đối tượng',
             dataIndex: 'itemAndProviderAndUrl',
             key: 'itemAndProviderAndUrl',
             ellipsis: true,
             width: 200,
-            render: (_: any, record: NDataProvider.IDataProviderItem) => (
-                <div className="text-sm">
-                    <p>
-                        <strong>Nhà cung cấp:</strong> {record?.dataProvider?.name ?? '---'}
-                    </p>
-                    <p>
-                        <strong>URL đối tượng:</strong> {record?.itemUrl ?? '---'}
-                    </p>
-                    <p>
-                        <strong>Đối tượng:</strong> {record?.item?.name ?? '---'}
-                    </p>
+            render: (_: any, record: ProviderItemRecord) => (
+                <div className="flex flex-col gap-1">
+                    <span className="font-semibold text-sm">{record?.item?.name ?? '---'}</span>
+                    <span className="text-xs text-hub-subtitle">
+                        {record?.dataProvider?.name ?? '---'}
+                    </span>
+                    <a
+                        href={record.itemUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-xs text-hub-primary hover:underline truncate"
+                    >
+                        {record.itemUrl}
+                    </a>
                 </div>
             ),
         },
@@ -73,30 +75,27 @@ const DataProviderItemPage = () => {
             render: (createdAt: Date) => formatDate(createdAt),
         },
         {
-            title: 'Trạng thái',
+            title: 'Trạng thái hoạt động',
             dataIndex: 'isActive',
             key: 'isActive',
+            width: 140,
             align: 'center',
-            width: 100,
-            render: (isActive: boolean, record: NDataProvider.IDataProviderItem) => (
+            render: (isActive: boolean, record: ProviderItemRecord) => (
                 <CustomToggle
                     size="small"
                     checked={isActive}
-                    onChange={(checked) => handleSwitchStatus(record?.id ?? '', checked)}
+                    onChange={(checked) => handleSwitchStatus(record.id, checked)}
                 />
             ),
         },
         {
-            title: 'Lưu vào kho dữ liệu',
+            title: 'Lưu Cloud',
             dataIndex: 'isSavedToCloudData',
             key: 'isSavedToCloudData',
+            width: 120,
             align: 'center',
-            width: 100,
-            render: (isSavedToCloudData: boolean, record: NDataProvider.IDataProviderItem) => (
-                <CustomSpace>
-                    <CustomToggle size="small" checked={isSavedToCloudData} disabled />
-                    <p>{record?.cloudDataProvider?.name ?? '---'}</p>
-                </CustomSpace>
+            render: (isSavedToCloudData: boolean) => (
+                <CustomToggle size="small" checked={isSavedToCloudData} disabled />
             ),
         },
     ];

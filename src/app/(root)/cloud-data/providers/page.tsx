@@ -11,7 +11,6 @@ import {
     type IFilterField,
 } from '@/components/common';
 import { CloudDataProviderType } from '@/enums';
-import type { NCloudData } from '@/interfaces';
 import { capitalizeFirstLetter, formatDate, formatFileSize } from '@/libs';
 
 import { useCloudDataProviderPage } from './hooks';
@@ -22,7 +21,7 @@ const CloudDataProvider = () => {
     const { tableProps, tableQuery, debouncedSearch, createModalForm, editModalForm } =
         useCloudDataProviderPage();
 
-    const columns: ColumnsType<NCloudData.ICloudDataProvider> = [
+    const columns: ColumnsType<CloudProviderRecord> = [
         {
             title: 'STT',
             key: 'index',

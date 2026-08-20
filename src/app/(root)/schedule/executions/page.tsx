@@ -11,7 +11,6 @@ import {
     type IFilterField,
 } from '@/components/common';
 import { CronExpression, ExecutionServiceEnum, ScheduleType } from '@/enums';
-import type { NSchedule } from '@/interfaces';
 import { capitalizeFirstLetter, formatDate, getEnumKeyByValue } from '@/libs';
 
 import { useScheduleExecutionPage } from './hooks';
@@ -33,7 +32,7 @@ const ScheduleExecutionPage = () => {
         handleSwitchStatus,
     } = useScheduleExecutionPage();
 
-    const columns: ColumnsType<NSchedule.ISchedule> = [
+    const columns: ColumnsType<ScheduleExecutionRecord> = [
         {
             title: 'STT',
             key: 'index',
@@ -99,7 +98,7 @@ const ScheduleExecutionPage = () => {
             key: 'isActive',
             width: 200,
             align: 'center',
-            render: (isActive: boolean, record: NSchedule.ISchedule) => (
+            render: (isActive: boolean, record: ScheduleExecutionRecord) => (
                 <CustomToggle
                     size="small"
                     checked={isActive}

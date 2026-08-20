@@ -22,13 +22,15 @@ import {
     StepsProps,
     TableProps,
 } from '@/components/custom-antd';
+import { MessageType } from '@/enums';
 import { useMainContext } from '@/contexts/MainContext';
-import { GoogleDriveType, MessageType, MimeType } from '@/enums';
-import { useCustomMutationData } from '@/hooks';
-import { NGoogle, Option } from '@/interfaces';
+import { GoogleDriveType, MimeType } from '@/enums';
+import { useCustomMutationData, useSelectGoogleFolder } from '@/hooks';
+import type { IDataOption, Option } from '@/interfaces';
 import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
 import { useEffect, useState, type Key } from 'react';
+import type { ILocalFilePreviewItem } from '@/app/(root)/google/drive/photos/types';
 
 const StepEnum = {
     Settings: 0,
@@ -90,8 +92,8 @@ export const SyncLocal = ({
     const [totalSize, setTotalSize] = useState(0);
     const [totalCount, setTotalCount] = useState(0);
     const [updateAll, setUpdateAll] = useState(false);
-    const [previewData, setPreviewData] = useState<NGoogle.ILocalFilePreviewItem[]>([]);
-    const [selectedRows, setSelectedRows] = useState<NGoogle.ILocalFilePreviewItem[]>([]);
+    const [previewData, setPreviewData] = useState<ILocalFilePreviewItem[]>([]);
+    const [selectedRows, setSelectedRows] = useState<ILocalFilePreviewItem[]>([]);
 
     useEffect(() => {
         setSelectedRows([]);
@@ -115,7 +117,7 @@ export const SyncLocal = ({
         },
     ];
 
-    const columns: ColumnType<NGoogle.ILocalFilePreviewItem>[] = [
+    const columns: ColumnType<ILocalFilePreviewItem>[] = [
         {
             title: 'Tên tệp',
             dataIndex: 'name',
@@ -162,12 +164,12 @@ export const SyncLocal = ({
         },
     ];
 
-    const rowSelection: TableProps<NGoogle.ILocalFilePreviewItem>['rowSelection'] = {
+    const rowSelection: TableProps<ILocalFilePreviewItem>['rowSelection'] = {
         type: 'checkbox',
-        onChange: (_: Key[], selectedRows: NGoogle.ILocalFilePreviewItem[]) => {
+        onChange: (_: Key[], selectedRows: ILocalFilePreviewItem[]) => {
             setSelectedRows([...selectedRows]);
         },
-        getCheckboxProps: (record: NGoogle.ILocalFilePreviewItem) => ({
+        getCheckboxProps: (record: ILocalFilePreviewItem) => ({
             name: record.name,
         }),
     };

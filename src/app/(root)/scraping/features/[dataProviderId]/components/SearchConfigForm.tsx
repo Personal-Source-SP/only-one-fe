@@ -16,11 +16,11 @@ import {
 import { DEFAULT_SEARCH_FUNCTION_GENERATOR } from '@/constants';
 import { MessageType, ScraperServiceEnum } from '@/enums';
 import { useCustomMutationData } from '@/hooks';
-import type { NDataProvider } from '@/interfaces';
 import { Icon } from '@iconify/react';
+import type { IDataProviderFeature } from '@/app/(root)/scraping/features/[dataProviderId]/types';
 
 interface SearchConfigFormProps {
-    feature: NDataProvider.IDataProviderFeature;
+    feature: IDataProviderFeature;
     onSuccess: () => void;
     onClose: () => void;
 }

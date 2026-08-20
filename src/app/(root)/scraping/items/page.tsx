@@ -11,7 +11,6 @@ import {
     type IFilterField,
 } from '@/components/common';
 import { DataImportType, ProductMappingStatus } from '@/enums';
-import type { NDataProvider } from '@/interfaces';
 import { formatDate } from '@/libs';
 
 import { useItemPage } from './hooks';
@@ -32,7 +31,7 @@ const ItemPage = () => {
         setOpenProcessScrapeDataModal,
     } = useItemPage();
 
-    const columns: ColumnsType<NDataProvider.IItem> = [
+    const columns: ColumnsType<ItemRecord> = [
         {
             title: 'Tên thư mục',
             dataIndex: 'name',
@@ -81,7 +80,7 @@ const ItemPage = () => {
         },
     ];
 
-    const importDataColumns: ColumnType<NDataProvider.IItem>[] = [
+    const importDataColumns: ColumnType<ItemRecord>[] = [
         {
             title: 'Tên đối tượng',
             dataIndex: 'name',

@@ -1,11 +1,13 @@
 'use client';
 
 import type { FC, JSX } from 'react';
-import type { FeatureModalTab } from '@/app/(root)/scraping/features/[dataProviderId]/types';
 import { CustomModal, CustomTabs } from '@/components/custom-antd';
 import { DataProviderFeatureType } from '@/enums';
-import type { NDataProvider } from '@/interfaces';
 import { Icon } from '@iconify/react';
+import type {
+    FeatureModalTab,
+    IDataProviderFeature,
+} from '@/app/(root)/scraping/features/[dataProviderId]/types';
 import { FeatureTestTab } from './FeatureTestTab';
 import { FeatureVersionHistoryTab } from './FeatureVersionHistoryTab';
 import { ScrapingConfigForm } from './ScrapingConfigForm';
@@ -13,7 +15,7 @@ import { SearchConfigForm } from './SearchConfigForm';
 
 interface DataProviderFeatureSettingModalProps {
     open: boolean;
-    feature: NDataProvider.IDataProviderFeature;
+    feature: IDataProviderFeature;
     activeTab: FeatureModalTab;
     onTabChange: (tab: FeatureModalTab) => void;
     onClose: () => void;

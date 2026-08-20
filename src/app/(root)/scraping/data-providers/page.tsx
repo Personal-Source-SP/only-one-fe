@@ -11,7 +11,6 @@ import {
 } from '@/components/common';
 import { CustomButton, type ColumnsType } from '@/components/custom-antd';
 import { DataProviderSearchStatus, DataProviderStatus } from '@/enums';
-import type { NDataProvider } from '@/interfaces';
 import { formatDate } from '@/libs';
 import { PlusOutlined } from '@ant-design/icons';
 import { Icon } from '@iconify/react';
@@ -19,7 +18,7 @@ import { Icon } from '@iconify/react';
 import { useRouter } from 'next/navigation';
 import { DataProviderFormModal, DataProviderSettingModal } from './components';
 import { useDataProviderPage } from './hooks';
-import type { DataProviderRecord } from './types';
+import type { DataProviderRecord, ISearchConfig, ITargetConfig } from './types';
 
 const DataProviderPage = () => {
     const router = useRouter();
@@ -102,52 +101,41 @@ const DataProviderPage = () => {
             ),
         },
         {
-            key: 'targetConfig',
-            title: 'Cào',
-            align: 'center',
+            title: 'Cấu hình cào',
             dataIndex: 'targetConfig',
-            render: (targetConfig: NDataProvider.ITargetConfig, record) => (
+            key: 'targetConfig',
+            width: 140,
+            render: (targetConfig: ITargetConfig, record) => (
                 <CustomButton
-                    type="text"
-                    title="Cấu hình hàm cào"
+                    size="small"
+                    type="link"
+                    icon={<Icon icon="lucide:settings" className="text-base" />}
                     onClick={() => openSettingModal(record, 'target')}
-                    icon={
-                        targetConfig ? (
-                            <Icon
-                                icon="lucide:check-circle-2"
-                                className="w-5 h-5 text-emerald-500"
-                            />
-                        ) : (
-                            <Icon icon="lucide:settings" className="w-5 h-5 text-amber-500" />
-                        )
-                    }
-                />
+                >
+                    {targetConfig?.functionGenerator ? 'Đã cấu hình' : 'Chưa cấu hình'}
+                </CustomButton>
             ),
-            width: '8%',
         },
         {
-            key: 'searchConfig',
-            title: 'Tìm kiếm',
-            align: 'center',
+            title: 'Trạng thái tìm kiếm',
+            dataIndex: 'searchStatus',
+            key: 'searchStatus',
+            width: 170,
+            render: (searchStatus: DataProviderSearchStatus) => <StatusTag status={searchStatus} />,
+        },
+        {
+            title: 'Cấu hình tìm kiếm',
             dataIndex: 'searchConfig',
-            render: (searchConfig: NDataProvider.ISearchConfig, record) => (
+            key: 'searchConfig',
+            width: 150,
+            render: (searchConfig: ISearchConfig, record) => (
                 <CustomButton
-                    type="text"
-                    title="Cấu hình hàm tìm kiếm"
+                    size="small"
+                    type="link"
+                    icon={<Icon icon="lucide:settings" className="text-base" />}
                     onClick={() => openSettingModal(record, 'search')}
-                    icon={
-                        searchConfig ? (
-                            <Icon
-                                icon="lucide:check-circle-2"
-                                className="w-5 h-5 text-emerald-500"
-                            />
-                        ) : (
-                            <Icon icon="lucide:search" className="w-5 h-5 text-amber-500" />
-                        )
-                    }
                 />
             ),
-            width: '8%',
         },
     ];
 

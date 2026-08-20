@@ -10,11 +10,11 @@ import {
     type IFilterField,
 } from '@/components/common';
 import { GoogleDriveType } from '@/enums';
-import type { NGoogle } from '@/interfaces';
 import { formatDate } from '@/libs';
 
 import { useGoogleFolderPage } from './hooks';
 import { FolderModal, SyncGoogleDrive } from './components';
+import type { GoogleFolderRecord } from './types';
 
 const FolderPage = () => {
     const {
@@ -28,7 +28,7 @@ const FolderPage = () => {
         queryFolderOptions,
     } = useGoogleFolderPage();
 
-    const columns: ColumnsType<NGoogle.IGoogleDriveFolder> = [
+    const columns: ColumnsType<GoogleFolderRecord> = [
         {
             title: 'Tên thư mục',
             dataIndex: 'name',
@@ -109,7 +109,7 @@ const FolderPage = () => {
                 isLoading={tableQuery.isLoading}
                 filters={<FilterPanel fields={filters} />}
             >
-                <ListTable<NGoogle.IGoogleDriveFolder>
+                <ListTable<GoogleFolderRecord>
                     columns={columns}
                     tableProps={tableProps}
                     tableQuery={tableQuery}

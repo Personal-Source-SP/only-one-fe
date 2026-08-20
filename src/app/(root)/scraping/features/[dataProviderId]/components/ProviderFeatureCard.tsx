@@ -1,17 +1,19 @@
 'use client';
 
 import type { FC, JSX } from 'react';
-import type { FeatureModalTab } from '@/app/(root)/scraping/features/[dataProviderId]/types';
 import { CustomButton, CustomSwitch } from '@/components/custom-antd';
 import { DataProviderFeatureStatus, DataProviderFeatureType } from '@/enums';
-import type { NDataProvider } from '@/interfaces';
 import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
+import type {
+    FeatureModalTab,
+    IDataProviderFeature,
+} from '@/app/(root)/scraping/features/[dataProviderId]/types';
 
 interface ProviderFeatureCardProps {
-    feature: NDataProvider.IDataProviderFeature;
+    feature: IDataProviderFeature;
     onSwitchStatus: (featureId: string, currentStatus: DataProviderFeatureStatus) => void;
-    onOpenModal: (feature: NDataProvider.IDataProviderFeature, tab: FeatureModalTab) => void;
+    onOpenModal: (feature: IDataProviderFeature, tab: FeatureModalTab) => void;
 }
 
 export const ProviderFeatureCard: FC<ProviderFeatureCardProps> = ({

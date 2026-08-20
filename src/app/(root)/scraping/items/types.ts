@@ -1,4 +1,12 @@
-import { NDataProvider } from '@/interfaces';
+import type { ProductMappingStatus } from '@/enums';
+import type { Abstract } from '@/interfaces';
+
+export interface IItem extends Abstract {
+    name: string;
+    mappingStatus: ProductMappingStatus;
+    code?: string;
+    tags?: string[];
+}
 
 export interface ItemFormValues {
     name: string;
@@ -6,5 +14,5 @@ export interface ItemFormValues {
     tags?: string;
 }
 
-export type ItemRecord = NDataProvider.IItem;
-export type ImportItemRecord = NDataProvider.IItem;
+export type ItemRecord = IItem;
+export type ImportItemRecord = IItem;

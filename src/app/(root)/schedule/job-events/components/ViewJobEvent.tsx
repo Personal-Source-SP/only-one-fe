@@ -2,12 +2,12 @@
 
 import { CustomDescriptions, CustomModal, CustomTabs } from '@/components/custom-antd';
 import { StatusTag } from '@/components/common';
-import { NSchedule } from '@/interfaces';
 import { calculateDuration, formatDate } from '@/libs';
+import type { IScheduleJobEvent } from '@/app/(root)/schedule/job-events/types';
 
 type ViewJobEventProps = {
     isOpen: boolean;
-    jobEvent: NSchedule.IScheduleJobEvent;
+    jobEvent: IScheduleJobEvent;
     onClose: () => void;
 };
 

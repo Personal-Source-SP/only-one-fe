@@ -12,7 +12,6 @@ import {
     type IFilterField,
 } from '@/components/common';
 import { MimeType } from '@/enums';
-import type { NCloudData } from '@/interfaces';
 import { formatDate, formatFileSize } from '@/libs';
 
 import { useCloudDataItemPage } from './hooks';
@@ -23,7 +22,7 @@ const CloudDataItem = () => {
     const { tableProps, tableQuery, debouncedSearch, createModalForm, cloudDataProviderOptions } =
         useCloudDataItemPage();
 
-    const columns: ColumnsType<NCloudData.ICloudDataItem> = [
+    const columns: ColumnsType<CloudItemRecord> = [
         {
             title: 'STT',
             key: 'index',
@@ -55,7 +54,7 @@ const CloudDataItem = () => {
             key: 'pathUrl',
             width: 250,
             ellipsis: true,
-            render: (pathUrl: string, record: NCloudData.ICloudDataItem) => {
+            render: (pathUrl: string, record: CloudItemRecord) => {
                 if (record.mimeType?.startsWith(MimeType.IMAGE)) {
                     return (
                         <CustomFlex align="center" justify="center">

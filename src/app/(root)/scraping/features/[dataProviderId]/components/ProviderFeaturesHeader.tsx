@@ -1,13 +1,13 @@
 'use client';
 
 import type { FC, JSX } from 'react';
+import type { IDataProvider } from '@/app/(root)/scraping/data-providers/types';
 import { CustomButton } from '@/components/custom-antd';
-import type { NDataProvider } from '@/interfaces';
 import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
 
 interface ProviderFeaturesHeaderProps {
-    provider?: NDataProvider.IDataProvider;
+    provider?: IDataProvider;
     onBack: () => void;
 }
 

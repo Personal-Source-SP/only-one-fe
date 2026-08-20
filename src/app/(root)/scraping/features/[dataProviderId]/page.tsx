@@ -12,6 +12,7 @@ import {
     ProviderFeaturesHeader,
 } from './components';
 import { useDataProviderFeaturesPage } from './hooks';
+import type { FeatureModalTab } from './types';
 
 const DataProviderFeaturesPage: FC = (): JSX.Element => {
     const {
@@ -86,7 +87,7 @@ const DataProviderFeaturesPage: FC = (): JSX.Element => {
                         open={modalState.open}
                         feature={modalState.feature}
                         activeTab={modalState.activeTab}
-                        onTabChange={(tab) =>
+                        onTabChange={(tab: FeatureModalTab) =>
                             setModalState((prev) => ({ ...prev, activeTab: tab }))
                         }
                         onClose={closeFeatureModal}

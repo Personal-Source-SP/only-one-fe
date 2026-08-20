@@ -34,6 +34,8 @@ export interface Option {
     value?: string | number;
 }
 
+export type IDataOption = Option;
+
 export interface PaginationRequest {
     page?: number;
     limit?: number;

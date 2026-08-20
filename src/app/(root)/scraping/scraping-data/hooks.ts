@@ -10,7 +10,8 @@ import {
     useSelectItem,
     useTableContainer,
 } from '@/hooks';
-import { FileItem, FilterItem, NBaseApi, NDataProvider } from '@/interfaces';
+import type { FileItem, FilterItem, NBaseApi } from '@/interfaces';
+import type { IScrapingData } from './types';
 
 import { columnDisplayOptions, dataTypeOptions, viewModeOptions } from './constants';
 
@@ -71,8 +72,7 @@ export const useScrapingDataPage = () => {
     });
 
     const photoItems: FileItem[] = useMemo(() => {
-        const scrapingDatas = (tableContainerData?.tableQuery?.data?.data ??
-            []) as NDataProvider.IScrapingData[];
+        const scrapingDatas = (tableContainerData?.tableQuery?.data?.data ?? []) as IScrapingData[];
 
         if (!scrapingDatas?.length) return [];
 

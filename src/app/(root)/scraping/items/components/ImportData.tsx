@@ -20,7 +20,11 @@ import { MessageType } from '@/enums';
 import { useMainContext } from '@/contexts/MainContext';
 import { DataImportType } from '@/enums';
 import { useCustomMutationData } from '@/hooks';
-import { NBaseApi, NImportData } from '@/interfaces';
+import type {
+    IImportDataResponse,
+    IPreviewImportDataResponse,
+} from '@/app/(root)/scraping/scraping-data/types';
+import type { NBaseApi } from '@/interfaces';
 import { FileExcelOutlined } from '@ant-design/icons';
 import { Icon } from '@iconify/react';
 import { useState } from 'react';
@@ -47,9 +51,8 @@ export const ImportData = ({ open, dataType, columns, onClose, onSuccess }: Impo
     const [fileList, setFileList] = useState<UploadFile[]>([]);
     const [currentStep, setCurrentStep] = useState(StepEnum.Upload);
 
-    const [previewItemData, setPreviewItemData] =
-        useState<NImportData.IPreviewImportDataResponse>();
-    const [importItemData, setImportItemData] = useState<NImportData.IImportDataResponse>();
+    const [previewItemData, setPreviewItemData] = useState<IPreviewImportDataResponse>();
+    const [importItemData, setImportItemData] = useState<IImportDataResponse>();
 
     const { handleCustomMutationData } = useCustomMutationData();
 
@@ -89,8 +92,7 @@ export const ImportData = ({ open, dataType, columns, onClose, onSuccess }: Impo
                 url: `import-data/preview-import-data/${dataType}`,
                 values: formData,
                 successNotification(data) {
-                    const response =
-                        data?.data as NBaseApi.IResponse<NImportData.IPreviewImportDataResponse>;
+                    const response = data?.data as NBaseApi.IResponse<IPreviewImportDataResponse>;
 
                     if (!response?.data) {
                         return {
@@ -134,8 +136,7 @@ export const ImportData = ({ open, dataType, columns, onClose, onSuccess }: Impo
                     data: previewItemData?.data ?? [],
                 },
                 successNotification(data) {
-                    const response =
-                        data?.data as NBaseApi.IResponse<NImportData.IImportDataResponse>;
+                    const response = data?.data as NBaseApi.IResponse<IImportDataResponse>;
 
                     if (!response?.data) {
                         return {
@@ -327,7 +328,7 @@ export const ImportData = ({ open, dataType, columns, onClose, onSuccess }: Impo
                         size="small"
                         pagination={{ pageSize: 20, showSizeChanger: true }}
                         dataSource={importItemData.validationErrorMessages.map(
-                            (message, index) => ({
+                            (message: string, index: number) => ({
                                 key: index,
                                 message,
                             }),

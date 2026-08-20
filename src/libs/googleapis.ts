@@ -1,6 +1,24 @@
 import { GOOGLE_SCOPES } from '@/constants';
-import { NGoogle } from '@/interfaces';
 import axios from 'axios';
+
+export interface IGoogleExchangeCodeRequest {
+    access_token: string;
+    expires_in: number;
+    scope: string;
+    token_type: string;
+    refresh_token?: string;
+    refresh_token_expires_in?: number;
+}
+
+export interface IGoogleUserInfo {
+    id: string;
+    email: string;
+    verified_email: boolean;
+    name: string;
+    given_name: string;
+    family_name: string;
+    picture: string;
+}
 
 export const getGoogleAuthUrl = (): string => {
     const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '';
@@ -32,7 +50,7 @@ export const isExpiredToken = (expiresAt: Date): boolean => {
 export const exchangeCodeForTokens = async (
     code: string,
     redirectUri: string,
-): Promise<NGoogle.IGoogleExchangeCodeRequest | null> => {
+): Promise<IGoogleExchangeCodeRequest | null> => {
     const res = await axios.post('/api/google/exchange-token', {
         code,
         redirectUri,
@@ -42,49 +60,28 @@ export const exchangeCodeForTokens = async (
         return null;
     }
 
-    return res.data as NGoogle.IGoogleExchangeCodeRequest;
+    return res.data as IGoogleExchangeCodeRequest;
 };
 
-/**
- * Refresh access token.
- * NOTE: Hiện tại chưa có caller trong codebase. Nếu cần dùng, tạo server-side API Route
- * tương tự exchange-token để tránh lộ GOOGLE_CLIENT_SECRET.
- * TODO: Chuyển hàm này sang sử dụng /api/google/refresh-token khi có caller.
- */
 export const refreshAccessToken = async (
     refreshToken: string,
-): Promise<NGoogle.IGoogleExchangeCodeRequest | null> => {
-    // TODO: Move to server-side API Route to avoid exposing GOOGLE_CLIENT_SECRET.
-    // See: src/app/api/google/exchange-token/route.ts as reference.
-    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '';
-    const clientSecret = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET || '';
-
-    const body = new URLSearchParams({
-        refresh_token: refreshToken,
-        client_id: clientId,
-        client_secret: clientSecret,
-        grant_type: 'refresh_token',
-    });
-
-    const res = await axios.post('https://oauth2.googleapis.com/token', body.toString(), {
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+): Promise<IGoogleExchangeCodeRequest | null> => {
+    const res = await axios.post('/api/google/refresh-token', {
+        refreshToken,
     });
 
     if (res.status !== 200) {
         return null;
     }
 
-    return res.data as NGoogle.IGoogleExchangeCodeRequest;
+    return res.data as IGoogleExchangeCodeRequest;
 };
 
-export const getUserInfoFromGoogle = async (
-    accessToken: string,
-): Promise<NGoogle.IGoogleUserInfo | null> => {
+export const getGoogleUserInfo = async (accessToken: string): Promise<IGoogleUserInfo | null> => {
     try {
         const res = await axios.get('https://www.googleapis.com/oauth2/v2/userinfo', {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
-                'Content-Type': 'application/json',
             },
         });
 
@@ -92,8 +89,10 @@ export const getUserInfoFromGoogle = async (
             return null;
         }
 
-        return res.data as NGoogle.IGoogleUserInfo;
+        return res.data as IGoogleUserInfo;
     } catch {
         return null;
     }
 };
+
+export const getUserInfoFromGoogle = getGoogleUserInfo;

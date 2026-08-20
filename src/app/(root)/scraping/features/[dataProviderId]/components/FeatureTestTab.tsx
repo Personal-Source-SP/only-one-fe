@@ -15,11 +15,11 @@ import {
 import { DEFAULT_HTML_CONTENT_STRING } from '@/constants';
 import { DataProviderFeatureType, MessageType } from '@/enums';
 import { useCustomMutationData } from '@/hooks';
-import type { NDataProvider } from '@/interfaces';
 import { Icon } from '@iconify/react';
+import type { IDataProviderFeature } from '@/app/(root)/scraping/features/[dataProviderId]/types';
 
 interface FeatureTestTabProps {
-    feature: NDataProvider.IDataProviderFeature;
+    feature: IDataProviderFeature;
 }
 
 export const FeatureTestTab: FC<FeatureTestTabProps> = ({ feature }): JSX.Element => {

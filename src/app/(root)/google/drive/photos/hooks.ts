@@ -4,8 +4,9 @@ import { useEffect, useMemo, useState } from 'react';
 import { isNumber } from 'lodash';
 import { CustomFilterType, MimeType, QualityMode, ViewFileMode } from '@/enums';
 import { useCustomData, useCustomTable, useSelectGoogleFolder } from '@/hooks';
-import { FileItem, FilterItem, NGoogle } from '@/interfaces';
+import type { FileItem, FilterItem } from '@/interfaces';
 import { getDriveImageUrl, isExpiredToken } from '@/libs';
+import type { IGoogleAuth, IGoogleDriveFile } from './types';
 
 import { columnOptions, qualityModeOptions, viewModeOptions } from './constants';
 
@@ -21,7 +22,7 @@ export const usePhotosPage = () => {
     const [currentPhotoIndex, setCurrentPhotoIndex] = useState<number>(0);
 
     const { tableProps, tableQuery, debouncedSearch, setFilters, setCurrentPage } =
-        useCustomTable<NGoogle.IGoogleDriveFile>({
+        useCustomTable<IGoogleDriveFile>({
             resource: 'google-file',
             filters: {
                 initial: [{ field: 'mimeType', operator: 'contains', value: MimeType.IMAGE }],
@@ -37,16 +38,16 @@ export const usePhotosPage = () => {
         enabled: false,
     });
 
-    const googleDriveFiles = useMemo<NGoogle.IGoogleDriveFile[]>(() => {
+    const googleDriveFiles = useMemo<IGoogleDriveFile[]>(() => {
         if (!tableQuery?.data?.data?.length) return [];
 
-        return tableQuery.data.data as NGoogle.IGoogleDriveFile[];
+        return tableQuery.data.data as IGoogleDriveFile[];
     }, [tableQuery?.data?.data]);
 
     const googleAuthOptions = useMemo(() => {
         if (!googleAuthsResult?.data?.data?.length) return [];
 
-        return googleAuthsResult?.data?.data?.map((item: NGoogle.IGoogleAuth) => ({
+        return googleAuthsResult?.data?.data?.map((item: IGoogleAuth) => ({
             value: item.id,
             label: item.email,
         }));
@@ -56,7 +57,7 @@ export const usePhotosPage = () => {
         if (!googleAuthsResult?.data?.data?.length) return [];
 
         return googleAuthsResult?.data?.data?.filter(
-            (item: NGoogle.IGoogleAuth) => !isExpiredToken(item.googleExpiresAt),
+            (item: IGoogleAuth) => !isExpiredToken(item.googleExpiresAt),
         );
     }, [googleAuthsResult?.data?.data]);
 
@@ -66,7 +67,7 @@ export const usePhotosPage = () => {
         return googleDriveFiles?.map((file) => ({
             id: String(file.id ?? ''),
             mimeType: file.mimeType ?? '',
-            url: getDriveImageUrl(file as NGoogle.IGoogleDriveFile, qualityMode),
+            url: getDriveImageUrl(file as IGoogleDriveFile, qualityMode),
             lastModified: file.lastModified ?? new Date(),
             folderName: file.googleDriveFolder?.name ?? '',
         }));

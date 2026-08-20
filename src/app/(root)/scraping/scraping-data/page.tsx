@@ -14,9 +14,9 @@ import {
 } from '@/components/common';
 import { ColumnsType, CustomButton, CustomFlex, CustomSelect } from '@/components/custom-antd';
 import { DisplayMode } from '@/enums';
-import type { NDataProvider } from '@/interfaces';
 import { formatDate } from '@/libs';
 
+import type { IItem } from '@/app/(root)/scraping/items/types';
 import { useScrapingDataPage } from './hooks';
 import { ProcessScrapeData } from './components';
 import type { ScrapingDataRecord } from './types';
@@ -39,14 +39,14 @@ const ScrapingDataPage = () => {
         handlePhotoClick,
     } = useScrapingDataPage();
 
-    const columns: ColumnsType<NDataProvider.IScrapingData> = [
+    const columns: ColumnsType<ScrapingDataRecord> = [
         {
             title: 'Đối tượng',
             dataIndex: 'item',
             key: 'item',
             ellipsis: true,
             width: '25%',
-            render: (item: NDataProvider.IItem) => item?.name ?? '---',
+            render: (item: IItem) => item?.name ?? '---',
         },
         {
             title: 'ID dữ liệu',
@@ -138,7 +138,7 @@ const ScrapingDataPage = () => {
                 <CustomSelect
                     value={displayMode}
                     className="w-[130px]"
-                    onChange={(value) => setDisplayMode(value as DisplayMode)}
+                    onChange={(value: any) => setDisplayMode(value as DisplayMode)}
                     options={displayModeOptions}
                 />
             ),

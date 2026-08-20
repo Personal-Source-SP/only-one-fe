@@ -11,12 +11,15 @@ import {
 } from '@/components/custom-antd';
 import { MessageType } from '@/enums';
 import { useCustomData, useCustomMutationData } from '@/hooks';
-import type { NDataProvider } from '@/interfaces';
 import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
+import type {
+    IConfigVersion,
+    IDataProviderFeature,
+} from '@/app/(root)/scraping/features/[dataProviderId]/types';
 
 interface FeatureVersionHistoryTabProps {
-    feature: NDataProvider.IDataProviderFeature;
+    feature: IDataProviderFeature;
     onRollbackSuccess?: () => void;
 }
 
@@ -24,7 +27,7 @@ export const FeatureVersionHistoryTab: FC<FeatureVersionHistoryTabProps> = ({
     feature,
     onRollbackSuccess,
 }): JSX.Element => {
-    const [previewVersion, setPreviewVersion] = useState<NDataProvider.IConfigVersion | null>(null);
+    const [previewVersion, setPreviewVersion] = useState<IConfigVersion | null>(null);
     const { handleCustomMutationData } = useCustomMutationData();
 
     // Query config versions for this feature
@@ -33,7 +36,7 @@ export const FeatureVersionHistoryTab: FC<FeatureVersionHistoryTabProps> = ({
         enabled: Boolean(feature.id),
     });
 
-    const versions = (result?.data?.data || []) as NDataProvider.IConfigVersion[];
+    const versions = (result?.data?.data || []) as IConfigVersion[];
 
     const handleRollback = (versionNumber: number) => {
         handleCustomMutationData({
@@ -74,7 +77,7 @@ export const FeatureVersionHistoryTab: FC<FeatureVersionHistoryTabProps> = ({
         });
     };
 
-    const columns: ColumnsType<NDataProvider.IConfigVersion> = [
+    const columns: ColumnsType<IConfigVersion> = [
         {
             title: 'Phiên bản',
             dataIndex: 'versionNumber',

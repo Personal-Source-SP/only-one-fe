@@ -2,10 +2,15 @@
 
 import { useCallback, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import type { IDataProvider } from '@/app/(root)/scraping/data-providers/types';
 import { DataProviderFeatureStatus, DataProviderFeatureType, MessageType } from '@/enums';
 import { useCustomData, useCustomMutationData } from '@/hooks';
-import type { NDataProvider } from '@/interfaces';
-import type { CreateFeatureModalState, FeatureModalState, FeatureModalTab } from './types';
+import type {
+    CreateFeatureModalState,
+    FeatureModalState,
+    FeatureModalTab,
+    IDataProviderFeature,
+} from './types';
 
 export const useDataProviderFeaturesPage = () => {
     const params = useParams();
@@ -43,15 +48,13 @@ export const useDataProviderFeaturesPage = () => {
         enabled: Boolean(dataProviderId),
     });
 
-    const provider = providerResult?.data?.data as NDataProvider.IDataProvider | undefined;
-    const scrapingFeature = scrapingResult?.data?.data as
-        NDataProvider.IDataProviderFeature | undefined;
-    const searchFeature = searchResult?.data?.data as
-        NDataProvider.IDataProviderFeature | undefined;
+    const provider = providerResult?.data?.data as IDataProvider | undefined;
+    const scrapingFeature = scrapingResult?.data?.data as IDataProviderFeature | undefined;
+    const searchFeature = searchResult?.data?.data as IDataProviderFeature | undefined;
 
-    const features: NDataProvider.IDataProviderFeature[] = [scrapingFeature, searchFeature].filter(
+    const features: IDataProviderFeature[] = [scrapingFeature, searchFeature].filter(
         Boolean,
-    ) as NDataProvider.IDataProviderFeature[];
+    ) as IDataProviderFeature[];
 
     const refetchAll = useCallback(async (): Promise<void> => {
         await Promise.all([
@@ -89,7 +92,7 @@ export const useDataProviderFeaturesPage = () => {
     };
 
     const openFeatureModal = (
-        feature: NDataProvider.IDataProviderFeature,
+        feature: IDataProviderFeature,
         tab: FeatureModalTab = 'config',
     ): void => {
         setModalState({ open: true, feature, activeTab: tab });

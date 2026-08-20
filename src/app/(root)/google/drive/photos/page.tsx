@@ -12,8 +12,8 @@ import {
 } from '@/components/common';
 import { CustomButton } from '@/components/custom-antd';
 import { GoogleDriveType, QualityMode } from '@/enums';
-import type { NGoogle } from '@/interfaces';
 import { getDriveImageUrl } from '@/libs';
+import type { IGoogleDriveFile } from './types';
 
 import { usePhotosPage } from './hooks';
 import { SyncGoogleDrive, SyncLocal } from './components';
@@ -120,7 +120,7 @@ const PhotosPage = () => {
                 index={currentPhotoIndex}
                 closeLightbox={() => setIsLightboxOpen(false)}
                 slides={(googleDriveFiles || [])?.map((p) => ({
-                    src: getDriveImageUrl(p as NGoogle.IGoogleDriveFile, QualityMode.LOW),
+                    src: getDriveImageUrl(p as IGoogleDriveFile, QualityMode.LOW),
                 }))}
             />
 

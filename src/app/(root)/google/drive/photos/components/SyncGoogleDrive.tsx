@@ -29,11 +29,12 @@ import { MessageType } from '@/enums';
 import { useMainContext } from '@/contexts/MainContext';
 import { GoogleDriveType, MimeType } from '@/enums';
 import { useCustomData, useCustomMutationData, useSelectGoogleFolder } from '@/hooks';
-import { NGoogle, Option } from '@/interfaces';
+import type { IDataOption } from '@/interfaces';
 import { formatDate, getGoogleAuthUrl, isExpiredToken } from '@/libs';
 import { Icon } from '@iconify/react';
 import Link from 'next/link';
 import { useEffect, useMemo, useState, type Key } from 'react';
+import type { IGoogleAuth, IGoogleDrivePreviewItem } from '@/app/(root)/google/drive/photos/types';
 
 const StepEnum = {
     Settings: 0,
@@ -56,8 +57,8 @@ type SyncGoogleDriveProps = {
     isOpen: boolean;
     queryLoading: boolean;
     defaultType?: GoogleDriveType;
-    defaultFolderOptions?: Option[];
-    defaultGoogleAuths?: NGoogle.IGoogleAuth[];
+    defaultFolderOptions?: IDataOption[];
+    defaultGoogleAuths?: IGoogleAuth[];
     onClose: () => void;
     onSuccess: () => void;
 };
@@ -112,8 +113,8 @@ export const SyncGoogleDrive = ({
     const [totalSize, setTotalSize] = useState(0);
     const [totalCount, setTotalCount] = useState(0);
     const [updateAll, setUpdateAll] = useState(false);
-    const [previewData, setPreviewData] = useState<NGoogle.IGoogleDrivePreviewItem[]>([]);
-    const [selectedRows, setSelectedRows] = useState<NGoogle.IGoogleDrivePreviewItem[]>([]);
+    const [previewData, setPreviewData] = useState<IGoogleDrivePreviewItem[]>([]);
+    const [selectedRows, setSelectedRows] = useState<IGoogleDrivePreviewItem[]>([]);
 
     const googleAuths = useMemo(() => {
         if (defaultGoogleAuths?.length) return defaultGoogleAuths;
@@ -121,7 +122,7 @@ export const SyncGoogleDrive = ({
         if (!googleAuthsResult?.data?.data?.length) return [];
 
         return googleAuthsResult?.data?.data?.filter(
-            (item: NGoogle.IGoogleAuth) => !isExpiredToken(item.googleExpiresAt),
+            (item: IGoogleAuth) => !isExpiredToken(item.googleExpiresAt),
         );
     }, [googleAuthsResult?.data?.data, defaultGoogleAuths]);
 
@@ -166,7 +167,7 @@ export const SyncGoogleDrive = ({
         },
     ];
 
-    const columns: ColumnType<NGoogle.IGoogleDrivePreviewItem>[] = [
+    const columns: ColumnType<IGoogleDrivePreviewItem>[] = [
         {
             title: 'Tên tệp',
             dataIndex: 'name',
@@ -248,12 +249,12 @@ export const SyncGoogleDrive = ({
         },
     ];
 
-    const rowSelection: TableProps<NGoogle.IGoogleDrivePreviewItem>['rowSelection'] = {
+    const rowSelection: TableProps<IGoogleDrivePreviewItem>['rowSelection'] = {
         type: 'checkbox',
-        onChange: (_: Key[], selectedRows: NGoogle.IGoogleDrivePreviewItem[]) => {
+        onChange: (_: Key[], selectedRows: IGoogleDrivePreviewItem[]) => {
             setSelectedRows([...selectedRows]);
         },
-        getCheckboxProps: (record: NGoogle.IGoogleDrivePreviewItem) => ({
+        getCheckboxProps: (record: IGoogleDrivePreviewItem) => ({
             name: record.name,
         }),
     };
@@ -425,13 +426,13 @@ export const SyncGoogleDrive = ({
                         >
                             <CustomSelect
                                 placeholder="Chọn kết nối Google"
-                                options={googleAuths?.map((auth: NGoogle.IGoogleAuth) => ({
+                                options={googleAuths?.map((auth: IGoogleAuth) => ({
                                     value: auth.id,
                                     label: auth.email,
                                 }))}
                                 onChange={(value) => {
                                     const selectedGoogleAuth = googleAuths?.find(
-                                        (auth: NGoogle.IGoogleAuth) => auth.id === value,
+                                        (auth: IGoogleAuth) => auth.id === value,
                                     );
 
                                     setGoogleAuthId(value);
@@ -600,7 +601,7 @@ export const SyncGoogleDrive = ({
                     rowKey="googleDriveId"
                     rowSelection={rowSelection}
                     dataSource={previewData || []}
-                    columns={columns as ColumnType<NGoogle.IGoogleDrivePreviewItem>[]}
+                    columns={columns as ColumnType<IGoogleDrivePreviewItem>[]}
                     pagination={{
                         pageSize,
                         showSizeChanger: true,

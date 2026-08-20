@@ -23,7 +23,8 @@ import {
 import { useMainContext } from '@/contexts/MainContext';
 import { MessageType, NotificationType, ScraperServiceEnum } from '@/enums';
 import { useCustomMutationData } from '@/hooks';
-import type { NBaseApi, NDataProvider } from '@/interfaces';
+import type { IDataProviderItem } from '@/app/(root)/scraping/provider-items/types';
+import type { NBaseApi } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { isEmpty } from 'lodash';
 
@@ -128,7 +129,7 @@ export const DataProviderTargetModal: FC<DataProviderTargetModalProps> = ({
                 successNotification: (data) => {
                     setIsLoading(false);
                     const response = data?.data as NBaseApi.IResponse<
-                        NDataProvider.IDataProviderItem & Record<string, unknown>
+                        IDataProviderItem & Record<string, unknown>
                     >;
 
                     if (!response?.data) {

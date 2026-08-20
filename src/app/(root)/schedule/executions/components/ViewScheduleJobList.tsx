@@ -11,8 +11,8 @@ import {
 import { ColumnsType, CustomModal } from '@/components/custom-antd';
 import { ScheduleJobTriggerType, ScheduleJobType, ScheduleType } from '@/enums';
 import { useCustomTable } from '@/hooks';
-import { NSchedule } from '@/interfaces';
 import { formatDate } from '@/libs';
+import type { IScheduleJob } from '@/app/(root)/schedule/executions/types';
 
 type ViewScheduleJobListProps = {
     isOpen: boolean;
@@ -21,11 +21,11 @@ type ViewScheduleJobListProps = {
 };
 
 export const ViewScheduleJobList = ({ isOpen, scheduleId, onClose }: ViewScheduleJobListProps) => {
-    const { tableProps, tableQuery, setFilters } = useCustomTable<NSchedule.IScheduleJob>({
+    const { tableProps, tableQuery, setFilters } = useCustomTable<IScheduleJob>({
         resource: `schedule-jobs/schedule/${scheduleId}`,
     });
 
-    const columns: ColumnsType<NSchedule.IScheduleJob> = [
+    const columns: ColumnsType<IScheduleJob> = [
         {
             title: 'STT',
             key: 'index',
@@ -168,7 +168,7 @@ export const ViewScheduleJobList = ({ isOpen, scheduleId, onClose }: ViewSchedul
                 isLoading={tableQuery.isLoading}
                 filters={<FilterPanel fields={filters} />}
             >
-                <ListTable<NSchedule.IScheduleJob>
+                <ListTable<IScheduleJob>
                     columns={columns}
                     tableProps={tableProps}
                     tableQuery={tableQuery}

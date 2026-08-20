@@ -1,4 +1,9 @@
-import { NCloudData, NDataProvider, NGoogle, NSimulation } from '@/interfaces';
+import type { ICloudDataProvider } from '@/app/(root)/cloud-data/providers/types';
+import type { IGoogleDriveFolder } from '@/app/(root)/google/drive/folders/types';
+import type { IDataProvider } from '@/app/(root)/scraping/data-providers/types';
+import type { IItem } from '@/app/(root)/scraping/items/types';
+import type { IDataProviderItem } from '@/app/(root)/scraping/provider-items/types';
+import type { ISimulationContext } from '@/app/(root)/simulation/contexts/types';
 import { CrudFilter, useSelect } from '@refinedev/core';
 
 interface IUseSelectProps<T> {
@@ -27,9 +32,7 @@ export const useCustomSelect = (props: IUseSelectProps<any>) => {
     return { options, query };
 };
 
-export const useSelectDataProviderItem = (
-    props?: IUseSelectProps<NDataProvider.IDataProviderItem>,
-) => {
+export const useSelectDataProviderItem = (props?: IUseSelectProps<IDataProviderItem>) => {
     let resource = '';
     switch (props?.type) {
         case 'items':
@@ -46,63 +49,55 @@ export const useSelectDataProviderItem = (
     return useCustomSelect({
         resource,
         enabled: !!props?.id || (props?.enabled ?? false),
-        optionValue:
-            props?.optionValue ?? ((item: NDataProvider.IDataProviderItem) => item.itemUrl ?? ''),
-        optionLabel:
-            props?.optionLabel ?? ((item: NDataProvider.IDataProviderItem) => item.itemUrl ?? ''),
+        optionValue: props?.optionValue ?? ((item: IDataProviderItem) => item.itemUrl ?? ''),
+        optionLabel: props?.optionLabel ?? ((item: IDataProviderItem) => item.itemUrl ?? ''),
     });
 };
 
-export const useSelectDataProvider = (props?: IUseSelectProps<NDataProvider.IDataProvider>) => {
+export const useSelectDataProvider = (props?: IUseSelectProps<IDataProvider>) => {
     return useCustomSelect({
         resource: 'data-providers/all',
         enabled: props?.enabled ?? true,
-        optionValue: props?.optionValue ?? ((item: NDataProvider.IDataProvider) => item.id ?? ''),
+        optionValue: props?.optionValue ?? ((item: IDataProvider) => item.id ?? ''),
         optionLabel:
             props?.optionLabel ??
-            ((item: NDataProvider.IDataProvider) =>
+            ((item: IDataProvider) =>
                 item.baseUrl ? `${item.name} - ${item.baseUrl}` : (item.name ?? '')),
     });
 };
 
-export const useSelectItem = (props?: IUseSelectProps<NDataProvider.IItem>) => {
+export const useSelectItem = (props?: IUseSelectProps<IItem>) => {
     return useCustomSelect({
         resource: 'items/all',
         enabled: props?.enabled ?? true,
-        optionValue: props?.optionValue ?? ((item: NDataProvider.IItem) => item.id ?? ''),
-        optionLabel: props?.optionLabel ?? ((item: NDataProvider.IItem) => item.name ?? ''),
+        optionValue: props?.optionValue ?? ((item: IItem) => item.id ?? ''),
+        optionLabel: props?.optionLabel ?? ((item: IItem) => item.name ?? ''),
     });
 };
 
-export const useSelectGoogleFolder = (props?: IUseSelectProps<NGoogle.IGoogleDriveFolder>) => {
+export const useSelectGoogleFolder = (props?: IUseSelectProps<IGoogleDriveFolder>) => {
     return useCustomSelect({
         resource: 'google-folder/all',
         enabled: props?.enabled ?? true,
-        optionValue: props?.optionValue ?? ((item: NGoogle.IGoogleDriveFolder) => item.id ?? ''),
-        optionLabel: props?.optionLabel ?? ((item: NGoogle.IGoogleDriveFolder) => item.name ?? ''),
+        optionValue: props?.optionValue ?? ((item: IGoogleDriveFolder) => item.id ?? ''),
+        optionLabel: props?.optionLabel ?? ((item: IGoogleDriveFolder) => item.name ?? ''),
     });
 };
 
-export const useSelectCloudDataProvider = (
-    props?: IUseSelectProps<NCloudData.ICloudDataProvider>,
-) => {
+export const useSelectCloudDataProvider = (props?: IUseSelectProps<ICloudDataProvider>) => {
     return useCustomSelect({
         resource: 'cloud-data-providers/all',
         enabled: props?.enabled ?? true,
-        optionValue: props?.optionValue ?? ((item: NCloudData.ICloudDataProvider) => item.id ?? ''),
-        optionLabel:
-            props?.optionLabel ?? ((item: NCloudData.ICloudDataProvider) => item.name ?? ''),
+        optionValue: props?.optionValue ?? ((item: ICloudDataProvider) => item.id ?? ''),
+        optionLabel: props?.optionLabel ?? ((item: ICloudDataProvider) => item.name ?? ''),
     });
 };
 
-export const useSelectSimulationContext = (
-    props?: IUseSelectProps<NSimulation.ISimulationContext>,
-) => {
+export const useSelectSimulationContext = (props?: IUseSelectProps<ISimulationContext>) => {
     return useCustomSelect({
         resource: 'simulation-contexts/all',
         enabled: props?.enabled ?? true,
-        optionValue: props?.optionValue ?? ((item: NCloudData.ICloudDataProvider) => item.id ?? ''),
-        optionLabel:
-            props?.optionLabel ?? ((item: NCloudData.ICloudDataProvider) => item.name ?? ''),
+        optionValue: props?.optionValue ?? ((item: ISimulationContext) => item.id ?? ''),
+        optionLabel: props?.optionLabel ?? ((item: ISimulationContext) => item.name ?? ''),
     });
 };

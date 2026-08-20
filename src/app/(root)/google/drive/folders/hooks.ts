@@ -2,13 +2,13 @@
 
 import { useEffect, useState } from 'react';
 import { useCustomModal, useCustomTable, useSelectGoogleFolder } from '@/hooks';
-import type { NGoogle } from '@/interfaces';
+import type { IGoogleDriveFolder } from './types';
 
 export const useGoogleFolderPage = () => {
     const [isOpenSyncFile, setIsOpenSyncFile] = useState(false);
 
     const { tableProps, tableQuery, debouncedSearch, setFilters } =
-        useCustomTable<NGoogle.IGoogleDriveFolder>({
+        useCustomTable<IGoogleDriveFolder>({
             resource: 'google-folder',
         });
 

@@ -10,18 +10,18 @@ import {
     type CardAction,
     type IFilterField,
 } from '@/components/common';
-import type { NGoogle, NUser } from '@/interfaces';
 import { formatDate } from '@/libs';
 
 import { useUsersPage } from './hooks';
 import { UserFormModal } from './components';
+import type { IGoogleAuth } from '@/app/(root)/google/drive/photos/types';
 import type { UserRecord } from './types';
 
 const UsersPage = () => {
     const { tableProps, tableQuery, debouncedSearch, createModalForm, editModalForm } =
         useUsersPage();
 
-    const columns: ColumnsType<NUser.IUser> = [
+    const columns: ColumnsType<UserRecord> = [
         {
             title: 'Email',
             dataIndex: 'email',
@@ -53,7 +53,7 @@ const UsersPage = () => {
             title: 'Kết nối Google',
             dataIndex: 'googleAuths',
             align: 'center',
-            render: (googleAuths: NGoogle.IGoogleAuth[]) =>
+            render: (googleAuths: IGoogleAuth[]) =>
                 googleAuths?.length > 0 ? (
                     <Icon icon="lucide:check" className="w-full" />
                 ) : (

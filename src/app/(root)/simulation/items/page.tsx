@@ -10,7 +10,6 @@ import {
     type CardAction,
     type IFilterField,
 } from '@/components/common';
-import type { NSimulation } from '@/interfaces';
 import { formatDate } from '@/libs';
 
 import { useSimulationItemsPage } from './hooks';
@@ -28,7 +27,7 @@ const SimulationItemsPage = () => {
         simulationContextOptions,
     } = useSimulationItemsPage();
 
-    const columns: ColumnsType<NSimulation.ISimulationItem> = [
+    const columns: ColumnsType<SimulationItemRecord> = [
         {
             title: 'STT',
             key: 'index',
