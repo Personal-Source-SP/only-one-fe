@@ -16,11 +16,13 @@ import { formatDate } from '@/libs';
 import { PlusOutlined } from '@ant-design/icons';
 import { Icon } from '@iconify/react';
 
+import { useRouter } from 'next/navigation';
 import { DataProviderFormModal, DataProviderSettingModal } from './components';
 import { useDataProviderPage } from './hooks';
 import type { DataProviderRecord } from './types';
 
 const DataProviderPage = () => {
+    const router = useRouter();
     const {
         tableProps,
         tableQuery,
@@ -43,6 +45,15 @@ const DataProviderPage = () => {
             ellipsis: true,
             sorter: true,
             width: '15%',
+            render: (name: string, record) => (
+                <CustomButton
+                    type="link"
+                    className="p-0 font-medium text-hub-primary hover:underline"
+                    onClick={() => router.push(`/scraping/features/${record.id}`)}
+                >
+                    {name}
+                </CustomButton>
+            ),
         },
         {
             title: 'Mã',
@@ -73,7 +84,22 @@ const DataProviderPage = () => {
             key: 'createdAt',
             sorter: true,
             render: (createdAt: Date) => formatDate(createdAt),
-            width: '20%',
+            width: '15%',
+        },
+        {
+            key: 'features',
+            title: 'Tính năng',
+            align: 'center',
+            width: '15%',
+            render: (_, record) => (
+                <CustomButton
+                    type="link"
+                    icon={<Icon icon="lucide:layers" className="w-4 h-4 text-hub-primary" />}
+                    onClick={() => router.push(`/scraping/features/${record.id}`)}
+                >
+                    Quản lý Features
+                </CustomButton>
+            ),
         },
         {
             key: 'targetConfig',
@@ -97,7 +123,7 @@ const DataProviderPage = () => {
                     }
                 />
             ),
-            width: '10%',
+            width: '8%',
         },
         {
             key: 'searchConfig',
@@ -121,11 +147,17 @@ const DataProviderPage = () => {
                     }
                 />
             ),
-            width: '15%',
+            width: '8%',
         },
     ];
 
     const customRowActions: TableCustomAction<DataProviderRecord>[] = [
+        {
+            key: 'manage-features',
+            icon: <Icon icon="lucide:layers" />,
+            tooltip: 'Quản lý tính năng',
+            onClick: (record) => router.push(`/scraping/features/${record.id}`),
+        },
         {
             key: 'setting-target-function',
             icon: <Icon icon="lucide:settings" />,

@@ -1,4 +1,6 @@
 import {
+    DataProviderFeatureStatus,
+    DataProviderFeatureType,
     DataProviderSearchStatus,
     DataProviderStatus,
     LocalFolderRegistrationStatusEnum,
@@ -189,5 +191,53 @@ export declare namespace NDataProvider {
         itemIds?: string[];
         dataProviderItemIds?: string[];
         lastSuccessfulScrapeAt?: Date;
+    }
+
+    interface IConfigVersion extends Abstract {
+        featureId: string;
+        versionNumber: number;
+        service: string;
+        config: Record<string, any>;
+        changeDescription?: string;
+        isActive: boolean;
+        createdBy?: string;
+    }
+
+    interface IDataProviderFeature extends Abstract {
+        dataProviderId: string;
+        type: DataProviderFeatureType;
+        service: string;
+        status: DataProviderFeatureStatus;
+        config?: Record<string, any>;
+        consecutiveFailures: number;
+        lastErrorMessage?: string;
+        lastErrorType?: string;
+        lastFailedRunAt?: Date;
+        lastSuccessfulRunAt?: Date;
+        versions?: IConfigVersion[];
+        dataProvider?: IDataProvider;
+    }
+
+    interface CreateDataProviderFeatureRequest {
+        type: DataProviderFeatureType;
+        service?: string;
+        config?: Record<string, any>;
+    }
+
+    interface UpdateFeatureConfigRequest {
+        config: Record<string, any>;
+        service?: string;
+        changeDescription?: string;
+    }
+
+    interface TestFeatureStatelessRequest {
+        type: DataProviderFeatureType;
+        service?: string;
+        config: Record<string, any>;
+        input?: Record<string, any>;
+    }
+
+    interface TestFeatureContextualRequest {
+        input?: Record<string, any>;
     }
 }

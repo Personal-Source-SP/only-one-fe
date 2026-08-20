@@ -28,3 +28,16 @@ export enum LocalFolderRegistrationStatusEnum {
     CREATED = 'created',
     REUSED = 'reused',
 }
+
+export enum DataProviderFeatureType {
+    SCRAPING = 'SCRAPING',
+    SEARCH = 'SEARCH',
+}
+
+export enum DataProviderFeatureStatus {
+    UNCONFIGURED = 'UNCONFIGURED',
+    TESTING = 'TESTING',
+    READY = 'READY',
+    ERROR = 'ERROR',
+    DISABLED = 'DISABLED',
+}
