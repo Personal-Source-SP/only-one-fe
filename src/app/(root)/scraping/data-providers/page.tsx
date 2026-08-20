@@ -10,15 +10,14 @@ import {
     type TableCustomAction,
 } from '@/components/common';
 import { CustomButton, type ColumnsType } from '@/components/custom-antd';
-import { DataProviderSearchStatus, DataProviderStatus } from '@/enums';
+import { DataProviderStatus } from '@/enums';
 import { formatDate } from '@/libs';
 import { PlusOutlined } from '@ant-design/icons';
 import { Icon } from '@iconify/react';
-
 import { useRouter } from 'next/navigation';
-import { DataProviderFormModal, DataProviderSettingModal } from './components';
+import { DataProviderFormModal } from './components';
 import { useDataProviderPage } from './hooks';
-import type { DataProviderRecord, ISearchConfig, ITargetConfig } from './types';
+import type { DataProviderRecord } from './types';
 
 const DataProviderPage = () => {
     const router = useRouter();
@@ -27,13 +26,9 @@ const DataProviderPage = () => {
         tableQuery,
         createModalForm,
         editModalForm,
-        settingRecord,
-        settingConfigType,
         debouncedSearch,
         setFilters,
         setCurrentPage,
-        openSettingModal,
-        closeSettingModal,
     } = useDataProviderPage();
 
     const columns: ColumnsType<DataProviderRecord> = [
@@ -43,7 +38,7 @@ const DataProviderPage = () => {
             key: 'name',
             ellipsis: true,
             sorter: true,
-            width: '15%',
+            width: '25%',
             render: (name: string, record) => (
                 <CustomButton
                     type="link"
@@ -60,7 +55,7 @@ const DataProviderPage = () => {
             key: 'identifier',
             ellipsis: true,
             sorter: true,
-            width: '10%',
+            width: '15%',
         },
         {
             title: 'URL cơ sở',
@@ -68,14 +63,14 @@ const DataProviderPage = () => {
             key: 'baseUrl',
             ellipsis: true,
             sorter: true,
-            width: '20%',
+            width: '30%',
         },
         {
             key: 'status',
             title: 'Trạng thái',
             dataIndex: 'status',
             render: (status: DataProviderStatus) => <StatusTag status={status} />,
-            width: '10%',
+            width: '15%',
         },
         {
             title: 'Ngày tạo',
@@ -85,58 +80,6 @@ const DataProviderPage = () => {
             render: (createdAt: Date) => formatDate(createdAt),
             width: '15%',
         },
-        {
-            key: 'features',
-            title: 'Tính năng',
-            align: 'center',
-            width: '15%',
-            render: (_, record) => (
-                <CustomButton
-                    type="link"
-                    icon={<Icon icon="lucide:layers" className="w-4 h-4 text-hub-primary" />}
-                    onClick={() => router.push(`/scraping/features/${record.id}`)}
-                >
-                    Quản lý Features
-                </CustomButton>
-            ),
-        },
-        {
-            title: 'Cấu hình cào',
-            dataIndex: 'targetConfig',
-            key: 'targetConfig',
-            width: 140,
-            render: (targetConfig: ITargetConfig, record) => (
-                <CustomButton
-                    size="small"
-                    type="link"
-                    icon={<Icon icon="lucide:settings" className="text-base" />}
-                    onClick={() => openSettingModal(record, 'target')}
-                >
-                    {targetConfig?.functionGenerator ? 'Đã cấu hình' : 'Chưa cấu hình'}
-                </CustomButton>
-            ),
-        },
-        {
-            title: 'Trạng thái tìm kiếm',
-            dataIndex: 'searchStatus',
-            key: 'searchStatus',
-            width: 170,
-            render: (searchStatus: DataProviderSearchStatus) => <StatusTag status={searchStatus} />,
-        },
-        {
-            title: 'Cấu hình tìm kiếm',
-            dataIndex: 'searchConfig',
-            key: 'searchConfig',
-            width: 150,
-            render: (searchConfig: ISearchConfig, record) => (
-                <CustomButton
-                    size="small"
-                    type="link"
-                    icon={<Icon icon="lucide:settings" className="text-base" />}
-                    onClick={() => openSettingModal(record, 'search')}
-                />
-            ),
-        },
     ];
 
     const customRowActions: TableCustomAction<DataProviderRecord>[] = [
@@ -145,18 +88,6 @@ const DataProviderPage = () => {
             icon: <Icon icon="lucide:layers" />,
             tooltip: 'Quản lý tính năng',
             onClick: (record) => router.push(`/scraping/features/${record.id}`),
-        },
-        {
-            key: 'setting-target-function',
-            icon: <Icon icon="lucide:settings" />,
-            tooltip: 'Cấu hình hàm cào',
-            onClick: (record) => openSettingModal(record, 'target'),
-        },
-        {
-            key: 'setting-search-function',
-            icon: <Icon icon="lucide:search" />,
-            tooltip: 'Cấu hình hàm tìm kiếm',
-            onClick: (record) => openSettingModal(record, 'search'),
         },
     ];
 
@@ -185,7 +116,7 @@ const DataProviderPage = () => {
         {
             name: 'status',
             type: 'select',
-            placeholder: 'Trạng thái cào',
+            placeholder: 'Trạng thái',
             options: [
                 { label: 'Sẵn sàng', value: DataProviderStatus.READY },
                 { label: 'Lỗi', value: DataProviderStatus.ERROR },
@@ -196,27 +127,6 @@ const DataProviderPage = () => {
                 setFilters([
                     {
                         field: 'status',
-                        operator: 'eq',
-                        value: val ?? undefined,
-                    },
-                ]);
-                setCurrentPage(1);
-            },
-        },
-        {
-            name: 'searchStatus',
-            type: 'select',
-            placeholder: 'Trạng thái tìm kiếm',
-            options: [
-                { label: 'Sẵn sàng', value: DataProviderSearchStatus.READY },
-                { label: 'Lỗi', value: DataProviderSearchStatus.ERROR },
-                { label: 'Đang kiểm tra', value: DataProviderSearchStatus.TESTING },
-                { label: 'Chưa cấu hình', value: DataProviderSearchStatus.UNCONFIGURED },
-            ],
-            onChange: (val) => {
-                setFilters([
-                    {
-                        field: 'searchStatus',
                         operator: 'eq',
                         value: val ?? undefined,
                     },
@@ -247,14 +157,6 @@ const DataProviderPage = () => {
             <DataProviderFormModal modalForm={createModalForm} />
 
             <DataProviderFormModal modalForm={editModalForm} />
-
-            <DataProviderSettingModal
-                open={!!settingRecord}
-                record={settingRecord}
-                configType={settingConfigType}
-                onClose={closeSettingModal}
-                onSuccess={() => tableQuery.refetch()}
-            />
         </>
     );
 };

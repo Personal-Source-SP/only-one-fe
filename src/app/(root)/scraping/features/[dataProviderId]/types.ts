@@ -57,8 +57,3 @@ export interface FeatureModalState {
     feature: IDataProviderFeature | null;
     activeTab: FeatureModalTab;
 }
-
-export interface CreateFeatureModalState {
-    open: boolean;
-    availableTypes: DataProviderFeatureType[];
-}

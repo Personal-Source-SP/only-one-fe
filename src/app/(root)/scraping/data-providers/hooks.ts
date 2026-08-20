@@ -1,28 +1,9 @@
 'use client';
 
-import { useState } from 'react';
 import { useCustomModalForm, useCustomTable } from '@/hooks';
-import type { DataProviderFormValues, DataProviderRecord, SettingConfigType } from './types';
-
-export interface SettingModalState {
-    record: DataProviderRecord;
-    configType: SettingConfigType;
-}
+import type { DataProviderFormValues, DataProviderRecord } from './types';
 
 export const useDataProviderPage = () => {
-    const [settingModalState, setSettingModalState] = useState<SettingModalState | null>(null);
-
-    const openSettingModal = (
-        record: DataProviderRecord,
-        configType: SettingConfigType = 'target',
-    ) => {
-        setSettingModalState({ record, configType });
-    };
-
-    const closeSettingModal = () => {
-        setSettingModalState(null);
-    };
-
     const { tableProps, tableQuery, debouncedSearch, setFilters, setCurrentPage } =
         useCustomTable<DataProviderRecord>({
             resource: 'data-providers',
@@ -62,13 +43,8 @@ export const useDataProviderPage = () => {
         tableQuery,
         createModalForm,
         editModalForm,
-        settingModalState,
-        settingRecord: settingModalState?.record || null,
-        settingConfigType: settingModalState?.configType || 'target',
         setFilters,
         setCurrentPage,
         debouncedSearch,
-        openSettingModal,
-        closeSettingModal,
     };
 };

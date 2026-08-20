@@ -3,14 +3,14 @@
 import { useCallback, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import type { IDataProvider } from '@/app/(root)/scraping/data-providers/types';
-import { DataProviderFeatureStatus, DataProviderFeatureType, MessageType } from '@/enums';
+import {
+    DataProviderFeatureStatus,
+    DataProviderFeatureType,
+    MessageType,
+    ScraperServiceEnum,
+} from '@/enums';
 import { useCustomData, useCustomMutationData } from '@/hooks';
-import type {
-    CreateFeatureModalState,
-    FeatureModalState,
-    FeatureModalTab,
-    IDataProviderFeature,
-} from './types';
+import type { FeatureModalState, FeatureModalTab, IDataProviderFeature } from './types';
 
 export const useDataProviderFeaturesPage = () => {
     const params = useParams();
@@ -21,11 +21,6 @@ export const useDataProviderFeaturesPage = () => {
         open: false,
         feature: null,
         activeTab: 'config',
-    });
-
-    const [createModalState, setCreateModalState] = useState<CreateFeatureModalState>({
-        open: false,
-        availableTypes: [],
     });
 
     const { handleCustomMutationData } = useCustomMutationData();
@@ -98,6 +93,29 @@ export const useDataProviderFeaturesPage = () => {
         setModalState({ open: true, feature, activeTab: tab });
     };
 
+    const openConfigByType = (type: DataProviderFeatureType): void => {
+        const existing = features.find((f) => f.type === type);
+        if (existing) {
+            setModalState({ open: true, feature: existing, activeTab: 'config' });
+            return;
+        }
+
+        const draftFeature: IDataProviderFeature = {
+            id: '',
+            dataProviderId,
+            type,
+            service: ScraperServiceEnum.GENERIC,
+            status: DataProviderFeatureStatus.UNCONFIGURED,
+            consecutiveFailures: 0,
+            config: {},
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            deletedAt: null,
+            dataProvider: provider,
+        };
+        setModalState({ open: true, feature: draftFeature, activeTab: 'config' });
+    };
+
     const closeFeatureModal = (): void => {
         setModalState((prev) => ({ ...prev, open: false }));
     };
@@ -108,11 +126,10 @@ export const useDataProviderFeaturesPage = () => {
         features,
         isLoading: providerQuery.isLoading || scrapingQuery.isLoading || searchQuery.isLoading,
         modalState,
-        createModalState,
         openFeatureModal,
+        openConfigByType,
         closeFeatureModal,
         setModalState,
-        setCreateModalState,
         handleSwitchStatus,
         refetchAll,
         router,

@@ -31,6 +31,7 @@ export const DataProviderFeatureSettingModal: FC<DataProviderFeatureSettingModal
     onSuccess,
 }): JSX.Element => {
     const isScraping = feature.type === DataProviderFeatureType.SCRAPING;
+    const isDraft = !feature.id;
 
     const tabItems = [
         {
@@ -47,34 +48,38 @@ export const DataProviderFeatureSettingModal: FC<DataProviderFeatureSettingModal
                 <SearchConfigForm feature={feature} onSuccess={onSuccess} onClose={onClose} />
             ),
         },
-        {
-            key: 'test',
-            label: (
-                <span className="flex items-center gap-2">
-                    <Icon icon="lucide:flask-conical" className="w-4 h-4" />
-                    Thử nghiệm
-                </span>
-            ),
-            children: <FeatureTestTab feature={feature} />,
-        },
-        {
-            key: 'versions',
-            label: (
-                <span className="flex items-center gap-2">
-                    <Icon icon="lucide:history" className="w-4 h-4" />
-                    Lịch sử phiên bản
-                </span>
-            ),
-            children: (
-                <FeatureVersionHistoryTab
-                    feature={feature}
-                    onRollbackSuccess={() => {
-                        onSuccess();
-                        onClose();
-                    }}
-                />
-            ),
-        },
+        ...(!isDraft
+            ? [
+                  {
+                      key: 'test',
+                      label: (
+                          <span className="flex items-center gap-2">
+                              <Icon icon="lucide:flask-conical" className="w-4 h-4" />
+                              Thử nghiệm
+                          </span>
+                      ),
+                      children: <FeatureTestTab feature={feature} />,
+                  },
+                  {
+                      key: 'versions',
+                      label: (
+                          <span className="flex items-center gap-2">
+                              <Icon icon="lucide:history" className="w-4 h-4" />
+                              Lịch sử phiên bản
+                          </span>
+                      ),
+                      children: (
+                          <FeatureVersionHistoryTab
+                              feature={feature}
+                              onRollbackSuccess={() => {
+                                  onSuccess();
+                                  onClose();
+                              }}
+                          />
+                      ),
+                  },
+              ]
+            : []),
     ];
 
     return (
@@ -87,7 +92,7 @@ export const DataProviderFeatureSettingModal: FC<DataProviderFeatureSettingModal
                 <div className="flex items-center gap-2 text-base font-semibold">
                     <Icon icon="lucide:sliders" className="text-hub-primary text-xl" />
                     <span>
-                        {`Cấu hình tính năng: ${
+                        {`${isDraft ? 'Thiết lập tính năng' : 'Cấu hình tính năng'}: ${
                             isScraping ? 'Cào dữ liệu (Scraping)' : 'Tìm kiếm (Search)'
                         } ${feature.dataProvider?.name ? `(${feature.dataProvider.name})` : ''}`}
                     </span>

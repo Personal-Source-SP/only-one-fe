@@ -2,11 +2,10 @@
 
 import type { FC, JSX } from 'react';
 import { ListWrapper } from '@/components/common';
-import { CustomButton } from '@/components/custom-antd';
+import { CustomButton, CustomDropdown } from '@/components/custom-antd';
 import { DataProviderFeatureType } from '@/enums';
 import { Icon } from '@iconify/react';
 import {
-    CreateFeatureModal,
     DataProviderFeatureSettingModal,
     ProviderFeatureCardGrid,
     ProviderFeaturesHeader,
@@ -20,26 +19,62 @@ const DataProviderFeaturesPage: FC = (): JSX.Element => {
         features,
         isLoading,
         modalState,
-        createModalState,
         openFeatureModal,
+        openConfigByType,
         closeFeatureModal,
         setModalState,
-        setCreateModalState,
         handleSwitchStatus,
         refetchAll,
-        dataProviderId,
         router,
     } = useDataProviderFeaturesPage();
 
-    const existingTypes = features.map((f) => f.type);
-    const availableTypes = [
-        DataProviderFeatureType.SCRAPING,
-        DataProviderFeatureType.SEARCH,
-    ].filter((t) => !existingTypes.includes(t));
+    const isScrapingConfigured = features.some((f) => f.type === DataProviderFeatureType.SCRAPING);
+    const isSearchConfigured = features.some((f) => f.type === DataProviderFeatureType.SEARCH);
 
-    const handleOpenAddFeature = () => {
-        setCreateModalState({ open: true, availableTypes });
-    };
+    const settingMenuItems = [
+        {
+            key: DataProviderFeatureType.SCRAPING,
+            label: (
+                <div className="flex items-center gap-3 py-1 px-1">
+                    <div className="p-1.5 rounded-lg bg-hub-primary/10 text-hub-primary shrink-0">
+                        <Icon icon="lucide:file-code" className="text-base" />
+                    </div>
+                    <div>
+                        <div className="font-semibold text-hub-title text-sm">
+                            Cào dữ liệu (Scraping)
+                        </div>
+                        <div className="text-xs text-hub-subtitle">
+                            {isScrapingConfigured
+                                ? 'Đã khởi tạo • Bấm để chỉnh sửa cấu hình'
+                                : 'Chưa khởi tạo • Bấm để thiết lập cấu hình'}
+                        </div>
+                    </div>
+                </div>
+            ),
+            onClick: () => openConfigByType(DataProviderFeatureType.SCRAPING),
+        },
+        {
+            key: DataProviderFeatureType.SEARCH,
+            label: (
+                <div className="flex items-center gap-3 py-1 px-1">
+                    <div className="p-1.5 rounded-lg bg-hub-primary/10 text-hub-primary shrink-0">
+                        <Icon icon="lucide:search" className="text-base" />
+                    </div>
+                    <div>
+                        <div className="font-semibold text-hub-title text-sm">
+                            Tìm kiếm (Search)
+                        </div>
+                        <div className="text-xs text-hub-subtitle">
+                            {isSearchConfigured
+                                ? 'Đã khởi tạo • Bấm để chỉnh sửa cấu hình'
+                                : 'Chưa khởi tạo • Bấm để thiết lập cấu hình'}
+                        </div>
+                    </div>
+                </div>
+            ),
+            onClick: () => openConfigByType(DataProviderFeatureType.SEARCH),
+        },
+    ];
 
     return (
         <ListWrapper isLoading={isLoading}>
@@ -62,15 +97,19 @@ const DataProviderFeaturesPage: FC = (): JSX.Element => {
                         </p>
                     </div>
 
-                    {availableTypes.length > 0 && (
+                    <CustomDropdown
+                        menu={{ items: settingMenuItems }}
+                        trigger={['click']}
+                        placement="bottomRight"
+                    >
                         <CustomButton
                             type="primary"
-                            icon={<Icon icon="lucide:plus" />}
-                            onClick={handleOpenAddFeature}
+                            icon={<Icon icon="lucide:settings-2" className="text-base" />}
                         >
-                            Thêm tính năng
+                            <span>Thêm cài đặt</span>
+                            <Icon icon="lucide:chevron-down" className="ml-1 text-xs" />
                         </CustomButton>
-                    )}
+                    </CustomDropdown>
                 </div>
 
                 {/* Feature Card Grid */}
@@ -78,7 +117,9 @@ const DataProviderFeaturesPage: FC = (): JSX.Element => {
                     features={features}
                     onSwitchStatus={handleSwitchStatus}
                     onOpenModal={openFeatureModal}
-                    onAddFeature={handleOpenAddFeature}
+                    onAddFeature={(type) =>
+                        openConfigByType(type || DataProviderFeatureType.SCRAPING)
+                    }
                 />
 
                 {/* Setting Modal */}
@@ -91,17 +132,6 @@ const DataProviderFeaturesPage: FC = (): JSX.Element => {
                             setModalState((prev) => ({ ...prev, activeTab: tab }))
                         }
                         onClose={closeFeatureModal}
-                        onSuccess={refetchAll}
-                    />
-                )}
-
-                {/* Create Feature Modal */}
-                {createModalState.open && (
-                    <CreateFeatureModal
-                        open={createModalState.open}
-                        dataProviderId={dataProviderId}
-                        availableTypes={createModalState.availableTypes}
-                        onClose={() => setCreateModalState({ open: false, availableTypes: [] })}
                         onSuccess={refetchAll}
                     />
                 )}

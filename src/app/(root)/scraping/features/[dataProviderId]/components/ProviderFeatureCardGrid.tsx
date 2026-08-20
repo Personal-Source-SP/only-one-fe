@@ -13,7 +13,7 @@ interface ProviderFeatureCardGridProps {
     features: IDataProviderFeature[];
     onSwitchStatus: (featureId: string, currentStatus: DataProviderFeatureStatus) => void;
     onOpenModal: (feature: IDataProviderFeature, tab: FeatureModalTab) => void;
-    onAddFeature: () => void;
+    onAddFeature: (type?: DataProviderFeatureType) => void;
 }
 
 export const ProviderFeatureCardGrid: FC<ProviderFeatureCardGridProps> = ({
@@ -23,9 +23,12 @@ export const ProviderFeatureCardGrid: FC<ProviderFeatureCardGridProps> = ({
     onAddFeature,
 }): JSX.Element => {
     const existingTypes = features.map((f) => f.type);
-    const hasMissingFeature =
-        !existingTypes.includes(DataProviderFeatureType.SCRAPING) ||
-        !existingTypes.includes(DataProviderFeatureType.SEARCH);
+    const missingTypes = [DataProviderFeatureType.SCRAPING, DataProviderFeatureType.SEARCH].filter(
+        (t) => !existingTypes.includes(t),
+    );
+
+    const hasMissingFeature = missingTypes.length > 0;
+    const firstMissingType = missingTypes[0];
 
     return (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -41,7 +44,7 @@ export const ProviderFeatureCardGrid: FC<ProviderFeatureCardGridProps> = ({
             {hasMissingFeature && (
                 <button
                     type="button"
-                    onClick={onAddFeature}
+                    onClick={() => onAddFeature(firstMissingType)}
                     className="border-2 border-dashed border-hub-border/80 hover:border-hub-primary/80 transition-colors rounded-2xl p-8 flex flex-col items-center justify-center text-center gap-3 group min-h-[260px] bg-hub-section/10 hover:bg-hub-section/30 cursor-pointer"
                 >
                     <div className="p-3 rounded-full bg-hub-section border border-hub-border group-hover:bg-hub-primary/10 group-hover:border-hub-primary/30 transition-all">
@@ -52,10 +55,12 @@ export const ProviderFeatureCardGrid: FC<ProviderFeatureCardGridProps> = ({
                     </div>
                     <div>
                         <h4 className="text-sm font-semibold text-hub-title group-hover:text-hub-primary">
-                            Khởi tạo tính năng mới
+                            {firstMissingType === DataProviderFeatureType.SEARCH
+                                ? 'Thiết lập tính năng Tìm kiếm'
+                                : 'Thiết lập tính năng Cào dữ liệu'}
                         </h4>
                         <p className="text-xs text-hub-subtitle mt-0.5">
-                            Thêm tính năng Cào dữ liệu hoặc Tìm kiếm cho Data Provider này
+                            Bấm để cấu hình và kích hoạt tính năng trực tiếp
                         </p>
                     </div>
                 </button>

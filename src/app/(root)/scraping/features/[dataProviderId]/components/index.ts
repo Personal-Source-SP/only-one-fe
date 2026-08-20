@@ -1,4 +1,3 @@
-export * from './CreateFeatureModal';
 export * from './DataProviderFeatureSettingModal';
 export * from './FeatureTestTab';
 export * from './FeatureVersionHistoryTab';

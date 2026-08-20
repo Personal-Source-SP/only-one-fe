@@ -35,6 +35,7 @@ export const ScrapingConfigForm: FC<ScrapingConfigFormProps> = ({
     const { handleCustomMutationData } = useCustomMutationData();
 
     const functionGenerator = CustomForm.useWatch('functionGenerator', form);
+    const isDraft = !feature.id;
 
     useEffect(() => {
         const config = feature.config || {};
@@ -73,27 +74,37 @@ export const ScrapingConfigForm: FC<ScrapingConfigFormProps> = ({
             const { service, changeDescription, ...configValues } = values;
 
             handleCustomMutationData({
-                method: 'put',
-                url: `data-provider-features/${feature.id}`,
-                values: {
-                    service,
-                    changeDescription: changeDescription || 'Cập nhật cấu hình cào',
-                    config: configValues,
-                },
+                method: isDraft ? 'post' : 'put',
+                url: isDraft
+                    ? `data-provider-features/data-providers/${feature.dataProviderId}`
+                    : `data-provider-features/${feature.id}`,
+                values: isDraft
+                    ? {
+                          type: feature.type,
+                          service: service || ScraperServiceEnum.GENERIC,
+                          config: configValues,
+                      }
+                    : {
+                          service,
+                          changeDescription: changeDescription || 'Cập nhật cấu hình cào',
+                          config: configValues,
+                      },
                 successNotification: () => {
                     setIsSaving(false);
                     onSuccess();
                     onClose();
                     return {
                         type: MessageType.SUCCESS,
-                        message: 'Lưu cấu hình cào thành công',
+                        message: isDraft
+                            ? 'Khởi tạo và lưu cấu hình cào thành công'
+                            : 'Lưu cấu hình cào thành công',
                     };
                 },
                 errorNotification: (error) => {
                     setIsSaving(false);
                     return {
                         type: MessageType.ERROR,
-                        message: 'Lưu cấu hình thất bại',
+                        message: isDraft ? 'Khởi tạo cấu hình thất bại' : 'Lưu cấu hình thất bại',
                         description: error?.message,
                     };
                 },
@@ -255,16 +266,18 @@ export const ScrapingConfigForm: FC<ScrapingConfigFormProps> = ({
                 </CustomForm.Item>
             </div>
 
-            {/* Change Log description */}
-            <div className="bg-hub-section/20 border border-hub-border/60 rounded-xl p-4">
-                <h4 className="text-sm font-semibold text-hub-title mb-2 flex items-center gap-2">
-                    <Icon icon="lucide:file-text" className="text-hub-primary shrink-0" />
-                    <span>Mô tả thay đổi phiên bản (Change Log)</span>
-                </h4>
-                <CustomForm.Item name="changeDescription" className="!mb-0">
-                    <CustomInput placeholder="Ví dụ: Cập nhật selector giá mới theo layout 2026..." />
-                </CustomForm.Item>
-            </div>
+            {/* Change Log description (shown when editing existing feature) */}
+            {!isDraft && (
+                <div className="bg-hub-section/20 border border-hub-border/60 rounded-xl p-4">
+                    <h4 className="text-sm font-semibold text-hub-title mb-2 flex items-center gap-2">
+                        <Icon icon="lucide:file-text" className="text-hub-primary shrink-0" />
+                        <span>Mô tả thay đổi phiên bản (Change Log)</span>
+                    </h4>
+                    <CustomForm.Item name="changeDescription" className="!mb-0">
+                        <CustomInput placeholder="Ví dụ: Cập nhật selector giá mới theo layout..." />
+                    </CustomForm.Item>
+                </div>
+            )}
 
             {/* Footer Buttons */}
             <CustomFlex justify="end" gap={8} className="pt-2">
