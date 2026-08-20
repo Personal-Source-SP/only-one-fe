@@ -4,9 +4,10 @@ import type { Abstract } from '@/interfaces';
 
 export interface IConfigVersion extends Abstract {
     featureId: string;
-    versionNumber: number;
-    service: string;
+    versionId: number;
+    service?: string;
     config: Record<string, any>;
+    changeType?: string;
     changeDescription?: string;
     isActive: boolean;
     createdBy?: string;

@@ -55,6 +55,7 @@ export interface IDataProvider extends Abstract {
     searchConfig?: ISearchConfig;
     searchService: string;
     searchStatus: DataProviderSearchStatus;
+    features?: any[];
     dataProviderItems?: IDataProviderItem[];
 }
 

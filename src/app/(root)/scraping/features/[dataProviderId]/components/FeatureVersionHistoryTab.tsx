@@ -38,16 +38,16 @@ export const FeatureVersionHistoryTab: FC<FeatureVersionHistoryTabProps> = ({
 
     const versions = (result?.data?.data || []) as IConfigVersion[];
 
-    const handleRollback = (versionNumber: number) => {
+    const handleRollback = (versionId: number) => {
         handleCustomMutationData({
             method: 'post',
-            url: `data-provider-features/${feature.id}/versions/${versionNumber}/rollback`,
+            url: `data-provider-features/${feature.id}/versions/${versionId}/rollback`,
             successNotification: () => {
                 query.refetch();
                 onRollbackSuccess?.();
                 return {
                     type: MessageType.SUCCESS,
-                    message: `Đã khôi phục về phiên bản v${versionNumber}`,
+                    message: `Đã khôi phục về phiên bản v${versionId}`,
                 };
             },
             errorNotification: (error) => ({
@@ -58,15 +58,15 @@ export const FeatureVersionHistoryTab: FC<FeatureVersionHistoryTabProps> = ({
         });
     };
 
-    const handleDelete = (versionNumber: number) => {
+    const handleDelete = (versionId: number) => {
         handleCustomMutationData({
             method: 'delete',
-            url: `data-provider-features/${feature.id}/versions/${versionNumber}`,
+            url: `data-provider-features/${feature.id}/versions/${versionId}`,
             successNotification: () => {
                 query.refetch();
                 return {
                     type: MessageType.SUCCESS,
-                    message: `Đã xóa phiên bản v${versionNumber}`,
+                    message: `Đã xóa phiên bản v${versionId}`,
                 };
             },
             errorNotification: (error) => ({
@@ -80,12 +80,12 @@ export const FeatureVersionHistoryTab: FC<FeatureVersionHistoryTabProps> = ({
     const columns: ColumnsType<IConfigVersion> = [
         {
             title: 'Phiên bản',
-            dataIndex: 'versionNumber',
-            key: 'versionNumber',
+            dataIndex: 'versionId',
+            key: 'versionId',
             width: '15%',
-            render: (vNumber: number, record) => (
+            render: (vId: number, record) => (
                 <div className="flex items-center gap-2">
-                    <span className="font-bold text-hub-title">{`v${vNumber}`}</span>
+                    <span className="font-bold text-hub-title">{`v${vId || record.versionId}`}</span>
                     {record.isActive && (
                         <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
                             Active
@@ -101,7 +101,7 @@ export const FeatureVersionHistoryTab: FC<FeatureVersionHistoryTabProps> = ({
             width: '12%',
             render: (service: string) => (
                 <span className="text-xs px-2 py-0.5 rounded bg-hub-section border border-hub-border text-hub-subtitle font-mono">
-                    {service || 'generic'}
+                    {service || feature.service || 'generic'}
                 </span>
             ),
         },
@@ -143,9 +143,9 @@ export const FeatureVersionHistoryTab: FC<FeatureVersionHistoryTabProps> = ({
 
                     {!record.isActive && (
                         <CustomPopconfirm
-                            title={`Khôi phục phiên bản v${record.versionNumber}?`}
+                            title={`Khôi phục phiên bản v${record.versionId}?`}
                             description="Cấu hình hiện tại sẽ được thay thế bằng snapshot này."
-                            onConfirm={() => handleRollback(record.versionNumber)}
+                            onConfirm={() => handleRollback(record.versionId)}
                             okText="Khôi phục"
                             cancelText="Hủy"
                         >
@@ -165,9 +165,9 @@ export const FeatureVersionHistoryTab: FC<FeatureVersionHistoryTabProps> = ({
 
                     {!record.isActive && (
                         <CustomPopconfirm
-                            title={`Xóa phiên bản v${record.versionNumber}?`}
+                            title={`Xóa phiên bản v${record.versionId}?`}
                             description="Hành động này không thể hoàn tác."
-                            onConfirm={() => handleDelete(record.versionNumber)}
+                            onConfirm={() => handleDelete(record.versionId)}
                             okText="Xóa"
                             cancelText="Hủy"
                             okButtonProps={{ danger: true }}
@@ -221,14 +221,17 @@ export const FeatureVersionHistoryTab: FC<FeatureVersionHistoryTabProps> = ({
                     title={
                         <div className="flex items-center gap-2 text-base font-semibold">
                             <Icon icon="lucide:file-code" className="text-hub-primary text-xl" />
-                            <span>{`Chi tiết snapshot cấu hình: v${previewVersion.versionNumber}`}</span>
+                            <span>{`Chi tiết snapshot cấu hình: v${previewVersion.versionId}`}</span>
                         </div>
                     }
                 >
                     <div className="space-y-3">
                         <div className="text-xs text-hub-subtitle flex items-center justify-between border-b border-hub-border/40 pb-2">
                             <span>
-                                Service: <strong>{previewVersion.service}</strong>
+                                Service:{' '}
+                                <strong>
+                                    {previewVersion.service || feature.service || 'generic'}
+                                </strong>
                             </span>
                             <span>
                                 Ngày tạo:{' '}

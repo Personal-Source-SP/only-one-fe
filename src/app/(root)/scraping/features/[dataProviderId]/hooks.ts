@@ -31,33 +31,21 @@ export const useDataProviderFeaturesPage = () => {
         enabled: Boolean(dataProviderId),
     });
 
-    // 2. Query Scraping Feature
-    const { result: scrapingResult, query: scrapingQuery } = useCustomData({
-        url: `data-provider-features/data-providers/${dataProviderId}/${DataProviderFeatureType.SCRAPING}`,
-        enabled: Boolean(dataProviderId),
-    });
-
-    // 3. Query Search Feature
-    const { result: searchResult, query: searchQuery } = useCustomData({
-        url: `data-provider-features/data-providers/${dataProviderId}/${DataProviderFeatureType.SEARCH}`,
+    // 2. Query all Features for this provider
+    const { result: featuresResult, query: featuresQuery } = useCustomData({
+        url: `data-provider-features/data-providers/${dataProviderId}`,
         enabled: Boolean(dataProviderId),
     });
 
     const provider = providerResult?.data?.data as IDataProvider | undefined;
-    const scrapingFeature = scrapingResult?.data?.data as IDataProviderFeature | undefined;
-    const searchFeature = searchResult?.data?.data as IDataProviderFeature | undefined;
-
-    const features: IDataProviderFeature[] = [scrapingFeature, searchFeature].filter(
-        Boolean,
-    ) as IDataProviderFeature[];
+    const rawFeatures = (featuresResult?.data?.data ||
+        provider?.features ||
+        []) as IDataProviderFeature[];
+    const features: IDataProviderFeature[] = Array.isArray(rawFeatures) ? rawFeatures : [];
 
     const refetchAll = useCallback(async (): Promise<void> => {
-        await Promise.all([
-            providerQuery.refetch(),
-            scrapingQuery.refetch(),
-            searchQuery.refetch(),
-        ]);
-    }, [providerQuery, scrapingQuery, searchQuery]);
+        await Promise.all([providerQuery.refetch(), featuresQuery.refetch()]);
+    }, [providerQuery, featuresQuery]);
 
     const handleSwitchStatus = (
         featureId: string,
@@ -124,7 +112,7 @@ export const useDataProviderFeaturesPage = () => {
         dataProviderId,
         provider,
         features,
-        isLoading: providerQuery.isLoading || scrapingQuery.isLoading || searchQuery.isLoading,
+        isLoading: providerQuery.isLoading || featuresQuery.isLoading,
         modalState,
         openFeatureModal,
         openConfigByType,
