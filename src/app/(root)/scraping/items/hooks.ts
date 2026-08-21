@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { API_ENDPOINT } from '@/config';
 import { useCustomModalForm, useCustomTable } from '@/hooks';
 import type { ItemFormValues, ItemRecord } from './types';
 
@@ -11,12 +12,12 @@ export const useItemPage = () => {
 
     const { tableProps, tableQuery, debouncedSearch, setFilters, setCurrentPage } =
         useCustomTable<ItemRecord>({
-            resource: 'items',
+            resource: API_ENDPOINT.ITEMS.BASE,
         });
 
     const createModalForm = useCustomModalForm<ItemRecord, ItemFormValues, ItemRecord>({
         action: 'create',
-        resource: 'items',
+        resource: API_ENDPOINT.ITEMS.BASE,
         onMutationSuccess: async () => {
             await tableQuery.refetch();
         },
@@ -24,7 +25,7 @@ export const useItemPage = () => {
 
     const editModalForm = useCustomModalForm<ItemRecord, ItemFormValues, ItemRecord>({
         action: 'edit',
-        resource: 'items',
+        resource: API_ENDPOINT.ITEMS.BASE,
         onMutationSuccess: async () => {
             await tableQuery.refetch();
         },

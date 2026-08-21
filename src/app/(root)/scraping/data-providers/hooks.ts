@@ -1,12 +1,13 @@
 'use client';
 
+import { API_ENDPOINT } from '@/config';
 import { useCustomModalForm, useCustomTable } from '@/hooks';
 import type { DataProviderFormValues, DataProviderRecord } from './types';
 
 export const useDataProviderPage = () => {
     const { tableProps, tableQuery, debouncedSearch, setFilters, setCurrentPage } =
         useCustomTable<DataProviderRecord>({
-            resource: 'data-providers',
+            resource: API_ENDPOINT.DATA_PROVIDERS.BASE,
         });
 
     const createModalForm = useCustomModalForm<
@@ -15,7 +16,7 @@ export const useDataProviderPage = () => {
         DataProviderRecord
     >({
         action: 'create',
-        resource: 'data-providers',
+        resource: API_ENDPOINT.DATA_PROVIDERS.BASE,
         onMutationSuccess: async () => {
             await tableQuery.refetch();
         },
@@ -27,7 +28,7 @@ export const useDataProviderPage = () => {
         DataProviderRecord
     >({
         action: 'edit',
-        resource: 'data-providers',
+        resource: API_ENDPOINT.DATA_PROVIDERS.BASE,
         onMutationSuccess: async () => {
             await tableQuery.refetch();
         },

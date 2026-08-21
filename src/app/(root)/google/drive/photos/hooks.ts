@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { isNumber } from 'lodash';
+import { API_ENDPOINT } from '@/config';
 import { CustomFilterType, MimeType, QualityMode, ViewFileMode } from '@/enums';
 import { useCustomData, useCustomTable, useSelectGoogleFolder } from '@/hooks';
 import type { FileItem, FilterItem } from '@/interfaces';
@@ -23,7 +24,7 @@ export const usePhotosPage = () => {
 
     const { tableProps, tableQuery, debouncedSearch, setFilters, setCurrentPage } =
         useCustomTable<IGoogleDriveFile>({
-            resource: 'google-file',
+            resource: API_ENDPOINT.GOOGLE_DRIVE.FILES,
             filters: {
                 initial: [{ field: 'mimeType', operator: 'contains', value: MimeType.IMAGE }],
             },

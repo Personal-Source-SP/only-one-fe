@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { API_ENDPOINT } from '@/config';
 import { useCustomTable } from '@/hooks';
 import type { JobEventRecord } from './types';
 
@@ -9,7 +10,7 @@ export const useScheduleJobEventsPage = () => {
 
     const { tableProps, tableQuery, debouncedSearch, setFilters, setCurrentPage } =
         useCustomTable<JobEventRecord>({
-            resource: 'schedule-job-events',
+            resource: API_ENDPOINT.SCHEDULE_JOB_EVENTS.BASE,
         });
 
     return {

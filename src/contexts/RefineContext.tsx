@@ -8,6 +8,7 @@ import {
     KEY_SESSION_STORAGE,
     mapNextAuthSignInErrorMessage,
 } from '@/constants';
+import { env } from '@/config';
 import { ColorModeContextProvider } from '@/contexts/ColorModeContext';
 import { accessControlProvider } from '@/providers/access-control-provider';
 import { RestServer, createSessionAxiosInstance } from '@/providers/data-provider';
@@ -30,7 +31,7 @@ const App = ({ children, defaultMode }: PropsWithChildren<AppProps>) => {
     const to = usePathname();
     const router = useRouter();
     const isAuthPublicPage = AUTH_PUBLIC_PAGES.includes(to);
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL as string;
+    const apiUrl = env.apiUrl;
 
     const [sessionBootstrapComplete, setSessionBootstrapComplete] = useState(false);
 

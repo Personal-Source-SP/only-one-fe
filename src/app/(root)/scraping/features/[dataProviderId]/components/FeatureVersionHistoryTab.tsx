@@ -9,6 +9,7 @@ import {
     CustomTable,
     type ColumnsType,
 } from '@/components/custom-antd';
+import { API_ENDPOINT } from '@/config';
 import { MessageType } from '@/enums';
 import { useCustomData, useCustomMutationData } from '@/hooks';
 import { formatDate } from '@/libs';
@@ -32,7 +33,7 @@ export const FeatureVersionHistoryTab: FC<FeatureVersionHistoryTabProps> = ({
 
     // Query config versions for this feature
     const { result, query } = useCustomData({
-        url: `data-provider-features/${feature.id}/versions`,
+        url: API_ENDPOINT.DATA_PROVIDER_FEATURES.VERSIONS(feature.id),
         enabled: Boolean(feature.id),
     });
 
@@ -41,7 +42,7 @@ export const FeatureVersionHistoryTab: FC<FeatureVersionHistoryTabProps> = ({
     const handleRollback = (versionId: number) => {
         handleCustomMutationData({
             method: 'post',
-            url: `data-provider-features/${feature.id}/versions/${versionId}/rollback`,
+            url: API_ENDPOINT.DATA_PROVIDER_FEATURES.ROLLBACK(feature.id, versionId),
             successNotification: () => {
                 query.refetch();
                 onRollbackSuccess?.();

@@ -22,7 +22,9 @@ export const API_ENDPOINT = {
             prefix(`data-provider-features/data-providers/${providerId}`),
         DETAIL: (id: string | number) => prefix(`data-provider-features/${id}`),
         TEST: prefix('data-provider-features/test'),
-        ROLLBACK: (id: string | number) => prefix(`data-provider-features/${id}/rollback`),
+        VERSIONS: (id: string | number) => prefix(`data-provider-features/${id}/versions`),
+        ROLLBACK: (id: string | number, versionId: string | number) =>
+            prefix(`data-provider-features/${id}/versions/${versionId}/rollback`),
     },
     DATA_PROVIDER_ITEMS: {
         BASE: prefix('data-provider-items'),
@@ -45,7 +47,9 @@ export const API_ENDPOINT = {
         BASE: prefix('schedules'),
         ALL: prefix('schedules/all'),
         DETAIL: (id: string | number) => prefix(`schedules/${id}`),
-        TRIGGER: (id: string | number) => prefix(`schedules/${id}/trigger`),
+        TRIGGER: (id: string | number) => prefix(`schedules/${id}/manual-trigger`),
+        SWITCH_STATUS: (id: string | number, active: boolean | string) =>
+            prefix(`schedules/${id}/switch-status/${active}`),
         JOBS: (scheduleId: string | number) => prefix(`schedule-jobs/schedule/${scheduleId}`),
     },
     SCHEDULE_JOBS: {
@@ -66,11 +70,17 @@ export const API_ENDPOINT = {
         SYNC: prefix('google/sync'),
         EXCHANGE_TOKEN: prefix('google/exchange-token'),
     },
+    CLOUD_DATA_PROVIDERS: {
+        BASE: prefix('cloud-data-providers'),
+        ALL: prefix('cloud-data-providers/all'),
+        DETAIL: (id: string | number) => prefix(`cloud-data-providers/${id}`),
+    },
     SIMULATION: {
         CONTEXTS: prefix('simulation-contexts'),
         CONTEXTS_ALL: prefix('simulation-contexts/all'),
         ITEMS: prefix('simulation-items'),
         ITEMS_ALL: prefix('simulation-items/all'),
+        ACTION: (id: string | number) => prefix(`simulation-items/${id}/action`),
     },
     USERS: {
         BASE: prefix('users'),

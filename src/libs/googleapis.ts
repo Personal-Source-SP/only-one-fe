@@ -1,3 +1,4 @@
+import { env } from '@/config';
 import { GOOGLE_SCOPES } from '@/constants';
 import axios from 'axios';
 
@@ -21,8 +22,8 @@ export interface IGoogleUserInfo {
 }
 
 export const getGoogleAuthUrl = (): string => {
-    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '';
-    const redirectUri = process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URI || '';
+    const clientId = env.googleClientId || '';
+    const redirectUri = env.googleRedirectUri || '';
 
     const params = new URLSearchParams({
         client_id: clientId,

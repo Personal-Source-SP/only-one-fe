@@ -1,6 +1,7 @@
 'use client';
 
 import { Loading } from '@/components/common';
+import { env } from '@/config';
 import { CustomSpace } from '@/components/custom-antd';
 import { SIDEBAR_ITEMS } from '@/constants';
 import { useMainContext } from '@/contexts/MainContext';
@@ -58,10 +59,7 @@ export const MainLayout = ({ children }: PropsWithChildren) => {
         handleLoading(true);
 
         try {
-            const tokens = await exchangeCodeForTokens(
-                code,
-                process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URI as string,
-            );
+            const tokens = await exchangeCodeForTokens(code, env.googleRedirectUri as string);
 
             if (!tokens) {
                 handleMessage({ type: MessageType.ERROR, content: 'Lỗi khi lấy token Google' });

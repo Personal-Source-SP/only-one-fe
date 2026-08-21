@@ -9,6 +9,7 @@ import {
     type IFilterField,
 } from '@/components/common';
 import { ColumnsType, CustomModal } from '@/components/custom-antd';
+import { API_ENDPOINT } from '@/config';
 import { ScheduleJobTriggerType, ScheduleJobType, ScheduleType } from '@/enums';
 import { useCustomTable } from '@/hooks';
 import { formatDate } from '@/libs';
@@ -22,7 +23,7 @@ type ViewScheduleJobListProps = {
 
 export const ViewScheduleJobList = ({ isOpen, scheduleId, onClose }: ViewScheduleJobListProps) => {
     const { tableProps, tableQuery, setFilters } = useCustomTable<IScheduleJob>({
-        resource: `schedule-jobs/schedule/${scheduleId}`,
+        resource: API_ENDPOINT.SCHEDULES.JOBS(scheduleId),
     });
 
     const columns: ColumnsType<IScheduleJob> = [

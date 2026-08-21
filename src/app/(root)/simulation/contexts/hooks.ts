@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { API_ENDPOINT } from '@/config';
 import { MessageType } from '@/enums';
 import { useCustomModalForm, useCustomMutationData, useCustomTable } from '@/hooks';
 import type { SimulationContextFormValues, SimulationContextRecord } from './types';
@@ -11,7 +12,7 @@ export const useSimulationContextsPage = () => {
 
     const { tableProps, tableQuery, debouncedSearch, setFilters, setCurrentPage } =
         useCustomTable<SimulationContextRecord>({
-            resource: 'simulation-contexts',
+            resource: API_ENDPOINT.SIMULATION.CONTEXTS,
         });
 
     const createModalForm = useCustomModalForm<
@@ -20,7 +21,7 @@ export const useSimulationContextsPage = () => {
         SimulationContextRecord
     >({
         action: 'create',
-        resource: 'simulation-contexts',
+        resource: API_ENDPOINT.SIMULATION.CONTEXTS,
         onMutationSuccess: async () => {
             await tableQuery.refetch();
         },
@@ -44,7 +45,7 @@ export const useSimulationContextsPage = () => {
         SimulationContextRecord
     >({
         action: 'edit',
-        resource: 'simulation-contexts',
+        resource: API_ENDPOINT.SIMULATION.CONTEXTS,
         onMutationSuccess: async () => {
             await tableQuery.refetch();
         },
@@ -76,7 +77,7 @@ export const useSimulationContextsPage = () => {
         handleCustomMutationData({
             values: { simulationContextId: id },
             method: 'post',
-            url: 'simulation-items',
+            url: API_ENDPOINT.SIMULATION.ITEMS,
             successNotification: () => {
                 setLoading(false);
                 tableQuery?.refetch();

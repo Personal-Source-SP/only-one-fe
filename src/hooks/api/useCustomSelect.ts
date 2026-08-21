@@ -4,6 +4,7 @@ import type { IDataProvider } from '@/app/(root)/scraping/data-providers/types';
 import type { IItem } from '@/app/(root)/scraping/items/types';
 import type { IDataProviderItem } from '@/app/(root)/scraping/provider-items/types';
 import type { ISimulationContext } from '@/app/(root)/simulation/contexts/types';
+import { API_ENDPOINT } from '@/config';
 import { CrudFilter, useSelect } from '@refinedev/core';
 
 interface IUseSelectProps<T> {
@@ -42,7 +43,7 @@ export const useSelectDataProviderItem = (props?: IUseSelectProps<IDataProviderI
             resource = `data-provider-items/data-provider/${props?.id}`;
             break;
         default:
-            resource = 'data-provider-items/all';
+            resource = API_ENDPOINT.DATA_PROVIDER_ITEMS.ALL;
             break;
     }
 
@@ -56,7 +57,7 @@ export const useSelectDataProviderItem = (props?: IUseSelectProps<IDataProviderI
 
 export const useSelectDataProvider = (props?: IUseSelectProps<IDataProvider>) => {
     return useCustomSelect({
-        resource: 'data-providers/all',
+        resource: API_ENDPOINT.DATA_PROVIDERS.ALL,
         enabled: props?.enabled ?? true,
         optionValue: props?.optionValue ?? ((item: IDataProvider) => item.id ?? ''),
         optionLabel:
@@ -68,7 +69,7 @@ export const useSelectDataProvider = (props?: IUseSelectProps<IDataProvider>) =>
 
 export const useSelectItem = (props?: IUseSelectProps<IItem>) => {
     return useCustomSelect({
-        resource: 'items/all',
+        resource: API_ENDPOINT.ITEMS.ALL,
         enabled: props?.enabled ?? true,
         optionValue: props?.optionValue ?? ((item: IItem) => item.id ?? ''),
         optionLabel: props?.optionLabel ?? ((item: IItem) => item.name ?? ''),
@@ -77,7 +78,7 @@ export const useSelectItem = (props?: IUseSelectProps<IItem>) => {
 
 export const useSelectGoogleFolder = (props?: IUseSelectProps<IGoogleDriveFolder>) => {
     return useCustomSelect({
-        resource: 'google-folder/all',
+        resource: API_ENDPOINT.GOOGLE_DRIVE.FOLDERS_ALL,
         enabled: props?.enabled ?? true,
         optionValue: props?.optionValue ?? ((item: IGoogleDriveFolder) => item.id ?? ''),
         optionLabel: props?.optionLabel ?? ((item: IGoogleDriveFolder) => item.name ?? ''),
@@ -86,7 +87,7 @@ export const useSelectGoogleFolder = (props?: IUseSelectProps<IGoogleDriveFolder
 
 export const useSelectCloudDataProvider = (props?: IUseSelectProps<ICloudDataProvider>) => {
     return useCustomSelect({
-        resource: 'cloud-data-providers/all',
+        resource: API_ENDPOINT.CLOUD_DATA_PROVIDERS.ALL,
         enabled: props?.enabled ?? true,
         optionValue: props?.optionValue ?? ((item: ICloudDataProvider) => item.id ?? ''),
         optionLabel: props?.optionLabel ?? ((item: ICloudDataProvider) => item.name ?? ''),
@@ -95,7 +96,7 @@ export const useSelectCloudDataProvider = (props?: IUseSelectProps<ICloudDataPro
 
 export const useSelectSimulationContext = (props?: IUseSelectProps<ISimulationContext>) => {
     return useCustomSelect({
-        resource: 'simulation-contexts/all',
+        resource: API_ENDPOINT.SIMULATION.CONTEXTS_ALL,
         enabled: props?.enabled ?? true,
         optionValue: props?.optionValue ?? ((item: ISimulationContext) => item.id ?? ''),
         optionLabel: props?.optionLabel ?? ((item: ISimulationContext) => item.name ?? ''),

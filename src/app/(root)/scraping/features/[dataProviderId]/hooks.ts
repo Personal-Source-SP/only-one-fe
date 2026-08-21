@@ -3,6 +3,7 @@
 import { useCallback, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import type { IDataProvider } from '@/app/(root)/scraping/data-providers/types';
+import { API_ENDPOINT } from '@/config';
 import {
     DataProviderFeatureStatus,
     DataProviderFeatureType,
@@ -28,13 +29,13 @@ export const useDataProviderFeaturesPage = () => {
 
     // 1. Query Data Provider details
     const { result: providerResult, query: providerQuery } = useCustomData({
-        url: `data-providers/${dataProviderId}`,
+        url: API_ENDPOINT.DATA_PROVIDERS.DETAIL(dataProviderId),
         enabled: Boolean(dataProviderId),
     });
 
     // 2. Query all Features for this provider
     const { result: featuresResult, query: featuresQuery } = useCustomData({
-        url: `data-provider-features/data-providers/${dataProviderId}`,
+        url: API_ENDPOINT.DATA_PROVIDER_FEATURES.BY_PROVIDER(dataProviderId),
         enabled: Boolean(dataProviderId),
     });
 

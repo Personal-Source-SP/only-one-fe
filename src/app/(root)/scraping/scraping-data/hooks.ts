@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import { API_ENDPOINT } from '@/config';
 import { useMainContext } from '@/contexts/MainContext';
 import { CustomFilterType, DisplayMode, MessageType, ViewFileMode } from '@/enums';
 import {
@@ -29,7 +30,7 @@ export const useScrapingDataPage = () => {
     const [currentPhotoIndex, setCurrentPhotoIndex] = useState<number>(0);
 
     const tableContainerData = useTableContainer({
-        resource: 'scraping-data',
+        resource: API_ENDPOINT.SCRAPING_DATA.BASE,
         defaultSorters: [{ field: 'lastModified', order: 'desc' }],
         defaultPagination: {
             pageSize: 30,
@@ -41,7 +42,7 @@ export const useScrapingDataPage = () => {
     const { options: dataProviderOptions } = useSelectDataProvider();
 
     const { handleDelete } = useCustomDelete({
-        resource: 'scraping-data',
+        resource: API_ENDPOINT.SCRAPING_DATA.BASE,
         errorNotification: (error: any) => ({
             type: MessageType.ERROR,
             message: error?.message || 'Xóa dữ liệu không thành công',
@@ -68,7 +69,7 @@ export const useScrapingDataPage = () => {
 
     const modalPropsData = useCustomModal({
         action: 'edit',
-        resource: 'scraping-data',
+        resource: API_ENDPOINT.SCRAPING_DATA.BASE,
     });
 
     const photoItems: FileItem[] = useMemo(() => {

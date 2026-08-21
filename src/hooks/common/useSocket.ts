@@ -1,3 +1,4 @@
+import { env } from '@/config';
 import { useEffect, useRef, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
 
@@ -9,7 +10,7 @@ export const useSocket = (options?: { url?: string }) => {
     const url = options?.url;
 
     useEffect(() => {
-        const socketUrl = url || process.env.NEXT_PUBLIC_SOCKET_URL || '';
+        const socketUrl = url || env.socketUrl || '';
         if (!socketUrl) return;
 
         socketRef.current = io(socketUrl, {

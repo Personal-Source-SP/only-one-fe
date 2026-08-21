@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { API_ENDPOINT } from '@/config';
 import { useCustomModal, useCustomTable, useSelectGoogleFolder } from '@/hooks';
 import type { IGoogleDriveFolder } from './types';
 
@@ -9,12 +10,12 @@ export const useGoogleFolderPage = () => {
 
     const { tableProps, tableQuery, debouncedSearch, setFilters } =
         useCustomTable<IGoogleDriveFolder>({
-            resource: 'google-folder',
+            resource: API_ENDPOINT.GOOGLE_DRIVE.FOLDERS,
         });
 
     const modalPropsData = useCustomModal({
         action: 'edit',
-        resource: 'google-folder',
+        resource: API_ENDPOINT.GOOGLE_DRIVE.FOLDERS,
     });
 
     const { options: folderOptions, query: queryFolderOptions } = useSelectGoogleFolder({
