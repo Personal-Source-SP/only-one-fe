@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import type { ICloudDataProvider } from '@/app/(root)/cloud-data/providers/types';
 import type { IGoogleDriveFolder } from '@/app/(root)/google/drive/folders/types';
 import type { IDataProvider } from '@/app/(root)/scraping/data-providers/types';
@@ -5,9 +6,9 @@ import type { IItem } from '@/app/(root)/scraping/items/types';
 import type { IDataProviderItem } from '@/app/(root)/scraping/provider-items/types';
 import type { ISimulationContext } from '@/app/(root)/simulation/contexts/types';
 import { API_ENDPOINT } from '@/config';
-import { CrudFilter, useSelect } from '@refinedev/core';
+import { BaseRecord, CrudFilter, useSelect } from '@refinedev/core';
 
-interface IUseSelectProps<T> {
+interface IUseSelectProps<T extends BaseRecord = any> {
     id?: string;
     resource?: string;
     enabled?: boolean;
@@ -15,12 +16,15 @@ interface IUseSelectProps<T> {
     type?: 'items' | 'data-provider' | 'data-provider-items';
     optionValue?: (item: T) => string;
     optionLabel?: (item: T) => string;
+    transform?: (
+        options: Array<{ label: string; value: string }>,
+    ) => Array<{ label: string; value: string }>;
 }
 
-export const useCustomSelect = (props: IUseSelectProps<any>) => {
-    const { enabled, resource, defaultFilters, optionValue, optionLabel } = props;
+export const useCustomSelect = <T extends BaseRecord = any>(props: IUseSelectProps<T>) => {
+    const { enabled, resource, defaultFilters, optionValue, optionLabel, transform } = props;
 
-    const { options, query } = useSelect<any>({
+    const { options, query } = useSelect<T>({
         resource: resource ?? '',
         pagination: { mode: 'off' },
         filters: defaultFilters ?? undefined,
@@ -30,7 +34,14 @@ export const useCustomSelect = (props: IUseSelectProps<any>) => {
         optionLabel: optionLabel ?? ((item: any) => item.name ?? ''),
     });
 
-    return { options, query };
+    const transformedOptions = useMemo(() => {
+        if (transform) {
+            return transform(options);
+        }
+        return options;
+    }, [options, transform]);
+
+    return { options: transformedOptions, query };
 };
 
 export const useSelectDataProviderItem = (props?: IUseSelectProps<IDataProviderItem>) => {

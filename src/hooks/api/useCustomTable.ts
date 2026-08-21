@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { getErrorNotification, NotificationAction } from '@/utilities';
 import { useTable } from '@refinedev/antd';
 import type { BaseRecord, HttpError } from '@refinedev/core';
@@ -7,17 +8,21 @@ type RefineUseTableRequest<TData extends BaseRecord> = NonNullable<
     Parameters<typeof useTable<TData, HttpError>>[0]
 >;
 
-export type UseCustomTableRequest<TData extends BaseRecord> = Omit<
-    RefineUseTableRequest<TData>,
-    'resource'
-> & {
+export type UseCustomTableRequest<
+    TData extends BaseRecord = BaseRecord,
+    TTransformed extends BaseRecord = TData,
+> = Omit<RefineUseTableRequest<TData>, 'resource'> & {
     resource: string;
     errorMessage?: string;
     successMessage?: string;
-    rowKey?: keyof TData | ((record: TData) => string);
+    rowKey?: keyof TTransformed | ((record: TTransformed) => string);
+    transform?: (data: TData[]) => TTransformed[];
 };
 
-export const useCustomTable = <TData extends BaseRecord>({
+export const useCustomTable = <
+    TData extends BaseRecord = BaseRecord,
+    TTransformed extends BaseRecord = TData,
+>({
     resource,
     errorMessage,
     pagination,
@@ -25,8 +30,9 @@ export const useCustomTable = <TData extends BaseRecord>({
     errorNotification,
     successNotification = false,
     rowKey,
+    transform,
     ...rest
-}: UseCustomTableRequest<TData>) => {
+}: UseCustomTableRequest<TData, TTransformed>) => {
     const result = useTable<TData, HttpError>({
         ...rest,
         resource,
@@ -59,14 +65,23 @@ export const useCustomTable = <TData extends BaseRecord>({
         setCurrentPage: result.setCurrentPage,
     });
 
+    const rawDataSource = (result.tableProps.dataSource ?? []) as TData[];
+    const transformedDataSource = useMemo<TTransformed[]>(() => {
+        if (transform) {
+            return transform(rawDataSource);
+        }
+        return rawDataSource as unknown as TTransformed[];
+    }, [rawDataSource, transform]);
+
     return {
         ...result,
         debouncedSearch,
         handleTableChange,
         tableProps: {
             ...result.tableProps,
+            dataSource: transformedDataSource,
             onChange: handleTableChange,
-            rowKey: (record: TData): string => {
+            rowKey: (record: TTransformed): string => {
                 if (typeof rowKey === 'function') {
                     return rowKey(record);
                 }
@@ -75,7 +90,7 @@ export const useCustomTable = <TData extends BaseRecord>({
                     return String(record[rowKey]);
                 }
 
-                return String((record as any).id ?? (record as any)._id ?? '');
+                return String(record.id ?? (record as Record<string, unknown>)._id ?? '');
             },
         },
     };

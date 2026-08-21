@@ -140,6 +140,67 @@ export const createSessionAxiosInstance = (session: Session | null) => {
     return axiosInstance;
 };
 
+export const unwrapResponseData = <T = any>(
+    payload: any,
+): { data: T; meta?: any; extraData?: any; total: number } => {
+    if (!payload) {
+        return { data: payload, total: 0 };
+    }
+
+    // Paginated: { data: T[], meta: { totalItems: number, ... }, links: { ... } }
+    if (Array.isArray(payload.data) && payload.meta) {
+        return {
+            data: payload.data,
+            meta: payload.meta,
+            extraData: payload.extraData,
+            total: payload.meta?.totalItems ?? payload.data.length,
+        };
+    }
+
+    // ResponseDto with array: { data: T[], isSuccess: boolean }
+    if (
+        Array.isArray(payload.data) &&
+        (payload.isSuccess !== undefined || payload.errors !== undefined)
+    ) {
+        return {
+            data: payload.data,
+            meta: payload.meta,
+            extraData: payload.extraData,
+            total: payload.meta?.totalItems ?? payload.data.length,
+        };
+    }
+
+    // ResponseDto with single entity: { data: T, isSuccess: boolean }
+    if (
+        payload.data !== undefined &&
+        (payload.isSuccess !== undefined || payload.errors !== undefined)
+    ) {
+        return {
+            data: payload.data,
+            meta: payload.meta,
+            extraData: payload.extraData,
+            total: 1,
+        };
+    }
+
+    // Raw array
+    if (Array.isArray(payload)) {
+        return {
+            data: payload as unknown as T,
+            total: payload.length,
+        };
+    }
+
+    // Fallback
+    const unwrapped = payload.data !== undefined ? payload.data : payload;
+    return {
+        data: unwrapped,
+        meta: payload.meta,
+        extraData: payload.extraData,
+        total: payload.total ?? (Array.isArray(unwrapped) ? unwrapped.length : 1),
+    };
+};
+
 export const RestServer = (
     apiUrl: string,
     httpClient: AxiosInstance = createSessionAxiosInstance(null),
@@ -165,17 +226,22 @@ export const RestServer = (
             `${url}?${qs.stringify(queryPagination)}&${qs.stringify(queryFilters)}`,
         );
 
+        const unwrapped = unwrapResponseData(apiResponseData);
+
         return {
-            data: apiResponseData.data,
-            meta: apiResponseData.meta,
-            extraData: apiResponseData.extraData,
-            total: apiResponseData.meta?.totalItems || apiResponseData.data?.length || 0,
+            data: unwrapped.data,
+            meta: unwrapped.meta,
+            extraData: unwrapped.extraData,
+            total: unwrapped.total,
         };
     },
 
     getMany: async ({ resource, ids }) => {
-        const { data } = await httpClient.get(`${apiUrl}/${resource}?${qs.stringify({ id: ids })}`);
-        return { data };
+        const { data: apiResponseData } = await httpClient.get(
+            `${apiUrl}/${resource}?${qs.stringify({ id: ids })}`,
+        );
+        const unwrapped = unwrapResponseData(apiResponseData);
+        return { data: unwrapped.data };
     },
 
     create: async ({ resource, variables }) => {
@@ -211,8 +277,9 @@ export const RestServer = (
     },
 
     getOne: async ({ resource, id }) => {
-        const { data } = await httpClient.get(`${apiUrl}/${resource}/${id}`);
-        return { data: data.data };
+        const { data: apiResponseData } = await httpClient.get(`${apiUrl}/${resource}/${id}`);
+        const unwrapped = unwrapResponseData(apiResponseData);
+        return { data: unwrapped.data };
     },
 
     deleteOne: async ({ resource, id }) => {

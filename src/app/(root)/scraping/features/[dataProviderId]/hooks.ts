@@ -10,7 +10,7 @@ import {
     MessageType,
     ScraperServiceEnum,
 } from '@/enums';
-import { useCustomData, useCustomMutationData } from '@/hooks';
+import { useCustomList, useCustomMutationData, useCustomOne } from '@/hooks';
 import type { FeatureModalState, FeatureModalTab, IDataProviderFeature } from './types';
 
 export const useDataProviderFeaturesPage = () => {
@@ -28,22 +28,20 @@ export const useDataProviderFeaturesPage = () => {
     const { handleCustomMutationData } = useCustomMutationData();
 
     // 1. Query Data Provider details
-    const { result: providerResult, query: providerQuery } = useCustomData({
-        url: API_ENDPOINT.DATA_PROVIDERS.DETAIL(dataProviderId),
+    const { query: providerQuery, data: provider } = useCustomOne<IDataProvider>({
+        resource: API_ENDPOINT.DATA_PROVIDERS.BASE,
+        id: dataProviderId,
         enabled: Boolean(dataProviderId),
     });
 
     // 2. Query all Features for this provider
-    const { result: featuresResult, query: featuresQuery } = useCustomData({
-        url: API_ENDPOINT.DATA_PROVIDER_FEATURES.BY_PROVIDER(dataProviderId),
-        enabled: Boolean(dataProviderId),
+    const { query: featuresQuery, data: features = [] } = useCustomList<IDataProviderFeature>({
+        resource: API_ENDPOINT.DATA_PROVIDER_FEATURES.BY_PROVIDER(dataProviderId),
+        queryOptions: {
+            enabled: Boolean(dataProviderId),
+        },
+        transform: (list) => (list && list.length > 0 ? list : provider?.features || []),
     });
-
-    const provider = providerResult?.data?.data as IDataProvider | undefined;
-    const rawFeatures = (featuresResult?.data?.data ||
-        provider?.features ||
-        []) as IDataProviderFeature[];
-    const features: IDataProviderFeature[] = Array.isArray(rawFeatures) ? rawFeatures : [];
 
     const refetchAll = useCallback(async (): Promise<void> => {
         await Promise.all([providerQuery.refetch(), featuresQuery.refetch()]);
