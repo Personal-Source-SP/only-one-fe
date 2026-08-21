@@ -1,16 +1,18 @@
 'use client';
 
-import { CustomLink } from '@/components/custom-antd';
+import { CustomLink, CustomTypography } from '@/components/custom-antd';
 import { AuthCard } from '@/app/(public)/_components/auth';
 
 import { ForgetPasswordForm } from './components';
 
 const ForgetPasswordPage = () => {
-    return (
+    const pageContent = (
         <AuthCard
             footer={
                 <p className="text-center text-sm text-hub-muted">
-                    <span>Nhớ mật khẩu? </span>
+                    <CustomTypography.Text className="text-hub-muted">
+                        Nhớ mật khẩu?{' '}
+                    </CustomTypography.Text>
                     <CustomLink href="/login">Đăng nhập</CustomLink>
                 </p>
             }
@@ -19,6 +21,8 @@ const ForgetPasswordPage = () => {
             <ForgetPasswordForm />
         </AuthCard>
     );
+
+    return pageContent;
 };
 
 export default ForgetPasswordPage;
