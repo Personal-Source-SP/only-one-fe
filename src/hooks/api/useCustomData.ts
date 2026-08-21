@@ -1,10 +1,18 @@
-import { NBaseApi } from '@/interfaces';
-import { OpenNotificationParams, useApiUrl, useCustom, useCustomMutation } from '@refinedev/core';
+import { getErrorNotification, NotificationAction } from '@/utilities';
+import type { BaseRecord, HttpError, OpenNotificationParams } from '@refinedev/core';
+import { useApiUrl, useCustom } from '@refinedev/core';
 
-interface IUseCustomDataProps {
+export type CustomDataMethod = 'get' | 'post' | 'put' | 'delete' | 'patch';
+
+export interface UseCustomDataRequest<TData extends BaseRecord = any> {
     url: string;
+    query?: Record<string, any>;
     enabled?: boolean;
-    method?: 'get' | 'post' | 'put' | 'delete' | 'patch';
+    refetchInterval?: number | false;
+    resource?: string;
+    method?: CustomDataMethod;
+    errorMessage?: string;
+    successMessage?: string;
     errorNotification?:
         | OpenNotificationParams
         | false
@@ -21,60 +29,59 @@ interface IUseCustomDataProps {
               values?: any,
               resource?: string,
           ) => OpenNotificationParams | false | undefined);
+    queryOptions?: Parameters<typeof useCustom<TData, HttpError>>[0]['queryOptions'];
 }
 
-interface IUseCustomMutationDataProps {
-    url: string;
-    values?: any;
-    method?: 'post' | 'put' | 'delete' | 'patch';
-    errorNotification?:
-        | OpenNotificationParams
-        | false
-        | ((
-              error?: any,
-              values?: any,
-              resource?: string,
-          ) => OpenNotificationParams | false | undefined);
-    successNotification?:
-        | OpenNotificationParams
-        | false
-        | ((
-              data?: any,
-              values?: any,
-              resource?: string,
-          ) => OpenNotificationParams | false | undefined);
+export interface UseCustomDataResponse<TData extends BaseRecord = any> {
+    apiUrl: string;
+    query: ReturnType<typeof useCustom<TData, HttpError>>['query'];
+    result: ReturnType<typeof useCustom<TData, HttpError>>['result'];
+    data: TData | undefined;
 }
 
-export const useCustomData = (props: IUseCustomDataProps) => {
+export const useCustomData = <TData extends BaseRecord = any>({
+    url,
+    query,
+    resource,
+    enabled = true,
+    method = 'get',
+    errorMessage,
+    successNotification = false,
+    errorNotification,
+    refetchInterval,
+    queryOptions,
+}: UseCustomDataRequest<TData>): UseCustomDataResponse<TData> => {
     const apiUrl = useApiUrl();
+    const targetUrl = url.startsWith('http') || url.startsWith('/') ? url : `${apiUrl}/${url}`;
 
-    const { result, query } = useCustom<NBaseApi.IResponse<any>>({
-        url: `${apiUrl}/${props.url}`,
-        method: props.method ?? 'get',
-        queryOptions: {
-            enabled: props.enabled ?? true,
+    const { query: customQuery, result } = useCustom<TData, HttpError>({
+        url: targetUrl,
+        method,
+        config: {
+            query,
         },
-        errorNotification: props.errorNotification ?? false,
-        successNotification: props.successNotification ?? false,
+        queryOptions: {
+            enabled,
+            refetchInterval,
+            ...queryOptions,
+        },
+        errorNotification:
+            errorNotification !== undefined
+                ? errorNotification
+                : getErrorNotification({
+                      resource,
+                      message: errorMessage,
+                      action: NotificationAction.Load,
+                  }),
+        successNotification,
     });
 
-    return { result, query, apiUrl };
-};
-
-export const useCustomMutationData = () => {
-    const apiUrl = useApiUrl();
-
-    const { mutateAsync } = useCustomMutation<NBaseApi.IResponse<any>>();
-
-    const handleCustomMutationData = (options: IUseCustomMutationDataProps) => {
-        mutateAsync({
-            values: options?.values ?? {},
-            method: options.method ?? 'post',
-            url: `${apiUrl}/${options.url}`,
-            errorNotification: options.errorNotification ?? false,
-            successNotification: options.successNotification ?? false,
-        });
+    return {
+        apiUrl,
+        result,
+        data: result?.data,
+        query: customQuery,
     };
-
-    return { handleCustomMutationData, apiUrl };
 };
+
+export { useCustomMutationData } from './useCustomMutationData';

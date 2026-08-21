@@ -15,21 +15,21 @@ import type { FeatureModalTab } from './types';
 
 const DataProviderFeaturesPage: FC = (): JSX.Element => {
     const {
+        router,
         provider,
         features,
         isLoading,
         modalState,
+        refetchAll,
+        setModalState,
         openFeatureModal,
         openConfigByType,
         closeFeatureModal,
-        setModalState,
         handleSwitchStatus,
-        refetchAll,
-        router,
     } = useDataProviderFeaturesPage();
 
-    const isScrapingConfigured = features.some((f) => f.type === DataProviderFeatureType.SCRAPING);
     const isSearchConfigured = features.some((f) => f.type === DataProviderFeatureType.SEARCH);
+    const isScrapingConfigured = features.some((f) => f.type === DataProviderFeatureType.SCRAPING);
 
     const settingMenuItems = [
         {
@@ -98,9 +98,9 @@ const DataProviderFeaturesPage: FC = (): JSX.Element => {
                     </div>
 
                     <CustomDropdown
-                        menu={{ items: settingMenuItems }}
                         trigger={['click']}
                         placement="bottomRight"
+                        menu={{ items: settingMenuItems }}
                     >
                         <CustomButton
                             type="primary"
@@ -115,8 +115,8 @@ const DataProviderFeaturesPage: FC = (): JSX.Element => {
                 {/* Feature Card Grid */}
                 <ProviderFeatureCardGrid
                     features={features}
-                    onSwitchStatus={handleSwitchStatus}
                     onOpenModal={openFeatureModal}
+                    onSwitchStatus={handleSwitchStatus}
                     onAddFeature={(type) =>
                         openConfigByType(type || DataProviderFeatureType.SCRAPING)
                     }
@@ -126,13 +126,13 @@ const DataProviderFeaturesPage: FC = (): JSX.Element => {
                 {modalState.open && modalState.feature && (
                     <DataProviderFeatureSettingModal
                         open={modalState.open}
+                        onSuccess={refetchAll}
+                        onClose={closeFeatureModal}
                         feature={modalState.feature}
                         activeTab={modalState.activeTab}
                         onTabChange={(tab: FeatureModalTab) =>
                             setModalState((prev) => ({ ...prev, activeTab: tab }))
                         }
-                        onClose={closeFeatureModal}
-                        onSuccess={refetchAll}
                     />
                 )}
             </div>
