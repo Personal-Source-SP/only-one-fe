@@ -1,4 +1,4 @@
-import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE, DEFAULT_SORTERS } from '@/constants';
+import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE, DEFAULT_SORTERS } from '@/config';
 import { getErrorNotification, NotificationAction } from '@/utilities';
 import type { BaseRecord, HttpError } from '@refinedev/core';
 import { useList } from '@refinedev/core';
