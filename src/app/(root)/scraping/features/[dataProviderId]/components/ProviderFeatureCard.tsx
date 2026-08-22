@@ -218,7 +218,7 @@ export const ProviderFeatureCard = ({
                 <CustomButton
                     type="text"
                     icon={<Icon icon="lucide:history" />}
-                    onClick={() => onOpenModal(feature, 'versions')}
+                    onClick={() => onOpenModal(feature, 'config')}
                 >
                     Lịch sử
                 </CustomButton>

@@ -21,23 +21,27 @@ import type {
 
 type FeatureVersionHistoryTabProps = {
     feature: IDataProviderFeature;
+    versions?: IConfigVersion[];
     onRollbackSuccess?: () => void;
+    refetchVersions?: () => void;
 };
 
 export const FeatureVersionHistoryTab = ({
     feature,
+    versions: externalVersions,
     onRollbackSuccess,
+    refetchVersions,
 }: FeatureVersionHistoryTabProps) => {
     const [previewVersion, setPreviewVersion] = useState<IConfigVersion | null>(null);
     const { handleCustomMutationData } = useCustomMutationData();
 
-    // Query config versions for this feature
+    // Query config versions for this feature if not passed from parent
     const { result, query } = useCustomData({
         url: API_ENDPOINT.DATA_PROVIDER_FEATURES.VERSIONS(feature.id),
-        enabled: Boolean(feature.id),
+        enabled: Boolean(feature.id && !externalVersions),
     });
 
-    const versions = (result?.data?.data || []) as IConfigVersion[];
+    const versions = externalVersions || ((result?.data?.data || []) as IConfigVersion[]);
 
     const handleRollback = (versionId: number) => {
         handleCustomMutationData({
@@ -45,6 +49,7 @@ export const FeatureVersionHistoryTab = ({
             url: API_ENDPOINT.DATA_PROVIDER_FEATURES.ROLLBACK(feature.id, versionId),
             successNotification: () => {
                 query.refetch();
+                refetchVersions?.();
                 onRollbackSuccess?.();
                 return {
                     type: MessageType.SUCCESS,
@@ -65,6 +70,7 @@ export const FeatureVersionHistoryTab = ({
             url: `data-provider-features/${feature.id}/versions/${versionId}`,
             successNotification: () => {
                 query.refetch();
+                refetchVersions?.();
                 return {
                     type: MessageType.SUCCESS,
                     message: `Đã xóa phiên bản v${versionId}`,

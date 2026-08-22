@@ -58,7 +58,7 @@ export interface TestFeatureContextualRequest {
     input?: Record<string, any>;
 }
 
-export type FeatureModalTab = 'config' | 'test' | 'versions';
+export type FeatureModalTab = 'config' | 'test';
 
 export interface FeatureModalState {
     open: boolean;
