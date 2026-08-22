@@ -41,3 +41,14 @@ export enum DataProviderFeatureStatus {
     ERROR = 'ERROR',
     DISABLED = 'DISABLED',
 }
+
+export enum DataProviderFeatureErrorType {
+    FATAL = 'FATAL',
+    TRANSIENT = 'TRANSIENT',
+}
+
+export enum ConfigVersionType {
+    ROLLBACK = 'rollback',
+    MANUAL_EDIT = 'manual_edit',
+    AI_GENERATED = 'ai_generated',
+}

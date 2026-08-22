@@ -97,12 +97,11 @@ export const FeatureVersionHistoryTab = ({
         },
         {
             title: 'Service',
-            dataIndex: 'service',
             key: 'service',
             width: '12%',
-            render: (service: string) => (
+            render: () => (
                 <span className="text-xs px-2 py-0.5 rounded bg-hub-section border border-hub-border text-hub-subtitle font-mono">
-                    {service || feature.service || 'generic'}
+                    {feature.service || 'generic'}
                 </span>
             ),
         },
@@ -229,10 +228,7 @@ export const FeatureVersionHistoryTab = ({
                     <div className="space-y-3">
                         <div className="text-xs text-hub-subtitle flex items-center justify-between border-b border-hub-border/40 pb-2">
                             <span>
-                                Service:{' '}
-                                <strong>
-                                    {previewVersion.service || feature.service || 'generic'}
-                                </strong>
+                                Service: <strong>{feature.service || 'generic'}</strong>
                             </span>
                             <span>
                                 Ngày tạo:{' '}

@@ -1,16 +1,23 @@
 import type { IDataProvider } from '@/app/(root)/scraping/data-providers/types';
-import type { DataProviderFeatureStatus, DataProviderFeatureType } from '@/enums';
+import type { IUser } from '@/app/(root)/setting/users/types';
+import type {
+    ConfigVersionType,
+    DataProviderFeatureErrorType,
+    DataProviderFeatureStatus,
+    DataProviderFeatureType,
+} from '@/enums';
 import type { Abstract } from '@/interfaces';
 
 export interface IConfigVersion extends Abstract {
     featureId: string;
-    versionId: number;
-    service?: string;
-    config: Record<string, any>;
-    changeType?: string;
-    changeDescription?: string;
     isActive: boolean;
+    versionId: number;
+    config: Record<string, any>;
+    changeType: ConfigVersionType;
+    changeDescription?: string;
     createdBy?: string;
+    user?: IUser;
+    feature?: IDataProviderFeature;
 }
 
 export interface IDataProviderFeature extends Abstract {
@@ -21,11 +28,11 @@ export interface IDataProviderFeature extends Abstract {
     config?: Record<string, any>;
     consecutiveFailures: number;
     lastErrorMessage?: string;
-    lastErrorType?: string;
+    lastErrorType?: DataProviderFeatureErrorType;
     lastFailedRunAt?: Date;
     lastSuccessfulRunAt?: Date;
-    versions?: IConfigVersion[];
     dataProvider?: IDataProvider;
+    versions?: IConfigVersion[];
 }
 
 export interface CreateDataProviderFeatureRequest {

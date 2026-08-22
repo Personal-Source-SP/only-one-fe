@@ -8,17 +8,17 @@ import type {
     IDataProvider,
 } from '@/app/(root)/scraping/data-providers/types';
 
-interface DataProviderFormModalProps {
+type DataProviderFormModalProps = {
     modalForm: UseCustomModalFormResponse<IDataProvider, DataProviderFormValues, IDataProvider>;
-}
+};
 
 export const DataProviderFormModal = ({ modalForm }: DataProviderFormModalProps) => {
     const { mode } = modalForm;
 
     return (
         <CustomModalForm<IDataProvider, DataProviderFormValues, IDataProvider>
-            modalForm={modalForm}
             width={600}
+            modalForm={modalForm}
             title={mode === 'create' ? 'Thêm mới nhà cung cấp' : 'Chỉnh sửa nhà cung cấp'}
             createInitialValues={{
                 name: '',
