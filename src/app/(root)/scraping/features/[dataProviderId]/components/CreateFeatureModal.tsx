@@ -12,6 +12,8 @@ import { DataProviderFeatureType, MessageType } from '@/enums';
 import { useCustomMutationData } from '@/hooks';
 import { Icon } from '@iconify/react';
 
+import { FEATURE_TYPE_METADATA } from '@/app/(root)/scraping/features/[dataProviderId]/constants';
+
 type CreateFeatureModalProps = {
     open: boolean;
     dataProviderId: string;
@@ -69,10 +71,7 @@ export const CreateFeatureModal = ({
     };
 
     const typeOptions = availableTypes.map((type) => ({
-        label:
-            type === DataProviderFeatureType.SCRAPING
-                ? 'Cào dữ liệu (Scraping)'
-                : 'Tìm kiếm (Search)',
+        label: FEATURE_TYPE_METADATA[type]?.label || type,
         value: type,
     }));
 

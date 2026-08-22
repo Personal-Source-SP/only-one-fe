@@ -1,36 +1,43 @@
 'use client';
 
-import { CustomModal, CustomTabs } from '@/components/custom-antd';
-import { DataProviderFeatureType } from '@/enums';
+import {
+    CustomFlex,
+    CustomModal,
+    CustomTabs,
+    CustomTag,
+    CustomTypography,
+} from '@/components/custom-antd';
 import { Icon } from '@iconify/react';
+import { getFeatureDefinition } from '@/app/(root)/scraping/features/[dataProviderId]/utils';
 import type {
     FeatureModalTab,
     IDataProviderFeature,
 } from '@/app/(root)/scraping/features/[dataProviderId]/types';
 import { FeatureTestTab } from './FeatureTestTab';
 import { FeatureVersionHistoryTab } from './FeatureVersionHistoryTab';
-import { ScrapingConfigForm } from './ScrapingConfigForm';
-import { SearchConfigForm } from './SearchConfigForm';
 
 type DataProviderFeatureSettingModalProps = {
     open: boolean;
-    feature: IDataProviderFeature;
     activeTab: FeatureModalTab;
-    onTabChange: (tab: FeatureModalTab) => void;
+    feature: IDataProviderFeature;
     onClose: () => void;
     onSuccess: () => void;
+    onTabChange: (tab: FeatureModalTab) => void;
 };
 
 export const DataProviderFeatureSettingModal = ({
     open,
-    feature,
     activeTab,
-    onTabChange,
+    feature,
     onClose,
     onSuccess,
+    onTabChange,
 }: DataProviderFeatureSettingModalProps) => {
-    const isScraping = feature.type === DataProviderFeatureType.SCRAPING;
     const isDraft = !feature.id;
+    const providerName = feature.dataProvider?.name;
+
+    const def = getFeatureDefinition(feature.type);
+    const ConfigComponent = def?.ConfigComponent;
 
     const tabItems = [
         {
@@ -41,10 +48,12 @@ export const DataProviderFeatureSettingModal = ({
                     Cấu hình
                 </span>
             ),
-            children: isScraping ? (
-                <ScrapingConfigForm feature={feature} onSuccess={onSuccess} onClose={onClose} />
+            children: ConfigComponent ? (
+                <ConfigComponent feature={feature} onClose={onClose} onSuccess={onSuccess} />
             ) : (
-                <SearchConfigForm feature={feature} onSuccess={onSuccess} onClose={onClose} />
+                <div className="p-6 text-center text-hub-subtitle">
+                    Chưa có biểu mẫu cấu hình cho tính năng này.
+                </div>
             ),
         },
         ...(!isDraft
@@ -81,27 +90,38 @@ export const DataProviderFeatureSettingModal = ({
             : []),
     ];
 
+    const modalTitle = (
+        <CustomFlex align="center" gap="middle">
+            <CustomFlex
+                align="center"
+                justify="center"
+                className={`p-2 rounded-xl shrink-0 ${
+                    def?.accentClass || 'text-hub-primary bg-hub-primary/10'
+                }`}
+            >
+                <Icon icon={def?.icon || 'lucide:sliders'} className="text-lg" />
+            </CustomFlex>
+            <CustomFlex vertical gap={2}>
+                <CustomFlex align="center" gap="small" wrap>
+                    <CustomTypography.Text strong className="text-base text-hub-title">
+                        {def?.getTitle
+                            ? def.getTitle(isDraft, providerName)
+                            : `${isDraft ? 'Thiết lập' : 'Cấu hình'}: ${feature.type}`}
+                    </CustomTypography.Text>
+                    {feature.service && (
+                        <CustomTag className="font-mono text-xs m-0">{feature.service}</CustomTag>
+                    )}
+                </CustomFlex>
+            </CustomFlex>
+        </CustomFlex>
+    );
+
     return (
-        <CustomModal
-            open={open}
-            onCancel={onClose}
-            footer={null}
-            width={1000}
-            title={
-                <div className="flex items-center gap-2 text-base font-semibold">
-                    <Icon icon="lucide:sliders" className="text-hub-primary text-xl" />
-                    <span>
-                        {`${isDraft ? 'Thiết lập tính năng' : 'Cấu hình tính năng'}: ${
-                            isScraping ? 'Cào dữ liệu (Scraping)' : 'Tìm kiếm (Search)'
-                        } ${feature.dataProvider?.name ? `(${feature.dataProvider.name})` : ''}`}
-                    </span>
-                </div>
-            }
-        >
+        <CustomModal open={open} width={1000} footer={null} onCancel={onClose} title={modalTitle}>
             <CustomTabs
+                items={tabItems}
                 activeKey={activeTab}
                 onChange={(key) => onTabChange(key as FeatureModalTab)}
-                items={tabItems}
             />
         </CustomModal>
     );

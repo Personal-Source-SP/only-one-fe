@@ -3,15 +3,18 @@
 import { ListWrapper, type BreadcrumbItem, type CardAction } from '@/components/common';
 import {
     CustomButton,
+    CustomCol,
     CustomDropdown,
     CustomFlex,
+    CustomRow,
     CustomSpace,
     CustomTypography,
 } from '@/components/custom-antd';
 import { DataProviderFeatureType } from '@/enums';
 import { Icon } from '@iconify/react';
 import { useMemo } from 'react';
-import { DataProviderFeatureSettingModal, ProviderFeatureCardGrid } from './components';
+import { FEATURE_TYPE_METADATA } from './constants';
+import { DataProviderFeatureSettingModal, ProviderFeatureCard } from './components';
 import { useDataProviderFeaturesPage } from './hooks';
 import type { FeatureModalTab } from './types';
 
@@ -30,69 +33,45 @@ const DataProviderFeaturesPage = () => {
         handleSwitchStatus,
     } = useDataProviderFeaturesPage();
 
-    const isSearchConfigured = features.some((f) => f.type === DataProviderFeatureType.SEARCH);
-    const isScrapingConfigured = features.some((f) => f.type === DataProviderFeatureType.SCRAPING);
-
     const settingMenuItems = useMemo(
-        () => [
-            {
-                key: DataProviderFeatureType.SCRAPING,
-                label: (
-                    <CustomFlex align="center" gap="middle" className="py-1 px-1">
-                        <CustomFlex
-                            align="center"
-                            justify="center"
-                            className="p-1.5 rounded-lg bg-hub-primary/10 text-hub-primary shrink-0"
-                        >
-                            <Icon icon="lucide:file-code" className="text-base" />
-                        </CustomFlex>
-                        <CustomFlex vertical gap={2}>
-                            <CustomTypography.Text strong className="text-hub-title text-sm">
-                                Cào dữ liệu (Scraping)
-                            </CustomTypography.Text>
-                            <CustomTypography.Text
-                                type="secondary"
-                                className="text-xs text-hub-subtitle"
+        () =>
+            Object.values(DataProviderFeatureType).map((type) => {
+                const meta = FEATURE_TYPE_METADATA[type];
+                const isConfigured = features.some((f) => f.type === type);
+
+                return {
+                    key: type,
+                    label: (
+                        <CustomFlex align="center" gap="middle" className="py-1 px-1">
+                            <CustomFlex
+                                align="center"
+                                justify="center"
+                                className="p-1.5 rounded-lg bg-hub-primary/10 text-hub-primary shrink-0"
                             >
-                                {isScrapingConfigured
-                                    ? 'Đã khởi tạo • Bấm để chỉnh sửa cấu hình'
-                                    : 'Chưa khởi tạo • Bấm để thiết lập cấu hình'}
-                            </CustomTypography.Text>
+                                <Icon
+                                    icon={meta?.icon || 'lucide:file-code'}
+                                    className="text-base"
+                                />
+                            </CustomFlex>
+                            <CustomFlex vertical gap={2}>
+                                <CustomTypography.Text strong className="text-hub-title text-sm">
+                                    {meta?.label || type}
+                                </CustomTypography.Text>
+                                <CustomTypography.Text
+                                    type="secondary"
+                                    className="text-xs text-hub-subtitle"
+                                >
+                                    {isConfigured
+                                        ? 'Đã khởi tạo • Bấm để chỉnh sửa cấu hình'
+                                        : 'Chưa khởi tạo • Bấm để thiết lập cấu hình'}
+                                </CustomTypography.Text>
+                            </CustomFlex>
                         </CustomFlex>
-                    </CustomFlex>
-                ),
-                onClick: () => openConfigByType(DataProviderFeatureType.SCRAPING),
-            },
-            {
-                key: DataProviderFeatureType.SEARCH,
-                label: (
-                    <CustomFlex align="center" gap="middle" className="py-1 px-1">
-                        <CustomFlex
-                            align="center"
-                            justify="center"
-                            className="p-1.5 rounded-lg bg-hub-primary/10 text-hub-primary shrink-0"
-                        >
-                            <Icon icon="lucide:search" className="text-base" />
-                        </CustomFlex>
-                        <CustomFlex vertical gap={2}>
-                            <CustomTypography.Text strong className="text-hub-title text-sm">
-                                Tìm kiếm (Search)
-                            </CustomTypography.Text>
-                            <CustomTypography.Text
-                                type="secondary"
-                                className="text-xs text-hub-subtitle"
-                            >
-                                {isSearchConfigured
-                                    ? 'Đã khởi tạo • Bấm để chỉnh sửa cấu hình'
-                                    : 'Chưa khởi tạo • Bấm để thiết lập cấu hình'}
-                            </CustomTypography.Text>
-                        </CustomFlex>
-                    </CustomFlex>
-                ),
-                onClick: () => openConfigByType(DataProviderFeatureType.SEARCH),
-            },
-        ],
-        [isScrapingConfigured, isSearchConfigured, openConfigByType],
+                    ),
+                    onClick: () => openConfigByType(type),
+                };
+            }),
+        [features, openConfigByType],
     );
 
     const breadcrumbs: BreadcrumbItem[] = useMemo(
@@ -163,11 +142,17 @@ const DataProviderFeaturesPage = () => {
             breadcrumb={breadcrumbs}
         >
             <CustomSpace direction="vertical" size="large" className="w-full">
-                <ProviderFeatureCardGrid
-                    features={features}
-                    onOpenModal={openFeatureModal}
-                    onSwitchStatus={handleSwitchStatus}
-                />
+                <CustomRow gutter={[24, 24]} className="w-full">
+                    {features.map((feature) => (
+                        <CustomCol key={feature.id} xs={24} lg={12} className="flex">
+                            <ProviderFeatureCard
+                                feature={feature}
+                                onOpenModal={openFeatureModal}
+                                onSwitchStatus={handleSwitchStatus}
+                            />
+                        </CustomCol>
+                    ))}
+                </CustomRow>
 
                 {modalState.open && modalState.feature && (
                     <DataProviderFeatureSettingModal

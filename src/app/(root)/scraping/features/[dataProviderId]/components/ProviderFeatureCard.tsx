@@ -13,6 +13,7 @@ import {
 import { DataProviderFeatureStatus, DataProviderFeatureType } from '@/enums';
 import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
+import { FEATURE_TYPE_METADATA } from '@/app/(root)/scraping/features/[dataProviderId]/constants';
 import type {
     FeatureModalTab,
     IDataProviderFeature,
@@ -29,15 +30,15 @@ export const ProviderFeatureCard = ({
     onOpenModal,
     onSwitchStatus,
 }: ProviderFeatureCardProps) => {
-    const isScraping = feature.type === DataProviderFeatureType.SCRAPING;
+    const meta = FEATURE_TYPE_METADATA[feature.type];
     const isReady = feature.status === DataProviderFeatureStatus.READY;
     const isError =
         feature.status === DataProviderFeatureStatus.ERROR || feature.consecutiveFailures > 0;
 
-    const accentColor = isScraping
-        ? 'text-emerald-500 bg-emerald-500/10'
-        : 'text-indigo-500 bg-indigo-500/10';
-    const iconName = isScraping ? 'lucide:bot' : 'lucide:search';
+    const accentColor = meta?.accentClass || 'text-hub-primary bg-hub-primary/10';
+    const iconName = meta?.icon || 'lucide:cpu';
+    const featureTitle = meta?.label || feature.type;
+    const featureDescription = meta?.description || '';
 
     return (
         <CustomCard
@@ -74,7 +75,7 @@ export const ProviderFeatureCard = ({
                                     level={5}
                                     className="!mb-0 text-base !font-bold text-hub-title"
                                 >
-                                    {isScraping ? 'Cào dữ liệu (Scraping)' : 'Tìm kiếm (Search)'}
+                                    {featureTitle}
                                 </CustomTypography.Title>
                                 <CustomTag className="font-mono text-xs m-0">
                                     {feature.service || 'generic'}
@@ -84,9 +85,7 @@ export const ProviderFeatureCard = ({
                                 type="secondary"
                                 className="!mb-0 text-xs text-hub-subtitle mt-0.5"
                             >
-                                {isScraping
-                                    ? 'Thu thập dữ liệu chi tiết sản phẩm'
-                                    : 'Tìm kiếm sản phẩm theo từ khóa'}
+                                {featureDescription}
                             </CustomTypography.Paragraph>
                         </CustomFlex>
                     </CustomFlex>
