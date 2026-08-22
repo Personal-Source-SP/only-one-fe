@@ -1,19 +1,20 @@
 'use client';
 
-import { DownOutlined } from '@ant-design/icons';
-import type { HttpError } from '@refinedev/core';
+import { BreadcrumbNav, DataNotFound, type BreadcrumbItem } from '@/components/common/';
 import {
-    CustomCard,
     CustomButton,
+    CustomCard,
     CustomDropdown,
+    CustomFlex,
     CustomSkeleton,
     CustomSpace,
+    CustomTypography,
     type MenuProps,
 } from '@/components/custom-antd';
-import { cloneElement, isValidElement, ReactElement, ReactNode, useMemo } from 'react';
-
 import { usePagePermissions } from '@/hooks';
-import { DataNotFound } from '@/components/common';
+import { DownOutlined } from '@ant-design/icons';
+import type { HttpError } from '@refinedev/core';
+import { cloneElement, isValidElement, ReactElement, ReactNode, useMemo } from 'react';
 
 export type CardAction = {
     /** Button or action component (for example: <Button>Create</Button>) */
@@ -28,14 +29,14 @@ export type CardAction = {
     /** Optional menu icon for mobile actions dropdown */
     icon?: ReactNode;
 
-    /** Optional click handler for mobile actions dropdown */
-    onClick?: () => void;
-
     /** Unique key for dropdown menu item */
     key?: string;
 
     /** Danger styling for dropdown menu item */
     danger?: boolean;
+
+    /** Optional click handler for mobile actions dropdown */
+    onClick?: () => void;
 };
 
 export type ListWrapperProps = {
@@ -50,6 +51,9 @@ export type ListWrapperProps = {
 
     /** Actions displayed in the top-right corner above the filter table */
     actions?: CardAction[];
+
+    /** Breadcrumb navigation items rendered above the main card/container */
+    breadcrumb?: BreadcrumbItem[];
 
     /** Custom title for mobile actions dropdown (default: "Thao tác") */
     mobileActionsTitle?: ReactNode;
@@ -83,6 +87,7 @@ export const ListWrapper = ({
     children,
     permissionGroup,
     actions = [],
+    breadcrumb,
     mobileActionsTitle,
     errorDescription,
     errorMessage,
@@ -109,6 +114,11 @@ export const ListWrapper = ({
         return undefined;
     }, [errorDescription, error]);
 
+    const breadcrumbNode = useMemo(() => {
+        if (!breadcrumb || breadcrumb.length === 0) return null;
+        return <BreadcrumbNav items={breadcrumb} />;
+    }, [breadcrumb]);
+
     const allowedActions = useMemo(
         () =>
             actions.filter((action) => {
@@ -126,19 +136,23 @@ export const ListWrapper = ({
         return allowedActions.map((action, index) => {
             if (action.label) {
                 return {
-                    label: action.label,
                     icon: action.icon,
+                    label: action.label,
                     danger: action.danger,
-                    onClick: action.onClick,
                     key: action.key ?? String(index),
+                    onClick: action.onClick,
                 };
             }
+
             return {
                 key: action.key ?? String(index),
                 label: (
-                    <div className="w-full flex items-center [&_button]:!w-full [&_button]:!justify-start [&_button]:!border-none [&_button]:!shadow-none [&_button]:!bg-transparent [&_button]:!p-0 [&_button]:!h-auto [&_button]:!text-inherit">
+                    <CustomFlex
+                        align="center"
+                        className="w-full [&_button]:!w-full [&_button]:!justify-start [&_button]:!border-none [&_button]:!shadow-none [&_button]:!bg-transparent [&_button]:!p-0 [&_button]:!h-auto [&_button]:!text-inherit"
+                    >
                         {action.component}
-                    </div>
+                    </CustomFlex>
                 ),
             };
         });
@@ -157,7 +171,9 @@ export const ListWrapper = ({
                     type="primary"
                     className="flex items-center justify-center gap-1 shrink-0"
                 >
-                    <span>{mobileActionsTitle ?? 'Thao tác'}</span>
+                    <CustomTypography.Text className="text-inherit">
+                        {mobileActionsTitle ?? 'Thao tác'}
+                    </CustomTypography.Text>
                     <DownOutlined className="text-xs ml-0.5" />
                 </CustomButton>
             </CustomDropdown>
@@ -176,34 +192,44 @@ export const ListWrapper = ({
                 : filters;
 
         return (
-            <div className="w-full">
+            <CustomFlex vertical className="w-full">
                 {/* Desktop View (md and above): Render all filters on left, all actions on right */}
-                <div className="hidden md:flex w-full items-center justify-between gap-2">
-                    {filters && <div className="flex-1 min-w-0">{filters}</div>}
+                <CustomFlex
+                    gap="small"
+                    align="center"
+                    justify="space-between"
+                    className="hidden md:flex w-full"
+                >
+                    {filters && <CustomFlex className="flex-1 min-w-0">{filters}</CustomFlex>}
                     {allowedActions.length > 0 && (
-                        <div className="flex items-center justify-end gap-2 shrink-0">
+                        <CustomFlex
+                            gap="small"
+                            align="center"
+                            justify="flex-end"
+                            className="shrink-0"
+                        >
                             {allowedActions.map((action, index) => (
-                                <div key={index} className="shrink-0">
+                                <CustomFlex key={index} className="shrink-0">
                                     {action.component}
-                                </div>
+                                </CustomFlex>
                             ))}
-                        </div>
+                        </CustomFlex>
                     )}
-                </div>
+                </CustomFlex>
 
                 {/* Mobile View (< md): 2-row layout handled by clonedFilters or fallback */}
-                <div className="flex md:hidden flex-col gap-2.5 w-full">
+                <CustomFlex vertical gap="middle" className="flex md:hidden w-full">
                     {clonedFilters
                         ? clonedFilters
                         : mobileActionsButton && (
-                              <div className="flex items-center justify-end w-full">
+                              <CustomFlex align="center" justify="flex-end" className="w-full">
                                   {mobileActionsButton}
-                              </div>
+                              </CustomFlex>
                           )}
-                </div>
-            </div>
+                </CustomFlex>
+            </CustomFlex>
         );
-    }, [allowedActions, filters, mobileActionsButton]);
+    }, [allowedActions, mobileActionsButton, filters]);
 
     if (isLoading) {
         return (
@@ -225,27 +251,29 @@ export const ListWrapper = ({
     }
 
     if (!withCard) {
-        return (
+        const unwrapContent = (
             <CustomSpace
                 size="middle"
                 direction="vertical"
-                className={`w-full ${className}`.trim()}
+                className={`w-full p-3 sm:p-5 ${className}`.trim()}
             >
+                {breadcrumbNode}
                 {header && <CustomCard className="w-full">{header}</CustomCard>}
                 {children}
             </CustomSpace>
         );
+        return unwrapContent;
     }
 
     return (
-        <CustomCard
-            styles={{ body: { padding: 0 } }}
-            className={`overflow-hidden ${className}`.trim()}
-        >
-            <CustomSpace direction="vertical" size="middle" className="w-full p-3 sm:p-5">
-                {header}
-                {children}
-            </CustomSpace>
-        </CustomCard>
+        <CustomSpace size="middle" direction="vertical" className={`w-full ${className}`.trim()}>
+            {breadcrumbNode}
+            <CustomCard styles={{ body: { padding: 0 } }} className="overflow-hidden">
+                <CustomSpace direction="vertical" size="middle" className="w-full p-3 sm:p-5">
+                    {header}
+                    {children}
+                </CustomSpace>
+            </CustomCard>
+        </CustomSpace>
     );
 };

@@ -2,79 +2,106 @@
 
 import type { FC, JSX } from 'react';
 import type { IDataProvider } from '@/app/(root)/scraping/data-providers/types';
-import { CustomButton } from '@/components/custom-antd';
+import {
+    CustomCard,
+    CustomFlex,
+    CustomSkeleton,
+    CustomTag,
+    CustomTypography,
+} from '@/components/custom-antd';
 import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
 
 interface ProviderFeaturesHeaderProps {
+    isLoading?: boolean;
     provider?: IDataProvider;
-    onBack: () => void;
 }
 
 export const ProviderFeaturesHeader: FC<ProviderFeaturesHeaderProps> = ({
+    isLoading = false,
     provider,
-    onBack,
 }): JSX.Element => {
+    if (isLoading) {
+        return (
+            <CustomCard
+                className="bg-hub-section/40 border-hub-border/60 backdrop-blur-sm shadow-sm rounded-2xl p-5 sm:p-6"
+                styles={{ body: { padding: 0 } }}
+            >
+                <CustomSkeleton
+                    active
+                    avatar={{ size: 56, shape: 'square' }}
+                    paragraph={{ rows: 2 }}
+                />
+            </CustomCard>
+        );
+    }
+
     return (
-        <div className="space-y-4">
-            {/* Breadcrumb & Navigation */}
-            <div className="flex items-center gap-3">
-                <CustomButton
-                    type="text"
-                    icon={<Icon icon="lucide:arrow-left" className="w-5 h-5" />}
-                    onClick={onBack}
-                    className="hover:bg-hub-section"
-                >
-                    Danh sách nhà cung cấp
-                </CustomButton>
-                <span className="text-hub-subtitle">/</span>
-                <span className="text-sm font-medium text-hub-title truncate">
-                    {provider?.name || 'Chi tiết tính năng'}
-                </span>
-            </div>
-
-            {/* Provider Info Banner Card */}
-            <div className="bg-hub-section/40 border border-hub-border/60 rounded-2xl p-5 sm:p-6 backdrop-blur-sm shadow-sm">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div className="flex items-center gap-4">
-                        <div className="p-3.5 rounded-xl bg-hub-primary/10 border border-hub-primary/20 text-hub-primary">
-                            <Icon icon="lucide:database" className="w-7 h-7" />
-                        </div>
-                        <div>
-                            <div className="flex items-center gap-2.5 flex-wrap">
-                                <h1 className="text-xl font-bold text-hub-title">
-                                    {provider?.name || 'Đang tải...'}
-                                </h1>
-                                {provider?.identifier && (
-                                    <span className="text-xs font-mono px-2.5 py-0.5 rounded-full bg-hub-section border border-hub-border text-hub-subtitle">
-                                        {provider.identifier}
-                                    </span>
-                                )}
-                            </div>
-                            {provider?.baseUrl && (
-                                <a
-                                    href={provider.baseUrl}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="text-xs text-hub-primary hover:underline flex items-center gap-1 mt-1 inline-flex"
-                                >
-                                    <span>{provider.baseUrl}</span>
-                                    <Icon icon="lucide:external-link" className="w-3.5 h-3.5" />
-                                </a>
-                            )}
-                        </div>
+        <CustomCard
+            className="bg-hub-section/40 border-hub-border/60 backdrop-blur-sm shadow-sm rounded-2xl"
+            styles={{ body: { padding: '20px 24px' } }}
+        >
+            <CustomFlex
+                justify="space-between"
+                align="center"
+                gap="middle"
+                className="flex-col sm:flex-row"
+            >
+                {/* Left Side: Avatar/Icon + Title + Badges + Link */}
+                <CustomFlex align="center" gap="middle" className="w-full sm:w-auto min-w-0">
+                    <div className="p-3.5 rounded-xl bg-hub-primary/10 border border-hub-primary/20 text-hub-primary shrink-0 flex items-center justify-center">
+                        <Icon icon="lucide:database" className="w-7 h-7" />
                     </div>
+                    <CustomFlex vertical gap={4} className="min-w-0 flex-1">
+                        <CustomFlex align="center" gap="small" wrap>
+                            <CustomTypography.Title
+                                level={4}
+                                className="!mb-0 text-hub-title truncate !font-bold text-xl"
+                            >
+                                {provider?.name || 'Chi tiết nhà cung cấp'}
+                            </CustomTypography.Title>
+                            {provider?.identifier && (
+                                <CustomTag className="font-mono bg-hub-section border-hub-border text-hub-subtitle text-xs rounded-full px-2.5 py-0.5 m-0">
+                                    {provider.identifier}
+                                </CustomTag>
+                            )}
+                        </CustomFlex>
 
-                    {provider?.createdAt && (
-                        <div className="text-xs text-hub-subtitle sm:text-right">
-                            <span>Ngày tạo: </span>
-                            <span className="font-medium text-hub-title">
+                        {provider?.baseUrl && (
+                            <CustomTypography.Link
+                                href={provider.baseUrl}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="text-xs text-hub-primary hover:underline flex items-center gap-1 inline-flex max-w-full truncate"
+                            >
+                                <span className="truncate">{provider.baseUrl}</span>
+                                <Icon
+                                    icon="lucide:external-link"
+                                    className="w-3.5 h-3.5 shrink-0"
+                                />
+                            </CustomTypography.Link>
+                        )}
+                    </CustomFlex>
+                </CustomFlex>
+
+                {/* Right Side: Meta Items */}
+                {provider?.createdAt && (
+                    <CustomFlex
+                        vertical
+                        align="flex-start"
+                        justify="space-between"
+                        gap="small"
+                        className="w-full sm:w-auto sm:items-end shrink-0"
+                    >
+                        <CustomFlex align="center" gap={4} className="text-xs text-hub-subtitle">
+                            <span>Ngày tạo:</span>
+                            <CustomTypography.Text strong className="text-hub-title font-medium">
                                 {formatDate(provider.createdAt)}
-                            </span>
-                        </div>
-                    )}
-                </div>
-            </div>
-        </div>
+                            </CustomTypography.Text>
+                        </CustomFlex>
+                    </CustomFlex>
+                )}
+            </CustomFlex>
+        </CustomCard>
     );
 };

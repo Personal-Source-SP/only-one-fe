@@ -1,10 +1,16 @@
 'use client';
 
-import type { FC, JSX } from 'react';
-import { ListWrapper } from '@/components/common';
-import { CustomButton, CustomDropdown } from '@/components/custom-antd';
+import { ListWrapper, type BreadcrumbItem, type CardAction } from '@/components/common';
+import {
+    CustomButton,
+    CustomDropdown,
+    CustomFlex,
+    CustomSpace,
+    CustomTypography,
+} from '@/components/custom-antd';
 import { DataProviderFeatureType } from '@/enums';
 import { Icon } from '@iconify/react';
+import { useMemo } from 'react';
 import {
     DataProviderFeatureSettingModal,
     ProviderFeatureCardGrid,
@@ -13,7 +19,7 @@ import {
 import { useDataProviderFeaturesPage } from './hooks';
 import type { FeatureModalTab } from './types';
 
-const DataProviderFeaturesPage: FC = (): JSX.Element => {
+const DataProviderFeaturesPage = () => {
     const {
         router,
         provider,
@@ -31,72 +37,72 @@ const DataProviderFeaturesPage: FC = (): JSX.Element => {
     const isSearchConfigured = features.some((f) => f.type === DataProviderFeatureType.SEARCH);
     const isScrapingConfigured = features.some((f) => f.type === DataProviderFeatureType.SCRAPING);
 
-    const settingMenuItems = [
-        {
-            key: DataProviderFeatureType.SCRAPING,
-            label: (
-                <div className="flex items-center gap-3 py-1 px-1">
-                    <div className="p-1.5 rounded-lg bg-hub-primary/10 text-hub-primary shrink-0">
-                        <Icon icon="lucide:file-code" className="text-base" />
-                    </div>
-                    <div>
-                        <div className="font-semibold text-hub-title text-sm">
-                            Cào dữ liệu (Scraping)
+    const settingMenuItems = useMemo(
+        () => [
+            {
+                key: DataProviderFeatureType.SCRAPING,
+                label: (
+                    <div className="flex items-center gap-3 py-1 px-1">
+                        <div className="p-1.5 rounded-lg bg-hub-primary/10 text-hub-primary shrink-0">
+                            <Icon icon="lucide:file-code" className="text-base" />
                         </div>
-                        <div className="text-xs text-hub-subtitle">
-                            {isScrapingConfigured
-                                ? 'Đã khởi tạo • Bấm để chỉnh sửa cấu hình'
-                                : 'Chưa khởi tạo • Bấm để thiết lập cấu hình'}
-                        </div>
-                    </div>
-                </div>
-            ),
-            onClick: () => openConfigByType(DataProviderFeatureType.SCRAPING),
-        },
-        {
-            key: DataProviderFeatureType.SEARCH,
-            label: (
-                <div className="flex items-center gap-3 py-1 px-1">
-                    <div className="p-1.5 rounded-lg bg-hub-primary/10 text-hub-primary shrink-0">
-                        <Icon icon="lucide:search" className="text-base" />
-                    </div>
-                    <div>
-                        <div className="font-semibold text-hub-title text-sm">
-                            Tìm kiếm (Search)
-                        </div>
-                        <div className="text-xs text-hub-subtitle">
-                            {isSearchConfigured
-                                ? 'Đã khởi tạo • Bấm để chỉnh sửa cấu hình'
-                                : 'Chưa khởi tạo • Bấm để thiết lập cấu hình'}
+                        <div>
+                            <div className="font-semibold text-hub-title text-sm">
+                                Cào dữ liệu (Scraping)
+                            </div>
+                            <div className="text-xs text-hub-subtitle">
+                                {isScrapingConfigured
+                                    ? 'Đã khởi tạo • Bấm để chỉnh sửa cấu hình'
+                                    : 'Chưa khởi tạo • Bấm để thiết lập cấu hình'}
+                            </div>
                         </div>
                     </div>
-                </div>
-            ),
-            onClick: () => openConfigByType(DataProviderFeatureType.SEARCH),
-        },
-    ];
+                ),
+                onClick: () => openConfigByType(DataProviderFeatureType.SCRAPING),
+            },
+            {
+                key: DataProviderFeatureType.SEARCH,
+                label: (
+                    <div className="flex items-center gap-3 py-1 px-1">
+                        <div className="p-1.5 rounded-lg bg-hub-primary/10 text-hub-primary shrink-0">
+                            <Icon icon="lucide:search" className="text-base" />
+                        </div>
+                        <div>
+                            <div className="font-semibold text-hub-title text-sm">
+                                Tìm kiếm (Search)
+                            </div>
+                            <div className="text-xs text-hub-subtitle">
+                                {isSearchConfigured
+                                    ? 'Đã khởi tạo • Bấm để chỉnh sửa cấu hình'
+                                    : 'Chưa khởi tạo • Bấm để thiết lập cấu hình'}
+                            </div>
+                        </div>
+                    </div>
+                ),
+                onClick: () => openConfigByType(DataProviderFeatureType.SEARCH),
+            },
+        ],
+        [isScrapingConfigured, isSearchConfigured, openConfigByType],
+    );
 
-    return (
-        <ListWrapper isLoading={isLoading}>
-            <div className="space-y-6">
-                <ProviderFeaturesHeader
-                    provider={provider}
-                    onBack={() => router.push('/scraping/data-providers')}
-                />
+    const breadcrumbs: BreadcrumbItem[] = useMemo(
+        () => [
+            {
+                label: 'Danh sách nhà cung cấp',
+                icon: <Icon icon="lucide:arrow-left" className="w-5 h-5" />,
+                onClick: () => router.push('/scraping/data-providers'),
+            },
+            {
+                label: provider?.name || 'Chi tiết tính năng',
+            },
+        ],
+        [provider?.name, router],
+    );
 
-                {/* Section Header & Actions */}
-                <div className="flex items-center justify-between gap-4">
-                    <div>
-                        <h2 className="text-lg font-bold text-hub-title flex items-center gap-2">
-                            <Icon icon="lucide:layers" className="text-hub-primary" />
-                            <span>Các tính năng hoạt động</span>
-                        </h2>
-                        <p className="text-xs text-hub-subtitle mt-0.5">
-                            Quản lý trạng thái, cấu hình và lịch sử thực thi của các tính năng trực
-                            thuộc nhà cung cấp này
-                        </p>
-                    </div>
-
+    const actions: CardAction[] = useMemo(
+        () => [
+            {
+                component: (
                     <CustomDropdown
                         trigger={['click']}
                         placement="bottomRight"
@@ -110,7 +116,44 @@ const DataProviderFeaturesPage: FC = (): JSX.Element => {
                             <Icon icon="lucide:chevron-down" className="ml-1 text-xs" />
                         </CustomButton>
                     </CustomDropdown>
-                </div>
+                ),
+            },
+        ],
+        [settingMenuItems],
+    );
+
+    const sectionTitle = useMemo(
+        () => (
+            <CustomFlex vertical gap={2}>
+                <CustomTypography.Title
+                    level={5}
+                    className="!mb-0 text-hub-title flex items-center gap-2 !font-bold text-lg"
+                >
+                    <Icon icon="lucide:layers" className="text-hub-primary" />
+                    <span>Các tính năng hoạt động</span>
+                </CustomTypography.Title>
+                <CustomTypography.Paragraph
+                    type="secondary"
+                    className="!mb-0 text-xs text-hub-subtitle mt-0.5"
+                >
+                    Quản lý trạng thái, cấu hình và lịch sử thực thi của các tính năng trực thuộc
+                    nhà cung cấp này
+                </CustomTypography.Paragraph>
+            </CustomFlex>
+        ),
+        [],
+    );
+
+    return (
+        <ListWrapper
+            withCard={false}
+            actions={actions}
+            isLoading={isLoading}
+            filters={sectionTitle}
+            breadcrumb={breadcrumbs}
+        >
+            <CustomSpace direction="vertical" size="large" className="w-full">
+                <ProviderFeaturesHeader provider={provider} isLoading={isLoading} />
 
                 {/* Feature Card Grid */}
                 <ProviderFeatureCardGrid
@@ -135,7 +178,7 @@ const DataProviderFeaturesPage: FC = (): JSX.Element => {
                         }
                     />
                 )}
-            </div>
+            </CustomSpace>
         </ListWrapper>
     );
 };
