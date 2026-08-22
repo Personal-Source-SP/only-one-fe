@@ -1,12 +1,8 @@
 import type { ComponentType } from 'react';
 import type { FormInstance } from '@/components/custom-antd';
 import { DataProviderFeatureType } from '@/enums';
-import { ScrapingConfigForm } from '@/app/(root)/scraping/features/[dataProviderId]/components/ScrapingConfigForm';
-import { SearchConfigForm } from '@/app/(root)/scraping/features/[dataProviderId]/components/SearchConfigForm';
-import type {
-    IConfigVersion,
-    IDataProviderFeature,
-} from '@/app/(root)/scraping/features/[dataProviderId]/types';
+import { ScrapingConfigForm, SearchConfigForm } from '../components';
+import type { IConfigVersion, IDataProviderFeature } from '../types';
 
 export type FeatureConfigFormProps = {
     form?: FormInstance;

@@ -14,7 +14,7 @@ import { DataProviderFeatureType } from '@/enums';
 import { Icon } from '@iconify/react';
 import { useMemo } from 'react';
 import { FEATURE_TYPE_METADATA } from './constants';
-import { DataProviderFeatureSettingModal, ProviderFeatureCard } from './components';
+import { FeatureCard, FeatureSettingModal } from './components';
 import { useDataProviderFeaturesPage } from './hooks';
 import type { FeatureModalTab } from './types';
 
@@ -145,7 +145,7 @@ const DataProviderFeaturesPage = () => {
                 <CustomRow gutter={[24, 24]} className="w-full">
                     {features.map((feature) => (
                         <CustomCol key={feature.id} xs={24} lg={12} className="flex">
-                            <ProviderFeatureCard
+                            <FeatureCard
                                 feature={feature}
                                 onOpenModal={openFeatureModal}
                                 onSwitchStatus={handleSwitchStatus}
@@ -155,7 +155,7 @@ const DataProviderFeaturesPage = () => {
                 </CustomRow>
 
                 {modalState.open && modalState.feature && (
-                    <DataProviderFeatureSettingModal
+                    <FeatureSettingModal
                         open={modalState.open}
                         onSuccess={refetchAll}
                         onClose={closeFeatureModal}

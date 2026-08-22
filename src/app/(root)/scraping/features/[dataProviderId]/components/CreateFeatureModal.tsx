@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
     CustomButton,
     CustomFlex,
@@ -31,12 +31,14 @@ export const CreateFeatureModal = ({
 }: CreateFeatureModalProps) => {
     const [form] = CustomForm.useForm();
     const [isLoading, setIsLoading] = useState<boolean>(false);
+
     const { handleCustomMutationData } = useCustomMutationData();
 
     const handleCreate = async (): Promise<void> => {
+        setIsLoading(true);
+
         try {
             const values = await form.validateFields();
-            setIsLoading(true);
 
             handleCustomMutationData({
                 method: 'post',
@@ -64,22 +66,28 @@ export const CreateFeatureModal = ({
                     };
                 },
             });
-        } catch (error) {
+        } finally {
             setIsLoading(false);
-            console.error('Create feature error:', error);
         }
     };
 
-    const typeOptions = availableTypes.map((type) => ({
-        label: FEATURE_TYPE_METADATA[type]?.label || type,
-        value: type,
-    }));
+    const typeOptions = useMemo(
+        () =>
+            availableTypes.map((type) => ({
+                value: type,
+                label: FEATURE_TYPE_METADATA[type]?.label || type,
+            })),
+        [availableTypes],
+    );
 
-    const serviceOptions = [
-        { label: 'Generic (HTML / Axios / Cheerio)', value: 'generic' },
-        { label: 'Puppeteer Headless', value: 'puppeteer' },
-        { label: 'Playwright', value: 'playwright' },
-    ];
+    const serviceOptions = useMemo(
+        () => [
+            { label: 'Generic (HTML / Axios / Cheerio)', value: 'generic' },
+            { label: 'Puppeteer Headless', value: 'puppeteer' },
+            { label: 'Playwright', value: 'playwright' },
+        ],
+        [],
+    );
 
     return (
         <CustomModal

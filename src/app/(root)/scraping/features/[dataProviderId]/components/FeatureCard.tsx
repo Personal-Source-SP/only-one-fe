@@ -13,32 +13,26 @@ import {
 import { DataProviderFeatureStatus, DataProviderFeatureType } from '@/enums';
 import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
-import { FEATURE_TYPE_METADATA } from '@/app/(root)/scraping/features/[dataProviderId]/constants';
-import type {
-    FeatureModalTab,
-    IDataProviderFeature,
-} from '@/app/(root)/scraping/features/[dataProviderId]/types';
+import { FEATURE_TYPE_METADATA } from '../constants';
+import type { FeatureModalTab, IDataProviderFeature } from '../types';
 
-type ProviderFeatureCardProps = {
+type FeatureCardProps = {
     feature: IDataProviderFeature;
     onOpenModal: (feature: IDataProviderFeature, tab: FeatureModalTab) => void;
     onSwitchStatus: (featureId: string, currentStatus: DataProviderFeatureStatus) => void;
 };
 
-export const ProviderFeatureCard = ({
-    feature,
-    onOpenModal,
-    onSwitchStatus,
-}: ProviderFeatureCardProps) => {
+export const FeatureCard = ({ feature, onOpenModal, onSwitchStatus }: FeatureCardProps) => {
     const meta = FEATURE_TYPE_METADATA[feature.type];
+
     const isReady = feature.status === DataProviderFeatureStatus.READY;
     const isError =
         feature.status === DataProviderFeatureStatus.ERROR || feature.consecutiveFailures > 0;
 
-    const accentColor = meta?.accentClass || 'text-hub-primary bg-hub-primary/10';
     const iconName = meta?.icon || 'lucide:cpu';
     const featureTitle = meta?.label || feature.type;
     const featureDescription = meta?.description || '';
+    const accentColor = meta?.accentClass || 'text-hub-primary bg-hub-primary/10';
 
     return (
         <CustomCard

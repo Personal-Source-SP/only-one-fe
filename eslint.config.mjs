@@ -121,6 +121,20 @@ export default [
         },
     },
     {
+        files: ['src/app/**/*.{ts,tsx}'],
+        rules: {
+            'no-relative-import-paths/no-relative-import-paths': [
+                'error',
+                {
+                    allowSameFolder: true,
+                    allowedDepth: 2,
+                    rootDir: 'src',
+                    prefix: '@',
+                },
+            ],
+        },
+    },
+    {
         files: ['src/components/custom-antd/**/*.{ts,tsx}'],
         rules: {
             'no-restricted-imports': [

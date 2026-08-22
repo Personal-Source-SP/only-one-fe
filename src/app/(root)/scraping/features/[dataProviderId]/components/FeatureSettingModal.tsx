@@ -18,16 +18,11 @@ import { ConfigVersionType, MessageType } from '@/enums';
 import { useCustomData, useCustomMutationData } from '@/hooks';
 import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
-import { getFeatureDefinition } from '@/app/(root)/scraping/features/[dataProviderId]/utils';
-import type {
-    FeatureModalTab,
-    IConfigVersion,
-    IDataProviderFeature,
-} from '@/app/(root)/scraping/features/[dataProviderId]/types';
+import { getFeatureDefinition } from '../utils';
+import type { FeatureModalTab, IConfigVersion, IDataProviderFeature } from '../types';
 import { FeatureTestTab } from './FeatureTestTab';
-import { FeatureVersionHistoryTab } from './FeatureVersionHistoryTab';
 
-type DataProviderFeatureSettingModalProps = {
+type FeatureSettingModalProps = {
     open: boolean;
     activeTab: FeatureModalTab;
     feature: IDataProviderFeature;
@@ -36,14 +31,14 @@ type DataProviderFeatureSettingModalProps = {
     onTabChange: (tab: FeatureModalTab) => void;
 };
 
-export const DataProviderFeatureSettingModal = ({
+export const FeatureSettingModal = ({
     open,
     activeTab,
     feature,
     onClose,
     onSuccess,
     onTabChange,
-}: DataProviderFeatureSettingModalProps) => {
+}: FeatureSettingModalProps) => {
     const [form] = CustomForm.useForm();
     const [isSaving, setIsSaving] = useState<boolean>(false);
     const [isRollingBack, setIsRollingBack] = useState<boolean>(false);
