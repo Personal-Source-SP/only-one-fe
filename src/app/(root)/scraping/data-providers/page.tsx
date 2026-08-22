@@ -66,13 +66,6 @@ const DataProviderPage = () => {
             width: '30%',
         },
         {
-            key: 'status',
-            title: 'Trạng thái',
-            dataIndex: 'status',
-            render: (status: DataProviderStatus) => <StatusTag status={status} />,
-            width: '15%',
-        },
-        {
             title: 'Ngày tạo',
             dataIndex: 'createdAt',
             key: 'createdAt',
