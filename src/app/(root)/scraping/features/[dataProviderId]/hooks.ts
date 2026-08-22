@@ -16,7 +16,6 @@ import type { FeatureModalState, FeatureModalTab, IDataProviderFeature } from '.
 export const useDataProviderFeaturesPage = () => {
     const params = useParams();
     const router = useRouter();
-
     const dataProviderId = (params?.dataProviderId as string) || '';
 
     const [modalState, setModalState] = useState<FeatureModalState>({
@@ -109,17 +108,17 @@ export const useDataProviderFeaturesPage = () => {
     };
 
     return {
-        dataProviderId,
+        router,
         provider,
         features,
-        isLoading: providerQuery.isLoading || featuresQuery.isLoading,
         modalState,
+        dataProviderId,
+        isLoading: providerQuery.isLoading || featuresQuery.isLoading,
+        refetchAll,
+        setModalState,
         openFeatureModal,
         openConfigByType,
         closeFeatureModal,
-        setModalState,
         handleSwitchStatus,
-        refetchAll,
-        router,
     };
 };
