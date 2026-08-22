@@ -4,16 +4,13 @@ import {
     FilterPanel,
     ListTable,
     ListWrapper,
-    StatusTag,
     type CardAction,
     type IFilterField,
-    type TableCustomAction,
 } from '@/components/common';
 import { CustomButton, type ColumnsType } from '@/components/custom-antd';
 import { DataProviderStatus } from '@/enums';
 import { formatDate } from '@/libs';
 import { PlusOutlined } from '@ant-design/icons';
-import { Icon } from '@iconify/react';
 import { useRouter } from 'next/navigation';
 import { DataProviderFormModal } from './components';
 import { useDataProviderPage } from './hooks';
@@ -75,15 +72,6 @@ const DataProviderPage = () => {
         },
     ];
 
-    const customRowActions: TableCustomAction<IDataProvider>[] = [
-        {
-            key: 'manage-features',
-            icon: <Icon icon="lucide:layers" />,
-            tooltip: 'Quản lý tính năng',
-            onClick: (record) => router.push(`/scraping/features/${record.id}`),
-        },
-    ];
-
     const actions: CardAction[] = [
         {
             component: (
@@ -142,7 +130,6 @@ const DataProviderPage = () => {
                     tableProps={tableProps}
                     tableQuery={tableQuery}
                     deleteResource="data-providers"
-                    customRowActions={customRowActions}
                     onEdit={(record) => editModalForm.show(record.id)}
                 />
             </ListWrapper>
