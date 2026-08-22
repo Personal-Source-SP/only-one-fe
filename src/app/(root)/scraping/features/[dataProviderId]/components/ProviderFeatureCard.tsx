@@ -1,7 +1,15 @@
 'use client';
 
-import type { FC, JSX } from 'react';
-import { CustomButton, CustomSwitch } from '@/components/custom-antd';
+import {
+    CustomButton,
+    CustomCard,
+    CustomCol,
+    CustomFlex,
+    CustomRow,
+    CustomSwitch,
+    CustomTag,
+    CustomTypography,
+} from '@/components/custom-antd';
 import { DataProviderFeatureStatus, DataProviderFeatureType } from '@/enums';
 import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
@@ -10,17 +18,17 @@ import type {
     IDataProviderFeature,
 } from '@/app/(root)/scraping/features/[dataProviderId]/types';
 
-interface ProviderFeatureCardProps {
+type ProviderFeatureCardProps = {
     feature: IDataProviderFeature;
-    onSwitchStatus: (featureId: string, currentStatus: DataProviderFeatureStatus) => void;
     onOpenModal: (feature: IDataProviderFeature, tab: FeatureModalTab) => void;
-}
+    onSwitchStatus: (featureId: string, currentStatus: DataProviderFeatureStatus) => void;
+};
 
-export const ProviderFeatureCard: FC<ProviderFeatureCardProps> = ({
+export const ProviderFeatureCard = ({
     feature,
-    onSwitchStatus,
     onOpenModal,
-}): JSX.Element => {
+    onSwitchStatus,
+}: ProviderFeatureCardProps) => {
     const isScraping = feature.type === DataProviderFeatureType.SCRAPING;
     const isReady = feature.status === DataProviderFeatureStatus.READY;
     const isError =
@@ -32,32 +40,58 @@ export const ProviderFeatureCard: FC<ProviderFeatureCardProps> = ({
     const iconName = isScraping ? 'lucide:bot' : 'lucide:search';
 
     return (
-        <div className="bg-hub-section/40 border border-hub-border/60 hover:border-hub-primary/60 transition-all duration-200 rounded-2xl p-5 sm:p-6 flex flex-col justify-between shadow-sm hover:shadow-md">
-            <div>
+        <CustomCard
+            className="hover:border-hub-primary/60 transition-all duration-200 shadow-sm hover:shadow-md h-full rounded-2xl"
+            styles={{
+                body: {
+                    padding: '20px',
+                    height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                },
+            }}
+        >
+            <CustomFlex vertical className="w-full">
                 {/* Card Header: Icon, Title, Service, Switch */}
-                <div className="flex items-start justify-between gap-4 mb-4">
-                    <div className="flex items-center gap-3">
-                        <div className={`p-3 rounded-xl ${accentColor}`}>
+                <CustomFlex
+                    align="flex-start"
+                    justify="space-between"
+                    gap="middle"
+                    className="mb-4"
+                >
+                    <CustomFlex align="center" gap="middle">
+                        <CustomFlex
+                            align="center"
+                            justify="center"
+                            className={`p-3 rounded-xl shrink-0 ${accentColor}`}
+                        >
                             <Icon icon={iconName} className="w-6 h-6" />
-                        </div>
-                        <div>
-                            <div className="flex items-center gap-2 flex-wrap">
-                                <h3 className="text-base font-bold text-hub-title">
+                        </CustomFlex>
+                        <CustomFlex vertical gap={2}>
+                            <CustomFlex align="center" gap="small" wrap>
+                                <CustomTypography.Title
+                                    level={5}
+                                    className="!mb-0 text-base !font-bold text-hub-title"
+                                >
                                     {isScraping ? 'Cào dữ liệu (Scraping)' : 'Tìm kiếm (Search)'}
-                                </h3>
-                                <span className="text-xs px-2 py-0.5 rounded-full bg-hub-section border border-hub-border text-hub-subtitle font-mono">
+                                </CustomTypography.Title>
+                                <CustomTag className="font-mono text-xs m-0">
                                     {feature.service || 'generic'}
-                                </span>
-                            </div>
-                            <p className="text-xs text-hub-subtitle mt-0.5">
+                                </CustomTag>
+                            </CustomFlex>
+                            <CustomTypography.Paragraph
+                                type="secondary"
+                                className="!mb-0 text-xs text-hub-subtitle mt-0.5"
+                            >
                                 {isScraping
                                     ? 'Thu thập dữ liệu chi tiết sản phẩm'
                                     : 'Tìm kiếm sản phẩm theo từ khóa'}
-                            </p>
-                        </div>
-                    </div>
+                            </CustomTypography.Paragraph>
+                        </CustomFlex>
+                    </CustomFlex>
 
-                    <div className="flex items-center gap-2">
+                    <CustomFlex align="center" gap="small" className="shrink-0">
                         <CustomSwitch
                             checked={isReady}
                             disabled={feature.status === DataProviderFeatureStatus.UNCONFIGURED}
@@ -65,14 +99,22 @@ export const ProviderFeatureCard: FC<ProviderFeatureCardProps> = ({
                             checkedChildren="Bật"
                             unCheckedChildren="Tắt"
                         />
-                    </div>
-                </div>
+                    </CustomFlex>
+                </CustomFlex>
 
                 {/* Health Metrics 2x2 Grid */}
-                <div className="grid grid-cols-2 gap-3 bg-hub-section/30 border border-hub-border/40 rounded-xl p-3.5 my-4">
-                    <div>
-                        <span className="text-xs text-hub-subtitle block">Trạng thái</span>
-                        <div className="flex items-center gap-1.5 mt-1">
+                <CustomRow
+                    gutter={[12, 12]}
+                    className="bg-hub-section/30 border border-hub-border/40 rounded-xl p-3.5 my-4 w-full"
+                >
+                    <CustomCol span={12}>
+                        <CustomTypography.Text
+                            type="secondary"
+                            className="text-xs text-hub-subtitle block"
+                        >
+                            Trạng thái
+                        </CustomTypography.Text>
+                        <CustomFlex align="center" gap={6} className="mt-1">
                             <span
                                 className={`w-2 h-2 rounded-full ${
                                     isReady
@@ -82,55 +124,82 @@ export const ProviderFeatureCard: FC<ProviderFeatureCardProps> = ({
                                           : 'bg-slate-400'
                                 }`}
                             />
-                            <span className="text-xs font-semibold text-hub-title">
+                            <CustomTypography.Text strong className="text-xs text-hub-title">
                                 {feature.status}
-                            </span>
-                        </div>
-                    </div>
+                            </CustomTypography.Text>
+                        </CustomFlex>
+                    </CustomCol>
 
-                    <div>
-                        <span className="text-xs text-hub-subtitle block">Số lỗi liên tiếp</span>
-                        <span
-                            className={`text-xs font-semibold mt-1 block ${
+                    <CustomCol span={12}>
+                        <CustomTypography.Text
+                            type="secondary"
+                            className="text-xs text-hub-subtitle block"
+                        >
+                            Số lỗi liên tiếp
+                        </CustomTypography.Text>
+                        <CustomTypography.Text
+                            strong
+                            className={`text-xs mt-1 block ${
                                 isError ? 'text-rose-500' : 'text-emerald-500'
                             }`}
                         >
                             {feature.consecutiveFailures > 0
                                 ? `${feature.consecutiveFailures} lỗi`
                                 : '0 (Ổn định)'}
-                        </span>
-                    </div>
+                        </CustomTypography.Text>
+                    </CustomCol>
 
-                    <div>
-                        <span className="text-xs text-hub-subtitle block">Chạy OK cuối</span>
-                        <span className="text-xs font-medium text-hub-title mt-1 block truncate">
+                    <CustomCol span={12}>
+                        <CustomTypography.Text
+                            type="secondary"
+                            className="text-xs text-hub-subtitle block"
+                        >
+                            Chạy OK cuối
+                        </CustomTypography.Text>
+                        <CustomTypography.Text className="text-xs font-medium text-hub-title mt-1 block truncate">
                             {feature.lastSuccessfulRunAt
                                 ? formatDate(feature.lastSuccessfulRunAt)
                                 : 'Chưa chạy'}
-                        </span>
-                    </div>
+                        </CustomTypography.Text>
+                    </CustomCol>
 
-                    <div>
-                        <span className="text-xs text-hub-subtitle block">Chạy lỗi cuối</span>
-                        <span className="text-xs font-medium text-hub-title mt-1 block truncate">
+                    <CustomCol span={12}>
+                        <CustomTypography.Text
+                            type="secondary"
+                            className="text-xs text-hub-subtitle block"
+                        >
+                            Chạy lỗi cuối
+                        </CustomTypography.Text>
+                        <CustomTypography.Text className="text-xs font-medium text-hub-title mt-1 block truncate">
                             {feature.lastFailedRunAt
                                 ? formatDate(feature.lastFailedRunAt)
                                 : 'Chưa có lỗi'}
-                        </span>
-                    </div>
-                </div>
+                        </CustomTypography.Text>
+                    </CustomCol>
+                </CustomRow>
 
                 {feature.lastErrorMessage && (
-                    <div className="bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 text-xs rounded-lg p-2.5 mb-4 flex items-start gap-2">
+                    <CustomFlex
+                        align="flex-start"
+                        gap="small"
+                        className="bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 text-xs rounded-lg p-2.5 mb-4"
+                    >
                         <Icon icon="lucide:alert-circle" className="w-4 h-4 shrink-0 mt-0.5" />
-                        <span className="line-clamp-2">{feature.lastErrorMessage}</span>
-                    </div>
+                        <CustomTypography.Text type="danger" className="text-xs line-clamp-2">
+                            {feature.lastErrorMessage}
+                        </CustomTypography.Text>
+                    </CustomFlex>
                 )}
-            </div>
+            </CustomFlex>
 
             {/* Action Bar */}
-            <div className="flex items-center justify-between gap-2 pt-3 border-t border-hub-border/40">
-                <div className="flex items-center gap-2">
+            <CustomFlex
+                align="center"
+                justify="space-between"
+                gap="small"
+                className="pt-3 border-t border-hub-border/40 mt-auto w-full"
+            >
+                <CustomFlex align="center" gap="small">
                     <CustomButton
                         type="primary"
                         icon={<Icon icon="lucide:settings" />}
@@ -145,7 +214,7 @@ export const ProviderFeatureCard: FC<ProviderFeatureCardProps> = ({
                     >
                         Thử nghiệm
                     </CustomButton>
-                </div>
+                </CustomFlex>
 
                 <CustomButton
                     type="text"
@@ -154,7 +223,7 @@ export const ProviderFeatureCard: FC<ProviderFeatureCardProps> = ({
                 >
                     Lịch sử
                 </CustomButton>
-            </div>
-        </div>
+            </CustomFlex>
+        </CustomCard>
     );
 };

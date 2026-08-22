@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, type FC, type JSX } from 'react';
+import { useEffect, useState } from 'react';
 import { CodeDisplay } from '@/components/common';
 import {
     CustomButton,
@@ -19,17 +19,13 @@ import { useCustomMutationData } from '@/hooks';
 import { Icon } from '@iconify/react';
 import type { IDataProviderFeature } from '@/app/(root)/scraping/features/[dataProviderId]/types';
 
-interface ScrapingConfigFormProps {
+type ScrapingConfigFormProps = {
     feature: IDataProviderFeature;
-    onSuccess: () => void;
     onClose: () => void;
-}
+    onSuccess: () => void;
+};
 
-export const ScrapingConfigForm: FC<ScrapingConfigFormProps> = ({
-    feature,
-    onSuccess,
-    onClose,
-}): JSX.Element => {
+export const ScrapingConfigForm = ({ feature, onClose, onSuccess }: ScrapingConfigFormProps) => {
     const [form] = CustomForm.useForm();
     const [isSaving, setIsSaving] = useState<boolean>(false);
     const { handleCustomMutationData } = useCustomMutationData();

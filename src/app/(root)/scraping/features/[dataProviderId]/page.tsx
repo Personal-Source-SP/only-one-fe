@@ -11,11 +11,7 @@ import {
 import { DataProviderFeatureType } from '@/enums';
 import { Icon } from '@iconify/react';
 import { useMemo } from 'react';
-import {
-    DataProviderFeatureSettingModal,
-    ProviderFeatureCardGrid,
-    ProviderFeaturesHeader,
-} from './components';
+import { DataProviderFeatureSettingModal, ProviderFeatureCardGrid } from './components';
 import { useDataProviderFeaturesPage } from './hooks';
 import type { FeatureModalTab } from './types';
 
@@ -42,42 +38,56 @@ const DataProviderFeaturesPage = () => {
             {
                 key: DataProviderFeatureType.SCRAPING,
                 label: (
-                    <div className="flex items-center gap-3 py-1 px-1">
-                        <div className="p-1.5 rounded-lg bg-hub-primary/10 text-hub-primary shrink-0">
+                    <CustomFlex align="center" gap="middle" className="py-1 px-1">
+                        <CustomFlex
+                            align="center"
+                            justify="center"
+                            className="p-1.5 rounded-lg bg-hub-primary/10 text-hub-primary shrink-0"
+                        >
                             <Icon icon="lucide:file-code" className="text-base" />
-                        </div>
-                        <div>
-                            <div className="font-semibold text-hub-title text-sm">
+                        </CustomFlex>
+                        <CustomFlex vertical gap={2}>
+                            <CustomTypography.Text strong className="text-hub-title text-sm">
                                 Cào dữ liệu (Scraping)
-                            </div>
-                            <div className="text-xs text-hub-subtitle">
+                            </CustomTypography.Text>
+                            <CustomTypography.Text
+                                type="secondary"
+                                className="text-xs text-hub-subtitle"
+                            >
                                 {isScrapingConfigured
                                     ? 'Đã khởi tạo • Bấm để chỉnh sửa cấu hình'
                                     : 'Chưa khởi tạo • Bấm để thiết lập cấu hình'}
-                            </div>
-                        </div>
-                    </div>
+                            </CustomTypography.Text>
+                        </CustomFlex>
+                    </CustomFlex>
                 ),
                 onClick: () => openConfigByType(DataProviderFeatureType.SCRAPING),
             },
             {
                 key: DataProviderFeatureType.SEARCH,
                 label: (
-                    <div className="flex items-center gap-3 py-1 px-1">
-                        <div className="p-1.5 rounded-lg bg-hub-primary/10 text-hub-primary shrink-0">
+                    <CustomFlex align="center" gap="middle" className="py-1 px-1">
+                        <CustomFlex
+                            align="center"
+                            justify="center"
+                            className="p-1.5 rounded-lg bg-hub-primary/10 text-hub-primary shrink-0"
+                        >
                             <Icon icon="lucide:search" className="text-base" />
-                        </div>
-                        <div>
-                            <div className="font-semibold text-hub-title text-sm">
+                        </CustomFlex>
+                        <CustomFlex vertical gap={2}>
+                            <CustomTypography.Text strong className="text-hub-title text-sm">
                                 Tìm kiếm (Search)
-                            </div>
-                            <div className="text-xs text-hub-subtitle">
+                            </CustomTypography.Text>
+                            <CustomTypography.Text
+                                type="secondary"
+                                className="text-xs text-hub-subtitle"
+                            >
                                 {isSearchConfigured
                                     ? 'Đã khởi tạo • Bấm để chỉnh sửa cấu hình'
                                     : 'Chưa khởi tạo • Bấm để thiết lập cấu hình'}
-                            </div>
-                        </div>
-                    </div>
+                            </CustomTypography.Text>
+                        </CustomFlex>
+                    </CustomFlex>
                 ),
                 onClick: () => openConfigByType(DataProviderFeatureType.SEARCH),
             },
@@ -153,19 +163,12 @@ const DataProviderFeaturesPage = () => {
             breadcrumb={breadcrumbs}
         >
             <CustomSpace direction="vertical" size="large" className="w-full">
-                <ProviderFeaturesHeader provider={provider} isLoading={isLoading} />
-
-                {/* Feature Card Grid */}
                 <ProviderFeatureCardGrid
                     features={features}
                     onOpenModal={openFeatureModal}
                     onSwitchStatus={handleSwitchStatus}
-                    onAddFeature={(type) =>
-                        openConfigByType(type || DataProviderFeatureType.SCRAPING)
-                    }
                 />
 
-                {/* Setting Modal */}
                 {modalState.open && modalState.feature && (
                     <DataProviderFeatureSettingModal
                         open={modalState.open}

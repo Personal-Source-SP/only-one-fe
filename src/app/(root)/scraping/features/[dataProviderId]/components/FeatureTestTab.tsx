@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, type FC, type JSX } from 'react';
+import { useState } from 'react';
 import { CodeDisplay } from '@/components/common';
 import {
     CustomButton,
@@ -18,11 +18,11 @@ import { useCustomMutationData } from '@/hooks';
 import { Icon } from '@iconify/react';
 import type { IDataProviderFeature } from '@/app/(root)/scraping/features/[dataProviderId]/types';
 
-interface FeatureTestTabProps {
+type FeatureTestTabProps = {
     feature: IDataProviderFeature;
-}
+};
 
-export const FeatureTestTab: FC<FeatureTestTabProps> = ({ feature }): JSX.Element => {
+export const FeatureTestTab = ({ feature }: FeatureTestTabProps) => {
     const [form] = CustomForm.useForm();
     const [testMode, setTestMode] = useState<'stateless' | 'contextual'>('stateless');
     const [isTestHtmlContent, setIsTestHtmlContent] = useState<boolean>(false);

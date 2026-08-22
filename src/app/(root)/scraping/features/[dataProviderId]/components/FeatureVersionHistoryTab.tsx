@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, type FC, type JSX } from 'react';
+import { useState } from 'react';
 import { CodeDisplay } from '@/components/common';
 import {
     CustomButton,
@@ -19,15 +19,15 @@ import type {
     IDataProviderFeature,
 } from '@/app/(root)/scraping/features/[dataProviderId]/types';
 
-interface FeatureVersionHistoryTabProps {
+type FeatureVersionHistoryTabProps = {
     feature: IDataProviderFeature;
     onRollbackSuccess?: () => void;
-}
+};
 
-export const FeatureVersionHistoryTab: FC<FeatureVersionHistoryTabProps> = ({
+export const FeatureVersionHistoryTab = ({
     feature,
     onRollbackSuccess,
-}): JSX.Element => {
+}: FeatureVersionHistoryTabProps) => {
     const [previewVersion, setPreviewVersion] = useState<IConfigVersion | null>(null);
     const { handleCustomMutationData } = useCustomMutationData();
 

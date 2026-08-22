@@ -1,22 +1,16 @@
-# Walkthrough: Standardized Breadcrumb Navigation & actions / filters in ListWrapper
+# Walkthrough: Cleaned ProviderFeatureCardGrid & CustomCard per Item
 
 ## 1. Summary of Changes
 
-We standardized [`DataProviderFeaturesPage`](file:///d:/Sources/Personal/only-one-fe/src/app/(root)/scraping/features/[dataProviderId]/page.tsx) to utilize `ListWrapper`'s `actions` and `filters` props:
+We simplified [`ProviderFeatureCardGrid`](file:///d:/Sources/Personal/only-one-fe/src/app/(root)/scraping/features/[dataProviderId]/components/ProviderFeatureCardGrid.tsx) to focus exclusively on rendering active feature cards without redundant placeholder cards:
 
 ### Key Highlights:
-1. **`actions` prop (`CardAction[]`)**:
-   - The "Thêm cài đặt" setting dropdown is defined as a `CardAction` and passed to `<ListWrapper actions={actions} ...>`.
-   - Automatically supports mobile dropdown view and permission checks.
-
-2. **`filters` prop**:
-   - The section title ("Các tính năng hoạt động" + subtitle) is passed via `filters={sectionTitle}`, aligning cleanly with the header layout in `ListWrapper`.
-
-3. **`breadcrumb` prop (`BreadcrumbItem[]`)**:
-   - `breadcrumbs` array passed to `breadcrumb={breadcrumbs}`.
-
-4. **Code Quality**:
-   - 100% Ant Design primitives (`CustomSpace`, `CustomFlex`, `CustomTypography`, `CustomButton`, `CustomDropdown`).
+1. **Removed Dashed Add Card**:
+   - Removed the placeholder card and `onAddFeature` prop. Adding features is handled via the "Thêm cài đặt" dropdown button on the header.
+2. **Standard Grid Layout**:
+   - Uses `<CustomRow gutter={[24, 24]}>` and `<CustomCol xs={24} lg={12}>` to render `<ProviderFeatureCard>` items.
+3. **`CustomCard` for each Feature Card**:
+   - Each item is cleanly contained in `<CustomCard>` with hover effects and 100% `custom-antd` components.
 
 ---
 

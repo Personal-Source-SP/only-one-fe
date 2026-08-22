@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, type FC, type JSX } from 'react';
+import { useState } from 'react';
 import {
     CustomButton,
     CustomFlex,
@@ -12,21 +12,21 @@ import { DataProviderFeatureType, MessageType } from '@/enums';
 import { useCustomMutationData } from '@/hooks';
 import { Icon } from '@iconify/react';
 
-interface CreateFeatureModalProps {
+type CreateFeatureModalProps = {
     open: boolean;
     dataProviderId: string;
     availableTypes: DataProviderFeatureType[];
     onClose: () => void;
     onSuccess: () => void;
-}
+};
 
-export const CreateFeatureModal: FC<CreateFeatureModalProps> = ({
+export const CreateFeatureModal = ({
     open,
     dataProviderId,
     availableTypes,
     onClose,
     onSuccess,
-}): JSX.Element => {
+}: CreateFeatureModalProps) => {
     const [form] = CustomForm.useForm();
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const { handleCustomMutationData } = useCustomMutationData();

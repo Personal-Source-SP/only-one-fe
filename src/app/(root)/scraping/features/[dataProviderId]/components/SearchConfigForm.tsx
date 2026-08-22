@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, type FC, type JSX } from 'react';
+import { useEffect, useState } from 'react';
 import { CodeDisplay } from '@/components/common';
 import {
     CustomButton,
@@ -19,17 +19,13 @@ import { useCustomMutationData } from '@/hooks';
 import { Icon } from '@iconify/react';
 import type { IDataProviderFeature } from '@/app/(root)/scraping/features/[dataProviderId]/types';
 
-interface SearchConfigFormProps {
+type SearchConfigFormProps = {
     feature: IDataProviderFeature;
-    onSuccess: () => void;
     onClose: () => void;
-}
+    onSuccess: () => void;
+};
 
-export const SearchConfigForm: FC<SearchConfigFormProps> = ({
-    feature,
-    onSuccess,
-    onClose,
-}): JSX.Element => {
+export const SearchConfigForm = ({ feature, onClose, onSuccess }: SearchConfigFormProps) => {
     const [form] = CustomForm.useForm();
     const [isSaving, setIsSaving] = useState<boolean>(false);
     const { handleCustomMutationData } = useCustomMutationData();
