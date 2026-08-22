@@ -18,6 +18,7 @@ import type { IDataProvider } from './types';
 
 const DataProviderPage = () => {
     const router = useRouter();
+
     const {
         tableProps,
         tableQuery,
