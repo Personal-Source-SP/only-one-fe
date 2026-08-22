@@ -2,18 +2,18 @@
 
 import { API_ENDPOINT } from '@/config';
 import { useCustomModalForm, useCustomTable } from '@/hooks';
-import type { DataProviderFormValues, DataProviderRecord } from './types';
+import type { DataProviderFormValues, IDataProvider } from './types';
 
 export const useDataProviderPage = () => {
     const { tableProps, tableQuery, debouncedSearch, setFilters, setCurrentPage } =
-        useCustomTable<DataProviderRecord>({
+        useCustomTable<IDataProvider>({
             resource: API_ENDPOINT.DATA_PROVIDERS.BASE,
         });
 
     const createModalForm = useCustomModalForm<
-        DataProviderRecord,
+        IDataProvider,
         DataProviderFormValues,
-        DataProviderRecord
+        IDataProvider
     >({
         action: 'create',
         resource: API_ENDPOINT.DATA_PROVIDERS.BASE,
@@ -22,11 +22,7 @@ export const useDataProviderPage = () => {
         },
     });
 
-    const editModalForm = useCustomModalForm<
-        DataProviderRecord,
-        DataProviderFormValues,
-        DataProviderRecord
-    >({
+    const editModalForm = useCustomModalForm<IDataProvider, DataProviderFormValues, IDataProvider>({
         action: 'edit',
         resource: API_ENDPOINT.DATA_PROVIDERS.BASE,
         onMutationSuccess: async () => {

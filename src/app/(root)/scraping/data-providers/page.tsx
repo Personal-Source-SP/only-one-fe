@@ -17,7 +17,7 @@ import { Icon } from '@iconify/react';
 import { useRouter } from 'next/navigation';
 import { DataProviderFormModal } from './components';
 import { useDataProviderPage } from './hooks';
-import type { DataProviderRecord } from './types';
+import type { IDataProvider } from './types';
 
 const DataProviderPage = () => {
     const router = useRouter();
@@ -31,7 +31,7 @@ const DataProviderPage = () => {
         setCurrentPage,
     } = useDataProviderPage();
 
-    const columns: ColumnsType<DataProviderRecord> = [
+    const columns: ColumnsType<IDataProvider> = [
         {
             title: 'Tên',
             dataIndex: 'name',
@@ -82,7 +82,7 @@ const DataProviderPage = () => {
         },
     ];
 
-    const customRowActions: TableCustomAction<DataProviderRecord>[] = [
+    const customRowActions: TableCustomAction<IDataProvider>[] = [
         {
             key: 'manage-features',
             icon: <Icon icon="lucide:layers" />,
@@ -144,7 +144,7 @@ const DataProviderPage = () => {
                 isLoading={tableQuery.isLoading}
                 filters={<FilterPanel fields={filters} />}
             >
-                <ListTable<DataProviderRecord>
+                <ListTable<IDataProvider>
                     columns={columns}
                     tableProps={tableProps}
                     tableQuery={tableQuery}

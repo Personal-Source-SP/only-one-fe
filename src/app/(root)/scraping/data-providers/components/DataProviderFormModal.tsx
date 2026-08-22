@@ -5,22 +5,18 @@ import type { UseCustomModalFormResponse } from '@/hooks';
 import { FormRuleType } from '@/utilities';
 import type {
     DataProviderFormValues,
-    DataProviderRecord,
+    IDataProvider,
 } from '@/app/(root)/scraping/data-providers/types';
 
 interface DataProviderFormModalProps {
-    modalForm: UseCustomModalFormResponse<
-        DataProviderRecord,
-        DataProviderFormValues,
-        DataProviderRecord
-    >;
+    modalForm: UseCustomModalFormResponse<IDataProvider, DataProviderFormValues, IDataProvider>;
 }
 
 export const DataProviderFormModal = ({ modalForm }: DataProviderFormModalProps) => {
     const { mode } = modalForm;
 
     return (
-        <CustomModalForm<DataProviderRecord, DataProviderFormValues, DataProviderRecord>
+        <CustomModalForm<IDataProvider, DataProviderFormValues, IDataProvider>
             modalForm={modalForm}
             width={600}
             title={mode === 'create' ? 'Thêm mới nhà cung cấp' : 'Chỉnh sửa nhà cung cấp'}
