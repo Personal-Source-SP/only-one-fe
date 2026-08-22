@@ -149,8 +149,8 @@ const DataProviderPage = () => {
                     tableProps={tableProps}
                     tableQuery={tableQuery}
                     deleteResource="data-providers"
-                    onEdit={(record) => editModalForm.show(record.id)}
                     customRowActions={customRowActions}
+                    onEdit={(record) => editModalForm.show(record.id)}
                 />
             </ListWrapper>
 
