@@ -14,7 +14,7 @@ import { DataProviderFeatureType } from '@/enums';
 import { Icon } from '@iconify/react';
 import { useMemo } from 'react';
 import { FEATURE_TYPE_METADATA } from './constants';
-import { FeatureCard, FeatureSettingModal } from './components';
+import { FeatureCard, FeatureHistoryModal, FeatureSettingModal } from './components';
 import { useDataProviderFeaturesPage } from './hooks';
 import type { FeatureModalTab } from './types';
 
@@ -25,9 +25,12 @@ const DataProviderFeaturesPage = () => {
         features,
         isLoading,
         modalState,
+        historyModalState,
         refetchAll,
         setModalState,
         openFeatureModal,
+        openHistoryModal,
+        closeHistoryModal,
         openConfigByType,
         closeFeatureModal,
         handleSwitchStatus,
@@ -148,6 +151,7 @@ const DataProviderFeaturesPage = () => {
                             <FeatureCard
                                 feature={feature}
                                 onOpenModal={openFeatureModal}
+                                onOpenHistoryModal={openHistoryModal}
                                 onSwitchStatus={handleSwitchStatus}
                             />
                         </CustomCol>
@@ -164,6 +168,15 @@ const DataProviderFeaturesPage = () => {
                         onTabChange={(tab: FeatureModalTab) =>
                             setModalState((prev) => ({ ...prev, activeTab: tab }))
                         }
+                    />
+                )}
+
+                {historyModalState.open && historyModalState.feature && (
+                    <FeatureHistoryModal
+                        open={historyModalState.open}
+                        feature={historyModalState.feature}
+                        onClose={closeHistoryModal}
+                        onSuccess={refetchAll}
                     />
                 )}
             </CustomSpace>

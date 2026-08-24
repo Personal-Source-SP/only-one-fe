@@ -11,7 +11,12 @@ import {
     ScraperServiceEnum,
 } from '@/enums';
 import { useCustomList, useCustomMutationData, useCustomOne } from '@/hooks';
-import type { FeatureModalState, FeatureModalTab, IDataProviderFeature } from './types';
+import type {
+    FeatureModalState,
+    FeatureModalTab,
+    HistoryModalState,
+    IDataProviderFeature,
+} from './types';
 
 export const useDataProviderFeaturesPage = () => {
     const params = useParams();
@@ -22,6 +27,11 @@ export const useDataProviderFeaturesPage = () => {
         open: false,
         feature: null,
         activeTab: 'config',
+    });
+
+    const [historyModalState, setHistoryModalState] = useState<HistoryModalState>({
+        open: false,
+        feature: null,
     });
 
     const { handleCustomMutationData } = useCustomMutationData();
@@ -107,11 +117,20 @@ export const useDataProviderFeaturesPage = () => {
         setModalState((prev) => ({ ...prev, open: false }));
     };
 
+    const openHistoryModal = useCallback((feature: IDataProviderFeature): void => {
+        setHistoryModalState({ open: true, feature });
+    }, []);
+
+    const closeHistoryModal = useCallback((): void => {
+        setHistoryModalState((prev) => ({ ...prev, open: false }));
+    }, []);
+
     return {
         router,
         provider,
         features,
         modalState,
+        historyModalState,
         dataProviderId,
         isLoading: providerQuery.isLoading || featuresQuery.isLoading,
         refetchAll,
@@ -119,6 +138,8 @@ export const useDataProviderFeaturesPage = () => {
         openFeatureModal,
         openConfigByType,
         closeFeatureModal,
+        openHistoryModal,
+        closeHistoryModal,
         handleSwitchStatus,
     };
 };

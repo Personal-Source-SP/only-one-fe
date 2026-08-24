@@ -65,3 +65,8 @@ export interface FeatureModalState {
     feature: IDataProviderFeature | null;
     activeTab: FeatureModalTab;
 }
+
+export interface HistoryModalState {
+    open: boolean;
+    feature: IDataProviderFeature | null;
+}

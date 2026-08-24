@@ -19,10 +19,16 @@ import type { FeatureModalTab, IDataProviderFeature } from '../types';
 type FeatureCardProps = {
     feature: IDataProviderFeature;
     onOpenModal: (feature: IDataProviderFeature, tab: FeatureModalTab) => void;
+    onOpenHistoryModal: (feature: IDataProviderFeature) => void;
     onSwitchStatus: (featureId: string, currentStatus: DataProviderFeatureStatus) => void;
 };
 
-export const FeatureCard = ({ feature, onOpenModal, onSwitchStatus }: FeatureCardProps) => {
+export const FeatureCard = ({
+    feature,
+    onOpenModal,
+    onOpenHistoryModal,
+    onSwitchStatus,
+}: FeatureCardProps) => {
     const meta = FEATURE_TYPE_METADATA[feature.type];
 
     const isReady = feature.status === DataProviderFeatureStatus.READY;
@@ -212,7 +218,7 @@ export const FeatureCard = ({ feature, onOpenModal, onSwitchStatus }: FeatureCar
                 <CustomButton
                     type="text"
                     icon={<Icon icon="lucide:history" />}
-                    onClick={() => onOpenModal(feature, 'config')}
+                    onClick={() => onOpenHistoryModal(feature)}
                 >
                     Lịch sử
                 </CustomButton>
