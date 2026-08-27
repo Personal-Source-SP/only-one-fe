@@ -43,6 +43,12 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
                 description: 'Quản lý các nhà cung cấp dữ liệu',
             },
             {
+                label: 'Khám phá',
+                icon: 'noto:compass',
+                href: '/scraping/discovery',
+                description: 'Khám phá và thu thập danh sách URL sản phẩm',
+            },
+            {
                 label: 'Đối tượng nhà cung cấp',
                 icon: 'noto:package',
                 href: '/scraping/provider-items',
