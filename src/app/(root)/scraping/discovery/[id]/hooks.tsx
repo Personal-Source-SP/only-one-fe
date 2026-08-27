@@ -10,7 +10,7 @@ import {
     type IDiscoverySession,
     type IDiscoveryUrl,
 } from '@/app/(root)/scraping/discovery/types';
-import type { BreadcrumbItem, CardAction, IFilterField } from '@/components/common';
+import type { CardAction, IFilterField } from '@/components/common';
 import {
     CustomButton,
     CustomFlex,
@@ -21,11 +21,9 @@ import {
 import { formatDate } from '@/libs';
 import { SendOutlined } from '@ant-design/icons';
 import { Icon } from '@iconify/react';
-import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 
 export const useDiscoveryDetailPage = (id: string) => {
-    const router = useRouter();
     const session = useMemo<IDiscoverySession | undefined>(() => getMockSessionById(id), [id]);
 
     const [urls, setUrls] = useState<IDiscoveryUrl[]>(getMockUrlsBySessionId(id));
@@ -53,20 +51,6 @@ export const useDiscoveryDetailPage = (id: string) => {
         setUrls(getMockUrlsBySessionId(id));
         setSelectedRowKeys([]);
     };
-
-    const breadcrumbs: BreadcrumbItem[] = useMemo(
-        () => [
-            {
-                label: 'Khám phá',
-                icon: <Icon icon="lucide:arrow-left" className="w-5 h-5" />,
-                onClick: () => router.push('/scraping/discovery'),
-            },
-            {
-                label: session?.sessionCode || id,
-            },
-        ],
-        [session?.sessionCode, id, router],
-    );
 
     const columns: ColumnsType<IDiscoveryUrl> = useMemo(
         () => [
@@ -168,7 +152,6 @@ export const useDiscoveryDetailPage = (id: string) => {
         queuedCount,
         selectedRowKeys,
         setSelectedRowKeys,
-        breadcrumbs,
         columns,
         actions,
         filters,

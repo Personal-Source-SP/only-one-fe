@@ -17,7 +17,6 @@ const DiscoveryDetailPage = () => {
         queuedCount,
         selectedRowKeys,
         setSelectedRowKeys,
-        breadcrumbs,
         columns,
         actions,
         filters,
@@ -32,11 +31,7 @@ const DiscoveryDetailPage = () => {
                 queuedCount={queuedCount}
             />
 
-            <ListWrapper
-                breadcrumb={breadcrumbs}
-                actions={actions}
-                filters={<FilterPanel fields={filters} />}
-            >
+            <ListWrapper actions={actions} filters={<FilterPanel fields={filters} />}>
                 <ListTable<IDiscoveryUrl>
                     columns={columns}
                     tableProps={{

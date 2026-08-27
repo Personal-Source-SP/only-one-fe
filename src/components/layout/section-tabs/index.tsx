@@ -1,7 +1,8 @@
 'use client';
 
+import { BreadcrumbNav } from '@/components/common';
 import { CustomTabs } from '@/components/custom-antd';
-import { getSectionTabs } from '@/libs';
+import { getSectionBreadcrumbs, getSectionTabs } from '@/libs';
 import { usePathname, useRouter } from 'next/navigation';
 import { PropsWithChildren, useCallback, useEffect, useMemo, useRef } from 'react';
 
@@ -11,6 +12,12 @@ export const SectionTabLayout = ({ children }: PropsWithChildren) => {
     const navRef = useRef<HTMLElement>(null);
 
     const tabs = useMemo(() => getSectionTabs(pathname), [pathname]);
+    const breadcrumbs = useMemo(() => getSectionBreadcrumbs(pathname), [pathname]);
+
+    const isSubRoute = useMemo(() => {
+        if (!tabs?.length) return false;
+        return !tabs.some((tab) => tab.href === pathname);
+    }, [pathname, tabs]);
 
     const activeKey = useMemo(() => {
         if (!tabs?.length) {
@@ -55,6 +62,11 @@ export const SectionTabLayout = ({ children }: PropsWithChildren) => {
 
     return (
         <>
+            {isSubRoute && breadcrumbs && breadcrumbs.length > 0 && (
+                <div className="mb-2 px-1">
+                    <BreadcrumbNav items={breadcrumbs} />
+                </div>
+            )}
             <nav
                 ref={navRef}
                 aria-label="Section navigation"
