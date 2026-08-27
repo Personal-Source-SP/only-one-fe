@@ -45,11 +45,13 @@ export const getSectionBreadcrumbs = (pathname: string): BreadcrumbItem[] | null
             {
                 key: item.label,
                 label: item.label,
+                iconName: item.icon,
             },
             {
                 key: matchedChild.href,
                 label: matchedChild.label,
                 href: matchedChild.href,
+                iconName: matchedChild.icon,
             },
         ];
 

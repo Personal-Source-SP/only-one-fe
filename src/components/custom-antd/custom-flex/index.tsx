@@ -1,7 +1,12 @@
 'use client';
 
-import { Flex, FlexProps } from 'antd';
+import { Flex, type FlexProps } from 'antd';
+import { forwardRef } from 'react';
 
 export type CustomFlexProps = FlexProps;
 
-export const CustomFlex = (props: CustomFlexProps) => <Flex {...props} />;
+export const CustomFlex = forwardRef<HTMLDivElement, CustomFlexProps>((props, ref) => (
+    <Flex ref={ref} {...props} />
+));
+
+CustomFlex.displayName = 'CustomFlex';
