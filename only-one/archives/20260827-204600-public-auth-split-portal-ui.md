@@ -1,17 +1,18 @@
 ---
-id: 20260821-150731-public-auth-split-portal-ui
-title: Public Auth Portal Split-Screen Redesign
-archived_at: 2026-08-21
+id: 20260827-204600-public-auth-split-portal-ui
+title: Public Auth Portal Split-Screen Redesign & Custom AntD UI
+archived_at: 2026-08-27
 status: active
-references: []
+references:
+  - only-one/archives/20260827-204600-centralized-system-configuration.md
 affected_modules:
-  - app/(public)/auth
+  - app/(public)/_components/auth
   - app/(public)/login
   - app/(public)/register
   - app/(public)/forget-password
 ---
 
-# Archive: Public Auth Portal Split-Screen Redesign
+# Archive: Public Auth Portal Split-Screen Redesign & Custom AntD UI
 
 ## 1. Problem & Core Value
 - **Problem**: Public authentication views (`/login`, `/register`, `/forget-password`) were constrained in a single, narrow vertical column layout without strong brand identity or high-tech visual engagement.
@@ -40,5 +41,5 @@ flowchart TD
 - [`src/app/(public)/login/page.tsx`](file:///d:/Sources/Personal/only-one-fe/src/app/(public)/login/page.tsx), [`register/page.tsx`](file:///d:/Sources/Personal/only-one-fe/src/app/(public)/register/page.tsx), [`forget-password/page.tsx`](file:///d:/Sources/Personal/only-one-fe/src/app/(public)/forget-password/page.tsx): Updated public routes.
 
 ## 4. Verification Evidence & PR
-- **Test Status**: 100% Passed (`npm run lint:fix`, `npm run build` static generation clean).
+- **Test Status**: 100% Passed (`tsc --noEmit` clean, ESLint clean, `npm run build` static generation clean).
 - **PR URL**: ~
