@@ -43,6 +43,26 @@ export const API_ENDPOINT = {
         DETAIL: (id: string | number) => prefix(`scraping-data/${id}`),
         PROCESS: prefix('scraping-data/process'),
     },
+    DISCOVERY_SESSIONS: {
+        BASE: prefix('discovery-sessions'),
+        ALL: prefix('discovery-sessions/all'),
+        DETAIL: (id: string | number) => prefix(`discovery-sessions/${id}`),
+        SUMMARY: (id: string | number) => prefix(`discovery-sessions/${id}/summary`),
+        VALIDATE: (id: string | number) => prefix(`discovery-sessions/${id}/validate`),
+        LATEST_BATCH: (id: string | number) =>
+            prefix(`discovery-sessions/${id}/validation-latest-batch`),
+        BULK_USER_ACTIONS: (id: string | number) =>
+            prefix(`discovery-sessions/${id}/bulk-user-actions`),
+        ENQUEUE_URLS: (id: string | number) => prefix(`discovery-sessions/${id}/enqueue-urls`),
+    },
+    DISCOVERY_URLS: {
+        BASE: prefix('discovery-urls'),
+        ALL: prefix('discovery-urls/all'),
+        DETAIL: (id: string | number) => prefix(`discovery-urls/${id}`),
+        USER_ACTION: (id: string | number) => prefix(`discovery-urls/${id}/user-action`),
+        REVALIDATE: (id: string | number) => prefix(`discovery-urls/${id}/re-validate`),
+        LOGS: (id: string | number) => prefix(`discovery-urls/${id}/validation-logs`),
+    },
     SCHEDULES: {
         BASE: prefix('schedules'),
         ALL: prefix('schedules/all'),

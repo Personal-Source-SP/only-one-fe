@@ -14,6 +14,7 @@ const DiscoveryDetailPage = () => {
     const {
         session,
         urls,
+        isLoading,
         queuedCount,
         selectedRowKeys,
         setSelectedRowKeys,
@@ -37,6 +38,7 @@ const DiscoveryDetailPage = () => {
                     tableProps={{
                         dataSource: urls,
                         rowKey: 'id',
+                        loading: isLoading,
                         rowSelection: {
                             selectedRowKeys,
                             onChange: (keys) => setSelectedRowKeys(keys as string[]),

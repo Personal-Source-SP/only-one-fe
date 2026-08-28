@@ -19,11 +19,13 @@ const DiscoveryPage = () => {
     const router = useRouter();
     const {
         sessions,
+        isLoading,
         dataProviderOptions,
         setSelectedProviderId,
         setSearchTerm,
         isCreateModalOpen,
         setIsCreateModalOpen,
+        isCreating,
         handleCreateSession,
     } = useDiscoveryPage();
 
@@ -128,6 +130,7 @@ const DiscoveryPage = () => {
                     tableProps={{
                         dataSource: sessions,
                         rowKey: 'id',
+                        loading: isLoading,
                         pagination: { pageSize: 10, showSizeChanger: true },
                     }}
                 />
@@ -137,6 +140,7 @@ const DiscoveryPage = () => {
                 onCancel={() => setIsCreateModalOpen(false)}
                 onSubmit={handleCreateSession}
                 dataProviderOptions={dataProviderOptions}
+                loading={isCreating}
             />
         </>
     );

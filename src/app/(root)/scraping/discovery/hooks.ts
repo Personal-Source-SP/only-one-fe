@@ -1,62 +1,69 @@
 'use client';
 
-import { useSelectDataProvider } from '@/hooks';
+import { API_ENDPOINT } from '@/config';
+import { useCustomList, useCustomMutationData, useSelectDataProvider } from '@/hooks';
+import type { CrudFilter } from '@refinedev/core';
 import { useMemo, useState } from 'react';
-import { addMockSession, getMockSessions } from './mocks/mock-data';
-import {
-    DiscoverySessionStatus,
-    type CreateSessionFormValues,
-    type IDiscoverySession,
-} from './types';
+import type { CreateSessionFormValues, IDiscoverySession } from './types';
 
 export const useDiscoveryPage = () => {
-    const [sessions, setSessions] = useState<IDiscoverySession[]>(getMockSessions());
     const [selectedProviderId, setSelectedProviderId] = useState<string | undefined>();
     const [searchTerm, setSearchTerm] = useState('');
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
     const { options: dataProviderOptions } = useSelectDataProvider();
+    const { handleCustomMutationData, mutation } = useCustomMutationData();
 
-    const filteredSessions = useMemo(() => {
-        return sessions.filter((s) => {
-            const matchesProvider = !selectedProviderId || s.dataProviderId === selectedProviderId;
-            const matchesSearch =
-                !searchTerm ||
-                s.sessionCode.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                s.targetUrl.toLowerCase().includes(searchTerm.toLowerCase());
-            return matchesProvider && matchesSearch;
-        });
-    }, [sessions, selectedProviderId, searchTerm]);
+    const filters: CrudFilter[] = useMemo(() => {
+        const list: CrudFilter[] = [];
+        if (selectedProviderId) {
+            list.push({
+                field: 'dataProviderId',
+                operator: 'eq',
+                value: selectedProviderId,
+            });
+        }
+        if (searchTerm) {
+            list.push({
+                field: 'search',
+                operator: 'contains',
+                value: searchTerm,
+            });
+        }
+        return list;
+    }, [selectedProviderId, searchTerm]);
 
-    const handleCreateSession = (values: CreateSessionFormValues) => {
-        const provider = dataProviderOptions.find((p) => p.value === values.dataProviderId);
-        const providerName = (provider?.label as string) || 'Provider';
-        const newSession: IDiscoverySession = {
-            id: `session-${Date.now()}`,
-            sessionCode: `DISC-${providerName.toUpperCase().slice(0, 3)}-${Math.floor(100 + Math.random() * 900)}`,
-            dataProviderId: values.dataProviderId,
-            dataProvider: {
-                id: values.dataProviderId,
-                name: providerName,
-                identifier: providerName.toLowerCase().replace(/\s+/g, '_'),
-                baseUrl: values.targetUrl,
-                createdAt: new Date(),
+    const {
+        data: sessions = [],
+        query: { isLoading, refetch },
+    } = useCustomList<IDiscoverySession>({
+        resource: API_ENDPOINT.DISCOVERY_SESSIONS.BASE,
+        filters,
+    });
+
+    const handleCreateSession = async (values: CreateSessionFormValues) => {
+        await handleCustomMutationData({
+            url: API_ENDPOINT.DISCOVERY_SESSIONS.BASE,
+            values: {
+                dataProviderId: values.dataProviderId,
+                targetUrl: values.targetUrl,
+                depth: values.depth || 1,
+                maxUrls: values.maxUrls || 100,
+                notes: values.notes,
+                targetKeyword: values.targetKeyword,
             },
-            targetUrl: values.targetUrl,
-            status: DiscoverySessionStatus.IN_PROGRESS,
-            totalDiscovered: 0,
-            totalQueued: 0,
-            depth: values.depth || 1,
-            durationSeconds: 0,
-            createdAt: new Date(),
-        };
-        addMockSession(newSession);
-        setSessions(getMockSessions());
-        setIsCreateModalOpen(false);
+            method: 'post',
+            successMessage: 'Tạo phiên khám phá thành công',
+            onSuccess: () => {
+                setIsCreateModalOpen(false);
+                refetch();
+            },
+        });
     };
 
     return {
-        sessions: filteredSessions,
+        sessions,
+        isLoading,
         dataProviderOptions,
         selectedProviderId,
         setSelectedProviderId,
@@ -64,6 +71,7 @@ export const useDiscoveryPage = () => {
         setSearchTerm,
         isCreateModalOpen,
         setIsCreateModalOpen,
+        isCreating: mutation.mutation.isPending,
         handleCreateSession,
     };
 };

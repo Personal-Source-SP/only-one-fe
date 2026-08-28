@@ -16,6 +16,7 @@ interface CreateSessionModalProps {
     onCancel: () => void;
     onSubmit: (values: CreateSessionFormValues) => void;
     dataProviderOptions?: CustomSelectProps['options'];
+    loading?: boolean;
 }
 
 export const CreateSessionModal = ({
@@ -23,6 +24,7 @@ export const CreateSessionModal = ({
     onCancel,
     onSubmit,
     dataProviderOptions,
+    loading = false,
 }: CreateSessionModalProps) => {
     const [form] = CustomForm.useForm<CreateSessionFormValues>();
 
@@ -46,6 +48,7 @@ export const CreateSessionModal = ({
             onOk={handleOk}
             okText="Bắt đầu khám phá"
             cancelText="Hủy"
+            confirmLoading={loading}
             destroyOnClose
         >
             <CustomForm form={form} layout="vertical">
@@ -68,8 +71,19 @@ export const CreateSessionModal = ({
                     <CustomInput placeholder="https://example.com/category/products" />
                 </CustomForm.Item>
 
+                <CustomForm.Item
+                    name="targetKeyword"
+                    label="Từ khóa sản phẩm mục tiêu (Tùy chọn - Giúp AI / Heuristics chấm điểm chính xác)"
+                >
+                    <CustomInput placeholder="Ví dụ: Sony WH-1000XM4, iPhone 15 Pro..." />
+                </CustomForm.Item>
+
                 <CustomForm.Item name="depth" label="Độ sâu thu thập (Crawl Depth)">
                     <CustomInputNumber min={1} max={5} className="w-full" />
+                </CustomForm.Item>
+
+                <CustomForm.Item name="maxUrls" label="Giới hạn URLs tối đa (Max URLs)">
+                    <CustomInputNumber min={5} max={500} className="w-full" />
                 </CustomForm.Item>
             </CustomForm>
         </CustomModal>
