@@ -1,0 +1,172 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-09-03T10:23:54.044Z",
+  "installed": {
+    "rules": {
+      "next-architecture-stack": {
+        "version": "0.0.1",
+        "installedAt": "2026-09-03T10:23:52.566Z",
+        "updatedAt": "2026-09-03T10:23:52.566Z"
+      },
+      "context-and-tools": {
+        "version": "0.0.1",
+        "installedAt": "2026-09-03T10:23:52.566Z",
+        "updatedAt": "2026-09-03T10:23:52.566Z"
+      }
+    },
+    "skills": {
+      "grill-with-docs": {
+        "version": "0.0.1",
+        "installedAt": "2026-09-03T10:23:52.719Z",
+        "updatedAt": "2026-09-03T10:23:54.033Z"
+      },
+      "grill-me": {
+        "version": "0.0.1",
+        "installedAt": "2026-09-03T10:23:52.765Z",
+        "updatedAt": "2026-09-03T10:23:54.033Z"
+      },
+      "interview-me": {
+        "version": "0.0.1",
+        "installedAt": "2026-09-03T10:23:52.811Z",
+        "updatedAt": "2026-09-03T10:23:54.033Z"
+      },
+      "idea-refine": {
+        "version": "0.0.1",
+        "installedAt": "2026-09-03T10:23:52.856Z",
+        "updatedAt": "2026-09-03T10:23:54.033Z"
+      },
+      "to-tickets": {
+        "version": "0.0.1",
+        "installedAt": "2026-09-03T10:23:52.901Z",
+        "updatedAt": "2026-09-03T10:23:54.033Z"
+      },
+      "codebase-design": {
+        "version": "0.0.1",
+        "installedAt": "2026-09-03T10:23:52.946Z",
+        "updatedAt": "2026-09-03T10:23:54.033Z"
+      },
+      "frontend-ui-engineering": {
+        "version": "0.0.1",
+        "installedAt": "2026-09-03T10:23:53.292Z",
+        "updatedAt": "2026-09-03T10:23:54.033Z"
+      },
+      "performance-optimization": {
+        "version": "0.0.1",
+        "installedAt": "2026-09-03T10:23:53.641Z",
+        "updatedAt": "2026-09-03T10:23:54.033Z"
+      },
+      "code-simplification": {
+        "version": "0.0.1",
+        "installedAt": "2026-09-03T10:23:53.695Z",
+        "updatedAt": "2026-09-03T10:23:54.033Z"
+      },
+      "incremental-implementation": {
+        "version": "0.0.1",
+        "installedAt": "2026-09-03T10:23:53.746Z",
+        "updatedAt": "2026-09-03T10:23:54.033Z"
+      },
+      "test-driven-development": {
+        "version": "0.0.1",
+        "installedAt": "2026-09-03T10:23:53.793Z",
+        "updatedAt": "2026-09-03T10:23:54.033Z"
+      },
+      "diagnosing-bugs": {
+        "version": "0.0.1",
+        "installedAt": "2026-09-03T10:23:53.841Z",
+        "updatedAt": "2026-09-03T10:23:54.033Z"
+      },
+      "doubt-driven-development": {
+        "version": "0.0.1",
+        "installedAt": "2026-09-03T10:23:53.892Z",
+        "updatedAt": "2026-09-03T10:23:54.033Z"
+      },
+      "source-driven-development": {
+        "version": "0.0.1",
+        "installedAt": "2026-09-03T10:23:53.938Z",
+        "updatedAt": "2026-09-03T10:23:54.033Z"
+      },
+      "handoff": {
+        "version": "0.0.1",
+        "installedAt": "2026-09-03T10:23:53.983Z",
+        "updatedAt": "2026-09-03T10:23:54.033Z"
+      },
+      "resolving-merge-conflicts": {
+        "version": "0.0.1",
+        "installedAt": "2026-09-03T10:23:54.028Z",
+        "updatedAt": "2026-09-03T10:23:54.033Z"
+      },
+      "c4-diagrams": {
+        "version": "0.0.1",
+        "installedAt": "2026-09-03T10:23:54.033Z",
+        "updatedAt": "2026-09-03T10:23:54.033Z"
+      },
+      "gherkin-authoring": {
+        "version": "0.0.1",
+        "installedAt": "2026-09-03T10:23:54.033Z",
+        "updatedAt": "2026-09-03T10:23:54.033Z"
+      },
+      "conversational-english-coaching": {
+        "version": "0.0.1",
+        "installedAt": "2026-09-03T10:23:54.033Z",
+        "updatedAt": "2026-09-03T10:23:54.033Z"
+      },
+      "english-learning-extraction": {
+        "version": "0.0.1",
+        "installedAt": "2026-09-03T10:23:54.033Z",
+        "updatedAt": "2026-09-03T10:23:54.033Z"
+      },
+      "only-one-nextjs-development": {
+        "version": "0.0.1",
+        "installedAt": "2026-09-03T10:23:54.033Z",
+        "updatedAt": "2026-09-03T10:23:54.033Z"
+      }
+    },
+    "workflows": {
+      "only-one-idea": {
+        "version": "0.0.1",
+        "installedAt": "2026-09-03T10:23:54.044Z",
+        "updatedAt": "2026-09-03T10:23:54.044Z"
+      },
+      "only-one-plan": {
+        "version": "0.0.1",
+        "installedAt": "2026-09-03T10:23:54.044Z",
+        "updatedAt": "2026-09-03T10:23:54.044Z"
+      },
+      "only-one-apply": {
+        "version": "0.0.1",
+        "installedAt": "2026-09-03T10:23:54.044Z",
+        "updatedAt": "2026-09-03T10:23:54.044Z"
+      },
+      "only-one-debug": {
+        "version": "0.0.1",
+        "installedAt": "2026-09-03T10:23:54.044Z",
+        "updatedAt": "2026-09-03T10:23:54.044Z"
+      },
+      "only-one-review": {
+        "version": "0.0.1",
+        "installedAt": "2026-09-03T10:23:54.044Z",
+        "updatedAt": "2026-09-03T10:23:54.044Z"
+      },
+      "only-one-handoff": {
+        "version": "0.0.1",
+        "installedAt": "2026-09-03T10:23:54.044Z",
+        "updatedAt": "2026-09-03T10:23:54.044Z"
+      },
+      "only-one-conflict": {
+        "version": "0.0.1",
+        "installedAt": "2026-09-03T10:23:54.044Z",
+        "updatedAt": "2026-09-03T10:23:54.044Z"
+      },
+      "only-one-archive": {
+        "version": "0.0.1",
+        "installedAt": "2026-09-03T10:23:54.044Z",
+        "updatedAt": "2026-09-03T10:23:54.044Z"
+      },
+      "only-one-clean": {
+        "version": "0.0.1",
+        "installedAt": "2026-09-03T10:23:54.044Z",
+        "updatedAt": "2026-09-03T10:23:54.044Z"
+      }
+    }
+  }
+}
