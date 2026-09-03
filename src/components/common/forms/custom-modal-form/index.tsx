@@ -51,10 +51,11 @@ export const CustomModalForm = <
     okText = 'Lưu',
     cancelText = 'Hủy',
 }: CustomModalFormProps<TQueryFnData, TValues, TData>) => {
-    const { mode, resource, formProps, modalProps, formLoading: loading } = modalForm;
+    const { mode, formProps, modalProps, formLoading: loading } = modalForm;
 
     const screens = useBreakpoint();
-    const open = modalProps.open;
+
+    const open = useMemo(() => modalProps.open, [modalProps.open]);
 
     const initialValues = useMemo(() => {
         if (mode === 'create') return createInitialValues;
@@ -66,33 +67,23 @@ export const CustomModalForm = <
             <CustomFlex justify="end" gap="middle">
                 <CustomButton onClick={modalProps.onCancel}>{cancelText}</CustomButton>
                 {extra}
-                <CustomButton
-                    type="primary"
-                    {...modalForm.saveButtonProps}
-                    onClick={modalProps.onOk}
-                    loading={modalForm.saveButtonProps.loading}
-                >
+                <CustomButton type="primary" {...modalForm.saveButtonProps}>
                     {okText}
                 </CustomButton>
             </CustomFlex>
         ),
-        [
-            extra,
-            okText,
-            cancelText,
-            modalForm?.saveButtonProps,
-            modalProps.onCancel,
-            modalProps.onOk,
-        ],
+        [extra, okText, cancelText, modalForm?.saveButtonProps, modalProps.onCancel],
     );
+
+    const defaultTitle = useMemo(() => {
+        return mode === 'create' ? 'Tạo mới' : 'Chỉnh sửa';
+    }, [mode]);
 
     useEffect(() => {
         if (!open && !loading) {
             formProps.form?.resetFields();
         }
     }, [loading, open, formProps.form]);
-
-    const defaultTitle = mode === 'create' ? 'Tạo mới' : 'Chỉnh sửa';
 
     return (
         <CustomModal
