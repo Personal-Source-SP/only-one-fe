@@ -6,6 +6,8 @@ export enum FormRuleType {
     Email = 'email',
     Required = 'required',
     RequiredNumber = 'required_number',
+    Code = 'code',
+    Url = 'url',
     Custom = 'custom',
 }
 
@@ -21,6 +23,8 @@ export type FormRuleConfig =
     | FormMinRuleConfig
     | FormRequiredRuleConfig
     | FormRequiredNumberRuleConfig
+    | FormCodeRuleConfig
+    | FormUrlRuleConfig
     | FormCustomRuleConfig;
 
 export type FormEmailRuleConfig = {
@@ -51,6 +55,18 @@ export type FormRequiredRuleConfig = {
 export type FormRequiredNumberRuleConfig = {
     type: FormRuleType.RequiredNumber;
     message: string;
+};
+
+export type FormCodeRuleConfig = {
+    type: FormRuleType.Code;
+    message?: string;
+};
+
+export type FormUrlRuleConfig = {
+    type: FormRuleType.Url;
+    message?: string;
+    noTrailingSlash?: boolean;
+    noWww?: boolean;
 };
 
 /** Escape hatch for arbitrary antd validators (async or sync). */
@@ -107,6 +123,45 @@ export const buildFormRules = ({ rules }: BuildFormRulesRequest): BuildFormRules
                             return Promise.reject(new Error(rule.message));
                         }
 
+                        return Promise.resolve();
+                    },
+                };
+            }
+
+            case FormRuleType.Code: {
+                return {
+                    validator: (_, value) => {
+                        if (!value) return Promise.resolve();
+                        if (!/^[a-z0-9-]+$/.test(value)) {
+                            return Promise.reject(
+                                new Error(
+                                    rule.message ||
+                                        'Chỉ được chứa chữ cái thường, số và dấu gạch ngang',
+                                ),
+                            );
+                        }
+                        return Promise.resolve();
+                    },
+                };
+            }
+
+            case FormRuleType.Url: {
+                return {
+                    validator: (_, value) => {
+                        if (!value) return Promise.resolve();
+                        const noTrailingSlash = rule.noTrailingSlash ?? true;
+                        const noWww = rule.noWww ?? true;
+
+                        if (noTrailingSlash && !/^.*[^/]$/.test(value)) {
+                            return Promise.reject(
+                                new Error(rule.message || 'URL không được kết thúc bằng /'),
+                            );
+                        }
+                        if (noWww && !/^(?!.*www\.).*$/.test(value)) {
+                            return Promise.reject(
+                                new Error(rule.message || 'URL không được chứa www'),
+                            );
+                        }
                         return Promise.resolve();
                     },
                 };

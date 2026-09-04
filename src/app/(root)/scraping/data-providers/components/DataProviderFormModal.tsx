@@ -50,8 +50,8 @@ export const DataProviderFormModal = ({ modalForm }: DataProviderFormModalProps)
                 rulesConfig={[
                     { type: FormRuleType.Required, message: 'Vui lòng nhập tên nhà cung cấp' },
                     {
-                        max: DATA_PROVIDER_LIMITS.NAME_MAX_LENGTH,
                         type: FormRuleType.Max,
+                        max: DATA_PROVIDER_LIMITS.NAME_MAX_LENGTH,
                         message: `Tên nhà cung cấp không được vượt quá ${DATA_PROVIDER_LIMITS.NAME_MAX_LENGTH} ký tự`,
                     },
                 ]}
@@ -95,16 +95,9 @@ export const DataProviderFormModal = ({ modalForm }: DataProviderFormModalProps)
                         message: `Mã nhà cung cấp không được vượt quá ${DATA_PROVIDER_LIMITS.IDENTIFIER_MAX_LENGTH} ký tự`,
                     },
                     {
-                        type: FormRuleType.Custom,
-                        validator: (_, value) => {
-                            if (!value) return Promise.resolve();
-                            if (!/^[a-z0-9-]+$/.test(value)) {
-                                return Promise.reject(
-                                    'Mã nhà cung cấp chỉ được chứa chữ cái thường, số và dấu gạch ngang',
-                                );
-                            }
-                            return Promise.resolve();
-                        },
+                        type: FormRuleType.Code,
+                        message:
+                            'Mã nhà cung cấp chỉ được chứa chữ cái thường, số và dấu gạch ngang',
                     },
                 ]}
             />
@@ -114,20 +107,8 @@ export const DataProviderFormModal = ({ modalForm }: DataProviderFormModalProps)
                 label="URL cơ sở"
                 inputProps={{ placeholder: 'https://example.com' }}
                 rulesConfig={[
+                    { type: FormRuleType.Url },
                     { type: FormRuleType.Required, message: 'Vui lòng nhập URL cơ sở' },
-                    {
-                        type: FormRuleType.Custom,
-                        validator: (_, value) => {
-                            if (!value) return Promise.resolve();
-                            if (!/^.*[^/]$/.test(value)) {
-                                return Promise.reject('URL cơ sở không được kết thúc bằng /');
-                            }
-                            if (!/^(?!.*www\.).*$/.test(value)) {
-                                return Promise.reject('URL cơ sở không được chứa www');
-                            }
-                            return Promise.resolve();
-                        },
-                    },
                 ]}
             />
         </CustomModalForm>
