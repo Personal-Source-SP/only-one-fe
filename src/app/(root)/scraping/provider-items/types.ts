@@ -12,6 +12,8 @@ export interface IDataProviderItem extends Abstract {
     isSavedToCloudData: boolean;
     cloudDataProviderId?: string;
     lastScrapedTimestamp?: Date;
+
+    // Relations
     item?: IItem;
     dataProvider?: IDataProvider;
     cloudDataProvider?: ICloudDataProvider;

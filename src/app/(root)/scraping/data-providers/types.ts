@@ -7,9 +7,11 @@ export interface IDataProvider extends Abstract {
     identifier: string;
     name: string;
     baseUrl: string;
+
+    // Relations
+    scrapingData?: IScrapingData[];
     features?: IDataProviderFeature[];
     dataProviderItems?: IDataProviderItem[];
-    scrapingData?: IScrapingData[];
 }
 
 export interface DataProviderFormValues {

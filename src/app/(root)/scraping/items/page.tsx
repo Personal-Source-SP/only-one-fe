@@ -154,8 +154,8 @@ const ItemPage = () => {
                     key="import-item"
                     open={openImportItemModal}
                     dataType={DataImportType.ITEM}
-                    onClose={() => setOpenImportItemModal(false)}
                     onSuccess={() => tableQuery.refetch()}
+                    onClose={() => setOpenImportItemModal(false)}
                     columns={importDataColumns as unknown as ColumnType<Record<string, any>>[]}
                 />
             )}
