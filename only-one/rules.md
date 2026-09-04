@@ -7,7 +7,9 @@
 - **[AVOID]** Hardcoding raw API endpoint strings or directly reading `process.env.NEXT_PUBLIC_*` in components, hooks, or pages — Always import typed endpoint paths and environment configuration from `@/config` (`API_ENDPOINT`, `env`) to maintain single-source-of-truth contracts.
 - **[NEVER]** Access `window` or browser DOM APIs during initial SSR render in custom hooks without guards — Always guard browser-only APIs (`window.matchMedia`, `localStorage`) with `typeof window !== 'undefined'` or run them inside `useEffect` to prevent Next.js hydration mismatches.
 - **[PREFER]** Relative imports (`../types`, `../constants`, `../utils`, `../hooks`) for intra-page colocation within `src/app/**` to maintain self-contained modules, prevent brittle path rewrites during route restructuring, and improve code readability. Use absolute alias `@/...` for global cross-module packages (`@/components/custom-antd`, `@/hooks`, `@/enums`, `@/libs`, `@/config`).
-- **[NEVER]** Save task lifecycle documents outside of the active workspace's task directory — Always store `concept.md`, `plan.md`, and `walkthrough.md` directly under `<workspace>/only-one/tasks/<task-folder>`.
+- **[NEVER]** Hardcode raw string resource paths in `<ListTable deleteResource="..." />` or Refine hook configurations — Always import and use centralized `RESOURCE.<NAME>` constants from `@/config`.
+- **[AVOID]** Writing inline slugification / string sanitization logic in components — Use the centralized `slugify` utility from `@/libs`.
+- **[PREFER]** Built-in `FormRuleType` validators (`FormRuleType.Code`, `FormRuleType.Url`, `FormRuleType.Required`, `FormRuleType.Email`, `FormRuleType.Length`) via `buildFormRules` over hand-crafted inline regex or ad-hoc custom validators in modal forms.
 
 ## UI/UX & Component Patterns
 - **[NEVER]** Overload main entity list tables with multi-feature configurations and obsolete action columns — Keep table rows focused on core identity fields (name, code, status, created date) and navigate to dedicated feature dashboards (`/scraping/features/:dataProviderId`) for detailed configurations.
