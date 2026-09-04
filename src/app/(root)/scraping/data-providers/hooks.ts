@@ -30,8 +30,8 @@ export const useDataProviderPage = () => {
         },
         initialValuesMapper: (record) => ({
             name: record.name,
-            identifier: record.identifier,
             baseUrl: record.baseUrl,
+            identifier: record.identifier,
         }),
     });
 

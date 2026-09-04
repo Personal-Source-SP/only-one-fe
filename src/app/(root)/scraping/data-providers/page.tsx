@@ -13,6 +13,7 @@ import { formatDate } from '@/libs';
 import { PlusOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
 import { DataProviderFormModal } from './components';
+import { DATA_PROVIDER_COLUMNS_WIDTH } from './constants';
 import { useDataProviderPage } from './hooks';
 import type { IDataProvider } from './types';
 
@@ -36,7 +37,7 @@ const DataProviderPage = () => {
             key: 'name',
             ellipsis: true,
             sorter: true,
-            width: '25%',
+            width: DATA_PROVIDER_COLUMNS_WIDTH.NAME,
             render: (name: string, record) => (
                 <CustomButton
                     type="link"
@@ -53,7 +54,7 @@ const DataProviderPage = () => {
             key: 'identifier',
             ellipsis: true,
             sorter: true,
-            width: '15%',
+            width: DATA_PROVIDER_COLUMNS_WIDTH.IDENTIFIER,
         },
         {
             title: 'URL cơ sở',
@@ -61,7 +62,7 @@ const DataProviderPage = () => {
             key: 'baseUrl',
             ellipsis: true,
             sorter: true,
-            width: '30%',
+            width: DATA_PROVIDER_COLUMNS_WIDTH.BASE_URL,
         },
         {
             title: 'Ngày tạo',
@@ -69,7 +70,7 @@ const DataProviderPage = () => {
             key: 'createdAt',
             sorter: true,
             render: (createdAt: Date) => formatDate(createdAt),
-            width: '15%',
+            width: DATA_PROVIDER_COLUMNS_WIDTH.CREATED_AT,
         },
     ];
 
@@ -136,7 +137,6 @@ const DataProviderPage = () => {
             </ListWrapper>
 
             <DataProviderFormModal modalForm={createModalForm} />
-
             <DataProviderFormModal modalForm={editModalForm} />
         </>
     );
