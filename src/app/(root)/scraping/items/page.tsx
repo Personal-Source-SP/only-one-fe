@@ -12,6 +12,7 @@ import {
 } from '@/components/common';
 import { DataImportType, ProductMappingStatus } from '@/enums';
 import { formatDate } from '@/libs';
+import { RESOURCE } from '@/config';
 
 import { useItemPage } from './hooks';
 import { ImportData, ItemFormModal, ProcessScrapeData } from './components';
@@ -141,7 +142,7 @@ const ItemPage = () => {
                     columns={columns}
                     tableProps={tableProps}
                     tableQuery={tableQuery}
-                    deleteResource="items"
+                    deleteResource={RESOURCE.ITEMS}
                     onEdit={(record) => editModalForm.show(record.id)}
                 />
             </ListWrapper>

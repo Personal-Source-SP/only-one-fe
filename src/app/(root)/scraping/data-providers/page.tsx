@@ -11,6 +11,7 @@ import { CustomButton, type ColumnsType } from '@/components/custom-antd';
 import { DataProviderStatus } from '@/enums';
 import { formatDate } from '@/libs';
 import { PlusOutlined } from '@ant-design/icons';
+import { RESOURCE } from '@/config';
 import { useRouter } from 'next/navigation';
 import { DataProviderFormModal } from './components';
 import { DATA_PROVIDER_COLUMNS_WIDTH } from './constants';
@@ -131,8 +132,9 @@ const DataProviderPage = () => {
                     columns={columns}
                     tableProps={tableProps}
                     tableQuery={tableQuery}
-                    deleteResource="data-providers"
+                    deleteResource={RESOURCE.DATA_PROVIDERS}
                     onEdit={(record) => editModalForm.show(record.id)}
+                    onView={(record) => router.push(`/scraping/features/${record.id}`)}
                 />
             </ListWrapper>
 

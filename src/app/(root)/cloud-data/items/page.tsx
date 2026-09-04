@@ -13,6 +13,7 @@ import {
 } from '@/components/common';
 import { MimeType } from '@/enums';
 import { formatDate, formatFileSize } from '@/libs';
+import { RESOURCE } from '@/config';
 
 import { useCloudDataItemPage } from './hooks';
 import { CloudItemFormModal } from './components';
@@ -148,7 +149,7 @@ const CloudDataItem = () => {
                     columns={columns}
                     tableProps={tableProps}
                     tableQuery={tableQuery}
-                    deleteResource="cloud-data-items"
+                    deleteResource={RESOURCE.CLOUD_DATA_ITEMS}
                 />
             </ListWrapper>
 

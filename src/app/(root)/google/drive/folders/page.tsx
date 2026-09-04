@@ -11,6 +11,7 @@ import {
 } from '@/components/common';
 import { GoogleDriveType } from '@/enums';
 import { formatDate } from '@/libs';
+import { RESOURCE } from '@/config';
 
 import { useGoogleFolderPage } from './hooks';
 import { FolderModal, SyncGoogleDrive } from './components';
@@ -113,7 +114,7 @@ const FolderPage = () => {
                     columns={columns}
                     tableProps={tableProps}
                     tableQuery={tableQuery}
-                    deleteResource="google-folder"
+                    deleteResource={RESOURCE.GOOGLE_FOLDERS}
                     onEdit={(record) => modalPropsData?.show?.(record?.id)}
                 />
             </ListWrapper>

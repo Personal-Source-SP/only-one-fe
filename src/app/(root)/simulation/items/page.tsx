@@ -11,6 +11,7 @@ import {
     type IFilterField,
 } from '@/components/common';
 import { formatDate } from '@/libs';
+import { RESOURCE } from '@/config';
 
 import { useSimulationItemsPage } from './hooks';
 import { SimulationItemFormModal } from './components';
@@ -89,7 +90,7 @@ const SimulationItemsPage = () => {
                     columns={columns}
                     tableProps={tableProps}
                     tableQuery={tableQuery}
-                    deleteResource="simulation-items"
+                    deleteResource={RESOURCE.SIMULATION_ITEMS}
                     onEdit={(record) => editModalForm.show(record.id)}
                 />
             </ListWrapper>

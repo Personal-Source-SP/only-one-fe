@@ -10,6 +10,7 @@ import {
     type IFilterField,
 } from '@/components/common';
 import { formatDate } from '@/libs';
+import { RESOURCE } from '@/config';
 
 import { useDataProviderItemPage } from './hooks';
 import { ProcessScrapeData, ProviderItemFormModal } from './components';
@@ -163,7 +164,7 @@ const DataProviderItemPage = () => {
                     columns={columns}
                     tableProps={tableProps}
                     tableQuery={tableQuery}
-                    deleteResource="data-provider-items"
+                    deleteResource={RESOURCE.DATA_PROVIDER_ITEMS}
                     onEdit={(record) => editModalForm.show(record.id)}
                 />
             </ListWrapper>

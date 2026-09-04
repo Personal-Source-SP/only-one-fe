@@ -11,6 +11,7 @@ import {
     type IFilterField,
 } from '@/components/common';
 import { formatDate } from '@/libs';
+import { RESOURCE } from '@/config';
 
 import { useUsersPage } from './hooks';
 import { UserFormModal } from './components';
@@ -104,7 +105,7 @@ const UsersPage = () => {
                     columns={columns}
                     tableProps={tableProps}
                     tableQuery={tableQuery}
-                    deleteResource="users"
+                    deleteResource={RESOURCE.USERS}
                     onEdit={(record) => editModalForm.show(record.id)}
                 />
             </ListWrapper>

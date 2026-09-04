@@ -12,6 +12,7 @@ import {
 } from '@/components/common';
 import { CloudDataProviderType } from '@/enums';
 import { capitalizeFirstLetter, formatDate, formatFileSize } from '@/libs';
+import { RESOURCE } from '@/config';
 
 import { useCloudDataProviderPage } from './hooks';
 import { CloudProviderFormModal } from './components';
@@ -115,7 +116,7 @@ const CloudDataProvider = () => {
                     columns={columns}
                     tableProps={tableProps}
                     tableQuery={tableQuery}
-                    deleteResource="cloud-data-providers"
+                    deleteResource={RESOURCE.CLOUD_DATA_PROVIDERS}
                     onEdit={(record) => editModalForm.show(record.id)}
                 />
             </ListWrapper>

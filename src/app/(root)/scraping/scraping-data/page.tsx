@@ -15,6 +15,7 @@ import {
 import { ColumnsType, CustomButton, CustomFlex, CustomSelect } from '@/components/custom-antd';
 import { DisplayMode } from '@/enums';
 import { formatDate } from '@/libs';
+import { RESOURCE } from '@/config';
 
 import type { IItem } from '@/app/(root)/scraping/items/types';
 import { useScrapingDataPage } from './hooks';
@@ -176,7 +177,7 @@ const ScrapingDataPage = () => {
                         columns={columns}
                         tableProps={tableContainerData.tableProps as any}
                         tableQuery={tableContainerData.tableQuery as any}
-                        deleteResource="scraping-data"
+                        deleteResource={RESOURCE.SCRAPING_DATA}
                         onEdit={(record) => modalPropsData?.show?.(record.id)}
                     />
                 ) : (

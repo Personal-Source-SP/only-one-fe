@@ -12,6 +12,7 @@ import {
 } from '@/components/common';
 import { SimulationService } from '@/enums';
 import { formatDate } from '@/libs';
+import { RESOURCE } from '@/config';
 
 import { useSimulationContextsPage } from './hooks';
 import { SimulationContextFormModal } from './components';
@@ -104,7 +105,7 @@ const SimulationContextsPage = () => {
                     columns={columns}
                     tableProps={tableProps}
                     tableQuery={tableQuery}
-                    deleteResource="simulation-contexts"
+                    deleteResource={RESOURCE.SIMULATION_CONTEXTS}
                     onEdit={(record) => editModalForm.show(record.id)}
                 />
             </ListWrapper>

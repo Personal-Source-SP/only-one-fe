@@ -12,6 +12,7 @@ import {
 } from '@/components/common';
 import { CronExpression, ExecutionServiceEnum, ScheduleType } from '@/enums';
 import { capitalizeFirstLetter, formatDate, getEnumKeyByValue } from '@/libs';
+import { RESOURCE } from '@/config';
 
 import { useScheduleExecutionPage } from './hooks';
 import { ScheduleExecutionFormModal, ViewScheduleJobList } from './components';
@@ -143,7 +144,7 @@ const ScheduleExecutionPage = () => {
                     columns={columns}
                     tableProps={tableProps}
                     tableQuery={tableQuery}
-                    deleteResource="schedules"
+                    deleteResource={RESOURCE.SCHEDULES}
                     onEdit={(record) => editModalForm.show(record.id)}
                 />
             </ListWrapper>
