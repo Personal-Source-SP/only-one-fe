@@ -1,4 +1,3 @@
-export * from './CreateFeatureModal';
 export * from './FeatureCard';
 export * from './FeatureHistoryModal';
 export * from './FeatureSettingModal';
