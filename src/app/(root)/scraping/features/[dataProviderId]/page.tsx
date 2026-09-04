@@ -1,6 +1,11 @@
 'use client';
 
-import { ListWrapper, type BreadcrumbItem, type CardAction } from '@/components/common';
+import {
+    DataNotFound,
+    ListWrapper,
+    type BreadcrumbItem,
+    type CardAction,
+} from '@/components/common';
 import {
     CustomButton,
     CustomCol,
@@ -145,18 +150,27 @@ const DataProviderFeaturesPage = () => {
             breadcrumb={breadcrumbs}
         >
             <CustomSpace direction="vertical" size="large" className="w-full">
-                <CustomRow gutter={[24, 24]} className="w-full">
-                    {features.map((feature) => (
-                        <CustomCol key={feature.id} xs={24} lg={12} className="flex">
-                            <FeatureCard
-                                feature={feature}
-                                onOpenModal={openFeatureModal}
-                                onOpenHistoryModal={openHistoryModal}
-                                onSwitchStatus={handleSwitchStatus}
-                            />
-                        </CustomCol>
-                    ))}
-                </CustomRow>
+                {!features?.length ? (
+                    <DataNotFound
+                        fullWidth
+                        icon="lucide:layers"
+                        title="Chưa có tính năng nào"
+                        message="Nhà cung cấp này chưa được thiết lập tính năng thu thập dữ liệu nào. Vui lòng sử dụng nút 'Thêm cài đặt' phía trên để bắt đầu cấu hình."
+                    />
+                ) : (
+                    <CustomRow gutter={[24, 24]} className="w-full">
+                        {features.map((feature) => (
+                            <CustomCol key={feature.id} xs={24} lg={12} className="flex">
+                                <FeatureCard
+                                    feature={feature}
+                                    onOpenModal={openFeatureModal}
+                                    onOpenHistoryModal={openHistoryModal}
+                                    onSwitchStatus={handleSwitchStatus}
+                                />
+                            </CustomCol>
+                        ))}
+                    </CustomRow>
+                )}
 
                 {modalState.open && modalState.feature && (
                     <FeatureSettingModal
@@ -175,8 +189,8 @@ const DataProviderFeaturesPage = () => {
                     <FeatureHistoryModal
                         open={historyModalState.open}
                         feature={historyModalState.feature}
-                        onClose={closeHistoryModal}
                         onSuccess={refetchAll}
+                        onClose={closeHistoryModal}
                     />
                 )}
             </CustomSpace>

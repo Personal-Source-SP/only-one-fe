@@ -9,7 +9,9 @@ export type DataNotFoundProps = {
     message?: string;
     loading?: boolean;
     compact?: boolean;
+    fullWidth?: boolean;
     className?: string;
+    cardClassName?: string;
     onRetry?: () => void;
 };
 
@@ -19,7 +21,9 @@ export const DataNotFound = ({
     message = 'Vui lòng kiểm tra lại kết nối hoặc thử lại sau.',
     loading,
     compact = false,
+    fullWidth = false,
     className = '',
+    cardClassName = '',
     onRetry,
 }: DataNotFoundProps) => {
     if (compact) {
@@ -51,9 +55,13 @@ export const DataNotFound = ({
         );
     }
 
+    const cardWidthClass = fullWidth ? 'w-full' : 'max-w-xl w-full mx-4';
+
     return (
-        <div className={`flex items-center justify-center bg-transparent ${className}`.trim()}>
-            <CustomCard className="max-w-xl w-full mx-4">
+        <div
+            className={`flex items-center justify-center bg-transparent w-full ${className}`.trim()}
+        >
+            <CustomCard className={`${cardWidthClass} ${cardClassName}`.trim()}>
                 <div className="flex flex-col items-center gap-4 py-10">
                     <Icon icon={icon} className="text-5xl text-foreground-400" />
                     <h2 className="text-xl font-semibold">{title}</h2>
