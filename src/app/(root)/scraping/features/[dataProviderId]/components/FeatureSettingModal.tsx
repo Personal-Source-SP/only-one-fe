@@ -191,13 +191,13 @@ export const FeatureSettingModal = ({
             ),
             children: ConfigComponent ? (
                 <ConfigComponent
-                    form={form}
                     feature={feature}
+                    form={form}
                     selectedVersion={selectedVersion}
                     isViewingHistory={isViewingHistory}
-                    setIsSaving={setIsSaving}
                     onClose={onClose}
                     onSuccess={onSuccess}
+                    setIsSaving={setIsSaving}
                 />
             ) : (
                 <div className="p-6 text-center text-hub-subtitle">
