@@ -18,28 +18,39 @@ import {
 import { DataProviderFeatureType } from '@/enums';
 import { Icon } from '@iconify/react';
 import { useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import { FEATURE_TYPE_METADATA } from './constants';
 import { FeatureCard, FeatureHistoryModal, FeatureSettingModal } from './components';
-import { useDataProviderFeaturesPage } from './hooks';
+import { useDataProviderFeatureActions, useDataProviderFeaturesView } from './hooks';
 import type { FeatureModalTab } from './types';
 
 const DataProviderFeaturesPage = () => {
+    const router = useRouter();
+
     const {
-        router,
+        dataProviderId,
         provider,
         features,
         isLoading,
-        modalState,
         historyModalState,
-        refetchAll,
-        setModalState,
-        openFeatureModal,
         openHistoryModal,
         closeHistoryModal,
+        refetchAll,
+    } = useDataProviderFeaturesView();
+
+    const {
+        modalState,
+        setModalState,
+        openFeatureModal,
         openConfigByType,
         closeFeatureModal,
         handleSwitchStatus,
-    } = useDataProviderFeaturesPage();
+    } = useDataProviderFeatureActions({
+        dataProviderId,
+        features,
+        provider,
+        refetchAll,
+    });
 
     const settingMenuItems = useMemo(
         () =>
