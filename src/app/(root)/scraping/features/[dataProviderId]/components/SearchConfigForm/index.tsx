@@ -38,18 +38,19 @@ export const SearchConfigForm = ({
     onSuccess,
     setIsSaving: externalSetIsSaving,
 }: SearchConfigFormProps) => {
-    const [internalForm] = CustomForm.useForm();
+    const { handleCustomMutationData } = useCustomMutationData();
 
+    const [internalForm] = CustomForm.useForm();
     const form = externalForm || internalForm;
-    const currentService = CustomForm.useWatch('service', form) || ScraperServiceEnum.GENERIC;
-    const { hasSearchSelectors } = checkService(currentService);
+
     const functionGenerator = CustomForm.useWatch('functionGenerator', form);
+    const currentService = CustomForm.useWatch('service', form) || ScraperServiceEnum.GENERIC;
+
+    const { hasSearchSelectors } = checkService(currentService);
 
     const [isSaving, setIsSaving] = useState<boolean>(false);
 
     const isDraft = useMemo(() => !feature.id, [feature.id]);
-
-    const { handleCustomMutationData } = useCustomMutationData();
 
     useEffect(() => {
         externalSetIsSaving?.(isSaving);
@@ -144,9 +145,9 @@ export const SearchConfigForm = ({
             <CustomFlex vertical gap="middle" className="w-full">
                 <SearchUrlPatternSection
                     feature={feature}
+                    service={currentService}
                     selectedVersion={selectedVersion}
                     isViewingHistory={isViewingHistory}
-                    service={currentService}
                     onServiceChange={handleServiceChange}
                 />
 
@@ -160,11 +161,11 @@ export const SearchConfigForm = ({
 
                 <SearchCodeSection
                     form={form}
-                    functionGenerator={functionGenerator}
                     feature={feature}
                     selectedVersion={selectedVersion}
                     isViewingHistory={isViewingHistory}
                     service={currentService}
+                    functionGenerator={functionGenerator}
                 />
 
                 {!isDraft && (

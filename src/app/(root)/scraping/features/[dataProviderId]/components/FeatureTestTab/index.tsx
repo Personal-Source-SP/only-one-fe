@@ -34,6 +34,7 @@ export const FeatureTestTab = ({ feature, configForm }: FeatureTestTabProps) => 
             if (configForm) {
                 await configForm.validateFields();
             }
+
             const values = await form.validateFields();
             await handleRunTest(values);
         } catch (error) {

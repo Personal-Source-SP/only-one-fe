@@ -42,9 +42,9 @@ export const SearchCodeSection = ({
                     <FormDiffLabel
                         label={searchCodeLabel}
                         fieldKey="functionGenerator"
-                        isViewingHistory={isViewingHistory}
                         feature={feature}
                         selectedVersion={selectedVersion}
+                        isViewingHistory={isViewingHistory}
                     />
                 </CustomTypography.Text>
             </CustomFlex>

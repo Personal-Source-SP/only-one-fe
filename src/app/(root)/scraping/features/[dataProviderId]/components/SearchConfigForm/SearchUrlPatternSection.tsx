@@ -17,18 +17,18 @@ import { FormDiffLabel } from '../FormDiffLabel';
 import type { IConfigVersion, IDataProviderFeature } from '../../types';
 
 export type SearchUrlPatternSectionProps = {
-    isViewingHistory?: boolean;
     feature: IDataProviderFeature;
-    selectedVersion?: IConfigVersion | null;
     service?: string;
+    isViewingHistory?: boolean;
+    selectedVersion?: IConfigVersion | null;
     onServiceChange?: (service: string) => void;
 };
 
 export const SearchUrlPatternSection = ({
-    isViewingHistory,
     feature,
-    selectedVersion,
     service = ScraperServiceEnum.GENERIC,
+    isViewingHistory,
+    selectedVersion,
     onServiceChange,
 }: SearchUrlPatternSectionProps) => {
     const { hasUrlPattern } = checkService(service);
@@ -44,10 +44,12 @@ export const SearchUrlPatternSection = ({
                     Cấu hình đường dẫn tìm kiếm
                 </CustomTypography.Text>
             </CustomFlex>
+
             <CustomRow gutter={[16, 12]}>
                 <CustomCol xs={24} md={hasUrlPattern ? 12 : 12}>
                     <CustomForm.Item
                         name="service"
+                        rules={[{ required: true, message: 'Vui lòng chọn engine' }]}
                         label={
                             <FormDiffLabel
                                 fieldKey="service"
@@ -57,7 +59,6 @@ export const SearchUrlPatternSection = ({
                                 isViewingHistory={isViewingHistory}
                             />
                         }
-                        rules={[{ required: true, message: 'Vui lòng chọn engine' }]}
                     >
                         <CustomSelect
                             onChange={onServiceChange}

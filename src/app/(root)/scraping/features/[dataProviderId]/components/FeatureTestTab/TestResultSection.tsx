@@ -21,8 +21,8 @@ export const TestResultSection = ({ testResult, errorMessage }: TestResultSectio
             {errorMessage && (
                 <CustomAlert
                     type="error"
-                    title="Thử nghiệm phát sinh lỗi"
                     description={errorMessage}
+                    title="Thử nghiệm phát sinh lỗi"
                     className="rounded-xl border-rose-500/20 bg-rose-500/10"
                 />
             )}
@@ -38,6 +38,7 @@ export const TestResultSection = ({ testResult, errorMessage }: TestResultSectio
                             Kết quả trích xuất (Execution Output)
                         </CustomTypography.Text>
                     </CustomFlex>
+
                     {testResult && (
                         <CustomTag color="success" className="font-medium m-0">
                             Thành công

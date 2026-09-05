@@ -14,14 +14,14 @@ import { FormDiffLabel } from '../FormDiffLabel';
 import type { IConfigVersion, IDataProviderFeature } from '../../types';
 
 export type SearchSelectorsSectionProps = {
-    isViewingHistory?: boolean;
     feature: IDataProviderFeature;
+    isViewingHistory?: boolean;
     selectedVersion?: IConfigVersion | null;
 };
 
 export const SearchSelectorsSection = ({
-    isViewingHistory,
     feature,
+    isViewingHistory,
     selectedVersion,
 }: SearchSelectorsSectionProps) => {
     return (
@@ -35,6 +35,7 @@ export const SearchSelectorsSection = ({
                     Bộ chọn (Selectors) & Tùy chọn
                 </CustomTypography.Text>
             </CustomFlex>
+
             <CustomRow gutter={[16, 12]}>
                 <CustomCol xs={24} md={12}>
                     <CustomForm.Item
@@ -43,9 +44,9 @@ export const SearchSelectorsSection = ({
                             <FormDiffLabel
                                 label="Selector vùng chứa kết quả"
                                 fieldKey="mainContentSelector"
-                                isViewingHistory={isViewingHistory}
                                 feature={feature}
                                 selectedVersion={selectedVersion}
+                                isViewingHistory={isViewingHistory}
                             />
                         }
                     >
@@ -58,11 +59,11 @@ export const SearchSelectorsSection = ({
                         name="resultSelector"
                         label={
                             <FormDiffLabel
-                                label="Selector từng phần tử kết quả"
                                 fieldKey="resultSelector"
-                                isViewingHistory={isViewingHistory}
+                                label="Selector từng phần tử kết quả"
                                 feature={feature}
                                 selectedVersion={selectedVersion}
+                                isViewingHistory={isViewingHistory}
                             />
                         }
                     >
@@ -80,9 +81,9 @@ export const SearchSelectorsSection = ({
                             <FormDiffLabel
                                 label="Lấy phần tử cha"
                                 fieldKey="isGetParentElement"
-                                isViewingHistory={isViewingHistory}
                                 feature={feature}
                                 selectedVersion={selectedVersion}
+                                isViewingHistory={isViewingHistory}
                             />
                         </CustomTypography.Text>
                         <CustomForm.Item name="isGetParentElement" valuePropName="checked" noStyle>

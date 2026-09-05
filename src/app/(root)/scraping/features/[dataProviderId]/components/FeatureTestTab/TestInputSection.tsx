@@ -17,26 +17,26 @@ import { DEFAULT_HTML_CONTENT_STRING } from '@/constants';
 import { Icon } from '@iconify/react';
 
 export type TestInputSectionProps = {
+    form: FormInstance;
+    isLoading: boolean;
     isScraping: boolean;
     isTestHtmlContent: boolean;
-    isLoading: boolean;
-    form: FormInstance;
     configForm?: FormInstance;
-    onToggleTestHtmlContent: (checked: boolean) => void;
     onRunTest: () => void;
+    onToggleTestHtmlContent: (checked: boolean) => void;
 };
 
 export const TestInputSection = ({
+    form,
+    isLoading,
     isScraping,
     isTestHtmlContent,
-    isLoading,
-    form,
     configForm,
-    onToggleTestHtmlContent,
     onRunTest,
+    onToggleTestHtmlContent,
 }: TestInputSectionProps) => {
     const functionGenerator = CustomForm.useWatch('functionGenerator', configForm);
-    const isMissingFunctionGenerator = !functionGenerator || !functionGenerator.trim();
+    const isMissingFunctionGenerator = !functionGenerator?.trim();
 
     return (
         <CustomForm
@@ -126,9 +126,9 @@ export const TestInputSection = ({
                             <CustomButton
                                 type="primary"
                                 loading={isLoading}
-                                disabled={isLoading || isMissingFunctionGenerator}
                                 onClick={onRunTest}
                                 icon={<Icon icon="lucide:play" />}
+                                disabled={isLoading || isMissingFunctionGenerator}
                             >
                                 Chạy thử nghiệm
                             </CustomButton>

@@ -28,6 +28,7 @@ export const TestModeSelector = ({ testMode, isDraft, onChangeMode }: TestModeSe
                             Chế độ thử nghiệm
                         </CustomTypography.Text>
                     </CustomFlex>
+
                     <CustomTypography.Paragraph
                         type="secondary"
                         className="!mb-0 text-xs text-hub-subtitle"
@@ -44,9 +45,9 @@ export const TestModeSelector = ({ testMode, isDraft, onChangeMode }: TestModeSe
                     options={[
                         { label: 'Stateless Sandbox', value: 'stateless' },
                         {
-                            label: 'Contextual Test',
-                            value: 'contextual',
                             disabled: isDraft,
+                            value: 'contextual',
+                            label: 'Contextual Test',
                         },
                     ]}
                 />
