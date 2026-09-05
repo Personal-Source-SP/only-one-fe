@@ -25,16 +25,16 @@ import {
     StepsProps,
     TableProps,
 } from '@/components/custom-antd';
-import { MessageType } from '@/enums';
+import { MessageType, MimeType } from '@/enums';
 import { useMainContext } from '@/contexts/MainContext';
-import { GoogleDriveType, MimeType } from '@/enums';
+import { GoogleDriveType } from '../../enums';
 import { useCustomData, useCustomMutationData, useSelectGoogleFolder } from '@/hooks';
 import type { IDataOption } from '@/interfaces';
 import { formatDate, getGoogleAuthUrl, isExpiredToken } from '@/libs';
 import { Icon } from '@iconify/react';
 import Link from 'next/link';
 import { useEffect, useMemo, useState, type Key } from 'react';
-import type { IGoogleAuth, IGoogleDrivePreviewItem } from '@/app/(root)/google/drive/photos/types';
+import type { IGoogleAuth, IGoogleDrivePreviewItem } from '../types';
 
 const StepEnum = {
     Settings: 0,

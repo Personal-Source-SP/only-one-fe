@@ -10,10 +10,11 @@ import {
 } from '@/components/common';
 import { ColumnsType, CustomModal } from '@/components/custom-antd';
 import { API_ENDPOINT } from '@/config';
-import { ScheduleJobTriggerType, ScheduleJobType, ScheduleType } from '@/enums';
 import { useCustomTable } from '@/hooks';
 import { formatDate } from '@/libs';
-import type { IScheduleJob } from '@/app/(root)/schedule/executions/types';
+
+import { ScheduleJobTriggerType, ScheduleJobType, ScheduleType } from '../enums';
+import type { IScheduleJob } from '../types';
 
 type ViewScheduleJobListProps = {
     isOpen: boolean;

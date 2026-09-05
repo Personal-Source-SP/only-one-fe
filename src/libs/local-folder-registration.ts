@@ -5,7 +5,7 @@ import type {
     RegisterLocalFolderRequest,
     RegisterLocalFolderResponse,
 } from '@/app/(root)/scraping/provider-items/types';
-import { LocalFolderRegistrationStatusEnum } from '@/enums';
+import { LocalFolderRegistrationStatusEnum } from '@/app/(root)/scraping/provider-items/enums';
 import { deburr, find, kebabCase, toLower } from 'lodash';
 
 type BuildLocalFolderRegistrationInput = {

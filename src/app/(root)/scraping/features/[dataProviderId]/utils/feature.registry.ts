@@ -1,6 +1,6 @@
 import type { ComponentType } from 'react';
 import type { FormInstance } from '@/components/custom-antd';
-import { DataProviderFeatureType } from '@/enums';
+import { DataProviderFeatureType } from '../enums';
 import { ScrapingConfigForm, SearchConfigForm } from '../components';
 import type { IConfigVersion, IDataProviderFeature } from '../types';
 

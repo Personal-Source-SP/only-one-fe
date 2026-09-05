@@ -1,4 +1,4 @@
-import type { ScheduleJobEventType } from '@/enums';
+import type { ScheduleJobEventType } from './enums';
 import type { Abstract } from '@/interfaces';
 import type { IScheduleJob } from '@/app/(root)/schedule/executions/types';
 

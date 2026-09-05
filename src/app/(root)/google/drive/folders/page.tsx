@@ -9,10 +9,10 @@ import {
     type CardAction,
     type IFilterField,
 } from '@/components/common';
-import { GoogleDriveType } from '@/enums';
 import { formatDate } from '@/libs';
 import { RESOURCE } from '@/config';
 
+import { GoogleDriveType } from '../enums';
 import { useGoogleFolderPage } from './hooks';
 import { FolderModal, SyncGoogleDrive } from './components';
 import type { GoogleFolderRecord } from './types';

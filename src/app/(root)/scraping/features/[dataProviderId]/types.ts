@@ -5,7 +5,7 @@ import type {
     DataProviderFeatureErrorType,
     DataProviderFeatureStatus,
     DataProviderFeatureType,
-} from '@/enums';
+} from './enums';
 import type { Abstract } from '@/interfaces';
 
 export interface IConfigVersion extends Abstract {

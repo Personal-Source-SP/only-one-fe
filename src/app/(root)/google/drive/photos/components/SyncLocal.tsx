@@ -22,15 +22,15 @@ import {
     StepsProps,
     TableProps,
 } from '@/components/custom-antd';
-import { MessageType } from '@/enums';
+import { MessageType, MimeType } from '@/enums';
 import { useMainContext } from '@/contexts/MainContext';
-import { GoogleDriveType, MimeType } from '@/enums';
+import { GoogleDriveType } from '../../enums';
 import { useCustomMutationData, useSelectGoogleFolder } from '@/hooks';
 import type { IDataOption, Option } from '@/interfaces';
 import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
 import { useEffect, useState, type Key } from 'react';
-import type { ILocalFilePreviewItem } from '@/app/(root)/google/drive/photos/types';
+import type { ILocalFilePreviewItem } from '../types';
 
 const StepEnum = {
     Settings: 0,

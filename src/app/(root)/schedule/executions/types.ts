@@ -3,7 +3,7 @@ import type {
     ScheduleJobTriggerType,
     ScheduleJobType,
     ScheduleType,
-} from '@/enums';
+} from './enums';
 import type { Abstract } from '@/interfaces';
 import type { IScheduleJobEvent } from '@/app/(root)/schedule/job-events/types';
 

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { CustomFlex, CustomTag } from '@/components/custom-antd';
-import { ScraperServiceEnum } from '@/enums';
+import { ScraperServiceEnum } from '../enums';
 import type { IConfigVersion, IDataProviderFeature } from '../types';
 
 export type FormDiffLabelProps = {

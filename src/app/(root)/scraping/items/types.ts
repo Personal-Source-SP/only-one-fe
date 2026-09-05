@@ -1,4 +1,4 @@
-import type { ProductMappingStatus } from '@/enums';
+import type { ProductMappingStatus } from './enums';
 import type { Abstract } from '@/interfaces';
 
 export interface IItem extends Abstract {

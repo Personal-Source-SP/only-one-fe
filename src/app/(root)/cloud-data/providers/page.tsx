@@ -10,10 +10,10 @@ import {
     type CardAction,
     type IFilterField,
 } from '@/components/common';
-import { CloudDataProviderType } from '@/enums';
 import { capitalizeFirstLetter, formatDate, formatFileSize } from '@/libs';
 import { RESOURCE } from '@/config';
 
+import { CloudDataProviderType } from './enums';
 import { useCloudDataProviderPage } from './hooks';
 import { CloudProviderFormModal } from './components';
 import type { CloudProviderRecord } from './types';

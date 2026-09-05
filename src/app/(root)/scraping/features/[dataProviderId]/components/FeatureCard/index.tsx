@@ -2,7 +2,7 @@
 
 import { useCallback, useMemo } from 'react';
 import { CustomCard, CustomFlex } from '@/components/custom-antd';
-import { DataProviderFeatureStatus } from '@/enums';
+import { DataProviderFeatureStatus } from '../../enums';
 import { FEATURE_TYPE_METADATA } from '../../constants';
 import type { FeatureModalTab, IDataProviderFeature } from '../../types';
 import { FeatureCardActions } from './FeatureCardActions';

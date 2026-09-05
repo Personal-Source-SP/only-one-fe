@@ -10,10 +10,10 @@ import {
     type CardAction,
     type IFilterField,
 } from '@/components/common';
-import { DataImportType, ProductMappingStatus } from '@/enums';
 import { formatDate } from '@/libs';
 import { RESOURCE } from '@/config';
 
+import { DataImportType, ProductMappingStatus } from './enums';
 import { useItemPage } from './hooks';
 import { ImportData, ItemFormModal, ProcessScrapeData } from './components';
 import type { ItemRecord } from './types';

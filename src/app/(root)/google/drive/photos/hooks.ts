@@ -3,10 +3,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import { isNumber } from 'lodash';
 import { API_ENDPOINT } from '@/config';
-import { CustomFilterType, MimeType, QualityMode, ViewFileMode } from '@/enums';
+import { CustomFilterType, MimeType, ViewFileMode } from '@/enums';
 import { useCustomData, useCustomTable, useSelectGoogleFolder } from '@/hooks';
 import type { FileItem, FilterItem } from '@/interfaces';
 import { getDriveImageUrl, isExpiredToken } from '@/libs';
+import { QualityMode } from '../enums';
 import type { IGoogleAuth, IGoogleDriveFile } from './types';
 
 import { columnOptions, qualityModeOptions, viewModeOptions } from './constants';

@@ -1,8 +1,8 @@
 'use client';
 
 import { CustomFlex, CustomSwitch, CustomTag, CustomTypography } from '@/components/custom-antd';
-import { DataProviderFeatureStatus } from '@/enums';
 import { Icon } from '@iconify/react';
+import { DataProviderFeatureStatus } from '../../enums';
 import type { FeatureDefinition } from '../../utils';
 import type { IDataProviderFeature } from '../../types';
 

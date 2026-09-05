@@ -9,8 +9,8 @@ import {
     CustomSpace,
     type FormInstance,
 } from '@/components/custom-antd';
-import { ConfigVersionType } from '@/enums';
 import { Icon } from '@iconify/react';
+import { ConfigVersionType } from '../../enums';
 import type { FeatureModalTab, IConfigVersion } from '../../types';
 
 export interface FeatureModalFooterProps {

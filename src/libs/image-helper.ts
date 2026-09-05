@@ -1,5 +1,5 @@
 import type { IGoogleDriveFile } from '@/app/(root)/google/drive/photos/types';
-import { QualityMode } from '@/enums';
+import { QualityMode } from '@/app/(root)/google/drive/enums';
 
 export const getProxyUrl = (url: string): string => {
     if (!url) return '';

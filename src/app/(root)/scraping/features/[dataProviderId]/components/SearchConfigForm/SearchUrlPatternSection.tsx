@@ -10,8 +10,8 @@ import {
     CustomSelect,
     CustomTypography,
 } from '@/components/custom-antd';
-import { ScraperServiceEnum } from '@/enums';
 import { Icon } from '@iconify/react';
+import { ScraperServiceEnum } from '../../enums';
 import { FormDiffLabel } from '../FormDiffLabel';
 import type { IConfigVersion, IDataProviderFeature } from '../../types';
 

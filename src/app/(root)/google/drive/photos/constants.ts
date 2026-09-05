@@ -1,5 +1,6 @@
-import { QualityMode, ViewFileMode } from '@/enums';
+import { ViewFileMode } from '@/enums';
 import { FilterItem } from '@/interfaces';
+import { QualityMode } from '../enums';
 
 type FilterOptions = NonNullable<FilterItem['options']>;
 

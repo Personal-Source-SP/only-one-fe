@@ -10,10 +10,10 @@ import {
     type CardAction,
     type IFilterField,
 } from '@/components/common';
-import { SimulationService } from '@/enums';
 import { formatDate } from '@/libs';
 import { RESOURCE } from '@/config';
 
+import { SimulationService } from './enums';
 import { useSimulationContextsPage } from './hooks';
 import { SimulationContextFormModal } from './components';
 import type { SimulationContextRecord } from './types';

@@ -1,8 +1,10 @@
 'use client';
 
 import { useCallback, useMemo, useState } from 'react';
-import { DataProviderFeatureType, MessageType } from '@/enums';
+import { MessageType } from '@/enums';
 import { useCustomMutationData } from '@/hooks';
+
+import { DataProviderFeatureType } from '../enums';
 import type { IDataProviderFeature } from '../types';
 
 export type UseFeatureTestRunnerProps = {

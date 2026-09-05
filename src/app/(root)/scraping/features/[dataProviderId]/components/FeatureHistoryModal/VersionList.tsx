@@ -2,7 +2,7 @@
 
 import { useCallback } from 'react';
 import { CustomFlex, CustomTag, CustomTypography } from '@/components/custom-antd';
-import { ConfigVersionType } from '@/enums';
+import { ConfigVersionType } from '../../enums';
 import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
 import type { IConfigVersion } from '../../types';

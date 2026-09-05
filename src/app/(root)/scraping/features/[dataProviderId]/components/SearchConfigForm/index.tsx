@@ -9,9 +9,10 @@ import {
     type FormInstance,
 } from '@/components/custom-antd';
 import { DEFAULT_SEARCH_FUNCTION_GENERATOR } from '@/constants';
-import { MessageType, ScraperServiceEnum } from '@/enums';
+import { MessageType } from '@/enums';
 import { useCustomMutationData } from '@/hooks';
 import { Icon } from '@iconify/react';
+import { ScraperServiceEnum } from '../../enums';
 import type { IConfigVersion, IDataProviderFeature } from '../../types';
 import { SearchCodeSection } from './SearchCodeSection';
 import { SearchSelectorsSection } from './SearchSelectorsSection';

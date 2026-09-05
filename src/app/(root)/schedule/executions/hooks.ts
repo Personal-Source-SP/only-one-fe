@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { API_ENDPOINT } from '@/config';
-import { MessageType, ScheduleType } from '@/enums';
+import { MessageType } from '@/enums';
+import { ScheduleType } from './enums';
 import {
     useCustomModalForm,
     useCustomMutationData,

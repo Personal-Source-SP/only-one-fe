@@ -8,9 +8,9 @@ import {
     StatusTag,
     type IFilterField,
 } from '@/components/common';
-import { ScheduleJobEventType } from '@/enums';
 import { formatDate } from '@/libs';
 
+import { ScheduleJobEventType } from './enums';
 import { useScheduleJobEventsPage } from './hooks';
 import { ViewJobEvent } from './components';
 import type { JobEventRecord } from './types';

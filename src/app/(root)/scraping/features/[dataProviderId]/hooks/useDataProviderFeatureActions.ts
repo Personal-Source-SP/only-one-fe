@@ -2,13 +2,10 @@
 
 import { useCallback, useState } from 'react';
 import type { IDataProvider } from '@/app/(root)/scraping/data-providers/types';
-import {
-    DataProviderFeatureStatus,
-    DataProviderFeatureType,
-    MessageType,
-    ScraperServiceEnum,
-} from '@/enums';
+import { MessageType } from '@/enums';
 import { useCustomMutationData } from '@/hooks';
+
+import { DataProviderFeatureStatus, DataProviderFeatureType, ScraperServiceEnum } from '../enums';
 import type { FeatureModalState, FeatureModalTab, IDataProviderFeature } from '../types';
 
 export type UseDataProviderFeatureActionsProps = {

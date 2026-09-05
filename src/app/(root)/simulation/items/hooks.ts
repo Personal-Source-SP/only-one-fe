@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { API_ENDPOINT } from '@/config';
-import { MessageType, SimulationItemStatus } from '@/enums';
+import { MessageType } from '@/enums';
+import { SimulationItemStatus } from './enums';
 import {
     useCustomModalForm,
     useCustomMutationData,

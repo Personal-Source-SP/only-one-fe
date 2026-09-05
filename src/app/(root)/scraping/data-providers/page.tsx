@@ -8,11 +8,12 @@ import {
     type IFilterField,
 } from '@/components/common';
 import { CustomButton, type ColumnsType } from '@/components/custom-antd';
-import { DataProviderStatus } from '@/enums';
 import { formatDate } from '@/libs';
 import { PlusOutlined } from '@ant-design/icons';
 import { RESOURCE } from '@/config';
 import { useRouter } from 'next/navigation';
+
+import { DataProviderStatus } from './enums';
 import { DataProviderFormModal } from './components';
 import { DATA_PROVIDER_COLUMNS_WIDTH } from './constants';
 import { useDataProviderPage } from './hooks';

@@ -18,7 +18,7 @@ import {
 } from '@/components/custom-antd';
 import { MessageType } from '@/enums';
 import { useMainContext } from '@/contexts/MainContext';
-import { DataImportType } from '@/enums';
+import { DataImportType } from '../enums';
 import { useCustomMutationData } from '@/hooks';
 import type {
     IImportDataResponse,
