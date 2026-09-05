@@ -10,6 +10,9 @@
 - **[NEVER]** Hardcode raw string resource paths in `<ListTable deleteResource="..." />` or Refine hook configurations — Always import and use centralized `RESOURCE.<NAME>` constants from `@/config`.
 - **[AVOID]** Writing inline slugification / string sanitization logic in components — Use the centralized `slugify` utility from `@/libs`.
 - **[PREFER]** Built-in `FormRuleType` validators (`FormRuleType.Code`, `FormRuleType.Url`, `FormRuleType.Required`, `FormRuleType.Email`, `FormRuleType.Length`) via `buildFormRules` over hand-crafted inline regex or ad-hoc custom validators in modal forms.
+- **[NEVER]** Re-export `utils` from `constants.ts` (e.g. `export * from './utils'`) when `utils` or its components import `constants` — Avoid circular module references that break Turbopack/Next.js bundle evaluation. Keep `constants.ts` and `utils/` decoupled.
+- **[AVOID]** Hardcoding raw service options or checking raw string values (`service === ...`) across multiple JSX components — Use centralized metadata maps (`SCRAPER_SERVICE_METADATA`) and capability helpers (`checkService`) for capability-driven UI rendering.
+- **[PREFER]** Colocating domain enums within feature folders (`[dataProviderId]/enums/`) and splitting enums into single-responsibility files (`*.enum.ts`) with barrel export (`index.ts`).
 
 ## UI/UX & Component Patterns
 - **[NEVER]** Overload main entity list tables with multi-feature configurations and obsolete action columns — Keep table rows focused on core identity fields (name, code, status, created date) and navigate to dedicated feature dashboards (`/scraping/features/:dataProviderId`) for detailed configurations.
