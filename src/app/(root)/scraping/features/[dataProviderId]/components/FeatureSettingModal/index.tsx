@@ -111,14 +111,14 @@ export const FeatureSettingModal = ({
                 <FeatureModalFooter
                     form={form}
                     isDraft={isDraft}
-                    onClose={onClose}
                     versions={versions}
                     isSaving={isSaving}
                     activeTab={activeTab}
                     isRollingBack={isRollingBack}
-                    onRollback={handleRollback}
                     selectedVersion={selectedVersion}
                     isViewingHistory={isViewingHistory}
+                    onClose={onClose}
+                    onRollback={handleRollback}
                     onSelectVersion={setSelectedVersionId}
                 />
             }

@@ -37,12 +37,13 @@ export const SearchConfigForm = ({
     setIsSaving: externalSetIsSaving,
 }: SearchConfigFormProps) => {
     const [internalForm] = CustomForm.useForm();
+
     const form = externalForm || internalForm;
+    const functionGenerator = CustomForm.useWatch('functionGenerator', form);
 
     const [isSaving, setIsSaving] = useState<boolean>(false);
 
     const isDraft = useMemo(() => !feature.id, [feature.id]);
-    const functionGenerator = CustomForm.useWatch('functionGenerator', form);
 
     const { handleCustomMutationData } = useCustomMutationData();
 
@@ -130,23 +131,23 @@ export const SearchConfigForm = ({
         <CustomForm form={form} layout="vertical" onFinish={handleSave}>
             <CustomFlex vertical gap="middle" className="w-full">
                 <SearchUrlPatternSection
-                    isViewingHistory={isViewingHistory}
                     feature={feature}
                     selectedVersion={selectedVersion}
+                    isViewingHistory={isViewingHistory}
                 />
 
                 <SearchSelectorsSection
-                    isViewingHistory={isViewingHistory}
                     feature={feature}
                     selectedVersion={selectedVersion}
+                    isViewingHistory={isViewingHistory}
                 />
 
                 <SearchCodeSection
                     form={form}
                     functionGenerator={functionGenerator}
-                    isViewingHistory={isViewingHistory}
                     feature={feature}
                     selectedVersion={selectedVersion}
+                    isViewingHistory={isViewingHistory}
                 />
 
                 {!isDraft && (

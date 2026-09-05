@@ -43,11 +43,11 @@ export const SearchUrlPatternSection = ({
                         name="service"
                         label={
                             <FormDiffLabel
-                                label="Service Engine"
                                 fieldKey="service"
-                                isViewingHistory={isViewingHistory}
+                                label="Service Engine"
                                 feature={feature}
                                 selectedVersion={selectedVersion}
+                                isViewingHistory={isViewingHistory}
                             />
                         }
                         rules={[{ required: true, message: 'Vui lòng chọn engine' }]}
@@ -69,11 +69,11 @@ export const SearchUrlPatternSection = ({
                         name="searchUrlPattern"
                         label={
                             <FormDiffLabel
-                                label="Mẫu URL tìm kiếm (Search URL Pattern)"
                                 fieldKey="searchUrlPattern"
-                                isViewingHistory={isViewingHistory}
+                                label="Mẫu URL tìm kiếm (Search URL Pattern)"
                                 feature={feature}
                                 selectedVersion={selectedVersion}
+                                isViewingHistory={isViewingHistory}
                             />
                         }
                         rules={[
@@ -92,11 +92,11 @@ export const SearchUrlPatternSection = ({
                         name="queryPlaceholder"
                         label={
                             <FormDiffLabel
-                                label="Placeholder từ khóa"
                                 fieldKey="queryPlaceholder"
-                                isViewingHistory={isViewingHistory}
+                                label="Placeholder từ khóa"
                                 feature={feature}
                                 selectedVersion={selectedVersion}
+                                isViewingHistory={isViewingHistory}
                             />
                         }
                     >
@@ -109,11 +109,11 @@ export const SearchUrlPatternSection = ({
                         name="maxResults"
                         label={
                             <FormDiffLabel
-                                label="Số kết quả tối đa"
                                 fieldKey="maxResults"
-                                isViewingHistory={isViewingHistory}
+                                label="Số kết quả tối đa"
                                 feature={feature}
                                 selectedVersion={selectedVersion}
+                                isViewingHistory={isViewingHistory}
                             />
                         }
                     >

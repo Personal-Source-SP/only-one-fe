@@ -14,6 +14,7 @@ export type FeatureTestTabProps = {
 
 export const FeatureTestTab = ({ feature }: FeatureTestTabProps) => {
     const [form] = CustomForm.useForm();
+
     const {
         isScraping,
         testMode,
@@ -40,12 +41,12 @@ export const FeatureTestTab = ({ feature }: FeatureTestTabProps) => {
             <TestModeSelector testMode={testMode} onChangeMode={setTestMode} />
 
             <TestInputSection
+                form={form}
+                isLoading={isLoading}
                 isScraping={isScraping}
                 isTestHtmlContent={isTestHtmlContent}
-                isLoading={isLoading}
-                form={form}
-                onToggleTestHtmlContent={setIsTestHtmlContent}
                 onRunTest={onFormSubmit}
+                onToggleTestHtmlContent={setIsTestHtmlContent}
             />
 
             <TestResultSection testResult={testResult} errorMessage={errorMessage} />
