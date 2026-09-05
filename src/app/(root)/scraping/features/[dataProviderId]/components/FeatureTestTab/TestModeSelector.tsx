@@ -5,10 +5,11 @@ import { Icon } from '@iconify/react';
 
 export type TestModeSelectorProps = {
     testMode: 'stateless' | 'contextual';
+    isDraft?: boolean;
     onChangeMode: (mode: 'stateless' | 'contextual') => void;
 };
 
-export const TestModeSelector = ({ testMode, onChangeMode }: TestModeSelectorProps) => {
+export const TestModeSelector = ({ testMode, isDraft, onChangeMode }: TestModeSelectorProps) => {
     return (
         <CustomFlex
             vertical
@@ -42,7 +43,11 @@ export const TestModeSelector = ({ testMode, onChangeMode }: TestModeSelectorPro
                     onChange={(value) => onChangeMode(value as 'stateless' | 'contextual')}
                     options={[
                         { label: 'Stateless Sandbox', value: 'stateless' },
-                        { label: 'Contextual Test', value: 'contextual' },
+                        {
+                            label: 'Contextual Test',
+                            value: 'contextual',
+                            disabled: isDraft,
+                        },
                     ]}
                 />
             </CustomFlex>

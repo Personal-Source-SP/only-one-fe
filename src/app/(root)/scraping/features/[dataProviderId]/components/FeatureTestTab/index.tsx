@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback } from 'react';
-import { CustomForm, CustomSpace } from '@/components/custom-antd';
+import { CustomForm, CustomSpace, type FormInstance } from '@/components/custom-antd';
 import { useFeatureTestRunner } from '../../hooks';
 import type { IDataProviderFeature } from '../../types';
 import { TestInputSection } from './TestInputSection';
@@ -10,10 +10,12 @@ import { TestResultSection } from './TestResultSection';
 
 export type FeatureTestTabProps = {
     feature: IDataProviderFeature;
+    configForm?: FormInstance;
 };
 
-export const FeatureTestTab = ({ feature }: FeatureTestTabProps) => {
+export const FeatureTestTab = ({ feature, configForm }: FeatureTestTabProps) => {
     const [form] = CustomForm.useForm();
+    const isDraft = !feature.id;
 
     const {
         isScraping,
@@ -25,7 +27,7 @@ export const FeatureTestTab = ({ feature }: FeatureTestTabProps) => {
         setTestMode,
         setIsTestHtmlContent,
         handleRunTest,
-    } = useFeatureTestRunner({ feature });
+    } = useFeatureTestRunner({ feature, configForm });
 
     const onFormSubmit = useCallback(async () => {
         try {
@@ -38,7 +40,7 @@ export const FeatureTestTab = ({ feature }: FeatureTestTabProps) => {
 
     return (
         <CustomSpace direction="vertical" size="middle" className="w-full">
-            <TestModeSelector testMode={testMode} onChangeMode={setTestMode} />
+            <TestModeSelector testMode={testMode} isDraft={isDraft} onChangeMode={setTestMode} />
 
             <TestInputSection
                 form={form}

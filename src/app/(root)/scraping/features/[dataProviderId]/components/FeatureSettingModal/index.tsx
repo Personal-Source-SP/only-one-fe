@@ -1,8 +1,7 @@
 'use client';
 
-import { useMemo, useState } from 'react';
-import { CustomForm, CustomModal, CustomTabs } from '@/components/custom-antd';
-import { Icon } from '@iconify/react';
+import { useState } from 'react';
+import { CustomCol, CustomForm, CustomModal, CustomRow } from '@/components/custom-antd';
 import { useFeatureVersionManager } from '../../hooks/useFeatureVersionManager';
 import type { FeatureModalTab, IDataProviderFeature } from '../../types';
 import { getFeatureDefinition } from '../../utils';
@@ -12,20 +11,18 @@ import { FeatureModalHeader } from './FeatureModalHeader';
 
 export type FeatureSettingModalProps = {
     open: boolean;
-    activeTab: FeatureModalTab;
+    activeTab?: FeatureModalTab;
     feature: IDataProviderFeature;
     onClose: () => void;
     onSuccess: () => void;
-    onTabChange: (tab: FeatureModalTab) => void;
+    onTabChange?: (tab: FeatureModalTab) => void;
 };
 
 export const FeatureSettingModal = ({
     open,
-    activeTab,
     feature,
     onClose,
     onSuccess,
-    onTabChange,
 }: FeatureSettingModalProps) => {
     const [form] = CustomForm.useForm();
     const [isSaving, setIsSaving] = useState<boolean>(false);
@@ -49,63 +46,11 @@ export const FeatureSettingModal = ({
         onSuccess,
     });
 
-    const tabItems = useMemo(() => {
-        const items = [
-            {
-                key: 'config',
-                label: (
-                    <span className="flex items-center gap-2">
-                        <Icon icon="lucide:settings" className="w-4 h-4" />
-                        Cấu hình
-                    </span>
-                ),
-                children: ConfigComponent ? (
-                    <ConfigComponent
-                        feature={feature}
-                        form={form}
-                        selectedVersion={selectedVersion}
-                        isViewingHistory={isViewingHistory}
-                        onClose={onClose}
-                        onSuccess={onSuccess}
-                        setIsSaving={setIsSaving}
-                    />
-                ) : (
-                    <div className="p-6 text-center text-hub-subtitle">
-                        Chưa có biểu mẫu cấu hình cho tính năng này.
-                    </div>
-                ),
-            },
-        ];
-
-        if (!isDraft) {
-            items.push({
-                key: 'test',
-                label: (
-                    <span className="flex items-center gap-2">
-                        <Icon icon="lucide:flask-conical" className="w-4 h-4" />
-                        Thử nghiệm
-                    </span>
-                ),
-                children: <FeatureTestTab feature={feature} />,
-            });
-        }
-
-        return items;
-    }, [
-        ConfigComponent,
-        feature,
-        form,
-        selectedVersion,
-        isViewingHistory,
-        isDraft,
-        onClose,
-        onSuccess,
-    ]);
-
     return (
         <CustomModal
             open={open}
-            width={1000}
+            width={1300}
+            className="top-6 max-w-[96vw]"
             onCancel={onClose}
             footer={
                 <FeatureModalFooter
@@ -113,7 +58,6 @@ export const FeatureSettingModal = ({
                     isDraft={isDraft}
                     versions={versions}
                     isSaving={isSaving}
-                    activeTab={activeTab}
                     isRollingBack={isRollingBack}
                     selectedVersion={selectedVersion}
                     isViewingHistory={isViewingHistory}
@@ -124,6 +68,7 @@ export const FeatureSettingModal = ({
             }
             title={
                 <FeatureModalHeader
+                    form={form}
                     feature={feature}
                     isDraft={isDraft}
                     authorName={authorName}
@@ -131,11 +76,32 @@ export const FeatureSettingModal = ({
                 />
             }
         >
-            <CustomTabs
-                items={tabItems}
-                activeKey={activeTab}
-                onChange={(key) => onTabChange(key as FeatureModalTab)}
-            />
+            <CustomRow gutter={[24, 24]}>
+                <CustomCol xs={24} lg={13} xl={14}>
+                    <div className="max-h-[calc(85vh-160px)] overflow-y-auto pr-2 custom-scrollbar">
+                        {ConfigComponent ? (
+                            <ConfigComponent
+                                feature={feature}
+                                form={form}
+                                selectedVersion={selectedVersion}
+                                isViewingHistory={isViewingHistory}
+                                onClose={onClose}
+                                onSuccess={onSuccess}
+                                setIsSaving={setIsSaving}
+                            />
+                        ) : (
+                            <div className="p-6 text-center text-hub-subtitle">
+                                Chưa có biểu mẫu cấu hình cho tính năng này.
+                            </div>
+                        )}
+                    </div>
+                </CustomCol>
+                <CustomCol xs={24} lg={11} xl={10}>
+                    <div className="max-h-[calc(85vh-160px)] overflow-y-auto pl-1 custom-scrollbar border-t lg:border-t-0 lg:border-l border-hub-border/60 pt-4 lg:pt-0 lg:pl-5">
+                        <FeatureTestTab feature={feature} configForm={form} />
+                    </div>
+                </CustomCol>
+            </CustomRow>
         </CustomModal>
     );
 };

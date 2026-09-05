@@ -4,14 +4,16 @@ import { useCallback, useMemo, useState } from 'react';
 import { MessageType } from '@/enums';
 import { useCustomMutationData } from '@/hooks';
 
-import { DataProviderFeatureType } from '../enums';
+import type { FormInstance } from '@/components/custom-antd';
+import { DataProviderFeatureType, ScraperServiceEnum } from '../enums';
 import type { IDataProviderFeature } from '../types';
 
 export type UseFeatureTestRunnerProps = {
     feature: IDataProviderFeature;
+    configForm?: FormInstance;
 };
 
-export const useFeatureTestRunner = ({ feature }: UseFeatureTestRunnerProps) => {
+export const useFeatureTestRunner = ({ feature, configForm }: UseFeatureTestRunnerProps) => {
     const [testResult, setTestResult] = useState<any>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -37,13 +39,20 @@ export const useFeatureTestRunner = ({ feature }: UseFeatureTestRunnerProps) => 
                 inputPayload.query = values.testQuery || 'ao-thun';
             }
 
+            const currentFormValues = configForm ? configForm.getFieldsValue() : {};
+            const activeService =
+                currentFormValues.service || feature.service || ScraperServiceEnum.GENERIC;
+            const { service: _s, changeDescription: _cd, ...configData } = currentFormValues;
+            const configPayload =
+                Object.keys(configData).length > 0 ? configData : feature.config || {};
+
             handleCustomMutationData({
                 method: 'post',
                 url: 'data-provider-features/test',
                 values: {
                     type: feature.type,
-                    service: feature.service || 'generic',
-                    config: feature.config || {},
+                    service: activeService,
+                    config: configPayload,
                     input: inputPayload,
                 },
                 successNotification: (res) => {
@@ -66,7 +75,7 @@ export const useFeatureTestRunner = ({ feature }: UseFeatureTestRunnerProps) => 
                 },
             });
         },
-        [isScraping, isTestHtmlContent, feature, handleCustomMutationData],
+        [isScraping, isTestHtmlContent, feature, configForm, handleCustomMutationData],
     );
 
     const handleRunContextualTest = useCallback(

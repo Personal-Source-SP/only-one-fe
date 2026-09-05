@@ -11,7 +11,7 @@ import {
 } from '@/components/custom-antd';
 import { Icon } from '@iconify/react';
 import { ConfigVersionType } from '../../enums';
-import type { FeatureModalTab, IConfigVersion } from '../../types';
+import type { IConfigVersion } from '../../types';
 
 export interface FeatureModalFooterProps {
     isDraft: boolean;
@@ -19,7 +19,6 @@ export interface FeatureModalFooterProps {
     form: FormInstance;
     isRollingBack: boolean;
     isViewingHistory: boolean;
-    activeTab: FeatureModalTab;
     versions: IConfigVersion[];
     selectedVersion: IConfigVersion | null;
     onClose: () => void;
@@ -33,7 +32,6 @@ export const FeatureModalFooter = ({
     form,
     isRollingBack,
     isViewingHistory,
-    activeTab,
     versions,
     selectedVersion,
     onClose,
@@ -81,71 +79,57 @@ export const FeatureModalFooter = ({
             });
     }, [versions]);
 
-    switch (activeTab) {
-        case 'config':
-            return (
-                <CustomFlex
-                    justify="space-between"
-                    align="center"
-                    className="w-full flex-wrap gap-2"
-                >
-                    <CustomFlex align="center" gap="small">
-                        {!isDraft && !!versions.length && (
-                            <CustomSelect
-                                className="w-64"
-                                options={versionOptions}
-                                disabled={versionOptions.length <= 1}
-                                value={selectedVersion?.versionId}
-                                dropdownStyle={{ width: 280 }}
-                                onChange={onSelectVersion}
-                            />
-                        )}
-                    </CustomFlex>
-                    <CustomFlex align="center" gap="small">
-                        {!isDraft && !!versions.length && (
-                            <CustomPopconfirm
-                                cancelText="Hủy"
-                                okText="Khôi phục"
-                                onConfirm={() => onRollback(selectedVersion?.versionId)}
-                                title={`Khôi phục phiên bản v${selectedVersion?.versionId}?`}
-                                description="Cấu hình hiện tại của tính năng sẽ được thay thế bằng snapshot này."
-                            >
-                                <CustomButton
-                                    type="primary"
-                                    loading={isRollingBack}
-                                    disabled={!isViewingHistory}
-                                    icon={<Icon icon="lucide:rotate-ccw" />}
-                                    className={
-                                        isViewingHistory
-                                            ? 'bg-amber-600 hover:bg-amber-500 border-amber-600 text-white'
-                                            : undefined
-                                    }
-                                >
-                                    Khôi phục
-                                </CustomButton>
-                            </CustomPopconfirm>
-                        )}
+    return (
+        <CustomFlex justify="space-between" align="center" className="w-full flex-wrap gap-2">
+            <CustomFlex align="center" gap="small">
+                {!isDraft && !!versions.length && (
+                    <CustomSelect
+                        className="w-64"
+                        options={versionOptions}
+                        disabled={versionOptions.length <= 1}
+                        value={selectedVersion?.versionId}
+                        dropdownStyle={{ width: 280 }}
+                        onChange={onSelectVersion}
+                    />
+                )}
+            </CustomFlex>
+            <CustomFlex align="center" gap="small">
+                {!isDraft && !!versions.length && (
+                    <CustomPopconfirm
+                        cancelText="Hủy"
+                        okText="Khôi phục"
+                        onConfirm={() => onRollback(selectedVersion?.versionId)}
+                        title={`Khôi phục phiên bản v${selectedVersion?.versionId}?`}
+                        description="Cấu hình hiện tại của tính năng sẽ được thay thế bằng snapshot này."
+                    >
                         <CustomButton
                             type="primary"
-                            loading={isSaving}
-                            disabled={isViewingHistory}
-                            onClick={() => form.submit()}
-                            icon={<Icon icon="lucide:save" />}
+                            loading={isRollingBack}
+                            disabled={!isViewingHistory}
+                            icon={<Icon icon="lucide:rotate-ccw" />}
+                            className={
+                                isViewingHistory
+                                    ? 'bg-amber-600 hover:bg-amber-500 border-amber-600 text-white'
+                                    : undefined
+                            }
                         >
-                            Lưu cấu hình
+                            Khôi phục
                         </CustomButton>
-                        <CustomButton onClick={onClose} disabled={isSaving || isRollingBack}>
-                            Hủy
-                        </CustomButton>
-                    </CustomFlex>
-                </CustomFlex>
-            );
-        case 'test':
-        default:
-            return (
-                <CustomFlex justify="end" gap="small">
-                    <CustomButton onClick={onClose}>Đóng</CustomButton>
-                </CustomFlex>
-            );
-    }
+                    </CustomPopconfirm>
+                )}
+                <CustomButton
+                    type="primary"
+                    loading={isSaving}
+                    disabled={isViewingHistory}
+                    onClick={() => form.submit()}
+                    icon={<Icon icon="lucide:save" />}
+                >
+                    Lưu cấu hình
+                </CustomButton>
+                <CustomButton onClick={onClose} disabled={isSaving || isRollingBack}>
+                    Hủy
+                </CustomButton>
+            </CustomFlex>
+        </CustomFlex>
+    );
 };

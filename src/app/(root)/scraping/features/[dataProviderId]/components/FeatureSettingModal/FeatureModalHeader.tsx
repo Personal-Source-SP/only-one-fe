@@ -1,8 +1,15 @@
 'use client';
 
 import { useCallback } from 'react';
-import { CustomFlex, CustomTag, CustomTypography } from '@/components/custom-antd';
-import { ConfigVersionType } from '../../enums';
+import {
+    CustomFlex,
+    CustomForm,
+    CustomTag,
+    CustomTypography,
+    type FormInstance,
+} from '@/components/custom-antd';
+import { checkService } from '../../constants';
+import { ConfigVersionType, ScraperServiceEnum } from '../../enums';
 import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
 import type { IConfigVersion, IDataProviderFeature } from '../../types';
@@ -13,6 +20,7 @@ export interface FeatureModalHeaderProps {
     feature: IDataProviderFeature;
     authorName: string | null;
     selectedVersion: IConfigVersion | null;
+    form?: FormInstance;
 }
 
 export const FeatureModalHeader = ({
@@ -20,9 +28,15 @@ export const FeatureModalHeader = ({
     feature,
     authorName,
     selectedVersion,
+    form,
 }: FeatureModalHeaderProps) => {
     const def = getFeatureDefinition(feature.type);
     const providerName = feature.dataProvider?.name;
+    const formService = CustomForm.useWatch('service', form);
+    const activeService = (formService ||
+        feature.service ||
+        ScraperServiceEnum.GENERIC) as ScraperServiceEnum;
+    const { meta } = checkService(activeService);
 
     const renderChangeTypeTag = useCallback((changeType?: ConfigVersionType) => {
         if (!changeType) return null;
@@ -70,11 +84,9 @@ export const FeatureModalHeader = ({
                                 ? def.getTitle(isDraft, providerName)
                                 : `${isDraft ? 'Thiết lập' : 'Cấu hình'}: ${feature.type}`}
                         </CustomTypography.Text>
-                        {feature.service && (
-                            <CustomTag className="font-mono text-xs m-0">
-                                {feature.service}
-                            </CustomTag>
-                        )}
+                        <CustomTag color="blue" className="font-medium text-xs m-0">
+                            {meta.label}
+                        </CustomTag>
                     </CustomFlex>
                 </CustomFlex>
             </CustomFlex>
