@@ -93,7 +93,7 @@ export const FeatureModalFooter = ({
                     />
                 )}
             </CustomFlex>
-            <CustomFlex align="center" gap="small">
+            <CustomFlex align="center" gap="small" className="ml-auto">
                 {!isDraft && !!versions.length && (
                     <CustomPopconfirm
                         cancelText="Hủy"

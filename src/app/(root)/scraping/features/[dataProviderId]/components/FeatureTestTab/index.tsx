@@ -31,12 +31,15 @@ export const FeatureTestTab = ({ feature, configForm }: FeatureTestTabProps) => 
 
     const onFormSubmit = useCallback(async () => {
         try {
+            if (configForm) {
+                await configForm.validateFields();
+            }
             const values = await form.validateFields();
             await handleRunTest(values);
         } catch (error) {
             console.error('Validation error running test:', error);
         }
-    }, [form, handleRunTest]);
+    }, [form, configForm, handleRunTest]);
 
     return (
         <CustomSpace direction="vertical" size="middle" className="w-full">
@@ -44,6 +47,7 @@ export const FeatureTestTab = ({ feature, configForm }: FeatureTestTabProps) => 
 
             <TestInputSection
                 form={form}
+                configForm={configForm}
                 isLoading={isLoading}
                 isScraping={isScraping}
                 isTestHtmlContent={isTestHtmlContent}

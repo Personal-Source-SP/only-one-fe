@@ -9,6 +9,7 @@ import {
     CustomRow,
     CustomSpace,
     CustomSwitch,
+    CustomTooltip,
     CustomTypography,
     type FormInstance,
 } from '@/components/custom-antd';
@@ -20,6 +21,7 @@ export type TestInputSectionProps = {
     isTestHtmlContent: boolean;
     isLoading: boolean;
     form: FormInstance;
+    configForm?: FormInstance;
     onToggleTestHtmlContent: (checked: boolean) => void;
     onRunTest: () => void;
 };
@@ -29,9 +31,13 @@ export const TestInputSection = ({
     isTestHtmlContent,
     isLoading,
     form,
+    configForm,
     onToggleTestHtmlContent,
     onRunTest,
 }: TestInputSectionProps) => {
+    const functionGenerator = CustomForm.useWatch('functionGenerator', configForm);
+    const isMissingFunctionGenerator = !functionGenerator || !functionGenerator.trim();
+
     return (
         <CustomForm
             form={form}
@@ -109,14 +115,25 @@ export const TestInputSection = ({
                 )}
 
                 <CustomFlex justify="end">
-                    <CustomButton
-                        type="primary"
-                        loading={isLoading}
-                        onClick={onRunTest}
-                        icon={<Icon icon="lucide:play" />}
+                    <CustomTooltip
+                        title={
+                            isMissingFunctionGenerator
+                                ? 'Vui lòng nhập hàm functionGenerator bên form cấu hình trước khi chạy thử nghiệm'
+                                : undefined
+                        }
                     >
-                        Chạy thử nghiệm
-                    </CustomButton>
+                        <span>
+                            <CustomButton
+                                type="primary"
+                                loading={isLoading}
+                                disabled={isLoading || isMissingFunctionGenerator}
+                                onClick={onRunTest}
+                                icon={<Icon icon="lucide:play" />}
+                            >
+                                Chạy thử nghiệm
+                            </CustomButton>
+                        </span>
+                    </CustomTooltip>
                 </CustomFlex>
             </CustomFlex>
         </CustomForm>
