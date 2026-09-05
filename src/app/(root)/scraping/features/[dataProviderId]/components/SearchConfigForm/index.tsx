@@ -12,6 +12,7 @@ import { DEFAULT_SEARCH_FUNCTION_GENERATOR } from '@/constants';
 import { MessageType } from '@/enums';
 import { useCustomMutationData } from '@/hooks';
 import { Icon } from '@iconify/react';
+import { checkService } from '../../constants';
 import { ScraperServiceEnum } from '../../enums';
 import type { IConfigVersion, IDataProviderFeature } from '../../types';
 import { SearchCodeSection } from './SearchCodeSection';
@@ -40,6 +41,8 @@ export const SearchConfigForm = ({
     const [internalForm] = CustomForm.useForm();
 
     const form = externalForm || internalForm;
+    const currentService = CustomForm.useWatch('service', form) || ScraperServiceEnum.GENERIC;
+    const { hasSearchSelectors } = checkService(currentService);
     const functionGenerator = CustomForm.useWatch('functionGenerator', form);
 
     const [isSaving, setIsSaving] = useState<boolean>(false);
@@ -69,6 +72,14 @@ export const SearchConfigForm = ({
             functionGenerator: config.functionGenerator || DEFAULT_SEARCH_FUNCTION_GENERATOR,
         });
     }, [feature, selectedVersion, form]);
+
+    const handleServiceChange = useCallback(
+        (service: string) => {
+            const { defaultSearchTemplate } = checkService(service);
+            form.setFieldValue('functionGenerator', defaultSearchTemplate);
+        },
+        [form],
+    );
 
     const handleSave = useCallback(
         async (values: any): Promise<void> => {
@@ -135,13 +146,17 @@ export const SearchConfigForm = ({
                     feature={feature}
                     selectedVersion={selectedVersion}
                     isViewingHistory={isViewingHistory}
+                    service={currentService}
+                    onServiceChange={handleServiceChange}
                 />
 
-                <SearchSelectorsSection
-                    feature={feature}
-                    selectedVersion={selectedVersion}
-                    isViewingHistory={isViewingHistory}
-                />
+                {hasSearchSelectors && (
+                    <SearchSelectorsSection
+                        feature={feature}
+                        selectedVersion={selectedVersion}
+                        isViewingHistory={isViewingHistory}
+                    />
+                )}
 
                 <SearchCodeSection
                     form={form}
@@ -149,6 +164,7 @@ export const SearchConfigForm = ({
                     feature={feature}
                     selectedVersion={selectedVersion}
                     isViewingHistory={isViewingHistory}
+                    service={currentService}
                 />
 
                 {!isDraft && (

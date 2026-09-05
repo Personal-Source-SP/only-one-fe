@@ -20,7 +20,7 @@ import { useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { DataProviderFeatureType } from './enums';
-import { FEATURE_TYPE_METADATA } from './constants';
+import { FEATURE_TYPE_METADATA } from './utils';
 import { FeatureCard, FeatureHistoryModal, FeatureSettingModal } from './components';
 import { useDataProviderFeatureActions, useDataProviderFeaturesView } from './hooks';
 import type { FeatureModalTab } from './types';

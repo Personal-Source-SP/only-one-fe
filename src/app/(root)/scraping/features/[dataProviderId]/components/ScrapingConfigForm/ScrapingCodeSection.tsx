@@ -8,6 +8,7 @@ import {
     type FormInstance,
 } from '@/components/custom-antd';
 import { Icon } from '@iconify/react';
+import { checkService } from '../../constants';
 import { FormDiffLabel } from '../FormDiffLabel';
 import type { IConfigVersion, IDataProviderFeature } from '../../types';
 
@@ -17,6 +18,7 @@ export type ScrapingCodeSectionProps = {
     isViewingHistory?: boolean;
     feature: IDataProviderFeature;
     selectedVersion?: IConfigVersion | null;
+    service?: string;
 };
 
 export const ScrapingCodeSection = ({
@@ -25,7 +27,10 @@ export const ScrapingCodeSection = ({
     isViewingHistory,
     feature,
     selectedVersion,
+    service,
 }: ScrapingCodeSectionProps) => {
+    const { scrapingCodeLabel } = checkService(service);
+
     return (
         <CustomFlex
             vertical
@@ -35,7 +40,7 @@ export const ScrapingCodeSection = ({
                 <Icon icon="lucide:code-2" className="text-hub-primary shrink-0" />
                 <CustomTypography.Text strong className="text-sm text-hub-title">
                     <FormDiffLabel
-                        label="Mã nguồn Hàm Parser (functionGenerator)"
+                        label={scrapingCodeLabel}
                         fieldKey="functionGenerator"
                         isViewingHistory={isViewingHistory}
                         feature={feature}

@@ -11,6 +11,7 @@ import {
     CustomTypography,
 } from '@/components/custom-antd';
 import { Icon } from '@iconify/react';
+import { checkService, SCRAPER_SERVICE_OPTIONS } from '../../constants';
 import { ScraperServiceEnum } from '../../enums';
 import { FormDiffLabel } from '../FormDiffLabel';
 import type { IConfigVersion, IDataProviderFeature } from '../../types';
@@ -19,13 +20,19 @@ export type SearchUrlPatternSectionProps = {
     isViewingHistory?: boolean;
     feature: IDataProviderFeature;
     selectedVersion?: IConfigVersion | null;
+    service?: string;
+    onServiceChange?: (service: string) => void;
 };
 
 export const SearchUrlPatternSection = ({
     isViewingHistory,
     feature,
     selectedVersion,
+    service = ScraperServiceEnum.GENERIC,
+    onServiceChange,
 }: SearchUrlPatternSectionProps) => {
+    const { hasUrlPattern } = checkService(service);
+
     return (
         <CustomFlex
             vertical
@@ -38,7 +45,7 @@ export const SearchUrlPatternSection = ({
                 </CustomTypography.Text>
             </CustomFlex>
             <CustomRow gutter={[16, 12]}>
-                <CustomCol xs={24} md={12}>
+                <CustomCol xs={24} md={hasUrlPattern ? 12 : 12}>
                     <CustomForm.Item
                         name="service"
                         label={
@@ -53,58 +60,57 @@ export const SearchUrlPatternSection = ({
                         rules={[{ required: true, message: 'Vui lòng chọn engine' }]}
                     >
                         <CustomSelect
-                            options={[
-                                {
-                                    label: 'Generic HTML Parser',
-                                    value: ScraperServiceEnum.GENERIC,
-                                },
-                                { label: 'Puppeteer Headless', value: 'puppeteer' },
-                            ]}
+                            onChange={onServiceChange}
+                            options={SCRAPER_SERVICE_OPTIONS}
                         />
                     </CustomForm.Item>
                 </CustomCol>
 
-                <CustomCol xs={24} md={12}>
-                    <CustomForm.Item
-                        name="searchUrlPattern"
-                        label={
-                            <FormDiffLabel
-                                fieldKey="searchUrlPattern"
-                                label="Mẫu URL tìm kiếm (Search URL Pattern)"
-                                feature={feature}
-                                selectedVersion={selectedVersion}
-                                isViewingHistory={isViewingHistory}
-                            />
-                        }
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Vui lòng nhập mẫu URL tìm kiếm',
-                            },
-                        ]}
-                    >
-                        <CustomInput placeholder="Ví dụ: https://example.com/search?q={query}" />
-                    </CustomForm.Item>
-                </CustomCol>
+                {hasUrlPattern && (
+                    <CustomCol xs={24} md={12}>
+                        <CustomForm.Item
+                            name="searchUrlPattern"
+                            label={
+                                <FormDiffLabel
+                                    fieldKey="searchUrlPattern"
+                                    label="Mẫu URL tìm kiếm (Search URL Pattern)"
+                                    feature={feature}
+                                    selectedVersion={selectedVersion}
+                                    isViewingHistory={isViewingHistory}
+                                />
+                            }
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Vui lòng nhập mẫu URL tìm kiếm',
+                                },
+                            ]}
+                        >
+                            <CustomInput placeholder="Ví dụ: https://example.com/search?q={query}" />
+                        </CustomForm.Item>
+                    </CustomCol>
+                )}
 
-                <CustomCol xs={24} md={12}>
-                    <CustomForm.Item
-                        name="queryPlaceholder"
-                        label={
-                            <FormDiffLabel
-                                fieldKey="queryPlaceholder"
-                                label="Placeholder từ khóa"
-                                feature={feature}
-                                selectedVersion={selectedVersion}
-                                isViewingHistory={isViewingHistory}
-                            />
-                        }
-                    >
-                        <CustomInput placeholder="{query}" />
-                    </CustomForm.Item>
-                </CustomCol>
+                {hasUrlPattern && (
+                    <CustomCol xs={24} md={12}>
+                        <CustomForm.Item
+                            name="queryPlaceholder"
+                            label={
+                                <FormDiffLabel
+                                    fieldKey="queryPlaceholder"
+                                    label="Placeholder từ khóa"
+                                    feature={feature}
+                                    selectedVersion={selectedVersion}
+                                    isViewingHistory={isViewingHistory}
+                                />
+                            }
+                        >
+                            <CustomInput placeholder="{query}" />
+                        </CustomForm.Item>
+                    </CustomCol>
+                )}
 
-                <CustomCol xs={24} md={12}>
+                <CustomCol xs={24} md={hasUrlPattern ? 12 : 12}>
                     <CustomForm.Item
                         name="maxResults"
                         label={

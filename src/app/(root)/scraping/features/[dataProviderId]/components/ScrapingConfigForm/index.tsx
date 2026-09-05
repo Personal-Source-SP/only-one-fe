@@ -8,10 +8,11 @@ import {
     CustomTypography,
     type FormInstance,
 } from '@/components/custom-antd';
-import { DEFAULT_API_FUNCTION_GENERATOR, DEFAULT_PARSER_FUNCTION_GENERATOR } from '@/constants';
+import { DEFAULT_PARSER_FUNCTION_GENERATOR } from '@/constants';
 import { MessageType } from '@/enums';
 import { useCustomMutationData } from '@/hooks';
 import { Icon } from '@iconify/react';
+import { checkService } from '../../constants';
 import { ScraperServiceEnum } from '../../enums';
 import type { IConfigVersion, IDataProviderFeature } from '../../types';
 import { ScrapingAdvancedSection } from './ScrapingAdvancedSection';
@@ -44,6 +45,8 @@ export const ScrapingConfigForm = ({
     const [isSaving, setIsSaving] = useState<boolean>(false);
 
     const isDraft = useMemo(() => !feature.id, [feature.id]);
+    const currentService = CustomForm.useWatch('service', form) || ScraperServiceEnum.GENERIC;
+    const { hasBrowserSettings } = checkService(currentService);
     const functionGenerator = CustomForm.useWatch('functionGenerator', form);
 
     const { handleCustomMutationData } = useCustomMutationData();
@@ -78,16 +81,8 @@ export const ScrapingConfigForm = ({
 
     const handleServiceChange = useCallback(
         (service: string) => {
-            switch (service) {
-                case ScraperServiceEnum.API:
-                    form.setFieldValue('functionGenerator', DEFAULT_API_FUNCTION_GENERATOR);
-                    break;
-                case ScraperServiceEnum.GENERIC:
-                    form.setFieldValue('functionGenerator', DEFAULT_PARSER_FUNCTION_GENERATOR);
-                    break;
-                default:
-                    break;
-            }
+            const { defaultScrapingTemplate } = checkService(service);
+            form.setFieldValue('functionGenerator', defaultScrapingTemplate);
         },
         [form],
     );
@@ -157,6 +152,7 @@ export const ScrapingConfigForm = ({
                     isViewingHistory={isViewingHistory}
                     feature={feature}
                     selectedVersion={selectedVersion}
+                    service={currentService}
                     onServiceChange={handleServiceChange}
                 />
 
@@ -164,13 +160,16 @@ export const ScrapingConfigForm = ({
                     isViewingHistory={isViewingHistory}
                     feature={feature}
                     selectedVersion={selectedVersion}
+                    service={currentService}
                 />
 
-                <ScrapingAdvancedSection
-                    isViewingHistory={isViewingHistory}
-                    feature={feature}
-                    selectedVersion={selectedVersion}
-                />
+                {hasBrowserSettings && (
+                    <ScrapingAdvancedSection
+                        isViewingHistory={isViewingHistory}
+                        feature={feature}
+                        selectedVersion={selectedVersion}
+                    />
+                )}
 
                 <ScrapingCodeSection
                     form={form}
@@ -178,6 +177,7 @@ export const ScrapingConfigForm = ({
                     isViewingHistory={isViewingHistory}
                     feature={feature}
                     selectedVersion={selectedVersion}
+                    service={currentService}
                 />
 
                 {!isDraft && (
