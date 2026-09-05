@@ -46,7 +46,7 @@ export const SearchUrlPatternSection = ({
             </CustomFlex>
 
             <CustomRow gutter={[16, 12]}>
-                <CustomCol xs={24} md={hasUrlPattern ? 12 : 12}>
+                <CustomCol span={24}>
                     <CustomForm.Item
                         name="service"
                         rules={[{ required: true, message: 'Vui lòng chọn engine' }]}
@@ -68,7 +68,7 @@ export const SearchUrlPatternSection = ({
                 </CustomCol>
 
                 {hasUrlPattern && (
-                    <CustomCol xs={24} md={12}>
+                    <CustomCol xs={24}>
                         <CustomForm.Item
                             name="searchUrlPattern"
                             label={
@@ -111,7 +111,7 @@ export const SearchUrlPatternSection = ({
                     </CustomCol>
                 )}
 
-                <CustomCol xs={24} md={hasUrlPattern ? 12 : 12}>
+                <CustomCol xs={24} md={12}>
                     <CustomForm.Item
                         name="maxResults"
                         label={
