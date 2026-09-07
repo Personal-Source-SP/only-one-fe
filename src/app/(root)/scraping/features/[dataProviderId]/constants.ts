@@ -1,6 +1,7 @@
 import {
     DEFAULT_API_FUNCTION_GENERATOR,
     DEFAULT_PARSER_FUNCTION_GENERATOR,
+    DEFAULT_SEARCH_API_FUNCTION_GENERATOR,
     DEFAULT_SEARCH_FUNCTION_GENERATOR,
 } from '@/constants';
 import { ScraperServiceEnum } from './enums';
@@ -41,7 +42,7 @@ export const SCRAPER_SERVICE_METADATA: Record<ScraperServiceEnum, IScraperServic
         scrapingCodeLabel: 'Mã nguồn Hàm API Response Parser (functionGenerator)',
         searchCodeLabel: 'Mã nguồn Hàm Tìm kiếm API (functionGenerator)',
         defaultScrapingTemplate: DEFAULT_API_FUNCTION_GENERATOR,
-        defaultSearchTemplate: DEFAULT_API_FUNCTION_GENERATOR,
+        defaultSearchTemplate: DEFAULT_SEARCH_API_FUNCTION_GENERATOR,
         hasDomSelectors: false,
         hasBrowserSettings: false,
         hasNetworkRetries: true,

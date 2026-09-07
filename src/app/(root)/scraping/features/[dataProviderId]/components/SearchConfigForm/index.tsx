@@ -8,7 +8,6 @@ import {
     CustomTypography,
     type FormInstance,
 } from '@/components/custom-antd';
-import { DEFAULT_SEARCH_FUNCTION_GENERATOR } from '@/constants';
 import { MessageType } from '@/enums';
 import { useCustomMutationData } from '@/hooks';
 import { Icon } from '@iconify/react';
@@ -61,6 +60,8 @@ export const SearchConfigForm = ({
         const service =
             selectedVersion?.config?.service || feature.service || ScraperServiceEnum.GENERIC;
 
+        const { defaultSearchTemplate } = checkService(service);
+
         form.setFieldsValue({
             service,
             changeDescription: '',
@@ -70,7 +71,7 @@ export const SearchConfigForm = ({
             resultSelector: config.resultSelector || '',
             maxResults: config.maxResults ?? 10,
             isGetParentElement: config.isGetParentElement ?? false,
-            functionGenerator: config.functionGenerator || DEFAULT_SEARCH_FUNCTION_GENERATOR,
+            functionGenerator: config.functionGenerator || defaultSearchTemplate,
         });
     }, [feature, selectedVersion, form]);
 
