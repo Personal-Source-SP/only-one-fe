@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-09-04T08:57:25.785Z",
+  "updatedAt": "2026-09-07T13:53:56.626Z",
   "installed": {
     "rules": {
       "next-architecture-stack": {
@@ -113,19 +113,19 @@
     },
     "workflows": {
       "only-one-idea": {
-        "version": "0.0.3",
+        "version": "0.0.4",
         "installedAt": "2026-09-03T10:23:54.044Z",
-        "updatedAt": "2026-09-04T08:57:14.607Z"
+        "updatedAt": "2026-09-07T13:53:56.618Z"
       },
       "only-one-plan": {
-        "version": "0.0.3",
+        "version": "0.0.5",
         "installedAt": "2026-09-03T10:23:54.044Z",
-        "updatedAt": "2026-09-04T08:57:14.607Z"
+        "updatedAt": "2026-09-07T13:53:56.618Z"
       },
       "only-one-apply": {
-        "version": "0.0.2",
+        "version": "0.0.4",
         "installedAt": "2026-09-03T10:23:54.044Z",
-        "updatedAt": "2026-09-04T08:57:14.607Z"
+        "updatedAt": "2026-09-07T13:53:56.618Z"
       },
       "only-one-debug": {
         "version": "0.0.1",
@@ -147,15 +147,10 @@
         "installedAt": "2026-09-03T10:23:54.044Z",
         "updatedAt": "2026-09-03T10:23:54.044Z"
       },
-      "only-one-archive": {
-        "version": "0.0.2",
-        "installedAt": "2026-09-03T10:23:54.044Z",
-        "updatedAt": "2026-09-04T08:57:14.607Z"
-      },
       "only-one-clean": {
-        "version": "0.0.2",
+        "version": "0.0.3",
         "installedAt": "2026-09-03T10:23:54.044Z",
-        "updatedAt": "2026-09-04T08:57:14.607Z"
+        "updatedAt": "2026-09-07T13:53:56.618Z"
       }
     }
   }
