@@ -18,7 +18,6 @@ export const useFeatureTestRunner = ({ feature, configForm }: UseFeatureTestRunn
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [isTestHtmlContent, setIsTestHtmlContent] = useState<boolean>(false);
-    const [testMode, setTestMode] = useState<'stateless' | 'contextual'>('stateless');
 
     const { handleCustomMutationData } = useCustomMutationData();
 
@@ -27,8 +26,11 @@ export const useFeatureTestRunner = ({ feature, configForm }: UseFeatureTestRunn
         [feature.type],
     );
 
-    const handleRunStatelessTest = useCallback(
-        (values: any): void => {
+    const handleRunTest = useCallback(
+        async (values: any): Promise<void> => {
+            setIsLoading(true);
+            setErrorMessage(null);
+
             const inputPayload: Record<string, any> = {};
             if (isScraping) {
                 inputPayload.url = values.testUrl;
@@ -36,7 +38,9 @@ export const useFeatureTestRunner = ({ feature, configForm }: UseFeatureTestRunn
                     inputPayload.htmlContentString = values.htmlContentString;
                 }
             } else {
-                inputPayload.query = values.testQuery || 'ao-thun';
+                if (values.testQuery) {
+                    inputPayload.query = values.testQuery;
+                }
             }
 
             const currentFormValues = configForm ? configForm.getFieldsValue() : {};
@@ -61,7 +65,7 @@ export const useFeatureTestRunner = ({ feature, configForm }: UseFeatureTestRunn
                     setTestResult(data);
                     return {
                         type: MessageType.SUCCESS,
-                        message: 'Thử nghiệm Stateless thành công',
+                        message: 'Thử nghiệm thành công',
                     };
                 },
                 errorNotification: (err) => {
@@ -78,66 +82,12 @@ export const useFeatureTestRunner = ({ feature, configForm }: UseFeatureTestRunn
         [isScraping, isTestHtmlContent, feature, configForm, handleCustomMutationData],
     );
 
-    const handleRunContextualTest = useCallback(
-        (values: any): void => {
-            const inputPayload: Record<string, any> = {};
-            if (isScraping && values.testUrl) {
-                inputPayload.url = values.testUrl;
-            } else if (!isScraping && values.testQuery) {
-                inputPayload.query = values.testQuery;
-            }
-
-            handleCustomMutationData({
-                method: 'post',
-                url: `data-provider-features/${feature.id}/test`,
-                values: {
-                    input: inputPayload,
-                },
-                successNotification: (res) => {
-                    setIsLoading(false);
-                    const data = res?.data?.data || res?.data;
-                    setTestResult(data);
-                    return {
-                        type: MessageType.SUCCESS,
-                        message: 'Thử nghiệm Contextual thành công',
-                    };
-                },
-                errorNotification: (err) => {
-                    setIsLoading(false);
-                    setErrorMessage(err?.message || 'Đã xảy ra lỗi khi thử nghiệm contextual');
-                    return {
-                        type: MessageType.ERROR,
-                        message: 'Thử nghiệm thất bại',
-                        description: err?.message,
-                    };
-                },
-            });
-        },
-        [isScraping, feature.id, handleCustomMutationData],
-    );
-
-    const handleRunTest = useCallback(
-        async (formValues: any): Promise<void> => {
-            setIsLoading(true);
-            setErrorMessage(null);
-
-            if (testMode === 'stateless') {
-                handleRunStatelessTest(formValues);
-            } else {
-                handleRunContextualTest(formValues);
-            }
-        },
-        [testMode, handleRunStatelessTest, handleRunContextualTest],
-    );
-
     return {
         isScraping,
-        testMode,
         testResult,
         isLoading,
         errorMessage,
         isTestHtmlContent,
-        setTestMode,
         setIsTestHtmlContent,
         handleRunTest,
     };

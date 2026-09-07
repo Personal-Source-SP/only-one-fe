@@ -15,6 +15,7 @@ import {
 } from '@/components/custom-antd';
 import { DEFAULT_HTML_CONTENT_STRING } from '@/constants';
 import { Icon } from '@iconify/react';
+import type { IDataProviderFeature } from '../../types';
 
 export type TestInputSectionProps = {
     form: FormInstance;
@@ -22,6 +23,7 @@ export type TestInputSectionProps = {
     isScraping: boolean;
     isTestHtmlContent: boolean;
     configForm?: FormInstance;
+    feature?: IDataProviderFeature;
     onRunTest: () => void;
     onToggleTestHtmlContent: (checked: boolean) => void;
 };
@@ -32,11 +34,17 @@ export const TestInputSection = ({
     isScraping,
     isTestHtmlContent,
     configForm,
+    feature,
     onRunTest,
     onToggleTestHtmlContent,
 }: TestInputSectionProps) => {
+    const queryPlaceholder = CustomForm.useWatch('queryPlaceholder', configForm);
     const functionGenerator = CustomForm.useWatch('functionGenerator', configForm);
+
     const isMissingFunctionGenerator = !functionGenerator?.trim();
+    const isQueryRequired = Boolean(
+        queryPlaceholder?.trim() || (!configForm && feature?.config?.queryPlaceholder?.trim()),
+    );
 
     return (
         <CustomForm
@@ -44,7 +52,7 @@ export const TestInputSection = ({
             layout="vertical"
             initialValues={{
                 testUrl: '',
-                testQuery: 'ao-thun',
+                testQuery: '',
                 htmlContentString: DEFAULT_HTML_CONTENT_STRING,
             }}
         >
@@ -108,7 +116,11 @@ export const TestInputSection = ({
                     <CustomForm.Item
                         name="testQuery"
                         label="Từ khóa tìm kiếm (Query)"
-                        rules={[{ required: true, message: 'Vui lòng nhập từ khóa tìm kiếm' }]}
+                        rules={
+                            isQueryRequired
+                                ? [{ required: true, message: 'Vui lòng nhập từ khóa tìm kiếm' }]
+                                : []
+                        }
                     >
                         <CustomInput placeholder="Ví dụ: ao-thun, iphone-15" />
                     </CustomForm.Item>

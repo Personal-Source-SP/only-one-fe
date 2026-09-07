@@ -5,7 +5,6 @@ import { CustomForm, CustomSpace, type FormInstance } from '@/components/custom-
 import { useFeatureTestRunner } from '../../hooks';
 import type { IDataProviderFeature } from '../../types';
 import { TestInputSection } from './TestInputSection';
-import { TestModeSelector } from './TestModeSelector';
 import { TestResultSection } from './TestResultSection';
 
 export type FeatureTestTabProps = {
@@ -15,16 +14,13 @@ export type FeatureTestTabProps = {
 
 export const FeatureTestTab = ({ feature, configForm }: FeatureTestTabProps) => {
     const [form] = CustomForm.useForm();
-    const isDraft = !feature.id;
 
     const {
         isScraping,
-        testMode,
         testResult,
         isLoading,
         errorMessage,
         isTestHtmlContent,
-        setTestMode,
         setIsTestHtmlContent,
         handleRunTest,
     } = useFeatureTestRunner({ feature, configForm });
@@ -44,10 +40,9 @@ export const FeatureTestTab = ({ feature, configForm }: FeatureTestTabProps) => 
 
     return (
         <CustomSpace direction="vertical" size="middle" className="w-full">
-            <TestModeSelector testMode={testMode} isDraft={isDraft} onChangeMode={setTestMode} />
-
             <TestInputSection
                 form={form}
+                feature={feature}
                 configForm={configForm}
                 isLoading={isLoading}
                 isScraping={isScraping}
