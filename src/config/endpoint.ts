@@ -22,9 +22,14 @@ export const API_ENDPOINT = {
             prefix(`data-provider-features/data-providers/${providerId}`),
         DETAIL: (id: string | number) => prefix(`data-provider-features/${id}`),
         TEST: prefix('data-provider-features/test'),
-        VERSIONS: (id: string | number) => prefix(`data-provider-features/${id}/versions`),
-        ROLLBACK: (id: string | number, versionId: string | number) =>
-            prefix(`data-provider-features/${id}/versions/${versionId}/rollback`),
+    },
+    CONFIG_VERSION_FEATURES: {
+        BASE: prefix('config-version-features'),
+        VERSIONS: (featureId: string | number) => prefix(`config-version-features/${featureId}`),
+        ROLLBACK: (featureId: string | number, versionId: string | number) =>
+            prefix(`config-version-features/${featureId}/rollback/${versionId}`),
+        DELETE: (featureId: string | number, versionId: string | number) =>
+            prefix(`config-version-features/${featureId}/${versionId}`),
     },
     DATA_PROVIDER_ITEMS: {
         BASE: prefix('data-provider-items'),

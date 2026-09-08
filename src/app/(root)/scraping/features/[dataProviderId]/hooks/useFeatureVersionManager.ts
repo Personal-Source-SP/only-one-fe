@@ -26,7 +26,7 @@ export const useFeatureVersionManager = ({
     const { handleCustomMutationData } = useCustomMutationData();
 
     const { result: versionsResult, query: versionsQuery } = useCustomData({
-        url: API_ENDPOINT.DATA_PROVIDER_FEATURES.VERSIONS(feature.id),
+        url: API_ENDPOINT.CONFIG_VERSION_FEATURES.VERSIONS(feature.id),
         enabled: Boolean(open && feature.id),
     });
 
@@ -81,7 +81,7 @@ export const useFeatureVersionManager = ({
             setIsRollingBack(true);
             handleCustomMutationData({
                 method: 'post',
-                url: API_ENDPOINT.DATA_PROVIDER_FEATURES.ROLLBACK(feature.id, vId),
+                url: API_ENDPOINT.CONFIG_VERSION_FEATURES.ROLLBACK(feature.id, vId),
                 successNotification: () => {
                     onSuccess();
                     setIsRollingBack(false);

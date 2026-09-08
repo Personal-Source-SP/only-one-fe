@@ -27,7 +27,7 @@ export const useFeatureHistoryManager = ({
     const meta = useMemo(() => (feature ? FEATURE_TYPE_METADATA[feature.type] : null), [feature]);
 
     const { result, query } = useCustomData({
-        url: API_ENDPOINT.DATA_PROVIDER_FEATURES.VERSIONS(featureId),
+        url: API_ENDPOINT.CONFIG_VERSION_FEATURES.VERSIONS(featureId),
         enabled: Boolean(open && featureId),
     });
 
@@ -52,7 +52,7 @@ export const useFeatureHistoryManager = ({
             setIsApplying(true);
             handleCustomMutationData({
                 method: 'post',
-                url: API_ENDPOINT.DATA_PROVIDER_FEATURES.ROLLBACK(featureId, versionId),
+                url: API_ENDPOINT.CONFIG_VERSION_FEATURES.ROLLBACK(featureId, versionId),
                 successNotification: () => {
                     setIsApplying(false);
                     query.refetch();
