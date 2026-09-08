@@ -4,6 +4,7 @@ import { CrudFilters, CrudOperators, CrudSorting, DataProvider, HttpError } from
 import axios, { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
 
 import { Session } from 'next-auth';
+import { getSession, signOut } from 'next-auth/react';
 import qs from 'query-string';
 
 const formatErrorMessage = (error: ApiError): string | null => {
@@ -73,6 +74,23 @@ export const getSessionToken = (session: Session | null): string | undefined => 
     return session?.user?.accessToken;
 };
 
+let isRefreshing = false;
+let failedQueue: Array<{
+    resolve: (token: string | null) => void;
+    reject: (error: any) => void;
+}> = [];
+
+const processQueue = (error: any, token: string | null = null) => {
+    failedQueue.forEach((prom) => {
+        if (error) {
+            prom.reject(error);
+        } else {
+            prom.resolve(token);
+        }
+    });
+    failedQueue = [];
+};
+
 export const createSessionAxiosInstance = (session: Session | null) => {
     const axiosInstance = axios.create();
 
@@ -111,25 +129,56 @@ export const createSessionAxiosInstance = (session: Session | null) => {
                 statusCode,
             };
 
-            let isRefreshing = false;
             const originalRequest = error.config;
 
             if (error?.response?.status === 401 && !originalRequest?._retry) {
                 if (originalRequest?.url?.includes('auth/')) {
-                    isRefreshing = false;
                     return Promise.reject(customError);
                 }
 
                 if (isRefreshing) {
-                    return new Promise(function (resolve, reject) {
-                        resolve(null);
+                    return new Promise((resolve, reject) => {
+                        failedQueue.push({ resolve, reject });
                     })
-                        .then(() => {
-                            return axios(originalRequest);
+                        .then((token) => {
+                            if (token && originalRequest.headers) {
+                                originalRequest.headers['Authorization'] = `Bearer ${token}`;
+                            }
+                            return axiosInstance(originalRequest);
                         })
                         .catch((err) => {
                             return Promise.reject(err);
                         });
+                }
+
+                originalRequest._retry = true;
+                isRefreshing = true;
+
+                try {
+                    const newSession = await getSession();
+                    const newAccessToken = newSession?.user?.accessToken;
+
+                    if (newAccessToken && !newSession?.user?.error) {
+                        processQueue(null, newAccessToken);
+                        if (originalRequest.headers) {
+                            originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
+                        }
+                        return axiosInstance(originalRequest);
+                    } else {
+                        processQueue(customError, null);
+                        if (typeof window !== 'undefined') {
+                            signOut({ redirect: true, callbackUrl: '/login' });
+                        }
+                        return Promise.reject(customError);
+                    }
+                } catch (refreshErr) {
+                    processQueue(refreshErr, null);
+                    if (typeof window !== 'undefined') {
+                        signOut({ redirect: true, callbackUrl: '/login' });
+                    }
+                    return Promise.reject(customError);
+                } finally {
+                    isRefreshing = false;
                 }
             }
 

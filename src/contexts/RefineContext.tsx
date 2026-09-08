@@ -67,6 +67,18 @@ const App = ({ children, defaultMode }: PropsWithChildren<AppProps>) => {
             return;
         }
 
+        if (session?.user?.error === 'RefreshAccessTokenError' && !isAuthPublicPage) {
+            if (typeof window !== 'undefined') {
+                sessionStorage.setItem(KEY_SESSION_STORAGE.RETURN_URL, to);
+            }
+
+            signOut({
+                redirect: true,
+                callbackUrl: '/login',
+            });
+            return;
+        }
+
         setSessionBootstrapComplete(true);
     }, [status, isAuthPublicPage, to, router, session]);
 
@@ -162,7 +174,11 @@ const App = ({ children, defaultMode }: PropsWithChildren<AppProps>) => {
             return { success: true };
         },
         onError: async (error) => {
-            if (error.response?.status === 401) {
+            if (
+                error?.statusCode === 401 ||
+                error?.status === 401 ||
+                error?.response?.status === 401
+            ) {
                 return { logout: true };
             }
 
