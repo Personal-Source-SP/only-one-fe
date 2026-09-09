@@ -187,10 +187,11 @@ const DataProviderFeaturesPage = () => {
                 {modalState.open && modalState.feature && (
                     <FeatureSettingModal
                         open={modalState.open}
-                        onSuccess={refetchAll}
-                        onClose={closeFeatureModal}
                         feature={modalState.feature}
                         activeTab={modalState.activeTab}
+                        onSuccess={refetchAll}
+                        onClose={closeFeatureModal}
+                        onSwitchStatus={handleSwitchStatus}
                         onTabChange={(tab: FeatureModalTab) =>
                             setModalState((prev) => ({ ...prev, activeTab: tab }))
                         }

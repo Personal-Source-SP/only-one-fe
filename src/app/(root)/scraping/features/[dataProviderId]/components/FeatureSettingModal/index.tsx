@@ -3,9 +3,11 @@
 import { useState } from 'react';
 import { CustomCol, CustomForm, CustomModal, CustomRow } from '@/components/custom-antd';
 import { useFeatureVersionManager } from '../../hooks/useFeatureVersionManager';
+import { DataProviderFeatureStatus } from '../../enums';
 import type { FeatureModalTab, IDataProviderFeature } from '../../types';
 import { getFeatureDefinition } from '../../utils';
 import { FeatureTestTab } from '../FeatureTestTab';
+import { FeatureChangeLogSection } from '../ConfigFormCommon';
 import { FeatureModalFooter } from './FeatureModalFooter';
 import { FeatureModalHeader } from './FeatureModalHeader';
 
@@ -16,6 +18,7 @@ export type FeatureSettingModalProps = {
     onClose: () => void;
     onSuccess: () => void;
     onTabChange?: (tab: FeatureModalTab) => void;
+    onSwitchStatus?: (featureId: string, currentStatus: DataProviderFeatureStatus) => void;
 };
 
 export const FeatureSettingModal = ({
@@ -23,6 +26,7 @@ export const FeatureSettingModal = ({
     feature,
     onClose,
     onSuccess,
+    onSwitchStatus,
 }: FeatureSettingModalProps) => {
     const [form] = CustomForm.useForm();
     const [isSaving, setIsSaving] = useState<boolean>(false);
@@ -73,6 +77,11 @@ export const FeatureSettingModal = ({
                     isDraft={isDraft}
                     authorName={authorName}
                     selectedVersion={selectedVersion}
+                    onSwitchStatus={
+                        onSwitchStatus
+                            ? () => onSwitchStatus(feature.id, feature.status)
+                            : undefined
+                    }
                 />
             }
         >
@@ -97,8 +106,13 @@ export const FeatureSettingModal = ({
                     </div>
                 </CustomCol>
                 <CustomCol xs={24} lg={11} xl={10}>
-                    <div className="max-h-[calc(85vh-160px)] overflow-y-auto pl-1 custom-scrollbar border-t lg:border-t-0 lg:border-l border-hub-border/60 pt-4 lg:pt-0 lg:pl-5">
+                    <div className="max-h-[calc(85vh-160px)] overflow-y-auto pl-1 custom-scrollbar border-t lg:border-t-0 lg:border-l border-hub-border/60 pt-4 lg:pt-0 lg:pl-5 flex flex-col gap-4">
                         <FeatureTestTab feature={feature} configForm={form} />
+                        {!isDraft && (
+                            <CustomForm form={form} layout="vertical" component={false}>
+                                <FeatureChangeLogSection placeholder="Ví dụ: Cập nhật selector giá mới theo layout..." />
+                            </CustomForm>
+                        )}
                     </div>
                 </CustomCol>
             </CustomRow>

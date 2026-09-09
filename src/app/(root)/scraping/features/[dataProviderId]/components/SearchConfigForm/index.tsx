@@ -16,7 +16,6 @@ import { ScraperServiceEnum } from '../../enums';
 import type { IConfigVersion, IDataProviderFeature } from '../../types';
 import {
     FeatureAdvancedSection,
-    FeatureChangeLogSection,
     FeatureCodeSection,
     FeatureLimitsSection,
 } from '../ConfigFormCommon';
@@ -197,10 +196,6 @@ export const SearchConfigForm = ({
                     selectedVersion={selectedVersion}
                     isViewingHistory={isViewingHistory}
                 />
-
-                {!isDraft && (
-                    <FeatureChangeLogSection placeholder="Ví dụ: Cập nhật URL pattern tìm kiếm mới..." />
-                )}
             </CustomFlex>
         </CustomForm>
     );

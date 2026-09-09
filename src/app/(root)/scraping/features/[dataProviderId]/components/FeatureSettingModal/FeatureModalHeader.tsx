@@ -4,12 +4,13 @@ import { useCallback } from 'react';
 import {
     CustomFlex,
     CustomForm,
+    CustomSwitch,
     CustomTag,
     CustomTypography,
     type FormInstance,
 } from '@/components/custom-antd';
 import { checkService } from '../../constants';
-import { ConfigVersionType, ScraperServiceEnum } from '../../enums';
+import { ConfigVersionType, DataProviderFeatureStatus, ScraperServiceEnum } from '../../enums';
 import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
 import type { IConfigVersion, IDataProviderFeature } from '../../types';
@@ -21,6 +22,7 @@ export interface FeatureModalHeaderProps {
     authorName: string | null;
     selectedVersion: IConfigVersion | null;
     form?: FormInstance;
+    onSwitchStatus?: () => void;
 }
 
 export const FeatureModalHeader = ({
@@ -29,6 +31,7 @@ export const FeatureModalHeader = ({
     authorName,
     selectedVersion,
     form,
+    onSwitchStatus,
 }: FeatureModalHeaderProps) => {
     const def = getFeatureDefinition(feature.type);
     const providerName = feature.dataProvider?.name;
@@ -91,36 +94,50 @@ export const FeatureModalHeader = ({
                 </CustomFlex>
             </CustomFlex>
 
-            {/* Version Metadata Tags in Header */}
-            {!isDraft && selectedVersion && (
-                <CustomFlex align="center" gap="small" wrap>
-                    {authorName && (
-                        <CustomTag color="#108ee9" className="flex items-center gap-1 m-0">
-                            <Icon icon="lucide:user" className="w-3 h-3" />
-                            {authorName}
-                        </CustomTag>
-                    )}
+            <CustomFlex align="center" gap="middle" className="flex-wrap">
+                {/* Version Metadata Tags in Header */}
+                {!isDraft && selectedVersion && (
+                    <CustomFlex align="center" gap="small" wrap>
+                        {authorName && (
+                            <CustomTag color="#108ee9" className="flex items-center gap-1 m-0">
+                                <Icon icon="lucide:user" className="w-3 h-3" />
+                                {authorName}
+                            </CustomTag>
+                        )}
 
-                    {renderChangeTypeTag(selectedVersion.changeType)}
+                        {renderChangeTypeTag(selectedVersion.changeType)}
 
-                    {selectedVersion.createdAt && (
-                        <CustomTag color="#108ee9" className="flex items-center gap-1 m-0">
-                            <Icon icon="lucide:clock" className="w-3 h-3" />
-                            {formatDate(selectedVersion.createdAt)}
-                        </CustomTag>
-                    )}
+                        {selectedVersion.createdAt && (
+                            <CustomTag color="#108ee9" className="flex items-center gap-1 m-0">
+                                <Icon icon="lucide:clock" className="w-3 h-3" />
+                                {formatDate(selectedVersion.createdAt)}
+                            </CustomTag>
+                        )}
 
-                    {selectedVersion.isActive ? (
-                        <CustomTag color="success" className="font-mono font-bold m-0">
-                            v{selectedVersion.versionId} Active
-                        </CustomTag>
-                    ) : (
-                        <CustomTag color="warning" className="font-mono font-bold m-0">
-                            v{selectedVersion.versionId} (Lịch sử)
-                        </CustomTag>
-                    )}
-                </CustomFlex>
-            )}
+                        {selectedVersion.isActive ? (
+                            <CustomTag color="success" className="font-mono font-bold m-0">
+                                v{selectedVersion.versionId} Active
+                            </CustomTag>
+                        ) : (
+                            <CustomTag color="warning" className="font-mono font-bold m-0">
+                                v{selectedVersion.versionId} (Lịch sử)
+                            </CustomTag>
+                        )}
+                    </CustomFlex>
+                )}
+
+                {/* Switch Status Toggle */}
+                {!isDraft && onSwitchStatus && (
+                    <CustomFlex align="center" gap="small">
+                        <CustomSwitch
+                            checkedChildren="Bật"
+                            unCheckedChildren="Tắt"
+                            onChange={onSwitchStatus}
+                            checked={feature.status === DataProviderFeatureStatus.READY}
+                        />
+                    </CustomFlex>
+                )}
+            </CustomFlex>
         </CustomFlex>
     );
 };

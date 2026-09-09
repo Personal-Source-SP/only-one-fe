@@ -21,7 +21,16 @@ export const FeatureChangeLogSection = ({
                     Mô tả thay đổi phiên bản (Change Log)
                 </CustomTypography.Text>
             </CustomFlex>
-            <CustomForm.Item name="changeDescription" className="!mb-0">
+            <CustomForm.Item
+                className="!mb-0"
+                name="changeDescription"
+                rules={[
+                    {
+                        required: true,
+                        message: 'Vui lòng nhập mô tả thay đổi phiên bản',
+                    },
+                ]}
+            >
                 <CustomInput placeholder={placeholder} />
             </CustomForm.Item>
         </CustomFlex>

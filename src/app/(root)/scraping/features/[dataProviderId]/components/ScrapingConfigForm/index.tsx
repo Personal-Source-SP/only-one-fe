@@ -17,7 +17,6 @@ import { ScraperServiceEnum } from '../../enums';
 import type { IConfigVersion, IDataProviderFeature } from '../../types';
 import {
     FeatureAdvancedSection,
-    FeatureChangeLogSection,
     FeatureCodeSection,
     FeatureLimitsSection,
 } from '../ConfigFormCommon';
@@ -193,10 +192,6 @@ export const ScrapingConfigForm = ({
                     selectedVersion={selectedVersion}
                     isViewingHistory={isViewingHistory}
                 />
-
-                {!isDraft && (
-                    <FeatureChangeLogSection placeholder="Ví dụ: Cập nhật selector giá mới theo layout..." />
-                )}
             </CustomFlex>
         </CustomForm>
     );
