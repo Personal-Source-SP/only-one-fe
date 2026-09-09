@@ -70,27 +70,6 @@ export const SearchSelectorsSection = ({
                         <CustomInput placeholder="Ví dụ: .product-item, article.card" />
                     </CustomForm.Item>
                 </CustomCol>
-
-                <CustomCol xs={24}>
-                    <CustomFlex
-                        align="center"
-                        justify="space-between"
-                        className="p-3 rounded-lg bg-hub-card border border-hub-border/50"
-                    >
-                        <CustomTypography.Text className="text-sm text-hub-title font-medium">
-                            <FormDiffLabel
-                                label="Lấy phần tử cha"
-                                fieldKey="isGetParentElement"
-                                feature={feature}
-                                selectedVersion={selectedVersion}
-                                isViewingHistory={isViewingHistory}
-                            />
-                        </CustomTypography.Text>
-                        <CustomForm.Item name="isGetParentElement" valuePropName="checked" noStyle>
-                            <CustomSwitch />
-                        </CustomForm.Item>
-                    </CustomFlex>
-                </CustomCol>
             </CustomRow>
         </CustomFlex>
     );

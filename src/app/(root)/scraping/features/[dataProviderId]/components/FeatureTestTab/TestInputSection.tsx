@@ -68,10 +68,10 @@ export const TestInputSection = ({
                     </CustomTypography.Text>
                 </CustomFlex>
 
-                {isScraping ? (
-                    <CustomSpace direction="vertical" size="small" className="w-full">
-                        <CustomRow gutter={[16, 12]}>
-                            <CustomCol xs={24} md={18}>
+                <CustomSpace direction="vertical" size="small" className="w-full">
+                    <CustomRow gutter={[16, 12]}>
+                        <CustomCol xs={24} md={18}>
+                            {isScraping ? (
                                 <CustomForm.Item
                                     name="testUrl"
                                     label="URL thử nghiệm"
@@ -84,47 +84,52 @@ export const TestInputSection = ({
                                 >
                                     <CustomInput placeholder="https://example.com/product/123" />
                                 </CustomForm.Item>
-                            </CustomCol>
-
-                            <CustomCol xs={24} md={6}>
-                                <CustomFlex
-                                    align="center"
-                                    justify="space-between"
-                                    className="p-3 rounded-lg bg-hub-card border border-hub-border/50 mt-1 sm:mt-7"
+                            ) : (
+                                <CustomForm.Item
+                                    name="testQuery"
+                                    label="Từ khóa tìm kiếm (Query)"
+                                    rules={
+                                        isQueryRequired && !isTestHtmlContent
+                                            ? [
+                                                  {
+                                                      required: true,
+                                                      message: 'Vui lòng nhập từ khóa tìm kiếm',
+                                                  },
+                                              ]
+                                            : []
+                                    }
                                 >
-                                    <CustomTypography.Text className="text-xs text-hub-title font-medium">
-                                        Test bằng HTML
-                                    </CustomTypography.Text>
-                                    <CustomSwitch
-                                        checked={isTestHtmlContent}
-                                        onChange={onToggleTestHtmlContent}
-                                    />
-                                </CustomFlex>
-                            </CustomCol>
-                        </CustomRow>
+                                    <CustomInput placeholder="Ví dụ: ao-thun, iphone-15" />
+                                </CustomForm.Item>
+                            )}
+                        </CustomCol>
 
-                        {isTestHtmlContent && (
-                            <CustomForm.Item name="htmlContentString" label="Chuỗi HTML giả lập">
-                                <CustomInput.TextArea
-                                    rows={6}
-                                    placeholder="<html><body>...</body></html>"
+                        <CustomCol xs={24} md={6}>
+                            <CustomFlex
+                                align="center"
+                                justify="space-between"
+                                className="p-3 rounded-lg bg-hub-card border border-hub-border/50 mt-1 sm:mt-7"
+                            >
+                                <CustomTypography.Text className="text-xs text-hub-title font-medium">
+                                    Test bằng HTML
+                                </CustomTypography.Text>
+                                <CustomSwitch
+                                    checked={isTestHtmlContent}
+                                    onChange={onToggleTestHtmlContent}
                                 />
-                            </CustomForm.Item>
-                        )}
-                    </CustomSpace>
-                ) : (
-                    <CustomForm.Item
-                        name="testQuery"
-                        label="Từ khóa tìm kiếm (Query)"
-                        rules={
-                            isQueryRequired
-                                ? [{ required: true, message: 'Vui lòng nhập từ khóa tìm kiếm' }]
-                                : []
-                        }
-                    >
-                        <CustomInput placeholder="Ví dụ: ao-thun, iphone-15" />
-                    </CustomForm.Item>
-                )}
+                            </CustomFlex>
+                        </CustomCol>
+                    </CustomRow>
+
+                    {isTestHtmlContent && (
+                        <CustomForm.Item name="htmlContentString" label="Chuỗi HTML giả lập">
+                            <CustomInput.TextArea
+                                rows={6}
+                                placeholder="<html><body>...</body></html>"
+                            />
+                        </CustomForm.Item>
+                    )}
+                </CustomSpace>
 
                 <CustomFlex justify="end">
                     <CustomTooltip

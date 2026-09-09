@@ -41,6 +41,9 @@ export const useFeatureTestRunner = ({ feature, configForm }: UseFeatureTestRunn
                 if (values.testQuery) {
                     inputPayload.query = values.testQuery;
                 }
+                if (isTestHtmlContent) {
+                    inputPayload.htmlContentString = values.htmlContentString;
+                }
             }
 
             const currentFormValues = configForm ? configForm.getFieldsValue() : {};

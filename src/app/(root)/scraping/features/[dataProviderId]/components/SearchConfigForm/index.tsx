@@ -14,7 +14,12 @@ import { Icon } from '@iconify/react';
 import { checkService } from '../../constants';
 import { ScraperServiceEnum } from '../../enums';
 import type { IConfigVersion, IDataProviderFeature } from '../../types';
-import { SearchCodeSection } from './SearchCodeSection';
+import {
+    FeatureAdvancedSection,
+    FeatureChangeLogSection,
+    FeatureCodeSection,
+    FeatureLimitsSection,
+} from '../ConfigFormCommon';
 import { SearchSelectorsSection } from './SearchSelectorsSection';
 import { SearchUrlPatternSection } from './SearchUrlPatternSection';
 
@@ -45,7 +50,7 @@ export const SearchConfigForm = ({
     const functionGenerator = CustomForm.useWatch('functionGenerator', form);
     const currentService = CustomForm.useWatch('service', form) || ScraperServiceEnum.GENERIC;
 
-    const { hasSearchSelectors } = checkService(currentService);
+    const { hasSearchSelectors, hasBrowserSettings } = checkService(currentService);
 
     const [isSaving, setIsSaving] = useState<boolean>(false);
 
@@ -69,8 +74,17 @@ export const SearchConfigForm = ({
             queryPlaceholder: config.queryPlaceholder || '{query}',
             mainContentSelector: config.mainContentSelector || '',
             resultSelector: config.resultSelector || '',
+            waitForSelector: config.waitForSelector || '',
+            userAgent: config.userAgent || '',
             maxResults: config.maxResults ?? 10,
+            retryDelay: config.retryDelay ?? 1000,
+            retryAttempts: config.retryAttempts ?? 3,
             isGetParentElement: config.isGetParentElement ?? false,
+            stealthMode: config.stealthMode ?? false,
+            cloudflareBypass: config.cloudflareBypass ?? false,
+            javascriptEnabled: config.javascriptEnabled ?? true,
+            imagesEnabled: config.imagesEnabled ?? false,
+            cssEnabled: config.cssEnabled ?? false,
             functionGenerator: config.functionGenerator || defaultSearchTemplate,
         });
     }, [feature, selectedVersion, form]);
@@ -160,7 +174,22 @@ export const SearchConfigForm = ({
                     />
                 )}
 
-                <SearchCodeSection
+                <FeatureLimitsSection
+                    isViewingHistory={isViewingHistory}
+                    feature={feature}
+                    selectedVersion={selectedVersion}
+                    service={currentService}
+                />
+
+                {hasBrowserSettings && (
+                    <FeatureAdvancedSection
+                        isViewingHistory={isViewingHistory}
+                        feature={feature}
+                        selectedVersion={selectedVersion}
+                    />
+                )}
+
+                <FeatureCodeSection
                     form={form}
                     feature={feature}
                     selectedVersion={selectedVersion}
@@ -170,20 +199,7 @@ export const SearchConfigForm = ({
                 />
 
                 {!isDraft && (
-                    <CustomFlex
-                        vertical
-                        className="bg-hub-section/20 border border-hub-border/60 rounded-xl p-4"
-                    >
-                        <CustomFlex align="center" gap="small" className="mb-2">
-                            <Icon icon="lucide:file-text" className="text-hub-primary shrink-0" />
-                            <CustomTypography.Text strong className="text-sm text-hub-title">
-                                Mô tả thay đổi phiên bản (Change Log)
-                            </CustomTypography.Text>
-                        </CustomFlex>
-                        <CustomForm.Item name="changeDescription" className="!mb-0">
-                            <CustomInput placeholder="Ví dụ: Cập nhật URL pattern tìm kiếm mới..." />
-                        </CustomForm.Item>
-                    </CustomFlex>
+                    <FeatureChangeLogSection placeholder="Ví dụ: Cập nhật URL pattern tìm kiếm mới..." />
                 )}
             </CustomFlex>
         </CustomForm>

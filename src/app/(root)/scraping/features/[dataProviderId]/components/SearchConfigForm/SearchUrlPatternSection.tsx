@@ -31,7 +31,7 @@ export const SearchUrlPatternSection = ({
     selectedVersion,
     onServiceChange,
 }: SearchUrlPatternSectionProps) => {
-    const { hasUrlPattern } = checkService(service);
+    const { hasUrlPattern, hasWaitForSelector, hasBrowserSettings } = checkService(service);
 
     return (
         <CustomFlex
@@ -93,7 +93,7 @@ export const SearchUrlPatternSection = ({
                 )}
 
                 {hasUrlPattern && (
-                    <CustomCol xs={24} md={12}>
+                    <CustomCol xs={24}>
                         <CustomForm.Item
                             name="queryPlaceholder"
                             label={
@@ -111,22 +111,43 @@ export const SearchUrlPatternSection = ({
                     </CustomCol>
                 )}
 
-                <CustomCol xs={24} md={12}>
-                    <CustomForm.Item
-                        name="maxResults"
-                        label={
-                            <FormDiffLabel
-                                fieldKey="maxResults"
-                                label="Số kết quả tối đa"
-                                feature={feature}
-                                selectedVersion={selectedVersion}
-                                isViewingHistory={isViewingHistory}
-                            />
-                        }
-                    >
-                        <CustomInputNumber min={1} className="w-full" placeholder="10" />
-                    </CustomForm.Item>
-                </CustomCol>
+                {hasWaitForSelector && (
+                    <CustomCol xs={24} md={12}>
+                        <CustomForm.Item
+                            name="waitForSelector"
+                            label={
+                                <FormDiffLabel
+                                    label="Selector chờ (Wait for selector)"
+                                    fieldKey="waitForSelector"
+                                    isViewingHistory={isViewingHistory}
+                                    feature={feature}
+                                    selectedVersion={selectedVersion}
+                                />
+                            }
+                        >
+                            <CustomInput placeholder="Ví dụ: .search-results, #loaded" />
+                        </CustomForm.Item>
+                    </CustomCol>
+                )}
+
+                {hasBrowserSettings && (
+                    <CustomCol xs={24} md={12}>
+                        <CustomForm.Item
+                            name="userAgent"
+                            label={
+                                <FormDiffLabel
+                                    label="User Agent tùy chỉnh"
+                                    fieldKey="userAgent"
+                                    isViewingHistory={isViewingHistory}
+                                    feature={feature}
+                                    selectedVersion={selectedVersion}
+                                />
+                            }
+                        >
+                            <CustomInput placeholder="Mozilla/5.0..." />
+                        </CustomForm.Item>
+                    </CustomCol>
+                )}
             </CustomRow>
         </CustomFlex>
     );

@@ -1,3 +1,4 @@
+export * from './ConfigFormCommon';
 export * from './FeatureCard';
 export * from './FeatureHistoryModal';
 export * from './FeatureSettingModal';

@@ -15,10 +15,13 @@ import { Icon } from '@iconify/react';
 import { checkService } from '../../constants';
 import { ScraperServiceEnum } from '../../enums';
 import type { IConfigVersion, IDataProviderFeature } from '../../types';
-import { ScrapingAdvancedSection } from './ScrapingAdvancedSection';
+import {
+    FeatureAdvancedSection,
+    FeatureChangeLogSection,
+    FeatureCodeSection,
+    FeatureLimitsSection,
+} from '../ConfigFormCommon';
 import { ScrapingBasicSection } from './ScrapingBasicSection';
-import { ScrapingCodeSection } from './ScrapingCodeSection';
-import { ScrapingLimitsSection } from './ScrapingLimitsSection';
 
 export type ScrapingConfigFormProps = {
     feature: IDataProviderFeature;
@@ -156,7 +159,7 @@ export const ScrapingConfigForm = ({
                     onServiceChange={handleServiceChange}
                 />
 
-                <ScrapingLimitsSection
+                <FeatureLimitsSection
                     isViewingHistory={isViewingHistory}
                     feature={feature}
                     selectedVersion={selectedVersion}
@@ -164,14 +167,14 @@ export const ScrapingConfigForm = ({
                 />
 
                 {hasBrowserSettings && (
-                    <ScrapingAdvancedSection
+                    <FeatureAdvancedSection
                         isViewingHistory={isViewingHistory}
                         feature={feature}
                         selectedVersion={selectedVersion}
                     />
                 )}
 
-                <ScrapingCodeSection
+                <FeatureCodeSection
                     form={form}
                     functionGenerator={functionGenerator}
                     isViewingHistory={isViewingHistory}
@@ -181,20 +184,7 @@ export const ScrapingConfigForm = ({
                 />
 
                 {!isDraft && (
-                    <CustomFlex
-                        vertical
-                        className="bg-hub-section/20 border border-hub-border/60 rounded-xl p-4"
-                    >
-                        <CustomFlex align="center" gap="small" className="mb-2">
-                            <Icon icon="lucide:file-text" className="text-hub-primary shrink-0" />
-                            <CustomTypography.Text strong className="text-sm text-hub-title">
-                                Mô tả thay đổi phiên bản (Change Log)
-                            </CustomTypography.Text>
-                        </CustomFlex>
-                        <CustomForm.Item name="changeDescription" className="!mb-0">
-                            <CustomInput placeholder="Ví dụ: Cập nhật selector giá mới theo layout..." />
-                        </CustomForm.Item>
-                    </CustomFlex>
+                    <FeatureChangeLogSection placeholder="Ví dụ: Cập nhật selector giá mới theo layout..." />
                 )}
             </CustomFlex>
         </CustomForm>
