@@ -23,3 +23,4 @@
 - **[AVOID]** Triggering feature test runners without cross-form validation — Validate both the configuration form (e.g. required selectors, URL patterns, script templates) and test input form before dispatching test requests.
 - **[AVOID]** Exposing obsolete test mode switches or hardcoding query requirements when query placeholders are not configured — Synchronize test input requirements dynamically with active form configuration (`queryPlaceholder`).
 - **[AVOID]** Reusing scraping function generator templates for search features — Provide dedicated default search templates for both HTML and API scraper service types.
+- **[AVOID]** Enabling experimental `reactCompiler: true` during active development without native Rust compiler support — React Compiler triggers fallback Node.js Babel AST transformation on initial on-demand route compilation in Turbopack, causing significant route transition latency.
