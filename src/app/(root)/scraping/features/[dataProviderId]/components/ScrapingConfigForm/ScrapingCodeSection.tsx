@@ -14,20 +14,20 @@ import type { IConfigVersion, IDataProviderFeature } from '../../types';
 
 export type ScrapingCodeSectionProps = {
     form: FormInstance;
+    feature: IDataProviderFeature;
+    service?: string;
     functionGenerator?: string;
     isViewingHistory?: boolean;
-    feature: IDataProviderFeature;
     selectedVersion?: IConfigVersion | null;
-    service?: string;
 };
 
 export const ScrapingCodeSection = ({
     form,
+    feature,
+    service,
     functionGenerator,
     isViewingHistory,
-    feature,
     selectedVersion,
-    service,
 }: ScrapingCodeSectionProps) => {
     const { scrapingCodeLabel } = checkService(service);
 
@@ -42,9 +42,9 @@ export const ScrapingCodeSection = ({
                     <FormDiffLabel
                         label={scrapingCodeLabel}
                         fieldKey="functionGenerator"
-                        isViewingHistory={isViewingHistory}
                         feature={feature}
                         selectedVersion={selectedVersion}
+                        isViewingHistory={isViewingHistory}
                     />
                 </CustomTypography.Text>
             </CustomFlex>

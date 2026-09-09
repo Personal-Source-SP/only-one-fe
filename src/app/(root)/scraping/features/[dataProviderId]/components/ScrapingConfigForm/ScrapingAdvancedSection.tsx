@@ -13,14 +13,14 @@ import { FormDiffLabel } from '../FormDiffLabel';
 import type { IConfigVersion, IDataProviderFeature } from '../../types';
 
 export type ScrapingAdvancedSectionProps = {
-    isViewingHistory?: boolean;
     feature: IDataProviderFeature;
+    isViewingHistory?: boolean;
     selectedVersion?: IConfigVersion | null;
 };
 
 export const ScrapingAdvancedSection = ({
-    isViewingHistory,
     feature,
+    isViewingHistory,
     selectedVersion,
 }: ScrapingAdvancedSectionProps) => {
     return (
@@ -45,9 +45,9 @@ export const ScrapingAdvancedSection = ({
                             <FormDiffLabel
                                 label="Lấy phần tử cha"
                                 fieldKey="isGetParentElement"
-                                isViewingHistory={isViewingHistory}
                                 feature={feature}
                                 selectedVersion={selectedVersion}
+                                isViewingHistory={isViewingHistory}
                             />
                         </CustomTypography.Text>
                         <CustomForm.Item name="isGetParentElement" valuePropName="checked" noStyle>
@@ -66,9 +66,9 @@ export const ScrapingAdvancedSection = ({
                             <FormDiffLabel
                                 label="Stealth Mode"
                                 fieldKey="stealthMode"
-                                isViewingHistory={isViewingHistory}
                                 feature={feature}
                                 selectedVersion={selectedVersion}
+                                isViewingHistory={isViewingHistory}
                             />
                         </CustomTypography.Text>
                         <CustomForm.Item name="stealthMode" valuePropName="checked" noStyle>
@@ -87,9 +87,9 @@ export const ScrapingAdvancedSection = ({
                             <FormDiffLabel
                                 label="Vượt Cloudflare"
                                 fieldKey="cloudflareBypass"
-                                isViewingHistory={isViewingHistory}
                                 feature={feature}
                                 selectedVersion={selectedVersion}
+                                isViewingHistory={isViewingHistory}
                             />
                         </CustomTypography.Text>
                         <CustomForm.Item name="cloudflareBypass" valuePropName="checked" noStyle>

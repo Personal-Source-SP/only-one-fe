@@ -15,17 +15,17 @@ import { FormDiffLabel } from '../FormDiffLabel';
 import type { IConfigVersion, IDataProviderFeature } from '../../types';
 
 export type ScrapingSelectorsSectionProps = {
-    isViewingHistory?: boolean;
     feature: IDataProviderFeature;
-    selectedVersion?: IConfigVersion | null;
     service?: string;
+    isViewingHistory?: boolean;
+    selectedVersion?: IConfigVersion | null;
 };
 
 export const ScrapingSelectorsSection = ({
-    isViewingHistory,
     feature,
-    selectedVersion,
     service = ScraperServiceEnum.GENERIC,
+    isViewingHistory,
+    selectedVersion,
 }: ScrapingSelectorsSectionProps) => {
     const { hasDomSelectors, hasWaitForSelector, hasBrowserSettings } = checkService(service);
 
@@ -49,9 +49,9 @@ export const ScrapingSelectorsSection = ({
                                 <FormDiffLabel
                                     label="Selector nội dung chính"
                                     fieldKey="mainContentSelector"
-                                    isViewingHistory={isViewingHistory}
                                     feature={feature}
                                     selectedVersion={selectedVersion}
+                                    isViewingHistory={isViewingHistory}
                                 />
                             }
                         >
@@ -66,11 +66,11 @@ export const ScrapingSelectorsSection = ({
                             name="waitForSelector"
                             label={
                                 <FormDiffLabel
-                                    label="Selector chờ (Wait for selector)"
                                     fieldKey="waitForSelector"
-                                    isViewingHistory={isViewingHistory}
+                                    label="Selector chờ (Wait for selector)"
                                     feature={feature}
                                     selectedVersion={selectedVersion}
+                                    isViewingHistory={isViewingHistory}
                                 />
                             }
                         >
@@ -85,11 +85,11 @@ export const ScrapingSelectorsSection = ({
                             name="userAgent"
                             label={
                                 <FormDiffLabel
-                                    label="User Agent tùy chỉnh"
                                     fieldKey="userAgent"
-                                    isViewingHistory={isViewingHistory}
+                                    label="User Agent tùy chỉnh"
                                     feature={feature}
                                     selectedVersion={selectedVersion}
+                                    isViewingHistory={isViewingHistory}
                                 />
                             }
                         >

@@ -14,17 +14,17 @@ import { FormDiffLabel } from '../FormDiffLabel';
 import type { IConfigVersion, IDataProviderFeature } from '../../types';
 
 export type ScrapingLimitsSectionProps = {
-    isViewingHistory?: boolean;
     feature: IDataProviderFeature;
-    selectedVersion?: IConfigVersion | null;
     service?: string;
+    isViewingHistory?: boolean;
+    selectedVersion?: IConfigVersion | null;
 };
 
 export const ScrapingLimitsSection = ({
-    isViewingHistory,
     feature,
-    selectedVersion,
     service,
+    isViewingHistory,
+    selectedVersion,
 }: ScrapingLimitsSectionProps) => {
     const { hasNetworkRetries } = checkService(service);
 
@@ -45,11 +45,11 @@ export const ScrapingLimitsSection = ({
                         name="maxResults"
                         label={
                             <FormDiffLabel
-                                label="Số kết quả tối đa"
                                 fieldKey="maxResults"
-                                isViewingHistory={isViewingHistory}
+                                label="Số kết quả tối đa"
                                 feature={feature}
                                 selectedVersion={selectedVersion}
+                                isViewingHistory={isViewingHistory}
                             />
                         }
                     >
@@ -65,9 +65,9 @@ export const ScrapingLimitsSection = ({
                                 <FormDiffLabel
                                     label="Delay retry (ms)"
                                     fieldKey="retryDelay"
-                                    isViewingHistory={isViewingHistory}
                                     feature={feature}
                                     selectedVersion={selectedVersion}
+                                    isViewingHistory={isViewingHistory}
                                 />
                             }
                         >
@@ -84,9 +84,9 @@ export const ScrapingLimitsSection = ({
                                 <FormDiffLabel
                                     label="Số lần thử lại"
                                     fieldKey="retryAttempts"
-                                    isViewingHistory={isViewingHistory}
                                     feature={feature}
                                     selectedVersion={selectedVersion}
+                                    isViewingHistory={isViewingHistory}
                                 />
                             }
                         >

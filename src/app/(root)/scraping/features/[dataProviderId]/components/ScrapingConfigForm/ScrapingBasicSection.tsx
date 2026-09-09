@@ -10,23 +10,20 @@ import {
 } from '@/components/custom-antd';
 import { Icon } from '@iconify/react';
 import { SCRAPER_SERVICE_OPTIONS } from '../../constants';
-import { ScraperServiceEnum } from '../../enums';
-import { FormDiffLabel } from '../FormDiffLabel';
 import type { IConfigVersion, IDataProviderFeature } from '../../types';
+import { FormDiffLabel } from '../FormDiffLabel';
 
 export type ScrapingBasicSectionProps = {
-    isViewingHistory?: boolean;
     feature: IDataProviderFeature;
+    isViewingHistory?: boolean;
     selectedVersion?: IConfigVersion | null;
-    service?: string;
     onServiceChange: (service: string) => void;
 };
 
 export const ScrapingBasicSection = ({
-    isViewingHistory,
     feature,
+    isViewingHistory,
     selectedVersion,
-    service = ScraperServiceEnum.GENERIC,
     onServiceChange,
 }: ScrapingBasicSectionProps) => {
     return (
@@ -46,11 +43,11 @@ export const ScrapingBasicSection = ({
                         name="service"
                         label={
                             <FormDiffLabel
-                                label="Service Engine"
                                 fieldKey="service"
-                                isViewingHistory={isViewingHistory}
+                                label="Service Engine"
                                 feature={feature}
                                 selectedVersion={selectedVersion}
+                                isViewingHistory={isViewingHistory}
                             />
                         }
                         rules={[{ required: true, message: 'Vui lòng chọn engine' }]}

@@ -43,18 +43,17 @@ export const ScrapingConfigForm = ({
     onSuccess,
     setIsSaving: externalSetIsSaving,
 }: ScrapingConfigFormProps) => {
+    const { handleCustomMutationData } = useCustomMutationData();
+
     const [internalForm] = CustomForm.useForm();
     const form = externalForm || internalForm;
 
-    const [isSaving, setIsSaving] = useState<boolean>(false);
-
-    const isDraft = useMemo(() => !feature.id, [feature.id]);
     const currentService = CustomForm.useWatch('service', form) || ScraperServiceEnum.GENERIC;
-    const { hasBrowserSettings, hasDomSelectors, hasWaitForSelector } =
-        checkService(currentService);
     const functionGenerator = CustomForm.useWatch('functionGenerator', form);
 
-    const { handleCustomMutationData } = useCustomMutationData();
+    const [isSaving, setIsSaving] = useState<boolean>(false);
+    const { hasBrowserSettings, hasDomSelectors, hasWaitForSelector } =
+        checkService(currentService);
 
     useEffect(() => {
         externalSetIsSaving?.(isSaving);
@@ -83,6 +82,8 @@ export const ScrapingConfigForm = ({
             cssEnabled: config.cssEnabled ?? false,
         });
     }, [feature, selectedVersion, form]);
+
+    const isDraft = useMemo(() => !feature.id, [feature.id]);
 
     const handleServiceChange = useCallback(
         (service: string) => {
@@ -154,44 +155,43 @@ export const ScrapingConfigForm = ({
         <CustomForm form={form} layout="vertical" onFinish={handleSave}>
             <CustomFlex vertical gap="middle" className="w-full">
                 <ScrapingBasicSection
-                    isViewingHistory={isViewingHistory}
                     feature={feature}
+                    isViewingHistory={isViewingHistory}
                     selectedVersion={selectedVersion}
-                    service={currentService}
                     onServiceChange={handleServiceChange}
                 />
 
                 {(hasDomSelectors || hasWaitForSelector || hasBrowserSettings) && (
                     <ScrapingSelectorsSection
-                        isViewingHistory={isViewingHistory}
+                        service={currentService}
                         feature={feature}
                         selectedVersion={selectedVersion}
-                        service={currentService}
+                        isViewingHistory={isViewingHistory}
                     />
                 )}
 
                 <FeatureLimitsSection
-                    isViewingHistory={isViewingHistory}
+                    service={currentService}
                     feature={feature}
                     selectedVersion={selectedVersion}
-                    service={currentService}
+                    isViewingHistory={isViewingHistory}
                 />
 
                 {hasBrowserSettings && (
                     <FeatureAdvancedSection
-                        isViewingHistory={isViewingHistory}
                         feature={feature}
                         selectedVersion={selectedVersion}
+                        isViewingHistory={isViewingHistory}
                     />
                 )}
 
                 <FeatureCodeSection
                     form={form}
+                    service={currentService}
                     functionGenerator={functionGenerator}
-                    isViewingHistory={isViewingHistory}
                     feature={feature}
                     selectedVersion={selectedVersion}
-                    service={currentService}
+                    isViewingHistory={isViewingHistory}
                 />
 
                 {!isDraft && (
