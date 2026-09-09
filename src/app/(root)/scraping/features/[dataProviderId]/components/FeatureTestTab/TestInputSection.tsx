@@ -13,6 +13,7 @@ import {
 } from '@/components/custom-antd';
 import { DEFAULT_HTML_CONTENT_STRING } from '@/constants';
 import { Icon } from '@iconify/react';
+import { ScraperServiceEnum } from '../../enums';
 import type { IDataProviderFeature } from '../../types';
 
 export type TestInputSectionProps = {
@@ -38,6 +39,12 @@ export const TestInputSection = ({
 }: TestInputSectionProps) => {
     const queryPlaceholder = CustomForm.useWatch('queryPlaceholder', configForm);
     const functionGenerator = CustomForm.useWatch('functionGenerator', configForm);
+    const activeService =
+        CustomForm.useWatch('service', configForm) ||
+        feature?.service ||
+        ScraperServiceEnum.GENERIC;
+
+    const isGeneric = activeService === ScraperServiceEnum.GENERIC;
 
     const isMissingFunctionGenerator = !functionGenerator?.trim();
     const isQueryRequired = Boolean(
@@ -73,36 +80,38 @@ export const TestInputSection = ({
                         </CustomTypography.Text>
                     </CustomFlex>
 
-                    <CustomSegmented
-                        value={isTestHtmlContent ? 'html' : 'input'}
-                        onChange={(value) => onToggleTestHtmlContent(value === 'html')}
-                        options={[
-                            {
-                                value: 'input',
-                                label: isScraping ? 'URL trực tiếp' : 'Từ khóa tìm kiếm',
-                                icon: (
-                                    <Icon
-                                        icon={isScraping ? 'lucide:link' : 'lucide:search'}
-                                        className="inline mr-1 text-xs"
-                                    />
-                                ),
-                            },
-                            {
-                                value: 'html',
-                                label: 'HTML giả lập',
-                                icon: (
-                                    <Icon
-                                        icon="lucide:file-code-2"
-                                        className="inline mr-1 text-xs"
-                                    />
-                                ),
-                            },
-                        ]}
-                    />
+                    {isGeneric && (
+                        <CustomSegmented
+                            value={isTestHtmlContent ? 'html' : 'input'}
+                            onChange={(value) => onToggleTestHtmlContent(value === 'html')}
+                            options={[
+                                {
+                                    value: 'input',
+                                    label: isScraping ? 'URL trực tiếp' : 'Từ khóa tìm kiếm',
+                                    icon: (
+                                        <Icon
+                                            icon={isScraping ? 'lucide:link' : 'lucide:search'}
+                                            className="inline mr-1 text-xs"
+                                        />
+                                    ),
+                                },
+                                {
+                                    value: 'html',
+                                    label: 'HTML giả lập',
+                                    icon: (
+                                        <Icon
+                                            icon="lucide:file-code-2"
+                                            className="inline mr-1 text-xs"
+                                        />
+                                    ),
+                                },
+                            ]}
+                        />
+                    )}
                 </CustomFlex>
 
                 <CustomSpace direction="vertical" size="small" className="w-full">
-                    {!isTestHtmlContent ? (
+                    {!isTestHtmlContent || !isGeneric ? (
                         isScraping ? (
                             <CustomForm.Item
                                 name="testUrl"

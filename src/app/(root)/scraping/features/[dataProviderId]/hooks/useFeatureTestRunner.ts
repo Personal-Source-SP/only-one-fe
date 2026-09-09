@@ -31,24 +31,29 @@ export const useFeatureTestRunner = ({ feature, configForm }: UseFeatureTestRunn
             setIsLoading(true);
             setErrorMessage(null);
 
+            const currentFormValues = configForm ? configForm.getFieldsValue() : {};
+            const activeService =
+                currentFormValues.service || feature.service || ScraperServiceEnum.GENERIC;
+
+            const isGeneric = activeService === ScraperServiceEnum.GENERIC;
+
             const inputPayload: Record<string, any> = {};
             if (isScraping) {
                 inputPayload.url = values.testUrl;
-                if (isTestHtmlContent) {
+
+                if (isGeneric && isTestHtmlContent) {
                     inputPayload.htmlContentString = values.htmlContentString;
                 }
             } else {
                 if (values.testQuery) {
                     inputPayload.query = values.testQuery;
                 }
-                if (isTestHtmlContent) {
+
+                if (isGeneric && isTestHtmlContent) {
                     inputPayload.htmlContentString = values.htmlContentString;
                 }
             }
 
-            const currentFormValues = configForm ? configForm.getFieldsValue() : {};
-            const activeService =
-                currentFormValues.service || feature.service || ScraperServiceEnum.GENERIC;
             const { service: _s, changeDescription: _cd, ...configData } = currentFormValues;
             const configPayload =
                 Object.keys(configData).length > 0 ? configData : feature.config || {};
@@ -63,9 +68,10 @@ export const useFeatureTestRunner = ({ feature, configForm }: UseFeatureTestRunn
                     input: inputPayload,
                 },
                 successNotification: (res) => {
-                    setIsLoading(false);
                     const data = res?.data?.data || res?.data;
                     setTestResult(data);
+                    setIsLoading(false);
+
                     return {
                         type: MessageType.SUCCESS,
                         message: 'Thử nghiệm thành công',
@@ -74,6 +80,7 @@ export const useFeatureTestRunner = ({ feature, configForm }: UseFeatureTestRunn
                 errorNotification: (err) => {
                     setIsLoading(false);
                     setErrorMessage(err?.message || 'Đã xảy ra lỗi khi thử nghiệm');
+
                     return {
                         type: MessageType.ERROR,
                         message: 'Thử nghiệm thất bại',
