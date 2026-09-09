@@ -4,9 +4,9 @@ import type { IScrapingData } from '@/app/(root)/scraping/scraping-data/types';
 import type { Abstract } from '@/interfaces';
 
 export interface IDataProvider extends Abstract {
-    identifier: string;
     name: string;
     baseUrl: string;
+    identifier: string;
 
     // Relations
     scrapingData?: IScrapingData[];

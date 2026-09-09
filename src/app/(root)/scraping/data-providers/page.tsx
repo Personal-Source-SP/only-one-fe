@@ -95,29 +95,8 @@ const DataProviderPage = () => {
             name: 'search',
             type: 'input',
             isPrimary: true,
-            placeholder: 'Tìm kiếm nhà cung cấp...',
+            placeholder: 'Tìm kiếm theo tên nhà cung cấp',
             onChange: (value) => debouncedSearch(value?.toString() ?? ''),
-        },
-        {
-            name: 'status',
-            type: 'select',
-            placeholder: 'Trạng thái',
-            options: [
-                { label: 'Sẵn sàng', value: DataProviderStatus.READY },
-                { label: 'Lỗi', value: DataProviderStatus.ERROR },
-                { label: 'Đang kiểm tra', value: DataProviderStatus.TESTING },
-                { label: 'Chưa cấu hình', value: DataProviderStatus.UNCONFIGURED },
-            ],
-            onChange: (val) => {
-                setFilters([
-                    {
-                        field: 'status',
-                        operator: 'eq',
-                        value: val ?? undefined,
-                    },
-                ]);
-                setCurrentPage(1);
-            },
         },
     ];
 
