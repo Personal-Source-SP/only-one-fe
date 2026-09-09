@@ -1,6 +1,7 @@
 import { KEY_LOCAL_STORAGE, KEY_SESSION_STORAGE } from '@/constants';
 import { NBaseApi } from '@/interfaces';
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
+import { signOut } from 'next-auth/react';
 import { isEmpty } from 'lodash';
 
 export class BaseApi {
@@ -66,7 +67,7 @@ export class BaseApi {
                             sessionStorage.setItem(KEY_SESSION_STORAGE.RETURN_URL, currentPath);
                         }
 
-                        window.location.href = '/login';
+                        signOut({ redirect: true, callbackUrl: '/login' });
                     }
                 }
 

@@ -2,10 +2,13 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { isNumber } from 'lodash';
-import { CustomFilterType, MimeType, QualityMode, ViewFileMode } from '@/enums';
-import { useCustomData, useSelectGoogleFolder, useTableContainer } from '@/hooks';
-import { FileItem, FilterItem, NGoogle } from '@/interfaces';
+import { API_ENDPOINT } from '@/config';
+import { CustomFilterType, MimeType, ViewFileMode } from '@/enums';
+import { useCustomData, useCustomTable, useSelectGoogleFolder } from '@/hooks';
+import type { FileItem, FilterItem } from '@/interfaces';
 import { getDriveImageUrl, isExpiredToken } from '@/libs';
+import { QualityMode } from '../enums';
+import type { IGoogleAuth, IGoogleDriveFile } from './types';
 
 import { columnOptions, qualityModeOptions, viewModeOptions } from './constants';
 
@@ -20,10 +23,13 @@ export const usePhotosPage = () => {
     const [isLightboxOpen, setIsLightboxOpen] = useState<boolean>(false);
     const [currentPhotoIndex, setCurrentPhotoIndex] = useState<number>(0);
 
-    const tableContainerData = useTableContainer({
-        resource: 'google-file',
-        defaultFilters: [{ field: 'mimeType', operator: 'contains', value: MimeType.IMAGE }],
-    });
+    const { tableProps, tableQuery, debouncedSearch, setFilters, setCurrentPage } =
+        useCustomTable<IGoogleDriveFile>({
+            resource: API_ENDPOINT.GOOGLE_DRIVE.FILES,
+            filters: {
+                initial: [{ field: 'mimeType', operator: 'contains', value: MimeType.IMAGE }],
+            },
+        });
 
     const { result: googleAuthsResult, query: queryGoogleAuths } = useCustomData({
         url: 'google-auth',
@@ -34,18 +40,16 @@ export const usePhotosPage = () => {
         enabled: false,
     });
 
-    const { tableQuery, setCurrentPage, setFilters } = tableContainerData;
-
-    const googleDriveFiles = useMemo<NGoogle.IGoogleDriveFile[]>(() => {
+    const googleDriveFiles = useMemo<IGoogleDriveFile[]>(() => {
         if (!tableQuery?.data?.data?.length) return [];
 
-        return tableQuery.data.data as NGoogle.IGoogleDriveFile[];
+        return tableQuery.data.data as IGoogleDriveFile[];
     }, [tableQuery?.data?.data]);
 
     const googleAuthOptions = useMemo(() => {
         if (!googleAuthsResult?.data?.data?.length) return [];
 
-        return googleAuthsResult?.data?.data?.map((item: NGoogle.IGoogleAuth) => ({
+        return googleAuthsResult?.data?.data?.map((item: IGoogleAuth) => ({
             value: item.id,
             label: item.email,
         }));
@@ -55,7 +59,7 @@ export const usePhotosPage = () => {
         if (!googleAuthsResult?.data?.data?.length) return [];
 
         return googleAuthsResult?.data?.data?.filter(
-            (item: NGoogle.IGoogleAuth) => !isExpiredToken(item.googleExpiresAt),
+            (item: IGoogleAuth) => !isExpiredToken(item.googleExpiresAt),
         );
     }, [googleAuthsResult?.data?.data]);
 
@@ -65,7 +69,7 @@ export const usePhotosPage = () => {
         return googleDriveFiles?.map((file) => ({
             id: String(file.id ?? ''),
             mimeType: file.mimeType ?? '',
-            url: getDriveImageUrl(file as NGoogle.IGoogleDriveFile, qualityMode),
+            url: getDriveImageUrl(file as IGoogleDriveFile, qualityMode),
             lastModified: file.lastModified ?? new Date(),
             folderName: file.googleDriveFolder?.name ?? '',
         }));
@@ -161,8 +165,11 @@ export const usePhotosPage = () => {
 
     return {
         columns,
+        setColumns,
         viewMode,
+        setViewMode,
         qualityMode,
+        setQualityMode,
         isOpenSyncFile,
         setIsOpenSyncFile,
         isOpenSyncLocal,
@@ -170,7 +177,11 @@ export const usePhotosPage = () => {
         isLightboxOpen,
         setIsLightboxOpen,
         currentPhotoIndex,
-        tableContainerData,
+        tableProps,
+        tableQuery,
+        debouncedSearch,
+        setFilters,
+        setCurrentPage,
         googleDriveFiles,
         googleAuthNotExpired,
         photoItems,

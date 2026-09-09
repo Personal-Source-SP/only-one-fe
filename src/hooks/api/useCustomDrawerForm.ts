@@ -1,7 +1,7 @@
 import { getErrorNotification, getSuccessNotification, NotificationAction } from '@/utilities';
 import { useDrawerForm } from '@refinedev/antd';
 import type { BaseRecord, GetOneResponse, HttpError } from '@refinedev/core';
-import type { ButtonProps, FormInstance, FormProps } from '@/components/custom';
+import type { ButtonProps, FormInstance, FormProps } from '@/components/custom-antd';
 
 export type FormMode = 'create' | 'edit' | 'clone';
 

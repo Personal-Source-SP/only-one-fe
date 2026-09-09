@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { Breakpoint } from '@/components/custom';
+import type { Breakpoint } from '@/components/custom-antd';
 
 type Screens = Partial<Record<Breakpoint, boolean>>;
 

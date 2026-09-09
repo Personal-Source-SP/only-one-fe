@@ -1,6 +1,7 @@
 'use client';
 
-import { CustomAvatar, CustomButton, CustomCard, CustomSpace } from '@/components/custom';
+import { API_ENDPOINT } from '@/config';
+import { CustomAvatar, CustomButton, CustomCard, CustomSpace } from '@/components/custom-antd';
 import { NotificationTab, NotificationType } from '@/enums';
 import { useTableContainer } from '@/hooks';
 import { Notification } from '@/interfaces';
@@ -66,7 +67,7 @@ export const NotificationsPanel = ({ onClose }: NotificationsPanelProps) => {
     const [activeTab, setActiveTab] = useState<NotificationTab>(NotificationTab.ALL);
 
     const tableContainerData = useTableContainer({
-        resource: 'notifications',
+        resource: API_ENDPOINT.NOTIFICATIONS.BASE,
     });
 
     useEffect(() => {

@@ -1,11 +1,20 @@
 'use client';
 
-import { DataTableContainer, StatusTag } from '@/components/common';
-import { ColumnsType, CustomModal } from '@/components/custom';
-import { CustomFilterType, ScheduleJobTriggerType, ScheduleJobType, ScheduleType } from '@/enums';
-import { useTableContainer } from '@/hooks';
-import { FilterItem, NSchedule } from '@/interfaces';
+import { useMemo } from 'react';
+import {
+    FilterPanel,
+    ListTable,
+    ListWrapper,
+    StatusTag,
+    type IFilterField,
+} from '@/components/common';
+import { ColumnsType, CustomModal } from '@/components/custom-antd';
+import { API_ENDPOINT } from '@/config';
+import { useCustomTable } from '@/hooks';
 import { formatDate } from '@/libs';
+
+import { ScheduleJobTriggerType, ScheduleJobType, ScheduleType } from '../enums';
+import type { IScheduleJob } from '../types';
 
 type ViewScheduleJobListProps = {
     isOpen: boolean;
@@ -14,11 +23,11 @@ type ViewScheduleJobListProps = {
 };
 
 export const ViewScheduleJobList = ({ isOpen, scheduleId, onClose }: ViewScheduleJobListProps) => {
-    const tableContainerData = useTableContainer({
-        resource: `schedule-jobs/schedule/${scheduleId}`,
+    const { tableProps, tableQuery, setFilters } = useCustomTable<IScheduleJob>({
+        resource: API_ENDPOINT.SCHEDULES.JOBS(scheduleId),
     });
 
-    const columns: ColumnsType<NSchedule.IScheduleJob> = [
+    const columns: ColumnsType<IScheduleJob> = [
         {
             title: 'STT',
             key: 'index',
@@ -104,31 +113,46 @@ export const ViewScheduleJobList = ({ isOpen, scheduleId, onClose }: ViewSchedul
         },
     ];
 
-    const customFilterItems: FilterItem[] = [
-        {
-            span: 12,
-            allowClear: true,
-            field: 'triggerType',
-            title: 'Loại trigger',
-            type: CustomFilterType.SELECT,
-            options: [
-                { label: 'Tự động', value: ScheduleJobTriggerType.CRON },
-                { label: 'Thủ công', value: ScheduleJobTriggerType.MANUAL },
-            ],
-        },
-        {
-            span: 12,
-            allowClear: true,
-            title: 'Loại lịch biểu',
-            field: 'scheduleType',
-            type: CustomFilterType.SELECT,
-            options: [
-                { label: 'Toàn bộ', value: ScheduleType.GLOBAL },
-                { label: 'Đối tượng', value: ScheduleType.ITEM },
-                { label: 'Nhà cung cấp', value: ScheduleType.DATA_PROVIDER },
-            ],
-        },
-    ];
+    const filters = useMemo<IFilterField[]>(
+        () => [
+            {
+                name: 'triggerType',
+                type: 'select',
+                placeholder: 'Loại trigger',
+                options: [
+                    { label: 'Tự động', value: ScheduleJobTriggerType.CRON },
+                    { label: 'Thủ công', value: ScheduleJobTriggerType.MANUAL },
+                ],
+                onChange: (val) =>
+                    setFilters([
+                        {
+                            field: 'triggerType',
+                            operator: 'eq',
+                            value: val,
+                        },
+                    ]),
+            },
+            {
+                name: 'scheduleType',
+                type: 'select',
+                placeholder: 'Loại lịch biểu',
+                options: [
+                    { label: 'Toàn bộ', value: ScheduleType.GLOBAL },
+                    { label: 'Đối tượng', value: ScheduleType.ITEM },
+                    { label: 'Nhà cung cấp', value: ScheduleType.DATA_PROVIDER },
+                ],
+                onChange: (val) =>
+                    setFilters([
+                        {
+                            field: 'scheduleType',
+                            operator: 'eq',
+                            value: val,
+                        },
+                    ]),
+            },
+        ],
+        [setFilters],
+    );
 
     return (
         <CustomModal
@@ -141,14 +165,17 @@ export const ViewScheduleJobList = ({ isOpen, scheduleId, onClose }: ViewSchedul
                 title: 'Xem sự kiện lịch biểu thực thi',
             }}
         >
-            <DataTableContainer
-                columns={columns}
-                customFilterItems={customFilterItems}
-                title="Danh sách công việc lịch biểu"
-                description="Danh sách các công việc thuộc lịch biểu thực thi được chọn"
-                tableContainerData={tableContainerData}
-                loading={tableContainerData.tableQuery.isLoading}
-            />
+            <ListWrapper
+                error={tableQuery.error}
+                isLoading={tableQuery.isLoading}
+                filters={<FilterPanel fields={filters} />}
+            >
+                <ListTable<IScheduleJob>
+                    columns={columns}
+                    tableProps={tableProps}
+                    tableQuery={tableQuery}
+                />
+            </ListWrapper>
         </CustomModal>
     );
 };

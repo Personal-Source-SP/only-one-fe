@@ -8,6 +8,7 @@ import {
     KEY_SESSION_STORAGE,
     mapNextAuthSignInErrorMessage,
 } from '@/constants';
+import { env } from '@/config';
 import { ColorModeContextProvider } from '@/contexts/ColorModeContext';
 import { accessControlProvider } from '@/providers/access-control-provider';
 import { RestServer, createSessionAxiosInstance } from '@/providers/data-provider';
@@ -30,7 +31,7 @@ const App = ({ children, defaultMode }: PropsWithChildren<AppProps>) => {
     const to = usePathname();
     const router = useRouter();
     const isAuthPublicPage = AUTH_PUBLIC_PAGES.includes(to);
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL as string;
+    const apiUrl = env.apiUrl;
 
     const [sessionBootstrapComplete, setSessionBootstrapComplete] = useState(false);
 
@@ -55,6 +56,18 @@ const App = ({ children, defaultMode }: PropsWithChildren<AppProps>) => {
 
         const isTokenExpired = session?.expires ? dayjs(session.expires).isBefore(dayjs()) : false;
         if (isTokenExpired && !isAuthPublicPage) {
+            if (typeof window !== 'undefined') {
+                sessionStorage.setItem(KEY_SESSION_STORAGE.RETURN_URL, to);
+            }
+
+            signOut({
+                redirect: true,
+                callbackUrl: '/login',
+            });
+            return;
+        }
+
+        if (session?.user?.error === 'RefreshAccessTokenError' && !isAuthPublicPage) {
             if (typeof window !== 'undefined') {
                 sessionStorage.setItem(KEY_SESSION_STORAGE.RETURN_URL, to);
             }
@@ -161,7 +174,11 @@ const App = ({ children, defaultMode }: PropsWithChildren<AppProps>) => {
             return { success: true };
         },
         onError: async (error) => {
-            if (error.response?.status === 401) {
+            if (
+                error?.statusCode === 401 ||
+                error?.status === 401 ||
+                error?.response?.status === 401
+            ) {
                 return { logout: true };
             }
 
@@ -200,6 +217,7 @@ const App = ({ children, defaultMode }: PropsWithChildren<AppProps>) => {
                 authProvider={authProvider}
                 routerProvider={routerProvider}
                 accessControlProvider={accessControlProvider}
+                // eslint-disable-next-line react-compiler/react-compiler
                 notificationProvider={useNotificationProvider}
                 dataProvider={RestServer(apiUrl, createSessionAxiosInstance(session))}
                 resources={[

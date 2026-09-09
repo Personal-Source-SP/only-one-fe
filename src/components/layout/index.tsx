@@ -1,7 +1,8 @@
 'use client';
 
 import { Loading } from '@/components/common';
-import { CustomSpace } from '@/components/custom';
+import { env } from '@/config';
+import { CustomSpace } from '@/components/custom-antd';
 import { SIDEBAR_ITEMS } from '@/constants';
 import { useMainContext } from '@/contexts/MainContext';
 import { MessageType } from '@/enums';
@@ -58,10 +59,7 @@ export const MainLayout = ({ children }: PropsWithChildren) => {
         handleLoading(true);
 
         try {
-            const tokens = await exchangeCodeForTokens(
-                code,
-                process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URI as string,
-            );
+            const tokens = await exchangeCodeForTokens(code, env.googleRedirectUri as string);
 
             if (!tokens) {
                 handleMessage({ type: MessageType.ERROR, content: 'Lỗi khi lấy token Google' });
@@ -147,7 +145,7 @@ export const MainLayout = ({ children }: PropsWithChildren) => {
                 )}
 
                 <Suspense fallback={<Loading />}>
-                    <div className="flex min-h-0 w-full max-w-full flex-1 flex-col overflow-x-hidden overflow-y-auto mt-4">
+                    <div className="flex min-h-0 w-full max-w-full flex-1 flex-col overflow-x-hidden overflow-y-auto max-md:pt-[4.25rem] max-md:px-3 max-md:pb-4 md:mt-4">
                         <CustomSpace size="middle" direction="vertical" className="w-full flex-1">
                             {children}
                         </CustomSpace>

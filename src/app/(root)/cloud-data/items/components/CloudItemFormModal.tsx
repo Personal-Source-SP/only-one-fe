@@ -1,6 +1,6 @@
 'use client';
 
-import { CustomModalForm, CustomSelectInput, CustomUpload } from '@/components/custom-form';
+import { CustomModalForm, CustomSelectInput, CustomUpload } from '@/components/common';
 import type { UseCustomModalFormResponse } from '@/hooks';
 import { FormRuleType } from '@/utilities';
 import type { CloudItemFormValues, CloudItemRecord } from '@/app/(root)/cloud-data/items/types';

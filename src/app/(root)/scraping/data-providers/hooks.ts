@@ -1,54 +1,47 @@
 'use client';
 
-import { useCustomModalForm, useCustomTable, useSelectDataProvider } from '@/hooks';
-import type { DataProviderFormValues, DataProviderRecord } from './types';
+import { API_ENDPOINT } from '@/config';
+import { useCustomModalForm, useCustomTable } from '@/hooks';
+import type { DataProviderFormValues, IDataProvider } from './types';
 
 export const useDataProviderPage = () => {
     const { tableProps, tableQuery, debouncedSearch, setFilters, setCurrentPage } =
-        useCustomTable<DataProviderRecord>({
-            resource: 'data-providers',
+        useCustomTable<IDataProvider>({
+            resource: API_ENDPOINT.DATA_PROVIDERS.BASE,
         });
 
-    const { options: dataProviders } = useSelectDataProvider();
-
     const createModalForm = useCustomModalForm<
-        DataProviderRecord,
+        IDataProvider,
         DataProviderFormValues,
-        DataProviderRecord
+        IDataProvider
     >({
         action: 'create',
-        resource: 'data-providers',
+        resource: API_ENDPOINT.DATA_PROVIDERS.BASE,
         onMutationSuccess: async () => {
             await tableQuery.refetch();
         },
     });
 
-    const editModalForm = useCustomModalForm<
-        DataProviderRecord,
-        DataProviderFormValues,
-        DataProviderRecord
-    >({
+    const editModalForm = useCustomModalForm<IDataProvider, DataProviderFormValues, IDataProvider>({
         action: 'edit',
-        resource: 'data-providers',
+        resource: API_ENDPOINT.DATA_PROVIDERS.BASE,
         onMutationSuccess: async () => {
             await tableQuery.refetch();
         },
         initialValuesMapper: (record) => ({
             name: record.name,
-            identifier: record.identifier,
             baseUrl: record.baseUrl,
-            parentId: record.parentId,
+            identifier: record.identifier,
         }),
     });
 
     return {
         tableProps,
         tableQuery,
-        debouncedSearch,
-        setFilters,
-        setCurrentPage,
         createModalForm,
         editModalForm,
-        dataProviders,
+        setFilters,
+        setCurrentPage,
+        debouncedSearch,
     };
 };

@@ -1,6 +1,6 @@
 import { CodeDisplayProps } from '@/components/common';
 import { Option } from '@/interfaces';
-import type { FormInstance, Rule } from '@/components/custom';
+import type { FormInstance, Rule } from '@/components/custom-antd';
 import { ReactNode } from 'react';
 
 export type CustomCardPadding = 'sm' | 'lg' | 'none' | 'default' | 'responsive';

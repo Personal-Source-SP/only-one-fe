@@ -1,34 +1,83 @@
 'use client';
 
-import { useMemo } from 'react';
-import { EyeOutlined } from '@ant-design/icons';
+import { ColumnsType } from '@/components/custom-antd';
 import {
     FilterPanel,
     ListTable,
     ListWrapper,
+    StatusTag,
     type IFilterField,
-} from '@/components/custom-container';
+} from '@/components/common';
+import { formatDate } from '@/libs';
 
-import { columns } from './constants';
+import { ScheduleJobEventType } from './enums';
 import { useScheduleJobEventsPage } from './hooks';
 import { ViewJobEvent } from './components';
 import type { JobEventRecord } from './types';
 
-const ScheduleJobEventsPage = () => {
+const JobEvents = () => {
     const { tableProps, tableQuery, debouncedSearch, selectedJobEvent, setSelectedJobEvent } =
         useScheduleJobEventsPage();
 
-    const filters = useMemo<IFilterField[]>(
-        () => [
-            {
-                name: 'search',
-                type: 'input',
-                placeholder: 'Tìm kiếm sự kiện lịch biểu...',
-                onChange: (value) => debouncedSearch(value?.toString() ?? ''),
-            },
-        ],
-        [debouncedSearch],
-    );
+    const columns: ColumnsType<JobEventRecord> = [
+        {
+            title: 'STT',
+            key: 'index',
+            dataIndex: 'index',
+            width: 60,
+            align: 'center',
+            render: (_: any, __: any, index: number) => index + 1,
+        },
+        {
+            title: 'Loại sự kiện',
+            dataIndex: 'eventType',
+            key: 'eventType',
+            width: 150,
+            ellipsis: true,
+            render: (type: ScheduleJobEventType) => <StatusTag status={type} />,
+        },
+        {
+            title: 'Nội dung sự kiện',
+            dataIndex: 'eventMessage',
+            key: 'eventMessage',
+            width: 150,
+            ellipsis: true,
+            render: (eventMessage: string) => eventMessage ?? '---',
+        },
+        {
+            title: 'Bắt đầu',
+            dataIndex: 'startedAt',
+            key: 'startedAt',
+            width: 200,
+            sorter: true,
+            render: (startedAt: Date) => formatDate(startedAt),
+        },
+        {
+            title: 'Kết thúc',
+            dataIndex: 'finishedAt',
+            key: 'finishedAt',
+            width: 200,
+            sorter: true,
+            render: (finishedAt: Date) => formatDate(finishedAt),
+        },
+        {
+            title: 'Số lần thử',
+            dataIndex: 'retryCount',
+            key: 'retryCount',
+            width: 100,
+            align: 'center',
+            render: (retryCount: number) => retryCount ?? 0,
+        },
+    ];
+
+    const filters: IFilterField[] = [
+        {
+            name: 'search',
+            type: 'input',
+            placeholder: 'Tìm kiếm sự kiện lịch biểu...',
+            onChange: (value) => debouncedSearch(value?.toString() ?? ''),
+        },
+    ];
 
     return (
         <>
@@ -56,4 +105,4 @@ const ScheduleJobEventsPage = () => {
     );
 };
 
-export default ScheduleJobEventsPage;
+export default JobEvents;

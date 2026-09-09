@@ -2,6 +2,7 @@ import js from '@eslint/js';
 import typescriptEslint from '@typescript-eslint/eslint-plugin';
 import typescriptParser from '@typescript-eslint/parser';
 import noRelativeImportPaths from 'eslint-plugin-no-relative-import-paths';
+import reactCompiler from 'eslint-plugin-react-compiler';
 import prettier from 'eslint-plugin-prettier';
 import prettierConfig from 'eslint-config-prettier';
 import globals from 'globals';
@@ -30,9 +31,11 @@ export default [
         plugins: {
             '@typescript-eslint': typescriptEslint,
             'no-relative-import-paths': noRelativeImportPaths,
+            'react-compiler': reactCompiler,
             prettier: prettier,
         },
         rules: {
+            'react-compiler/react-compiler': 'error',
             'no-unused-vars': 'off',
             '@typescript-eslint/no-unused-vars': 'off',
             '@typescript-eslint/no-explicit-any': 'off',
@@ -63,13 +66,13 @@ export default [
                         {
                             name: 'antd',
                             message:
-                                'Import Ant Design only via @/components/custom (wrapper layer).',
+                                'Import Ant Design only via @/components/custom-antd (wrapper layer).',
                         },
                     ],
                     patterns: [
                         {
                             group: ['antd/*', 'antd/es/*'],
-                            message: 'Import antd subpaths only inside src/components/custom/**.',
+                            message: 'Import antd subpaths only inside src/components/custom-antd/**.',
                         },
                         {
                             group: [
@@ -78,12 +81,12 @@ export default [
                                 '@/hooks/*',
                                 '@/constants/*',
                                 '@/services/*',
-                                '@/components/custom/*',
+                                '@/components/custom-antd/*',
                                 '@/components/common/*',
                                 '@/components/module/*/*',
                             ],
                             message:
-                                'Import from barrel root (@/interfaces, @/enums, @/hooks, @/constants, @/services, @/components/custom, @/components/common, or @/components/module/<feature>).',
+                                'Import from barrel root (@/interfaces, @/enums, @/hooks, @/constants, @/services, @/components/custom-antd, @/components/common, or @/components/module/<feature>).',
                         },
                     ],
                 },
@@ -111,14 +114,28 @@ export default [
             'src/hooks/**/*.{ts,tsx}',
             'src/providers/**/*.{ts,tsx}',
             'src/interfaces/**/*.d.ts',
-            'src/components/custom/**/*.{ts,tsx}',
+            'src/components/custom-antd/**/*.{ts,tsx}',
         ],
         rules: {
             'no-restricted-syntax': 'off',
         },
     },
     {
-        files: ['src/components/custom/**/*.{ts,tsx}'],
+        files: ['src/app/**/*.{ts,tsx}'],
+        rules: {
+            'no-relative-import-paths/no-relative-import-paths': [
+                'error',
+                {
+                    allowSameFolder: true,
+                    allowedDepth: 2,
+                    rootDir: 'src',
+                    prefix: '@',
+                },
+            ],
+        },
+    },
+    {
+        files: ['src/components/custom-antd/**/*.{ts,tsx}'],
         rules: {
             'no-restricted-imports': [
                 'error',
@@ -135,7 +152,7 @@ export default [
                                 '@/components/module/*/*',
                             ],
                             message:
-                                'Import from barrel root (@/interfaces, @/enums, @/hooks, @/constants, @/services, @/components/custom, @/components/common, or @/components/module/<feature>).',
+                                'Import from barrel root (@/interfaces, @/enums, @/hooks, @/constants, @/services, @/components/custom-antd, @/components/common, or @/components/module/<feature>).',
                         },
                     ],
                 },

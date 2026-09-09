@@ -11,7 +11,7 @@ import {
     CustomSpace,
     CustomTag,
     CustomTooltip,
-} from '@/components/custom';
+} from '@/components/custom-antd';
 import {
     AppstoreOutlined,
     BgColorsOutlined,

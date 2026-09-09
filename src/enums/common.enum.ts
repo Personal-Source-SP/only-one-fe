@@ -10,10 +10,10 @@ export enum MimeType {
     OTHER = 'other',
 }
 
-export enum DataImportType {
-    ITEM = 'item',
-    DATA_PROVIDER = 'data-provider',
-    DATA_PROVIDER_ITEM = 'data-provider-item',
+export enum MediaType {
+    ALL = 'all',
+    IMAGE = 'image',
+    VIDEO = 'video',
 }
 
 export enum NotificationType {

@@ -1,7 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { MessageType, SimulationItemStatus } from '@/enums';
+import { API_ENDPOINT } from '@/config';
+import { MessageType } from '@/enums';
+import { SimulationItemStatus } from './enums';
 import {
     useCustomModalForm,
     useCustomMutationData,
@@ -19,7 +21,7 @@ export const useSimulationItemsPage = () => {
 
     const { tableProps, tableQuery, debouncedSearch, setFilters, setCurrentPage } =
         useCustomTable<SimulationItemRecord>({
-            resource: 'simulation-items',
+            resource: API_ENDPOINT.SIMULATION.ITEMS,
         });
 
     const createModalForm = useCustomModalForm<
@@ -28,7 +30,7 @@ export const useSimulationItemsPage = () => {
         SimulationItemRecord
     >({
         action: 'create',
-        resource: 'simulation-items',
+        resource: API_ENDPOINT.SIMULATION.ITEMS,
         onMutationSuccess: async () => {
             await tableQuery.refetch();
         },
@@ -50,7 +52,7 @@ export const useSimulationItemsPage = () => {
         SimulationItemRecord
     >({
         action: 'edit',
-        resource: 'simulation-items',
+        resource: API_ENDPOINT.SIMULATION.ITEMS,
         onMutationSuccess: async () => {
             await tableQuery.refetch();
         },
@@ -80,7 +82,7 @@ export const useSimulationItemsPage = () => {
         handleCustomMutationData({
             values: { status },
             method: 'put',
-            url: `simulation-items/${id}/action`,
+            url: API_ENDPOINT.SIMULATION.ACTION(id),
             successNotification: (data) => {
                 if (!data?.data?.isSuccess) {
                     setLoading(false);

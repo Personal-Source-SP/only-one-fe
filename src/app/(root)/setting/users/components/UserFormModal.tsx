@@ -1,6 +1,6 @@
 'use client';
 
-import { CustomInputForm, CustomModalForm, CustomSwitchForm } from '@/components/custom-form';
+import { CustomInputForm, CustomModalForm, CustomSwitchForm } from '@/components/common';
 import type { UseCustomModalFormResponse } from '@/hooks';
 import { FormRuleType } from '@/utilities';
 import type { UserFormValues, UserRecord } from '@/app/(root)/setting/users/types';

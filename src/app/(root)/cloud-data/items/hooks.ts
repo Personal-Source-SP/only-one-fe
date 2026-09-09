@@ -1,5 +1,6 @@
 'use client';
 
+import { API_ENDPOINT, RESOURCE } from '@/config';
 import { useCustomModalForm, useCustomTable, useSelectCloudDataProvider } from '@/hooks';
 import type { CloudItemFormValues, CloudItemRecord } from './types';
 
@@ -8,7 +9,7 @@ export const useCloudDataItemPage = () => {
 
     const { tableProps, tableQuery, debouncedSearch, setFilters, setCurrentPage } =
         useCustomTable<CloudItemRecord>({
-            resource: 'cloud-data-items',
+            resource: RESOURCE.CLOUD_DATA_ITEMS,
         });
 
     const createModalForm = useCustomModalForm<
@@ -17,7 +18,7 @@ export const useCloudDataItemPage = () => {
         CloudItemRecord
     >({
         action: 'create',
-        resource: 'cloud-data-items/upload',
+        resource: API_ENDPOINT.CLOUD_DATA_ITEMS.UPLOAD,
         onMutationSuccess: async () => {
             await tableQuery.refetch();
         },

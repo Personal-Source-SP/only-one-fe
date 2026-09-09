@@ -23,10 +23,9 @@ const searchData = (html) => {
       const product = {
         url: $element.find('a').attr('href') || '',
         title: $element.find('.product-title').text().trim() || '',
-        price: $element.find('.price').text().trim() || '',
-        currency: $element.find('.price').attr('currency') || 'USD',
         imageUrl: $element.find('img').attr('src') || '',
-        relativeUrl: $element.find('a').attr('href') || ''
+        relativeUrl: $element.find('a').attr('href') || '',
+        metadata: {}
       };
 
       results.push(product);
@@ -34,7 +33,34 @@ const searchData = (html) => {
 
     return results;
   } catch (error) {
-    console.error('Error scraping the HTML:', error);
+    console.error('Error searching the HTML:', error);
+    return null;
+  }
+};
+`;
+
+export const DEFAULT_SEARCH_API_FUNCTION_GENERATOR = `
+const searchData = async (data, axios) => {
+  try {
+    const items = Array.isArray(data?.items)
+      ? data.items
+      : Array.isArray(data?.data)
+      ? data.data
+      : Array.isArray(data)
+      ? data
+      : [];
+
+    const results = items.map((item) => ({
+      url: item?.url || item?.link || item?.productUrl || '',
+      title: item?.title || item?.name || '',
+      imageUrl: item?.imageUrl || item?.thumbnail || item?.image || '',
+      relativeUrl: item?.relativeUrl || '',
+      metadata: item?.metadata || {}
+    }));
+
+    return results;
+  } catch (error) {
+    console.error('Error searching the API data:', error?.message);
     return null;
   }
 };

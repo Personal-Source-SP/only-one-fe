@@ -5,15 +5,13 @@ import {
     CustomModalForm,
     CustomSelectInput,
     CustomSwitchForm,
-} from '@/components/custom-form';
-import { CloudDataProviderType } from '@/enums';
+} from '@/components/common';
 import type { UseCustomModalFormResponse } from '@/hooks';
 import { enumToOptions } from '@/libs';
 import { FormRuleType } from '@/utilities';
-import type {
-    CloudProviderFormValues,
-    CloudProviderRecord,
-} from '@/app/(root)/cloud-data/providers/types';
+
+import { CloudDataProviderType } from '../enums';
+import type { CloudProviderFormValues, CloudProviderRecord } from '../types';
 
 interface CloudProviderFormModalProps {
     modalForm: UseCustomModalFormResponse<

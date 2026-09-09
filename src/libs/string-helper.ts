@@ -20,3 +20,23 @@ export const formatFileSize = (bytes?: number): string => {
 
     return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
 };
+
+export const slugify = (text: string, maxLength?: number): string => {
+    if (!text) return '';
+
+    let slug = text
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[đĐ]/g, 'd')
+        .replace(/[^a-z0-9\s-]/g, '')
+        .trim()
+        .replace(/[\s_]+/g, '-')
+        .replace(/-+/g, '-');
+
+    if (maxLength && slug.length > maxLength) {
+        slug = slug.substring(0, maxLength);
+    }
+
+    return slug.replace(/^-+|-+$/g, '');
+};

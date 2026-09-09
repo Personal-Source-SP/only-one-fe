@@ -40,15 +40,3 @@ next-env.d.ts
 
 # vscode
 .vscode
-
-# AI project settings
-.agent/
-.agents/
-.claude/
-.cursor/
-
-# Openspec
-openspec/
-
-# Git Nexus
-.gitnexus/

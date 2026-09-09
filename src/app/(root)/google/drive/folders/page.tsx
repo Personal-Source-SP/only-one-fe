@@ -1,59 +1,123 @@
 'use client';
 
-import { ReactNode } from 'react';
 import { Icon } from '@iconify/react';
-import { DataTableContainer } from '@/components/common';
-import { CustomButton } from '@/components/custom';
-import { GoogleDriveType } from '@/enums';
-import { NGoogle } from '@/interfaces';
+import { ColumnsType, CustomButton } from '@/components/custom-antd';
+import {
+    FilterPanel,
+    ListTable,
+    ListWrapper,
+    type CardAction,
+    type IFilterField,
+} from '@/components/common';
+import { formatDate } from '@/libs';
+import { RESOURCE } from '@/config';
 
-import { columns, filterSearch } from './constants';
+import { GoogleDriveType } from '../enums';
 import { useGoogleFolderPage } from './hooks';
 import { FolderModal, SyncGoogleDrive } from './components';
+import type { GoogleFolderRecord } from './types';
 
 const FolderPage = () => {
     const {
+        tableProps,
+        tableQuery,
+        debouncedSearch,
         isOpenSyncFile,
         setIsOpenSyncFile,
-        tableContainerData,
         modalPropsData,
         folderOptions,
         queryFolderOptions,
     } = useGoogleFolderPage();
 
-    const actionItems = [
+    const columns: ColumnsType<GoogleFolderRecord> = [
         {
-            key: 'edit',
-            label: 'Chỉnh sửa',
-            icon: <Icon icon="lucide:edit" />,
-            onClick: (record: NGoogle.IGoogleDriveFolder) => modalPropsData?.show?.(record?.id),
+            title: 'Tên thư mục',
+            dataIndex: 'name',
+            key: 'name',
+            ellipsis: true,
+            sorter: true,
+        },
+        {
+            title: 'Ngày tạo',
+            dataIndex: 'createdAt',
+            key: 'createdAt',
+            sorter: true,
+            render: (createdAt: Date) => formatDate(createdAt),
+        },
+        {
+            key: 'lastModified',
+            title: 'Ngày chỉnh sửa',
+            dataIndex: 'lastModified',
+            sorter: true,
+            render: (lastModified: Date) => formatDate(lastModified),
+        },
+        {
+            key: 'isTrashed',
+            title: 'Đã xóa',
+            align: 'center',
+            dataIndex: 'isTrashed',
+            render: (isTrashed: boolean) =>
+                isTrashed ? (
+                    <Icon icon="lucide:check" className="w-full" />
+                ) : (
+                    <Icon icon="lucide:x" className="w-full" />
+                ),
+        },
+        {
+            key: 'isStarred',
+            title: 'Gắn sao',
+            align: 'center',
+            dataIndex: 'isStarred',
+            render: (isStarred: boolean) =>
+                isStarred ? (
+                    <Icon icon="lucide:check" className="w-full" />
+                ) : (
+                    <Icon icon="lucide:x" className="w-full" />
+                ),
         },
     ];
 
-    const actionButtons: ReactNode[] = [
-        <CustomButton
-            type="primary"
-            key="sync-google-drive"
-            title="Đồng bộ từ Google Drive"
-            icon={<Icon icon="ic:baseline-sync" />}
-            onClick={() => setIsOpenSyncFile(true)}
-        >
-            Đồng bộ
-        </CustomButton>,
+    const actions: CardAction[] = [
+        {
+            component: (
+                <CustomButton
+                    type="primary"
+                    key="sync-google-drive"
+                    title="Đồng bộ từ Google Drive"
+                    icon={<Icon icon="ic:baseline-sync" />}
+                    onClick={() => setIsOpenSyncFile(true)}
+                >
+                    Đồng bộ
+                </CustomButton>
+            ),
+        },
+    ];
+
+    const filters: IFilterField[] = [
+        {
+            name: 'search',
+            type: 'input',
+            placeholder: 'Tìm kiếm thư mục...',
+            onChange: (value) => debouncedSearch(value?.toString() ?? ''),
+        },
     ];
 
     return (
         <>
-            <DataTableContainer
-                columns={columns}
-                resource="google-folder"
-                title="Danh sách thư mục"
-                description="Quản lý các thư mục trong Google Drive"
-                actionButtons={actionButtons}
-                actionItems={actionItems}
-                tableContainerData={tableContainerData}
-                filterSearch={filterSearch}
-            />
+            <ListWrapper
+                actions={actions}
+                error={tableQuery.error}
+                isLoading={tableQuery.isLoading}
+                filters={<FilterPanel fields={filters} />}
+            >
+                <ListTable<GoogleFolderRecord>
+                    columns={columns}
+                    tableProps={tableProps}
+                    tableQuery={tableQuery}
+                    deleteResource={RESOURCE.GOOGLE_FOLDERS}
+                    onEdit={(record) => modalPropsData?.show?.(record?.id)}
+                />
+            </ListWrapper>
 
             <FolderModal
                 modalPropsData={modalPropsData}
@@ -67,7 +131,7 @@ const FolderPage = () => {
                 onClose={() => setIsOpenSyncFile(false)}
                 defaultFolderOptions={folderOptions || []}
                 queryLoading={queryFolderOptions?.isLoading}
-                onSuccess={() => tableContainerData?.tableQuery?.refetch()}
+                onSuccess={() => tableQuery?.refetch()}
             />
         </>
     );

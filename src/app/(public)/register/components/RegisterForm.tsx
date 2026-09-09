@@ -1,5 +1,5 @@
 import React from 'react';
-import { CustomButton, CustomForm, CustomInput } from '@/components/custom';
+import { CustomButton, CustomForm, CustomInput } from '@/components/custom-antd';
 import { AuthSocialLogin } from '@/app/(public)/_components/auth/AuthSocialLogin';
 import { useRegisterPage } from '@/app/(public)/register/hooks';
 

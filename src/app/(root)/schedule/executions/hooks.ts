@@ -1,7 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { MessageType, ScheduleType } from '@/enums';
+import { API_ENDPOINT } from '@/config';
+import { MessageType } from '@/enums';
+import { ScheduleType } from './enums';
 import {
     useCustomModalForm,
     useCustomMutationData,
@@ -26,7 +28,7 @@ export const useScheduleExecutionPage = () => {
 
     const { tableProps, tableQuery, debouncedSearch, setFilters, setCurrentPage } =
         useCustomTable<ScheduleExecutionRecord>({
-            resource: 'schedules',
+            resource: API_ENDPOINT.SCHEDULES.BASE,
         });
 
     const createModalForm = useCustomModalForm<
@@ -35,7 +37,7 @@ export const useScheduleExecutionPage = () => {
         ScheduleExecutionRecord
     >({
         action: 'create',
-        resource: 'schedules',
+        resource: API_ENDPOINT.SCHEDULES.BASE,
         onMutationSuccess: async () => {
             await tableQuery.refetch();
         },
@@ -47,7 +49,7 @@ export const useScheduleExecutionPage = () => {
         ScheduleExecutionRecord
     >({
         action: 'edit',
-        resource: 'schedules',
+        resource: API_ENDPOINT.SCHEDULES.BASE,
         onMutationSuccess: async () => {
             await tableQuery.refetch();
         },
@@ -79,7 +81,7 @@ export const useScheduleExecutionPage = () => {
         handleCustomMutationData({
             values: {},
             method: 'put',
-            url: `schedules/${id}/switch-status/${active}`,
+            url: API_ENDPOINT.SCHEDULES.SWITCH_STATUS(id, active),
             successNotification: (data) => {
                 if (!data?.data?.isSuccess) {
                     setLoading(false);
@@ -117,7 +119,7 @@ export const useScheduleExecutionPage = () => {
         handleCustomMutationData({
             values: {},
             method: 'post',
-            url: `schedules/${id}/manual-trigger`,
+            url: API_ENDPOINT.SCHEDULES.TRIGGER(id),
             successNotification: (data) => {
                 if (!data?.data?.isSuccess) {
                     setLoading(false);

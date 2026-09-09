@@ -1,4 +1,4 @@
-import { CustomButton, CustomDrawer } from '@/components/custom';
+import { CustomButton, CustomDrawer } from '@/components/custom-antd';
 import { SIDEBAR_ITEMS } from '@/constants';
 import { SidebarItem } from '@/interfaces';
 import { Icon } from '@iconify/react';

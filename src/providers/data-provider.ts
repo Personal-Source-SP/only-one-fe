@@ -4,6 +4,7 @@ import { CrudFilters, CrudOperators, CrudSorting, DataProvider, HttpError } from
 import axios, { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
 
 import { Session } from 'next-auth';
+import { getSession, signOut } from 'next-auth/react';
 import qs from 'query-string';
 
 const formatErrorMessage = (error: ApiError): string | null => {
@@ -73,6 +74,23 @@ export const getSessionToken = (session: Session | null): string | undefined => 
     return session?.user?.accessToken;
 };
 
+let isRefreshing = false;
+let failedQueue: Array<{
+    resolve: (token: string | null) => void;
+    reject: (error: any) => void;
+}> = [];
+
+const processQueue = (error: any, token: string | null = null) => {
+    failedQueue.forEach((prom) => {
+        if (error) {
+            prom.reject(error);
+        } else {
+            prom.resolve(token);
+        }
+    });
+    failedQueue = [];
+};
+
 export const createSessionAxiosInstance = (session: Session | null) => {
     const axiosInstance = axios.create();
 
@@ -111,25 +129,56 @@ export const createSessionAxiosInstance = (session: Session | null) => {
                 statusCode,
             };
 
-            let isRefreshing = false;
             const originalRequest = error.config;
 
             if (error?.response?.status === 401 && !originalRequest?._retry) {
                 if (originalRequest?.url?.includes('auth/')) {
-                    isRefreshing = false;
                     return Promise.reject(customError);
                 }
 
                 if (isRefreshing) {
-                    return new Promise(function (resolve, reject) {
-                        resolve(null);
+                    return new Promise((resolve, reject) => {
+                        failedQueue.push({ resolve, reject });
                     })
-                        .then(() => {
-                            return axios(originalRequest);
+                        .then((token) => {
+                            if (token && originalRequest.headers) {
+                                originalRequest.headers['Authorization'] = `Bearer ${token}`;
+                            }
+                            return axiosInstance(originalRequest);
                         })
                         .catch((err) => {
                             return Promise.reject(err);
                         });
+                }
+
+                originalRequest._retry = true;
+                isRefreshing = true;
+
+                try {
+                    const newSession = await getSession();
+                    const newAccessToken = newSession?.user?.accessToken;
+
+                    if (newAccessToken && !newSession?.user?.error) {
+                        processQueue(null, newAccessToken);
+                        if (originalRequest.headers) {
+                            originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
+                        }
+                        return axiosInstance(originalRequest);
+                    } else {
+                        processQueue(customError, null);
+                        if (typeof window !== 'undefined') {
+                            signOut({ redirect: true, callbackUrl: '/login' });
+                        }
+                        return Promise.reject(customError);
+                    }
+                } catch (refreshErr) {
+                    processQueue(refreshErr, null);
+                    if (typeof window !== 'undefined') {
+                        signOut({ redirect: true, callbackUrl: '/login' });
+                    }
+                    return Promise.reject(customError);
+                } finally {
+                    isRefreshing = false;
                 }
             }
 
@@ -138,6 +187,67 @@ export const createSessionAxiosInstance = (session: Session | null) => {
     );
 
     return axiosInstance;
+};
+
+export const unwrapResponseData = <T = any>(
+    payload: any,
+): { data: T; meta?: any; extraData?: any; total: number } => {
+    if (!payload) {
+        return { data: payload, total: 0 };
+    }
+
+    // Paginated: { data: T[], meta: { totalItems: number, ... }, links: { ... } }
+    if (Array.isArray(payload.data) && payload.meta) {
+        return {
+            data: payload.data,
+            meta: payload.meta,
+            extraData: payload.extraData,
+            total: payload.meta?.totalItems ?? payload.data.length,
+        };
+    }
+
+    // ResponseDto with array: { data: T[], isSuccess: boolean }
+    if (
+        Array.isArray(payload.data) &&
+        (payload.isSuccess !== undefined || payload.errors !== undefined)
+    ) {
+        return {
+            data: payload.data,
+            meta: payload.meta,
+            extraData: payload.extraData,
+            total: payload.meta?.totalItems ?? payload.data.length,
+        };
+    }
+
+    // ResponseDto with single entity: { data: T, isSuccess: boolean }
+    if (
+        payload.data !== undefined &&
+        (payload.isSuccess !== undefined || payload.errors !== undefined)
+    ) {
+        return {
+            data: payload.data,
+            meta: payload.meta,
+            extraData: payload.extraData,
+            total: 1,
+        };
+    }
+
+    // Raw array
+    if (Array.isArray(payload)) {
+        return {
+            data: payload as unknown as T,
+            total: payload.length,
+        };
+    }
+
+    // Fallback
+    const unwrapped = payload.data !== undefined ? payload.data : payload;
+    return {
+        data: unwrapped,
+        meta: payload.meta,
+        extraData: payload.extraData,
+        total: payload.total ?? (Array.isArray(unwrapped) ? unwrapped.length : 1),
+    };
 };
 
 export const RestServer = (
@@ -165,17 +275,22 @@ export const RestServer = (
             `${url}?${qs.stringify(queryPagination)}&${qs.stringify(queryFilters)}`,
         );
 
+        const unwrapped = unwrapResponseData(apiResponseData);
+
         return {
-            data: apiResponseData.data,
-            meta: apiResponseData.meta,
-            extraData: apiResponseData.extraData,
-            total: apiResponseData.meta?.totalItems || apiResponseData.data?.length || 0,
+            data: unwrapped.data,
+            meta: unwrapped.meta,
+            extraData: unwrapped.extraData,
+            total: unwrapped.total,
         };
     },
 
     getMany: async ({ resource, ids }) => {
-        const { data } = await httpClient.get(`${apiUrl}/${resource}?${qs.stringify({ id: ids })}`);
-        return { data };
+        const { data: apiResponseData } = await httpClient.get(
+            `${apiUrl}/${resource}?${qs.stringify({ id: ids })}`,
+        );
+        const unwrapped = unwrapResponseData(apiResponseData);
+        return { data: unwrapped.data };
     },
 
     create: async ({ resource, variables }) => {
@@ -211,8 +326,9 @@ export const RestServer = (
     },
 
     getOne: async ({ resource, id }) => {
-        const { data } = await httpClient.get(`${apiUrl}/${resource}/${id}`);
-        return { data: data.data };
+        const { data: apiResponseData } = await httpClient.get(`${apiUrl}/${resource}/${id}`);
+        const unwrapped = unwrapResponseData(apiResponseData);
+        return { data: unwrapped.data };
     },
 
     deleteOne: async ({ resource, id }) => {

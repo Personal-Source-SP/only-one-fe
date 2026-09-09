@@ -55,3 +55,7 @@ export const ALLOWED_IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.gif'];
 
 export const SERVER_IS_NOT_READY_MESSAGE = 'Server is not ready';
 export const DEFAULT_FILE_IMAGE_URL = '/images/default-file-image.png';
+
+export const DEFAULT_PAGE_INDEX = 1;
+export const DEFAULT_PAGE_SIZE = 10;
+export const DEFAULT_SORTERS = [{ field: 'createdAt', order: 'desc' as const }];

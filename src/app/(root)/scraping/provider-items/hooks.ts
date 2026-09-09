@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { API_ENDPOINT } from '@/config';
 import { MessageType } from '@/enums';
 import {
     useCustomModalForm,
@@ -24,7 +25,7 @@ export const useDataProviderItemPage = () => {
     const { handleCustomMutationData: handleUpdate } = useCustomMutationData();
     const { tableProps, tableQuery, debouncedSearch, setFilters, setCurrentPage } =
         useCustomTable<ProviderItemRecord>({
-            resource: 'data-provider-items',
+            resource: API_ENDPOINT.DATA_PROVIDER_ITEMS.BASE,
         });
 
     const createModalForm = useCustomModalForm<
@@ -33,7 +34,7 @@ export const useDataProviderItemPage = () => {
         ProviderItemRecord
     >({
         action: 'create',
-        resource: 'data-provider-items',
+        resource: API_ENDPOINT.DATA_PROVIDER_ITEMS.BASE,
         onMutationSuccess: async () => {
             await tableQuery.refetch();
         },
@@ -45,7 +46,7 @@ export const useDataProviderItemPage = () => {
         ProviderItemRecord
     >({
         action: 'edit',
-        resource: 'data-provider-items',
+        resource: API_ENDPOINT.DATA_PROVIDER_ITEMS.BASE,
         onMutationSuccess: async () => {
             await tableQuery.refetch();
         },
