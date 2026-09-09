@@ -1,9 +1,12 @@
 import process from 'node:process';
 
+const isTurbopack = Boolean(process.env.TURBOPACK);
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+    reactCompiler: true,
     experimental: {
-        reactCompiler: true,
+        ...(isTurbopack ? { turbopackRustReactCompiler: true } : {}),
         optimizePackageImports: [
             'antd',
             '@ant-design/icons',
@@ -13,6 +16,9 @@ const nextConfig = {
             'lodash',
             'recharts',
             'dayjs',
+            'zustand',
+            '@monaco-editor/react',
+            'socket.io-client',
         ],
     },
     async rewrites() {
