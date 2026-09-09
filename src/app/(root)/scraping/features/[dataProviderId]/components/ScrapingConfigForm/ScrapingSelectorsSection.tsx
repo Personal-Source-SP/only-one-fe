@@ -14,20 +14,20 @@ import { ScraperServiceEnum } from '../../enums';
 import { FormDiffLabel } from '../FormDiffLabel';
 import type { IConfigVersion, IDataProviderFeature } from '../../types';
 
-export type SearchSelectorsSectionProps = {
-    feature: IDataProviderFeature;
+export type ScrapingSelectorsSectionProps = {
     isViewingHistory?: boolean;
+    feature: IDataProviderFeature;
     selectedVersion?: IConfigVersion | null;
     service?: string;
 };
 
-export const SearchSelectorsSection = ({
-    feature,
+export const ScrapingSelectorsSection = ({
     isViewingHistory,
+    feature,
     selectedVersion,
     service = ScraperServiceEnum.GENERIC,
-}: SearchSelectorsSectionProps) => {
-    const { hasWaitForSelector, hasBrowserSettings } = checkService(service);
+}: ScrapingSelectorsSectionProps) => {
+    const { hasDomSelectors, hasWaitForSelector, hasBrowserSettings } = checkService(service);
 
     return (
         <CustomFlex
@@ -40,41 +40,25 @@ export const SearchSelectorsSection = ({
                     Bộ chọn (Selectors) & Tùy chọn
                 </CustomTypography.Text>
             </CustomFlex>
-
             <CustomRow gutter={[16, 12]}>
-                <CustomCol xs={24} md={12}>
-                    <CustomForm.Item
-                        name="mainContentSelector"
-                        label={
-                            <FormDiffLabel
-                                fieldKey="mainContentSelector"
-                                label="Selector vùng chứa kết quả"
-                                feature={feature}
-                                selectedVersion={selectedVersion}
-                                isViewingHistory={isViewingHistory}
-                            />
-                        }
-                    >
-                        <CustomInput placeholder="Ví dụ: #search-results, .products-grid" />
-                    </CustomForm.Item>
-                </CustomCol>
-
-                <CustomCol xs={24} md={12}>
-                    <CustomForm.Item
-                        name="resultSelector"
-                        label={
-                            <FormDiffLabel
-                                fieldKey="resultSelector"
-                                label="Selector từng phần tử kết quả"
-                                feature={feature}
-                                selectedVersion={selectedVersion}
-                                isViewingHistory={isViewingHistory}
-                            />
-                        }
-                    >
-                        <CustomInput placeholder="Ví dụ: .product-item, article.card" />
-                    </CustomForm.Item>
-                </CustomCol>
+                {hasDomSelectors && (
+                    <CustomCol xs={24} md={12}>
+                        <CustomForm.Item
+                            name="mainContentSelector"
+                            label={
+                                <FormDiffLabel
+                                    label="Selector nội dung chính"
+                                    fieldKey="mainContentSelector"
+                                    isViewingHistory={isViewingHistory}
+                                    feature={feature}
+                                    selectedVersion={selectedVersion}
+                                />
+                            }
+                        >
+                            <CustomInput placeholder="Ví dụ: #product-detail, .item-list" />
+                        </CustomForm.Item>
+                    </CustomCol>
+                )}
 
                 {hasWaitForSelector && (
                     <CustomCol xs={24} md={12}>
@@ -82,15 +66,15 @@ export const SearchSelectorsSection = ({
                             name="waitForSelector"
                             label={
                                 <FormDiffLabel
-                                    fieldKey="waitForSelector"
                                     label="Selector chờ (Wait for selector)"
+                                    fieldKey="waitForSelector"
+                                    isViewingHistory={isViewingHistory}
                                     feature={feature}
                                     selectedVersion={selectedVersion}
-                                    isViewingHistory={isViewingHistory}
                                 />
                             }
                         >
-                            <CustomInput placeholder="Ví dụ: .search-results, #loaded" />
+                            <CustomInput placeholder="Ví dụ: .price-tag, #loaded" />
                         </CustomForm.Item>
                     </CustomCol>
                 )}
@@ -101,11 +85,11 @@ export const SearchSelectorsSection = ({
                             name="userAgent"
                             label={
                                 <FormDiffLabel
-                                    fieldKey="userAgent"
                                     label="User Agent tùy chỉnh"
+                                    fieldKey="userAgent"
+                                    isViewingHistory={isViewingHistory}
                                     feature={feature}
                                     selectedVersion={selectedVersion}
-                                    isViewingHistory={isViewingHistory}
                                 />
                             }
                         >

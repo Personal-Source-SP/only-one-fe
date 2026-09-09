@@ -22,6 +22,7 @@ import {
     FeatureLimitsSection,
 } from '../ConfigFormCommon';
 import { ScrapingBasicSection } from './ScrapingBasicSection';
+import { ScrapingSelectorsSection } from './ScrapingSelectorsSection';
 
 export type ScrapingConfigFormProps = {
     feature: IDataProviderFeature;
@@ -49,7 +50,8 @@ export const ScrapingConfigForm = ({
 
     const isDraft = useMemo(() => !feature.id, [feature.id]);
     const currentService = CustomForm.useWatch('service', form) || ScraperServiceEnum.GENERIC;
-    const { hasBrowserSettings } = checkService(currentService);
+    const { hasBrowserSettings, hasDomSelectors, hasWaitForSelector } =
+        checkService(currentService);
     const functionGenerator = CustomForm.useWatch('functionGenerator', form);
 
     const { handleCustomMutationData } = useCustomMutationData();
@@ -158,6 +160,15 @@ export const ScrapingConfigForm = ({
                     service={currentService}
                     onServiceChange={handleServiceChange}
                 />
+
+                {(hasDomSelectors || hasWaitForSelector || hasBrowserSettings) && (
+                    <ScrapingSelectorsSection
+                        isViewingHistory={isViewingHistory}
+                        feature={feature}
+                        selectedVersion={selectedVersion}
+                        service={currentService}
+                    />
+                )}
 
                 <FeatureLimitsSection
                     isViewingHistory={isViewingHistory}
