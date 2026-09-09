@@ -19,7 +19,7 @@ export const API_ENDPOINT = {
         BASE: prefix('data-provider-features'),
         ALL: prefix('data-provider-features/all'),
         BY_PROVIDER: (providerId: string | number) =>
-            prefix(`data-provider-features/data-providers/${providerId}`),
+            prefix(`data-provider-features/provider/${providerId}`),
         DETAIL: (id: string | number) => prefix(`data-provider-features/${id}`),
         TEST: prefix('data-provider-features/test'),
     },

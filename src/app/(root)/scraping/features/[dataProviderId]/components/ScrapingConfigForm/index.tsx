@@ -95,7 +95,7 @@ export const ScrapingConfigForm = ({
 
             const method = isDraft ? 'post' : 'put';
             const endpoint = isDraft
-                ? `data-provider-features/data-providers/${feature.dataProviderId}`
+                ? `data-provider-features/provider/${feature.dataProviderId}`
                 : `data-provider-features/${feature.id}`;
 
             const payload: Record<string, any> = {
