@@ -11,6 +11,7 @@ import { Icon } from '@iconify/react';
 import { checkService, FEATURE_SECTION_CONTAINER_CLASS } from '../../constants';
 import { DataProviderFeatureType, type ScraperServiceEnum } from '../../enums';
 import { FormDiffLabel } from './FormDiffLabel';
+import { SectionHeader } from './SectionHeader';
 import type { IConfigVersion, IDataProviderFeature } from '../../types';
 
 export type FeatureCodeSectionProps = {
@@ -40,9 +41,8 @@ export const FeatureCodeSection = ({
 
     return (
         <CustomFlex vertical className={FEATURE_SECTION_CONTAINER_CLASS}>
-            <CustomFlex align="center" gap="small" className="mb-3">
-                <Icon icon="lucide:code-2" className="text-hub-primary shrink-0" />
-                <CustomTypography.Text strong className="text-sm text-hub-title">
+            <SectionHeader
+                title={
                     <FormDiffLabel
                         label={label}
                         fieldKey="functionGenerator"
@@ -50,8 +50,10 @@ export const FeatureCodeSection = ({
                         selectedVersion={selectedVersion}
                         isViewingHistory={isViewingHistory}
                     />
-                </CustomTypography.Text>
-            </CustomFlex>
+                }
+                icon="lucide:code-2"
+                description="Hàm JavaScript xử lý dữ liệu trích xuất từ trang web hoặc phản hồi API"
+            />
             <CustomForm.Item
                 name="functionGenerator"
                 rules={[{ required: true, message: requiredMessage }]}

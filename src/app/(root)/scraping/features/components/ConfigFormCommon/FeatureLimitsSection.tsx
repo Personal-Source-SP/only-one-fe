@@ -12,6 +12,7 @@ import { Icon } from '@iconify/react';
 import { checkService, FEATURE_SECTION_CONTAINER_CLASS } from '../../constants';
 import type { ScraperServiceEnum } from '../../enums';
 import { FormDiffLabel } from './FormDiffLabel';
+import { SectionHeader } from './SectionHeader';
 import type { IConfigVersion, IDataProviderFeature } from '../../types';
 
 export type FeatureLimitsSectionProps = {
@@ -31,12 +32,11 @@ export const FeatureLimitsSection = ({
 
     return (
         <CustomFlex vertical className={FEATURE_SECTION_CONTAINER_CLASS}>
-            <CustomFlex align="center" gap="small" className="mb-3">
-                <Icon icon="lucide:repeat" className="text-hub-primary shrink-0" />
-                <CustomTypography.Text strong className="text-sm text-hub-title">
-                    Giới hạn & Thời gian chờ
-                </CustomTypography.Text>
-            </CustomFlex>
+            <SectionHeader
+                title="Giới hạn & Thời gian chờ"
+                icon="lucide:repeat"
+                description="Kiểm soát số lượng kết quả, số lần thử lại và thời gian timeout"
+            />
             <CustomRow gutter={[16, 12]}>
                 <CustomCol xs={24} sm={hasNetworkRetries ? 8 : 24}>
                     <CustomForm.Item

@@ -12,7 +12,7 @@ import { Icon } from '@iconify/react';
 import { FEATURE_SECTION_CONTAINER_CLASS, SCRAPER_SERVICE_OPTIONS } from '../../constants';
 import type { IConfigVersion, IDataProviderFeature } from '../../types';
 import type { ScraperServiceEnum } from '../../enums';
-import { FormDiffLabel } from '../ConfigFormCommon/FormDiffLabel';
+import { FormDiffLabel, SectionHeader } from '../ConfigFormCommon';
 
 export type ScrapingBasicSectionProps = {
     feature: IDataProviderFeature;
@@ -29,12 +29,11 @@ export const ScrapingBasicSection = ({
 }: ScrapingBasicSectionProps) => {
     return (
         <CustomFlex vertical className={FEATURE_SECTION_CONTAINER_CLASS}>
-            <CustomFlex align="center" gap="small" className="mb-3">
-                <Icon icon="lucide:settings-2" className="text-hub-primary shrink-0" />
-                <CustomTypography.Text strong className="text-sm text-hub-title">
-                    Cấu hình chung
-                </CustomTypography.Text>
-            </CustomFlex>
+            <SectionHeader
+                title="Cấu hình chung"
+                icon="lucide:settings-2"
+                description="Lựa chọn công cụ trích xuất (Service Engine) phù hợp cho tính năng"
+            />
             <CustomRow gutter={[16, 12]}>
                 <CustomCol span={24}>
                     <CustomForm.Item

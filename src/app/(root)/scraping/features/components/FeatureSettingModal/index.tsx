@@ -1,12 +1,14 @@
 'use client';
 
-import { CustomCol, CustomForm, CustomModal, CustomRow } from '@/components/custom-antd';
-import { useState } from 'react';
+import { CustomFlex, CustomForm, CustomModal, CustomTabs } from '@/components/custom-antd';
+import { MessageType } from '@/enums';
+import { useMessage } from '@/hooks';
+import { Icon } from '@iconify/react';
+import { useCallback, useMemo, useState } from 'react';
 import { DataProviderFeatureStatus } from '../../enums';
 import { useFeatureVersionManager } from '../../hooks';
 import type { IDataProviderFeature } from '../../types';
 import { getFeatureDefinition } from '../../utils';
-import { FeatureChangeLogSection } from '../ConfigFormCommon';
 import { FeatureTestTab } from '../FeatureTestTab';
 import { FeatureModalFooter } from './FeatureModalFooter';
 import { FeatureModalHeader } from './FeatureModalHeader';
@@ -27,7 +29,9 @@ export const FeatureSettingModal = ({
     onSwitchStatus,
 }: FeatureSettingModalProps) => {
     const [form] = CustomForm.useForm();
+    const { handleNotification } = useMessage();
     const [isSaving, setIsSaving] = useState<boolean>(false);
+    const [activeTabKey, setActiveTabKey] = useState<'config' | 'test'>('config');
 
     const isDraft = !feature.id;
     const def = getFeatureDefinition(feature.type);
@@ -47,6 +51,78 @@ export const FeatureSettingModal = ({
         form,
         onSuccess,
     });
+
+    const handleTabChange = useCallback(
+        async (nextKey: string) => {
+            if (nextKey === 'test') {
+                try {
+                    await form.validateFields();
+                    setActiveTabKey('test');
+                } catch {
+                    handleNotification({
+                        type: MessageType.WARNING,
+                        title: 'Cấu hình chưa hoàn tất',
+                        description:
+                            'Vui lòng kiểm tra và điền đầy đủ các trường bắt buộc trước khi kiểm thử.',
+                    });
+                }
+            } else {
+                setActiveTabKey(nextKey as 'config' | 'test');
+            }
+        },
+        [form, handleNotification],
+    );
+
+    const tabItems = useMemo(
+        () => [
+            {
+                key: 'config',
+                label: (
+                    <CustomFlex align="center" gap={6}>
+                        <Icon icon="lucide:settings-2" className="text-base" />
+                        <span className="font-medium">Cấu hình tính năng</span>
+                    </CustomFlex>
+                ),
+                children: (
+                    <div className="h-auto max-h-[70vh] lg:max-h-none lg:h-[calc(85vh-200px)] overflow-y-auto custom-scrollbar py-1 pr-1">
+                        <ConfigComponent
+                            feature={feature}
+                            form={form}
+                            selectedVersion={selectedVersion}
+                            isViewingHistory={isViewingHistory}
+                            onClose={onClose}
+                            onSuccess={onSuccess}
+                            externalSetIsSaving={setIsSaving}
+                        />
+                    </div>
+                ),
+            },
+            {
+                key: 'test',
+                label: (
+                    <CustomFlex align="center" gap={6}>
+                        <Icon icon="lucide:flask-conical" className="text-base" />
+                        <span className="font-medium">Thử nghiệm Sandbox</span>
+                    </CustomFlex>
+                ),
+                children: (
+                    <div className="h-auto max-h-[70vh] lg:max-h-none lg:h-[calc(85vh-200px)] overflow-y-auto custom-scrollbar py-1 pr-1">
+                        <FeatureTestTab feature={feature} configForm={form} />
+                    </div>
+                ),
+            },
+        ],
+        [
+            ConfigComponent,
+            feature,
+            form,
+            selectedVersion,
+            isViewingHistory,
+            onClose,
+            onSuccess,
+            setIsSaving,
+        ],
+    );
 
     return (
         <CustomModal
@@ -80,31 +156,7 @@ export const FeatureSettingModal = ({
                 />
             }
         >
-            <CustomRow gutter={[12, 12]}>
-                <CustomCol xs={24} lg={13} xl={14}>
-                    <div className="border border-hub-border/60 rounded-xl p-2.5 sm:p-3 h-auto max-h-[70vh] lg:max-h-none lg:h-[calc(85vh-180px)] overflow-y-auto custom-scrollbar">
-                        <ConfigComponent
-                            feature={feature}
-                            form={form}
-                            selectedVersion={selectedVersion}
-                            isViewingHistory={isViewingHistory}
-                            onClose={onClose}
-                            onSuccess={onSuccess}
-                            externalSetIsSaving={setIsSaving}
-                        />
-                    </div>
-                </CustomCol>
-                <CustomCol xs={24} lg={11} xl={10}>
-                    <div className="border border-hub-border/60 rounded-xl p-2.5 sm:p-3 h-auto max-h-[70vh] lg:max-h-none lg:h-[calc(85vh-180px)] overflow-y-auto custom-scrollbar flex flex-col gap-3">
-                        <FeatureTestTab feature={feature} configForm={form} />
-                        {!isDraft && (
-                            <CustomForm form={form} layout="vertical" component={false}>
-                                <FeatureChangeLogSection placeholder="Ví dụ: Cập nhật selector giá mới theo layout..." />
-                            </CustomForm>
-                        )}
-                    </div>
-                </CustomCol>
-            </CustomRow>
+            <CustomTabs activeKey={activeTabKey} onChange={handleTabChange} items={tabItems} />
         </CustomModal>
     );
 };

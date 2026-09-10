@@ -4,6 +4,8 @@ import { CustomFlex, CustomForm, CustomInput, CustomTypography } from '@/compone
 import { Icon } from '@iconify/react';
 import { FEATURE_SECTION_CONTAINER_CLASS } from '../../constants';
 
+import { SectionHeader } from './SectionHeader';
+
 export type FeatureChangeLogSectionProps = {
     placeholder?: string;
 };
@@ -13,12 +15,11 @@ export const FeatureChangeLogSection = ({
 }: FeatureChangeLogSectionProps) => {
     return (
         <CustomFlex vertical className={FEATURE_SECTION_CONTAINER_CLASS}>
-            <CustomFlex align="center" gap="small" className="mb-2">
-                <Icon icon="lucide:file-text" className="text-hub-primary shrink-0" />
-                <CustomTypography.Text strong className="text-sm text-hub-title">
-                    Mô tả thay đổi phiên bản (Change Log)
-                </CustomTypography.Text>
-            </CustomFlex>
+            <SectionHeader
+                title="Mô tả thay đổi phiên bản (Change Log)"
+                icon="lucide:file-text"
+                description="Ghi chú tóm tắt nội dung chỉnh sửa cấu hình cho lần lưu này"
+            />
             <CustomForm.Item
                 className="!mb-0"
                 name="changeDescription"

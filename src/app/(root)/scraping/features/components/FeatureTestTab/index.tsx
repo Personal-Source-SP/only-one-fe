@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback } from 'react';
-import { CustomForm, CustomSpace, type FormInstance } from '@/components/custom-antd';
+import { CustomCol, CustomForm, CustomRow, type FormInstance } from '@/components/custom-antd';
 import { useFeatureTestRunner } from '../../hooks';
 import type { IDataProviderFeature } from '../../types';
 import { TestInputSection } from './TestInputSection';
@@ -39,19 +39,22 @@ export const FeatureTestTab = ({ feature, configForm }: FeatureTestTabProps) => 
     }, [form, configForm, handleRunTest]);
 
     return (
-        <CustomSpace direction="vertical" size="middle" className="w-full">
-            <TestInputSection
-                form={form}
-                feature={feature}
-                configForm={configForm}
-                isLoading={isLoading}
-                isScraping={isScraping}
-                isTestHtmlContent={isTestHtmlContent}
-                onRunTest={onFormSubmit}
-                onToggleTestHtmlContent={setIsTestHtmlContent}
-            />
-
-            <TestResultSection testResult={testResult} errorMessage={errorMessage} />
-        </CustomSpace>
+        <CustomRow gutter={[16, 16]}>
+            <CustomCol xs={24} lg={10}>
+                <TestInputSection
+                    form={form}
+                    feature={feature}
+                    configForm={configForm}
+                    isLoading={isLoading}
+                    isScraping={isScraping}
+                    isTestHtmlContent={isTestHtmlContent}
+                    onRunTest={onFormSubmit}
+                    onToggleTestHtmlContent={setIsTestHtmlContent}
+                />
+            </CustomCol>
+            <CustomCol xs={24} lg={14}>
+                <TestResultSection testResult={testResult} errorMessage={errorMessage} />
+            </CustomCol>
+        </CustomRow>
     );
 };

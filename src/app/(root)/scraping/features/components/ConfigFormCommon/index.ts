@@ -4,3 +4,4 @@ export * from './FeatureChangeLogSection';
 export * from './FeatureCodeSection';
 export * from './FeatureLimitsSection';
 export * from './FormDiffLabel';
+export * from './SectionHeader';

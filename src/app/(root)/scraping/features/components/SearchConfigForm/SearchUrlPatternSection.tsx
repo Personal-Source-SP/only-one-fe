@@ -17,7 +17,7 @@ import {
     FEATURE_SECTION_CONTAINER_CLASS,
 } from '../../constants';
 import { ScraperServiceEnum } from '../../enums';
-import { FormDiffLabel } from '../ConfigFormCommon/FormDiffLabel';
+import { FormDiffLabel, SectionHeader } from '../ConfigFormCommon';
 import type { IConfigVersion, IDataProviderFeature } from '../../types';
 
 export type SearchUrlPatternSectionProps = {
@@ -39,12 +39,11 @@ export const SearchUrlPatternSection = ({
 
     return (
         <CustomFlex vertical className={FEATURE_SECTION_CONTAINER_CLASS}>
-            <CustomFlex align="center" gap="small" className="mb-3">
-                <Icon icon="lucide:search" className="text-hub-primary shrink-0" />
-                <CustomTypography.Text strong className="text-sm text-hub-title">
-                    Cấu hình đường dẫn tìm kiếm
-                </CustomTypography.Text>
-            </CustomFlex>
+            <SectionHeader
+                title="Cấu hình đường dẫn tìm kiếm"
+                icon="lucide:search"
+                description="Lựa chọn engine và định dạng mẫu URL tìm kiếm cho từ khóa"
+            />
 
             <CustomRow gutter={[16, 12]}>
                 <CustomCol span={24}>

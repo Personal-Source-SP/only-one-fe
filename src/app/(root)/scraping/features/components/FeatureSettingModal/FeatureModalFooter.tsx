@@ -4,6 +4,8 @@ import { useMemo } from 'react';
 import {
     CustomButton,
     CustomFlex,
+    CustomForm,
+    CustomInput,
     CustomPopconfirm,
     CustomSelect,
     CustomSpace,
@@ -93,7 +95,28 @@ export const FeatureModalFooter = ({
                     />
                 )}
             </CustomFlex>
-            <CustomFlex align="center" gap="small" className="ml-auto">
+            <CustomFlex align="center" gap="small" className="ml-auto flex-wrap">
+                {!isDraft && !isViewingHistory && (
+                    <CustomForm form={form} component={false}>
+                        <CustomForm.Item
+                            className="!m-0"
+                            name="changeDescription"
+                            rules={[{ required: true, message: 'Vui lòng nhập mô tả thay đổi' }]}
+                        >
+                            <CustomInput
+                                className="w-60 sm:w-72"
+                                placeholder="Lý do thay đổi phiên bản..."
+                                prefix={
+                                    <Icon
+                                        icon="lucide:file-pen-line"
+                                        className="text-hub-subtitle"
+                                    />
+                                }
+                            />
+                        </CustomForm.Item>
+                    </CustomForm>
+                )}
+
                 {!isDraft && !!versions.length && (
                     <CustomPopconfirm
                         cancelText="Hủy"

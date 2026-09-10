@@ -8,8 +8,9 @@ import {
     CustomTag,
     CustomTypography,
 } from '@/components/custom-antd';
-import { Icon } from '@iconify/react';
+import { FEATURE_SECTION_CONTAINER_CLASS } from '../../constants';
 import type { FeatureTestResult } from '../../types';
+import { SectionHeader } from '../ConfigFormCommon';
 
 export type TestResultSectionProps = {
     testResult: FeatureTestResult | null;
@@ -28,21 +29,14 @@ export const TestResultSection = ({ testResult, errorMessage }: TestResultSectio
                 />
             )}
 
-            <CustomFlex vertical className="bg-hub-section/20 rounded-xl p-4 w-full">
-                <CustomFlex align="center" justify="space-between" className="mb-3 w-full">
-                    <CustomFlex align="center" gap="small">
-                        <Icon icon="lucide:code" className="text-hub-primary" />
-                        <CustomTypography.Text strong className="text-sm text-hub-title">
-                            Kết quả trích xuất (Execution Output)
-                        </CustomTypography.Text>
-                    </CustomFlex>
-
-                    {testResult && (
-                        <CustomTag color="success" className="font-medium m-0">
-                            Thành công
-                        </CustomTag>
-                    )}
-                </CustomFlex>
+            <CustomFlex vertical className={FEATURE_SECTION_CONTAINER_CLASS}>
+                <SectionHeader
+                    title="Kết quả trích xuất"
+                    icon="lucide:code"
+                    description="Dữ liệu JSON thực thi từ hàm functionGenerator trong môi trường Sandbox"
+                    badge={testResult ? 'Thành công' : undefined}
+                    badgeColor="success"
+                />
 
                 {testResult ? (
                     <CodeDisplay language="json" code={JSON.stringify(testResult, null, 2)} />

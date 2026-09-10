@@ -13,8 +13,10 @@ import {
 } from '@/components/custom-antd';
 import { DEFAULT_HTML_CONTENT_STRING } from '@/constants';
 import { Icon } from '@iconify/react';
+import { FEATURE_SECTION_CONTAINER_CLASS } from '../../constants';
 import { ScraperServiceEnum } from '../../enums';
 import type { IDataProviderFeature, ISearchTargetConfig } from '../../types';
+import { SectionHeader } from '../ConfigFormCommon';
 
 export type TestInputSectionProps = {
     form: FormInstance;
@@ -62,50 +64,42 @@ export const TestInputSection = ({
                 htmlContentString: DEFAULT_HTML_CONTENT_STRING,
             }}
         >
-            <CustomFlex vertical gap="middle" className="bg-hub-section/20 rounded-xl p-4 w-full">
-                <CustomFlex
-                    align="center"
-                    justify="space-between"
-                    wrap="wrap"
-                    gap="middle"
-                    className="w-full"
-                >
-                    <CustomFlex align="center" gap="small">
-                        <Icon icon="lucide:terminal" className="text-hub-primary" />
-                        <CustomTypography.Text strong className="text-sm text-hub-title">
-                            Dữ liệu đầu vào thử nghiệm (Test Payload)
-                        </CustomTypography.Text>
-                    </CustomFlex>
-
-                    {isGeneric && (
-                        <CustomSegmented
-                            value={isTestHtmlContent ? 'html' : 'input'}
-                            onChange={(value) => onToggleTestHtmlContent(value === 'html')}
-                            options={[
-                                {
-                                    value: 'input',
-                                    label: isScraping ? 'URL trực tiếp' : 'Từ khóa tìm kiếm',
-                                    icon: (
-                                        <Icon
-                                            icon={isScraping ? 'lucide:link' : 'lucide:search'}
-                                            className="inline mr-1 text-xs"
-                                        />
-                                    ),
-                                },
-                                {
-                                    value: 'html',
-                                    label: 'HTML giả lập',
-                                    icon: (
-                                        <Icon
-                                            icon="lucide:file-code-2"
-                                            className="inline mr-1 text-xs"
-                                        />
-                                    ),
-                                },
-                            ]}
-                        />
-                    )}
-                </CustomFlex>
+            <CustomFlex vertical className={FEATURE_SECTION_CONTAINER_CLASS}>
+                <SectionHeader
+                    title="Dữ liệu đầu vào thử nghiệm"
+                    icon="lucide:terminal"
+                    description="Cung cấp URL hoặc từ khóa tìm kiếm để kiểm tra logic bóc tách"
+                    extra={
+                        isGeneric ? (
+                            <CustomSegmented
+                                value={isTestHtmlContent ? 'html' : 'input'}
+                                onChange={(value) => onToggleTestHtmlContent(value === 'html')}
+                                options={[
+                                    {
+                                        value: 'input',
+                                        label: isScraping ? 'URL trực tiếp' : 'Từ khóa',
+                                        icon: (
+                                            <Icon
+                                                icon={isScraping ? 'lucide:link' : 'lucide:search'}
+                                                className="inline mr-1 text-xs"
+                                            />
+                                        ),
+                                    },
+                                    {
+                                        value: 'html',
+                                        label: 'HTML giả lập',
+                                        icon: (
+                                            <Icon
+                                                icon="lucide:file-code-2"
+                                                className="inline mr-1 text-xs"
+                                            />
+                                        ),
+                                    },
+                                ]}
+                            />
+                        ) : undefined
+                    }
+                />
 
                 <CustomSpace direction="vertical" size="small" className="w-full">
                     {!isTestHtmlContent || !isGeneric ? (

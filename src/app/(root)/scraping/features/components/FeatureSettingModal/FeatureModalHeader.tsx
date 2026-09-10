@@ -44,24 +44,31 @@ export const FeatureModalHeader = ({
     const renderChangeTypeTag = useCallback((changeType?: ConfigVersionType) => {
         if (!changeType) return null;
 
-        let label = 'Chỉnh sửa thủ công';
+        let color = 'blue';
         let icon = 'lucide:edit-3';
+        let label = 'Chỉnh sửa thủ công';
 
         switch (changeType) {
-            case ConfigVersionType.AI_GENERATED:
-                label = 'AI tạo';
+            case ConfigVersionType.AI_GENERATED: {
+                color = 'purple';
                 icon = 'lucide:sparkles';
+                label = 'AI tạo';
                 break;
-            case ConfigVersionType.ROLLBACK:
-                label = 'Khôi phục';
+            }
+
+            case ConfigVersionType.ROLLBACK: {
+                color = 'orange';
                 icon = 'lucide:history';
+                label = 'Khôi phục';
                 break;
+            }
+
             default:
                 break;
         }
 
         return (
-            <CustomTag color="#108ee9" className="flex items-center gap-1 m-0">
+            <CustomTag color={color} className="flex items-center gap-1 m-0">
                 <Icon icon={icon} className="w-3 h-3" />
                 {label}
             </CustomTag>
@@ -99,7 +106,7 @@ export const FeatureModalHeader = ({
                 {!isDraft && selectedVersion && (
                     <CustomFlex align="center" gap="small" wrap>
                         {authorName && (
-                            <CustomTag color="#108ee9" className="flex items-center gap-1 m-0">
+                            <CustomTag color="default" className="flex items-center gap-1 m-0">
                                 <Icon icon="lucide:user" className="w-3 h-3" />
                                 {authorName}
                             </CustomTag>
@@ -108,7 +115,7 @@ export const FeatureModalHeader = ({
                         {renderChangeTypeTag(selectedVersion.changeType)}
 
                         {selectedVersion.createdAt && (
-                            <CustomTag color="#108ee9" className="flex items-center gap-1 m-0">
+                            <CustomTag color="default" className="flex items-center gap-1 m-0">
                                 <Icon icon="lucide:clock" className="w-3 h-3" />
                                 {formatDate(selectedVersion.createdAt)}
                             </CustomTag>

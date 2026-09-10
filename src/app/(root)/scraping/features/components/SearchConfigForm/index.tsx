@@ -8,7 +8,6 @@ import { checkService, DEFAULT_SEARCH_TARGET_CONFIG } from '../../constants';
 import { ScraperServiceEnum } from '../../enums';
 import type { FeatureConfigFormProps, SearchConfigFormValues } from '../../types';
 import {
-    ConfigGroupContainer,
     FeatureAdvancedSection,
     FeatureCodeSection,
     FeatureLimitsSection,
@@ -168,63 +167,47 @@ export const SearchConfigForm = ({
     return (
         <CustomForm form={form} layout="vertical" onFinish={handleSave}>
             <CustomFlex vertical gap="middle" className="w-full">
-                <ConfigGroupContainer
-                    title="Cấu hình tính năng tìm kiếm"
-                    description="Các tham số đặc thù định tuyến URL và bóc tách kết quả tìm kiếm"
-                    badge="Đặc thù"
-                    badgeColor="blue"
-                    icon="lucide:search"
-                >
-                    <SearchUrlPatternSection
-                        service={currentService}
-                        feature={feature}
-                        selectedVersion={selectedVersion}
-                        isViewingHistory={isViewingHistory}
-                        onServiceChange={handleServiceChange}
-                    />
+                <SearchUrlPatternSection
+                    service={currentService}
+                    feature={feature}
+                    selectedVersion={selectedVersion}
+                    isViewingHistory={isViewingHistory}
+                    onServiceChange={handleServiceChange}
+                />
 
-                    {hasSearchSelectors && (
-                        <SearchSelectorsSection
-                            service={currentService}
-                            feature={feature}
-                            selectedVersion={selectedVersion}
-                            isViewingHistory={isViewingHistory}
-                        />
-                    )}
-                </ConfigGroupContainer>
-
-                <ConfigGroupContainer
-                    title="Cấu hình hệ thống & Thực thi"
-                    description="Các tham số dùng chung về giới hạn, mạng, trình duyệt và bộ parser"
-                    badge="Dùng chung"
-                    badgeColor="purple"
-                    icon="lucide:settings-2"
-                >
-                    <FeatureLimitsSection
+                {hasSearchSelectors && (
+                    <SearchSelectorsSection
                         service={currentService}
                         feature={feature}
                         selectedVersion={selectedVersion}
                         isViewingHistory={isViewingHistory}
                     />
+                )}
 
-                    {(hasBrowserSettings || hasAdvancedHeaders) && (
-                        <FeatureAdvancedSection
-                            service={currentService}
-                            feature={feature}
-                            selectedVersion={selectedVersion}
-                            isViewingHistory={isViewingHistory}
-                        />
-                    )}
+                <FeatureLimitsSection
+                    service={currentService}
+                    feature={feature}
+                    selectedVersion={selectedVersion}
+                    isViewingHistory={isViewingHistory}
+                />
 
-                    <FeatureCodeSection
-                        form={form}
+                {(hasBrowserSettings || hasAdvancedHeaders) && (
+                    <FeatureAdvancedSection
                         service={currentService}
-                        functionGenerator={functionGenerator}
                         feature={feature}
                         selectedVersion={selectedVersion}
                         isViewingHistory={isViewingHistory}
                     />
-                </ConfigGroupContainer>
+                )}
+
+                <FeatureCodeSection
+                    form={form}
+                    service={currentService}
+                    functionGenerator={functionGenerator}
+                    feature={feature}
+                    selectedVersion={selectedVersion}
+                    isViewingHistory={isViewingHistory}
+                />
             </CustomFlex>
         </CustomForm>
     );
