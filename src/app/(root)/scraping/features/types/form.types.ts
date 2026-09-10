@@ -14,26 +14,6 @@ export type FeatureConfigFormProps = {
     externalSetIsSaving?: (loading: boolean) => void;
 };
 
-export interface UseFeatureConfigFormOptions<TValues extends ScrapingConfigFormValues> {
-    feature: IDataProviderFeature;
-    form: FormInstance;
-    selectedVersion?: IConfigVersion | null;
-    featureLabel?: string;
-    defaultTargetConfig?: Record<string, unknown>;
-    onClose: () => void;
-    onSuccess: () => void;
-    externalSetIsSaving?: (loading: boolean) => void;
-    extraInitialValues?: (config: Record<string, any>) => Partial<TValues>;
-    getDefaultTemplate?: (service: ScraperServiceEnum) => string;
-}
-
-export interface UseFeatureConfigFormReturn<TValues extends ScrapingConfigFormValues> {
-    isSaving: boolean;
-    isDraft: boolean;
-    handleSave: (values: TValues) => Promise<void>;
-    handleServiceChange: (service: ScraperServiceEnum) => void;
-}
-
 export interface ScrapingConfigFormValues extends Omit<
     Partial<ITargetConfig>,
     'headers' | 'cookies' | 'service'

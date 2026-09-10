@@ -1,17 +1,38 @@
 'use client';
 
+import type { FormInstance } from '@/components/custom-antd';
 import { MessageType } from '@/enums';
 import { useCustomMutationData } from '@/hooks';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { checkService, DEFAULT_TARGET_CONFIG } from '../constants';
 import { ScraperServiceEnum } from '../enums';
 import type {
+    IConfigVersion,
+    IDataProviderFeature,
     ScrapingConfigFormValues,
     TargetConfig,
-    UseFeatureConfigFormOptions,
-    UseFeatureConfigFormReturn,
 } from '../types';
 import { buildFeatureMutationPayload, mapConfigToBaseFormValues } from '../utils';
+
+export interface UseFeatureConfigFormOptions<TValues extends ScrapingConfigFormValues> {
+    form: FormInstance;
+    feature: IDataProviderFeature;
+    featureLabel?: string;
+    selectedVersion?: IConfigVersion | null;
+    defaultTargetConfig?: Record<string, unknown>;
+    onClose: () => void;
+    onSuccess: () => void;
+    externalSetIsSaving?: (loading: boolean) => void;
+    extraInitialValues?: (config: Record<string, any>) => Partial<TValues>;
+    getDefaultTemplate?: (service: ScraperServiceEnum) => string;
+}
+
+export interface UseFeatureConfigFormReturn<TValues extends ScrapingConfigFormValues> {
+    isDraft: boolean;
+    isSaving: boolean;
+    handleSave: (values: TValues) => Promise<void>;
+    handleServiceChange: (service: ScraperServiceEnum) => void;
+}
 
 export const useFeatureConfigForm = <TValues extends ScrapingConfigFormValues>({
     feature,
