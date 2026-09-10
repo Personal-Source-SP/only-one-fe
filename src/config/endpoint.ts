@@ -26,12 +26,12 @@ export const API_ENDPOINT = {
         TEST: prefix('data-provider-features/test'),
     },
     CONFIG_VERSION_FEATURES: {
-        BASE: prefix('config-version-features'),
-        VERSIONS: (featureId: string | number) => prefix(`config-version-features/${featureId}`),
+        BASE: prefix('config-versions'),
+        VERSIONS: (featureId: string | number) => prefix(`config-versions/${featureId}`),
         ROLLBACK: (featureId: string | number, versionId: string | number) =>
-            prefix(`config-version-features/${featureId}/rollback/${versionId}`),
+            prefix(`config-versions/${featureId}/rollback/${versionId}`),
         DELETE: (featureId: string | number, versionId: string | number) =>
-            prefix(`config-version-features/${featureId}/${versionId}`),
+            prefix(`config-versions/${featureId}/${versionId}`),
     },
     DATA_PROVIDER_ITEMS: {
         BASE: prefix('data-provider-items'),
