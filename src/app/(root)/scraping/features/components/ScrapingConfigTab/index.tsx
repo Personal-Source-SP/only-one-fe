@@ -22,6 +22,8 @@ export const ScrapingConfigTab = ({
     onSuccess,
     externalSetIsSaving,
 }: FeatureConfigFormProps) => {
+    const headers = CustomForm.useWatch('headers', form);
+    const cookies = CustomForm.useWatch('cookies', form);
     const functionGenerator = CustomForm.useWatch('functionGenerator', form);
     const currentService = CustomForm.useWatch('service', form) || ScraperServiceEnum.GENERIC;
 
@@ -68,7 +70,10 @@ export const ScrapingConfigTab = ({
 
                 {(hasBrowserSettings || hasAdvancedHeaders) && (
                     <FeatureAdvancedSection
+                        form={form}
                         service={currentService}
+                        headers={headers}
+                        cookies={cookies}
                         feature={feature}
                         selectedVersion={selectedVersion}
                         isViewingHistory={isViewingHistory}

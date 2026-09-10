@@ -42,6 +42,8 @@ export const FeatureCodeSection = ({
     return (
         <CustomFlex vertical className={FEATURE_SECTION_CONTAINER_CLASS}>
             <SectionHeader
+                icon="lucide:code-2"
+                description="Hàm JavaScript xử lý dữ liệu trích xuất từ trang web hoặc phản hồi API"
                 title={
                     <FormDiffLabel
                         label={label}
@@ -51,8 +53,6 @@ export const FeatureCodeSection = ({
                         isViewingHistory={isViewingHistory}
                     />
                 }
-                icon="lucide:code-2"
-                description="Hàm JavaScript xử lý dữ liệu trích xuất từ trang web hoặc phản hồi API"
             />
             <CustomForm.Item
                 name="functionGenerator"

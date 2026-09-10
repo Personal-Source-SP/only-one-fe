@@ -53,27 +53,6 @@ export const FeatureSettingModal = ({
         onSuccess,
     });
 
-    const handleTabChange = useCallback(
-        async (nextKey: string) => {
-            if (nextKey === 'test') {
-                try {
-                    await form.validateFields();
-                    setActiveTabKey('test');
-                } catch {
-                    handleNotification({
-                        type: MessageType.WARNING,
-                        title: 'Cấu hình chưa hoàn tất',
-                        description:
-                            'Vui lòng kiểm tra và điền đầy đủ các trường bắt buộc trước khi kiểm thử.',
-                    });
-                }
-            } else {
-                setActiveTabKey(nextKey as 'config' | 'test');
-            }
-        },
-        [form, handleNotification],
-    );
-
     const tabItems = useMemo(
         () => [
             {
@@ -123,6 +102,27 @@ export const FeatureSettingModal = ({
             onSuccess,
             setIsSaving,
         ],
+    );
+
+    const handleTabChange = useCallback(
+        async (nextKey: string) => {
+            if (nextKey === 'test') {
+                try {
+                    await form.validateFields();
+                    setActiveTabKey('test');
+                } catch {
+                    handleNotification({
+                        type: MessageType.WARNING,
+                        title: 'Cấu hình chưa hoàn tất',
+                        description:
+                            'Vui lòng kiểm tra và điền đầy đủ các trường bắt buộc trước khi kiểm thử.',
+                    });
+                }
+            } else {
+                setActiveTabKey(nextKey as 'config' | 'test');
+            }
+        },
+        [form, handleNotification],
     );
 
     return (
