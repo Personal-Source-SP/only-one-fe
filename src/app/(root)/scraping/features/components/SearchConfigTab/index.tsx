@@ -7,6 +7,7 @@ import { useFeatureConfigForm } from '../../hooks';
 import type { FeatureConfigFormProps, SearchConfigFormValues } from '../../types';
 import {
     FeatureAdvancedSection,
+    FeatureChangeLogSection,
     FeatureCodeSection,
     FeatureLimitsSection,
 } from '../ConfigFormCommon';
@@ -95,6 +96,8 @@ export const SearchConfigTab = ({
                     selectedVersion={selectedVersion}
                     isViewingHistory={isViewingHistory}
                 />
+
+                <FeatureChangeLogSection feature={feature} isViewingHistory={isViewingHistory} />
             </CustomFlex>
         </CustomForm>
     );

@@ -7,6 +7,7 @@ import { useFeatureConfigForm } from '../../hooks';
 import type { FeatureConfigFormProps, ScrapingConfigFormValues } from '../../types';
 import {
     FeatureAdvancedSection,
+    FeatureChangeLogSection,
     FeatureCodeSection,
     FeatureLimitsSection,
 } from '../ConfigFormCommon';
@@ -88,6 +89,8 @@ export const ScrapingConfigTab = ({
                     selectedVersion={selectedVersion}
                     isViewingHistory={isViewingHistory}
                 />
+
+                <FeatureChangeLogSection feature={feature} isViewingHistory={isViewingHistory} />
             </CustomFlex>
         </CustomForm>
     );

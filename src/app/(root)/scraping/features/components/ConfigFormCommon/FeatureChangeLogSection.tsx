@@ -1,24 +1,31 @@
 'use client';
 
-import { CustomFlex, CustomForm, CustomInput, CustomTypography } from '@/components/custom-antd';
+import { CustomFlex, CustomForm, CustomInput } from '@/components/custom-antd';
 import { Icon } from '@iconify/react';
 import { FEATURE_SECTION_CONTAINER_CLASS } from '../../constants';
-
+import type { IDataProviderFeature } from '../../types';
 import { SectionHeader } from './SectionHeader';
 
 export type FeatureChangeLogSectionProps = {
     placeholder?: string;
+    isViewingHistory?: boolean;
+    feature?: IDataProviderFeature;
 };
 
 export const FeatureChangeLogSection = ({
-    placeholder = 'Ví dụ: Cập nhật selector giá mới theo layout...',
+    placeholder = 'Lý do thay đổi phiên bản (ví dụ: Cập nhật selector giá mới theo layout...)',
+    isViewingHistory = false,
+    feature,
 }: FeatureChangeLogSectionProps) => {
+    const isDraft = !feature?.id;
+    if (isDraft || isViewingHistory) return null;
+
     return (
         <CustomFlex vertical className={FEATURE_SECTION_CONTAINER_CLASS}>
             <SectionHeader
+                icon="lucide:file-pen-line"
                 title="Mô tả thay đổi phiên bản (Change Log)"
-                icon="lucide:file-text"
-                description="Ghi chú tóm tắt nội dung chỉnh sửa cấu hình cho lần lưu này"
+                description="Ghi chú tóm tắt lý do cập nhật cấu hình cho snapshot phiên bản mới"
             />
             <CustomForm.Item
                 className="!mb-0"
@@ -30,7 +37,10 @@ export const FeatureChangeLogSection = ({
                     },
                 ]}
             >
-                <CustomInput placeholder={placeholder} />
+                <CustomInput
+                    placeholder={placeholder}
+                    prefix={<Icon icon="lucide:file-pen-line" className="text-hub-subtitle" />}
+                />
             </CustomForm.Item>
         </CustomFlex>
     );
