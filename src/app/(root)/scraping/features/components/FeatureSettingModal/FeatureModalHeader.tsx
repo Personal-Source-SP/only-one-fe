@@ -18,27 +18,27 @@ import { getFeatureDefinition } from '../../utils';
 
 export interface FeatureModalHeaderProps {
     isDraft: boolean;
-    feature: IDataProviderFeature;
+    form: FormInstance;
     authorName: string | null;
+    feature: IDataProviderFeature;
     selectedVersion: IConfigVersion | null;
-    form?: FormInstance;
     onSwitchStatus?: () => void;
 }
 
 export const FeatureModalHeader = ({
     isDraft,
-    feature,
-    authorName,
-    selectedVersion,
     form,
+    authorName,
+    feature,
+    selectedVersion,
     onSwitchStatus,
 }: FeatureModalHeaderProps) => {
     const def = getFeatureDefinition(feature.type);
     const providerName = feature.dataProvider?.name;
+
     const formService = CustomForm.useWatch('service', form);
-    const activeService = (formService ||
-        feature.service ||
-        ScraperServiceEnum.GENERIC) as ScraperServiceEnum;
+    const activeService = formService || feature.service || ScraperServiceEnum.GENERIC;
+
     const { meta } = checkService(activeService);
 
     const renderChangeTypeTag = useCallback((changeType?: ConfigVersionType) => {

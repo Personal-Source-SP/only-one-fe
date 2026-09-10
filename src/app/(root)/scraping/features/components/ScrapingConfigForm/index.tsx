@@ -1,13 +1,13 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { CustomFlex, CustomForm, type FormInstance } from '@/components/custom-antd';
+import { CustomFlex, CustomForm } from '@/components/custom-antd';
 import { DEFAULT_PARSER_FUNCTION_GENERATOR } from '@/constants';
 import { MessageType } from '@/enums';
 import { useCustomMutationData } from '@/hooks';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { checkService } from '../../constants';
 import { ScraperServiceEnum } from '../../enums';
-import type { IConfigVersion, IDataProviderFeature, ScrapingConfigFormValues } from '../../types';
+import type { FeatureConfigFormProps, ScrapingConfigFormValues } from '../../types';
 import {
     ConfigGroupContainer,
     FeatureAdvancedSection,
@@ -17,32 +17,19 @@ import {
 import { ScrapingBasicSection } from './ScrapingBasicSection';
 import { ScrapingSelectorsSection } from './ScrapingSelectorsSection';
 
-export type ScrapingConfigFormProps = {
-    feature: IDataProviderFeature;
-    form?: FormInstance;
-    isViewingHistory?: boolean;
-    selectedVersion?: IConfigVersion | null;
-    onClose: () => void;
-    onSuccess: () => void;
-    setIsSaving?: (loading: boolean) => void;
-};
-
 export const ScrapingConfigForm = ({
     feature,
-    form: externalForm,
+    form,
     isViewingHistory,
     selectedVersion,
     onClose,
     onSuccess,
-    setIsSaving: externalSetIsSaving,
-}: ScrapingConfigFormProps) => {
+    externalSetIsSaving,
+}: FeatureConfigFormProps) => {
     const { handleCustomMutationData } = useCustomMutationData();
 
-    const [internalForm] = CustomForm.useForm();
-    const form = externalForm || internalForm;
-
-    const currentService = CustomForm.useWatch('service', form) || ScraperServiceEnum.GENERIC;
     const functionGenerator = CustomForm.useWatch('functionGenerator', form);
+    const currentService = CustomForm.useWatch('service', form) || ScraperServiceEnum.GENERIC;
 
     const [isSaving, setIsSaving] = useState<boolean>(false);
     const { hasBrowserSettings, hasDomSelectors, hasWaitForSelector } =

@@ -183,7 +183,7 @@ const DataProviderFeaturesPage = () => {
                     </CustomRow>
                 )}
 
-                {modalState.open && modalState.feature && (
+                {modalState.feature && (
                     <FeatureSettingModal
                         open={modalState.open}
                         feature={modalState.feature}
@@ -193,7 +193,7 @@ const DataProviderFeaturesPage = () => {
                     />
                 )}
 
-                {historyModalState.open && historyModalState.feature && (
+                {historyModalState.feature && (
                     <FeatureHistoryModal
                         open={historyModalState.open}
                         feature={historyModalState.feature}

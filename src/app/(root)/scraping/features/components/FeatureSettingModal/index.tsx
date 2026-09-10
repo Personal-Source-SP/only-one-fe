@@ -90,7 +90,7 @@ export const FeatureSettingModal = ({
                                 isViewingHistory={isViewingHistory}
                                 onClose={onClose}
                                 onSuccess={onSuccess}
-                                setIsSaving={setIsSaving}
+                                externalSetIsSaving={setIsSaving}
                             />
                         ) : (
                             <div className="p-6 text-center text-hub-subtitle">

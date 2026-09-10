@@ -10,7 +10,7 @@ import {
     CustomTypography,
 } from '@/components/custom-antd';
 import { Icon } from '@iconify/react';
-import { FormDiffLabel } from '../FormDiffLabel';
+import { FormDiffLabel } from './FormDiffLabel';
 import type { IConfigVersion, IDataProviderFeature } from '../../types';
 
 export type FeatureAdvancedSectionProps = {

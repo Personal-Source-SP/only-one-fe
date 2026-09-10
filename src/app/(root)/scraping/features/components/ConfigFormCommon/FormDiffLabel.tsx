@@ -1,9 +1,8 @@
 'use client';
 
-import React from 'react';
 import { CustomFlex, CustomTag } from '@/components/custom-antd';
-import type { IConfigVersion, IDataProviderFeature } from '../types';
-import { getDifferenceText } from '../utils';
+import type { IConfigVersion, IDataProviderFeature } from '../../types';
+import { getDifferenceText } from '../../utils';
 
 export type FormDiffLabelProps = {
     label: string;
@@ -13,13 +12,13 @@ export type FormDiffLabelProps = {
     selectedVersion?: IConfigVersion | null;
 };
 
-export const FormDiffLabel: React.FC<FormDiffLabelProps> = ({
+export const FormDiffLabel = ({
     label,
     fieldKey,
     isViewingHistory,
     feature,
     selectedVersion,
-}) => {
+}: FormDiffLabelProps) => {
     const diffText = getDifferenceText(fieldKey, isViewingHistory, feature, selectedVersion);
     if (!diffText) return <>{label}</>;
 

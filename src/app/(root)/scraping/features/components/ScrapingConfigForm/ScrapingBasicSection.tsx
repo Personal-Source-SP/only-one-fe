@@ -11,7 +11,7 @@ import {
 import { Icon } from '@iconify/react';
 import { SCRAPER_SERVICE_OPTIONS } from '../../constants';
 import type { IConfigVersion, IDataProviderFeature } from '../../types';
-import { FormDiffLabel } from '../FormDiffLabel';
+import { FormDiffLabel } from '../ConfigFormCommon/FormDiffLabel';
 
 export type ScrapingBasicSectionProps = {
     feature: IDataProviderFeature;

@@ -13,7 +13,7 @@ import {
 import { Icon } from '@iconify/react';
 import { checkService, SCRAPER_SERVICE_OPTIONS } from '../../constants';
 import { ScraperServiceEnum } from '../../enums';
-import { FormDiffLabel } from '../FormDiffLabel';
+import { FormDiffLabel } from '../ConfigFormCommon/FormDiffLabel';
 import type { IConfigVersion, IDataProviderFeature } from '../../types';
 
 export type SearchUrlPatternSectionProps = {
