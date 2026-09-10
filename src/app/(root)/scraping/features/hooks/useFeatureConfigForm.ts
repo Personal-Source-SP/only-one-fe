@@ -104,12 +104,11 @@ export const useFeatureConfigForm = <TValues extends ScrapingConfigFormValues>({
             });
 
             try {
-                handleCustomMutationData({
+                await handleCustomMutationData({
                     method,
                     url: endpoint,
                     values: payload,
                     successNotification: () => {
-                        setIsSaving(false);
                         onSuccess();
                         onClose();
 
@@ -121,8 +120,6 @@ export const useFeatureConfigForm = <TValues extends ScrapingConfigFormValues>({
                         };
                     },
                     errorNotification: (error) => {
-                        setIsSaving(false);
-
                         return {
                             type: MessageType.ERROR,
                             description: error?.message,

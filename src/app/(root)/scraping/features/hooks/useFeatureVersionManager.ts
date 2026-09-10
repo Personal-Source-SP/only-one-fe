@@ -71,33 +71,35 @@ export const useFeatureVersionManager = ({
     }, [open, form, activeVersion]);
 
     const handleRollback = useCallback(
-        (targetVersionId?: number) => {
+        async (targetVersionId?: number) => {
             const vId = targetVersionId || selectedVersion?.versionId;
             if (!feature.id || !vId) return;
 
             setIsRollingBack(true);
-            handleCustomMutationData({
-                method: 'post',
-                url: API_ENDPOINT.CONFIG_VERSION_FEATURES.ROLLBACK(feature.id, vId),
-                successNotification: () => {
-                    onSuccess();
-                    setIsRollingBack(false);
-                    versionsQuery.refetch();
+            try {
+                await handleCustomMutationData({
+                    method: 'post',
+                    url: API_ENDPOINT.CONFIG_VERSION_FEATURES.ROLLBACK(feature.id, vId),
+                    successNotification: () => {
+                        onSuccess();
+                        versionsQuery.refetch();
 
-                    return {
-                        type: MessageType.SUCCESS,
-                        message: `Đã khôi phục về phiên bản v${vId}`,
-                    };
-                },
-                errorNotification: (error) => {
-                    setIsRollingBack(false);
-                    return {
-                        type: MessageType.ERROR,
-                        description: error?.message,
-                        message: 'Khôi phục phiên bản thất bại',
-                    };
-                },
-            });
+                        return {
+                            type: MessageType.SUCCESS,
+                            message: `Đã khôi phục về phiên bản v${vId}`,
+                        };
+                    },
+                    errorNotification: (error) => {
+                        return {
+                            type: MessageType.ERROR,
+                            description: error?.message,
+                            message: 'Khôi phục phiên bản thất bại',
+                        };
+                    },
+                });
+            } finally {
+                setIsRollingBack(false);
+            }
         },
         [feature, selectedVersion, versionsQuery, handleCustomMutationData, onSuccess],
     );
@@ -108,6 +110,7 @@ export const useFeatureVersionManager = ({
         selectedVersionId,
         isViewingHistory,
         isRollingBack,
+        isLoadingVersions: versionsQuery.isLoading,
         authorName,
         setSelectedVersionId,
         handleRollback,

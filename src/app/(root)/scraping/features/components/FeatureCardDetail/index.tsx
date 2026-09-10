@@ -11,6 +11,7 @@ import { FeatureHealthMetrics } from './FeatureHealthMetrics';
 
 export type FeatureCardProps = {
     feature: IDataProviderFeature;
+    isSwitchingStatus?: boolean;
     onOpenModal: (feature: IDataProviderFeature) => void;
     onOpenHistoryModal: (feature: IDataProviderFeature) => void;
     onSwitchStatus: (featureId: string, currentStatus: DataProviderFeatureStatus) => void;
@@ -18,6 +19,7 @@ export type FeatureCardProps = {
 
 export const FeatureCardDetail = ({
     feature,
+    isSwitchingStatus = false,
     onOpenModal,
     onOpenHistoryModal,
     onSwitchStatus,
@@ -65,6 +67,7 @@ export const FeatureCardDetail = ({
                     isReady={isReady}
                     feature={feature}
                     onSwitchStatus={handleSwitchStatus}
+                    isSwitchingStatus={isSwitchingStatus}
                 />
 
                 <FeatureHealthMetrics feature={feature} isReady={isReady} isError={isError} />

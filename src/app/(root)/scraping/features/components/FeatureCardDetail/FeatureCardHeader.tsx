@@ -11,6 +11,7 @@ type FeatureCardHeaderProps = {
     isReady: boolean;
     feature: IDataProviderFeature;
     meta?: FeatureDefinition;
+    isSwitchingStatus?: boolean;
     onSwitchStatus: () => void;
 };
 
@@ -18,6 +19,7 @@ export const FeatureCardHeader = ({
     isReady,
     feature,
     meta,
+    isSwitchingStatus = false,
     onSwitchStatus,
 }: FeatureCardHeaderProps) => {
     const iconName = meta?.icon || 'lucide:cpu';
@@ -63,7 +65,11 @@ export const FeatureCardHeader = ({
                     checkedChildren="Bật"
                     unCheckedChildren="Tắt"
                     onChange={onSwitchStatus}
-                    disabled={feature.status === DataProviderFeatureStatus.UNCONFIGURED}
+                    loading={isSwitchingStatus}
+                    disabled={
+                        feature.status === DataProviderFeatureStatus.UNCONFIGURED ||
+                        isSwitchingStatus
+                    }
                 />
             </CustomFlex>
         </CustomFlex>

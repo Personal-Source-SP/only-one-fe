@@ -8,17 +8,13 @@ import { useCustomData, useCustomMutationData } from '@/hooks';
 import { FEATURE_TYPE_METADATA } from '../utils';
 import type { IConfigVersion, IDataProviderFeature } from '../types';
 
-export type UseFeatureHistoryManagerProps = {
+export type UseFeatureHistoryProps = {
     open: boolean;
     feature: IDataProviderFeature | null;
     onSuccess: () => void;
 };
 
-export const useFeatureHistoryManager = ({
-    open,
-    feature,
-    onSuccess,
-}: UseFeatureHistoryManagerProps) => {
+export const useFeatureHistory = ({ open, feature, onSuccess }: UseFeatureHistoryProps) => {
     const { handleCustomMutationData } = useCustomMutationData();
 
     const [isApplying, setIsApplying] = useState<boolean>(false);

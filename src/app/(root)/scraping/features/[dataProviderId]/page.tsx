@@ -21,7 +21,7 @@ import { useMemo } from 'react';
 
 import { FeatureCardDetail, FeatureHistoryModal, FeatureSettingModal } from '../components';
 import { DataProviderFeatureType } from '../enums';
-import { useDataProviderFeatureActions, useDataProviderFeaturesView } from '../hooks';
+import { useFeatureActions, useFeaturesView } from '../hooks';
 import { FEATURE_TYPE_METADATA } from '../utils';
 
 const DataProviderFeaturesPage = () => {
@@ -36,7 +36,7 @@ const DataProviderFeaturesPage = () => {
         openHistoryModal,
         closeHistoryModal,
         refetchAll,
-    } = useDataProviderFeaturesView();
+    } = useFeaturesView();
 
     const {
         modalState,
@@ -44,7 +44,8 @@ const DataProviderFeaturesPage = () => {
         openConfigByType,
         closeFeatureModal,
         handleSwitchStatus,
-    } = useDataProviderFeatureActions({
+        switchingFeatureId,
+    } = useFeatureActions({
         dataProviderId,
         features,
         provider,
@@ -173,6 +174,7 @@ const DataProviderFeaturesPage = () => {
                             <CustomCol key={feature.id} xs={24} lg={12} className="flex">
                                 <FeatureCardDetail
                                     feature={feature}
+                                    isSwitchingStatus={switchingFeatureId === feature.id}
                                     onOpenModal={openFeatureModal}
                                     onSwitchStatus={handleSwitchStatus}
                                     onOpenHistoryModal={openHistoryModal}
@@ -186,6 +188,7 @@ const DataProviderFeaturesPage = () => {
                     <FeatureSettingModal
                         open={modalState.open}
                         feature={modalState.feature}
+                        isSwitchingStatus={switchingFeatureId === modalState.feature.id}
                         onSuccess={refetchAll}
                         onClose={closeFeatureModal}
                         onSwitchStatus={handleSwitchStatus}

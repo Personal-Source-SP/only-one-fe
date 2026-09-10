@@ -10,7 +10,7 @@ import {
     CustomTypography,
 } from '@/components/custom-antd';
 import { Icon } from '@iconify/react';
-import { useFeatureHistoryManager } from '../../hooks';
+import { useFeatureHistory } from '../../hooks';
 import type { IDataProviderFeature } from '../../types';
 import { VersionDetail } from './VersionDetail';
 import { VersionList } from './VersionList';
@@ -37,7 +37,7 @@ export const FeatureHistoryModal = ({
         setSelectedVersionId,
         handleApply,
         handleCopyConfig,
-    } = useFeatureHistoryManager({ open, feature, onSuccess });
+    } = useFeatureHistory({ open, feature, onSuccess });
 
     const modalTitle = (
         <CustomFlex align="center" gap="middle" className="pr-6">

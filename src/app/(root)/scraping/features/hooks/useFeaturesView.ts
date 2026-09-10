@@ -7,7 +7,7 @@ import { API_ENDPOINT } from '@/config';
 import { useCustomList, useCustomOne } from '@/hooks';
 import type { HistoryModalState, IDataProviderFeature } from '../types';
 
-export const useDataProviderFeaturesView = () => {
+export const useFeaturesView = () => {
     const params = useParams();
     const dataProviderId = (params?.dataProviderId as string) || '';
 

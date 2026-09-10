@@ -22,6 +22,7 @@ export interface FeatureModalHeaderProps {
     authorName: string | null;
     feature: IDataProviderFeature;
     selectedVersion: IConfigVersion | null;
+    isSwitchingStatus?: boolean;
     onSwitchStatus?: () => void;
 }
 
@@ -31,6 +32,7 @@ export const FeatureModalHeader = ({
     authorName,
     feature,
     selectedVersion,
+    isSwitchingStatus = false,
     onSwitchStatus,
 }: FeatureModalHeaderProps) => {
     const def = getFeatureDefinition(feature.type);
@@ -140,6 +142,8 @@ export const FeatureModalHeader = ({
                             checkedChildren="Bật"
                             unCheckedChildren="Tắt"
                             onChange={onSwitchStatus}
+                            loading={isSwitchingStatus}
+                            disabled={isSwitchingStatus}
                             checked={feature.status === DataProviderFeatureStatus.READY}
                         />
                     </CustomFlex>

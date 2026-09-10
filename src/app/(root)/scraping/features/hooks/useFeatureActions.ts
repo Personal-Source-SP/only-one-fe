@@ -10,49 +10,55 @@ import { DataProviderFeatureStatus, DataProviderFeatureType } from '../enums';
 import type { FeatureModalState, IDataProviderFeature } from '../types';
 import { createDefaultDraftFeature } from '../utils';
 
-export type UseDataProviderFeatureActionsProps = {
+export type UseFeatureActionsProps = {
     dataProviderId: string;
     features: IDataProviderFeature[];
     provider?: IDataProvider;
     refetchAll: () => Promise<void>;
 };
 
-export const useDataProviderFeatureActions = ({
+export const useFeatureActions = ({
     dataProviderId,
     features,
     provider,
     refetchAll,
-}: UseDataProviderFeatureActionsProps) => {
+}: UseFeatureActionsProps) => {
     const { handleCustomMutationData } = useCustomMutationData();
 
     const [modalState, setModalState] = useState<FeatureModalState>({
         open: false,
         feature: null,
     });
+    const [switchingFeatureId, setSwitchingFeatureId] = useState<string | null>(null);
 
     const handleSwitchStatus = useCallback(
-        (featureId: string, currentStatus: DataProviderFeatureStatus): void => {
+        async (featureId: string, currentStatus: DataProviderFeatureStatus): Promise<void> => {
             const nextStatus =
                 currentStatus === DataProviderFeatureStatus.READY
                     ? DataProviderFeatureStatus.DISABLED
                     : DataProviderFeatureStatus.READY;
 
-            handleCustomMutationData({
-                method: 'put',
-                url: API_ENDPOINT.DATA_PROVIDER_FEATURES.SWITCH_STATUS(featureId, nextStatus),
-                successNotification: () => {
-                    refetchAll();
-                    return {
-                        type: MessageType.SUCCESS,
-                        message: 'Cập nhật trạng thái thành công',
-                    };
-                },
-                errorNotification: (error) => ({
-                    type: MessageType.ERROR,
-                    message: 'Cập nhật trạng thái thất bại',
-                    description: error?.message,
-                }),
-            });
+            setSwitchingFeatureId(featureId);
+            try {
+                await handleCustomMutationData({
+                    method: 'put',
+                    url: API_ENDPOINT.DATA_PROVIDER_FEATURES.SWITCH_STATUS(featureId, nextStatus),
+                    successNotification: () => {
+                        refetchAll();
+                        return {
+                            type: MessageType.SUCCESS,
+                            message: 'Cập nhật trạng thái thành công',
+                        };
+                    },
+                    errorNotification: (error) => ({
+                        type: MessageType.ERROR,
+                        message: 'Cập nhật trạng thái thất bại',
+                        description: error?.message,
+                    }),
+                });
+            } finally {
+                setSwitchingFeatureId(null);
+            }
         },
         [handleCustomMutationData, refetchAll],
     );
@@ -90,5 +96,7 @@ export const useDataProviderFeatureActions = ({
         openConfigByType,
         closeFeatureModal,
         handleSwitchStatus,
+        switchingFeatureId,
+        isSwitchingStatus: Boolean(switchingFeatureId),
     };
 };

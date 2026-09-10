@@ -1,6 +1,12 @@
 'use client';
 
-import { CustomFlex, CustomForm, CustomModal, CustomTabs } from '@/components/custom-antd';
+import {
+    CustomFlex,
+    CustomForm,
+    CustomModal,
+    CustomSpin,
+    CustomTabs,
+} from '@/components/custom-antd';
 import { MessageType } from '@/enums';
 import { useMessage } from '@/hooks';
 import { Icon } from '@iconify/react';
@@ -16,6 +22,7 @@ import { FeatureModalHeader } from './FeatureModalHeader';
 export type FeatureSettingModalProps = {
     open: boolean;
     feature: IDataProviderFeature;
+    isSwitchingStatus?: boolean;
     onClose: () => void;
     onSuccess: () => void;
     onSwitchStatus: (featureId: string, currentStatus: DataProviderFeatureStatus) => void;
@@ -24,6 +31,7 @@ export type FeatureSettingModalProps = {
 export const FeatureSettingModal = ({
     open,
     feature,
+    isSwitchingStatus = false,
     onClose,
     onSuccess,
     onSwitchStatus,
@@ -43,6 +51,7 @@ export const FeatureSettingModal = ({
         selectedVersion,
         isViewingHistory,
         isRollingBack,
+        isLoadingVersions,
         authorName,
         setSelectedVersionId,
         handleRollback,
@@ -139,6 +148,7 @@ export const FeatureSettingModal = ({
                     isDraft={isDraft}
                     authorName={authorName}
                     selectedVersion={selectedVersion}
+                    isSwitchingStatus={isSwitchingStatus}
                     onSwitchStatus={() => onSwitchStatus(feature.id, feature.status)}
                 />
             }
@@ -157,7 +167,12 @@ export const FeatureSettingModal = ({
                 />
             }
         >
-            <CustomTabs activeKey={activeTabKey} onChange={handleTabChange} items={tabItems} />
+            <CustomSpin
+                spinning={isLoadingVersions && !isDraft}
+                tip="Đang tải phiên bản cấu hình..."
+            >
+                <CustomTabs activeKey={activeTabKey} onChange={handleTabChange} items={tabItems} />
+            </CustomSpin>
         </CustomModal>
     );
 };
