@@ -16,13 +16,13 @@ import {
     CustomTypography,
 } from '@/components/custom-antd';
 import { Icon } from '@iconify/react';
-import { useMemo } from 'react';
 import { useRouter } from 'next/navigation';
+import { useMemo } from 'react';
 
-import { DataProviderFeatureType } from '../enums';
-import { FEATURE_TYPE_METADATA } from '../utils';
 import { FeatureCard, FeatureHistoryModal, FeatureSettingModal } from '../components';
+import { DataProviderFeatureType } from '../enums';
 import { useDataProviderFeatureActions, useDataProviderFeaturesView } from '../hooks';
+import { FEATURE_TYPE_METADATA } from '../utils';
 
 const DataProviderFeaturesPage = () => {
     const router = useRouter();
@@ -40,7 +40,6 @@ const DataProviderFeaturesPage = () => {
 
     const {
         modalState,
-        setModalState,
         openFeatureModal,
         openConfigByType,
         closeFeatureModal,
@@ -175,8 +174,8 @@ const DataProviderFeaturesPage = () => {
                                 <FeatureCard
                                     feature={feature}
                                     onOpenModal={openFeatureModal}
-                                    onOpenHistoryModal={openHistoryModal}
                                     onSwitchStatus={handleSwitchStatus}
+                                    onOpenHistoryModal={openHistoryModal}
                                 />
                             </CustomCol>
                         ))}
