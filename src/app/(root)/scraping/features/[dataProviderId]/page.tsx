@@ -19,7 +19,7 @@ import { Icon } from '@iconify/react';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 
-import { FeatureCard, FeatureHistoryModal, FeatureSettingModal } from '../components';
+import { FeatureCardDetail, FeatureHistoryModal, FeatureSettingModal } from '../components';
 import { DataProviderFeatureType } from '../enums';
 import { useDataProviderFeatureActions, useDataProviderFeaturesView } from '../hooks';
 import { FEATURE_TYPE_METADATA } from '../utils';
@@ -171,7 +171,7 @@ const DataProviderFeaturesPage = () => {
                     <CustomRow gutter={[24, 24]} className="w-full">
                         {features.map((feature) => (
                             <CustomCol key={feature.id} xs={24} lg={12} className="flex">
-                                <FeatureCard
+                                <FeatureCardDetail
                                     feature={feature}
                                     onOpenModal={openFeatureModal}
                                     onSwitchStatus={handleSwitchStatus}

@@ -16,7 +16,7 @@ export type FeatureCardProps = {
     onSwitchStatus: (featureId: string, currentStatus: DataProviderFeatureStatus) => void;
 };
 
-export const FeatureCard = ({
+export const FeatureCardDetail = ({
     feature,
     onOpenModal,
     onOpenHistoryModal,
