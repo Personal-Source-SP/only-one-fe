@@ -1,23 +1,23 @@
 'use client';
 
 import { CustomFlex, CustomForm } from '@/components/custom-antd';
-import { checkService, DEFAULT_SEARCH_TARGET_CONFIG } from '../../constants';
+import { checkService, DEFAULT_TARGET_CONFIG } from '../../constants';
 import { ScraperServiceEnum } from '../../enums';
 import { useFeatureConfigForm } from '../../hooks';
-import type { FeatureConfigFormProps, SearchConfigFormValues } from '../../types';
+import type { FeatureConfigFormProps, ScrapingConfigFormValues } from '../../types';
 import {
     FeatureAdvancedSection,
     FeatureCodeSection,
     FeatureLimitsSection,
 } from '../ConfigFormCommon';
-import { SearchSelectorsSection } from './SearchSelectorsSection';
-import { SearchUrlPatternSection } from './SearchUrlPatternSection';
+import { ScrapingBasicSection } from './ScrapingBasicSection';
+import { ScrapingSelectorsSection } from './ScrapingSelectorsSection';
 
-export const SearchConfigForm = ({
+export const ScrapingConfigTab = ({
     feature,
     form,
-    selectedVersion,
     isViewingHistory,
+    selectedVersion,
     onClose,
     onSuccess,
     externalSetIsSaving,
@@ -25,40 +25,33 @@ export const SearchConfigForm = ({
     const functionGenerator = CustomForm.useWatch('functionGenerator', form);
     const currentService = CustomForm.useWatch('service', form) || ScraperServiceEnum.GENERIC;
 
-    const { hasSearchSelectors, hasBrowserSettings, hasAdvancedHeaders } =
+    const { hasBrowserSettings, hasAdvancedHeaders, hasDomSelectors, hasWaitForSelector } =
         checkService(currentService);
 
-    const { handleServiceChange, handleSave } = useFeatureConfigForm<SearchConfigFormValues>({
-        feature,
+    const { handleServiceChange, handleSave } = useFeatureConfigForm<ScrapingConfigFormValues>({
         form,
+        feature,
         selectedVersion,
-        featureLabel: 'tìm kiếm',
-        defaultTargetConfig: DEFAULT_SEARCH_TARGET_CONFIG,
+        featureLabel: 'cào',
+        defaultTargetConfig: DEFAULT_TARGET_CONFIG,
         onClose,
         onSuccess,
         externalSetIsSaving,
-        getDefaultTemplate: (service) => checkService(service).defaultSearchTemplate,
-        extraInitialValues: (config) => ({
-            searchUrlPattern: config.searchUrlPattern || '',
-            queryPlaceholder:
-                config.queryPlaceholder || DEFAULT_SEARCH_TARGET_CONFIG.queryPlaceholder,
-            resultSelector: config.resultSelector || '',
-        }),
+        getDefaultTemplate: (service) => checkService(service).defaultScrapingTemplate,
     });
 
     return (
         <CustomForm form={form} layout="vertical" onFinish={handleSave}>
             <CustomFlex vertical gap="middle" className="w-full">
-                <SearchUrlPatternSection
-                    service={currentService}
+                <ScrapingBasicSection
                     feature={feature}
-                    selectedVersion={selectedVersion}
                     isViewingHistory={isViewingHistory}
+                    selectedVersion={selectedVersion}
                     onServiceChange={handleServiceChange}
                 />
 
-                {hasSearchSelectors && (
-                    <SearchSelectorsSection
+                {(hasDomSelectors || hasWaitForSelector || hasBrowserSettings) && (
+                    <ScrapingSelectorsSection
                         service={currentService}
                         feature={feature}
                         selectedVersion={selectedVersion}

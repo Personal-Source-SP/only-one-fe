@@ -1,5 +1,5 @@
 import type { ComponentType } from 'react';
-import { ScrapingConfigForm, SearchConfigForm } from '../components';
+import { ScrapingConfigTab, SearchConfigTab } from '../components';
 import { DataProviderFeatureType } from '../enums';
 import type { FeatureConfigFormProps } from '../types';
 
@@ -22,7 +22,7 @@ export const FEATURE_REGISTRY: Record<DataProviderFeatureType, FeatureDefinition
         shortLabel: 'Scraping',
         accentClass: 'text-emerald-500 bg-emerald-500/10',
         description: 'Cào dữ liệu tự động từ nhà cung cấp',
-        ConfigComponent: ScrapingConfigForm,
+        ConfigComponent: ScrapingConfigTab,
         getTitle: (isDraft, providerName) =>
             `${isDraft ? 'Thiết lập' : 'Cấu hình'}: Cào dữ liệu (Scraping)${
                 providerName ? ` (${providerName})` : ''
@@ -35,7 +35,7 @@ export const FEATURE_REGISTRY: Record<DataProviderFeatureType, FeatureDefinition
         shortLabel: 'Search',
         accentClass: 'text-indigo-500 bg-indigo-500/10',
         description: 'Tìm kiếm sản phẩm từ nhà cung cấp',
-        ConfigComponent: SearchConfigForm,
+        ConfigComponent: SearchConfigTab,
         getTitle: (isDraft, providerName) =>
             `${isDraft ? 'Thiết lập' : 'Cấu hình'}: Tìm kiếm (Search)${
                 providerName ? ` (${providerName})` : ''
