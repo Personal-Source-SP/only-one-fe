@@ -18,10 +18,10 @@ import type { IConfigVersion, IDataProviderFeature } from '../../types';
 
 export type SearchUrlPatternSectionProps = {
     feature: IDataProviderFeature;
-    service?: string;
+    service?: ScraperServiceEnum;
     isViewingHistory?: boolean;
     selectedVersion?: IConfigVersion | null;
-    onServiceChange?: (service: string) => void;
+    onServiceChange?: (service: ScraperServiceEnum) => void;
 };
 
 export const SearchUrlPatternSection = ({

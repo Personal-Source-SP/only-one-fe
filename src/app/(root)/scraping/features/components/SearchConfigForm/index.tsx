@@ -4,7 +4,7 @@ import { CustomFlex, CustomForm } from '@/components/custom-antd';
 import { MessageType } from '@/enums';
 import { useCustomMutationData } from '@/hooks';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { checkService } from '../../constants';
+import { checkService, DEFAULT_SEARCH_TARGET_CONFIG } from '../../constants';
 import { ScraperServiceEnum } from '../../enums';
 import type { FeatureConfigFormProps, SearchConfigFormValues } from '../../types';
 import {
@@ -31,7 +31,8 @@ export const SearchConfigForm = ({
     const currentService = CustomForm.useWatch('service', form) || ScraperServiceEnum.GENERIC;
 
     const [isSaving, setIsSaving] = useState<boolean>(false);
-    const { hasSearchSelectors, hasBrowserSettings } = checkService(currentService);
+    const { hasSearchSelectors, hasBrowserSettings, hasAdvancedHeaders } =
+        checkService(currentService);
 
     useEffect(() => {
         externalSetIsSaving?.(isSaving);
@@ -48,26 +49,30 @@ export const SearchConfigForm = ({
             service,
             changeDescription: '',
             searchUrlPattern: config.searchUrlPattern || '',
-            queryPlaceholder: config.queryPlaceholder || '{query}',
+            queryPlaceholder:
+                config.queryPlaceholder || DEFAULT_SEARCH_TARGET_CONFIG.queryPlaceholder,
             mainContentSelector: config.mainContentSelector || '',
             resultSelector: config.resultSelector || '',
             waitForSelector: config.waitForSelector || '',
             userAgent: config.userAgent || '',
-            maxResults: config.maxResults ?? 10,
-            retryDelay: config.retryDelay ?? 1000,
-            retryAttempts: config.retryAttempts ?? 3,
-            timeout: config.timeout ?? 30000,
-            waitForTimeout: config.waitForTimeout ?? 5000,
+            maxResults: config.maxResults ?? DEFAULT_SEARCH_TARGET_CONFIG.maxResults,
+            retryDelay: config.retryDelay ?? DEFAULT_SEARCH_TARGET_CONFIG.retryDelay,
+            retryAttempts: config.retryAttempts ?? DEFAULT_SEARCH_TARGET_CONFIG.retryAttempts,
+            timeout: config.timeout ?? DEFAULT_SEARCH_TARGET_CONFIG.timeout,
+            waitForTimeout: config.waitForTimeout ?? DEFAULT_SEARCH_TARGET_CONFIG.waitForTimeout,
             queryParams: config.queryParams || '',
             firstQueryParams: config.firstQueryParams || '',
             headers: config.headers ? JSON.stringify(config.headers, null, 2) : '',
             cookies: config.cookies ? JSON.stringify(config.cookies, null, 2) : '',
-            isGetParentElement: config.isGetParentElement ?? false,
-            stealthMode: config.stealthMode ?? false,
-            cloudflareBypass: config.cloudflareBypass ?? false,
-            javascriptEnabled: config.javascriptEnabled ?? true,
-            imagesEnabled: config.imagesEnabled ?? false,
-            cssEnabled: config.cssEnabled ?? false,
+            isGetParentElement:
+                config.isGetParentElement ?? DEFAULT_SEARCH_TARGET_CONFIG.isGetParentElement,
+            stealthMode: config.stealthMode ?? DEFAULT_SEARCH_TARGET_CONFIG.stealthMode,
+            cloudflareBypass:
+                config.cloudflareBypass ?? DEFAULT_SEARCH_TARGET_CONFIG.cloudflareBypass,
+            javascriptEnabled:
+                config.javascriptEnabled ?? DEFAULT_SEARCH_TARGET_CONFIG.javascriptEnabled,
+            imagesEnabled: config.imagesEnabled ?? DEFAULT_SEARCH_TARGET_CONFIG.imagesEnabled,
+            cssEnabled: config.cssEnabled ?? DEFAULT_SEARCH_TARGET_CONFIG.cssEnabled,
             functionGenerator: config.functionGenerator || defaultSearchTemplate,
         });
     }, [feature, selectedVersion, form]);
@@ -75,7 +80,7 @@ export const SearchConfigForm = ({
     const isDraft = useMemo(() => !feature.id, [feature.id]);
 
     const handleServiceChange = useCallback(
-        (service: string) => {
+        (service: ScraperServiceEnum) => {
             const { defaultSearchTemplate } = checkService(service);
             form.setFieldValue('functionGenerator', defaultSearchTemplate);
         },
@@ -202,8 +207,9 @@ export const SearchConfigForm = ({
                         isViewingHistory={isViewingHistory}
                     />
 
-                    {hasBrowserSettings && (
+                    {(hasBrowserSettings || hasAdvancedHeaders) && (
                         <FeatureAdvancedSection
+                            service={currentService}
                             feature={feature}
                             selectedVersion={selectedVersion}
                             isViewingHistory={isViewingHistory}

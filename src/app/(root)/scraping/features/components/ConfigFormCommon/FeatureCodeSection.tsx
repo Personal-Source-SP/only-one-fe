@@ -9,13 +9,13 @@ import {
 } from '@/components/custom-antd';
 import { Icon } from '@iconify/react';
 import { checkService } from '../../constants';
-import { DataProviderFeatureType } from '../../enums';
+import { DataProviderFeatureType, type ScraperServiceEnum } from '../../enums';
 import { FormDiffLabel } from './FormDiffLabel';
 import type { IConfigVersion, IDataProviderFeature } from '../../types';
 
 export type FeatureCodeSectionProps = {
     form: FormInstance;
-    service?: string;
+    service?: ScraperServiceEnum;
     functionGenerator?: string;
     isViewingHistory?: boolean;
     feature: IDataProviderFeature;

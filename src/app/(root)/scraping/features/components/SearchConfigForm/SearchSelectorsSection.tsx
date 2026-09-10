@@ -10,7 +10,7 @@ import {
 } from '@/components/custom-antd';
 import { Icon } from '@iconify/react';
 import { checkService } from '../../constants';
-import { ScraperServiceEnum } from '../../enums';
+import type { ScraperServiceEnum } from '../../enums';
 import { FormDiffLabel } from '../ConfigFormCommon/FormDiffLabel';
 import type { IConfigVersion, IDataProviderFeature } from '../../types';
 
@@ -18,17 +18,16 @@ export type SearchSelectorsSectionProps = {
     feature: IDataProviderFeature;
     isViewingHistory?: boolean;
     selectedVersion?: IConfigVersion | null;
-    service?: string;
+    service?: ScraperServiceEnum;
 };
 
 export const SearchSelectorsSection = ({
     feature,
     isViewingHistory,
     selectedVersion,
-    service = ScraperServiceEnum.GENERIC,
+    service,
 }: SearchSelectorsSectionProps) => {
-    const { hasWaitForSelector, hasBrowserSettings } = checkService(service);
-    const isApi = service === ScraperServiceEnum.API;
+    const { hasWaitForSelector, hasBrowserSettings, hasApiParams } = checkService(service);
 
     return (
         <CustomFlex
@@ -115,7 +114,7 @@ export const SearchSelectorsSection = ({
                     </CustomCol>
                 )}
 
-                {isApi && (
+                {hasApiParams && (
                     <>
                         <CustomCol xs={24} md={12}>
                             <CustomForm.Item

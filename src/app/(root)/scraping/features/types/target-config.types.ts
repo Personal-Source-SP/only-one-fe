@@ -1,3 +1,5 @@
+import type { ScraperServiceEnum } from '../enums';
+
 export interface CookieItem {
     name: string;
     value: string;
@@ -38,7 +40,7 @@ export interface ITargetConfigCode {
 
 export interface ITargetConfig
     extends ITargetConfigLimits, ITargetConfigNetwork, ITargetConfigSelectors, ITargetConfigCode {
-    service?: string;
+    service?: ScraperServiceEnum;
     [key: string]: unknown;
 }
 

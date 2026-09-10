@@ -24,7 +24,7 @@ export const FeatureCardHeader = ({
     const featureTitle = meta?.label || feature.type;
     const featureDescription = meta?.description || '';
     const accentColor = meta?.accentClass || 'text-hub-primary bg-hub-primary/10';
-    const { meta: serviceMeta } = checkService(feature.service);
+    const { label: serviceLabel } = checkService(feature.service);
 
     return (
         <CustomFlex align="flex-start" justify="space-between" gap="middle" className="mb-4">
@@ -45,7 +45,7 @@ export const FeatureCardHeader = ({
                             {featureTitle}
                         </CustomTypography.Title>
                         <CustomTag color="blue" className="font-medium text-xs m-0">
-                            {serviceMeta.label}
+                            {serviceLabel}
                         </CustomTag>
                     </CustomFlex>
                     <CustomTypography.Paragraph

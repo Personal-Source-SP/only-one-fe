@@ -5,7 +5,7 @@ import { DEFAULT_PARSER_FUNCTION_GENERATOR } from '@/constants';
 import { MessageType } from '@/enums';
 import { useCustomMutationData } from '@/hooks';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { checkService } from '../../constants';
+import { checkService, DEFAULT_TARGET_CONFIG } from '../../constants';
 import { ScraperServiceEnum } from '../../enums';
 import type { FeatureConfigFormProps, ScrapingConfigFormValues } from '../../types';
 import {
@@ -32,7 +32,7 @@ export const ScrapingConfigForm = ({
     const currentService = CustomForm.useWatch('service', form) || ScraperServiceEnum.GENERIC;
 
     const [isSaving, setIsSaving] = useState<boolean>(false);
-    const { hasBrowserSettings, hasDomSelectors, hasWaitForSelector } =
+    const { hasBrowserSettings, hasAdvancedHeaders, hasDomSelectors, hasWaitForSelector } =
         checkService(currentService);
 
     useEffect(() => {
@@ -51,28 +51,29 @@ export const ScrapingConfigForm = ({
             mainContentSelector: config.mainContentSelector || '',
             waitForSelector: config.waitForSelector || '',
             userAgent: config.userAgent || '',
-            maxResults: config.maxResults ?? 10,
-            retryDelay: config.retryDelay ?? 1000,
-            retryAttempts: config.retryAttempts ?? 3,
-            timeout: config.timeout ?? 30000,
-            waitForTimeout: config.waitForTimeout ?? 5000,
+            maxResults: config.maxResults ?? DEFAULT_TARGET_CONFIG.maxResults,
+            retryDelay: config.retryDelay ?? DEFAULT_TARGET_CONFIG.retryDelay,
+            retryAttempts: config.retryAttempts ?? DEFAULT_TARGET_CONFIG.retryAttempts,
+            timeout: config.timeout ?? DEFAULT_TARGET_CONFIG.timeout,
+            waitForTimeout: config.waitForTimeout ?? DEFAULT_TARGET_CONFIG.waitForTimeout,
             queryParams: config.queryParams || '',
             firstQueryParams: config.firstQueryParams || '',
             headers: config.headers ? JSON.stringify(config.headers, null, 2) : '',
             cookies: config.cookies ? JSON.stringify(config.cookies, null, 2) : '',
-            isGetParentElement: config.isGetParentElement ?? false,
-            stealthMode: config.stealthMode ?? false,
-            cloudflareBypass: config.cloudflareBypass ?? false,
-            javascriptEnabled: config.javascriptEnabled ?? true,
-            imagesEnabled: config.imagesEnabled ?? false,
-            cssEnabled: config.cssEnabled ?? false,
+            isGetParentElement:
+                config.isGetParentElement ?? DEFAULT_TARGET_CONFIG.isGetParentElement,
+            stealthMode: config.stealthMode ?? DEFAULT_TARGET_CONFIG.stealthMode,
+            cloudflareBypass: config.cloudflareBypass ?? DEFAULT_TARGET_CONFIG.cloudflareBypass,
+            javascriptEnabled: config.javascriptEnabled ?? DEFAULT_TARGET_CONFIG.javascriptEnabled,
+            imagesEnabled: config.imagesEnabled ?? DEFAULT_TARGET_CONFIG.imagesEnabled,
+            cssEnabled: config.cssEnabled ?? DEFAULT_TARGET_CONFIG.cssEnabled,
         });
     }, [feature, selectedVersion, form]);
 
     const isDraft = useMemo(() => !feature.id, [feature.id]);
 
     const handleServiceChange = useCallback(
-        (service: string) => {
+        (service: ScraperServiceEnum) => {
             const { defaultScrapingTemplate } = checkService(service);
             form.setFieldValue('functionGenerator', defaultScrapingTemplate);
         },
@@ -198,8 +199,9 @@ export const ScrapingConfigForm = ({
                         isViewingHistory={isViewingHistory}
                     />
 
-                    {hasBrowserSettings && (
+                    {(hasBrowserSettings || hasAdvancedHeaders) && (
                         <FeatureAdvancedSection
+                            service={currentService}
                             feature={feature}
                             selectedVersion={selectedVersion}
                             isViewingHistory={isViewingHistory}

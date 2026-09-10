@@ -10,12 +10,13 @@ import {
 } from '@/components/custom-antd';
 import { Icon } from '@iconify/react';
 import { checkService } from '../../constants';
+import type { ScraperServiceEnum } from '../../enums';
 import { FormDiffLabel } from './FormDiffLabel';
 import type { IConfigVersion, IDataProviderFeature } from '../../types';
 
 export type FeatureLimitsSectionProps = {
     feature: IDataProviderFeature;
-    service?: string;
+    service?: ScraperServiceEnum;
     isViewingHistory?: boolean;
     selectedVersion?: IConfigVersion | null;
 };

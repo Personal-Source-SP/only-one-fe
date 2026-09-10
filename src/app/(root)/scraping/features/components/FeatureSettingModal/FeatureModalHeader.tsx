@@ -39,7 +39,7 @@ export const FeatureModalHeader = ({
     const formService = CustomForm.useWatch('service', form);
     const activeService = formService || feature.service || ScraperServiceEnum.GENERIC;
 
-    const { meta } = checkService(activeService);
+    const { label: serviceLabel } = checkService(activeService);
 
     const renderChangeTypeTag = useCallback((changeType?: ConfigVersionType) => {
         if (!changeType) return null;
@@ -88,7 +88,7 @@ export const FeatureModalHeader = ({
                                 : `${isDraft ? 'Thiết lập' : 'Cấu hình'}: ${feature.type}`}
                         </CustomTypography.Text>
                         <CustomTag color="blue" className="font-medium text-xs m-0">
-                            {meta.label}
+                            {serviceLabel}
                         </CustomTag>
                     </CustomFlex>
                 </CustomFlex>

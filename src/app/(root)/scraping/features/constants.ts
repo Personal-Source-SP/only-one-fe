@@ -5,6 +5,26 @@ import {
     DEFAULT_SEARCH_FUNCTION_GENERATOR,
 } from '@/constants';
 import { ScraperServiceEnum } from './enums';
+import type { ISearchTargetConfig, ITargetConfig } from './types';
+
+export const DEFAULT_TARGET_CONFIG: ITargetConfig = {
+    maxResults: 10,
+    retryDelay: 1000,
+    retryAttempts: 3,
+    timeout: 30000,
+    waitForTimeout: 5000,
+    isGetParentElement: false,
+    stealthMode: false,
+    cloudflareBypass: false,
+    javascriptEnabled: true,
+    imagesEnabled: false,
+    cssEnabled: false,
+};
+
+export const DEFAULT_SEARCH_TARGET_CONFIG: ISearchTargetConfig = {
+    ...DEFAULT_TARGET_CONFIG,
+    queryPlaceholder: '{query}',
+};
 
 export interface IScraperServiceMetadata {
     label: string;
@@ -15,6 +35,8 @@ export interface IScraperServiceMetadata {
     defaultSearchTemplate: string;
     hasDomSelectors: boolean;
     hasBrowserSettings: boolean;
+    hasAdvancedHeaders: boolean;
+    hasApiParams: boolean;
     hasNetworkRetries: boolean;
     hasUrlPattern: boolean;
     hasSearchSelectors: boolean;
@@ -31,6 +53,8 @@ export const SCRAPER_SERVICE_METADATA: Record<ScraperServiceEnum, IScraperServic
         defaultSearchTemplate: DEFAULT_SEARCH_FUNCTION_GENERATOR,
         hasDomSelectors: true,
         hasBrowserSettings: true,
+        hasAdvancedHeaders: true,
+        hasApiParams: false,
         hasNetworkRetries: true,
         hasUrlPattern: true,
         hasSearchSelectors: true,
@@ -45,6 +69,8 @@ export const SCRAPER_SERVICE_METADATA: Record<ScraperServiceEnum, IScraperServic
         defaultSearchTemplate: DEFAULT_SEARCH_API_FUNCTION_GENERATOR,
         hasDomSelectors: false,
         hasBrowserSettings: false,
+        hasAdvancedHeaders: true,
+        hasApiParams: true,
         hasNetworkRetries: true,
         hasUrlPattern: true,
         hasSearchSelectors: false,
@@ -59,6 +85,8 @@ export const SCRAPER_SERVICE_METADATA: Record<ScraperServiceEnum, IScraperServic
         defaultSearchTemplate: DEFAULT_SEARCH_FUNCTION_GENERATOR,
         hasDomSelectors: false,
         hasBrowserSettings: false,
+        hasAdvancedHeaders: false,
+        hasApiParams: false,
         hasNetworkRetries: true,
         hasUrlPattern: false,
         hasSearchSelectors: false,
@@ -71,18 +99,15 @@ export const SCRAPER_SERVICE_OPTIONS = Object.values(SCRAPER_SERVICE_METADATA).m
     value: meta.value,
 }));
 
-export const checkService = (service?: string) => {
-    const validService = (service as ScraperServiceEnum) || ScraperServiceEnum.GENERIC;
-    const meta =
-        SCRAPER_SERVICE_METADATA[validService] ||
-        SCRAPER_SERVICE_METADATA[ScraperServiceEnum.GENERIC];
+export const checkService = (service?: ScraperServiceEnum) => {
+    const validService = service || ScraperServiceEnum.GENERIC;
+    const meta = SCRAPER_SERVICE_METADATA[validService];
 
     return {
         service: validService,
         isApi: validService === ScraperServiceEnum.API,
         isLocal: validService === ScraperServiceEnum.LOCAL,
         isGeneric: validService === ScraperServiceEnum.GENERIC,
-        meta,
         ...meta,
     };
 };
