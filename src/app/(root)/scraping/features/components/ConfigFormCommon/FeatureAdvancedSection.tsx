@@ -4,6 +4,7 @@ import {
     CustomCol,
     CustomFlex,
     CustomForm,
+    CustomInput,
     CustomRow,
     CustomSwitch,
     CustomTypography,
@@ -31,10 +32,12 @@ export const FeatureAdvancedSection = ({
             <CustomFlex align="center" gap="small" className="mb-3">
                 <Icon icon="lucide:shield-check" className="text-hub-primary shrink-0" />
                 <CustomTypography.Text strong className="text-sm text-hub-title">
-                    Tùy chọn nâng cao
+                    Mạng & Trình duyệt Nâng cao
                 </CustomTypography.Text>
             </CustomFlex>
-            <CustomRow gutter={[12, 12]}>
+
+            {/* Browser Feature Switches */}
+            <CustomRow gutter={[12, 12]} className="mb-3">
                 <CustomCol xs={24} sm={8}>
                     <CustomFlex
                         align="center"
@@ -96,6 +99,112 @@ export const FeatureAdvancedSection = ({
                             <CustomSwitch />
                         </CustomForm.Item>
                     </CustomFlex>
+                </CustomCol>
+
+                <CustomCol xs={24} sm={8}>
+                    <CustomFlex
+                        align="center"
+                        justify="space-between"
+                        className="p-3 rounded-lg bg-hub-card border border-hub-border/50"
+                    >
+                        <CustomTypography.Text className="text-sm text-hub-title font-medium">
+                            <FormDiffLabel
+                                label="Bật JavaScript"
+                                fieldKey="javascriptEnabled"
+                                feature={feature}
+                                selectedVersion={selectedVersion}
+                                isViewingHistory={isViewingHistory}
+                            />
+                        </CustomTypography.Text>
+                        <CustomForm.Item name="javascriptEnabled" valuePropName="checked" noStyle>
+                            <CustomSwitch />
+                        </CustomForm.Item>
+                    </CustomFlex>
+                </CustomCol>
+
+                <CustomCol xs={24} sm={8}>
+                    <CustomFlex
+                        align="center"
+                        justify="space-between"
+                        className="p-3 rounded-lg bg-hub-card border border-hub-border/50"
+                    >
+                        <CustomTypography.Text className="text-sm text-hub-title font-medium">
+                            <FormDiffLabel
+                                label="Tải hình ảnh"
+                                fieldKey="imagesEnabled"
+                                feature={feature}
+                                selectedVersion={selectedVersion}
+                                isViewingHistory={isViewingHistory}
+                            />
+                        </CustomTypography.Text>
+                        <CustomForm.Item name="imagesEnabled" valuePropName="checked" noStyle>
+                            <CustomSwitch />
+                        </CustomForm.Item>
+                    </CustomFlex>
+                </CustomCol>
+
+                <CustomCol xs={24} sm={8}>
+                    <CustomFlex
+                        align="center"
+                        justify="space-between"
+                        className="p-3 rounded-lg bg-hub-card border border-hub-border/50"
+                    >
+                        <CustomTypography.Text className="text-sm text-hub-title font-medium">
+                            <FormDiffLabel
+                                label="Tải CSS"
+                                fieldKey="cssEnabled"
+                                feature={feature}
+                                selectedVersion={selectedVersion}
+                                isViewingHistory={isViewingHistory}
+                            />
+                        </CustomTypography.Text>
+                        <CustomForm.Item name="cssEnabled" valuePropName="checked" noStyle>
+                            <CustomSwitch />
+                        </CustomForm.Item>
+                    </CustomFlex>
+                </CustomCol>
+            </CustomRow>
+
+            {/* Custom Headers & Cookies JSON Inputs */}
+            <CustomRow gutter={[16, 12]}>
+                <CustomCol xs={24} sm={12}>
+                    <CustomForm.Item
+                        name="headers"
+                        label={
+                            <FormDiffLabel
+                                fieldKey="headers"
+                                label="Tùy chỉnh Headers (JSON)"
+                                feature={feature}
+                                selectedVersion={selectedVersion}
+                                isViewingHistory={isViewingHistory}
+                            />
+                        }
+                    >
+                        <CustomInput.TextArea
+                            rows={3}
+                            placeholder='{"Authorization": "Bearer token", "x-custom-key": "value"}'
+                        />
+                    </CustomForm.Item>
+                </CustomCol>
+
+                <CustomCol xs={24} sm={12}>
+                    <CustomForm.Item
+                        name="cookies"
+                        label={
+                            <FormDiffLabel
+                                fieldKey="cookies"
+                                label="Tùy chỉnh Cookies (JSON Array)"
+                                feature={feature}
+                                selectedVersion={selectedVersion}
+                                isViewingHistory={isViewingHistory}
+                            />
+                        }
+                    >
+                        <CustomInput.TextArea
+                            rows={3}
+                            placeholder='[{"name": "session_id", "value": "xyz", "domain": ".example.com"}]'
+                        />
+                    </CustomForm.Item>
                 </CustomCol>
             </CustomRow>
         </CustomFlex>

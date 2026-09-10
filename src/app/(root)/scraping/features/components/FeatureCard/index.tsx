@@ -1,17 +1,17 @@
 'use client';
 
-import { useCallback, useMemo } from 'react';
 import { CustomCard, CustomFlex } from '@/components/custom-antd';
+import { useCallback, useMemo } from 'react';
 import { DataProviderFeatureStatus } from '../../enums';
+import type { IDataProviderFeature } from '../../types';
 import { FEATURE_TYPE_METADATA } from '../../utils';
-import type { FeatureModalTab, IDataProviderFeature } from '../../types';
 import { FeatureCardActions } from './FeatureCardActions';
 import { FeatureCardHeader } from './FeatureCardHeader';
 import { FeatureHealthMetrics } from './FeatureHealthMetrics';
 
 export type FeatureCardProps = {
     feature: IDataProviderFeature;
-    onOpenModal: (feature: IDataProviderFeature, tab: FeatureModalTab) => void;
+    onOpenModal: (feature: IDataProviderFeature) => void;
     onOpenHistoryModal: (feature: IDataProviderFeature) => void;
     onSwitchStatus: (featureId: string, currentStatus: DataProviderFeatureStatus) => void;
 };
@@ -34,17 +34,12 @@ export const FeatureCard = ({
         [feature.status, feature.consecutiveFailures],
     );
 
+    const handleOpenConfig = useCallback(() => onOpenModal(feature), [onOpenModal, feature]);
+
     const handleSwitchStatus = useCallback(
         () => onSwitchStatus(feature.id, feature.status),
         [onSwitchStatus, feature.id, feature.status],
     );
-
-    const handleOpenConfig = useCallback(
-        () => onOpenModal(feature, 'config'),
-        [onOpenModal, feature],
-    );
-
-    const handleOpenTest = useCallback(() => onOpenModal(feature, 'test'), [onOpenModal, feature]);
 
     const handleOpenHistory = useCallback(
         () => onOpenHistoryModal(feature),
@@ -67,19 +62,15 @@ export const FeatureCard = ({
             <CustomFlex vertical className="w-full">
                 <FeatureCardHeader
                     meta={meta}
-                    feature={feature}
                     isReady={isReady}
+                    feature={feature}
                     onSwitchStatus={handleSwitchStatus}
                 />
 
                 <FeatureHealthMetrics feature={feature} isReady={isReady} isError={isError} />
             </CustomFlex>
 
-            <FeatureCardActions
-                onOpenConfig={handleOpenConfig}
-                onOpenTest={handleOpenTest}
-                onOpenHistory={handleOpenHistory}
-            />
+            <FeatureCardActions onOpenConfig={handleOpenConfig} onOpenHistory={handleOpenHistory} />
         </CustomCard>
     );
 };

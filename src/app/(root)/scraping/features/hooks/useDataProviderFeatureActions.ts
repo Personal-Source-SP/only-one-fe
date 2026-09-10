@@ -6,7 +6,7 @@ import { MessageType } from '@/enums';
 import { useCustomMutationData } from '@/hooks';
 
 import { DataProviderFeatureStatus, DataProviderFeatureType, ScraperServiceEnum } from '../enums';
-import type { FeatureModalState, FeatureModalTab, IDataProviderFeature } from '../types';
+import type { FeatureModalState, IDataProviderFeature } from '../types';
 
 export type UseDataProviderFeatureActionsProps = {
     dataProviderId: string;
@@ -24,7 +24,6 @@ export const useDataProviderFeatureActions = ({
     const [modalState, setModalState] = useState<FeatureModalState>({
         open: false,
         feature: null,
-        activeTab: 'config',
     });
 
     const { handleCustomMutationData } = useCustomMutationData();
@@ -56,18 +55,15 @@ export const useDataProviderFeatureActions = ({
         [handleCustomMutationData, refetchAll],
     );
 
-    const openFeatureModal = useCallback(
-        (feature: IDataProviderFeature, tab: FeatureModalTab = 'config'): void => {
-            setModalState({ open: true, feature, activeTab: tab });
-        },
-        [],
-    );
+    const openFeatureModal = useCallback((feature: IDataProviderFeature): void => {
+        setModalState({ open: true, feature });
+    }, []);
 
     const openConfigByType = useCallback(
         (type: DataProviderFeatureType): void => {
             const existing = features.find((f) => f.type === type);
             if (existing) {
-                setModalState({ open: true, feature: existing, activeTab: 'config' });
+                setModalState({ open: true, feature: existing });
                 return;
             }
 
@@ -84,7 +80,7 @@ export const useDataProviderFeatureActions = ({
                 deletedAt: null,
                 dataProvider: provider,
             };
-            setModalState({ open: true, feature: draftFeature, activeTab: 'config' });
+            setModalState({ open: true, feature: draftFeature });
         },
         [features, dataProviderId, provider],
     );

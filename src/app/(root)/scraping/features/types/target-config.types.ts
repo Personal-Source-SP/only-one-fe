@@ -1,39 +1,53 @@
-export interface ITargetConfig {
-    service?: string;
-    functionGenerator?: string;
+export interface CookieItem {
+    name: string;
+    value: string;
+    domain?: string;
+    path?: string;
+}
 
-    mainContentSelector?: string;
-    isGetParentElement?: boolean;
-    queryParams?: string;
-    firstQueryParams?: string;
+export interface ITargetConfigLimits {
     maxResults?: number;
     retryDelay?: number;
     retryAttempts?: number;
-    userAgent?: string;
-    headers?: Record<string, string>;
-    cookies?: Array<{
-        name: string;
-        value: string;
-        domain?: string;
-        path?: string;
-    }>;
     timeout?: number;
     waitForTimeout?: number;
+}
+
+export interface ITargetConfigNetwork {
+    userAgent?: string;
+    headers?: Record<string, string>;
+    cookies?: Array<CookieItem>;
     stealthMode?: boolean;
     cloudflareBypass?: boolean;
-    waitForSelector?: string;
     javascriptEnabled?: boolean;
     imagesEnabled?: boolean;
     cssEnabled?: boolean;
+}
 
+export interface ITargetConfigSelectors {
+    mainContentSelector?: string;
+    waitForSelector?: string;
+    isGetParentElement?: boolean;
+    queryParams?: string;
+    firstQueryParams?: string;
+}
+
+export interface ITargetConfigCode {
+    functionGenerator?: string;
+}
+
+export interface ITargetConfig
+    extends ITargetConfigLimits, ITargetConfigNetwork, ITargetConfigSelectors, ITargetConfigCode {
+    service?: string;
     [key: string]: unknown;
 }
 
-export interface ISearchTargetConfig extends ITargetConfig {
+export interface ISearchTargetConfigSpecific {
     searchUrlPattern?: string;
     queryPlaceholder?: string;
     resultSelector?: string;
-    sampleQuery?: string;
 }
+
+export interface ISearchTargetConfig extends ITargetConfig, ISearchTargetConfigSpecific {}
 
 export type TargetConfig = ITargetConfig | ISearchTargetConfig;

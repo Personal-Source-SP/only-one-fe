@@ -28,10 +28,7 @@ export interface IDataProviderFeature<
     versions?: IConfigVersion<TConfig>[];
 }
 
-export type FeatureModalTab = 'config' | 'test';
-
 export interface FeatureModalState {
     open: boolean;
-    activeTab: FeatureModalTab;
     feature: IDataProviderFeature | null;
 }

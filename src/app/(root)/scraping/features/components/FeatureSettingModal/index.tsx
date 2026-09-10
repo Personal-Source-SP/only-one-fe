@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { CustomCol, CustomForm, CustomModal, CustomRow } from '@/components/custom-antd';
 import { useFeatureVersionManager } from '../../hooks/useFeatureVersionManager';
 import { DataProviderFeatureStatus } from '../../enums';
-import type { FeatureModalTab, IDataProviderFeature } from '../../types';
+import type { IDataProviderFeature } from '../../types';
 import { getFeatureDefinition } from '../../utils';
 import { FeatureTestTab } from '../FeatureTestTab';
 import { FeatureChangeLogSection } from '../ConfigFormCommon';
@@ -13,12 +13,10 @@ import { FeatureModalHeader } from './FeatureModalHeader';
 
 export type FeatureSettingModalProps = {
     open: boolean;
-    activeTab?: FeatureModalTab;
     feature: IDataProviderFeature;
     onClose: () => void;
     onSuccess: () => void;
-    onTabChange?: (tab: FeatureModalTab) => void;
-    onSwitchStatus?: (featureId: string, currentStatus: DataProviderFeatureStatus) => void;
+    onSwitchStatus: (featureId: string, currentStatus: DataProviderFeatureStatus) => void;
 };
 
 export const FeatureSettingModal = ({
@@ -54,8 +52,18 @@ export const FeatureSettingModal = ({
         <CustomModal
             open={open}
             width={1300}
-            className="top-6 max-w-[96vw]"
             onCancel={onClose}
+            className="top-6 max-w-[96vw]"
+            title={
+                <FeatureModalHeader
+                    form={form}
+                    feature={feature}
+                    isDraft={isDraft}
+                    authorName={authorName}
+                    selectedVersion={selectedVersion}
+                    onSwitchStatus={() => onSwitchStatus(feature.id, feature.status)}
+                />
+            }
             footer={
                 <FeatureModalFooter
                     form={form}
@@ -68,20 +76,6 @@ export const FeatureSettingModal = ({
                     onClose={onClose}
                     onRollback={handleRollback}
                     onSelectVersion={setSelectedVersionId}
-                />
-            }
-            title={
-                <FeatureModalHeader
-                    form={form}
-                    feature={feature}
-                    isDraft={isDraft}
-                    authorName={authorName}
-                    selectedVersion={selectedVersion}
-                    onSwitchStatus={
-                        onSwitchStatus
-                            ? () => onSwitchStatus(feature.id, feature.status)
-                            : undefined
-                    }
                 />
             }
         >

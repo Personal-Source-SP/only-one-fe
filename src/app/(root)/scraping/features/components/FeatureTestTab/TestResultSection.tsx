@@ -9,9 +9,10 @@ import {
     CustomTypography,
 } from '@/components/custom-antd';
 import { Icon } from '@iconify/react';
+import type { FeatureTestResult } from '../../types';
 
 export type TestResultSectionProps = {
-    testResult: any;
+    testResult: FeatureTestResult | null;
     errorMessage: string | null;
 };
 

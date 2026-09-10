@@ -6,7 +6,7 @@ import { useCustomMutationData } from '@/hooks';
 
 import type { FormInstance } from '@/components/custom-antd';
 import { DataProviderFeatureType, ScraperServiceEnum } from '../enums';
-import type { IDataProviderFeature } from '../types';
+import type { FeatureTestResult, IDataProviderFeature, TestInputFormValues } from '../types';
 
 export type UseFeatureTestRunnerProps = {
     feature: IDataProviderFeature;
@@ -14,7 +14,7 @@ export type UseFeatureTestRunnerProps = {
 };
 
 export const useFeatureTestRunner = ({ feature, configForm }: UseFeatureTestRunnerProps) => {
-    const [testResult, setTestResult] = useState<any>(null);
+    const [testResult, setTestResult] = useState<FeatureTestResult | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [isTestHtmlContent, setIsTestHtmlContent] = useState<boolean>(false);
@@ -27,7 +27,7 @@ export const useFeatureTestRunner = ({ feature, configForm }: UseFeatureTestRunn
     );
 
     const handleRunTest = useCallback(
-        async (values: any): Promise<void> => {
+        async (values: TestInputFormValues): Promise<void> => {
             setIsLoading(true);
             setErrorMessage(null);
 
@@ -37,7 +37,7 @@ export const useFeatureTestRunner = ({ feature, configForm }: UseFeatureTestRunn
 
             const isGeneric = activeService === ScraperServiceEnum.GENERIC;
 
-            const inputPayload: Record<string, any> = {};
+            const inputPayload: Record<string, unknown> = {};
             if (isScraping) {
                 inputPayload.url = values.testUrl;
 
@@ -68,7 +68,7 @@ export const useFeatureTestRunner = ({ feature, configForm }: UseFeatureTestRunn
                     input: inputPayload,
                 },
                 successNotification: (res) => {
-                    const data = res?.data?.data || res?.data;
+                    const data = (res?.data?.data || res?.data) as FeatureTestResult;
                     setTestResult(data);
                     setIsLoading(false);
 
@@ -100,5 +100,6 @@ export const useFeatureTestRunner = ({ feature, configForm }: UseFeatureTestRunn
         isTestHtmlContent,
         setIsTestHtmlContent,
         handleRunTest,
+        setTestResult,
     };
 };

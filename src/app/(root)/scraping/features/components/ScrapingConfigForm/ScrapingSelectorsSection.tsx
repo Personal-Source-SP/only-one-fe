@@ -28,6 +28,7 @@ export const ScrapingSelectorsSection = ({
     selectedVersion,
 }: ScrapingSelectorsSectionProps) => {
     const { hasDomSelectors, hasWaitForSelector, hasBrowserSettings } = checkService(service);
+    const isApi = service === ScraperServiceEnum.API;
 
     return (
         <CustomFlex
@@ -37,7 +38,7 @@ export const ScrapingSelectorsSection = ({
             <CustomFlex align="center" gap="small" className="mb-3">
                 <Icon icon="lucide:sliders" className="text-hub-primary shrink-0" />
                 <CustomTypography.Text strong className="text-sm text-hub-title">
-                    Bộ chọn (Selectors) & Tùy chọn
+                    Bộ chọn (Selectors) & Tham số truy vấn
                 </CustomTypography.Text>
             </CustomFlex>
             <CustomRow gutter={[16, 12]}>
@@ -96,6 +97,43 @@ export const ScrapingSelectorsSection = ({
                             <CustomInput placeholder="Mozilla/5.0..." />
                         </CustomForm.Item>
                     </CustomCol>
+                )}
+
+                {isApi && (
+                    <>
+                        <CustomCol xs={24} md={12}>
+                            <CustomForm.Item
+                                name="queryParams"
+                                label={
+                                    <FormDiffLabel
+                                        label="API Query Params"
+                                        fieldKey="queryParams"
+                                        feature={feature}
+                                        selectedVersion={selectedVersion}
+                                        isViewingHistory={isViewingHistory}
+                                    />
+                                }
+                            >
+                                <CustomInput placeholder="Ví dụ: page={page}&limit={limit}" />
+                            </CustomForm.Item>
+                        </CustomCol>
+                        <CustomCol xs={24} md={12}>
+                            <CustomForm.Item
+                                name="firstQueryParams"
+                                label={
+                                    <FormDiffLabel
+                                        label="First Query Params (trang đầu)"
+                                        fieldKey="firstQueryParams"
+                                        feature={feature}
+                                        selectedVersion={selectedVersion}
+                                        isViewingHistory={isViewingHistory}
+                                    />
+                                }
+                            >
+                                <CustomInput placeholder="Ví dụ: limit={limit}" />
+                            </CustomForm.Item>
+                        </CustomCol>
+                    </>
                 )}
             </CustomRow>
         </CustomFlex>

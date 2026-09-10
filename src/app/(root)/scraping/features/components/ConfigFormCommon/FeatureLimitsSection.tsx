@@ -36,7 +36,7 @@ export const FeatureLimitsSection = ({
             <CustomFlex align="center" gap="small" className="mb-3">
                 <Icon icon="lucide:repeat" className="text-hub-primary shrink-0" />
                 <CustomTypography.Text strong className="text-sm text-hub-title">
-                    Giới hạn & Thử lại
+                    Giới hạn & Thời gian chờ
                 </CustomTypography.Text>
             </CustomFlex>
             <CustomRow gutter={[16, 12]}>
@@ -93,6 +93,47 @@ export const FeatureLimitsSection = ({
                             <CustomInputNumber min={0} className="w-full" placeholder="3" />
                         </CustomForm.Item>
                     </CustomCol>
+                )}
+
+                {hasNetworkRetries && (
+                    <>
+                        <CustomCol xs={24} sm={12}>
+                            <CustomForm.Item
+                                name="timeout"
+                                label={
+                                    <FormDiffLabel
+                                        fieldKey="timeout"
+                                        label="Thời gian chờ Request (ms)"
+                                        feature={feature}
+                                        selectedVersion={selectedVersion}
+                                        isViewingHistory={isViewingHistory}
+                                    />
+                                }
+                            >
+                                <CustomInputNumber
+                                    min={1000}
+                                    className="w-full"
+                                    placeholder="30000"
+                                />
+                            </CustomForm.Item>
+                        </CustomCol>
+                        <CustomCol xs={24} sm={12}>
+                            <CustomForm.Item
+                                name="waitForTimeout"
+                                label={
+                                    <FormDiffLabel
+                                        fieldKey="waitForTimeout"
+                                        label="Thời gian chờ Selector (ms)"
+                                        feature={feature}
+                                        selectedVersion={selectedVersion}
+                                        isViewingHistory={isViewingHistory}
+                                    />
+                                }
+                            >
+                                <CustomInputNumber min={0} className="w-full" placeholder="5000" />
+                            </CustomForm.Item>
+                        </CustomCol>
+                    </>
                 )}
             </CustomRow>
         </CustomFlex>

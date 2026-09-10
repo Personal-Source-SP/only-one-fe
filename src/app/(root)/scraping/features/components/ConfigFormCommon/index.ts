@@ -1,3 +1,4 @@
+export * from './ConfigGroupContainer';
 export * from './FeatureAdvancedSection';
 export * from './FeatureChangeLogSection';
 export * from './FeatureCodeSection';

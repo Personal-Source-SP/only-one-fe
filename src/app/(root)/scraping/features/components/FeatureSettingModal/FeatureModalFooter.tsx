@@ -86,9 +86,9 @@ export const FeatureModalFooter = ({
                     <CustomSelect
                         className="w-64"
                         options={versionOptions}
-                        disabled={versionOptions.length <= 1}
-                        value={selectedVersion?.versionId}
                         dropdownStyle={{ width: 280 }}
+                        value={selectedVersion?.versionId}
+                        disabled={versionOptions.length <= 1}
                         onChange={onSelectVersion}
                     />
                 )}
