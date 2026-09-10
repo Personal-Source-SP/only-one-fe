@@ -1,32 +1,22 @@
 import type { IDataProvider } from '@/app/(root)/scraping/data-providers/types';
-import type { IUser } from '@/app/(root)/setting/users/types';
+import type { Abstract } from '@/interfaces';
 import type {
-    ConfigVersionType,
     DataProviderFeatureErrorType,
     DataProviderFeatureStatus,
     DataProviderFeatureType,
-} from './enums';
-import type { Abstract } from '@/interfaces';
-
-export interface IConfigVersion extends Abstract {
-    featureId: string;
-    isActive: boolean;
-    versionId: number;
-    config: Record<string, any>;
-    changeType: ConfigVersionType;
-    changeDescription?: string;
-    createdBy?: string;
-    user?: IUser;
-    feature?: IDataProviderFeature;
-}
+    ScraperServiceEnum,
+} from '../enums';
+import type { IConfigVersion } from './config-version.types';
+import type { ISearchTargetConfig, ITargetConfig } from './target-config.types';
 
 export interface IDataProviderFeature extends Abstract {
     dataProviderId: string;
     type: DataProviderFeatureType;
-    service: string;
+    service: ScraperServiceEnum;
     status: DataProviderFeatureStatus;
-    config?: Record<string, any>;
     consecutiveFailures: number;
+
+    config?: Record<string, any>;
     lastErrorMessage?: string;
     lastErrorType?: DataProviderFeatureErrorType;
     lastFailedRunAt?: Date;
@@ -37,24 +27,21 @@ export interface IDataProviderFeature extends Abstract {
 
 export interface CreateDataProviderFeatureRequest {
     type: DataProviderFeatureType;
-    service?: string;
+    service: ScraperServiceEnum;
     config?: Record<string, any>;
+    input?: Record<string, any>;
 }
 
 export interface UpdateFeatureConfigRequest {
-    config: Record<string, any>;
-    service?: string;
-    changeDescription?: string;
+    changeDescription: string;
+    config?: Record<string, any>;
+    input?: Record<string, any>;
 }
 
 export interface TestFeatureStatelessRequest {
     type: DataProviderFeatureType;
-    service?: string;
     config: Record<string, any>;
-    input?: Record<string, any>;
-}
-
-export interface TestFeatureContextualRequest {
+    service?: ScraperServiceEnum;
     input?: Record<string, any>;
 }
 
@@ -64,9 +51,4 @@ export interface FeatureModalState {
     open: boolean;
     feature: IDataProviderFeature | null;
     activeTab: FeatureModalTab;
-}
-
-export interface HistoryModalState {
-    open: boolean;
-    feature: IDataProviderFeature | null;
 }
