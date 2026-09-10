@@ -2,6 +2,7 @@
 
 import { CustomFlex, CustomForm, CustomInput, CustomTypography } from '@/components/custom-antd';
 import { Icon } from '@iconify/react';
+import { FEATURE_SECTION_CONTAINER_CLASS } from '../../constants';
 
 export type FeatureChangeLogSectionProps = {
     placeholder?: string;
@@ -11,10 +12,7 @@ export const FeatureChangeLogSection = ({
     placeholder = 'Ví dụ: Cập nhật selector giá mới theo layout...',
 }: FeatureChangeLogSectionProps) => {
     return (
-        <CustomFlex
-            vertical
-            className="bg-hub-section/20 border border-hub-border/60 rounded-xl p-4"
-        >
+        <CustomFlex vertical className={FEATURE_SECTION_CONTAINER_CLASS}>
             <CustomFlex align="center" gap="small" className="mb-2">
                 <Icon icon="lucide:file-text" className="text-hub-primary shrink-0" />
                 <CustomTypography.Text strong className="text-sm text-hub-title">

@@ -9,7 +9,7 @@ import {
     CustomTypography,
 } from '@/components/custom-antd';
 import { Icon } from '@iconify/react';
-import { SCRAPER_SERVICE_OPTIONS } from '../../constants';
+import { FEATURE_SECTION_CONTAINER_CLASS, SCRAPER_SERVICE_OPTIONS } from '../../constants';
 import type { IConfigVersion, IDataProviderFeature } from '../../types';
 import type { ScraperServiceEnum } from '../../enums';
 import { FormDiffLabel } from '../ConfigFormCommon/FormDiffLabel';
@@ -28,10 +28,7 @@ export const ScrapingBasicSection = ({
     onServiceChange,
 }: ScrapingBasicSectionProps) => {
     return (
-        <CustomFlex
-            vertical
-            className="bg-hub-section/20 border border-hub-border/60 rounded-xl p-4"
-        >
+        <CustomFlex vertical className={FEATURE_SECTION_CONTAINER_CLASS}>
             <CustomFlex align="center" gap="small" className="mb-3">
                 <Icon icon="lucide:settings-2" className="text-hub-primary shrink-0" />
                 <CustomTypography.Text strong className="text-sm text-hub-title">

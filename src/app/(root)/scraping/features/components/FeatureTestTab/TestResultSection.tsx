@@ -28,10 +28,7 @@ export const TestResultSection = ({ testResult, errorMessage }: TestResultSectio
                 />
             )}
 
-            <CustomFlex
-                vertical
-                className="bg-hub-section/20 border border-hub-border/60 rounded-xl p-4 w-full"
-            >
+            <CustomFlex vertical className="bg-hub-section/20 rounded-xl p-4 w-full">
                 <CustomFlex align="center" justify="space-between" className="mb-3 w-full">
                     <CustomFlex align="center" gap="small">
                         <Icon icon="lucide:code" className="text-hub-primary" />

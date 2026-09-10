@@ -22,7 +22,7 @@ export const ConfigGroupContainer = ({
     description,
 }: ConfigGroupContainerProps) => {
     return (
-        <div className="rounded-xl border border-hub-border/80 bg-hub-section/10 p-3.5 sm:p-4 space-y-3.5">
+        <div className="rounded-xl bg-hub-section/10 p-3.5 sm:p-4 space-y-3.5">
             <CustomFlex
                 align="center"
                 justify="space-between"

@@ -9,7 +9,7 @@ import {
     CustomTypography,
 } from '@/components/custom-antd';
 import { Icon } from '@iconify/react';
-import { checkService } from '../../constants';
+import { checkService, FEATURE_SECTION_CONTAINER_CLASS } from '../../constants';
 import type { ScraperServiceEnum } from '../../enums';
 import { FormDiffLabel } from './FormDiffLabel';
 import type { IConfigVersion, IDataProviderFeature } from '../../types';
@@ -30,10 +30,7 @@ export const FeatureLimitsSection = ({
     const { hasNetworkRetries } = checkService(service);
 
     return (
-        <CustomFlex
-            vertical
-            className="bg-hub-section/20 border border-hub-border/60 rounded-xl p-4"
-        >
+        <CustomFlex vertical className={FEATURE_SECTION_CONTAINER_CLASS}>
             <CustomFlex align="center" gap="small" className="mb-3">
                 <Icon icon="lucide:repeat" className="text-hub-primary shrink-0" />
                 <CustomTypography.Text strong className="text-sm text-hub-title">

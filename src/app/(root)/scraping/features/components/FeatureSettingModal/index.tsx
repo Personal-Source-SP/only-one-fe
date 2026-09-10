@@ -31,7 +31,7 @@ export const FeatureSettingModal = ({
 
     const isDraft = !feature.id;
     const def = getFeatureDefinition(feature.type);
-    const ConfigComponent = def?.ConfigComponent;
+    const ConfigComponent = def.ConfigComponent;
 
     const {
         versions,
@@ -82,21 +82,15 @@ export const FeatureSettingModal = ({
             <CustomRow gutter={[24, 24]}>
                 <CustomCol xs={24} lg={13} xl={14}>
                     <div className="max-h-[calc(85vh-160px)] overflow-y-auto pr-2 custom-scrollbar">
-                        {ConfigComponent ? (
-                            <ConfigComponent
-                                feature={feature}
-                                form={form}
-                                selectedVersion={selectedVersion}
-                                isViewingHistory={isViewingHistory}
-                                onClose={onClose}
-                                onSuccess={onSuccess}
-                                externalSetIsSaving={setIsSaving}
-                            />
-                        ) : (
-                            <div className="p-6 text-center text-hub-subtitle">
-                                Chưa có biểu mẫu cấu hình cho tính năng này.
-                            </div>
-                        )}
+                        <ConfigComponent
+                            feature={feature}
+                            form={form}
+                            selectedVersion={selectedVersion}
+                            isViewingHistory={isViewingHistory}
+                            onClose={onClose}
+                            onSuccess={onSuccess}
+                            externalSetIsSaving={setIsSaving}
+                        />
                     </div>
                 </CustomCol>
                 <CustomCol xs={24} lg={11} xl={10}>

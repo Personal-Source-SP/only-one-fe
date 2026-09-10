@@ -62,11 +62,7 @@ export const TestInputSection = ({
                 htmlContentString: DEFAULT_HTML_CONTENT_STRING,
             }}
         >
-            <CustomFlex
-                vertical
-                gap="middle"
-                className="bg-hub-section/20 border border-hub-border/60 rounded-xl p-4 w-full"
-            >
+            <CustomFlex vertical gap="middle" className="bg-hub-section/20 rounded-xl p-4 w-full">
                 <CustomFlex
                     align="center"
                     justify="space-between"

@@ -7,6 +7,8 @@ import {
 import { ScraperServiceEnum } from './enums';
 import type { ISearchTargetConfig, ITargetConfig } from './types';
 
+export const FEATURE_SECTION_CONTAINER_CLASS = 'bg-hub-section/20 rounded-xl p-4 w-full';
+
 export const DEFAULT_TARGET_CONFIG: ITargetConfig = {
     maxResults: 10,
     retryDelay: 1000,
