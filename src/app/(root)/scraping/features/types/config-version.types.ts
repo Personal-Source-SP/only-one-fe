@@ -2,17 +2,18 @@ import type { IUser } from '@/app/(root)/setting/users/types';
 import type { Abstract } from '@/interfaces';
 import type { ConfigVersionType } from '../enums';
 import type { IDataProviderFeature } from './data-provider-feature.types';
+import type { TargetConfig } from './target-config.types';
 
-export interface IConfigVersion extends Abstract {
+export interface IConfigVersion<TConfig extends TargetConfig = TargetConfig> extends Abstract {
     featureId: string;
     isActive: boolean;
     versionId: number;
-    config: Record<string, any>;
+    config: TConfig;
     changeType: ConfigVersionType;
     changeDescription?: string;
-    createdBy?: string;
+
     user?: IUser;
-    feature?: IDataProviderFeature;
+    feature?: IDataProviderFeature<TConfig>;
 }
 
 export interface HistoryModalState {

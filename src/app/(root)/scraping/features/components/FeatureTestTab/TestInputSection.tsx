@@ -14,7 +14,7 @@ import {
 import { DEFAULT_HTML_CONTENT_STRING } from '@/constants';
 import { Icon } from '@iconify/react';
 import { ScraperServiceEnum } from '../../enums';
-import type { IDataProviderFeature } from '../../types';
+import type { IDataProviderFeature, ISearchTargetConfig } from '../../types';
 
 export type TestInputSectionProps = {
     form: FormInstance;
@@ -48,7 +48,8 @@ export const TestInputSection = ({
 
     const isMissingFunctionGenerator = !functionGenerator?.trim();
     const isQueryRequired = Boolean(
-        queryPlaceholder?.trim() || (!configForm && feature?.config?.queryPlaceholder?.trim()),
+        queryPlaceholder?.trim() ||
+        (!configForm && (feature?.config as ISearchTargetConfig)?.queryPlaceholder?.trim()),
     );
 
     return (

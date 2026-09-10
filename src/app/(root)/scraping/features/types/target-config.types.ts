@@ -1,5 +1,6 @@
 export interface ITargetConfig {
-    functionGenerator: string;
+    service?: string;
+    functionGenerator?: string;
 
     mainContentSelector?: string;
     isGetParentElement?: boolean;
@@ -24,6 +25,8 @@ export interface ITargetConfig {
     javascriptEnabled?: boolean;
     imagesEnabled?: boolean;
     cssEnabled?: boolean;
+
+    [key: string]: unknown;
 }
 
 export interface ISearchTargetConfig extends ITargetConfig {
@@ -33,35 +36,4 @@ export interface ISearchTargetConfig extends ITargetConfig {
     sampleQuery?: string;
 }
 
-export interface IRunFunctionExtractData {
-    htmlContent: string;
-    functionGenerator: string;
-    mainContentSelector: string;
-    isGetParentElement: boolean;
-}
-
-export interface IRunApiFunctionExtractData {
-    data: Record<string, any>;
-    functionGenerator: string;
-}
-
-export interface IRunSearchFunctionExtractData {
-    htmlContent: string;
-    functionGenerator: string;
-    resultSelector?: string;
-    maxResults?: number;
-    mainContentSelector?: string;
-    isGetParentElement?: boolean;
-}
-
-export interface IRunApiSearchFunctionExtractData {
-    data: Record<string, any>;
-    functionGenerator: string;
-    maxResults?: number;
-}
-
-export interface ISearchExtractDataResponse {
-    html?: string;
-    error?: string;
-    data?: Array<Record<string, any>>;
-}
+export type TargetConfig = ITargetConfig | ISearchTargetConfig;
