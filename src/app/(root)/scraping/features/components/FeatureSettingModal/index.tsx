@@ -1,13 +1,13 @@
 'use client';
 
-import { useState } from 'react';
 import { CustomCol, CustomForm, CustomModal, CustomRow } from '@/components/custom-antd';
-import { useFeatureVersionManager } from '../../hooks/useFeatureVersionManager';
+import { useState } from 'react';
 import { DataProviderFeatureStatus } from '../../enums';
+import { useFeatureVersionManager } from '../../hooks';
 import type { IDataProviderFeature } from '../../types';
 import { getFeatureDefinition } from '../../utils';
-import { FeatureTestTab } from '../FeatureTestTab';
 import { FeatureChangeLogSection } from '../ConfigFormCommon';
+import { FeatureTestTab } from '../FeatureTestTab';
 import { FeatureModalFooter } from './FeatureModalFooter';
 import { FeatureModalHeader } from './FeatureModalHeader';
 
@@ -53,6 +53,7 @@ export const FeatureSettingModal = ({
             open={open}
             width={1300}
             onCancel={onClose}
+            bodyClassName="!p-2.5 sm:!p-3"
             className="top-6 max-w-[96vw]"
             title={
                 <FeatureModalHeader
@@ -79,9 +80,9 @@ export const FeatureSettingModal = ({
                 />
             }
         >
-            <CustomRow gutter={[24, 24]}>
+            <CustomRow gutter={[12, 12]}>
                 <CustomCol xs={24} lg={13} xl={14}>
-                    <div className="max-h-[calc(85vh-160px)] overflow-y-auto pr-2 custom-scrollbar">
+                    <div className="border border-hub-border/60 rounded-xl p-2.5 sm:p-3 h-auto max-h-[70vh] lg:max-h-none lg:h-[calc(85vh-180px)] overflow-y-auto custom-scrollbar">
                         <ConfigComponent
                             feature={feature}
                             form={form}
@@ -94,7 +95,7 @@ export const FeatureSettingModal = ({
                     </div>
                 </CustomCol>
                 <CustomCol xs={24} lg={11} xl={10}>
-                    <div className="max-h-[calc(85vh-160px)] overflow-y-auto pl-1 custom-scrollbar border-t lg:border-t-0 lg:border-l border-hub-border/60 pt-4 lg:pt-0 lg:pl-5 flex flex-col gap-4">
+                    <div className="border border-hub-border/60 rounded-xl p-2.5 sm:p-3 h-auto max-h-[70vh] lg:max-h-none lg:h-[calc(85vh-180px)] overflow-y-auto custom-scrollbar flex flex-col gap-3">
                         <FeatureTestTab feature={feature} configForm={form} />
                         {!isDraft && (
                             <CustomForm form={form} layout="vertical" component={false}>
