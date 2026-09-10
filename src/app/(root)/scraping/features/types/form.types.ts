@@ -16,36 +16,19 @@ export type FeatureConfigFormProps = {
 
 export interface ScrapingConfigFormValues extends Omit<
     Partial<ITargetConfig>,
-    'headers' | 'cookies'
+    'headers' | 'cookies' | 'service'
 > {
     service: ScraperServiceEnum;
     changeDescription?: string;
-    functionGenerator?: string;
-    mainContentSelector?: string;
-    waitForSelector?: string;
-    userAgent?: string;
-    maxResults?: number;
-    retryDelay?: number;
-    retryAttempts?: number;
-    timeout?: number;
-    waitForTimeout?: number;
-    isGetParentElement?: boolean;
-    stealthMode?: boolean;
-    cloudflareBypass?: boolean;
-    javascriptEnabled?: boolean;
-    imagesEnabled?: boolean;
-    cssEnabled?: boolean;
-    queryParams?: string;
-    firstQueryParams?: string;
     headers?: string;
     cookies?: string;
 }
 
 export interface SearchConfigFormValues
-    extends ScrapingConfigFormValues, Partial<ISearchTargetConfigSpecific> {
+    extends
+        ScrapingConfigFormValues,
+        Omit<Partial<ISearchTargetConfigSpecific>, 'searchUrlPattern'> {
     searchUrlPattern: string;
-    queryPlaceholder?: string;
-    resultSelector?: string;
 }
 
 export interface TestInputFormValues {
