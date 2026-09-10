@@ -30,6 +30,7 @@ export const FeatureSettingModal = ({
 }: FeatureSettingModalProps) => {
     const [form] = CustomForm.useForm();
     const { handleNotification } = useMessage();
+
     const [isSaving, setIsSaving] = useState<boolean>(false);
     const [activeTabKey, setActiveTabKey] = useState<'config' | 'test'>('config');
 

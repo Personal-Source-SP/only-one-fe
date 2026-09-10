@@ -20,22 +20,19 @@ export const useFeatureVersionManager = ({
     feature,
     onSuccess,
 }: UseFeatureVersionManagerProps) => {
+    const { handleCustomMutationData } = useCustomMutationData();
+
     const [isRollingBack, setIsRollingBack] = useState<boolean>(false);
     const [selectedVersionId, setSelectedVersionId] = useState<number>();
 
-    const { handleCustomMutationData } = useCustomMutationData();
-
     const { result: versionsResult, query: versionsQuery } = useCustomData({
-        url: API_ENDPOINT.CONFIG_VERSION_FEATURES.VERSIONS(feature.id),
         enabled: Boolean(open && feature.id),
+        url: API_ENDPOINT.CONFIG_VERSION_FEATURES.VERSIONS(feature.id),
     });
 
     const { versions, activeVersion } = useMemo(() => {
         const list = (versionsResult?.data?.data || []) as IConfigVersion[];
-        return {
-            versions: list,
-            activeVersion: list.find((v) => v.isActive),
-        };
+        return { versions: list, activeVersion: list.find((v) => v.isActive) };
     }, [versionsResult]);
 
     const selectedVersion = useMemo(

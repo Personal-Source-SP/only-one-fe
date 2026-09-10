@@ -19,16 +19,17 @@ export const useFeatureHistoryManager = ({
     feature,
     onSuccess,
 }: UseFeatureHistoryManagerProps) => {
-    const [selectedVersionId, setSelectedVersionId] = useState<number | undefined>();
-    const [isApplying, setIsApplying] = useState<boolean>(false);
     const { handleCustomMutationData } = useCustomMutationData();
 
-    const featureId = feature?.id || '';
+    const [isApplying, setIsApplying] = useState<boolean>(false);
+    const [selectedVersionId, setSelectedVersionId] = useState<number | undefined>();
+
+    const featureId = useMemo(() => feature?.id || '', [feature]);
     const meta = useMemo(() => (feature ? FEATURE_TYPE_METADATA[feature.type] : null), [feature]);
 
     const { result, query } = useCustomData({
-        url: API_ENDPOINT.CONFIG_VERSION_FEATURES.VERSIONS(featureId),
         enabled: Boolean(open && featureId),
+        url: API_ENDPOINT.CONFIG_VERSION_FEATURES.VERSIONS(featureId),
     });
 
     const versions = useMemo(() => (result?.data?.data || []) as IConfigVersion[], [result]);
@@ -49,14 +50,18 @@ export const useFeatureHistoryManager = ({
     const handleApply = useCallback(
         (versionId: number) => {
             if (!featureId || !versionId) return;
+
             setIsApplying(true);
+
             handleCustomMutationData({
                 method: 'post',
                 url: API_ENDPOINT.CONFIG_VERSION_FEATURES.ROLLBACK(featureId, versionId),
                 successNotification: () => {
                     setIsApplying(false);
-                    query.refetch();
                     onSuccess();
+
+                    query.refetch();
+
                     return {
                         type: MessageType.SUCCESS,
                         message: `Đã áp dụng thành công cấu hình phiên bản v${versionId}`,
@@ -64,6 +69,7 @@ export const useFeatureHistoryManager = ({
                 },
                 errorNotification: (err) => {
                     setIsApplying(false);
+
                     return {
                         type: MessageType.ERROR,
                         message: 'Áp dụng phiên bản thất bại',
@@ -77,10 +83,9 @@ export const useFeatureHistoryManager = ({
 
     const handleCopyConfig = useCallback(() => {
         if (!currentSelectedVersion?.config) return;
+
         navigator.clipboard.writeText(JSON.stringify(currentSelectedVersion.config, null, 2));
-        customNotification.success({
-            message: 'Đã sao chép cấu hình JSON vào clipboard',
-        });
+        customNotification.success({ message: 'Đã sao chép cấu hình JSON vào clipboard' });
     }, [currentSelectedVersion]);
 
     return {

@@ -13,17 +13,15 @@ export const useDataProviderFeaturesView = () => {
 
     // 1. Query Data Provider details
     const { query: providerQuery, data: provider } = useCustomOne<IDataProvider>({
-        resource: API_ENDPOINT.DATA_PROVIDERS.BASE,
         id: dataProviderId,
         enabled: Boolean(dataProviderId),
+        resource: API_ENDPOINT.DATA_PROVIDERS.BASE,
     });
 
     // 2. Query all Features for this provider
     const { query: featuresQuery, data: features = [] } = useCustomList<IDataProviderFeature>({
+        queryOptions: { enabled: Boolean(dataProviderId) },
         resource: API_ENDPOINT.DATA_PROVIDER_FEATURES.BY_PROVIDER(dataProviderId),
-        queryOptions: {
-            enabled: Boolean(dataProviderId),
-        },
         transform: (list) => (list && list.length > 0 ? list : provider?.features || []),
     });
 

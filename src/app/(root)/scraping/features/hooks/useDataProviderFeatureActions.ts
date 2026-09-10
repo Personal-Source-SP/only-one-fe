@@ -2,11 +2,13 @@
 
 import { useCallback, useState } from 'react';
 import type { IDataProvider } from '@/app/(root)/scraping/data-providers/types';
+import { API_ENDPOINT } from '@/config';
 import { MessageType } from '@/enums';
 import { useCustomMutationData } from '@/hooks';
 
-import { DataProviderFeatureStatus, DataProviderFeatureType, ScraperServiceEnum } from '../enums';
+import { DataProviderFeatureStatus, DataProviderFeatureType } from '../enums';
 import type { FeatureModalState, IDataProviderFeature } from '../types';
+import { createDefaultDraftFeature } from '../utils';
 
 export type UseDataProviderFeatureActionsProps = {
     dataProviderId: string;
@@ -21,12 +23,12 @@ export const useDataProviderFeatureActions = ({
     provider,
     refetchAll,
 }: UseDataProviderFeatureActionsProps) => {
+    const { handleCustomMutationData } = useCustomMutationData();
+
     const [modalState, setModalState] = useState<FeatureModalState>({
         open: false,
         feature: null,
     });
-
-    const { handleCustomMutationData } = useCustomMutationData();
 
     const handleSwitchStatus = useCallback(
         (featureId: string, currentStatus: DataProviderFeatureStatus): void => {
@@ -37,7 +39,7 @@ export const useDataProviderFeatureActions = ({
 
             handleCustomMutationData({
                 method: 'put',
-                url: `data-provider-features/${featureId}/switch-status/${nextStatus}`,
+                url: API_ENDPOINT.DATA_PROVIDER_FEATURES.SWITCH_STATUS(featureId, nextStatus),
                 successNotification: () => {
                     refetchAll();
                     return {
@@ -67,19 +69,11 @@ export const useDataProviderFeatureActions = ({
                 return;
             }
 
-            const draftFeature: IDataProviderFeature = {
-                id: '',
+            const draftFeature = createDefaultDraftFeature({
                 dataProviderId,
                 type,
-                service: ScraperServiceEnum.GENERIC,
-                status: DataProviderFeatureStatus.UNCONFIGURED,
-                consecutiveFailures: 0,
-                config: {},
-                createdAt: new Date(),
-                updatedAt: new Date(),
-                deletedAt: null,
-                dataProvider: provider,
-            };
+                provider,
+            });
             setModalState({ open: true, feature: draftFeature });
         },
         [features, dataProviderId, provider],

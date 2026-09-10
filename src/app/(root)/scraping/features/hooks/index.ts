@@ -3,3 +3,4 @@ export * from './useDataProviderFeaturesView';
 export * from './useFeatureHistoryManager';
 export * from './useFeatureTestRunner';
 export * from './useFeatureVersionManager';
+export * from './useFeatureConfigForm';

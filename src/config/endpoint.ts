@@ -21,6 +21,8 @@ export const API_ENDPOINT = {
         BY_PROVIDER: (providerId: string | number) =>
             prefix(`data-provider-features/provider/${providerId}`),
         DETAIL: (id: string | number) => prefix(`data-provider-features/${id}`),
+        SWITCH_STATUS: (id: string | number, status: string) =>
+            prefix(`data-provider-features/${id}/switch-status/${status}`),
         TEST: prefix('data-provider-features/test'),
     },
     CONFIG_VERSION_FEATURES: {

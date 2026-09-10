@@ -1,12 +1,14 @@
 'use client';
 
 import { useCallback, useMemo, useState } from 'react';
+import { API_ENDPOINT } from '@/config';
 import { MessageType } from '@/enums';
 import { useCustomMutationData } from '@/hooks';
 
 import type { FormInstance } from '@/components/custom-antd';
 import { DataProviderFeatureType, ScraperServiceEnum } from '../enums';
 import type { FeatureTestResult, IDataProviderFeature, TestInputFormValues } from '../types';
+import { extractTargetConfigFromFormValues } from '../utils';
 
 export type UseFeatureTestRunnerProps = {
     feature: IDataProviderFeature;
@@ -14,12 +16,12 @@ export type UseFeatureTestRunnerProps = {
 };
 
 export const useFeatureTestRunner = ({ feature, configForm }: UseFeatureTestRunnerProps) => {
-    const [testResult, setTestResult] = useState<FeatureTestResult | null>(null);
+    const { handleCustomMutationData } = useCustomMutationData();
+
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [isTestHtmlContent, setIsTestHtmlContent] = useState<boolean>(false);
-
-    const { handleCustomMutationData } = useCustomMutationData();
+    const [testResult, setTestResult] = useState<FeatureTestResult | null>(null);
 
     const isScraping = useMemo(
         () => feature.type === DataProviderFeatureType.SCRAPING,
@@ -54,13 +56,14 @@ export const useFeatureTestRunner = ({ feature, configForm }: UseFeatureTestRunn
                 }
             }
 
-            const { service: _s, changeDescription: _cd, ...configData } = currentFormValues;
-            const configPayload =
-                Object.keys(configData).length > 0 ? configData : feature.config || {};
+            const configPayload = extractTargetConfigFromFormValues(
+                currentFormValues,
+                feature.config as Record<string, unknown>,
+            );
 
             handleCustomMutationData({
                 method: 'post',
-                url: 'data-provider-features/test',
+                url: API_ENDPOINT.DATA_PROVIDER_FEATURES.TEST,
                 values: {
                     type: feature.type,
                     service: activeService,
