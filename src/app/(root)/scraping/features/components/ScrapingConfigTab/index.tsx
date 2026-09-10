@@ -21,7 +21,6 @@ export const ScrapingConfigTab = ({
     selectedVersion,
     onClose,
     onSuccess,
-    externalSetIsSaving,
 }: FeatureConfigFormProps) => {
     const headers = CustomForm.useWatch('headers', form);
     const cookies = CustomForm.useWatch('cookies', form);
@@ -39,7 +38,6 @@ export const ScrapingConfigTab = ({
         defaultTargetConfig: DEFAULT_TARGET_CONFIG,
         onClose,
         onSuccess,
-        externalSetIsSaving,
         getDefaultTemplate: (service) => checkService(service).defaultScrapingTemplate,
     });
 

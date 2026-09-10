@@ -12,7 +12,7 @@ import { useMessage } from '@/hooks';
 import { Icon } from '@iconify/react';
 import { useCallback, useMemo, useState } from 'react';
 import { DataProviderFeatureStatus } from '../../enums';
-import { useFeatureVersionManager } from '../../hooks';
+import { useFeatureModalController } from '../../hooks';
 import type { IDataProviderFeature } from '../../types';
 import { getFeatureDefinition } from '../../utils';
 import { FeatureTestTab } from '../FeatureTestTab';
@@ -38,27 +38,27 @@ export const FeatureSettingModal = ({
 }: FeatureSettingModalProps) => {
     const [form] = CustomForm.useForm();
     const { handleNotification } = useMessage();
-
-    const [isSaving, setIsSaving] = useState<boolean>(false);
     const [activeTabKey, setActiveTabKey] = useState<'config' | 'test'>('config');
 
-    const isDraft = !feature.id;
     const def = getFeatureDefinition(feature.type);
     const ConfigComponent = def.ConfigComponent;
 
     const {
+        isDraft,
         versions,
         selectedVersion,
         isViewingHistory,
         isRollingBack,
-        isLoadingVersions,
         authorName,
+        isGlobalLoading,
+        loadingTip,
         setSelectedVersionId,
         handleRollback,
-    } = useFeatureVersionManager({
+    } = useFeatureModalController({
         open,
         feature,
         form,
+        isSwitchingStatus,
         onSuccess,
     });
 
@@ -81,7 +81,6 @@ export const FeatureSettingModal = ({
                             isViewingHistory={isViewingHistory}
                             onClose={onClose}
                             onSuccess={onSuccess}
-                            externalSetIsSaving={setIsSaving}
                         />
                     </div>
                 ),
@@ -101,16 +100,7 @@ export const FeatureSettingModal = ({
                 ),
             },
         ],
-        [
-            ConfigComponent,
-            feature,
-            form,
-            selectedVersion,
-            isViewingHistory,
-            onClose,
-            onSuccess,
-            setIsSaving,
-        ],
+        [ConfigComponent, feature, form, selectedVersion, isViewingHistory, onClose, onSuccess],
     );
 
     const handleTabChange = useCallback(
@@ -139,8 +129,19 @@ export const FeatureSettingModal = ({
             open={open}
             width={1300}
             onCancel={onClose}
+            closable={!isGlobalLoading}
+            keyboard={!isGlobalLoading}
             bodyClassName="!p-2.5 sm:!p-3"
             className="top-6 max-w-[96vw]"
+            modalRender={(modalNode) => (
+                <CustomSpin
+                    tip={loadingTip}
+                    spinning={isGlobalLoading}
+                    wrapperClassName="w-full h-full [&_.ant-spin-container]:w-full [&_.ant-spin-container]:h-full"
+                >
+                    {modalNode}
+                </CustomSpin>
+            )}
             title={
                 <FeatureModalHeader
                     form={form}
@@ -157,7 +158,6 @@ export const FeatureSettingModal = ({
                     form={form}
                     isDraft={isDraft}
                     versions={versions}
-                    isSaving={isSaving}
                     isRollingBack={isRollingBack}
                     selectedVersion={selectedVersion}
                     isViewingHistory={isViewingHistory}
@@ -167,12 +167,7 @@ export const FeatureSettingModal = ({
                 />
             }
         >
-            <CustomSpin
-                spinning={isLoadingVersions && !isDraft}
-                tip="Đang tải phiên bản cấu hình..."
-            >
-                <CustomTabs activeKey={activeTabKey} onChange={handleTabChange} items={tabItems} />
-            </CustomSpin>
+            <CustomTabs activeKey={activeTabKey} onChange={handleTabChange} items={tabItems} />
         </CustomModal>
     );
 };

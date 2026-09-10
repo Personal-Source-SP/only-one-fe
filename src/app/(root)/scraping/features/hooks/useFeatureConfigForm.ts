@@ -22,7 +22,6 @@ export interface UseFeatureConfigFormOptions<TValues extends ScrapingConfigFormV
     defaultTargetConfig?: Record<string, unknown>;
     onClose: () => void;
     onSuccess: () => void;
-    externalSetIsSaving?: (loading: boolean) => void;
     extraInitialValues?: (config: Record<string, any>) => Partial<TValues>;
     getDefaultTemplate?: (service: ScraperServiceEnum) => string;
 }
@@ -44,15 +43,10 @@ export const useFeatureConfigForm = <TValues extends ScrapingConfigFormValues>({
     extraInitialValues,
     onSuccess,
     onClose,
-    externalSetIsSaving,
 }: UseFeatureConfigFormOptions<TValues>): UseFeatureConfigFormReturn<TValues> => {
     const isDraft = useMemo(() => !feature.id, [feature.id]);
     const [isSaving, setIsSaving] = useState<boolean>(false);
     const { handleCustomMutationData } = useCustomMutationData();
-
-    useEffect(() => {
-        externalSetIsSaving?.(isSaving);
-    }, [isSaving, externalSetIsSaving]);
 
     useEffect(() => {
         const config = (selectedVersion?.config || feature.config || {}) as TargetConfig;

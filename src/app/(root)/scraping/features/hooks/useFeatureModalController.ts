@@ -1,25 +1,42 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { FormInstance } from '@/components/custom-antd';
 import { API_ENDPOINT } from '@/config';
 import { MessageType } from '@/enums';
 import { useCustomData, useCustomMutationData } from '@/hooks';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { IConfigVersion, IDataProviderFeature } from '../types';
 
-export interface UseFeatureVersionManagerProps {
+export interface UseFeatureModalControllerProps {
     open: boolean;
-    form: FormInstance;
     feature: IDataProviderFeature;
+    form: FormInstance;
+    isSwitchingStatus?: boolean;
     onSuccess: () => void;
 }
 
-export const useFeatureVersionManager = ({
+export interface UseFeatureModalControllerReturn {
+    isDraft: boolean;
+    versions: IConfigVersion[];
+    selectedVersion: IConfigVersion | null;
+    selectedVersionId?: number;
+    isViewingHistory: boolean;
+    authorName: string | null;
+    isLoadingVersions: boolean;
+    isRollingBack: boolean;
+    isGlobalLoading: boolean;
+    loadingTip: string;
+    setSelectedVersionId: (id?: number) => void;
+    handleRollback: (targetVersionId?: number) => Promise<void>;
+}
+
+export const useFeatureModalController = ({
     open,
-    form,
     feature,
+    form,
+    isSwitchingStatus = false,
     onSuccess,
-}: UseFeatureVersionManagerProps) => {
+}: UseFeatureModalControllerProps): UseFeatureModalControllerReturn => {
     const { handleCustomMutationData } = useCustomMutationData();
 
     const [isRollingBack, setIsRollingBack] = useState<boolean>(false);
@@ -29,6 +46,8 @@ export const useFeatureVersionManager = ({
         enabled: Boolean(open && feature.id),
         url: API_ENDPOINT.CONFIG_VERSION_FEATURES.VERSIONS(feature.id),
     });
+
+    const isDraft = useMemo(() => !feature.id, [feature.id]);
 
     const { versions, activeVersion } = useMemo(() => {
         const list = (versionsResult?.data?.data || []) as IConfigVersion[];
@@ -51,12 +70,24 @@ export const useFeatureVersionManager = ({
             const fullName = `${selectedVersion.user.firstName || ''} ${
                 selectedVersion.user.lastName || ''
             }`.trim();
-
             return fullName || selectedVersion.user.email || selectedVersion.user.userName;
         }
-
         return selectedVersion.createdBy || null;
     }, [selectedVersion]);
+
+    const isLoadingVersions = Boolean(versionsQuery.isLoading);
+
+    const isGlobalLoading = useMemo(
+        () => (isLoadingVersions && !isDraft) || isRollingBack || isSwitchingStatus,
+        [isLoadingVersions, isDraft, isRollingBack, isSwitchingStatus],
+    );
+
+    const loadingTip = useMemo(() => {
+        if (isRollingBack) return 'Đang khôi phục phiên bản...';
+        if (isSwitchingStatus) return 'Đang cập nhật trạng thái...';
+        if (isLoadingVersions && !isDraft) return 'Đang tải phiên bản cấu hình...';
+        return 'Đang xử lý...';
+    }, [isRollingBack, isLoadingVersions, isDraft, isSwitchingStatus]);
 
     useEffect(() => {
         if (open && activeVersion) {
@@ -89,13 +120,11 @@ export const useFeatureVersionManager = ({
                             message: `Đã khôi phục về phiên bản v${vId}`,
                         };
                     },
-                    errorNotification: (error) => {
-                        return {
-                            type: MessageType.ERROR,
-                            description: error?.message,
-                            message: 'Khôi phục phiên bản thất bại',
-                        };
-                    },
+                    errorNotification: (error) => ({
+                        type: MessageType.ERROR,
+                        description: error?.message,
+                        message: 'Khôi phục phiên bản thất bại',
+                    }),
                 });
             } finally {
                 setIsRollingBack(false);
@@ -105,13 +134,16 @@ export const useFeatureVersionManager = ({
     );
 
     return {
+        isDraft,
         versions,
         selectedVersion,
         selectedVersionId,
         isViewingHistory,
-        isRollingBack,
-        isLoadingVersions: versionsQuery.isLoading,
         authorName,
+        isLoadingVersions,
+        isRollingBack,
+        isGlobalLoading,
+        loadingTip,
         setSelectedVersionId,
         handleRollback,
     };

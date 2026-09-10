@@ -15,7 +15,6 @@ import type { IConfigVersion } from '../../types';
 
 export interface FeatureModalFooterProps {
     isDraft: boolean;
-    isSaving: boolean;
     form: FormInstance;
     isRollingBack: boolean;
     isViewingHistory: boolean;
@@ -28,7 +27,6 @@ export interface FeatureModalFooterProps {
 
 export const FeatureModalFooter = ({
     isDraft,
-    isSaving,
     form,
     isRollingBack,
     isViewingHistory,
@@ -119,14 +117,13 @@ export const FeatureModalFooter = ({
                 )}
                 <CustomButton
                     type="primary"
-                    loading={isSaving}
                     disabled={isViewingHistory}
                     onClick={() => form.submit()}
                     icon={<Icon icon="lucide:save" />}
                 >
                     Lưu cấu hình
                 </CustomButton>
-                <CustomButton onClick={onClose} disabled={isSaving || isRollingBack}>
+                <CustomButton onClick={onClose} disabled={isRollingBack}>
                     Hủy
                 </CustomButton>
             </CustomFlex>

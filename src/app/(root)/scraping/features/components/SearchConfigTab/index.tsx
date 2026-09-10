@@ -21,7 +21,6 @@ export const SearchConfigTab = ({
     isViewingHistory,
     onClose,
     onSuccess,
-    externalSetIsSaving,
 }: FeatureConfigFormProps) => {
     const headers = CustomForm.useWatch('headers', form);
     const cookies = CustomForm.useWatch('cookies', form);
@@ -39,7 +38,6 @@ export const SearchConfigTab = ({
         defaultTargetConfig: DEFAULT_SEARCH_TARGET_CONFIG,
         onClose,
         onSuccess,
-        externalSetIsSaving,
         getDefaultTemplate: (service) => checkService(service).defaultSearchTemplate,
         extraInitialValues: (config) => ({
             searchUrlPattern: config.searchUrlPattern || '',
