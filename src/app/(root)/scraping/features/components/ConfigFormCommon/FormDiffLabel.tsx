@@ -4,13 +4,13 @@ import { CustomFlex, CustomTag } from '@/components/custom-antd';
 import type { IConfigVersion, IDataProviderFeature } from '../../types';
 import { getDifferenceText } from '../../utils';
 
-export type FormDiffLabelProps = {
+export interface IFormDiffLabelProps {
     label: string;
     fieldKey: string;
     isViewingHistory?: boolean;
     feature: IDataProviderFeature;
     selectedVersion?: IConfigVersion | null;
-};
+}
 
 export const FormDiffLabel = ({
     label,
@@ -18,8 +18,13 @@ export const FormDiffLabel = ({
     isViewingHistory,
     feature,
     selectedVersion,
-}: FormDiffLabelProps) => {
-    const diffText = getDifferenceText(fieldKey, isViewingHistory, feature, selectedVersion);
+}: IFormDiffLabelProps) => {
+    const diffText = getDifferenceText({
+        fieldKey,
+        isViewingHistory,
+        feature,
+        selectedVersion,
+    });
     if (!diffText) return <>{label}</>;
 
     return (

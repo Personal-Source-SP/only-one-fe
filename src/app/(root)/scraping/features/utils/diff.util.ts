@@ -1,17 +1,25 @@
 import { ScraperServiceEnum } from '../enums';
 import type { IConfigVersion, IDataProviderFeature } from '../types';
 
-export const getDifferenceText = (
-    fieldKey: string,
-    isViewingHistory?: boolean,
-    feature?: IDataProviderFeature,
-    selectedVersion?: IConfigVersion | null,
-): string | null => {
+export interface IGetDifferenceTextParams {
+    fieldKey: string;
+    isViewingHistory?: boolean;
+    feature?: IDataProviderFeature;
+    selectedVersion?: IConfigVersion | null;
+}
+
+export const getDifferenceText = ({
+    fieldKey,
+    isViewingHistory,
+    feature,
+    selectedVersion,
+}: IGetDifferenceTextParams): string | null => {
     if (!isViewingHistory || !feature) return null;
 
     if (fieldKey === 'service') {
         const currentService = feature.service || ScraperServiceEnum.GENERIC;
         const snapshotService = selectedVersion?.config?.service || ScraperServiceEnum.GENERIC;
+
         return currentService !== snapshotService ? `Hiện tại: ${currentService}` : null;
     }
 
@@ -20,7 +28,6 @@ export const getDifferenceText = (
 
     const currentVal = currentConfig[fieldKey];
     const snapshotVal = snapshotConfig[fieldKey];
-
     if (currentVal === snapshotVal) return null;
 
     if (typeof currentVal === 'boolean' || typeof snapshotVal === 'boolean') {
