@@ -1,3 +1,3 @@
-export * from './feature.registry';
-export * from './diff.util';
-export * from './featureConfigTransform';
+export * from './feature-registry';
+export * from './difference-text';
+export * from './feature-config-transform';
