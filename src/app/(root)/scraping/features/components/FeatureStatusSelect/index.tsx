@@ -66,6 +66,14 @@ export const FeatureStatusSelect = ({
         setTargetStatusForConfirm(null);
     }, [loading]);
 
+    const handleMenuClick: MenuProps['onClick'] = useCallback(
+        ({ key }: { key: string }) => {
+            if (key.startsWith('current-') || key.startsWith('header-')) return;
+            handleSelectOption(key as DataProviderFeatureStatus);
+        },
+        [handleSelectOption],
+    );
+
     const availableStatuses = useMemo(() => getAvailableTargetStatuses(status), [status]);
 
     const menuItems: MenuProps['items'] = useMemo(() => {
@@ -164,7 +172,7 @@ export const FeatureStatusSelect = ({
                 trigger={['click']}
                 disabled={isDisabled}
                 placement="bottomRight"
-                menu={{ items: menuItems }}
+                menu={{ items: menuItems, onClick: handleMenuClick }}
             >
                 <FeatureStatusTrigger
                     loading={loading}
