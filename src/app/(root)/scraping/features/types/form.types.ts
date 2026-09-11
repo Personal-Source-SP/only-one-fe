@@ -24,4 +24,4 @@ export interface TestInputFormValues {
     htmlContentString?: string;
 }
 
-export type { FeatureTestResult } from './test.types';
+export type { FeatureTestResult } from './provider-feature-test.types';

@@ -46,12 +46,4 @@ export interface ISearchExtractDataResponse {
     data?: SearchResultItem[];
 }
 
-export type FeatureTestResult =
-    | IExtractDataResponse
-    | ISearchExtractDataResponse
-    | {
-          html?: string;
-          error?: string;
-          data?: Array<Record<string, unknown>> | Record<string, unknown>;
-          [key: string]: unknown;
-      };
+export type FeatureTestResult = IExtractDataResponse | ISearchExtractDataResponse;
