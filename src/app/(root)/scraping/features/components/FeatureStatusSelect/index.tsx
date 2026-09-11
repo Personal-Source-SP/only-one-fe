@@ -2,10 +2,9 @@
 
 import { CustomDropdown, CustomFlex, CustomTag, type MenuProps } from '@/components/custom-antd';
 import { Icon } from '@iconify/react';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import { DATA_PROVIDER_FEATURE_STATUS_CONFIG, getAvailableTargetStatuses } from '../../constants';
 import { DataProviderFeatureStatus } from '../../enums';
-import { FeatureStatusConfirmModal } from '../FeatureStatusConfirmModal';
 import { FeatureStatusTrigger } from './FeatureStatusTrigger';
 import { FeatureStatusUnconfiguredTrigger } from './FeatureStatusUnconfiguredTrigger';
 
@@ -14,7 +13,6 @@ export type FeatureStatusSelectProps = {
     loading?: boolean;
     disabled?: boolean;
     className?: string;
-    disableConfirm?: boolean;
     onChange: (nextStatus: DataProviderFeatureStatus) => void | Promise<void>;
 };
 
@@ -23,13 +21,8 @@ export const FeatureStatusSelect = ({
     loading = false,
     disabled = false,
     className = '',
-    disableConfirm = false,
     onChange,
 }: FeatureStatusSelectProps) => {
-    const [isConfirmOpen, setIsConfirmOpen] = useState<boolean>(false);
-    const [targetStatusForConfirm, setTargetStatusForConfirm] =
-        useState<DataProviderFeatureStatus | null>(null);
-
     const isUnconfigured = status === DataProviderFeatureStatus.UNCONFIGURED;
     const isDisabled = disabled || loading || isUnconfigured;
     const currentConfig = DATA_PROVIDER_FEATURE_STATUS_CONFIG[status];
@@ -37,34 +30,10 @@ export const FeatureStatusSelect = ({
     const handleSelectOption = useCallback(
         (targetStatus: DataProviderFeatureStatus) => {
             if (targetStatus === status) return;
-            if (disableConfirm) {
-                onChange(targetStatus);
-                return;
-            }
-
-            setIsConfirmOpen(true);
-            setTargetStatusForConfirm(targetStatus);
+            onChange(targetStatus);
         },
-        [status, disableConfirm, onChange],
+        [status, onChange],
     );
-
-    const handleConfirm = useCallback(async () => {
-        if (!targetStatusForConfirm) return;
-
-        try {
-            await onChange(targetStatusForConfirm);
-            setIsConfirmOpen(false);
-            setTargetStatusForConfirm(null);
-        } catch {
-            // Error is handled by caller toast
-        }
-    }, [targetStatusForConfirm, onChange]);
-
-    const handleCancel = useCallback(() => {
-        if (loading) return;
-        setIsConfirmOpen(false);
-        setTargetStatusForConfirm(null);
-    }, [loading]);
 
     const handleMenuClick: MenuProps['onClick'] = useCallback(
         ({ key }: { key: string }) => {
@@ -167,29 +136,18 @@ export const FeatureStatusSelect = ({
     }
 
     return (
-        <>
-            <CustomDropdown
-                trigger={['click']}
-                disabled={isDisabled}
-                placement="bottomRight"
-                menu={{ items: menuItems, onClick: handleMenuClick }}
-            >
-                <FeatureStatusTrigger
-                    loading={loading}
-                    className={className}
-                    disabled={isDisabled}
-                    currentConfig={currentConfig}
-                />
-            </CustomDropdown>
-
-            <FeatureStatusConfirmModal
-                open={isConfirmOpen}
-                targetStatus={targetStatusForConfirm}
+        <CustomDropdown
+            trigger={['click']}
+            disabled={isDisabled}
+            placement="bottomRight"
+            menu={{ items: menuItems, onClick: handleMenuClick }}
+        >
+            <FeatureStatusTrigger
                 loading={loading}
-                currentStatus={status}
-                onCancel={handleCancel}
-                onConfirm={handleConfirm}
+                className={className}
+                disabled={isDisabled}
+                currentConfig={currentConfig}
             />
-        </>
+        </CustomDropdown>
     );
 };
