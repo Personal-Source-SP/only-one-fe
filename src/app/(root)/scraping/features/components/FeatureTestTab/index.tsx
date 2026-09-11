@@ -2,17 +2,25 @@
 
 import { useCallback } from 'react';
 import { CustomCol, CustomForm, CustomRow, type FormInstance } from '@/components/custom-antd';
+import { useFeatureModalContext } from '../../context';
 import { useFeatureTestRunner } from '../../hooks';
 import type { IDataProviderFeature } from '../../types';
 import { TestInputSection } from './TestInputSection';
 import { TestResultSection } from './TestResultSection';
 
 export type FeatureTestTabProps = {
-    feature: IDataProviderFeature;
+    feature?: IDataProviderFeature;
     configForm?: FormInstance;
 };
 
-export const FeatureTestTab = ({ feature, configForm }: FeatureTestTabProps) => {
+export const FeatureTestTab = ({
+    feature: propFeature,
+    configForm: propConfigForm,
+}: FeatureTestTabProps = {}) => {
+    const context = useFeatureModalContext();
+    const feature = propFeature ?? context.feature;
+    const configForm = propConfigForm ?? context.form;
+
     const [form] = CustomForm.useForm();
 
     const {

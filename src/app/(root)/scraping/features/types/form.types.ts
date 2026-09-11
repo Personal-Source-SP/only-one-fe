@@ -5,12 +5,12 @@ import type { IDataProviderFeature } from './data-provider-feature.types';
 import type { ISearchTargetConfigSpecific, ITargetConfig } from './target-config.types';
 
 export type FeatureConfigFormProps = {
-    form: FormInstance;
-    feature: IDataProviderFeature;
+    form?: FormInstance;
+    feature?: IDataProviderFeature;
     isViewingHistory?: boolean;
     selectedVersion?: IConfigVersion | null;
-    onClose: () => void;
-    onSuccess: () => void;
+    onClose?: () => void;
+    onSuccess?: () => void;
     onSaveForm?: (values: any) => Promise<void> | void;
 };
 

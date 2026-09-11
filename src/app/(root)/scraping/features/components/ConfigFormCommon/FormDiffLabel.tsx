@@ -1,14 +1,16 @@
 'use client';
 
+import { type ReactNode } from 'react';
 import { CustomFlex, CustomTag } from '@/components/custom-antd';
+import { useFeatureModalContext } from '../../context';
 import type { IConfigVersion, IDataProviderFeature } from '../../types';
 import { getDifferenceText } from '../../utils';
 
 export interface IFormDiffLabelProps {
-    label: string;
+    label: ReactNode;
     fieldKey: string;
     isViewingHistory?: boolean;
-    feature: IDataProviderFeature;
+    feature?: IDataProviderFeature;
     selectedVersion?: IConfigVersion | null;
 }
 
@@ -19,11 +21,18 @@ export const FormDiffLabel = ({
     feature,
     selectedVersion,
 }: IFormDiffLabelProps) => {
+    const context = useFeatureModalContext();
+    const activeFeature = feature ?? context.feature;
+    const activeSelectedVersion =
+        selectedVersion !== undefined ? selectedVersion : context.selectedVersion;
+    const activeIsViewingHistory =
+        isViewingHistory !== undefined ? isViewingHistory : context.isViewingHistory;
+
     const diffText = getDifferenceText({
         fieldKey,
-        isViewingHistory,
-        feature,
-        selectedVersion,
+        isViewingHistory: activeIsViewingHistory,
+        feature: activeFeature,
+        selectedVersion: activeSelectedVersion,
     });
     if (!diffText) return <>{label}</>;
 

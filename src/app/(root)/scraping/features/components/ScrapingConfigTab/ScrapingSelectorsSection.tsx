@@ -6,27 +6,23 @@ import {
     CustomForm,
     CustomInput,
     CustomRow,
-    CustomTypography,
 } from '@/components/custom-antd';
-import { Icon } from '@iconify/react';
 import { checkService, FEATURE_SECTION_CONTAINER_CLASS } from '../../constants';
 import type { ScraperServiceEnum } from '../../enums';
+import { useCurrentService } from '../../hooks';
 import { FormDiffLabel, SectionHeader } from '../ConfigFormCommon';
 import type { IConfigVersion, IDataProviderFeature } from '../../types';
 
 export type ScrapingSelectorsSectionProps = {
-    feature: IDataProviderFeature;
+    feature?: IDataProviderFeature;
     service?: ScraperServiceEnum;
     isViewingHistory?: boolean;
     selectedVersion?: IConfigVersion | null;
 };
 
-export const ScrapingSelectorsSection = ({
-    feature,
-    service,
-    isViewingHistory,
-    selectedVersion,
-}: ScrapingSelectorsSectionProps) => {
+export const ScrapingSelectorsSection = (_props?: ScrapingSelectorsSectionProps) => {
+    const currentService = useCurrentService();
+    const service = _props?.service ?? currentService;
     const { hasDomSelectors, hasWaitForSelector, hasBrowserSettings, hasApiParams } =
         checkService(service);
 
@@ -46,9 +42,6 @@ export const ScrapingSelectorsSection = ({
                                 <FormDiffLabel
                                     label="Selector nội dung chính"
                                     fieldKey="mainContentSelector"
-                                    feature={feature}
-                                    selectedVersion={selectedVersion}
-                                    isViewingHistory={isViewingHistory}
                                 />
                             }
                         >
@@ -63,11 +56,8 @@ export const ScrapingSelectorsSection = ({
                             name="waitForSelector"
                             label={
                                 <FormDiffLabel
-                                    fieldKey="waitForSelector"
                                     label="Selector chờ (Wait for selector)"
-                                    feature={feature}
-                                    selectedVersion={selectedVersion}
-                                    isViewingHistory={isViewingHistory}
+                                    fieldKey="waitForSelector"
                                 />
                             }
                         >
@@ -81,13 +71,7 @@ export const ScrapingSelectorsSection = ({
                         <CustomForm.Item
                             name="userAgent"
                             label={
-                                <FormDiffLabel
-                                    fieldKey="userAgent"
-                                    label="User Agent tùy chỉnh"
-                                    feature={feature}
-                                    selectedVersion={selectedVersion}
-                                    isViewingHistory={isViewingHistory}
-                                />
+                                <FormDiffLabel fieldKey="userAgent" label="User Agent tùy chỉnh" />
                             }
                         >
                             <CustomInput placeholder="Mozilla/5.0..." />
@@ -104,9 +88,6 @@ export const ScrapingSelectorsSection = ({
                                     <FormDiffLabel
                                         label="API Query Params"
                                         fieldKey="queryParams"
-                                        feature={feature}
-                                        selectedVersion={selectedVersion}
-                                        isViewingHistory={isViewingHistory}
                                     />
                                 }
                             >
@@ -120,9 +101,6 @@ export const ScrapingSelectorsSection = ({
                                     <FormDiffLabel
                                         label="First Query Params (trang đầu)"
                                         fieldKey="firstQueryParams"
-                                        feature={feature}
-                                        selectedVersion={selectedVersion}
-                                        isViewingHistory={isViewingHistory}
                                     />
                                 }
                             >

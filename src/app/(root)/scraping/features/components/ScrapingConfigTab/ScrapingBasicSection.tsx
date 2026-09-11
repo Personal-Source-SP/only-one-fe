@@ -6,27 +6,29 @@ import {
     CustomForm,
     CustomRow,
     CustomSelect,
-    CustomTypography,
 } from '@/components/custom-antd';
-import { Icon } from '@iconify/react';
 import { FEATURE_SECTION_CONTAINER_CLASS, SCRAPER_SERVICE_OPTIONS } from '../../constants';
 import type { IConfigVersion, IDataProviderFeature } from '../../types';
 import type { ScraperServiceEnum } from '../../enums';
+import { useFeatureModalContext } from '../../context';
 import { FormDiffLabel, SectionHeader } from '../ConfigFormCommon';
 
 export type ScrapingBasicSectionProps = {
-    feature: IDataProviderFeature;
+    feature?: IDataProviderFeature;
     isViewingHistory?: boolean;
     selectedVersion?: IConfigVersion | null;
-    onServiceChange: (service: ScraperServiceEnum) => void;
+    onServiceChange?: (service: ScraperServiceEnum) => void;
 };
 
 export const ScrapingBasicSection = ({
-    feature,
-    isViewingHistory,
-    selectedVersion,
+    feature: propFeature,
+    isViewingHistory: propIsViewingHistory,
     onServiceChange,
 }: ScrapingBasicSectionProps) => {
+    const context = useFeatureModalContext();
+    const feature = propFeature ?? context.feature;
+    const isViewingHistory = propIsViewingHistory ?? context.isViewingHistory;
+
     const isServiceDisabled = Boolean(feature?.id || isViewingHistory);
 
     return (
@@ -40,15 +42,7 @@ export const ScrapingBasicSection = ({
                 <CustomCol span={24}>
                     <CustomForm.Item
                         name="service"
-                        label={
-                            <FormDiffLabel
-                                fieldKey="service"
-                                label="Service Engine"
-                                feature={feature}
-                                selectedVersion={selectedVersion}
-                                isViewingHistory={isViewingHistory}
-                            />
-                        }
+                        label={<FormDiffLabel fieldKey="service" label="Service Engine" />}
                         rules={[{ required: true, message: 'Vui lòng chọn engine' }]}
                     >
                         <CustomSelect

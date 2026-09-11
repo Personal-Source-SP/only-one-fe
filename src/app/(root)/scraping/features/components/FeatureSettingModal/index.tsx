@@ -6,6 +6,7 @@ import { useMessage } from '@/hooks';
 import { Icon } from '@iconify/react';
 import { useCallback, useMemo, useState } from 'react';
 import { DataProviderFeatureStatus } from '../../enums';
+import { FeatureModalProvider, type FeatureModalContextValue } from '../../context';
 import { useFeatureModalController } from '../../hooks';
 import type { IDataProviderFeature } from '../../types';
 import { getFeatureDefinition } from '../../utils';
@@ -42,6 +43,7 @@ export const FeatureSettingModal = ({
         isDraft,
         versions,
         selectedVersion,
+        selectedVersionId,
         isViewingHistory,
         isRollingBack,
         isSaving,
@@ -64,6 +66,47 @@ export const FeatureSettingModal = ({
         onSuccess,
     });
 
+    const contextValue: FeatureModalContextValue = useMemo(
+        () => ({
+            feature,
+            form,
+            selectedVersion,
+            selectedVersionId,
+            isViewingHistory,
+            isDraft,
+            isRollingBack,
+            isSaving,
+            authorName,
+            versions,
+            isSwitchingStatus,
+            onClose,
+            onSuccess,
+            onSwitchStatus: () => onSwitchStatus(feature.id, feature.status),
+            onRollback: handleRollback,
+            onSelectVersion: setSelectedVersionId,
+            onSaveForm: handleFormSubmit,
+        }),
+        [
+            feature,
+            form,
+            selectedVersion,
+            selectedVersionId,
+            isViewingHistory,
+            isDraft,
+            isRollingBack,
+            isSaving,
+            authorName,
+            versions,
+            isSwitchingStatus,
+            onClose,
+            onSuccess,
+            onSwitchStatus,
+            handleRollback,
+            setSelectedVersionId,
+            handleFormSubmit,
+        ],
+    );
+
     const tabItems = useMemo(
         () => [
             {
@@ -76,15 +119,7 @@ export const FeatureSettingModal = ({
                 ),
                 children: (
                     <div className="h-auto max-h-[70vh] lg:max-h-none lg:h-[calc(85vh-200px)] overflow-y-auto custom-scrollbar py-1 pr-1">
-                        <ConfigComponent
-                            feature={feature}
-                            form={form}
-                            selectedVersion={selectedVersion}
-                            isViewingHistory={isViewingHistory}
-                            onClose={onClose}
-                            onSuccess={onSuccess}
-                            onSaveForm={handleFormSubmit}
-                        />
+                        <ConfigComponent />
                     </div>
                 ),
             },
@@ -98,21 +133,12 @@ export const FeatureSettingModal = ({
                 ),
                 children: (
                     <div className="h-auto max-h-[70vh] lg:max-h-none lg:h-[calc(85vh-200px)] overflow-y-auto custom-scrollbar py-1 pr-1">
-                        <FeatureTestTab feature={feature} configForm={form} />
+                        <FeatureTestTab />
                     </div>
                 ),
             },
         ],
-        [
-            ConfigComponent,
-            feature,
-            form,
-            selectedVersion,
-            isViewingHistory,
-            onClose,
-            onSuccess,
-            handleFormSubmit,
-        ],
+        [ConfigComponent],
     );
 
     const handleTabChange = useCallback(
@@ -137,47 +163,27 @@ export const FeatureSettingModal = ({
     );
 
     return (
-        <CustomModal
-            open={open}
-            width={1300}
-            onCancel={onClose}
-            loadingTip={loadingTip}
-            loading={isGlobalLoading}
-            bodyClassName="!p-2.5 sm:!p-3"
-            className="top-6 max-w-[96vw]"
-            title={
-                <FeatureModalHeader
-                    form={form}
-                    feature={feature}
-                    isDraft={isDraft}
-                    authorName={authorName}
-                    selectedVersion={selectedVersion}
-                    isSwitchingStatus={isSwitchingStatus}
-                    onSwitchStatus={() => onSwitchStatus(feature.id, feature.status)}
+        <FeatureModalProvider value={contextValue}>
+            <CustomModal
+                open={open}
+                width={1300}
+                onCancel={onClose}
+                loadingTip={loadingTip}
+                loading={isGlobalLoading}
+                bodyClassName="!p-2.5 sm:!p-3"
+                className="top-6 max-w-[96vw]"
+                title={<FeatureModalHeader />}
+                footer={<FeatureModalFooter />}
+            >
+                <CustomTabs activeKey={activeTabKey} onChange={handleTabChange} items={tabItems} />
+                <FeatureConfirmUpdateModal
+                    open={isConfirmOpen}
+                    isSaving={isSaving}
+                    diffItems={diffItems}
+                    onClose={handleCancelConfirm}
+                    onConfirm={handleConfirmUpdate}
                 />
-            }
-            footer={
-                <FeatureModalFooter
-                    form={form}
-                    isDraft={isDraft}
-                    versions={versions}
-                    isRollingBack={isRollingBack}
-                    selectedVersion={selectedVersion}
-                    isViewingHistory={isViewingHistory}
-                    onClose={onClose}
-                    onRollback={handleRollback}
-                    onSelectVersion={setSelectedVersionId}
-                />
-            }
-        >
-            <CustomTabs activeKey={activeTabKey} onChange={handleTabChange} items={tabItems} />
-            <FeatureConfirmUpdateModal
-                open={isConfirmOpen}
-                isSaving={isSaving}
-                diffItems={diffItems}
-                onClose={handleCancelConfirm}
-                onConfirm={handleConfirmUpdate}
-            />
-        </CustomModal>
+            </CustomModal>
+        </FeatureModalProvider>
     );
 };

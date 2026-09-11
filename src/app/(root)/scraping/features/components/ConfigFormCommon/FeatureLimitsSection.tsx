@@ -8,24 +8,14 @@ import {
     CustomRow,
 } from '@/components/custom-antd';
 import { checkService, FEATURE_SECTION_CONTAINER_CLASS } from '../../constants';
-import type { ScraperServiceEnum } from '../../enums';
-import type { IConfigVersion, IDataProviderFeature } from '../../types';
+import { useCurrentService } from '../../hooks';
 import { FormDiffLabel } from './FormDiffLabel';
 import { SectionHeader } from './SectionHeader';
 
-export type FeatureLimitsSectionProps = {
-    feature: IDataProviderFeature;
-    service?: ScraperServiceEnum;
-    isViewingHistory?: boolean;
-    selectedVersion?: IConfigVersion | null;
-};
+export type FeatureLimitsSectionProps = Record<string, never>;
 
-export const FeatureLimitsSection = ({
-    feature,
-    service,
-    isViewingHistory,
-    selectedVersion,
-}: FeatureLimitsSectionProps) => {
+export const FeatureLimitsSection = (_props?: FeatureLimitsSectionProps) => {
+    const service = useCurrentService();
     const { hasNetworkRetries } = checkService(service);
 
     return (
@@ -39,15 +29,7 @@ export const FeatureLimitsSection = ({
                 <CustomCol xs={24} sm={hasNetworkRetries ? 8 : 24}>
                     <CustomForm.Item
                         name="maxResults"
-                        label={
-                            <FormDiffLabel
-                                fieldKey="maxResults"
-                                label="Số kết quả tối đa"
-                                feature={feature}
-                                selectedVersion={selectedVersion}
-                                isViewingHistory={isViewingHistory}
-                            />
-                        }
+                        label={<FormDiffLabel fieldKey="maxResults" label="Số kết quả tối đa" />}
                     >
                         <CustomInputNumber min={1} className="w-full" placeholder="10" />
                     </CustomForm.Item>
@@ -57,15 +39,7 @@ export const FeatureLimitsSection = ({
                     <CustomCol xs={24} sm={8}>
                         <CustomForm.Item
                             name="retryDelay"
-                            label={
-                                <FormDiffLabel
-                                    fieldKey="retryDelay"
-                                    label="Delay retry (ms)"
-                                    feature={feature}
-                                    selectedVersion={selectedVersion}
-                                    isViewingHistory={isViewingHistory}
-                                />
-                            }
+                            label={<FormDiffLabel fieldKey="retryDelay" label="Delay retry (ms)" />}
                         >
                             <CustomInputNumber min={0} className="w-full" placeholder="1000" />
                         </CustomForm.Item>
@@ -77,13 +51,7 @@ export const FeatureLimitsSection = ({
                         <CustomForm.Item
                             name="retryAttempts"
                             label={
-                                <FormDiffLabel
-                                    label="Số lần thử lại"
-                                    fieldKey="retryAttempts"
-                                    feature={feature}
-                                    selectedVersion={selectedVersion}
-                                    isViewingHistory={isViewingHistory}
-                                />
+                                <FormDiffLabel fieldKey="retryAttempts" label="Số lần thử lại" />
                             }
                         >
                             <CustomInputNumber min={0} className="w-full" placeholder="3" />
@@ -100,9 +68,6 @@ export const FeatureLimitsSection = ({
                                     <FormDiffLabel
                                         fieldKey="timeout"
                                         label="Thời gian chờ Request (ms)"
-                                        feature={feature}
-                                        selectedVersion={selectedVersion}
-                                        isViewingHistory={isViewingHistory}
                                     />
                                 }
                             >
@@ -120,9 +85,6 @@ export const FeatureLimitsSection = ({
                                     <FormDiffLabel
                                         fieldKey="waitForTimeout"
                                         label="Thời gian chờ Selector (ms)"
-                                        feature={feature}
-                                        selectedVersion={selectedVersion}
-                                        isViewingHistory={isViewingHistory}
                                     />
                                 }
                             >

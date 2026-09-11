@@ -5,23 +5,22 @@ import {
     CustomFlex,
     CustomForm,
     CustomInput,
-    CustomInputNumber,
     CustomRow,
     CustomSelect,
-    CustomTypography,
 } from '@/components/custom-antd';
-import { Icon } from '@iconify/react';
 import {
     checkService,
     SCRAPER_SERVICE_OPTIONS,
     FEATURE_SECTION_CONTAINER_CLASS,
 } from '../../constants';
 import { ScraperServiceEnum } from '../../enums';
+import { useFeatureModalContext } from '../../context';
+import { useCurrentService } from '../../hooks';
 import { FormDiffLabel, SectionHeader } from '../ConfigFormCommon';
 import type { IConfigVersion, IDataProviderFeature } from '../../types';
 
 export type SearchUrlPatternSectionProps = {
-    feature: IDataProviderFeature;
+    feature?: IDataProviderFeature;
     service?: ScraperServiceEnum;
     isViewingHistory?: boolean;
     selectedVersion?: IConfigVersion | null;
@@ -29,14 +28,18 @@ export type SearchUrlPatternSectionProps = {
 };
 
 export const SearchUrlPatternSection = ({
-    feature,
-    service = ScraperServiceEnum.GENERIC,
-    isViewingHistory,
-    selectedVersion,
+    feature: propFeature,
+    service: propService,
+    isViewingHistory: propIsViewingHistory,
     onServiceChange,
 }: SearchUrlPatternSectionProps) => {
-    const { hasUrlPattern } = checkService(service);
+    const context = useFeatureModalContext();
+    const feature = propFeature ?? context.feature;
+    const isViewingHistory = propIsViewingHistory ?? context.isViewingHistory;
+    const currentService = useCurrentService();
+    const service = propService ?? currentService;
 
+    const { hasUrlPattern } = checkService(service);
     const isServiceDisabled = Boolean(feature?.id || isViewingHistory);
 
     return (
@@ -52,15 +55,7 @@ export const SearchUrlPatternSection = ({
                     <CustomForm.Item
                         name="service"
                         rules={[{ required: true, message: 'Vui lòng chọn engine' }]}
-                        label={
-                            <FormDiffLabel
-                                fieldKey="service"
-                                label="Service Engine"
-                                feature={feature}
-                                selectedVersion={selectedVersion}
-                                isViewingHistory={isViewingHistory}
-                            />
-                        }
+                        label={<FormDiffLabel fieldKey="service" label="Service Engine" />}
                     >
                         <CustomSelect
                             onChange={onServiceChange}
@@ -78,9 +73,6 @@ export const SearchUrlPatternSection = ({
                                 <FormDiffLabel
                                     fieldKey="searchUrlPattern"
                                     label="Mẫu URL tìm kiếm (Search URL Pattern)"
-                                    feature={feature}
-                                    selectedVersion={selectedVersion}
-                                    isViewingHistory={isViewingHistory}
                                 />
                             }
                             rules={[
@@ -103,9 +95,6 @@ export const SearchUrlPatternSection = ({
                                 <FormDiffLabel
                                     fieldKey="queryPlaceholder"
                                     label="Placeholder từ khóa"
-                                    feature={feature}
-                                    selectedVersion={selectedVersion}
-                                    isViewingHistory={isViewingHistory}
                                 />
                             }
                         >

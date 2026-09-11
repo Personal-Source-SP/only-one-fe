@@ -13,14 +13,16 @@ import {
 import { Icon } from '@iconify/react';
 import { useEffect, useRef, useState } from 'react';
 import { checkService, FEATURE_SECTION_CONTAINER_CLASS } from '../../constants';
+import { useFeatureModalContext } from '../../context';
+import { useCurrentService } from '../../hooks';
 import type { ScraperServiceEnum } from '../../enums';
+import type { IConfigVersion, IDataProviderFeature } from '../../types';
 import { FormDiffLabel } from './FormDiffLabel';
 import { SectionHeader } from './SectionHeader';
-import type { IConfigVersion, IDataProviderFeature } from '../../types';
 
 export type FeatureAdvancedSectionProps = {
-    form: FormInstance;
-    feature: IDataProviderFeature;
+    form?: FormInstance;
+    feature?: IDataProviderFeature;
     service?: ScraperServiceEnum;
     headers?: string;
     cookies?: string;
@@ -28,15 +30,18 @@ export type FeatureAdvancedSectionProps = {
     selectedVersion?: IConfigVersion | null;
 };
 
-export const FeatureAdvancedSection = ({
-    form,
-    feature,
-    service,
-    headers,
-    cookies,
-    isViewingHistory,
-    selectedVersion,
-}: FeatureAdvancedSectionProps) => {
+export const FeatureAdvancedSection = (props?: FeatureAdvancedSectionProps) => {
+    const context = useFeatureModalContext();
+    const currentService = useCurrentService();
+    const form = props?.form ?? context.form;
+    const service = props?.service ?? currentService;
+    const isViewingHistory = props?.isViewingHistory ?? context.isViewingHistory;
+
+    const watchedHeaders = CustomForm.useWatch('headers', form);
+    const watchedCookies = CustomForm.useWatch('cookies', form);
+    const headers = props?.headers ?? watchedHeaders;
+    const cookies = props?.cookies ?? watchedCookies;
+
     const { hasBrowserSettings, hasAdvancedHeaders } = checkService(service);
 
     const [hasCustomHeaders, setHasCustomHeaders] = useState<boolean>(() =>
@@ -119,9 +124,6 @@ export const FeatureAdvancedSection = ({
                                     <FormDiffLabel
                                         label="Lấy phần tử cha"
                                         fieldKey="isGetParentElement"
-                                        feature={feature}
-                                        selectedVersion={selectedVersion}
-                                        isViewingHistory={isViewingHistory}
                                     />
                                 </CustomTypography.Text>
                                 <CustomTypography.Text className="text-xs text-hub-subtitle leading-snug">
@@ -147,13 +149,7 @@ export const FeatureAdvancedSection = ({
                         >
                             <CustomFlex vertical gap={2} className="min-w-0 flex-1 pr-2">
                                 <CustomTypography.Text className="text-sm text-hub-title font-medium">
-                                    <FormDiffLabel
-                                        label="Stealth Mode"
-                                        fieldKey="stealthMode"
-                                        feature={feature}
-                                        selectedVersion={selectedVersion}
-                                        isViewingHistory={isViewingHistory}
-                                    />
+                                    <FormDiffLabel label="Stealth Mode" fieldKey="stealthMode" />
                                 </CustomTypography.Text>
                                 <CustomTypography.Text className="text-xs text-hub-subtitle leading-snug">
                                     Ẩn dấu vết tự động hóa để tránh bị trang web chặn
@@ -177,9 +173,6 @@ export const FeatureAdvancedSection = ({
                                     <FormDiffLabel
                                         label="Vượt Cloudflare"
                                         fieldKey="cloudflareBypass"
-                                        feature={feature}
-                                        selectedVersion={selectedVersion}
-                                        isViewingHistory={isViewingHistory}
                                     />
                                 </CustomTypography.Text>
                                 <CustomTypography.Text className="text-xs text-hub-subtitle leading-snug">
@@ -208,9 +201,6 @@ export const FeatureAdvancedSection = ({
                                     <FormDiffLabel
                                         label="Bật JavaScript"
                                         fieldKey="javascriptEnabled"
-                                        feature={feature}
-                                        selectedVersion={selectedVersion}
-                                        isViewingHistory={isViewingHistory}
                                     />
                                 </CustomTypography.Text>
                                 <CustomTypography.Text className="text-xs text-hub-subtitle leading-snug">
@@ -236,13 +226,7 @@ export const FeatureAdvancedSection = ({
                         >
                             <CustomFlex vertical gap={2} className="min-w-0 flex-1 pr-2">
                                 <CustomTypography.Text className="text-sm text-hub-title font-medium">
-                                    <FormDiffLabel
-                                        label="Tải hình ảnh"
-                                        fieldKey="imagesEnabled"
-                                        feature={feature}
-                                        selectedVersion={selectedVersion}
-                                        isViewingHistory={isViewingHistory}
-                                    />
+                                    <FormDiffLabel label="Tải hình ảnh" fieldKey="imagesEnabled" />
                                 </CustomTypography.Text>
                                 <CustomTypography.Text className="text-xs text-hub-subtitle leading-snug">
                                     Tải tài nguyên hình ảnh (tắt để tăng tốc crawl)
@@ -263,13 +247,7 @@ export const FeatureAdvancedSection = ({
                         >
                             <CustomFlex vertical gap={2} className="min-w-0 flex-1 pr-2">
                                 <CustomTypography.Text className="text-sm text-hub-title font-medium">
-                                    <FormDiffLabel
-                                        label="Tải CSS"
-                                        fieldKey="cssEnabled"
-                                        feature={feature}
-                                        selectedVersion={selectedVersion}
-                                        isViewingHistory={isViewingHistory}
-                                    />
+                                    <FormDiffLabel label="Tải CSS" fieldKey="cssEnabled" />
                                 </CustomTypography.Text>
                                 <CustomTypography.Text className="text-xs text-hub-subtitle leading-snug">
                                     Tải định dạng CSS styles (tắt để tiết kiệm băng thông)
@@ -303,9 +281,6 @@ export const FeatureAdvancedSection = ({
                                             <FormDiffLabel
                                                 fieldKey="headers"
                                                 label="Tùy chỉnh Headers (JSON)"
-                                                feature={feature}
-                                                selectedVersion={selectedVersion}
-                                                isViewingHistory={isViewingHistory}
                                             />
                                         </CustomTypography.Text>
                                         <CustomTypography.Text className="text-xs text-hub-subtitle">
@@ -358,9 +333,6 @@ export const FeatureAdvancedSection = ({
                                             <FormDiffLabel
                                                 fieldKey="cookies"
                                                 label="Tùy chỉnh Cookies (JSON Array)"
-                                                feature={feature}
-                                                selectedVersion={selectedVersion}
-                                                isViewingHistory={isViewingHistory}
                                             />
                                         </CustomTypography.Text>
                                         <CustomTypography.Text className="text-xs text-hub-subtitle">

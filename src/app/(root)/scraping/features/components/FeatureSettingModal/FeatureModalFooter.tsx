@@ -10,32 +10,35 @@ import {
 } from '@/components/custom-antd';
 import { Icon } from '@iconify/react';
 import { useMemo } from 'react';
+import { useFeatureModalContext } from '../../context';
 import { ConfigVersionType } from '../../enums';
 import type { IConfigVersion } from '../../types';
 
 export interface FeatureModalFooterProps {
-    isDraft: boolean;
-    form: FormInstance;
-    isRollingBack: boolean;
-    isViewingHistory: boolean;
-    versions: IConfigVersion[];
-    selectedVersion: IConfigVersion | null;
-    onClose: () => void;
-    onRollback: (versionId?: number) => void;
-    onSelectVersion: (versionId: number) => void;
+    isDraft?: boolean;
+    form?: FormInstance;
+    isRollingBack?: boolean;
+    isViewingHistory?: boolean;
+    versions?: IConfigVersion[];
+    selectedVersion?: IConfigVersion | null;
+    onClose?: () => void;
+    onRollback?: (versionId?: number) => void;
+    onSelectVersion?: (versionId: number) => void;
 }
 
-export const FeatureModalFooter = ({
-    isDraft,
-    form,
-    isRollingBack,
-    isViewingHistory,
-    versions,
-    selectedVersion,
-    onClose,
-    onRollback,
-    onSelectVersion,
-}: FeatureModalFooterProps) => {
+export const FeatureModalFooter = (props: FeatureModalFooterProps = {}) => {
+    const context = useFeatureModalContext();
+    const isDraft = props.isDraft ?? context.isDraft;
+    const form = props.form ?? context.form;
+    const isRollingBack = props.isRollingBack ?? context.isRollingBack;
+    const isViewingHistory = props.isViewingHistory ?? context.isViewingHistory;
+    const versions = props.versions ?? context.versions;
+    const selectedVersion =
+        props.selectedVersion !== undefined ? props.selectedVersion : context.selectedVersion;
+    const onClose = props.onClose ?? context.onClose;
+    const onRollback = props.onRollback ?? context.onRollback;
+    const onSelectVersion = props.onSelectVersion ?? context.onSelectVersion;
+
     const versionOptions = useMemo(() => {
         if (!versions.length) return [];
 

@@ -1,36 +1,34 @@
 'use client';
 
 import { CodeDisplay } from '@/components/common';
-import {
-    CustomFlex,
-    CustomForm,
-    CustomTypography,
-    type FormInstance,
-} from '@/components/custom-antd';
-import { Icon } from '@iconify/react';
+import { CustomFlex, CustomForm, type FormInstance } from '@/components/custom-antd';
 import { checkService, FEATURE_SECTION_CONTAINER_CLASS } from '../../constants';
+import { useFeatureModalContext } from '../../context';
+import { useCurrentService } from '../../hooks';
 import { DataProviderFeatureType, type ScraperServiceEnum } from '../../enums';
+import type { IConfigVersion, IDataProviderFeature } from '../../types';
 import { FormDiffLabel } from './FormDiffLabel';
 import { SectionHeader } from './SectionHeader';
-import type { IConfigVersion, IDataProviderFeature } from '../../types';
 
 export type FeatureCodeSectionProps = {
-    form: FormInstance;
+    form?: FormInstance;
     service?: ScraperServiceEnum;
     functionGenerator?: string;
     isViewingHistory?: boolean;
-    feature: IDataProviderFeature;
+    feature?: IDataProviderFeature;
     selectedVersion?: IConfigVersion | null;
 };
 
-export const FeatureCodeSection = ({
-    form,
-    service,
-    functionGenerator,
-    isViewingHistory,
-    feature,
-    selectedVersion,
-}: FeatureCodeSectionProps) => {
+export const FeatureCodeSection = (props?: FeatureCodeSectionProps) => {
+    const context = useFeatureModalContext();
+    const currentService = useCurrentService();
+    const form = props?.form ?? context.form;
+    const feature = props?.feature ?? context.feature;
+    const service = props?.service ?? currentService;
+
+    const watchedFunctionGenerator = CustomForm.useWatch('functionGenerator', form);
+    const functionGenerator = props?.functionGenerator ?? watchedFunctionGenerator;
+
     const { scrapingCodeLabel, searchCodeLabel } = checkService(service);
 
     const isSearch = feature.type === DataProviderFeatureType.SEARCH;
@@ -44,15 +42,7 @@ export const FeatureCodeSection = ({
             <SectionHeader
                 icon="lucide:code-2"
                 description="Hàm JavaScript xử lý dữ liệu trích xuất từ trang web hoặc phản hồi API"
-                title={
-                    <FormDiffLabel
-                        label={label}
-                        fieldKey="functionGenerator"
-                        feature={feature}
-                        selectedVersion={selectedVersion}
-                        isViewingHistory={isViewingHistory}
-                    />
-                }
+                title={<FormDiffLabel label={label} fieldKey="functionGenerator" />}
             />
             <CustomForm.Item
                 name="functionGenerator"
