@@ -7,39 +7,34 @@ import { DataProviderFeatureStatus, DataProviderFeatureType, ScraperServiceEnum 
 import type { IDataProviderFeature, ScrapingConfigFormValues, TargetConfig } from '../types';
 
 export interface MapConfigToBaseFormValuesParams {
-    config?: TargetConfig;
     defaultTemplate?: string;
-    defaultConfig?: TargetConfig;
     service?: ScraperServiceEnum;
+    config?: TargetConfig | Record<string, unknown>;
+    defaultConfig?: TargetConfig | Record<string, unknown>;
 }
 export const mapConfigToBaseFormValues = ({
-    config = {},
     defaultTemplate = DEFAULT_PARSER_FUNCTION_GENERATOR,
-    defaultConfig = DEFAULT_TARGET_CONFIG,
     service = ScraperServiceEnum.GENERIC,
-}: MapConfigToBaseFormValuesParams = {}): ScrapingConfigFormValues => ({
-    service,
-    changeDescription: '',
-    functionGenerator: config.functionGenerator || defaultTemplate,
-    mainContentSelector: config.mainContentSelector || '',
-    waitForSelector: config.waitForSelector || '',
-    userAgent: config.userAgent || '',
-    maxResults: config.maxResults ?? defaultConfig.maxResults,
-    retryDelay: config.retryDelay ?? defaultConfig.retryDelay,
-    retryAttempts: config.retryAttempts ?? defaultConfig.retryAttempts,
-    timeout: config.timeout ?? defaultConfig.timeout,
-    waitForTimeout: config.waitForTimeout ?? defaultConfig.waitForTimeout,
-    queryParams: config.queryParams || '',
-    firstQueryParams: config.firstQueryParams || '',
-    headers: formatJsonString(config.headers) || undefined,
-    cookies: formatJsonString(config.cookies) || undefined,
-    isGetParentElement: config.isGetParentElement ?? defaultConfig.isGetParentElement,
-    stealthMode: config.stealthMode ?? defaultConfig.stealthMode,
-    cloudflareBypass: config.cloudflareBypass ?? defaultConfig.cloudflareBypass,
-    javascriptEnabled: config.javascriptEnabled ?? defaultConfig.javascriptEnabled,
-    imagesEnabled: config.imagesEnabled ?? defaultConfig.imagesEnabled,
-    cssEnabled: config.cssEnabled ?? defaultConfig.cssEnabled,
-});
+    config = {},
+    defaultConfig = DEFAULT_TARGET_CONFIG,
+}: MapConfigToBaseFormValuesParams = {}): Record<string, unknown> => {
+    const rawHeaders =
+        (config as Record<string, unknown>).headers ??
+        (defaultConfig as Record<string, unknown>).headers;
+    const rawCookies =
+        (config as Record<string, unknown>).cookies ??
+        (defaultConfig as Record<string, unknown>).cookies;
+
+    return {
+        ...defaultConfig,
+        ...config,
+        service,
+        changeDescription: '',
+        functionGenerator: (config as Record<string, unknown>).functionGenerator || defaultTemplate,
+        headers: rawHeaders ? formatJsonString(rawHeaders) || undefined : undefined,
+        cookies: rawCookies ? formatJsonString(rawCookies) || undefined : undefined,
+    };
+};
 
 export const extractTargetConfigFromFormValues = (
     formValues?: Partial<ScrapingConfigFormValues>,
