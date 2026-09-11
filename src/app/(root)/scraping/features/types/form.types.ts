@@ -11,6 +11,7 @@ export type FeatureConfigFormProps = {
     selectedVersion?: IConfigVersion | null;
     onClose: () => void;
     onSuccess: () => void;
+    onSaveForm?: (values: any) => Promise<void> | void;
 };
 
 export interface ScrapingConfigFormValues extends Omit<

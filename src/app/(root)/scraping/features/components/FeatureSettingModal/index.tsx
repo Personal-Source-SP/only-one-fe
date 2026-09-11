@@ -1,12 +1,6 @@
 'use client';
 
-import {
-    CustomFlex,
-    CustomForm,
-    CustomModal,
-    CustomSpin,
-    CustomTabs,
-} from '@/components/custom-antd';
+import { CustomFlex, CustomForm, CustomModal, CustomTabs } from '@/components/custom-antd';
 import { MessageType } from '@/enums';
 import { useMessage } from '@/hooks';
 import { Icon } from '@iconify/react';
@@ -15,6 +9,7 @@ import { DataProviderFeatureStatus } from '../../enums';
 import { useFeatureModalController } from '../../hooks';
 import type { IDataProviderFeature } from '../../types';
 import { getFeatureDefinition } from '../../utils';
+import { FeatureConfirmUpdateModal } from '../FeatureConfirmUpdateModal';
 import { FeatureTestTab } from '../FeatureTestTab';
 import { FeatureModalFooter } from './FeatureModalFooter';
 import { FeatureModalHeader } from './FeatureModalHeader';
@@ -49,16 +44,23 @@ export const FeatureSettingModal = ({
         selectedVersion,
         isViewingHistory,
         isRollingBack,
+        isSaving,
+        isConfirmOpen,
+        diffItems,
         authorName,
         isGlobalLoading,
         loadingTip,
         setSelectedVersionId,
         handleRollback,
+        handleFormSubmit,
+        handleConfirmUpdate,
+        handleCancelConfirm,
     } = useFeatureModalController({
         open,
         feature,
         form,
         isSwitchingStatus,
+        onClose,
         onSuccess,
     });
 
@@ -81,6 +83,7 @@ export const FeatureSettingModal = ({
                             isViewingHistory={isViewingHistory}
                             onClose={onClose}
                             onSuccess={onSuccess}
+                            onSaveForm={handleFormSubmit}
                         />
                     </div>
                 ),
@@ -100,7 +103,16 @@ export const FeatureSettingModal = ({
                 ),
             },
         ],
-        [ConfigComponent, feature, form, selectedVersion, isViewingHistory, onClose, onSuccess],
+        [
+            ConfigComponent,
+            feature,
+            form,
+            selectedVersion,
+            isViewingHistory,
+            onClose,
+            onSuccess,
+            handleFormSubmit,
+        ],
     );
 
     const handleTabChange = useCallback(
@@ -129,19 +141,10 @@ export const FeatureSettingModal = ({
             open={open}
             width={1300}
             onCancel={onClose}
-            closable={!isGlobalLoading}
-            keyboard={!isGlobalLoading}
+            loadingTip={loadingTip}
+            loading={isGlobalLoading}
             bodyClassName="!p-2.5 sm:!p-3"
             className="top-6 max-w-[96vw]"
-            modalRender={(modalNode) => (
-                <CustomSpin
-                    tip={loadingTip}
-                    spinning={isGlobalLoading}
-                    wrapperClassName="w-full h-full [&_.ant-spin-container]:w-full [&_.ant-spin-container]:h-full"
-                >
-                    {modalNode}
-                </CustomSpin>
-            )}
             title={
                 <FeatureModalHeader
                     form={form}
@@ -168,6 +171,13 @@ export const FeatureSettingModal = ({
             }
         >
             <CustomTabs activeKey={activeTabKey} onChange={handleTabChange} items={tabItems} />
+            <FeatureConfirmUpdateModal
+                open={isConfirmOpen}
+                isSaving={isSaving}
+                diffItems={diffItems}
+                onClose={handleCancelConfirm}
+                onConfirm={handleConfirmUpdate}
+            />
         </CustomModal>
     );
 };

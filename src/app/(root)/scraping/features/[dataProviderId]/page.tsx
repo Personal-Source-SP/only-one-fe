@@ -28,23 +28,23 @@ const DataProviderFeaturesPage = () => {
     const router = useRouter();
 
     const {
-        dataProviderId,
         provider,
         features,
         isLoading,
+        dataProviderId,
         historyModalState,
+        refetchAll,
         openHistoryModal,
         closeHistoryModal,
-        refetchAll,
     } = useFeaturesView();
 
     const {
         modalState,
-        openFeatureModal,
+        switchingFeatureId,
         openConfigByType,
+        openFeatureModal,
         closeFeatureModal,
         handleSwitchStatus,
-        switchingFeatureId,
     } = useFeatureActions({
         dataProviderId,
         features,

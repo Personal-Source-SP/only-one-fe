@@ -7,7 +7,6 @@ import { useFeatureConfigForm } from '../../hooks';
 import type { FeatureConfigFormProps, SearchConfigFormValues } from '../../types';
 import {
     FeatureAdvancedSection,
-    FeatureChangeLogSection,
     FeatureCodeSection,
     FeatureLimitsSection,
 } from '../ConfigFormCommon';
@@ -21,6 +20,7 @@ export const SearchConfigTab = ({
     isViewingHistory,
     onClose,
     onSuccess,
+    onSaveForm,
 }: FeatureConfigFormProps) => {
     const headers = CustomForm.useWatch('headers', form);
     const cookies = CustomForm.useWatch('cookies', form);
@@ -38,6 +38,7 @@ export const SearchConfigTab = ({
         defaultTargetConfig: DEFAULT_SEARCH_TARGET_CONFIG,
         onClose,
         onSuccess,
+        onSaveForm,
         getDefaultTemplate: (service) => checkService(service).defaultSearchTemplate,
         extraInitialValues: (config) => ({
             searchUrlPattern: config.searchUrlPattern || '',
@@ -94,8 +95,6 @@ export const SearchConfigTab = ({
                     selectedVersion={selectedVersion}
                     isViewingHistory={isViewingHistory}
                 />
-
-                <FeatureChangeLogSection feature={feature} isViewingHistory={isViewingHistory} />
             </CustomFlex>
         </CustomForm>
     );

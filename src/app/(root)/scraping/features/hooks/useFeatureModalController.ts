@@ -6,12 +6,18 @@ import { MessageType } from '@/enums';
 import { useCustomData, useCustomMutationData } from '@/hooks';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { IConfigVersion, IDataProviderFeature } from '../types';
+import {
+    buildFeatureMutationPayload,
+    calculateFeatureConfigDiff,
+    IFeatureDiffItem,
+} from '../utils';
 
 export interface UseFeatureModalControllerProps {
     open: boolean;
     feature: IDataProviderFeature;
     form: FormInstance;
     isSwitchingStatus?: boolean;
+    onClose: () => void;
     onSuccess: () => void;
 }
 
@@ -24,10 +30,16 @@ export interface UseFeatureModalControllerReturn {
     authorName: string | null;
     isLoadingVersions: boolean;
     isRollingBack: boolean;
-    isGlobalLoading: boolean;
+    isSaving: boolean;
     loadingTip: string;
+    isConfirmOpen: boolean;
+    isGlobalLoading: boolean;
+    diffItems: IFeatureDiffItem[];
+    handleCancelConfirm: () => void;
     setSelectedVersionId: (id?: number) => void;
     handleRollback: (targetVersionId?: number) => Promise<void>;
+    handleFormSubmit: (values: Record<string, any>) => Promise<void>;
+    handleConfirmUpdate: (changeDescription: string) => Promise<void>;
 }
 
 export const useFeatureModalController = ({
@@ -35,12 +47,17 @@ export const useFeatureModalController = ({
     feature,
     form,
     isSwitchingStatus = false,
+    onClose,
     onSuccess,
 }: UseFeatureModalControllerProps): UseFeatureModalControllerReturn => {
     const { handleCustomMutationData } = useCustomMutationData();
 
+    const [isSaving, setIsSaving] = useState<boolean>(false);
+    const [isConfirmOpen, setIsConfirmOpen] = useState<boolean>(false);
     const [isRollingBack, setIsRollingBack] = useState<boolean>(false);
+    const [diffItems, setDiffItems] = useState<IFeatureDiffItem[]>([]);
     const [selectedVersionId, setSelectedVersionId] = useState<number>();
+    const [pendingValues, setPendingValues] = useState<Record<string, any> | null>(null);
 
     const { result: versionsResult, query: versionsQuery } = useCustomData({
         enabled: Boolean(open && feature.id),
@@ -78,16 +95,17 @@ export const useFeatureModalController = ({
     const isLoadingVersions = Boolean(versionsQuery.isLoading);
 
     const isGlobalLoading = useMemo(
-        () => (isLoadingVersions && !isDraft) || isRollingBack || isSwitchingStatus,
-        [isLoadingVersions, isDraft, isRollingBack, isSwitchingStatus],
+        () => (isLoadingVersions && !isDraft) || isRollingBack || isSwitchingStatus || isSaving,
+        [isLoadingVersions, isDraft, isRollingBack, isSaving, isSwitchingStatus],
     );
 
     const loadingTip = useMemo(() => {
-        if (isRollingBack) return 'Đang khôi phục phiên bản...';
         if (isSwitchingStatus) return 'Đang cập nhật trạng thái...';
+        if (isRollingBack) return 'Đang khôi phục phiên bản...';
         if (isLoadingVersions && !isDraft) return 'Đang tải phiên bản cấu hình...';
+        if (isSaving) return 'Đang lưu cấu hình...';
         return 'Đang xử lý...';
-    }, [isRollingBack, isLoadingVersions, isDraft, isSwitchingStatus]);
+    }, [isRollingBack, isLoadingVersions, isDraft, isSwitchingStatus, isSaving]);
 
     useEffect(() => {
         if (open && activeVersion) {
@@ -133,6 +151,82 @@ export const useFeatureModalController = ({
         [feature, selectedVersion, versionsQuery, handleCustomMutationData, onSuccess],
     );
 
+    const executeSave = useCallback(
+        async (values: Record<string, any>, changeDescription?: string): Promise<void> => {
+            setIsSaving(true);
+            const valuesWithDesc = {
+                ...values,
+                ...(changeDescription ? { changeDescription } : {}),
+            };
+
+            const { method, endpoint, payload } = buildFeatureMutationPayload({
+                feature,
+                isDraft,
+                featureLabel: 'tính năng',
+                values: valuesWithDesc as any,
+            });
+
+            try {
+                await handleCustomMutationData({
+                    method,
+                    url: endpoint,
+                    values: payload,
+                    successNotification: () => {
+                        setIsConfirmOpen(false);
+                        onSuccess();
+                        onClose();
+                        return {
+                            type: MessageType.SUCCESS,
+                            message: isDraft
+                                ? 'Khởi tạo cấu hình thành công'
+                                : 'Lưu cấu hình thành công',
+                        };
+                    },
+                    errorNotification: (error) => ({
+                        type: MessageType.ERROR,
+                        description: error?.message,
+                        message: isDraft ? 'Khởi tạo cấu hình thất bại' : 'Lưu cấu hình thất bại',
+                    }),
+                });
+            } finally {
+                setIsSaving(false);
+            }
+        },
+        [feature, isDraft, handleCustomMutationData, onSuccess, onClose],
+    );
+
+    const handleFormSubmit = useCallback(
+        async (values: Record<string, any>): Promise<void> => {
+            if (isDraft) {
+                await executeSave(values);
+                return;
+            }
+            const origConfig = (selectedVersion?.config || feature.config || {}) as Record<
+                string,
+                unknown
+            >;
+            const origService = selectedVersion?.config?.service || feature.service;
+            const diffs = calculateFeatureConfigDiff(origConfig, origService, values);
+
+            setPendingValues(values);
+            setDiffItems(diffs);
+            setIsConfirmOpen(true);
+        },
+        [isDraft, selectedVersion, feature, executeSave],
+    );
+
+    const handleConfirmUpdate = useCallback(
+        async (changeDescription: string): Promise<void> => {
+            if (!pendingValues) return;
+            await executeSave(pendingValues, changeDescription);
+        },
+        [pendingValues, executeSave],
+    );
+
+    const handleCancelConfirm = useCallback(() => {
+        setIsConfirmOpen(false);
+    }, []);
+
     return {
         isDraft,
         versions,
@@ -142,9 +236,15 @@ export const useFeatureModalController = ({
         authorName,
         isLoadingVersions,
         isRollingBack,
+        isSaving,
+        isConfirmOpen,
+        diffItems,
         isGlobalLoading,
         loadingTip,
         setSelectedVersionId,
         handleRollback,
+        handleFormSubmit,
+        handleConfirmUpdate,
+        handleCancelConfirm,
     };
 };

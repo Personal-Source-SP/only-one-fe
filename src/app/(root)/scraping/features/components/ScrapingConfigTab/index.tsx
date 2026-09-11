@@ -7,7 +7,6 @@ import { useFeatureConfigForm } from '../../hooks';
 import type { FeatureConfigFormProps, ScrapingConfigFormValues } from '../../types';
 import {
     FeatureAdvancedSection,
-    FeatureChangeLogSection,
     FeatureCodeSection,
     FeatureLimitsSection,
 } from '../ConfigFormCommon';
@@ -21,6 +20,7 @@ export const ScrapingConfigTab = ({
     selectedVersion,
     onClose,
     onSuccess,
+    onSaveForm,
 }: FeatureConfigFormProps) => {
     const headers = CustomForm.useWatch('headers', form);
     const cookies = CustomForm.useWatch('cookies', form);
@@ -38,6 +38,7 @@ export const ScrapingConfigTab = ({
         defaultTargetConfig: DEFAULT_TARGET_CONFIG,
         onClose,
         onSuccess,
+        onSaveForm,
         getDefaultTemplate: (service) => checkService(service).defaultScrapingTemplate,
     });
 
@@ -87,8 +88,6 @@ export const ScrapingConfigTab = ({
                     selectedVersion={selectedVersion}
                     isViewingHistory={isViewingHistory}
                 />
-
-                <FeatureChangeLogSection feature={feature} isViewingHistory={isViewingHistory} />
             </CustomFlex>
         </CustomForm>
     );

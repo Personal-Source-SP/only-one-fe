@@ -1,30 +1,36 @@
 'use client';
 
 import { HUB_ANTD_MODAL_WRAP_CLASS, mergeHubAntdClass } from '@/components/custom-antd';
+import { CustomSpin } from '@/components/custom-antd/custom-spin';
 import { useBreakpointStore } from '@/stores';
 import { Modal, ModalProps } from 'antd';
 import { CSSProperties, ReactNode, useMemo } from 'react';
 
 export type CustomModalProps = ModalProps & {
-    modalProps?: ModalProps;
-    children?: ReactNode;
     fixed?: boolean;
     isFixed?: boolean;
-    fixedHeight?: number | string;
+    loading?: boolean;
+    children?: ReactNode;
+    loadingTip?: ReactNode;
     bodyClassName?: string;
+    modalProps?: ModalProps;
     bodyStyle?: CSSProperties;
+    fixedHeight?: number | string;
 };
 
 export const CustomModal = ({
-    modalProps,
-    children,
     fixed,
     isFixed,
-    fixedHeight,
+    loading,
+    children,
+    loadingTip,
     bodyClassName,
+    modalProps,
     bodyStyle,
+    fixedHeight,
     ...restProps
 }: CustomModalProps) => {
+    const isSpinning = Boolean(loading);
     const isMobile = useBreakpointStore((s) => s.isMobile);
     const isFixedMode = fixed || isFixed || Boolean(fixedHeight);
     const mergedProps = modalProps ? { ...modalProps, ...restProps } : restProps;
@@ -34,11 +40,25 @@ export const CustomModal = ({
             ...mergedProps,
             forceRender: true,
             footer: mergedProps.footer ?? false,
-            closable: mergedProps.closable ?? false,
             centered: mergedProps.centered ?? isMobile,
             getContainer: mergedProps.getContainer ?? false,
-            maskClosable: mergedProps.maskClosable ?? false,
             destroyOnHidden: mergedProps.destroyOnHidden ?? true,
+            keyboard: isSpinning ? false : (mergedProps.keyboard ?? true),
+            closable: isSpinning ? false : (mergedProps.closable ?? false),
+            maskClosable: isSpinning ? false : (mergedProps.maskClosable ?? false),
+            modalRender:
+                mergedProps.modalRender ||
+                (isSpinning
+                    ? (modalNode: ReactNode) => (
+                          <CustomSpin
+                              tip={loadingTip}
+                              spinning={isSpinning}
+                              wrapperClassName="w-full h-full [&_.ant-spin-container]:w-full [&_.ant-spin-container]:h-full"
+                          >
+                              {modalNode}
+                          </CustomSpin>
+                      )
+                    : undefined),
             style: { top: isMobile ? 10 : 20, ...(mergedProps.style ?? {}) },
             width: isMobile ? 'calc(100vw - 24px)' : (mergedProps.width ?? 1200),
             wrapClassName: mergeHubAntdClass(
@@ -59,17 +79,13 @@ export const CustomModal = ({
                 mergedProps.wrapClassName,
             ),
         }),
-        [isMobile, mergedProps],
+        [isMobile, isSpinning, mergedProps, loadingTip],
     );
 
     const sectionStyle = useMemo<CSSProperties>(() => {
         if (fixedHeight) {
             const heightVal = typeof fixedHeight === 'number' ? `${fixedHeight}px` : fixedHeight;
-            return {
-                height: heightVal,
-                maxHeight: heightVal,
-                ...bodyStyle,
-            };
+            return { height: heightVal, maxHeight: heightVal, ...bodyStyle };
         }
 
         if (isFixedMode) {
@@ -80,7 +96,7 @@ export const CustomModal = ({
         }
 
         return bodyStyle ?? {};
-    }, [fixedHeight, isFixedMode, isMobile, bodyStyle]);
+    }, [fixedHeight, bodyStyle, isFixedMode, isMobile]);
 
     if (!finalModalProps.open) return null;
 

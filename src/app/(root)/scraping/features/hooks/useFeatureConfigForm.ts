@@ -22,8 +22,9 @@ export interface UseFeatureConfigFormOptions<TValues extends ScrapingConfigFormV
     defaultTargetConfig?: Record<string, unknown>;
     onClose: () => void;
     onSuccess: () => void;
-    extraInitialValues?: (config: Record<string, any>) => Partial<TValues>;
+    onSaveForm?: (values: TValues) => Promise<void> | void;
     getDefaultTemplate?: (service: ScraperServiceEnum) => string;
+    extraInitialValues?: (config: Record<string, any>) => Partial<TValues>;
 }
 
 export interface UseFeatureConfigFormReturn<TValues extends ScrapingConfigFormValues> {
@@ -39,10 +40,11 @@ export const useFeatureConfigForm = <TValues extends ScrapingConfigFormValues>({
     selectedVersion,
     featureLabel = 'tính năng',
     defaultTargetConfig = DEFAULT_TARGET_CONFIG,
+    onClose,
+    onSuccess,
+    onSaveForm,
     getDefaultTemplate,
     extraInitialValues,
-    onSuccess,
-    onClose,
 }: UseFeatureConfigFormOptions<TValues>): UseFeatureConfigFormReturn<TValues> => {
     const isDraft = useMemo(() => !feature.id, [feature.id]);
     const [isSaving, setIsSaving] = useState<boolean>(false);
@@ -88,6 +90,11 @@ export const useFeatureConfigForm = <TValues extends ScrapingConfigFormValues>({
 
     const handleSave = useCallback(
         async (values: TValues): Promise<void> => {
+            if (onSaveForm) {
+                await onSaveForm(values);
+                return;
+            }
+
             setIsSaving(true);
 
             const { method, endpoint, payload } = buildFeatureMutationPayload({
@@ -127,7 +134,7 @@ export const useFeatureConfigForm = <TValues extends ScrapingConfigFormValues>({
                 setIsSaving(false);
             }
         },
-        [isDraft, feature, featureLabel, handleCustomMutationData, onSuccess, onClose],
+        [isDraft, feature, featureLabel, handleCustomMutationData, onSuccess, onClose, onSaveForm],
     );
 
     return {
