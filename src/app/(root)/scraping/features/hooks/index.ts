@@ -4,4 +4,3 @@ export * from './useFeatureHistory';
 export * from './useFeatureTestRunner';
 export * from './useFeatureConfigForm';
 export * from './useFeatureModalController';
-export * from './useCurrentService';

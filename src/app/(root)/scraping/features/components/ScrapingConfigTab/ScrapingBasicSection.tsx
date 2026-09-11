@@ -8,26 +8,16 @@ import {
     CustomSelect,
 } from '@/components/custom-antd';
 import { FEATURE_SECTION_CONTAINER_CLASS, SCRAPER_SERVICE_OPTIONS } from '../../constants';
-import type { IConfigVersion, IDataProviderFeature } from '../../types';
 import type { ScraperServiceEnum } from '../../enums';
 import { useFeatureModalContext } from '../../context';
 import { FormDiffLabel, SectionHeader } from '../ConfigFormCommon';
 
 export type ScrapingBasicSectionProps = {
-    feature?: IDataProviderFeature;
-    isViewingHistory?: boolean;
-    selectedVersion?: IConfigVersion | null;
     onServiceChange?: (service: ScraperServiceEnum) => void;
 };
 
-export const ScrapingBasicSection = ({
-    feature: propFeature,
-    isViewingHistory: propIsViewingHistory,
-    onServiceChange,
-}: ScrapingBasicSectionProps) => {
-    const context = useFeatureModalContext();
-    const feature = propFeature ?? context.feature;
-    const isViewingHistory = propIsViewingHistory ?? context.isViewingHistory;
+export const ScrapingBasicSection = ({ onServiceChange }: ScrapingBasicSectionProps) => {
+    const { feature, isViewingHistory } = useFeatureModalContext();
 
     const isServiceDisabled = Boolean(feature?.id || isViewingHistory);
 

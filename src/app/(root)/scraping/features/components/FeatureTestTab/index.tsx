@@ -4,11 +4,10 @@ import { useCallback } from 'react';
 import { CustomCol, CustomForm, CustomRow } from '@/components/custom-antd';
 import { useFeatureModalContext } from '../../context';
 import { useFeatureTestRunner } from '../../hooks';
-import type { FeatureConfigFormProps } from '../../types';
 import { TestInputSection } from './TestInputSection';
 import { TestResultSection } from './TestResultSection';
 
-export const FeatureTestTab = (_props?: FeatureConfigFormProps) => {
+export const FeatureTestTab = () => {
     const { form: configForm, feature } = useFeatureModalContext();
     const [form] = CustomForm.useForm();
 

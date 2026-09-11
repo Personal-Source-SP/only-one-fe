@@ -5,20 +5,25 @@ import { CustomFlex, CustomSwitch, CustomTag, CustomTypography } from '@/compone
 import { checkService } from '../../constants';
 import { useFeatureModalContext } from '../../context';
 import { ConfigVersionType, DataProviderFeatureStatus } from '../../enums';
-import { useCurrentService } from '../../hooks';
 import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
 import { getFeatureDefinition } from '../../utils';
 
 export const FeatureModalHeader = () => {
-    const { feature, isDraft, authorName, selectedVersion, isSwitchingStatus, onSwitchStatus } =
-        useFeatureModalContext();
+    const {
+        feature,
+        isDraft,
+        authorName,
+        currentService,
+        selectedVersion,
+        isSwitchingStatus,
+        onSwitchStatus,
+    } = useFeatureModalContext();
 
-    const activeService = useCurrentService();
+    const { label: serviceLabel } = checkService(currentService);
+
     const def = getFeatureDefinition(feature.type);
     const providerName = feature.dataProvider?.name;
-
-    const { label: serviceLabel } = checkService(activeService);
 
     const renderChangeTypeTag = useCallback((changeType?: ConfigVersionType) => {
         if (!changeType) return null;

@@ -8,22 +8,12 @@ import {
     CustomRow,
 } from '@/components/custom-antd';
 import { checkService, FEATURE_SECTION_CONTAINER_CLASS } from '../../constants';
-import type { ScraperServiceEnum } from '../../enums';
-import { useCurrentService } from '../../hooks';
+import { useFeatureModalContext } from '../../context';
 import { FormDiffLabel, SectionHeader } from '../ConfigFormCommon';
-import type { IConfigVersion, IDataProviderFeature } from '../../types';
 
-export type SearchSelectorsSectionProps = {
-    feature?: IDataProviderFeature;
-    service?: ScraperServiceEnum;
-    isViewingHistory?: boolean;
-    selectedVersion?: IConfigVersion | null;
-};
-
-export const SearchSelectorsSection = (_props?: SearchSelectorsSectionProps) => {
-    const currentService = useCurrentService();
-    const service = _props?.service ?? currentService;
-    const { hasWaitForSelector, hasBrowserSettings, hasApiParams } = checkService(service);
+export const SearchSelectorsSection = () => {
+    const { currentService } = useFeatureModalContext();
+    const { hasWaitForSelector, hasBrowserSettings, hasApiParams } = checkService(currentService);
 
     return (
         <CustomFlex vertical className={FEATURE_SECTION_CONTAINER_CLASS}>

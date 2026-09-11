@@ -3,8 +3,8 @@
 import { CustomFlex, CustomForm } from '@/components/custom-antd';
 import { checkService, DEFAULT_TARGET_CONFIG } from '../../constants';
 import { useFeatureModalContext } from '../../context';
-import { useCurrentService, useFeatureConfigForm } from '../../hooks';
-import type { FeatureConfigFormProps, ScrapingConfigFormValues } from '../../types';
+import { useFeatureConfigForm } from '../../hooks';
+import type { ScrapingConfigFormValues } from '../../types';
 import {
     FeatureAdvancedSection,
     FeatureCodeSection,
@@ -13,9 +13,8 @@ import {
 import { ScrapingBasicSection } from './ScrapingBasicSection';
 import { ScrapingSelectorsSection } from './ScrapingSelectorsSection';
 
-export const ScrapingConfigTab = (_props?: FeatureConfigFormProps) => {
-    const { form } = useFeatureModalContext();
-    const currentService = useCurrentService();
+export const ScrapingConfigTab = () => {
+    const { form, currentService } = useFeatureModalContext();
 
     const { hasBrowserSettings, hasAdvancedHeaders, hasDomSelectors, hasWaitForSelector } =
         checkService(currentService);

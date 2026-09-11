@@ -1,35 +1,18 @@
 'use client';
 
 import { CodeDisplay } from '@/components/common';
-import { CustomFlex, CustomForm, type FormInstance } from '@/components/custom-antd';
+import { CustomFlex, CustomForm } from '@/components/custom-antd';
 import { checkService, FEATURE_SECTION_CONTAINER_CLASS } from '../../constants';
 import { useFeatureModalContext } from '../../context';
-import { useCurrentService } from '../../hooks';
-import { DataProviderFeatureType, type ScraperServiceEnum } from '../../enums';
-import type { IConfigVersion, IDataProviderFeature } from '../../types';
+import { DataProviderFeatureType } from '../../enums';
 import { FormDiffLabel } from './FormDiffLabel';
 import { SectionHeader } from './SectionHeader';
 
-export type FeatureCodeSectionProps = {
-    form?: FormInstance;
-    service?: ScraperServiceEnum;
-    functionGenerator?: string;
-    isViewingHistory?: boolean;
-    feature?: IDataProviderFeature;
-    selectedVersion?: IConfigVersion | null;
-};
+export const FeatureCodeSection = () => {
+    const { form, feature, currentService } = useFeatureModalContext();
+    const { scrapingCodeLabel, searchCodeLabel } = checkService(currentService);
 
-export const FeatureCodeSection = (props?: FeatureCodeSectionProps) => {
-    const context = useFeatureModalContext();
-    const currentService = useCurrentService();
-    const form = props?.form ?? context.form;
-    const feature = props?.feature ?? context.feature;
-    const service = props?.service ?? currentService;
-
-    const watchedFunctionGenerator = CustomForm.useWatch('functionGenerator', form);
-    const functionGenerator = props?.functionGenerator ?? watchedFunctionGenerator;
-
-    const { scrapingCodeLabel, searchCodeLabel } = checkService(service);
+    const functionGenerator = CustomForm.useWatch('functionGenerator', form);
 
     const isSearch = feature.type === DataProviderFeatureType.SEARCH;
     const label = isSearch ? searchCodeLabel : scrapingCodeLabel;

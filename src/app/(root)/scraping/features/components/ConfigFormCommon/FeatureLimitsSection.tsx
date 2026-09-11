@@ -8,15 +8,13 @@ import {
     CustomRow,
 } from '@/components/custom-antd';
 import { checkService, FEATURE_SECTION_CONTAINER_CLASS } from '../../constants';
-import { useCurrentService } from '../../hooks';
+import { useFeatureModalContext } from '../../context';
 import { FormDiffLabel } from './FormDiffLabel';
 import { SectionHeader } from './SectionHeader';
 
-export type FeatureLimitsSectionProps = Record<string, never>;
-
-export const FeatureLimitsSection = (_props?: FeatureLimitsSectionProps) => {
-    const service = useCurrentService();
-    const { hasNetworkRetries } = checkService(service);
+export const FeatureLimitsSection = () => {
+    const { currentService } = useFeatureModalContext();
+    const { hasNetworkRetries } = checkService(currentService);
 
     return (
         <CustomFlex vertical className={FEATURE_SECTION_CONTAINER_CLASS}>

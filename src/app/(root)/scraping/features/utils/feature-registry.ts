@@ -1,8 +1,6 @@
 import type { ComponentType } from 'react';
 import { ScrapingConfigTab, SearchConfigTab } from '../components';
 import { DataProviderFeatureType } from '../enums';
-import type { FeatureConfigFormProps } from '../types';
-
 export type FeatureDefinition = {
     type: DataProviderFeatureType;
     icon: string;
@@ -10,7 +8,7 @@ export type FeatureDefinition = {
     shortLabel: string;
     accentClass: string;
     description: string;
-    ConfigComponent: ComponentType<FeatureConfigFormProps>;
+    ConfigComponent: ComponentType;
     getTitle: (isDraft: boolean, providerName?: string) => string;
 };
 

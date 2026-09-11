@@ -8,49 +8,23 @@ import {
     CustomRow,
     CustomSwitch,
     CustomTypography,
-    type FormInstance,
 } from '@/components/custom-antd';
 import { Icon } from '@iconify/react';
 import { useEffect, useRef, useState } from 'react';
 import { checkService, FEATURE_SECTION_CONTAINER_CLASS } from '../../constants';
 import { useFeatureModalContext } from '../../context';
-import { useCurrentService } from '../../hooks';
-import type { ScraperServiceEnum } from '../../enums';
-import type { IConfigVersion, IDataProviderFeature } from '../../types';
 import { FormDiffLabel } from './FormDiffLabel';
 import { SectionHeader } from './SectionHeader';
 
-export type FeatureAdvancedSectionProps = {
-    form?: FormInstance;
-    feature?: IDataProviderFeature;
-    service?: ScraperServiceEnum;
-    headers?: string;
-    cookies?: string;
-    isViewingHistory?: boolean;
-    selectedVersion?: IConfigVersion | null;
-};
+export const FeatureAdvancedSection = () => {
+    const { form, isViewingHistory, currentService } = useFeatureModalContext();
+    const { hasBrowserSettings, hasAdvancedHeaders } = checkService(currentService);
 
-export const FeatureAdvancedSection = (props?: FeatureAdvancedSectionProps) => {
-    const context = useFeatureModalContext();
-    const currentService = useCurrentService();
-    const form = props?.form ?? context.form;
-    const service = props?.service ?? currentService;
-    const isViewingHistory = props?.isViewingHistory ?? context.isViewingHistory;
+    const headers = CustomForm.useWatch('headers', form);
+    const cookies = CustomForm.useWatch('cookies', form);
 
-    const watchedHeaders = CustomForm.useWatch('headers', form);
-    const watchedCookies = CustomForm.useWatch('cookies', form);
-    const headers = props?.headers ?? watchedHeaders;
-    const cookies = props?.cookies ?? watchedCookies;
-
-    const { hasBrowserSettings, hasAdvancedHeaders } = checkService(service);
-
-    const [hasCustomHeaders, setHasCustomHeaders] = useState<boolean>(() =>
-        Boolean(headers && headers.trim()),
-    );
-
-    const [hasCustomCookies, setHasCustomCookies] = useState<boolean>(() =>
-        Boolean(cookies && cookies.trim()),
-    );
+    const [hasCustomHeaders, setHasCustomHeaders] = useState<boolean>(Boolean(headers?.trim()));
+    const [hasCustomCookies, setHasCustomCookies] = useState<boolean>(Boolean(cookies?.trim()));
 
     const cachedHeadersRef = useRef<string>(headers || '');
     const cachedCookiesRef = useRef<string>(cookies || '');

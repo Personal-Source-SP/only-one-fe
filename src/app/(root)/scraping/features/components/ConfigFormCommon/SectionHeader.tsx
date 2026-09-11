@@ -7,21 +7,21 @@ import { Icon } from '@iconify/react';
 export type SectionHeaderProps = {
     title: ReactNode;
     icon?: string;
-    description?: string;
-    extra?: ReactNode;
     badge?: string;
-    badgeColor?: string;
+    extra?: ReactNode;
     className?: string;
+    badgeColor?: string;
+    description?: string;
 };
 
 export const SectionHeader = ({
     title,
     icon,
-    description,
-    extra,
     badge,
-    badgeColor = 'blue',
+    extra,
     className = 'mb-4 pb-3 border-b border-hub-border/50',
+    badgeColor = 'blue',
+    description,
 }: SectionHeaderProps) => {
     return (
         <CustomFlex

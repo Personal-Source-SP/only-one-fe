@@ -13,33 +13,18 @@ import {
     SCRAPER_SERVICE_OPTIONS,
     FEATURE_SECTION_CONTAINER_CLASS,
 } from '../../constants';
-import { ScraperServiceEnum } from '../../enums';
+import type { ScraperServiceEnum } from '../../enums';
 import { useFeatureModalContext } from '../../context';
-import { useCurrentService } from '../../hooks';
 import { FormDiffLabel, SectionHeader } from '../ConfigFormCommon';
-import type { IConfigVersion, IDataProviderFeature } from '../../types';
 
 export type SearchUrlPatternSectionProps = {
-    feature?: IDataProviderFeature;
-    service?: ScraperServiceEnum;
-    isViewingHistory?: boolean;
-    selectedVersion?: IConfigVersion | null;
     onServiceChange?: (service: ScraperServiceEnum) => void;
 };
 
-export const SearchUrlPatternSection = ({
-    feature: propFeature,
-    service: propService,
-    isViewingHistory: propIsViewingHistory,
-    onServiceChange,
-}: SearchUrlPatternSectionProps) => {
-    const context = useFeatureModalContext();
-    const feature = propFeature ?? context.feature;
-    const isViewingHistory = propIsViewingHistory ?? context.isViewingHistory;
-    const currentService = useCurrentService();
-    const service = propService ?? currentService;
+export const SearchUrlPatternSection = ({ onServiceChange }: SearchUrlPatternSectionProps) => {
+    const { feature, isViewingHistory, currentService } = useFeatureModalContext();
 
-    const { hasUrlPattern } = checkService(service);
+    const { hasUrlPattern } = checkService(currentService);
     const isServiceDisabled = Boolean(feature?.id || isViewingHistory);
 
     return (

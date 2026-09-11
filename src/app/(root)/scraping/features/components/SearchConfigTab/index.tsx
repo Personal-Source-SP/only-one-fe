@@ -3,8 +3,8 @@
 import { CustomFlex, CustomForm } from '@/components/custom-antd';
 import { checkService, DEFAULT_SEARCH_TARGET_CONFIG } from '../../constants';
 import { useFeatureModalContext } from '../../context';
-import { useCurrentService, useFeatureConfigForm } from '../../hooks';
-import type { FeatureConfigFormProps, SearchConfigFormValues } from '../../types';
+import { useFeatureConfigForm } from '../../hooks';
+import type { SearchConfigFormValues } from '../../types';
 import {
     FeatureAdvancedSection,
     FeatureCodeSection,
@@ -13,9 +13,8 @@ import {
 import { SearchSelectorsSection } from './SearchSelectorsSection';
 import { SearchUrlPatternSection } from './SearchUrlPatternSection';
 
-export const SearchConfigTab = (_props?: FeatureConfigFormProps) => {
-    const { form } = useFeatureModalContext();
-    const currentService = useCurrentService();
+export const SearchConfigTab = () => {
+    const { form, currentService } = useFeatureModalContext();
 
     const { hasSearchSelectors, hasBrowserSettings, hasAdvancedHeaders } =
         checkService(currentService);
