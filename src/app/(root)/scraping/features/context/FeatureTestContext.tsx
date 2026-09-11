@@ -2,6 +2,7 @@
 
 import { CustomForm, type FormInstance } from '@/components/custom-antd';
 import { createContext, useCallback, useContext, useMemo, type PropsWithChildren } from 'react';
+import { useFeatureModalContext } from './FeatureModalContext';
 import { useFeatureTestRunner } from '../hooks';
 import type { FeatureTestResult, IDataProviderFeature } from '../types';
 
@@ -20,16 +21,8 @@ export interface FeatureTestContextValue {
 
 export const FeatureTestContext = createContext<FeatureTestContextValue | null>(null);
 
-export interface FeatureTestProviderProps extends PropsWithChildren {
-    feature: IDataProviderFeature;
-    configForm: FormInstance;
-}
-
-export const FeatureTestProvider = ({
-    feature,
-    configForm,
-    children,
-}: FeatureTestProviderProps) => {
+export const FeatureTestProvider = ({ children }: PropsWithChildren) => {
+    const { feature, form: configForm } = useFeatureModalContext();
     const [form] = CustomForm.useForm();
 
     const {

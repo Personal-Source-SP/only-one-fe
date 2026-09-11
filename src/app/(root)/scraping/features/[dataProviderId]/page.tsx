@@ -48,8 +48,8 @@ const DataProviderFeaturesPage = () => {
         handleSwitchStatus,
     } = useFeatureActions({
         dataProviderId,
-        features,
         provider,
+        features,
         refetchAll,
     });
 

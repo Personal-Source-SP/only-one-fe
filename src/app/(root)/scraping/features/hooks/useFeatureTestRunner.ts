@@ -8,20 +8,18 @@ import { useCustomMutationData } from '@/hooks';
 import type { FormInstance } from '@/components/custom-antd';
 import { useFeatureModalContext } from '../context';
 import { DataProviderFeatureType, ScraperServiceEnum } from '../enums';
-import type { FeatureTestResult, IDataProviderFeature, TestInputFormValues } from '../types';
+import type {
+    FeatureTestInput,
+    FeatureTestResult,
+    IDataProviderFeature,
+    TestFeatureStatelessRequest,
+    TestInputFormValues,
+} from '../types';
 import { extractTargetConfigFromFormValues } from '../utils';
 
-export type UseFeatureTestRunnerProps = {
-    feature?: IDataProviderFeature;
-    configForm?: FormInstance;
-};
-
-export const useFeatureTestRunner = (props: UseFeatureTestRunnerProps = {}) => {
-    const modal = useFeatureModalContext();
-    const feature = props.feature ?? modal.feature;
-    const configForm = props.configForm ?? modal.form;
-
+export const useFeatureTestRunner = () => {
     const { handleCustomMutationData } = useCustomMutationData();
+    const { feature, form: configForm } = useFeatureModalContext();
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -44,7 +42,7 @@ export const useFeatureTestRunner = (props: UseFeatureTestRunnerProps = {}) => {
 
             const isGeneric = activeService === ScraperServiceEnum.GENERIC;
 
-            const inputPayload: Record<string, unknown> = {};
+            const inputPayload: FeatureTestInput = {};
             if (isScraping) {
                 inputPayload.url = values.testUrl;
 
@@ -66,15 +64,17 @@ export const useFeatureTestRunner = (props: UseFeatureTestRunnerProps = {}) => {
                 feature.config as Record<string, unknown>,
             );
 
+            const requestPayload: TestFeatureStatelessRequest = {
+                type: feature.type,
+                service: activeService,
+                config: configPayload,
+                input: inputPayload,
+            };
+
             handleCustomMutationData({
                 method: 'post',
                 url: API_ENDPOINT.DATA_PROVIDER_FEATURES.TEST,
-                values: {
-                    type: feature.type,
-                    service: activeService,
-                    config: configPayload,
-                    input: inputPayload,
-                },
+                values: requestPayload,
                 successNotification: (res) => {
                     const data = (res?.data?.data || res?.data) as FeatureTestResult;
                     setTestResult(data);

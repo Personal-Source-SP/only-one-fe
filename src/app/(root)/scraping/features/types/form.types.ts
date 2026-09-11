@@ -24,9 +24,4 @@ export interface TestInputFormValues {
     htmlContentString?: string;
 }
 
-export interface FeatureTestResult {
-    html?: string;
-    error?: string;
-    data?: Array<Record<string, unknown>> | Record<string, unknown>;
-    [key: string]: unknown;
-}
+export type { FeatureTestResult } from './test.types';

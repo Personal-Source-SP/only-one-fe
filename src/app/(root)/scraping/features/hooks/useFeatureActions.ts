@@ -1,10 +1,10 @@
 'use client';
 
-import { useCallback, useState } from 'react';
 import type { IDataProvider } from '@/app/(root)/scraping/data-providers/types';
 import { API_ENDPOINT } from '@/config';
 import { MessageType } from '@/enums';
 import { useCustomMutationData } from '@/hooks';
+import { useCallback, useState } from 'react';
 
 import { DataProviderFeatureStatus, DataProviderFeatureType } from '../enums';
 import type { FeatureModalState, IDataProviderFeature } from '../types';
@@ -12,24 +12,24 @@ import { createDefaultDraftFeature } from '../utils';
 
 export type UseFeatureActionsProps = {
     dataProviderId: string;
+    provider: IDataProvider;
     features: IDataProviderFeature[];
-    provider?: IDataProvider;
     refetchAll: () => Promise<void>;
 };
 
 export const useFeatureActions = ({
     dataProviderId,
-    features,
     provider,
+    features,
     refetchAll,
 }: UseFeatureActionsProps) => {
     const { handleCustomMutationData } = useCustomMutationData();
 
+    const [switchingFeatureId, setSwitchingFeatureId] = useState<string | null>(null);
     const [modalState, setModalState] = useState<FeatureModalState>({
         open: false,
         feature: null,
     });
-    const [switchingFeatureId, setSwitchingFeatureId] = useState<string | null>(null);
 
     const handleSwitchStatus = useCallback(
         async (featureId: string, currentStatus: DataProviderFeatureStatus): Promise<void> => {
@@ -78,7 +78,7 @@ export const useFeatureActions = ({
             const draftFeature = createDefaultDraftFeature({
                 dataProviderId,
                 type,
-                provider,
+                provider: provider,
             });
             setModalState({ open: true, feature: draftFeature });
         },
