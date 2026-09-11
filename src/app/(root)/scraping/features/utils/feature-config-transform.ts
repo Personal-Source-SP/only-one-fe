@@ -110,7 +110,7 @@ export const buildFeatureMutationPayload = <TValues extends ScrapingConfigFormVa
 
     const method: 'post' | 'put' = isDraft ? 'post' : 'put';
     const endpoint = isDraft
-        ? API_ENDPOINT.DATA_PROVIDER_FEATURES.BY_PROVIDER(feature.dataProviderId)
+        ? API_ENDPOINT.DATA_PROVIDER_FEATURES.BASE
         : API_ENDPOINT.DATA_PROVIDER_FEATURES.DETAIL(feature.id);
 
     const targetConfig = extractTargetConfigFromFormValues(values, feature.config);
@@ -123,6 +123,7 @@ export const buildFeatureMutationPayload = <TValues extends ScrapingConfigFormVa
         payload.changeDescription = changeDescription || `Cập nhật cấu hình ${featureLabel}`;
     } else {
         payload.type = feature.type;
+        payload.dataProviderId = feature.dataProviderId;
     }
 
     return {
