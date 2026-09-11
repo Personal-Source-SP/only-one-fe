@@ -2,13 +2,11 @@
 
 import { CustomButton, CustomFlex } from '@/components/custom-antd';
 import { Icon } from '@iconify/react';
+import { useFeatureCardContext } from '../../context';
 
-type FeatureCardActionsProps = {
-    onOpenConfig: () => void;
-    onOpenHistory: () => void;
-};
+export const FeatureCardActions = () => {
+    const { onOpenConfig, onOpenHistory } = useFeatureCardContext();
 
-export const FeatureCardActions = ({ onOpenConfig, onOpenHistory }: FeatureCardActionsProps) => {
     return (
         <CustomFlex
             gap="small"

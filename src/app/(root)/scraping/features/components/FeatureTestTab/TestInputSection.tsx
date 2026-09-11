@@ -9,36 +9,27 @@ import {
     CustomSpace,
     CustomTooltip,
     CustomTypography,
-    type FormInstance,
 } from '@/components/custom-antd';
 import { DEFAULT_HTML_CONTENT_STRING } from '@/constants';
 import { Icon } from '@iconify/react';
 import { FEATURE_SECTION_CONTAINER_CLASS } from '../../constants';
+import { useFeatureTestContext } from '../../context';
 import { ScraperServiceEnum } from '../../enums';
-import type { IDataProviderFeature, ISearchTargetConfig } from '../../types';
+import type { ISearchTargetConfig } from '../../types';
 import { SectionHeader } from '../ConfigFormCommon';
 
-export type TestInputSectionProps = {
-    form: FormInstance;
-    isLoading: boolean;
-    isScraping: boolean;
-    isTestHtmlContent: boolean;
-    configForm?: FormInstance;
-    feature?: IDataProviderFeature;
-    onRunTest: () => void;
-    onToggleTestHtmlContent: (checked: boolean) => void;
-};
+export const TestInputSection = () => {
+    const {
+        form,
+        isLoading,
+        isScraping,
+        isTestHtmlContent,
+        configForm,
+        feature,
+        onRunTest,
+        setIsTestHtmlContent,
+    } = useFeatureTestContext();
 
-export const TestInputSection = ({
-    form,
-    isLoading,
-    isScraping,
-    isTestHtmlContent,
-    configForm,
-    feature,
-    onRunTest,
-    onToggleTestHtmlContent,
-}: TestInputSectionProps) => {
     const queryPlaceholder = CustomForm.useWatch('queryPlaceholder', configForm);
     const functionGenerator = CustomForm.useWatch('functionGenerator', configForm);
     const activeService =
@@ -49,6 +40,7 @@ export const TestInputSection = ({
     const isGeneric = activeService === ScraperServiceEnum.GENERIC;
 
     const isMissingFunctionGenerator = !functionGenerator?.trim();
+
     const isQueryRequired = Boolean(
         queryPlaceholder?.trim() ||
         (!configForm && (feature?.config as ISearchTargetConfig)?.queryPlaceholder?.trim()),
@@ -73,7 +65,7 @@ export const TestInputSection = ({
                         isGeneric ? (
                             <CustomSegmented
                                 value={isTestHtmlContent ? 'html' : 'input'}
-                                onChange={(value) => onToggleTestHtmlContent(value === 'html')}
+                                onChange={(value) => setIsTestHtmlContent(value === 'html')}
                                 options={[
                                     {
                                         value: 'input',

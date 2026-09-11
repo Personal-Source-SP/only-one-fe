@@ -12,62 +12,39 @@ import {
     CustomTypography,
 } from '@/components/custom-antd';
 import { Icon } from '@iconify/react';
-import { useEffect, useMemo } from 'react';
-import type { IFeatureDiffItem } from '../../utils';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useFeatureModalContext } from '../../context';
 
-export interface FeatureConfirmUpdateModalProps {
-    open?: boolean;
-    isSaving?: boolean;
-    diffItems?: IFeatureDiffItem[];
-    onClose?: () => void;
-    onConfirm?: (changeDescription: string) => Promise<void>;
-}
-
-export const FeatureConfirmUpdateModal = ({
-    open,
-    isSaving,
-    diffItems,
-    onClose,
-    onConfirm,
-}: FeatureConfirmUpdateModalProps = {}) => {
-    const context = useFeatureModalContext();
-
-    const resolvedOpen = open ?? context.isConfirmOpen;
-    const resolvedIsSaving = isSaving ?? context.isSaving;
-    const resolvedDiffItems = diffItems ?? context.diffItems;
-    const resolvedOnClose = onClose ?? context.handleCancelConfirm;
-    const resolvedOnConfirm = onConfirm ?? context.handleConfirmUpdate;
-
+export const FeatureConfirmUpdateModal = () => {
     const [form] = CustomForm.useForm();
 
+    const { isConfirmOpen, isSaving, diffItems, handleCancelConfirm, handleConfirmUpdate } =
+        useFeatureModalContext();
+
     useEffect(() => {
-        if (resolvedOpen) {
+        if (isConfirmOpen) {
             form.resetFields();
         }
-    }, [resolvedOpen, form]);
+    }, [isConfirmOpen, form]);
 
-    const handleFinish = async (values: { changeDescription: string }) => {
-        await resolvedOnConfirm(values.changeDescription);
-    };
+    const codeDiffItems = useMemo(() => diffItems.filter((item) => item.isCode), [diffItems]);
+    const standardDiffItems = useMemo(() => diffItems.filter((item) => !item.isCode), [diffItems]);
 
-    const codeDiffItems = useMemo(
-        () => resolvedDiffItems.filter((item) => item.isCode),
-        [resolvedDiffItems],
-    );
-    const standardDiffItems = useMemo(
-        () => resolvedDiffItems.filter((item) => !item.isCode),
-        [resolvedDiffItems],
+    const handleFinish = useCallback(
+        async (values: { changeDescription: string }) => {
+            await handleConfirmUpdate(values.changeDescription);
+        },
+        [handleConfirmUpdate],
     );
 
     return (
         <CustomModal
-            open={resolvedOpen}
+            open={isConfirmOpen}
             width={840}
-            onCancel={resolvedOnClose}
-            loading={resolvedIsSaving}
-            closable={!resolvedIsSaving}
-            keyboard={!resolvedIsSaving}
+            onCancel={handleCancelConfirm}
+            loading={isSaving}
+            closable={!isSaving}
+            keyboard={!isSaving}
             loadingTip="Đang lưu và tạo phiên bản snapshot mới..."
             title={
                 <CustomFlex align="center" gap={8}>
@@ -79,12 +56,12 @@ export const FeatureConfirmUpdateModal = ({
             }
             footer={
                 <CustomFlex justify="flex-end" gap={8}>
-                    <CustomButton onClick={resolvedOnClose} disabled={resolvedIsSaving}>
+                    <CustomButton onClick={handleCancelConfirm} disabled={isSaving}>
                         Quay lại chỉnh sửa
                     </CustomButton>
                     <CustomButton
                         type="primary"
-                        loading={resolvedIsSaving}
+                        loading={isSaving}
                         onClick={() => form.submit()}
                         icon={<Icon icon="lucide:check" />}
                     >
@@ -99,7 +76,7 @@ export const FeatureConfirmUpdateModal = ({
                     lưu snapshot mới.
                 </CustomTypography.Text>
 
-                {resolvedDiffItems.length === 0 ? (
+                {diffItems.length === 0 ? (
                     <CustomAlert
                         showIcon
                         type="info"

@@ -3,21 +3,14 @@
 import { useCallback } from 'react';
 import { CustomFlex, CustomTag, CustomTypography } from '@/components/custom-antd';
 import { ConfigVersionType } from '../../enums';
+import { useFeatureHistoryContext } from '../../context';
 import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
-import type { IConfigVersion } from '../../types';
 
-export type VersionListProps = {
-    sortedVersions: IConfigVersion[];
-    currentSelectedVersion: IConfigVersion | null;
-    onSelectVersion: (versionId: number) => void;
-};
+export const VersionList = () => {
+    const { sortedVersions, currentSelectedVersion, setSelectedVersionId } =
+        useFeatureHistoryContext();
 
-export const VersionList = ({
-    sortedVersions,
-    currentSelectedVersion,
-    onSelectVersion,
-}: VersionListProps) => {
     const renderChangeTypeTag = useCallback((type: ConfigVersionType) => {
         switch (type) {
             case ConfigVersionType.AI_GENERATED:
@@ -66,7 +59,7 @@ export const VersionList = ({
                 return (
                     <div
                         key={v.id || v.versionId}
-                        onClick={() => onSelectVersion(v.versionId)}
+                        onClick={() => setSelectedVersionId(v.versionId)}
                         className={`p-3 rounded-xl cursor-pointer transition-all duration-150 border ${
                             isSelected
                                 ? 'border-hub-primary bg-hub-primary/5 shadow-xs'
@@ -95,8 +88,8 @@ export const VersionList = ({
                         </CustomTypography.Paragraph>
 
                         <CustomFlex
-                            justify="space-between"
                             align="center"
+                            justify="space-between"
                             className="text-xs text-hub-subtitle"
                         >
                             <span className="flex items-center gap-1 truncate max-w-[150px]">

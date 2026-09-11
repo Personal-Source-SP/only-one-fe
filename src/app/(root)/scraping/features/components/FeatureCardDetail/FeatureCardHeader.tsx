@@ -3,30 +3,19 @@
 import { CustomFlex, CustomSwitch, CustomTag, CustomTypography } from '@/components/custom-antd';
 import { Icon } from '@iconify/react';
 import { checkService } from '../../constants';
+import { useFeatureCardContext } from '../../context';
 import { DataProviderFeatureStatus } from '../../enums';
-import type { FeatureDefinition } from '../../utils';
-import type { IDataProviderFeature } from '../../types';
 
-type FeatureCardHeaderProps = {
-    isReady: boolean;
-    feature: IDataProviderFeature;
-    meta?: FeatureDefinition;
-    isSwitchingStatus?: boolean;
-    onSwitchStatus: () => void;
-};
+export const FeatureCardHeader = () => {
+    const { isReady, feature, meta, isSwitchingStatus, onSwitchStatus } = useFeatureCardContext();
+    const { label: serviceLabel } = checkService(feature.service);
 
-export const FeatureCardHeader = ({
-    isReady,
-    feature,
-    meta,
-    isSwitchingStatus = false,
-    onSwitchStatus,
-}: FeatureCardHeaderProps) => {
     const iconName = meta?.icon || 'lucide:cpu';
     const featureTitle = meta?.label || feature.type;
     const featureDescription = meta?.description || '';
     const accentColor = meta?.accentClass || 'text-hub-primary bg-hub-primary/10';
-    const { label: serviceLabel } = checkService(feature.service);
+    const disabledSwitch =
+        feature.status === DataProviderFeatureStatus.UNCONFIGURED || isSwitchingStatus;
 
     return (
         <CustomFlex align="flex-start" justify="space-between" gap="middle" className="mb-4">
@@ -65,11 +54,8 @@ export const FeatureCardHeader = ({
                     checkedChildren="Bật"
                     unCheckedChildren="Tắt"
                     onChange={onSwitchStatus}
+                    disabled={disabledSwitch}
                     loading={isSwitchingStatus}
-                    disabled={
-                        feature.status === DataProviderFeatureStatus.UNCONFIGURED ||
-                        isSwitchingStatus
-                    }
                 />
             </CustomFlex>
         </CustomFlex>

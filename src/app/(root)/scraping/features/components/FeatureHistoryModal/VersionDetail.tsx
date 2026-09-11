@@ -8,21 +8,12 @@ import {
     CustomTypography,
 } from '@/components/custom-antd';
 import { Icon } from '@iconify/react';
-import type { IConfigVersion } from '../../types';
+import { useFeatureHistoryContext } from '../../context';
 
-export type VersionDetailProps = {
-    currentSelectedVersion: IConfigVersion | null;
-    isApplying: boolean;
-    onApply: (versionId: number) => void;
-    onCopyConfig: () => void;
-};
+export const VersionDetail = () => {
+    const { currentSelectedVersion, isApplying, handleApply, handleCopyConfig } =
+        useFeatureHistoryContext();
 
-export const VersionDetail = ({
-    currentSelectedVersion,
-    isApplying,
-    onApply,
-    onCopyConfig,
-}: VersionDetailProps) => {
     if (!currentSelectedVersion) return null;
 
     return (
@@ -53,22 +44,22 @@ export const VersionDetail = ({
                 </CustomFlex>
 
                 <CustomFlex align="center" gap="small">
-                    <CustomButton icon={<Icon icon="lucide:copy" />} onClick={onCopyConfig}>
+                    <CustomButton icon={<Icon icon="lucide:copy" />} onClick={handleCopyConfig}>
                         Copy JSON
                     </CustomButton>
                     {!currentSelectedVersion.isActive && (
                         <CustomPopconfirm
-                            title={`Áp dụng cấu hình phiên bản v${currentSelectedVersion.versionId}?`}
-                            description="Cấu hình hiện tại sẽ được cập nhật và tạo snapshot mới."
-                            okText="Xác nhận áp dụng"
                             cancelText="Hủy"
-                            onConfirm={() => onApply(currentSelectedVersion.versionId)}
+                            okText="Xác nhận áp dụng"
+                            onConfirm={() => handleApply(currentSelectedVersion.versionId)}
+                            description="Cấu hình hiện tại sẽ được cập nhật và tạo snapshot mới."
+                            title={`Áp dụng cấu hình phiên bản v${currentSelectedVersion.versionId}?`}
                         >
                             <CustomButton
                                 type="primary"
-                                icon={<Icon icon="lucide:rotate-ccw" />}
                                 loading={isApplying}
                                 className="bg-hub-primary"
+                                icon={<Icon icon="lucide:rotate-ccw" />}
                             >
                                 Áp dụng phiên bản này
                             </CustomButton>

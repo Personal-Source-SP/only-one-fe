@@ -4,15 +4,11 @@ import { useMemo } from 'react';
 import { CustomCol, CustomFlex, CustomRow, CustomTypography } from '@/components/custom-antd';
 import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
-import type { IDataProviderFeature } from '../../types';
+import { useFeatureCardContext } from '../../context';
 
-type FeatureHealthMetricsProps = {
-    isReady: boolean;
-    isError: boolean;
-    feature: IDataProviderFeature;
-};
+export const FeatureHealthMetrics = () => {
+    const { isReady, isError, feature } = useFeatureCardContext();
 
-export const FeatureHealthMetrics = ({ isReady, isError, feature }: FeatureHealthMetricsProps) => {
     const formattedSuccessDate = useMemo(
         () => (feature.lastSuccessfulRunAt ? formatDate(feature.lastSuccessfulRunAt) : 'Chưa chạy'),
         [feature.lastSuccessfulRunAt],

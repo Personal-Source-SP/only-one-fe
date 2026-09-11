@@ -9,15 +9,11 @@ import {
     CustomTypography,
 } from '@/components/custom-antd';
 import { FEATURE_SECTION_CONTAINER_CLASS } from '../../constants';
-import type { FeatureTestResult } from '../../types';
+import { useFeatureTestContext } from '../../context';
 import { SectionHeader } from '../ConfigFormCommon';
 
-export type TestResultSectionProps = {
-    testResult: FeatureTestResult | null;
-    errorMessage: string | null;
-};
-
-export const TestResultSection = ({ testResult, errorMessage }: TestResultSectionProps) => {
+export const TestResultSection = () => {
+    const { testResult, errorMessage } = useFeatureTestContext();
     return (
         <>
             {errorMessage && (

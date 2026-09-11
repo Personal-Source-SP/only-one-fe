@@ -23,7 +23,7 @@ import { FeatureCardDetail, FeatureHistoryModal, FeatureSettingModal } from '../
 import { DataProviderFeatureType } from '../enums';
 import { useFeatureActions, useFeaturesView } from '../hooks';
 import { FEATURE_TYPE_METADATA } from '../utils';
-import { FeatureModalProvider } from '../context';
+import { FeatureCardProvider, FeatureHistoryProvider, FeatureModalProvider } from '../context';
 
 const DataProviderFeaturesPage = () => {
     const router = useRouter();
@@ -173,13 +173,15 @@ const DataProviderFeaturesPage = () => {
                     <CustomRow gutter={[24, 24]} className="w-full">
                         {features.map((feature) => (
                             <CustomCol key={feature.id} xs={24} lg={12} className="flex">
-                                <FeatureCardDetail
+                                <FeatureCardProvider
                                     feature={feature}
                                     isSwitchingStatus={switchingFeatureId === feature.id}
                                     onOpenModal={openFeatureModal}
                                     onSwitchStatus={handleSwitchStatus}
                                     onOpenHistoryModal={openHistoryModal}
-                                />
+                                >
+                                    <FeatureCardDetail />
+                                </FeatureCardProvider>
                             </CustomCol>
                         ))}
                     </CustomRow>
@@ -199,12 +201,14 @@ const DataProviderFeaturesPage = () => {
                 )}
 
                 {historyModalState.feature && (
-                    <FeatureHistoryModal
+                    <FeatureHistoryProvider
                         open={historyModalState.open}
                         feature={historyModalState.feature}
                         onSuccess={refetchAll}
                         onClose={closeHistoryModal}
-                    />
+                    >
+                        <FeatureHistoryModal />
+                    </FeatureHistoryProvider>
                 )}
             </CustomSpace>
         </ListWrapper>
