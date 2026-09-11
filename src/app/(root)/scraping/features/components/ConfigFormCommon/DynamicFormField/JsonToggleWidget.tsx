@@ -9,7 +9,7 @@ import {
     CustomTypography,
 } from '@/components/custom-antd';
 import { Icon } from '@iconify/react';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useFeatureModalContext } from '@/app/(root)/scraping/features/context';
 import type {
     FormEvaluationContext,
@@ -19,17 +19,22 @@ import { FormDiffLabel } from '../FormDiffLabel';
 
 export type JsonToggleWidgetProps = {
     schema: JsonToggleFormFieldSchema;
-    evaluationContext: FormEvaluationContext;
     colProps: Record<string, unknown>;
+    evaluationContext: FormEvaluationContext;
 };
 
 export const JsonToggleWidget = ({
     schema,
-    evaluationContext,
     colProps,
+    evaluationContext,
 }: JsonToggleWidgetProps) => {
     const { form, isViewingHistory } = useFeatureModalContext();
+
     const fieldValue = CustomForm.useWatch(schema.name, form);
+    const cachedValueRef = useRef<string>(fieldValue || '');
+
+    const [hasContent, setHasContent] = useState<boolean>(Boolean(fieldValue?.trim()));
+
     const rawProps =
         (typeof schema.fieldProps === 'function'
             ? schema.fieldProps(evaluationContext)
@@ -37,11 +42,9 @@ export const JsonToggleWidget = ({
     const iconName = (rawProps.icon as string) || 'lucide:code-2';
     const defaultEmptyValue = (rawProps.defaultEmptyValue as string) || '{\n  \n}';
 
-    const [hasContent, setHasContent] = useState<boolean>(Boolean(fieldValue?.trim()));
-    const cachedValueRef = useRef<string>(fieldValue || '');
-
     const labelText =
         typeof schema.label === 'function' ? schema.label(evaluationContext) : schema.label;
+
     const desc =
         typeof schema.description === 'function'
             ? schema.description(evaluationContext)
@@ -56,16 +59,19 @@ export const JsonToggleWidget = ({
         }
     }, [fieldValue]);
 
-    const handleToggle = (checked: boolean) => {
-        setHasContent(checked);
-        if (checked) {
-            const restored = cachedValueRef.current || defaultEmptyValue;
-            form.setFieldValue(schema.name, restored);
-        } else {
-            if (fieldValue) cachedValueRef.current = fieldValue;
-            form.setFieldValue(schema.name, undefined);
-        }
-    };
+    const handleToggle = useCallback(
+        (checked: boolean) => {
+            setHasContent(checked);
+            if (checked) {
+                const restored = cachedValueRef.current || defaultEmptyValue;
+                form.setFieldValue(schema.name, restored);
+            } else {
+                if (fieldValue) cachedValueRef.current = fieldValue;
+                form.setFieldValue(schema.name, undefined);
+            }
+        },
+        [fieldValue],
+    );
 
     return (
         <CustomCol {...colProps}>
@@ -103,8 +109,8 @@ export const JsonToggleWidget = ({
                     <CustomForm.Item name={schema.name} noStyle>
                         <CodeDisplay
                             language="json"
-                            maxHeight={rawProps.maxHeight || '160px'}
                             code={fieldValue || ''}
+                            maxHeight={rawProps.maxHeight || '160px'}
                             onCodeChange={
                                 !isViewingHistory && !rawProps.disabled
                                     ? (newCode: string): void => {

@@ -9,18 +9,20 @@ import { FormDiffLabel } from '../FormDiffLabel';
 
 export type SelectFieldWidgetProps = {
     schema: SelectFormFieldSchema;
-    evaluationContext: FormEvaluationContext;
     colProps: Record<string, unknown>;
+    evaluationContext: FormEvaluationContext;
 };
 
 export const SelectFieldWidget = ({
     schema,
-    evaluationContext,
     colProps,
+    evaluationContext,
 }: SelectFieldWidgetProps) => {
     const labelText =
         typeof schema.label === 'function' ? schema.label(evaluationContext) : schema.label;
+
     const rules = schema.getRules ? schema.getRules(evaluationContext) : undefined;
+
     const rawProps =
         typeof schema.fieldProps === 'function'
             ? schema.fieldProps(evaluationContext)
@@ -29,9 +31,9 @@ export const SelectFieldWidget = ({
     return (
         <CustomCol {...colProps}>
             <CustomForm.Item
+                rules={rules}
                 name={schema.name}
                 label={<FormDiffLabel fieldKey={schema.name} label={labelText as string} />}
-                rules={rules}
             >
                 <CustomSelect {...rawProps} />
             </CustomForm.Item>

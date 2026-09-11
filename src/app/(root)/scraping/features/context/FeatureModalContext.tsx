@@ -28,6 +28,7 @@ export interface FeatureModalContextValue {
     isConfirmOpen: boolean;
     isSwitchingStatus?: boolean;
     diffItems: IFeatureDiffItem[];
+    pendingValues: Record<string, any> | null;
 
     // Handlers
     onClose: () => void;

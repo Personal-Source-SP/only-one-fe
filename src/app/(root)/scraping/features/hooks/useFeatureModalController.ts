@@ -35,6 +35,7 @@ export interface UseFeatureModalControllerReturn {
     loadingTip: string;
     isConfirmOpen: boolean;
     diffItems: IFeatureDiffItem[];
+    pendingValues: Record<string, any> | null;
     handleCancelConfirm: () => void;
     setSelectedVersionId: (id?: number) => void;
     handleRollback: (targetVersionId?: number) => Promise<void>;
@@ -267,6 +268,7 @@ export const useFeatureModalController = ({
         loadingTip,
         isConfirmOpen,
         diffItems,
+        pendingValues,
         setSelectedVersionId,
         handleRollback,
         handleFormSubmit,

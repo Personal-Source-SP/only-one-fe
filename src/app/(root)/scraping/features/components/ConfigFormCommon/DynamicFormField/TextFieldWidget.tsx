@@ -9,14 +9,16 @@ import { FormDiffLabel } from '../FormDiffLabel';
 
 export type TextFieldWidgetProps = {
     schema: TextFormFieldSchema;
-    evaluationContext: FormEvaluationContext;
     colProps: Record<string, unknown>;
+    evaluationContext: FormEvaluationContext;
 };
 
-export const TextFieldWidget = ({ schema, evaluationContext, colProps }: TextFieldWidgetProps) => {
+export const TextFieldWidget = ({ schema, colProps, evaluationContext }: TextFieldWidgetProps) => {
     const labelText =
         typeof schema.label === 'function' ? schema.label(evaluationContext) : schema.label;
+
     const rules = schema.getRules ? schema.getRules(evaluationContext) : undefined;
+
     const rawProps =
         typeof schema.fieldProps === 'function'
             ? schema.fieldProps(evaluationContext)
@@ -25,9 +27,9 @@ export const TextFieldWidget = ({ schema, evaluationContext, colProps }: TextFie
     return (
         <CustomCol {...colProps}>
             <CustomForm.Item
+                rules={rules}
                 name={schema.name}
                 label={<FormDiffLabel fieldKey={schema.name} label={labelText as string} />}
-                rules={rules}
             >
                 <CustomInput placeholder={schema.placeholder} {...rawProps} />
             </CustomForm.Item>

@@ -16,22 +16,25 @@ import { FormDiffLabel } from '../FormDiffLabel';
 
 export type SwitchCardWidgetProps = {
     schema: SwitchCardFormFieldSchema;
-    evaluationContext: FormEvaluationContext;
     colProps: Record<string, unknown>;
+    evaluationContext: FormEvaluationContext;
 };
 
 export const SwitchCardWidget = ({
     schema,
-    evaluationContext,
     colProps,
+    evaluationContext,
 }: SwitchCardWidgetProps) => {
     const { isViewingHistory } = useFeatureModalContext();
+
     const labelText =
         typeof schema.label === 'function' ? schema.label(evaluationContext) : schema.label;
+
     const desc =
         typeof schema.description === 'function'
             ? schema.description(evaluationContext)
             : schema.description;
+
     const rawProps =
         typeof schema.fieldProps === 'function'
             ? schema.fieldProps(evaluationContext)
@@ -54,10 +57,10 @@ export const SwitchCardWidget = ({
                 </CustomFlex>
                 <CustomForm.Item name={schema.name} valuePropName="checked" noStyle>
                     <CustomSwitch
-                        disabled={isViewingHistory || rawProps.disabled}
                         checkedChildren="Bật"
                         unCheckedChildren="Tắt"
                         className={rawProps.className}
+                        disabled={isViewingHistory || rawProps.disabled}
                     />
                 </CustomForm.Item>
             </div>

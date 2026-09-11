@@ -1,12 +1,9 @@
 'use client';
 
-import { CodeDisplay } from '@/components/common';
 import {
-    CustomAlert,
     CustomButton,
     CustomFlex,
     CustomForm,
-    CustomInput,
     CustomModal,
     CustomTypography,
 } from '@/components/custom-antd';
@@ -14,19 +11,14 @@ import { Icon } from '@iconify/react';
 import { useCallback, useEffect } from 'react';
 import { FEATURE_MODAL_WIDTH } from '../../constants';
 import { useFeatureModalContext } from '../../context';
+import { FeatureChangedFieldsList } from './FeatureChangedFieldsList';
+import { FeatureChangeLogForm } from './FeatureChangeLogForm';
 
 export const FeatureConfirmUpdateModal = () => {
     const [form] = CustomForm.useForm();
 
-    const {
-        isConfirmOpen,
-        isLoading,
-        diffItems,
-        selectedVersion,
-        selectedVersionId,
-        handleCancelConfirm,
-        handleConfirmUpdate,
-    } = useFeatureModalContext();
+    const { isConfirmOpen, isLoading, handleCancelConfirm, handleConfirmUpdate } =
+        useFeatureModalContext();
 
     useEffect(() => {
         if (isConfirmOpen) {
@@ -80,56 +72,9 @@ export const FeatureConfirmUpdateModal = () => {
                     lưu snapshot mới.
                 </CustomTypography.Text>
 
-                {diffItems.length === 0 ? (
-                    <CustomAlert
-                        showIcon
-                        type="info"
-                        title="Không phát hiện thay đổi"
-                        description="Các giá trị trên form hoàn toàn trùng khớp với phiên bản hiện tại. Việc lưu lại vẫn sẽ tạo một snapshot ghi chú mới."
-                    />
-                ) : (
-                    <CustomFlex
-                        vertical
-                        gap="small"
-                        className="w-full max-h-[420px] overflow-y-auto custom-scrollbar border border-hub-border/60 rounded-lg p-3 bg-hub-gray/30"
-                    >
-                        {diffItems.map((item) => (
-                            <CodeDisplay
-                                maxHeight="220px"
-                                key={item.key}
-                                title={item.label}
-                                code={String(item.oldValue ?? '')}
-                                compareCode={String(item.newValue ?? '')}
-                                compareVersion={selectedVersion?.versionId ?? selectedVersionId}
-                                language={
-                                    item.codeLanguage ||
-                                    (['headers', 'cookies'].includes(item.key)
-                                        ? 'json'
-                                        : 'javascript')
-                                }
-                            />
-                        ))}
-                    </CustomFlex>
-                )}
+                <FeatureChangedFieldsList />
 
-                <CustomForm form={form} layout="vertical" onFinish={handleFinish} className="mt-2">
-                    <CustomForm.Item
-                        name="changeDescription"
-                        label="Lý do thay đổi phiên bản (Change Log)"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Vui lòng nhập lý do thay đổi trước khi lưu snapshot',
-                            },
-                        ]}
-                        className="!mb-0"
-                    >
-                        <CustomInput.TextArea
-                            rows={3}
-                            placeholder="Ví dụ: Cập nhật selector giá mới theo layout 2026, tăng timeout lên 30s..."
-                        />
-                    </CustomForm.Item>
-                </CustomForm>
+                <FeatureChangeLogForm form={form} onFinish={handleFinish} />
             </CustomFlex>
         </CustomModal>
     );
