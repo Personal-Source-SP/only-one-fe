@@ -148,7 +148,7 @@ export const useFeatureModalController = ({
         });
 
         form.setFieldsValue(baseInitialValues);
-    }, [open, form, activeVersion, selectedVersionId, selectedVersion, feature]);
+    }, [open, form, feature, activeVersion, selectedVersionId, selectedVersion]);
 
     const handleRollback = useCallback(
         async (targetVersionId?: number) => {
