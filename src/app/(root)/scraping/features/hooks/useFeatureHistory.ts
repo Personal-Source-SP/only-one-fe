@@ -5,7 +5,7 @@ import { customNotification } from '@/components/custom-antd';
 import { API_ENDPOINT } from '@/config';
 import { MessageType } from '@/enums';
 import { useCustomData, useCustomMutationData } from '@/hooks';
-import { FEATURE_TYPE_METADATA } from '../utils';
+import { FEATURE_TYPE_METADATA } from '../constants';
 import type { IConfigVersion, IDataProviderFeature } from '../types';
 
 export type UseFeatureHistoryProps = {

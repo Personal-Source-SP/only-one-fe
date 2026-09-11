@@ -6,19 +6,19 @@ import { Icon } from '@iconify/react';
 
 export type ConfigGroupContainerProps = {
     title: string;
+    children: ReactNode;
     icon?: string;
     badge?: string;
     badgeColor?: string;
-    children: ReactNode;
     description?: string;
 };
 
 export const ConfigGroupContainer = ({
     title,
+    children,
     icon,
     badge,
     badgeColor = 'processing',
-    children,
     description,
 }: ConfigGroupContainerProps) => {
     return (

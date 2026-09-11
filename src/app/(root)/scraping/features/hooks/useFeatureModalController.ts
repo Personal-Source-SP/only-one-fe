@@ -5,11 +5,14 @@ import { API_ENDPOINT } from '@/config';
 import { MessageType } from '@/enums';
 import { useCustomData, useCustomMutationData } from '@/hooks';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import type { IConfigVersion, IDataProviderFeature } from '../types';
+import { DEFAULT_FEATURE_TEMPLATES, getDefaultFormValues } from '../constants';
+import { ScraperServiceEnum } from '../enums';
+import type { IConfigVersion, IDataProviderFeature, TargetConfig } from '../types';
 import {
     buildFeatureMutationPayload,
     calculateFeatureConfigDiff,
     IFeatureDiffItem,
+    mapConfigToBaseFormValues,
 } from '../utils';
 
 export interface UseFeatureModalControllerProps {
@@ -39,6 +42,8 @@ export interface UseFeatureModalControllerReturn {
     setSelectedVersionId: (id?: number) => void;
     handleRollback: (targetVersionId?: number) => Promise<void>;
     handleFormSubmit: (values: Record<string, any>) => Promise<void>;
+    handleSave: (values: Record<string, any>) => Promise<void>;
+    handleServiceChange: (service: ScraperServiceEnum) => void;
     handleConfirmUpdate: (changeDescription: string) => Promise<void>;
 }
 
@@ -108,16 +113,36 @@ export const useFeatureModalController = ({
     }, [isRollingBack, isLoadingVersions, isDraft, isSwitchingStatus, isSaving]);
 
     useEffect(() => {
-        if (open && activeVersion) {
-            setSelectedVersionId(activeVersion.versionId);
-            return;
-        }
-
         if (!open) {
             setSelectedVersionId(undefined);
             form.resetFields();
+            return;
         }
-    }, [open, form, activeVersion]);
+
+        if (activeVersion && selectedVersionId === undefined) {
+            setSelectedVersionId(activeVersion.versionId);
+        }
+
+        const config = (selectedVersion?.config || feature.config || {}) as TargetConfig;
+        const service =
+            selectedVersion?.config?.service || feature.service || ScraperServiceEnum.GENERIC;
+
+        const resolvedDefaultConfig = getDefaultFormValues({
+            service,
+            featureType: feature.type,
+        });
+
+        const defaultTemplate = DEFAULT_FEATURE_TEMPLATES[feature.type]?.[service] || '';
+
+        const baseInitialValues = mapConfigToBaseFormValues({
+            config,
+            service,
+            defaultTemplate,
+            defaultConfig: resolvedDefaultConfig,
+        });
+
+        form.setFieldsValue(baseInitialValues);
+    }, [open, form, activeVersion, selectedVersionId, selectedVersion, feature]);
 
     const handleRollback = useCallback(
         async (targetVersionId?: number) => {
@@ -215,6 +240,14 @@ export const useFeatureModalController = ({
         [isDraft, selectedVersion, feature, executeSave],
     );
 
+    const handleServiceChange = useCallback(
+        (service: ScraperServiceEnum) => {
+            const template = DEFAULT_FEATURE_TEMPLATES[feature.type]?.[service] || '';
+            form.setFieldValue('functionGenerator', template);
+        },
+        [feature.type, form],
+    );
+
     const handleConfirmUpdate = useCallback(
         async (changeDescription: string): Promise<void> => {
             if (!pendingValues) return;
@@ -244,6 +277,8 @@ export const useFeatureModalController = ({
         setSelectedVersionId,
         handleRollback,
         handleFormSubmit,
+        handleSave: handleFormSubmit,
+        handleServiceChange,
         handleConfirmUpdate,
         handleCancelConfirm,
     };

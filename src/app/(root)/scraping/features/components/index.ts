@@ -5,5 +5,3 @@ export * from './FeatureConfirmUpdateModal';
 export * from './FeatureHistoryModal';
 export * from './FeatureSettingModal';
 export * from './FeatureTestTab';
-export * from './ScrapingConfigTab';
-export * from './SearchConfigTab';

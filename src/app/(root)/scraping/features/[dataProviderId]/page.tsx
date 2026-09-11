@@ -22,7 +22,7 @@ import { useMemo } from 'react';
 import { FeatureCardDetail, FeatureHistoryModal, FeatureSettingModal } from '../components';
 import { DataProviderFeatureType } from '../enums';
 import { useFeatureActions, useFeaturesView } from '../hooks';
-import { FEATURE_TYPE_METADATA } from '../utils';
+import { FEATURE_TYPE_METADATA } from '../constants';
 import { FeatureCardProvider, FeatureHistoryProvider, FeatureModalProvider } from '../context';
 
 const DataProviderFeaturesPage = () => {

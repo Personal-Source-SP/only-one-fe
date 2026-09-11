@@ -1,13 +1,12 @@
 'use client';
 
-import { useCallback } from 'react';
 import { CustomFlex, CustomSwitch, CustomTag, CustomTypography } from '@/components/custom-antd';
-import { checkService } from '../../constants';
-import { useFeatureModalContext } from '../../context';
-import { ConfigVersionType, DataProviderFeatureStatus } from '../../enums';
 import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
-import { getFeatureDefinition } from '../../utils';
+import { useCallback } from 'react';
+import { FEATURE_REGISTRY, SCRAPER_SERVICE_LABELS } from '../../constants';
+import { useFeatureModalContext } from '../../context';
+import { ConfigVersionType, DataProviderFeatureStatus } from '../../enums';
 
 export const FeatureModalHeader = () => {
     const {
@@ -20,10 +19,9 @@ export const FeatureModalHeader = () => {
         onSwitchStatus,
     } = useFeatureModalContext();
 
-    const { label: serviceLabel } = checkService(currentService);
-
-    const def = getFeatureDefinition(feature.type);
+    const def = FEATURE_REGISTRY[feature.type];
     const providerName = feature.dataProvider?.name;
+    const serviceLabel = SCRAPER_SERVICE_LABELS[currentService];
 
     const renderChangeTypeTag = useCallback((changeType?: ConfigVersionType) => {
         if (!changeType) return null;
@@ -65,18 +63,14 @@ export const FeatureModalHeader = () => {
                 <CustomFlex
                     align="center"
                     justify="center"
-                    className={`p-2 rounded-xl shrink-0 ${
-                        def?.accentClass || 'text-hub-primary bg-hub-primary/10'
-                    }`}
+                    className={`p-2 rounded-xl shrink-0 ${def.accentClass}`}
                 >
-                    <Icon icon={def?.icon || 'lucide:sliders'} className="text-lg" />
+                    <Icon icon={def.icon} className="text-lg" />
                 </CustomFlex>
                 <CustomFlex vertical gap={2}>
                     <CustomFlex align="center" gap="small" wrap>
                         <CustomTypography.Text strong className="text-base text-hub-title">
-                            {def?.getTitle
-                                ? def.getTitle(isDraft, providerName)
-                                : `${isDraft ? 'Thiết lập' : 'Cấu hình'}: ${feature.type}`}
+                            {def.getTitle(isDraft, providerName)}
                         </CustomTypography.Text>
                         <CustomTag color="blue" className="font-medium text-xs m-0">
                             {serviceLabel}

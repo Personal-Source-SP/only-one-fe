@@ -7,9 +7,9 @@ import { Icon } from '@iconify/react';
 import { useCallback, useMemo, useState } from 'react';
 import { FEATURE_MODAL_WIDTH } from '../../constants';
 import { useFeatureModalContext } from '../../context';
-import { getFeatureDefinition } from '../../utils';
 import { FeatureConfirmUpdateModal } from '../FeatureConfirmUpdateModal';
 import { FeatureTestTab } from '../FeatureTestTab';
+import { DynamicFeatureConfigForm } from './DynamicFeatureConfigForm';
 import { FeatureModalFooter } from './FeatureModalFooter';
 import { FeatureModalHeader } from './FeatureModalHeader';
 
@@ -17,12 +17,9 @@ type FeatureSettingTabKey = 'config' | 'test';
 
 export const FeatureSettingModal = () => {
     const { handleNotification } = useMessage();
-    const { open, feature, form, isGlobalLoading, loadingTip, onClose } = useFeatureModalContext();
+    const { open, form, isGlobalLoading, loadingTip, onClose } = useFeatureModalContext();
 
     const [activeTabKey, setActiveTabKey] = useState<FeatureSettingTabKey>('config');
-
-    const def = getFeatureDefinition(feature.type);
-    const ConfigComponent = def.ConfigComponent;
 
     const tabItems = useMemo(
         () => [
@@ -36,7 +33,7 @@ export const FeatureSettingModal = () => {
                 ),
                 children: (
                     <div className="h-auto max-h-[70vh] lg:max-h-none lg:h-[calc(85vh-200px)] overflow-y-auto custom-scrollbar py-1 pr-1">
-                        <ConfigComponent />
+                        <DynamicFeatureConfigForm />
                     </div>
                 ),
             },
@@ -55,7 +52,7 @@ export const FeatureSettingModal = () => {
                 ),
             },
         ],
-        [ConfigComponent],
+        [],
     );
 
     const handleTabChange = useCallback(

@@ -41,7 +41,9 @@ export interface FeatureModalContextValue {
     handleCancelConfirm: () => void;
     handleRollback: (targetVersionId?: number) => Promise<void>;
     handleConfirmUpdate: (changeDescription: string) => Promise<void>;
-    handleFormSubmit: (values: Record<string, unknown>) => Promise<void>;
+    handleFormSubmit: (values: Record<string, any>) => Promise<void>;
+    handleSave: (values: Record<string, any>) => Promise<void>;
+    handleServiceChange: (service: ScraperServiceEnum) => void;
 }
 
 export const FeatureModalContext = createContext<FeatureModalContextValue | null>(null);

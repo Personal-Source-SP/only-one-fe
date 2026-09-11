@@ -1,16 +1,16 @@
 'use client';
 
 import { createContext, useCallback, useContext, useMemo, type PropsWithChildren } from 'react';
+import { FEATURE_REGISTRY, type FeatureDefinition } from '../constants';
 import { DataProviderFeatureStatus } from '../enums';
 import type { IDataProviderFeature } from '../types';
-import { FEATURE_TYPE_METADATA, type FeatureDefinition } from '../utils';
 
 export interface FeatureCardContextValue {
     isReady: boolean;
     isError: boolean;
+    meta: FeatureDefinition;
     isSwitchingStatus: boolean;
     feature: IDataProviderFeature;
-    meta?: FeatureDefinition;
     onOpenConfig: () => void;
     onOpenHistory: () => void;
     onSwitchStatus: () => void;
@@ -34,7 +34,7 @@ export const FeatureCardProvider = ({
     onOpenHistoryModal,
     onSwitchStatus,
 }: FeatureCardProviderProps) => {
-    const meta = useMemo(() => FEATURE_TYPE_METADATA[feature.type], [feature.type]);
+    const meta = useMemo(() => FEATURE_REGISTRY[feature.type], [feature.type]);
 
     const isReady = useMemo(
         () => feature.status === DataProviderFeatureStatus.READY,

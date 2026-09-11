@@ -3,7 +3,7 @@
 import { createContext, useContext, useMemo, type PropsWithChildren } from 'react';
 import { useFeatureHistory } from '../hooks';
 import type { IConfigVersion, IDataProviderFeature } from '../types';
-import type { FeatureDefinition } from '../utils';
+import type { FeatureDefinition } from '../constants';
 
 export interface FeatureHistoryContextValue {
     open: boolean;

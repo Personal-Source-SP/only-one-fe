@@ -2,18 +2,15 @@
 
 import { CustomFlex, CustomSwitch, CustomTag, CustomTypography } from '@/components/custom-antd';
 import { Icon } from '@iconify/react';
-import { checkService } from '../../constants';
+import { SCRAPER_SERVICE_LABELS } from '../../constants';
 import { useFeatureCardContext } from '../../context';
 import { DataProviderFeatureStatus } from '../../enums';
 
 export const FeatureCardHeader = () => {
     const { isReady, feature, meta, isSwitchingStatus, onSwitchStatus } = useFeatureCardContext();
-    const { label: serviceLabel } = checkService(feature.service);
+    const { icon, label, description, accentClass } = meta;
 
-    const iconName = meta?.icon || 'lucide:cpu';
-    const featureTitle = meta?.label || feature.type;
-    const featureDescription = meta?.description || '';
-    const accentColor = meta?.accentClass || 'text-hub-primary bg-hub-primary/10';
+    const serviceLabel = SCRAPER_SERVICE_LABELS[feature.service];
     const disabledSwitch =
         feature.status === DataProviderFeatureStatus.UNCONFIGURED || isSwitchingStatus;
 
@@ -23,9 +20,9 @@ export const FeatureCardHeader = () => {
                 <CustomFlex
                     align="center"
                     justify="center"
-                    className={`p-3 rounded-xl shrink-0 ${accentColor}`}
+                    className={`p-3 rounded-xl shrink-0 ${accentClass}`}
                 >
-                    <Icon icon={iconName} className="w-6 h-6" />
+                    <Icon icon={icon} className="w-6 h-6" />
                 </CustomFlex>
                 <CustomFlex vertical gap={2}>
                     <CustomFlex align="center" gap="small" wrap>
@@ -33,7 +30,7 @@ export const FeatureCardHeader = () => {
                             level={5}
                             className="!mb-0 text-base !font-bold text-hub-title"
                         >
-                            {featureTitle}
+                            {label}
                         </CustomTypography.Title>
                         <CustomTag color="blue" className="font-medium text-xs m-0">
                             {serviceLabel}
@@ -43,7 +40,7 @@ export const FeatureCardHeader = () => {
                         type="secondary"
                         className="!mb-0 text-xs text-hub-subtitle mt-0.5"
                     >
-                        {featureDescription}
+                        {description}
                     </CustomTypography.Paragraph>
                 </CustomFlex>
             </CustomFlex>
