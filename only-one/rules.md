@@ -42,3 +42,6 @@
 - **[PREFER]** Dedicated confirmation modals with structured visual diff inspection (`CodeDisplay` / `ReactDiffViewer`) and mandatory change reason validation before submitting mutations on existing configurations over direct form saves.
 - **[AVOID]** Allowing mutation of immutable engine parameters (`service`) after feature initialization — Disable `service` engine selector in edit mode and history preview to prevent breaking active parser scripts and capabilities.
 - **[PREFER]** Explicit opt-in switches for complex/optional configurations (e.g. `headers`, `cookies`) over always-expanded bulky editors — Collapse optional JSON code editors behind toggle switches to reduce cognitive load and keep form layouts compact.
+- **[AVOID]** Using binary switch toggles (`CustomSwitch`) for domain resources with multi-state lifecycles (e.g. `READY`, `TESTING`, `DISABLED`, `ERROR`, `UNCONFIGURED`) — Use status dropdown/select badges (`FeatureStatusSelect`) to provide explicit, controlled state transitions.
+- **[AVOID]** Prop-drilling feature modal, test runner, and history state through deep component hierarchies — Encapsulate feature domain controllers in cohesive React contexts (`FeatureModalContext`, `FeatureCardContext`, `FeatureHistoryContext`, `FeatureTestContext`).
+
