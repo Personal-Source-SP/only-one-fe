@@ -8,29 +8,31 @@ import {
     CustomForm,
     CustomInput,
     CustomModal,
-    CustomTag,
     CustomTypography,
 } from '@/components/custom-antd';
 import { Icon } from '@iconify/react';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect } from 'react';
 import { FEATURE_MODAL_WIDTH } from '../../constants';
 import { useFeatureModalContext } from '../../context';
-import type { IFeatureDiffItem } from '../../utils';
 
 export const FeatureConfirmUpdateModal = () => {
     const [form] = CustomForm.useForm();
 
-    const { isConfirmOpen, isSaving, diffItems, handleCancelConfirm, handleConfirmUpdate } =
-        useFeatureModalContext();
+    const {
+        isConfirmOpen,
+        isSaving,
+        diffItems,
+        selectedVersion,
+        selectedVersionId,
+        handleCancelConfirm,
+        handleConfirmUpdate,
+    } = useFeatureModalContext();
 
     useEffect(() => {
         if (isConfirmOpen) {
             form.resetFields();
         }
     }, [isConfirmOpen, form]);
-
-    const codeDiffItems = useMemo(() => diffItems.filter((item) => item.isCode), [diffItems]);
-    const standardDiffItems = useMemo(() => diffItems.filter((item) => !item.isCode), [diffItems]);
 
     const handleFinish = useCallback(
         async (values: { changeDescription: string }) => {
@@ -91,86 +93,22 @@ export const FeatureConfirmUpdateModal = () => {
                         gap="small"
                         className="w-full max-h-[420px] overflow-y-auto custom-scrollbar border border-hub-border/60 rounded-lg p-3 bg-hub-gray/30"
                     >
-                        {standardDiffItems.length > 0 && (
-                            <>
-                                <CustomFlex
-                                    align="center"
-                                    justify="space-between"
-                                    className="border-b border-hub-border pb-2"
-                                >
-                                    <CustomTypography.Text
-                                        strong
-                                        className="text-xs uppercase tracking-wider text-hub-subtitle"
-                                    >
-                                        Thông số cấu hình thay đổi ({standardDiffItems.length})
-                                    </CustomTypography.Text>
-                                </CustomFlex>
-
-                                {standardDiffItems.map((item) => (
-                                    <CustomFlex
-                                        gap={4}
-                                        vertical
-                                        key={item.key}
-                                        className="border-b border-hub-border/40 last:border-0 pb-2.5 pt-1"
-                                    >
-                                        <CustomFlex align="center" gap={6}>
-                                            <CustomTag
-                                                color="blue"
-                                                className="text-[11px] font-medium !m-0"
-                                            >
-                                                {item.section}
-                                            </CustomTag>
-                                            <CustomTypography.Text
-                                                strong
-                                                className="text-xs text-hub-title"
-                                            >
-                                                {item.label}
-                                            </CustomTypography.Text>
-                                        </CustomFlex>
-
-                                        <CustomFlex align="center" gap={8} className="text-xs pl-2">
-                                            <div className="flex-1 bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 rounded px-2 py-1 font-mono text-[11px] truncate">
-                                                <span className="font-semibold select-none mr-1">
-                                                    [-]
-                                                </span>
-                                                {item.displayOldValue}
-                                            </div>
-                                            <Icon
-                                                icon="lucide:arrow-right"
-                                                className="text-hub-subtitle shrink-0 text-xs"
-                                            />
-                                            <div className="flex-1 bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 rounded px-2 py-1 font-mono text-[11px] truncate">
-                                                <span className="font-semibold select-none mr-1">
-                                                    [+]
-                                                </span>
-                                                {item.displayNewValue}
-                                            </div>
-                                        </CustomFlex>
-                                    </CustomFlex>
-                                ))}
-                            </>
-                        )}
-
-                        {codeDiffItems.length > 0 && (
-                            <CustomFlex vertical gap="small" className="pt-2">
-                                <CustomTypography.Text
-                                    strong
-                                    className="text-xs uppercase tracking-wider text-hub-subtitle"
-                                >
-                                    Chi tiết thay đổi mã nguồn ({codeDiffItems.length})
-                                </CustomTypography.Text>
-                                {codeDiffItems.map((item) => (
-                                    <CodeDisplay
-                                        maxHeight="220px"
-                                        key={item.key}
-                                        title={item.label}
-                                        code={String(item.newValue || '')}
-                                        compareCode={String(item.oldValue || '')}
-                                        language={item.codeLanguage || 'javascript'}
-                                    />
-                                ))}
-                            </CustomFlex>
-                        )}
+                        {diffItems.map((item) => (
+                            <CodeDisplay
+                                maxHeight="220px"
+                                key={item.key}
+                                title={item.label}
+                                code={String(item.oldValue ?? '')}
+                                compareCode={String(item.newValue ?? '')}
+                                compareVersion={selectedVersion?.versionId ?? selectedVersionId}
+                                language={
+                                    item.codeLanguage ||
+                                    (['headers', 'cookies'].includes(item.key)
+                                        ? 'json'
+                                        : 'javascript')
+                                }
+                            />
+                        ))}
                     </CustomFlex>
                 )}
 
