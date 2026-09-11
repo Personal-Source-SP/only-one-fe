@@ -11,6 +11,7 @@ import {
     type FormInstance,
 } from '@/components/custom-antd';
 import { Icon } from '@iconify/react';
+import { useEffect, useRef, useState } from 'react';
 import { checkService, FEATURE_SECTION_CONTAINER_CLASS } from '../../constants';
 import type { ScraperServiceEnum } from '../../enums';
 import { FormDiffLabel } from './FormDiffLabel';
@@ -37,6 +38,62 @@ export const FeatureAdvancedSection = ({
     selectedVersion,
 }: FeatureAdvancedSectionProps) => {
     const { hasBrowserSettings, hasAdvancedHeaders } = checkService(service);
+
+    const [hasCustomHeaders, setHasCustomHeaders] = useState<boolean>(() =>
+        Boolean(headers && headers.trim()),
+    );
+
+    const [hasCustomCookies, setHasCustomCookies] = useState<boolean>(() =>
+        Boolean(cookies && cookies.trim()),
+    );
+
+    const cachedHeadersRef = useRef<string>(headers || '');
+    const cachedCookiesRef = useRef<string>(cookies || '');
+
+    useEffect(() => {
+        if (headers && headers.trim()) {
+            setHasCustomHeaders(true);
+            cachedHeadersRef.current = headers;
+        } else if (!headers) {
+            setHasCustomHeaders(false);
+        }
+    }, [headers]);
+
+    useEffect(() => {
+        if (cookies && cookies.trim()) {
+            setHasCustomCookies(true);
+            cachedCookiesRef.current = cookies;
+        } else if (!cookies) {
+            setHasCustomCookies(false);
+        }
+    }, [cookies]);
+
+    const handleToggleHeaders = (checked: boolean) => {
+        setHasCustomHeaders(checked);
+        if (checked) {
+            const restored = cachedHeadersRef.current || '{\n  \n}';
+            form.setFieldValue('headers', restored);
+        } else {
+            if (headers) {
+                cachedHeadersRef.current = headers;
+            }
+            form.setFieldValue('headers', undefined);
+        }
+    };
+
+    const handleToggleCookies = (checked: boolean) => {
+        setHasCustomCookies(checked);
+        if (checked) {
+            const restored = cachedCookiesRef.current || '[\n  \n]';
+            form.setFieldValue('cookies', restored);
+        } else {
+            if (cookies) {
+                cachedCookiesRef.current = cookies;
+            }
+            form.setFieldValue('cookies', undefined);
+        }
+    };
+
     if (!hasBrowserSettings && !hasAdvancedHeaders) return null;
 
     return (
@@ -228,55 +285,115 @@ export const FeatureAdvancedSection = ({
 
             {/* Custom Headers & Cookies JSON Inputs */}
             {hasAdvancedHeaders && (
-                <CustomRow gutter={[16, 12]}>
+                <CustomRow gutter={[16, 16]}>
                     <CustomCol span={24}>
-                        <CustomForm.Item
-                            name="headers"
-                            label={
-                                <FormDiffLabel
-                                    fieldKey="headers"
-                                    label="Tùy chỉnh Headers (JSON)"
-                                    feature={feature}
-                                    selectedVersion={selectedVersion}
-                                    isViewingHistory={isViewingHistory}
-                                />
-                            }
+                        <CustomFlex
+                            vertical
+                            gap={12}
+                            className="p-3.5 rounded-lg bg-hub-card border border-hub-border/50"
                         >
-                            <CodeDisplay
-                                language="json"
-                                isDisplayLanguage
-                                maxHeight="160px"
-                                code={headers || ''}
-                                onCodeChange={(newCode: string): void => {
-                                    form.setFieldValue('headers', newCode);
-                                }}
-                            />
-                        </CustomForm.Item>
+                            <CustomFlex align="center" justify="space-between" className="w-full">
+                                <CustomFlex align="center" gap="small">
+                                    <Icon
+                                        icon="lucide:code-2"
+                                        className="text-base text-hub-primary"
+                                    />
+                                    <CustomFlex vertical gap={2}>
+                                        <CustomTypography.Text className="text-sm text-hub-title font-medium">
+                                            <FormDiffLabel
+                                                fieldKey="headers"
+                                                label="Tùy chỉnh Headers (JSON)"
+                                                feature={feature}
+                                                selectedVersion={selectedVersion}
+                                                isViewingHistory={isViewingHistory}
+                                            />
+                                        </CustomTypography.Text>
+                                        <CustomTypography.Text className="text-xs text-hub-subtitle">
+                                            Định cấu hình custom headers gửi kèm request HTTP
+                                        </CustomTypography.Text>
+                                    </CustomFlex>
+                                </CustomFlex>
+                                <CustomSwitch
+                                    checked={hasCustomHeaders}
+                                    onChange={handleToggleHeaders}
+                                    disabled={isViewingHistory}
+                                />
+                            </CustomFlex>
+
+                            {hasCustomHeaders ? (
+                                <CustomForm.Item name="headers" className="!mb-0">
+                                    <CodeDisplay
+                                        language="json"
+                                        isDisplayLanguage
+                                        maxHeight="160px"
+                                        code={headers || ''}
+                                        onCodeChange={(newCode: string): void => {
+                                            cachedHeadersRef.current = newCode;
+                                            form.setFieldValue('headers', newCode);
+                                        }}
+                                    />
+                                </CustomForm.Item>
+                            ) : (
+                                <CustomTypography.Text className="text-xs text-hub-subtitle italic">
+                                    Chưa kích hoạt tùy chỉnh HTTP Headers
+                                </CustomTypography.Text>
+                            )}
+                        </CustomFlex>
                     </CustomCol>
 
                     <CustomCol span={24}>
-                        <CustomForm.Item
-                            name="cookies"
-                            label={
-                                <FormDiffLabel
-                                    fieldKey="cookies"
-                                    label="Tùy chỉnh Cookies (JSON Array)"
-                                    feature={feature}
-                                    selectedVersion={selectedVersion}
-                                    isViewingHistory={isViewingHistory}
-                                />
-                            }
+                        <CustomFlex
+                            vertical
+                            gap={12}
+                            className="p-3.5 rounded-lg bg-hub-card border border-hub-border/50"
                         >
-                            <CodeDisplay
-                                language="json"
-                                isDisplayLanguage
-                                maxHeight="160px"
-                                code={cookies || ''}
-                                onCodeChange={(newCode: string): void => {
-                                    form.setFieldValue('cookies', newCode);
-                                }}
-                            />
-                        </CustomForm.Item>
+                            <CustomFlex align="center" justify="space-between" className="w-full">
+                                <CustomFlex align="center" gap="small">
+                                    <Icon
+                                        icon="lucide:cookie"
+                                        className="text-base text-hub-primary"
+                                    />
+                                    <CustomFlex vertical gap={2}>
+                                        <CustomTypography.Text className="text-sm text-hub-title font-medium">
+                                            <FormDiffLabel
+                                                fieldKey="cookies"
+                                                label="Tùy chỉnh Cookies (JSON Array)"
+                                                feature={feature}
+                                                selectedVersion={selectedVersion}
+                                                isViewingHistory={isViewingHistory}
+                                            />
+                                        </CustomTypography.Text>
+                                        <CustomTypography.Text className="text-xs text-hub-subtitle">
+                                            Đính kèm danh sách cookies cho session trình duyệt
+                                        </CustomTypography.Text>
+                                    </CustomFlex>
+                                </CustomFlex>
+                                <CustomSwitch
+                                    checked={hasCustomCookies}
+                                    onChange={handleToggleCookies}
+                                    disabled={isViewingHistory}
+                                />
+                            </CustomFlex>
+
+                            {hasCustomCookies ? (
+                                <CustomForm.Item name="cookies" className="!mb-0">
+                                    <CodeDisplay
+                                        language="json"
+                                        isDisplayLanguage
+                                        maxHeight="160px"
+                                        code={cookies || ''}
+                                        onCodeChange={(newCode: string): void => {
+                                            cachedCookiesRef.current = newCode;
+                                            form.setFieldValue('cookies', newCode);
+                                        }}
+                                    />
+                                </CustomForm.Item>
+                            ) : (
+                                <CustomTypography.Text className="text-xs text-hub-subtitle italic">
+                                    Chưa kích hoạt tùy chỉnh Cookies
+                                </CustomTypography.Text>
+                            )}
+                        </CustomFlex>
                     </CustomCol>
                 </CustomRow>
             )}

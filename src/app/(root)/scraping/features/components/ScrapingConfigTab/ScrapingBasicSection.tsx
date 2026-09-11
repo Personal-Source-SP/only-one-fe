@@ -27,6 +27,8 @@ export const ScrapingBasicSection = ({
     selectedVersion,
     onServiceChange,
 }: ScrapingBasicSectionProps) => {
+    const isServiceDisabled = Boolean(feature?.id || isViewingHistory);
+
     return (
         <CustomFlex vertical className={FEATURE_SECTION_CONTAINER_CLASS}>
             <SectionHeader
@@ -51,6 +53,7 @@ export const ScrapingBasicSection = ({
                     >
                         <CustomSelect
                             onChange={onServiceChange}
+                            disabled={isServiceDisabled}
                             options={SCRAPER_SERVICE_OPTIONS}
                         />
                     </CustomForm.Item>

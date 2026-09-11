@@ -37,11 +37,13 @@ export const SearchUrlPatternSection = ({
 }: SearchUrlPatternSectionProps) => {
     const { hasUrlPattern } = checkService(service);
 
+    const isServiceDisabled = Boolean(feature?.id || isViewingHistory);
+
     return (
         <CustomFlex vertical className={FEATURE_SECTION_CONTAINER_CLASS}>
             <SectionHeader
-                title="Cấu hình đường dẫn tìm kiếm"
                 icon="lucide:search"
+                title="Cấu hình đường dẫn tìm kiếm"
                 description="Lựa chọn engine và định dạng mẫu URL tìm kiếm cho từ khóa"
             />
 
@@ -62,6 +64,7 @@ export const SearchUrlPatternSection = ({
                     >
                         <CustomSelect
                             onChange={onServiceChange}
+                            disabled={isServiceDisabled}
                             options={SCRAPER_SERVICE_OPTIONS}
                         />
                     </CustomForm.Item>

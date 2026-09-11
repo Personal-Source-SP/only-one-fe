@@ -6,14 +6,12 @@ import {
     CustomForm,
     CustomInputNumber,
     CustomRow,
-    CustomTypography,
 } from '@/components/custom-antd';
-import { Icon } from '@iconify/react';
 import { checkService, FEATURE_SECTION_CONTAINER_CLASS } from '../../constants';
 import type { ScraperServiceEnum } from '../../enums';
+import type { IConfigVersion, IDataProviderFeature } from '../../types';
 import { FormDiffLabel } from './FormDiffLabel';
 import { SectionHeader } from './SectionHeader';
-import type { IConfigVersion, IDataProviderFeature } from '../../types';
 
 export type FeatureLimitsSectionProps = {
     feature: IDataProviderFeature;
@@ -33,8 +31,8 @@ export const FeatureLimitsSection = ({
     return (
         <CustomFlex vertical className={FEATURE_SECTION_CONTAINER_CLASS}>
             <SectionHeader
-                title="Giới hạn & Thời gian chờ"
                 icon="lucide:repeat"
+                title="Giới hạn & Thời gian chờ"
                 description="Kiểm soát số lượng kết quả, số lần thử lại và thời gian timeout"
             />
             <CustomRow gutter={[16, 12]}>

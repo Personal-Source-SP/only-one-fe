@@ -16,24 +16,24 @@ import type { IConfigVersion, IDataProviderFeature } from '../../types';
 
 export type SearchSelectorsSectionProps = {
     feature: IDataProviderFeature;
+    service?: ScraperServiceEnum;
     isViewingHistory?: boolean;
     selectedVersion?: IConfigVersion | null;
-    service?: ScraperServiceEnum;
 };
 
 export const SearchSelectorsSection = ({
     feature,
+    service,
     isViewingHistory,
     selectedVersion,
-    service,
 }: SearchSelectorsSectionProps) => {
     const { hasWaitForSelector, hasBrowserSettings, hasApiParams } = checkService(service);
 
     return (
         <CustomFlex vertical className={FEATURE_SECTION_CONTAINER_CLASS}>
             <SectionHeader
-                title="Bộ chọn (Selectors) & Tham số tìm kiếm"
                 icon="lucide:sliders"
+                title="Bộ chọn (Selectors) & Tham số tìm kiếm"
                 description="Thiết lập CSS Selectors cho vùng chứa và từng phần tử kết quả"
             />
 
@@ -133,8 +133,8 @@ export const SearchSelectorsSection = ({
                                 name="firstQueryParams"
                                 label={
                                     <FormDiffLabel
-                                        label="First Query Params (trang đầu)"
                                         fieldKey="firstQueryParams"
+                                        label="First Query Params (trang đầu)"
                                         feature={feature}
                                         selectedVersion={selectedVersion}
                                         isViewingHistory={isViewingHistory}
