@@ -1,5 +1,6 @@
 import type { ScraperServiceEnum } from '../enums';
 
+//  Interface Configuration for Target
 export interface CookieItem {
     name: string;
     value: string;
@@ -38,12 +39,14 @@ export interface ITargetConfigCode {
     functionGenerator?: string;
 }
 
+// Interface Configuration for Target for Scraping Data
 export interface ITargetConfig
     extends ITargetConfigLimits, ITargetConfigNetwork, ITargetConfigSelectors, ITargetConfigCode {
     service?: ScraperServiceEnum;
     [key: string]: unknown;
 }
 
+// Interface Configuration for Target for Search Data
 export interface ISearchTargetConfigSpecific {
     searchUrlPattern?: string;
     queryPlaceholder?: string;

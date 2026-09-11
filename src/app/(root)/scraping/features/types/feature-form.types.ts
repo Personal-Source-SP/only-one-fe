@@ -23,5 +23,3 @@ export interface TestInputFormValues {
     testQuery?: string;
     htmlContentString?: string;
 }
-
-export type { FeatureTestResult } from './provider-feature-test.types';

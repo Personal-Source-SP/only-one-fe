@@ -11,9 +11,9 @@ export interface FeatureTestInput {
 }
 
 export interface TestFeatureStatelessRequest {
-    type: DataProviderFeatureType;
-    service: ScraperServiceEnum;
     config: TargetConfig;
+    service: ScraperServiceEnum;
+    type: DataProviderFeatureType;
     input?: FeatureTestInput;
 }
 
