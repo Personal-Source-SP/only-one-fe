@@ -27,11 +27,11 @@ export const TestResultSection = () => {
 
             <CustomFlex vertical className={FEATURE_SECTION_CONTAINER_CLASS}>
                 <SectionHeader
-                    title="Kết quả trích xuất"
                     icon="lucide:code"
-                    description="Dữ liệu JSON thực thi từ hàm functionGenerator trong môi trường Sandbox"
-                    badge={testResult ? 'Thành công' : undefined}
                     badgeColor="success"
+                    title="Kết quả trích xuất"
+                    badge={testResult ? 'Thành công' : undefined}
+                    description="Dữ liệu JSON thực thi từ hàm functionGenerator trong môi trường Sandbox"
                 />
 
                 {testResult ? (

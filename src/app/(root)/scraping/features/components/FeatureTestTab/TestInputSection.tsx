@@ -8,7 +8,6 @@ import {
     CustomSegmented,
     CustomSpace,
     CustomTooltip,
-    CustomTypography,
 } from '@/components/custom-antd';
 import { DEFAULT_HTML_CONTENT_STRING } from '@/constants';
 import { Icon } from '@iconify/react';
@@ -58,8 +57,8 @@ export const TestInputSection = () => {
         >
             <CustomFlex vertical className={FEATURE_SECTION_CONTAINER_CLASS}>
                 <SectionHeader
-                    title="Dữ liệu đầu vào thử nghiệm"
                     icon="lucide:terminal"
+                    title="Dữ liệu đầu vào thử nghiệm"
                     description="Cung cấp URL hoặc từ khóa tìm kiếm để kiểm tra logic bóc tách"
                     extra={
                         isGeneric ? (

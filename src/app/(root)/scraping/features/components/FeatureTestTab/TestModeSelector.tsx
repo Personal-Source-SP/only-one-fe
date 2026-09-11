@@ -16,9 +16,9 @@ export const TestModeSelector = ({ testMode, isDraft, onChangeMode }: TestModeSe
             className="bg-hub-section/20 border border-hub-border/60 rounded-xl p-4"
         >
             <CustomFlex
+                gap="middle"
                 align="center"
                 justify="space-between"
-                gap="middle"
                 className="w-full flex-wrap"
             >
                 <CustomFlex vertical gap={2}>
