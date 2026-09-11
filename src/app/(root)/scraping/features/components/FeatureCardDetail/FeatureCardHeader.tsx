@@ -1,13 +1,14 @@
 'use client';
 
-import { CustomFlex, CustomSwitch, CustomTag, CustomTypography } from '@/components/custom-antd';
+import { CustomFlex, CustomTag, CustomTypography } from '@/components/custom-antd';
 import { Icon } from '@iconify/react';
+import { FeatureStatusSelect } from '../FeatureStatusSelect';
 import { SCRAPER_SERVICE_LABELS } from '../../constants';
 import { useFeatureCardContext } from '../../context';
 import { DataProviderFeatureStatus } from '../../enums';
 
 export const FeatureCardHeader = () => {
-    const { isReady, feature, meta, isSwitchingStatus, onSwitchStatus } = useFeatureCardContext();
+    const { feature, meta, isSwitchingStatus, onSwitchStatus } = useFeatureCardContext();
     const { icon, label, description, accentClass } = meta;
 
     const serviceLabel = SCRAPER_SERVICE_LABELS[feature.service];
@@ -46,10 +47,8 @@ export const FeatureCardHeader = () => {
             </CustomFlex>
 
             <CustomFlex align="center" gap="small" className="shrink-0">
-                <CustomSwitch
-                    checked={isReady}
-                    checkedChildren="Bật"
-                    unCheckedChildren="Tắt"
+                <FeatureStatusSelect
+                    status={feature.status}
                     onChange={onSwitchStatus}
                     disabled={disabledSwitch}
                     loading={isSwitchingStatus}

@@ -13,7 +13,7 @@ export interface FeatureCardContextValue {
     feature: IDataProviderFeature;
     onOpenConfig: () => void;
     onOpenHistory: () => void;
-    onSwitchStatus: () => void;
+    onSwitchStatus: (targetStatus: DataProviderFeatureStatus) => void;
 }
 
 export const FeatureCardContext = createContext<FeatureCardContextValue | null>(null);
@@ -23,7 +23,7 @@ export interface FeatureCardProviderProps extends PropsWithChildren {
     isSwitchingStatus?: boolean;
     onOpenModal: (feature: IDataProviderFeature) => void;
     onOpenHistoryModal: (feature: IDataProviderFeature) => void;
-    onSwitchStatus: (featureId: string, currentStatus: DataProviderFeatureStatus) => void;
+    onSwitchStatus: (featureId: string, targetStatus: DataProviderFeatureStatus) => void;
 }
 
 export const FeatureCardProvider = ({
@@ -54,8 +54,8 @@ export const FeatureCardProvider = ({
     );
 
     const handleSwitchStatus = useCallback(
-        () => onSwitchStatus(feature.id, feature.status),
-        [onSwitchStatus, feature.id, feature.status],
+        (targetStatus: DataProviderFeatureStatus) => onSwitchStatus(feature.id, targetStatus),
+        [onSwitchStatus, feature.id],
     );
 
     const value: FeatureCardContextValue = useMemo(

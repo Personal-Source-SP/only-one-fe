@@ -1,12 +1,13 @@
 'use client';
 
-import { CustomFlex, CustomSwitch, CustomTag, CustomTypography } from '@/components/custom-antd';
+import { CustomFlex, CustomTag, CustomTypography } from '@/components/custom-antd';
 import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
 import { useCallback } from 'react';
+import { FeatureStatusSelect } from '../FeatureStatusSelect';
 import { FEATURE_REGISTRY, SCRAPER_SERVICE_LABELS } from '../../constants';
 import { useFeatureModalContext } from '../../context';
-import { ConfigVersionType, DataProviderFeatureStatus } from '../../enums';
+import { ConfigVersionType } from '../../enums';
 
 export const FeatureModalHeader = () => {
     const {
@@ -114,13 +115,11 @@ export const FeatureModalHeader = () => {
                 {/* Switch Status Toggle */}
                 {!isDraft && onSwitchStatus && (
                     <CustomFlex align="center" gap="small">
-                        <CustomSwitch
-                            checkedChildren="Bật"
-                            unCheckedChildren="Tắt"
+                        <FeatureStatusSelect
+                            status={feature.status}
                             onChange={onSwitchStatus}
                             loading={isSwitchingStatus}
                             disabled={isSwitchingStatus}
-                            checked={feature.status === DataProviderFeatureStatus.READY}
                         />
                     </CustomFlex>
                 )}

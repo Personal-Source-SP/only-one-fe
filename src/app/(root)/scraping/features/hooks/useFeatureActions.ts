@@ -32,17 +32,13 @@ export const useFeatureActions = ({
     });
 
     const handleSwitchStatus = useCallback(
-        async (featureId: string, currentStatus: DataProviderFeatureStatus): Promise<void> => {
-            const nextStatus =
-                currentStatus === DataProviderFeatureStatus.READY
-                    ? DataProviderFeatureStatus.DISABLED
-                    : DataProviderFeatureStatus.READY;
-
+        async (featureId: string, targetStatus: DataProviderFeatureStatus): Promise<void> => {
+            if (switchingFeatureId) return;
             setSwitchingFeatureId(featureId);
             try {
                 await handleCustomMutationData({
                     method: 'put',
-                    url: API_ENDPOINT.DATA_PROVIDER_FEATURES.SWITCH_STATUS(featureId, nextStatus),
+                    url: API_ENDPOINT.DATA_PROVIDER_FEATURES.SWITCH_STATUS(featureId, targetStatus),
                     successNotification: () => {
                         refetchAll();
                         return {
@@ -60,7 +56,7 @@ export const useFeatureActions = ({
                 setSwitchingFeatureId(null);
             }
         },
-        [handleCustomMutationData, refetchAll],
+        [handleCustomMutationData, refetchAll, switchingFeatureId],
     );
 
     const openFeatureModal = useCallback((feature: IDataProviderFeature): void => {
