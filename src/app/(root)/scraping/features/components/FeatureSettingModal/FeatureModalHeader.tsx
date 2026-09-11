@@ -80,7 +80,7 @@ export const FeatureModalHeader = () => {
                 </CustomFlex>
             </CustomFlex>
 
-            <CustomFlex align="center" gap="middle" className="flex-wrap">
+            <CustomFlex align="center" gap="small" className="flex-wrap">
                 {/* Version Metadata Tags in Header */}
                 {!isDraft && selectedVersion && (
                     <CustomFlex align="center" gap="small" wrap>
@@ -102,11 +102,11 @@ export const FeatureModalHeader = () => {
 
                         {selectedVersion.isActive ? (
                             <CustomTag color="success" className="font-mono font-bold m-0">
-                                v{selectedVersion.versionId} Active
+                                v{selectedVersion.versionId}
                             </CustomTag>
                         ) : (
                             <CustomTag color="warning" className="font-mono font-bold m-0">
-                                v{selectedVersion.versionId} (Lịch sử)
+                                Phiên bản {selectedVersion.versionId}
                             </CustomTag>
                         )}
                     </CustomFlex>
