@@ -6,16 +6,21 @@ import { MessageType } from '@/enums';
 import { useCustomMutationData } from '@/hooks';
 
 import type { FormInstance } from '@/components/custom-antd';
+import { useFeatureModalContext } from '../context';
 import { DataProviderFeatureType, ScraperServiceEnum } from '../enums';
 import type { FeatureTestResult, IDataProviderFeature, TestInputFormValues } from '../types';
 import { extractTargetConfigFromFormValues } from '../utils';
 
 export type UseFeatureTestRunnerProps = {
-    feature: IDataProviderFeature;
+    feature?: IDataProviderFeature;
     configForm?: FormInstance;
 };
 
-export const useFeatureTestRunner = ({ feature, configForm }: UseFeatureTestRunnerProps) => {
+export const useFeatureTestRunner = (props: UseFeatureTestRunnerProps = {}) => {
+    const modal = useFeatureModalContext();
+    const feature = props.feature ?? modal.feature;
+    const configForm = props.configForm ?? modal.form;
+
     const { handleCustomMutationData } = useCustomMutationData();
 
     const [isLoading, setIsLoading] = useState<boolean>(false);

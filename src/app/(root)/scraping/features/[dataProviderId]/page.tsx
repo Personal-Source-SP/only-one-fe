@@ -23,6 +23,7 @@ import { FeatureCardDetail, FeatureHistoryModal, FeatureSettingModal } from '../
 import { DataProviderFeatureType } from '../enums';
 import { useFeatureActions, useFeaturesView } from '../hooks';
 import { FEATURE_TYPE_METADATA } from '../utils';
+import { FeatureModalProvider } from '../context';
 
 const DataProviderFeaturesPage = () => {
     const router = useRouter();
@@ -185,14 +186,16 @@ const DataProviderFeaturesPage = () => {
                 )}
 
                 {modalState.feature && (
-                    <FeatureSettingModal
+                    <FeatureModalProvider
                         open={modalState.open}
                         feature={modalState.feature}
                         isSwitchingStatus={switchingFeatureId === modalState.feature.id}
                         onSuccess={refetchAll}
                         onClose={closeFeatureModal}
                         onSwitchStatus={handleSwitchStatus}
-                    />
+                    >
+                        <FeatureSettingModal />
+                    </FeatureModalProvider>
                 )}
 
                 {historyModalState.feature && (

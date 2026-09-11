@@ -1,48 +1,18 @@
 'use client';
 
 import { useCallback } from 'react';
-import {
-    CustomFlex,
-    CustomSwitch,
-    CustomTag,
-    CustomTypography,
-    type FormInstance,
-} from '@/components/custom-antd';
+import { CustomFlex, CustomSwitch, CustomTag, CustomTypography } from '@/components/custom-antd';
 import { checkService } from '../../constants';
-import { ConfigVersionType, DataProviderFeatureStatus } from '../../enums';
 import { useFeatureModalContext } from '../../context';
+import { ConfigVersionType, DataProviderFeatureStatus } from '../../enums';
 import { useCurrentService } from '../../hooks';
 import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
-import type { IConfigVersion, IDataProviderFeature } from '../../types';
 import { getFeatureDefinition } from '../../utils';
 
-export interface FeatureModalHeaderProps {
-    isDraft?: boolean;
-    form?: FormInstance;
-    authorName?: string | null;
-    feature?: IDataProviderFeature;
-    selectedVersion?: IConfigVersion | null;
-    isSwitchingStatus?: boolean;
-    onSwitchStatus?: () => void;
-}
-
-export const FeatureModalHeader = ({
-    isDraft: propIsDraft,
-    authorName: propAuthorName,
-    feature: propFeature,
-    selectedVersion: propSelectedVersion,
-    isSwitchingStatus: propIsSwitchingStatus,
-    onSwitchStatus: propOnSwitchStatus,
-}: FeatureModalHeaderProps = {}) => {
-    const context = useFeatureModalContext();
-    const feature = propFeature ?? context.feature;
-    const isDraft = propIsDraft ?? context.isDraft;
-    const authorName = propAuthorName !== undefined ? propAuthorName : context.authorName;
-    const selectedVersion =
-        propSelectedVersion !== undefined ? propSelectedVersion : context.selectedVersion;
-    const isSwitchingStatus = propIsSwitchingStatus ?? context.isSwitchingStatus;
-    const onSwitchStatus = propOnSwitchStatus ?? context.onSwitchStatus;
+export const FeatureModalHeader = () => {
+    const { feature, isDraft, authorName, selectedVersion, isSwitchingStatus, onSwitchStatus } =
+        useFeatureModalContext();
 
     const activeService = useCurrentService();
     const def = getFeatureDefinition(feature.type);

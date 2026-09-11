@@ -13,37 +13,16 @@ import {
 import { ScrapingBasicSection } from './ScrapingBasicSection';
 import { ScrapingSelectorsSection } from './ScrapingSelectorsSection';
 
-export const ScrapingConfigTab = ({
-    feature: propFeature,
-    form: propForm,
-    selectedVersion: propSelectedVersion,
-    onClose: propOnClose,
-    onSuccess: propOnSuccess,
-    onSaveForm: propOnSaveForm,
-}: FeatureConfigFormProps) => {
-    const context = useFeatureModalContext();
-    const feature = propFeature ?? context.feature;
-    const form = propForm ?? context.form;
-    const selectedVersion =
-        propSelectedVersion !== undefined ? propSelectedVersion : context.selectedVersion;
-    const onClose = propOnClose ?? context.onClose;
-    const onSuccess = propOnSuccess ?? context.onSuccess;
-    const onSaveForm = propOnSaveForm ?? context.onSaveForm;
-
+export const ScrapingConfigTab = (_props?: FeatureConfigFormProps) => {
+    const { form } = useFeatureModalContext();
     const currentService = useCurrentService();
 
     const { hasBrowserSettings, hasAdvancedHeaders, hasDomSelectors, hasWaitForSelector } =
         checkService(currentService);
 
     const { handleServiceChange, handleSave } = useFeatureConfigForm<ScrapingConfigFormValues>({
-        form,
-        feature,
-        selectedVersion,
         featureLabel: 'cào',
         defaultTargetConfig: DEFAULT_TARGET_CONFIG,
-        onClose,
-        onSuccess,
-        onSaveForm,
         getDefaultTemplate: (service) => checkService(service).defaultScrapingTemplate,
     });
 

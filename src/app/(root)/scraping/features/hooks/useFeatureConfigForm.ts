@@ -5,6 +5,7 @@ import { MessageType } from '@/enums';
 import { useCustomMutationData } from '@/hooks';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { checkService, DEFAULT_TARGET_CONFIG } from '../constants';
+import { useFeatureModalContext } from '../context';
 import { ScraperServiceEnum } from '../enums';
 import type {
     IConfigVersion,
@@ -15,13 +16,13 @@ import type {
 import { buildFeatureMutationPayload, mapConfigToBaseFormValues } from '../utils';
 
 export interface UseFeatureConfigFormOptions<TValues extends ScrapingConfigFormValues> {
-    form: FormInstance;
-    feature: IDataProviderFeature;
+    form?: FormInstance;
+    feature?: IDataProviderFeature;
     featureLabel?: string;
     selectedVersion?: IConfigVersion | null;
     defaultTargetConfig?: Record<string, unknown>;
-    onClose: () => void;
-    onSuccess: () => void;
+    onClose?: () => void;
+    onSuccess?: () => void;
     onSaveForm?: (values: TValues) => Promise<void> | void;
     getDefaultTemplate?: (service: ScraperServiceEnum) => string;
     extraInitialValues?: (config: Record<string, any>) => Partial<TValues>;
@@ -34,18 +35,22 @@ export interface UseFeatureConfigFormReturn<TValues extends ScrapingConfigFormVa
     handleServiceChange: (service: ScraperServiceEnum) => void;
 }
 
-export const useFeatureConfigForm = <TValues extends ScrapingConfigFormValues>({
-    feature,
-    form,
-    selectedVersion,
-    featureLabel = 'tính năng',
-    defaultTargetConfig = DEFAULT_TARGET_CONFIG,
-    onClose,
-    onSuccess,
-    onSaveForm,
-    getDefaultTemplate,
-    extraInitialValues,
-}: UseFeatureConfigFormOptions<TValues>): UseFeatureConfigFormReturn<TValues> => {
+export const useFeatureConfigForm = <TValues extends ScrapingConfigFormValues>(
+    options: UseFeatureConfigFormOptions<TValues> = {},
+): UseFeatureConfigFormReturn<TValues> => {
+    const modal = useFeatureModalContext();
+    const form = options.form ?? modal.form;
+    const feature = options.feature ?? modal.feature;
+    const selectedVersion =
+        options.selectedVersion !== undefined ? options.selectedVersion : modal.selectedVersion;
+    const featureLabel = options.featureLabel ?? 'tính năng';
+    const defaultTargetConfig = options.defaultTargetConfig ?? DEFAULT_TARGET_CONFIG;
+    const onClose = options.onClose ?? modal.onClose;
+    const onSuccess = options.onSuccess ?? modal.onSuccess;
+    const onSaveForm = options.onSaveForm ?? modal.handleFormSubmit;
+    const getDefaultTemplate = options.getDefaultTemplate;
+    const extraInitialValues = options.extraInitialValues;
+
     const isDraft = useMemo(() => !feature.id, [feature.id]);
     const [isSaving, setIsSaving] = useState<boolean>(false);
     const { handleCustomMutationData } = useCustomMutationData();

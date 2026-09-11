@@ -1,111 +1,27 @@
 'use client';
 
-import { CustomFlex, CustomForm, CustomModal, CustomTabs } from '@/components/custom-antd';
+import { CustomFlex, CustomModal, CustomTabs } from '@/components/custom-antd';
 import { MessageType } from '@/enums';
 import { useMessage } from '@/hooks';
 import { Icon } from '@iconify/react';
 import { useCallback, useMemo, useState } from 'react';
-import { DataProviderFeatureStatus } from '../../enums';
-import { FeatureModalProvider, type FeatureModalContextValue } from '../../context';
-import { useFeatureModalController } from '../../hooks';
-import type { IDataProviderFeature } from '../../types';
+import { useFeatureModalContext } from '../../context';
 import { getFeatureDefinition } from '../../utils';
 import { FeatureConfirmUpdateModal } from '../FeatureConfirmUpdateModal';
 import { FeatureTestTab } from '../FeatureTestTab';
 import { FeatureModalFooter } from './FeatureModalFooter';
 import { FeatureModalHeader } from './FeatureModalHeader';
 
-export type FeatureSettingModalProps = {
-    open: boolean;
-    feature: IDataProviderFeature;
-    isSwitchingStatus?: boolean;
-    onClose: () => void;
-    onSuccess: () => void;
-    onSwitchStatus: (featureId: string, currentStatus: DataProviderFeatureStatus) => void;
-};
+type FeatureSettingTabKey = 'config' | 'test';
 
-export const FeatureSettingModal = ({
-    open,
-    feature,
-    isSwitchingStatus = false,
-    onClose,
-    onSuccess,
-    onSwitchStatus,
-}: FeatureSettingModalProps) => {
-    const [form] = CustomForm.useForm();
+export const FeatureSettingModal = () => {
     const { handleNotification } = useMessage();
-    const [activeTabKey, setActiveTabKey] = useState<'config' | 'test'>('config');
+    const { open, feature, form, isGlobalLoading, loadingTip, onClose } = useFeatureModalContext();
+
+    const [activeTabKey, setActiveTabKey] = useState<FeatureSettingTabKey>('config');
 
     const def = getFeatureDefinition(feature.type);
     const ConfigComponent = def.ConfigComponent;
-
-    const {
-        isDraft,
-        versions,
-        selectedVersion,
-        selectedVersionId,
-        isViewingHistory,
-        isRollingBack,
-        isSaving,
-        isConfirmOpen,
-        diffItems,
-        authorName,
-        isGlobalLoading,
-        loadingTip,
-        setSelectedVersionId,
-        handleRollback,
-        handleFormSubmit,
-        handleConfirmUpdate,
-        handleCancelConfirm,
-    } = useFeatureModalController({
-        open,
-        feature,
-        form,
-        isSwitchingStatus,
-        onClose,
-        onSuccess,
-    });
-
-    const contextValue: FeatureModalContextValue = useMemo(
-        () => ({
-            feature,
-            form,
-            selectedVersion,
-            selectedVersionId,
-            isViewingHistory,
-            isDraft,
-            isRollingBack,
-            isSaving,
-            authorName,
-            versions,
-            isSwitchingStatus,
-            onClose,
-            onSuccess,
-            onSwitchStatus: () => onSwitchStatus(feature.id, feature.status),
-            onRollback: handleRollback,
-            onSelectVersion: setSelectedVersionId,
-            onSaveForm: handleFormSubmit,
-        }),
-        [
-            feature,
-            form,
-            selectedVersion,
-            selectedVersionId,
-            isViewingHistory,
-            isDraft,
-            isRollingBack,
-            isSaving,
-            authorName,
-            versions,
-            isSwitchingStatus,
-            onClose,
-            onSuccess,
-            onSwitchStatus,
-            handleRollback,
-            setSelectedVersionId,
-            handleFormSubmit,
-        ],
-    );
 
     const tabItems = useMemo(
         () => [
@@ -143,47 +59,44 @@ export const FeatureSettingModal = ({
 
     const handleTabChange = useCallback(
         async (nextKey: string) => {
-            if (nextKey === 'test') {
-                try {
-                    await form.validateFields();
-                    setActiveTabKey('test');
-                } catch {
-                    handleNotification({
-                        type: MessageType.WARNING,
-                        title: 'Cấu hình chưa hoàn tất',
-                        description:
-                            'Vui lòng kiểm tra và điền đầy đủ các trường bắt buộc trước khi kiểm thử.',
-                    });
+            switch (nextKey) {
+                case 'test': {
+                    try {
+                        await form.validateFields();
+                        setActiveTabKey('test');
+                    } catch {
+                        handleNotification({
+                            type: MessageType.WARNING,
+                            title: 'Cấu hình chưa hoàn tất',
+                            description:
+                                'Vui lòng kiểm tra và điền đầy đủ các trường bắt buộc trước khi kiểm thử.',
+                        });
+                    }
+                    break;
                 }
-            } else {
-                setActiveTabKey(nextKey as 'config' | 'test');
+
+                default: {
+                    setActiveTabKey(nextKey as FeatureSettingTabKey);
+                }
             }
         },
         [form, handleNotification],
     );
 
     return (
-        <FeatureModalProvider value={contextValue}>
-            <CustomModal
-                open={open}
-                width={1300}
-                onCancel={onClose}
-                loadingTip={loadingTip}
-                loading={isGlobalLoading}
-                bodyClassName="!p-2.5 sm:!p-3"
-                className="top-6 max-w-[96vw]"
-                title={<FeatureModalHeader />}
-                footer={<FeatureModalFooter />}
-            >
-                <CustomTabs activeKey={activeTabKey} onChange={handleTabChange} items={tabItems} />
-                <FeatureConfirmUpdateModal
-                    open={isConfirmOpen}
-                    isSaving={isSaving}
-                    diffItems={diffItems}
-                    onClose={handleCancelConfirm}
-                    onConfirm={handleConfirmUpdate}
-                />
-            </CustomModal>
-        </FeatureModalProvider>
+        <CustomModal
+            open={open}
+            width={1300}
+            onCancel={onClose}
+            loadingTip={loadingTip}
+            loading={isGlobalLoading}
+            bodyClassName="!p-2.5 sm:!p-3"
+            className="top-6 max-w-[96vw]"
+            title={<FeatureModalHeader />}
+            footer={<FeatureModalFooter />}
+        >
+            <CustomTabs activeKey={activeTabKey} onChange={handleTabChange} items={tabItems} />
+            <FeatureConfirmUpdateModal />
+        </CustomModal>
     );
 };

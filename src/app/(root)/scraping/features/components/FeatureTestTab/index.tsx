@@ -1,26 +1,15 @@
 'use client';
 
 import { useCallback } from 'react';
-import { CustomCol, CustomForm, CustomRow, type FormInstance } from '@/components/custom-antd';
+import { CustomCol, CustomForm, CustomRow } from '@/components/custom-antd';
 import { useFeatureModalContext } from '../../context';
 import { useFeatureTestRunner } from '../../hooks';
-import type { IDataProviderFeature } from '../../types';
+import type { FeatureConfigFormProps } from '../../types';
 import { TestInputSection } from './TestInputSection';
 import { TestResultSection } from './TestResultSection';
 
-export type FeatureTestTabProps = {
-    feature?: IDataProviderFeature;
-    configForm?: FormInstance;
-};
-
-export const FeatureTestTab = ({
-    feature: propFeature,
-    configForm: propConfigForm,
-}: FeatureTestTabProps = {}) => {
-    const context = useFeatureModalContext();
-    const feature = propFeature ?? context.feature;
-    const configForm = propConfigForm ?? context.form;
-
+export const FeatureTestTab = (_props?: FeatureConfigFormProps) => {
+    const { form: configForm, feature } = useFeatureModalContext();
     const [form] = CustomForm.useForm();
 
     const {
@@ -31,7 +20,7 @@ export const FeatureTestTab = ({
         isTestHtmlContent,
         setIsTestHtmlContent,
         handleRunTest,
-    } = useFeatureTestRunner({ feature, configForm });
+    } = useFeatureTestRunner();
 
     const onFormSubmit = useCallback(async () => {
         try {
