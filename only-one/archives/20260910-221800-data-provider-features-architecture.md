@@ -40,8 +40,8 @@ src/app/(root)/scraping/features/
 │   ├── FeatureHistoryModal/             # Modal lịch sử phiên bản và rollback
 │   ├── FeatureSettingModal/             # Modal-level tabs ('config' | 'test') với full modalRender loading
 │   ├── FeatureTestTab/                  # Live stateless testing runner & result inspector
-│   ├── ScrapingConfigForm/              # Form cấu hình tính năng SCRAPING (Gọn nhẹ qua hook)
-│   ├── SearchConfigForm/                # Form cấu hình tính năng SEARCH (Gọn nhẹ qua hook)
+│   ├── ScrapingConfigTab/               # Form cấu hình tính năng SCRAPING (Gọn nhẹ qua hook)
+│   ├── SearchConfigTab/                 # Form cấu hình tính năng SEARCH (Gọn nhẹ qua hook)
 │   └── index.ts
 ├── constants.ts                         # Metadata dịch vụ, templates mặc định
 ├── enums/                               # Colocated single-responsibility enums
@@ -50,11 +50,12 @@ src/app/(root)/scraping/features/
 │   ├── scraper-service.enum.ts
 │   └── index.ts
 ├── hooks/
-│   ├── useDataProviderFeatureActions.ts # Quản lý hành động CRUD, switch status với switchingFeatureId state
+│   ├── useFeatureActions.ts             # Quản lý hành động CRUD, switch status với switchingFeatureId state
 │   ├── useFeatureConfigForm.ts          # Quản lý form lifecycle, submit async mutation an toàn
+│   ├── useFeatureHistory.ts             # Quản lý lịch sử và rollback phiên bản cấu hình
 │   ├── useFeatureModalController.ts     # Centralized coordinator tổng hợp 100% modal loading overlay
 │   ├── useFeatureTestRunner.ts          # Quản lý stateless execution sandbox
-│   ├── useFeatureVersionManager.ts      # Quản lý lịch sử và rollback phiên bản cấu hình
+│   ├── useFeaturesView.ts               # Quản lý view state và tabs
 │   └── index.ts
 ├── types/                               # Object-centric interface boundaries
 │   ├── config-version.types.ts
@@ -63,7 +64,9 @@ src/app/(root)/scraping/features/
 │   ├── target-config.types.ts
 │   └── index.ts
 └── utils/
-    ├── featureConfigTransform.ts        # Pure data transformers & JSON parser
+    ├── difference-text.ts               # Pure string difference utility
+    ├── feature-config-transform.ts      # Pure data transformers & JSON parser
+    ├── feature-registry.ts              # Feature registry definitions
     └── index.ts
 ```
 
@@ -82,8 +85,8 @@ flowchart TD
 
     subgraph Controller ["useFeatureModalController"]
         FForm["useFeatureConfigForm (isSaving)"]
-        FVer["useFeatureVersionManager (isLoadingVersions, isRollingBack)"]
-        FAct["useDataProviderFeatureActions (isSwitchingStatus)"]
+        FVer["useFeatureHistory (isLoadingVersions, isRollingBack)"]
+        FAct["useFeatureActions (isSwitchingStatus)"]
         FForm --> Controller
         FVer --> Controller
         FAct --> Controller
@@ -93,12 +96,13 @@ flowchart TD
 ```
 
 ## 3. Scope & Key Changes (Phạm vi & Thay đổi Chính)
-- [useFeatureModalController.ts](file:///d:/Sources/Personal/only-one-fe/src/app/(root)/scraping/features/hooks/useFeatureModalController.ts): Hook điều phối tập trung cho modal setting.
-- [FeatureSettingModal/index.tsx](file:///d:/Sources/Personal/only-one-fe/src/app/(root)/scraping/features/components/FeatureSettingModal/index.tsx): Áp dụng `modalRender` bao bọc toàn bộ modal.
-- [useFeatureConfigForm.ts](file:///d:/Sources/Personal/only-one-fe/src/app/(root)/scraping/features/hooks/useFeatureConfigForm.ts): Đảm bảo async/await cho `handleSave`.
-- [useDataProviderFeatureActions.ts](file:///d:/Sources/Personal/only-one-fe/src/app/(root)/scraping/features/hooks/useDataProviderFeatureActions.ts): Track `switchingFeatureId` cho nút toggle switch.
-- [useFeatureVersionManager.ts](file:///d:/Sources/Personal/only-one-fe/src/app/(root)/scraping/features/hooks/useFeatureVersionManager.ts): Expose `isLoadingVersions`.
-- [FeatureCardHeader.tsx](file:///d:/Sources/Personal/only-one-fe/src/app/(root)/scraping/features/components/FeatureCardDetail/FeatureCardHeader.tsx) & [FeatureModalHeader.tsx](file:///d:/Sources/Personal/only-one-fe/src/app/(root)/scraping/features/components/FeatureSettingModal/FeatureModalHeader.tsx): Thêm loading state vào switch.
+- [useFeatureModalController.ts](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/app/(root)/scraping/features/hooks/useFeatureModalController.ts): Hook điều phối tập trung cho modal setting.
+- [FeatureSettingModal/index.tsx](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/app/(root)/scraping/features/components/FeatureSettingModal/index.tsx): Áp dụng `modalRender` bao bọc toàn bộ modal.
+- [useFeatureConfigForm.ts](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/app/(root)/scraping/features/hooks/useFeatureConfigForm.ts): Đảm bảo async/await cho `handleSave`.
+- [useFeatureActions.ts](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/app/(root)/scraping/features/hooks/useFeatureActions.ts): Track `switchingFeatureId` cho nút toggle switch.
+- [useFeatureHistory.ts](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/app/(root)/scraping/features/hooks/useFeatureHistory.ts): Quản lý lịch sử và expose `isLoadingVersions`.
+- [FeatureCardHeader.tsx](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/app/(root)/scraping/features/components/FeatureCardDetail/FeatureCardHeader.tsx) & [FeatureModalHeader.tsx](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/app/(root)/scraping/features/components/FeatureSettingModal/FeatureModalHeader.tsx): Thêm loading state vào switch.
+- [feature-config-transform.ts](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/app/(root)/scraping/features/utils/feature-config-transform.ts): Pure data transformers & JSON parser.
 
 ## 4. Verification Evidence & PR (Bằng chứng Nghiệm thu & PR)
 - **TypeScript Check**: `npx tsc --noEmit` đạt 100% pass (0 errors).
