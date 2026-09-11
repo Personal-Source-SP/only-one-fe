@@ -11,6 +11,7 @@ import {
 } from '@/components/custom-antd';
 import { Icon } from '@iconify/react';
 import { ReactNode, useMemo } from 'react';
+import { FEATURE_MODAL_WIDTH } from '../../constants';
 import { useFeatureHistoryContext } from '../../context';
 import { VersionDetail } from './VersionDetail';
 import { VersionList } from './VersionList';
@@ -24,19 +25,18 @@ export const FeatureHistoryModal = () => {
                 <CustomFlex
                     align="center"
                     justify="center"
-                    className={`p-2 rounded-xl shrink-0 ${
-                        meta?.accentClass || 'text-hub-primary bg-hub-primary/10'
-                    }`}
+                    className="w-10 h-10 rounded-xl bg-hub-primary/10 text-hub-primary shrink-0"
                 >
-                    <Icon icon="lucide:history" className="text-lg" />
+                    <Icon icon={meta?.icon || 'lucide:history'} className="text-xl" />
                 </CustomFlex>
+
                 <CustomFlex vertical gap={2}>
                     <CustomFlex align="center" gap="small">
-                        <CustomTypography.Text strong className="text-base text-hub-title">
-                            Lịch sử cấu hình: {meta?.label || feature?.type}
-                        </CustomTypography.Text>
+                        <CustomTypography.Title level={5} className="!mb-0 !font-semibold">
+                            Lịch sử Cấu hình & Khôi phục Snapshot
+                        </CustomTypography.Title>
                         {feature?.service && (
-                            <CustomTag className="font-mono text-xs m-0">
+                            <CustomTag color="blue" className="font-mono text-xs">
                                 {feature.service}
                             </CustomTag>
                         )}
@@ -53,8 +53,8 @@ export const FeatureHistoryModal = () => {
     return (
         <CustomModal
             open={open}
-            width={1000}
             title={modalTitle}
+            width={FEATURE_MODAL_WIDTH}
             onCancel={onClose}
             footer={
                 <CustomFlex justify="end">

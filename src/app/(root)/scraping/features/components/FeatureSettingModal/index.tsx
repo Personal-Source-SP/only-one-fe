@@ -5,6 +5,7 @@ import { MessageType } from '@/enums';
 import { useMessage } from '@/hooks';
 import { Icon } from '@iconify/react';
 import { useCallback, useMemo, useState } from 'react';
+import { FEATURE_MODAL_WIDTH } from '../../constants';
 import { useFeatureModalContext } from '../../context';
 import { getFeatureDefinition } from '../../utils';
 import { FeatureConfirmUpdateModal } from '../FeatureConfirmUpdateModal';
@@ -86,10 +87,10 @@ export const FeatureSettingModal = () => {
     return (
         <CustomModal
             open={open}
-            width={1300}
             onCancel={onClose}
             loadingTip={loadingTip}
             loading={isGlobalLoading}
+            width={FEATURE_MODAL_WIDTH}
             bodyClassName="!p-2.5 sm:!p-3"
             className="top-6 max-w-[96vw]"
             title={<FeatureModalHeader />}

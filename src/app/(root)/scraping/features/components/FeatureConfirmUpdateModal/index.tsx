@@ -13,7 +13,9 @@ import {
 } from '@/components/custom-antd';
 import { Icon } from '@iconify/react';
 import { useCallback, useEffect, useMemo } from 'react';
+import { FEATURE_MODAL_WIDTH } from '../../constants';
 import { useFeatureModalContext } from '../../context';
+import type { IFeatureDiffItem } from '../../utils';
 
 export const FeatureConfirmUpdateModal = () => {
     const [form] = CustomForm.useForm();
@@ -39,12 +41,12 @@ export const FeatureConfirmUpdateModal = () => {
 
     return (
         <CustomModal
-            open={isConfirmOpen}
-            width={840}
-            onCancel={handleCancelConfirm}
             loading={isSaving}
+            open={isConfirmOpen}
             closable={!isSaving}
             keyboard={!isSaving}
+            width={FEATURE_MODAL_WIDTH}
+            onCancel={handleCancelConfirm}
             loadingTip="Đang lưu và tạo phiên bản snapshot mới..."
             title={
                 <CustomFlex align="center" gap={8}>

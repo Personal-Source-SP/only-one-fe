@@ -20,7 +20,6 @@ export const SearchConfigTab = () => {
         checkService(currentService);
 
     const { handleServiceChange, handleSave } = useFeatureConfigForm<SearchConfigFormValues>({
-        featureLabel: 'tìm kiếm',
         defaultTargetConfig: DEFAULT_SEARCH_TARGET_CONFIG,
         getDefaultTemplate: (service) => checkService(service).defaultSearchTemplate,
         extraInitialValues: (config) => ({

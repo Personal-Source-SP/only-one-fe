@@ -20,7 +20,6 @@ export const ScrapingConfigTab = () => {
         checkService(currentService);
 
     const { handleServiceChange, handleSave } = useFeatureConfigForm<ScrapingConfigFormValues>({
-        featureLabel: 'cào',
         defaultTargetConfig: DEFAULT_TARGET_CONFIG,
         getDefaultTemplate: (service) => checkService(service).defaultScrapingTemplate,
     });

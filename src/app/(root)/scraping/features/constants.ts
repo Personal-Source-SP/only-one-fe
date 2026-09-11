@@ -7,6 +7,8 @@ import {
 import { ScraperServiceEnum } from './enums';
 import type { ISearchTargetConfig, ITargetConfig } from './types';
 
+export const FEATURE_MODAL_WIDTH = 1300;
+
 export const FEATURE_SECTION_CONTAINER_CLASS =
     'border border-hub-border/60 bg-hub-section/20 rounded-xl p-4 sm:p-5 w-full shadow-sm';
 
@@ -19,7 +21,7 @@ export const DEFAULT_TARGET_CONFIG: ITargetConfig = {
     isGetParentElement: false,
     stealthMode: false,
     cloudflareBypass: false,
-    javascriptEnabled: true,
+    javascriptEnabled: false,
     imagesEnabled: false,
     cssEnabled: false,
 };
