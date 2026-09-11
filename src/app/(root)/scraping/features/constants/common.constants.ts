@@ -53,7 +53,7 @@ export const FEATURE_REGISTRY: Record<DataProviderFeatureType, FeatureDefinition
     [DataProviderFeatureType.SCRAPING]: {
         type: DataProviderFeatureType.SCRAPING,
         icon: 'lucide:bot',
-        label: 'Cào dữ liệu (Scraping)',
+        label: 'Cào dữ liệu',
         shortLabel: 'Scraping',
         accentClass: 'text-emerald-500 bg-emerald-500/10',
         description: 'Cào dữ liệu tự động từ nhà cung cấp',
@@ -65,7 +65,7 @@ export const FEATURE_REGISTRY: Record<DataProviderFeatureType, FeatureDefinition
     [DataProviderFeatureType.SEARCH]: {
         type: DataProviderFeatureType.SEARCH,
         icon: 'lucide:search',
-        label: 'Tìm kiếm (Search)',
+        label: 'Tìm kiếm đối tượng',
         shortLabel: 'Search',
         accentClass: 'text-indigo-500 bg-indigo-500/10',
         description: 'Tìm kiếm sản phẩm từ nhà cung cấp',

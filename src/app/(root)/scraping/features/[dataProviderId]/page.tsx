@@ -20,10 +20,10 @@ import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 
 import { FeatureCardDetail, FeatureHistoryModal, FeatureSettingModal } from '../components';
+import { FEATURE_REGISTRY } from '../constants';
+import { FeatureCardProvider, FeatureHistoryProvider, FeatureModalProvider } from '../context';
 import { DataProviderFeatureType } from '../enums';
 import { useFeatureActions, useFeaturesView } from '../hooks';
-import { FEATURE_TYPE_METADATA } from '../constants';
-import { FeatureCardProvider, FeatureHistoryProvider, FeatureModalProvider } from '../context';
 
 const DataProviderFeaturesPage = () => {
     const router = useRouter();
@@ -56,7 +56,7 @@ const DataProviderFeaturesPage = () => {
     const settingMenuItems = useMemo(
         () =>
             Object.values(DataProviderFeatureType).map((type) => {
-                const meta = FEATURE_TYPE_METADATA[type];
+                const meta = FEATURE_REGISTRY[type];
                 const isConfigured = features.some((f) => f.type === type);
 
                 return {
@@ -68,14 +68,11 @@ const DataProviderFeaturesPage = () => {
                                 justify="center"
                                 className="p-1.5 rounded-lg bg-hub-primary/10 text-hub-primary shrink-0"
                             >
-                                <Icon
-                                    icon={meta?.icon || 'lucide:file-code'}
-                                    className="text-base"
-                                />
+                                <Icon icon={meta.icon} className="text-base" />
                             </CustomFlex>
                             <CustomFlex vertical gap={2}>
                                 <CustomTypography.Text strong className="text-hub-title text-sm">
-                                    {meta?.label || type}
+                                    {meta.label}
                                 </CustomTypography.Text>
                                 <CustomTypography.Text
                                     type="secondary"
