@@ -20,7 +20,7 @@ export const FeatureConfirmUpdateModal = () => {
 
     const {
         isConfirmOpen,
-        isSaving,
+        isLoading,
         diffItems,
         selectedVersion,
         selectedVersionId,
@@ -43,10 +43,10 @@ export const FeatureConfirmUpdateModal = () => {
 
     return (
         <CustomModal
-            loading={isSaving}
+            loading={isLoading}
             open={isConfirmOpen}
-            closable={!isSaving}
-            keyboard={!isSaving}
+            closable={!isLoading}
+            keyboard={!isLoading}
             width={FEATURE_MODAL_WIDTH}
             onCancel={handleCancelConfirm}
             loadingTip="Đang lưu và tạo phiên bản snapshot mới..."
@@ -60,12 +60,12 @@ export const FeatureConfirmUpdateModal = () => {
             }
             footer={
                 <CustomFlex justify="flex-end" gap={8}>
-                    <CustomButton onClick={handleCancelConfirm} disabled={isSaving}>
+                    <CustomButton onClick={handleCancelConfirm} disabled={isLoading}>
                         Quay lại chỉnh sửa
                     </CustomButton>
                     <CustomButton
                         type="primary"
-                        loading={isSaving}
+                        loading={isLoading}
                         onClick={() => form.submit()}
                         icon={<Icon icon="lucide:check" />}
                     >

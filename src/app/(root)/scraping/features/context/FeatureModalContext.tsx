@@ -23,11 +23,9 @@ export interface FeatureModalContextValue {
     selectedVersion: IConfigVersion | null;
 
     // Loadings & Flags
-    isSaving: boolean;
+    isLoading: boolean;
     loadingTip: string;
     isConfirmOpen: boolean;
-    isRollingBack: boolean;
-    isGlobalLoading: boolean;
     isSwitchingStatus?: boolean;
     diffItems: IFeatureDiffItem[];
 

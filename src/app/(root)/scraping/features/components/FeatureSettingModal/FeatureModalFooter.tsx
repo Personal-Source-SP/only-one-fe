@@ -16,7 +16,7 @@ export const FeatureModalFooter = () => {
     const {
         form,
         isDraft,
-        isRollingBack,
+        isLoading,
         isViewingHistory,
         versions,
         selectedVersion,
@@ -91,7 +91,7 @@ export const FeatureModalFooter = () => {
                     >
                         <CustomButton
                             type="primary"
-                            loading={isRollingBack}
+                            loading={isLoading}
                             disabled={!isViewingHistory}
                             icon={<Icon icon="lucide:rotate-ccw" />}
                             className={
@@ -114,7 +114,7 @@ export const FeatureModalFooter = () => {
                     Lưu cấu hình
                 </CustomButton>
 
-                <CustomButton onClick={onClose} disabled={isRollingBack}>
+                <CustomButton onClick={onClose} disabled={isLoading}>
                     Hủy
                 </CustomButton>
             </CustomFlex>

@@ -76,9 +76,9 @@ export const useFeatureActions = ({
             }
 
             const draftFeature = createDefaultDraftFeature({
-                dataProviderId,
                 type,
-                provider: provider,
+                provider,
+                dataProviderId,
             });
             setModalState({ open: true, feature: draftFeature });
         },

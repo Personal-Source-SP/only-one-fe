@@ -11,7 +11,7 @@ import { Icon } from '@iconify/react';
 import { useFeatureHistoryContext } from '../../context';
 
 export const VersionDetail = () => {
-    const { currentSelectedVersion, isApplying, handleApply, handleCopyConfig } =
+    const { currentSelectedVersion, isLoading, handleApply, handleCopyConfig } =
         useFeatureHistoryContext();
 
     if (!currentSelectedVersion) return null;
@@ -57,7 +57,7 @@ export const VersionDetail = () => {
                         >
                             <CustomButton
                                 type="primary"
-                                loading={isApplying}
+                                loading={isLoading}
                                 className="bg-hub-primary"
                                 icon={<Icon icon="lucide:rotate-ccw" />}
                             >

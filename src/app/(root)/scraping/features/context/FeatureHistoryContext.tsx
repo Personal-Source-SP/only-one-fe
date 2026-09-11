@@ -7,7 +7,6 @@ import type { FeatureDefinition } from '../constants';
 
 export interface FeatureHistoryContextValue {
     open: boolean;
-    isApplying: boolean;
     isLoading: boolean;
     meta: FeatureDefinition | null;
     sortedVersions: IConfigVersion[];
@@ -31,9 +30,9 @@ export interface FeatureHistoryProviderProps extends PropsWithChildren {
 export const FeatureHistoryProvider = ({
     open,
     feature,
+    children,
     onClose,
     onSuccess,
-    children,
 }: FeatureHistoryProviderProps) => {
     const historyState = useFeatureHistory({ open, feature, onSuccess });
 

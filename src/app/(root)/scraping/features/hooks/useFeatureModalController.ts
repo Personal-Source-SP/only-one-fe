@@ -17,8 +17,8 @@ import {
 
 export interface UseFeatureModalControllerProps {
     open: boolean;
-    feature: IDataProviderFeature;
     form: FormInstance;
+    feature: IDataProviderFeature;
     isSwitchingStatus?: boolean;
     onClose: () => void;
     onSuccess: () => void;
@@ -31,12 +31,9 @@ export interface UseFeatureModalControllerReturn {
     selectedVersionId?: number;
     isViewingHistory: boolean;
     authorName: string | null;
-    isLoadingVersions: boolean;
-    isRollingBack: boolean;
-    isSaving: boolean;
+    isLoading: boolean;
     loadingTip: string;
     isConfirmOpen: boolean;
-    isGlobalLoading: boolean;
     diffItems: IFeatureDiffItem[];
     handleCancelConfirm: () => void;
     setSelectedVersionId: (id?: number) => void;
@@ -55,26 +52,24 @@ export const useFeatureModalController = ({
     onClose,
     onSuccess,
 }: UseFeatureModalControllerProps): UseFeatureModalControllerReturn => {
-    const { handleCustomMutationData } = useCustomMutationData();
+    const { handleCustomMutationData, mutation } = useCustomMutationData();
 
-    const [isSaving, setIsSaving] = useState<boolean>(false);
     const [isConfirmOpen, setIsConfirmOpen] = useState<boolean>(false);
-    const [isRollingBack, setIsRollingBack] = useState<boolean>(false);
     const [diffItems, setDiffItems] = useState<IFeatureDiffItem[]>([]);
     const [selectedVersionId, setSelectedVersionId] = useState<number>();
     const [pendingValues, setPendingValues] = useState<Record<string, any> | null>(null);
 
-    const { result: versionsResult, query: versionsQuery } = useCustomData({
+    const { data: versions = [], query: versionsQuery } = useCustomData<
+        IConfigVersion[],
+        IConfigVersion[]
+    >({
         enabled: Boolean(open && feature.id),
         url: API_ENDPOINT.CONFIG_VERSION_FEATURES.VERSIONS(feature.id),
+        transform: (data) => (Array.isArray(data) ? data : []) as IConfigVersion[],
     });
 
     const isDraft = useMemo(() => !feature.id, [feature.id]);
-
-    const { versions, activeVersion } = useMemo(() => {
-        const list = (versionsResult?.data?.data || []) as IConfigVersion[];
-        return { versions: list, activeVersion: list.find((v) => v.isActive) };
-    }, [versionsResult]);
+    const activeVersion = useMemo(() => versions.find((v) => v.isActive), [versions]);
 
     const selectedVersion = useMemo(
         () => versions.find((v) => v.versionId === selectedVersionId) || activeVersion || null,
@@ -97,20 +92,31 @@ export const useFeatureModalController = ({
         return selectedVersion.createdBy || null;
     }, [selectedVersion]);
 
-    const isLoadingVersions = Boolean(versionsQuery.isLoading);
-
-    const isGlobalLoading = useMemo(
-        () => (isLoadingVersions && !isDraft) || isRollingBack || isSwitchingStatus || isSaving,
-        [isLoadingVersions, isDraft, isRollingBack, isSaving, isSwitchingStatus],
-    );
+    const isLoading = useMemo(() => {
+        return (
+            (versionsQuery.isLoading && !isDraft) ||
+            mutation.mutation.isPending ||
+            isSwitchingStatus
+        );
+    }, [versionsQuery.isLoading, mutation.mutation.isPending, isSwitchingStatus, isDraft]);
 
     const loadingTip = useMemo(() => {
         if (isSwitchingStatus) return 'Đang cập nhật trạng thái...';
-        if (isRollingBack) return 'Đang khôi phục phiên bản...';
-        if (isLoadingVersions && !isDraft) return 'Đang tải phiên bản cấu hình...';
-        if (isSaving) return 'Đang lưu cấu hình...';
+
+        if (mutation.mutation.isPending) {
+            return isConfirmOpen ? 'Đang lưu cấu hình...' : 'Đang khôi phục phiên bản...';
+        }
+
+        if (versionsQuery.isLoading && !isDraft) return 'Đang tải phiên bản cấu hình...';
+
         return 'Đang xử lý...';
-    }, [isRollingBack, isLoadingVersions, isDraft, isSwitchingStatus, isSaving]);
+    }, [
+        isSwitchingStatus,
+        isDraft,
+        isConfirmOpen,
+        versionsQuery.isLoading,
+        mutation.mutation.isPending,
+    ]);
 
     useEffect(() => {
         if (!open) {
@@ -149,36 +155,30 @@ export const useFeatureModalController = ({
             const vId = targetVersionId || selectedVersion?.versionId;
             if (!feature.id || !vId) return;
 
-            setIsRollingBack(true);
-            try {
-                await handleCustomMutationData({
-                    method: 'post',
-                    url: API_ENDPOINT.CONFIG_VERSION_FEATURES.ROLLBACK(feature.id, vId),
-                    successNotification: () => {
-                        onSuccess();
-                        versionsQuery.refetch();
+            await handleCustomMutationData({
+                method: 'post',
+                url: API_ENDPOINT.CONFIG_VERSION_FEATURES.ROLLBACK(feature.id, vId),
+                successNotification: () => {
+                    onSuccess();
+                    versionsQuery.refetch();
 
-                        return {
-                            type: MessageType.SUCCESS,
-                            message: `Đã khôi phục về phiên bản v${vId}`,
-                        };
-                    },
-                    errorNotification: (error) => ({
-                        type: MessageType.ERROR,
-                        description: error?.message,
-                        message: 'Khôi phục phiên bản thất bại',
-                    }),
-                });
-            } finally {
-                setIsRollingBack(false);
-            }
+                    return {
+                        type: MessageType.SUCCESS,
+                        message: `Đã khôi phục về phiên bản v${vId}`,
+                    };
+                },
+                errorNotification: (error) => ({
+                    type: MessageType.ERROR,
+                    description: error?.message,
+                    message: 'Khôi phục phiên bản thất bại',
+                }),
+            });
         },
         [feature, selectedVersion, versionsQuery, handleCustomMutationData, onSuccess],
     );
 
     const executeSave = useCallback(
         async (values: Record<string, any>, changeDescription?: string): Promise<void> => {
-            setIsSaving(true);
             const valuesWithDesc = {
                 ...values,
                 ...(changeDescription ? { changeDescription } : {}),
@@ -191,31 +191,27 @@ export const useFeatureModalController = ({
                 values: valuesWithDesc as any,
             });
 
-            try {
-                await handleCustomMutationData({
-                    method,
-                    url: endpoint,
-                    values: payload,
-                    successNotification: () => {
-                        setIsConfirmOpen(false);
-                        onSuccess();
-                        onClose();
-                        return {
-                            type: MessageType.SUCCESS,
-                            message: isDraft
-                                ? 'Khởi tạo cấu hình thành công'
-                                : 'Lưu cấu hình thành công',
-                        };
-                    },
-                    errorNotification: (error) => ({
-                        type: MessageType.ERROR,
-                        description: error?.message,
-                        message: isDraft ? 'Khởi tạo cấu hình thất bại' : 'Lưu cấu hình thất bại',
-                    }),
-                });
-            } finally {
-                setIsSaving(false);
-            }
+            await handleCustomMutationData({
+                method,
+                url: endpoint,
+                values: payload,
+                successNotification: () => {
+                    setIsConfirmOpen(false);
+                    onSuccess();
+                    onClose();
+                    return {
+                        type: MessageType.SUCCESS,
+                        message: isDraft
+                            ? 'Khởi tạo cấu hình thành công'
+                            : 'Lưu cấu hình thành công',
+                    };
+                },
+                errorNotification: (error) => ({
+                    type: MessageType.ERROR,
+                    description: error?.message,
+                    message: isDraft ? 'Khởi tạo cấu hình thất bại' : 'Lưu cấu hình thất bại',
+                }),
+            });
         },
         [feature, isDraft, handleCustomMutationData, onSuccess, onClose],
     );
@@ -267,13 +263,10 @@ export const useFeatureModalController = ({
         selectedVersionId,
         isViewingHistory,
         authorName,
-        isLoadingVersions,
-        isRollingBack,
-        isSaving,
+        isLoading,
+        loadingTip,
         isConfirmOpen,
         diffItems,
-        isGlobalLoading,
-        loadingTip,
         setSelectedVersionId,
         handleRollback,
         handleFormSubmit,

@@ -17,7 +17,7 @@ type FeatureSettingTabKey = 'config' | 'test';
 
 export const FeatureSettingModal = () => {
     const { handleNotification } = useMessage();
-    const { open, form, isGlobalLoading, loadingTip, onClose } = useFeatureModalContext();
+    const { open, form, isLoading, loadingTip, onClose } = useFeatureModalContext();
 
     const [activeTabKey, setActiveTabKey] = useState<FeatureSettingTabKey>('config');
 
@@ -86,7 +86,7 @@ export const FeatureSettingModal = () => {
             open={open}
             onCancel={onClose}
             loadingTip={loadingTip}
-            loading={isGlobalLoading}
+            loading={isLoading}
             width={FEATURE_MODAL_WIDTH}
             bodyClassName="!p-2.5 sm:!p-3"
             className="top-6 max-w-[96vw]"
