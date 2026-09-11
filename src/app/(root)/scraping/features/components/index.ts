@@ -6,3 +6,4 @@ export * from './FeatureHistoryModal';
 export * from './FeatureSettingModal';
 export * from './FeatureTestTab';
 export * from './FeatureStatusSelect';
+export * from './FeatureStatusConfirmModal';
