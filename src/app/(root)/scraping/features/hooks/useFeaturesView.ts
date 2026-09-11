@@ -44,11 +44,11 @@ export const useFeaturesView = () => {
     }, [providerQuery, featuresQuery]);
 
     return {
-        dataProviderId,
         provider,
         features,
-        isLoading: providerQuery.isLoading || featuresQuery.isLoading,
+        dataProviderId,
         historyModalState,
+        isLoading: providerQuery.isLoading || featuresQuery.isLoading,
         openHistoryModal,
         closeHistoryModal,
         refetchAll,
