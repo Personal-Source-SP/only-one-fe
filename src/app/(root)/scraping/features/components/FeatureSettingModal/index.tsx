@@ -32,7 +32,7 @@ export const FeatureSettingModal = () => {
                     </CustomFlex>
                 ),
                 children: (
-                    <div className="h-auto max-h-[70vh] lg:max-h-none lg:h-[calc(85vh-200px)] overflow-y-auto custom-scrollbar py-1 pr-1">
+                    <div className="py-1">
                         <DynamicFeatureConfigForm />
                     </div>
                 ),
@@ -46,7 +46,7 @@ export const FeatureSettingModal = () => {
                     </CustomFlex>
                 ),
                 children: (
-                    <div className="h-auto max-h-[70vh] lg:max-h-none lg:h-[calc(85vh-200px)] overflow-y-auto custom-scrollbar py-1 pr-1">
+                    <div className="py-1">
                         <FeatureTestTab />
                     </div>
                 ),
@@ -88,12 +88,17 @@ export const FeatureSettingModal = () => {
             loadingTip={loadingTip}
             loading={isLoading}
             width={FEATURE_MODAL_WIDTH}
-            bodyClassName="!p-2.5 sm:!p-3"
+            bodyClassName="!p-2.5 sm:!p-4"
             className="top-6 max-w-[96vw]"
             title={<FeatureModalHeader />}
             footer={<FeatureModalFooter />}
         >
-            <CustomTabs activeKey={activeTabKey} onChange={handleTabChange} items={tabItems} />
+            <CustomTabs
+                activeKey={activeTabKey}
+                onChange={handleTabChange}
+                items={tabItems}
+                className="[&_.ant-tabs-nav]:!sticky [&_.ant-tabs-nav]:!top-0 [&_.ant-tabs-nav]:!bg-hub-surface [&_.ant-tabs-nav]:!z-10 [&_.ant-tabs-nav]:!mb-3"
+            />
             <FeatureConfirmUpdateModal />
         </CustomModal>
     );

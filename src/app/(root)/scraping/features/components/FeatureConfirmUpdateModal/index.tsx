@@ -41,6 +41,7 @@ export const FeatureConfirmUpdateModal = () => {
             keyboard={!isLoading}
             width={FEATURE_MODAL_WIDTH}
             onCancel={handleCancelConfirm}
+            bodyClassName="!p-3 sm:!p-4 min-h-screen"
             loadingTip="Đang lưu và tạo phiên bản snapshot mới..."
             title={
                 <CustomFlex align="center" gap={8}>
@@ -66,7 +67,7 @@ export const FeatureConfirmUpdateModal = () => {
                 </CustomFlex>
             }
         >
-            <CustomFlex vertical gap="middle" className="w-full py-2">
+            <CustomFlex vertical gap="middle" className="w-full">
                 <CustomTypography.Text type="secondary" className="text-xs sm:text-sm">
                     Vui lòng kiểm tra lại các thông số cấu hình đã thay đổi và nhập lý do trước khi
                     lưu snapshot mới.

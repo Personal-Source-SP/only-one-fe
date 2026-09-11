@@ -6,7 +6,7 @@ import {
 } from '@/constants';
 import { DataProviderFeatureType, ScraperServiceEnum } from '../enums';
 
-export const FEATURE_MODAL_WIDTH = 1300;
+export const FEATURE_MODAL_WIDTH = 900;
 export const FEATURE_SECTION_CONTAINER_CLASS =
     'border border-hub-border/60 bg-hub-section/20 rounded-xl p-4 sm:p-5 w-full shadow-sm';
 

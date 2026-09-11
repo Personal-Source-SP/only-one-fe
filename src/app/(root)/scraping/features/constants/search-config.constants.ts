@@ -74,7 +74,7 @@ export const SEARCH_FORM_SECTIONS: FormSectionSchema[] = [
                 type: 'text',
                 defaultValue: '',
                 placeholder: 'Mozilla/5.0...',
-                gridSpan: { xs: 24, md: 12 },
+                gridSpan: { xs: 24, md: 24 },
                 visibleWhen: [ScraperServiceEnum.GENERIC],
             },
             {

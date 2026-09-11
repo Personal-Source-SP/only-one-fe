@@ -30,7 +30,7 @@ export const FeatureChangedFieldsList = () => {
             gap="small"
             className="w-full max-h-[360px] overflow-y-auto custom-scrollbar border border-hub-border/60 rounded-xl p-3 bg-hub-gray/30"
         >
-            <div className="flex items-center justify-between px-1 pb-1 border-b border-hub-border/40">
+            <div className="flex items-center justify-between px-1 pb-1 border-b border-hub-border/40 shrink-0">
                 <CustomTypography.Text className="text-xs font-semibold text-hub-title">
                     Danh sách thông số đã thay đổi ({diffItems.length})
                 </CustomTypography.Text>
@@ -42,6 +42,7 @@ export const FeatureChangedFieldsList = () => {
             <CustomFlex vertical gap={8} className="pt-1">
                 {diffItems.map((item) => (
                     <CustomCard
+                        key={item.key}
                         size="small"
                         className="!border-hub-border/50 hover:!border-hub-primary/40 transition-colors shadow-sm [&_.ant-card-body]:!p-2.5"
                     >
