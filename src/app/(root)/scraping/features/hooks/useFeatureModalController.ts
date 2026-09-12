@@ -11,7 +11,7 @@ import type { IConfigVersion, IDataProviderFeature, TargetConfig } from '../type
 import {
     buildFeatureMutationPayload,
     calculateFeatureConfigDiff,
-    IFeatureDiffItem,
+    generateAutoChangeDescription,
     mapConfigToBaseFormValues,
 } from '../utils';
 
@@ -26,23 +26,18 @@ export interface UseFeatureModalControllerProps {
 
 export interface UseFeatureModalControllerReturn {
     isDraft: boolean;
+    isLoading: boolean;
+    loadingTip: string;
+    isViewingHistory: boolean;
+    authorName: string | null;
     versions: IConfigVersion[];
     selectedVersion: IConfigVersion | null;
     selectedVersionId?: number;
-    isViewingHistory: boolean;
-    authorName: string | null;
-    isLoading: boolean;
-    loadingTip: string;
-    isConfirmOpen: boolean;
-    diffItems: IFeatureDiffItem[];
-    pendingValues: Record<string, any> | null;
-    handleCancelConfirm: () => void;
     setSelectedVersionId: (id?: number) => void;
-    handleRollback: (targetVersionId?: number) => Promise<void>;
-    handleFormSubmit: (values: Record<string, any>) => Promise<void>;
     handleSave: (values: Record<string, any>) => Promise<void>;
     handleServiceChange: (service: ScraperServiceEnum) => void;
-    handleConfirmUpdate: (changeDescription: string) => Promise<void>;
+    handleRollback: (targetVersionId?: number) => Promise<void>;
+    handleFormSubmit: (values: Record<string, any>) => Promise<void>;
 }
 
 export const useFeatureModalController = ({
@@ -54,11 +49,7 @@ export const useFeatureModalController = ({
     onSuccess,
 }: UseFeatureModalControllerProps): UseFeatureModalControllerReturn => {
     const { handleCustomMutationData, mutation } = useCustomMutationData();
-
-    const [isConfirmOpen, setIsConfirmOpen] = useState<boolean>(false);
-    const [diffItems, setDiffItems] = useState<IFeatureDiffItem[]>([]);
     const [selectedVersionId, setSelectedVersionId] = useState<number>();
-    const [pendingValues, setPendingValues] = useState<Record<string, any> | null>(null);
 
     const { data: versions = [], query: versionsQuery } = useCustomData<
         IConfigVersion[],
@@ -70,16 +61,20 @@ export const useFeatureModalController = ({
     });
 
     const isDraft = useMemo(() => !feature.id, [feature.id]);
-    const activeVersion = useMemo(() => versions.find((v) => v.isActive), [versions]);
 
-    const selectedVersion = useMemo(
-        () => versions.find((v) => v.versionId === selectedVersionId) || activeVersion || null,
-        [versions, selectedVersionId, activeVersion],
-    );
+    const activeVersion = useMemo(() => {
+        return versions.find((v) => v.isActive) || versions[0] || null;
+    }, [versions]);
 
-    const isViewingHistory = useMemo(
-        () => Boolean(selectedVersion && !selectedVersion.isActive),
-        [selectedVersion],
+    const selectedVersion = useMemo(() => {
+        if (selectedVersionId) {
+            return versions.find((v) => v.versionId === selectedVersionId) || null;
+        }
+        return activeVersion;
+    }, [versions, selectedVersionId, activeVersion]);
+
+    const isViewingHistory = Boolean(
+        selectedVersion && activeVersion && selectedVersion.versionId !== activeVersion.versionId,
     );
 
     const authorName = useMemo(() => {
@@ -105,19 +100,13 @@ export const useFeatureModalController = ({
         if (isSwitchingStatus) return 'Đang cập nhật trạng thái...';
 
         if (mutation.mutation.isPending) {
-            return isConfirmOpen ? 'Đang lưu cấu hình...' : 'Đang khôi phục phiên bản...';
+            return isDraft ? 'Đang khởi tạo cấu hình...' : 'Đang lưu cấu hình...';
         }
 
         if (versionsQuery.isLoading && !isDraft) return 'Đang tải phiên bản cấu hình...';
 
         return 'Đang xử lý...';
-    }, [
-        isSwitchingStatus,
-        isDraft,
-        isConfirmOpen,
-        versionsQuery.isLoading,
-        mutation.mutation.isPending,
-    ]);
+    }, [isSwitchingStatus, isDraft, versionsQuery.isLoading, mutation.mutation.isPending]);
 
     useEffect(() => {
         if (!open) {
@@ -198,7 +187,6 @@ export const useFeatureModalController = ({
                 url: endpoint,
                 values: payload,
                 successNotification: () => {
-                    setIsConfirmOpen(false);
                     onSuccess();
                     onClose();
                     return {
@@ -230,10 +218,9 @@ export const useFeatureModalController = ({
             >;
             const origService = selectedVersion?.config?.service || feature.service;
             const diffs = calculateFeatureConfigDiff(origConfig, origService, values);
+            const changeDescription = generateAutoChangeDescription(diffs);
 
-            setPendingValues(values);
-            setDiffItems(diffs);
-            setIsConfirmOpen(true);
+            await executeSave(values, changeDescription);
         },
         [isDraft, selectedVersion, feature, executeSave],
     );
@@ -246,18 +233,6 @@ export const useFeatureModalController = ({
         [feature.type, form],
     );
 
-    const handleConfirmUpdate = useCallback(
-        async (changeDescription: string): Promise<void> => {
-            if (!pendingValues) return;
-            await executeSave(pendingValues, changeDescription);
-        },
-        [pendingValues, executeSave],
-    );
-
-    const handleCancelConfirm = useCallback(() => {
-        setIsConfirmOpen(false);
-    }, []);
-
     return {
         isDraft,
         versions,
@@ -267,15 +242,10 @@ export const useFeatureModalController = ({
         authorName,
         isLoading,
         loadingTip,
-        isConfirmOpen,
-        diffItems,
-        pendingValues,
         setSelectedVersionId,
         handleRollback,
         handleFormSubmit,
         handleSave: handleFormSubmit,
         handleServiceChange,
-        handleConfirmUpdate,
-        handleCancelConfirm,
     };
 };

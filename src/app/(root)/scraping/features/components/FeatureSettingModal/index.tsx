@@ -7,7 +7,6 @@ import { Icon } from '@iconify/react';
 import { useCallback, useMemo, useState } from 'react';
 import { FEATURE_MODAL_WIDTH } from '../../constants';
 import { useFeatureModalContext } from '../../context';
-import { FeatureConfirmUpdateModal } from '../FeatureConfirmUpdateModal';
 import { FeatureTestTab } from '../FeatureTestTab';
 import { DynamicFeatureConfigForm } from './DynamicFeatureConfigForm';
 import { FeatureModalFooter } from './FeatureModalFooter';
@@ -99,7 +98,6 @@ export const FeatureSettingModal = () => {
                 items={tabItems}
                 className="[&_.ant-tabs-nav]:!sticky [&_.ant-tabs-nav]:!top-0 [&_.ant-tabs-nav]:!bg-hub-surface [&_.ant-tabs-nav]:!z-10 [&_.ant-tabs-nav]:!mb-3"
             />
-            <FeatureConfirmUpdateModal />
         </CustomModal>
     );
 };

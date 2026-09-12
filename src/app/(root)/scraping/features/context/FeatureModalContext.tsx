@@ -5,7 +5,6 @@ import { createContext, PropsWithChildren, useContext, useMemo } from 'react';
 import { DataProviderFeatureStatus, ScraperServiceEnum } from '../enums';
 import { useFeatureModalController } from '../hooks';
 import type { IConfigVersion, IDataProviderFeature } from '../types';
-import type { IFeatureDiffItem } from '../utils';
 
 export interface FeatureModalContextValue {
     // Core Domain & Form
@@ -25,10 +24,7 @@ export interface FeatureModalContextValue {
     // Loadings & Flags
     isLoading: boolean;
     loadingTip: string;
-    isConfirmOpen: boolean;
     isSwitchingStatus?: boolean;
-    diffItems: IFeatureDiffItem[];
-    pendingValues: Record<string, any> | null;
 
     // Handlers
     onClose: () => void;
@@ -37,12 +33,10 @@ export interface FeatureModalContextValue {
     onRollback: (targetVersionId?: number) => Promise<void>;
     onSwitchStatus: (targetStatus: DataProviderFeatureStatus) => Promise<void>;
     setSelectedVersionId: (id?: number) => void;
-    handleCancelConfirm: () => void;
-    handleRollback: (targetVersionId?: number) => Promise<void>;
-    handleConfirmUpdate: (changeDescription: string) => Promise<void>;
-    handleFormSubmit: (values: Record<string, any>) => Promise<void>;
     handleSave: (values: Record<string, any>) => Promise<void>;
     handleServiceChange: (service: ScraperServiceEnum) => void;
+    handleRollback: (targetVersionId?: number) => Promise<void>;
+    handleFormSubmit: (values: Record<string, any>) => Promise<void>;
 }
 
 export const FeatureModalContext = createContext<FeatureModalContextValue | null>(null);

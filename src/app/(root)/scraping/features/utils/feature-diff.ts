@@ -1,4 +1,6 @@
+import { DATE_FORMAT_TIME } from '@/config/date';
 import { formatJsonString, safeParseJson } from '@/utilities';
+import dayjs from 'dayjs';
 import { isBoolean, isEqual, isNil } from 'lodash';
 import { ScraperServiceEnum } from '../enums';
 import type { ScrapingConfigFormValues } from '../types';
@@ -135,4 +137,15 @@ export const calculateFeatureConfigDiff = (
     });
 
     return diffs;
+};
+
+export const generateAutoChangeDescription = (
+    diffs: IFeatureDiffItem[],
+    timestamp: string | Date = new Date(),
+): string => {
+    const formattedTime = dayjs(timestamp).format(DATE_FORMAT_TIME);
+    if (!diffs?.length) return `Cập nhật cấu hình lúc ${formattedTime}`;
+
+    const fieldLabels = diffs.map((d) => d.label).join(', ');
+    return `Cập nhật cấu hình: [${fieldLabels}] lúc ${formattedTime}`;
 };

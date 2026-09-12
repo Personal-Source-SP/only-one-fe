@@ -1,7 +1,6 @@
 export * from './ConfigFormCommon';
 export * from './ConfigFormCommon/FormDiffLabel';
 export * from './FeatureCardDetail';
-export * from './FeatureConfirmUpdateModal';
 export * from './FeatureHistoryModal';
 export * from './FeatureSettingModal';
 export * from './FeatureTestTab';
