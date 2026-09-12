@@ -134,11 +134,11 @@ const DiscoveryPage = () => {
                 />
             </ListWrapper>
             <CreateSessionModal
+                loading={isCreating}
                 open={isCreateModalOpen}
-                onCancel={() => setIsCreateModalOpen(false)}
                 onSubmit={handleCreateSession}
                 dataProviderOptions={dataProviderOptions}
-                loading={isCreating}
+                onCancel={() => setIsCreateModalOpen(false)}
             />
         </>
     );

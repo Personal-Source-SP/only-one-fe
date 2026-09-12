@@ -58,8 +58,6 @@ export const API_ENDPOINT = {
         VALIDATE: (id: string | number) => prefix(`discovery-sessions/${id}/validate`),
         LATEST_BATCH: (id: string | number) =>
             prefix(`discovery-sessions/${id}/validation-latest-batch`),
-        BULK_USER_ACTIONS: (id: string | number) =>
-            prefix(`discovery-sessions/${id}/bulk-user-actions`),
         ENQUEUE_URLS: (id: string | number) => prefix(`discovery-sessions/${id}/enqueue-urls`),
     },
     DISCOVERY_URLS: {
@@ -67,6 +65,7 @@ export const API_ENDPOINT = {
         ALL: prefix('discovery-urls/all'),
         DETAIL: (id: string | number) => prefix(`discovery-urls/${id}`),
         USER_ACTION: (id: string | number) => prefix(`discovery-urls/${id}/user-action`),
+        BULK_USER_ACTIONS: prefix('discovery-urls/bulk-user-actions'),
         REVALIDATE: (id: string | number) => prefix(`discovery-urls/${id}/re-validate`),
         LOGS: (id: string | number) => prefix(`discovery-urls/${id}/validation-logs`),
     },

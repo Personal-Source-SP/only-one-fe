@@ -13,43 +13,56 @@ import type { CreateSessionFormValues } from '../types';
 
 interface CreateSessionModalProps {
     open: boolean;
+    loading?: boolean;
+    dataProviderOptions?: CustomSelectProps['options'];
     onCancel: () => void;
     onSubmit: (values: CreateSessionFormValues) => void;
-    dataProviderOptions?: CustomSelectProps['options'];
-    loading?: boolean;
 }
 
 export const CreateSessionModal = ({
     open,
+    loading = false,
+    dataProviderOptions,
     onCancel,
     onSubmit,
-    dataProviderOptions,
-    loading = false,
 }: CreateSessionModalProps) => {
     const [form] = CustomForm.useForm<CreateSessionFormValues>();
 
     useEffect(() => {
         if (open) {
             form.resetFields();
-            form.setFieldsValue({ depth: 1, maxUrls: 50 });
+            form.setFieldsValue({ depth: 1 });
         }
     }, [open, form]);
 
     const handleOk = async () => {
         const values = await form.validateFields();
-        onSubmit(values);
+        const rawKeywords = values.targetKeywords;
+        const targetKeywords = rawKeywords
+            ? rawKeywords
+                  .split(',')
+                  .map((k) => k.trim())
+                  .filter(Boolean)
+            : [];
+
+        onSubmit({
+            dataProviderId: values.dataProviderId,
+            targetKeywords,
+            depth: values.depth,
+            maxUrls: values.maxUrls,
+        });
     };
 
     return (
         <CustomModal
+            centered
             open={open}
-            title="Khởi tạo phiên khám phá mới (Discovery Session)"
-            onCancel={onCancel}
-            onOk={handleOk}
-            okText="Bắt đầu khám phá"
             cancelText="Hủy"
+            onOk={handleOk}
+            onCancel={onCancel}
             confirmLoading={loading}
-            destroyOnClose
+            okText="Bắt đầu khám phá"
+            title="Khởi tạo phiên khám phá mới (Discovery Session)"
         >
             <CustomForm form={form} layout="vertical">
                 <CustomForm.Item
@@ -61,29 +74,29 @@ export const CreateSessionModal = ({
                 </CustomForm.Item>
 
                 <CustomForm.Item
-                    name="targetUrl"
-                    label="Đường dẫn khám phá (Seed URL)"
-                    rules={[
-                        { required: true, message: 'Vui lòng nhập đường dẫn' },
-                        { type: 'url', message: 'Đường dẫn không hợp lệ' },
-                    ]}
+                    name="targetKeywords"
+                    label="Từ khóa sản phẩm mục tiêu (Target Keywords)"
                 >
-                    <CustomInput placeholder="https://example.com/category/products" />
-                </CustomForm.Item>
-
-                <CustomForm.Item
-                    name="targetKeyword"
-                    label="Từ khóa sản phẩm mục tiêu (Tùy chọn - Giúp AI / Heuristics chấm điểm chính xác)"
-                >
-                    <CustomInput placeholder="Ví dụ: Sony WH-1000XM4, iPhone 15 Pro..." />
+                    <CustomInput.TextArea
+                        rows={3}
+                        placeholder="Nhập các từ khóa cách nhau bởi dấu phẩy (ví dụ: Sony WH-1000XM4, iPhone 15 Pro, ...)"
+                    />
                 </CustomForm.Item>
 
                 <CustomForm.Item name="depth" label="Độ sâu thu thập (Crawl Depth)">
                     <CustomInputNumber min={1} max={5} className="w-full" />
                 </CustomForm.Item>
 
-                <CustomForm.Item name="maxUrls" label="Giới hạn URLs tối đa (Max URLs)">
-                    <CustomInputNumber min={5} max={500} className="w-full" />
+                <CustomForm.Item
+                    name="maxUrls"
+                    label="Giới hạn URLs tối đa (Max URLs - Tùy chọn override)"
+                >
+                    <CustomInputNumber
+                        min={1}
+                        max={1000}
+                        className="w-full"
+                        placeholder="Mặc định lấy theo cấu hình Search"
+                    />
                 </CustomForm.Item>
             </CustomForm>
         </CustomModal>

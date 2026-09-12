@@ -1,5 +1,9 @@
 'use client';
 
+import {
+    DataProviderFeatureStatus,
+    DataProviderFeatureType,
+} from '@/app/(root)/scraping/features/enums';
 import { API_ENDPOINT } from '@/config';
 import { useCustomList, useCustomMutationData, useSelectDataProvider } from '@/hooks';
 import type { CrudFilter } from '@refinedev/core';
@@ -7,22 +11,31 @@ import { useMemo, useState } from 'react';
 import type { CreateSessionFormValues, IDiscoverySession } from './types';
 
 export const useDiscoveryPage = () => {
-    const [selectedProviderId, setSelectedProviderId] = useState<string | undefined>();
     const [searchTerm, setSearchTerm] = useState('');
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+    const [selectedProviderId, setSelectedProviderId] = useState<string>();
 
-    const { options: dataProviderOptions } = useSelectDataProvider();
+    const { options: dataProviderOptions } = useSelectDataProvider({
+        filter: (provider) =>
+            provider.features?.some(
+                (f) =>
+                    f.type === DataProviderFeatureType.SEARCH &&
+                    f.status === DataProviderFeatureStatus.READY,
+            ) ?? false,
+    });
     const { handleCustomMutationData, mutation } = useCustomMutationData();
 
     const filters: CrudFilter[] = useMemo(() => {
         const list: CrudFilter[] = [];
+
         if (selectedProviderId) {
             list.push({
-                field: 'dataProviderId',
                 operator: 'eq',
+                field: 'dataProviderId',
                 value: selectedProviderId,
             });
         }
+
         if (searchTerm) {
             list.push({
                 field: 'search',
@@ -30,6 +43,7 @@ export const useDiscoveryPage = () => {
                 value: searchTerm,
             });
         }
+
         return list;
     }, [selectedProviderId, searchTerm]);
 
@@ -37,22 +51,20 @@ export const useDiscoveryPage = () => {
         data: sessions = [],
         query: { isLoading, refetch },
     } = useCustomList<IDiscoverySession>({
-        resource: API_ENDPOINT.DISCOVERY_SESSIONS.BASE,
         filters,
+        resource: API_ENDPOINT.DISCOVERY_SESSIONS.BASE,
     });
 
     const handleCreateSession = async (values: CreateSessionFormValues) => {
         await handleCustomMutationData({
+            method: 'post',
             url: API_ENDPOINT.DISCOVERY_SESSIONS.BASE,
             values: {
-                dataProviderId: values.dataProviderId,
-                targetUrl: values.targetUrl,
                 depth: values.depth || 1,
-                maxUrls: values.maxUrls || 100,
-                notes: values.notes,
-                targetKeyword: values.targetKeyword,
+                maxUrls: values.maxUrls,
+                dataProviderId: values.dataProviderId,
+                targetKeywords: values.targetKeywords,
             },
-            method: 'post',
             successMessage: 'Tạo phiên khám phá thành công',
             onSuccess: () => {
                 setIsCreateModalOpen(false);

@@ -16,13 +16,15 @@ interface IUseSelectProps<T extends BaseRecord = any> {
     type?: 'items' | 'data-provider' | 'data-provider-items';
     optionValue?: (item: T) => string;
     optionLabel?: (item: T) => string;
+    filter?: (item: T) => boolean;
     transform?: (
         options: Array<{ label: string; value: string }>,
     ) => Array<{ label: string; value: string }>;
 }
 
 export const useCustomSelect = <T extends BaseRecord = any>(props: IUseSelectProps<T>) => {
-    const { enabled, resource, defaultFilters, optionValue, optionLabel, transform } = props;
+    const { enabled, resource, defaultFilters, optionValue, optionLabel, filter, transform } =
+        props;
 
     const { options, query } = useSelect<T>({
         resource: resource ?? '',
@@ -35,11 +37,22 @@ export const useCustomSelect = <T extends BaseRecord = any>(props: IUseSelectPro
     });
 
     const transformedOptions = useMemo(() => {
-        if (transform) {
-            return transform(options);
+        let resultOptions = options;
+        if (filter && query.data?.data) {
+            const rawData = query.data.data as T[];
+            const getValue = optionValue ?? ((item: any) => item.id ?? '');
+            const getLabel = optionLabel ?? ((item: any) => item.name ?? '');
+            resultOptions = rawData.filter(filter).map((item) => ({
+                label: getLabel(item),
+                value: getValue(item),
+            }));
         }
-        return options;
-    }, [options, transform]);
+
+        if (transform) {
+            return transform(resultOptions);
+        }
+        return resultOptions;
+    }, [options, filter, query.data?.data, optionValue, optionLabel, transform]);
 
     return { options: transformedOptions, query };
 };
@@ -59,6 +72,7 @@ export const useSelectDataProviderItem = (props?: IUseSelectProps<IDataProviderI
     }
 
     return useCustomSelect({
+        ...props,
         resource,
         enabled: !!props?.id || (props?.enabled ?? false),
         optionValue: props?.optionValue ?? ((item: IDataProviderItem) => item.itemUrl ?? ''),
@@ -68,6 +82,7 @@ export const useSelectDataProviderItem = (props?: IUseSelectProps<IDataProviderI
 
 export const useSelectDataProvider = (props?: IUseSelectProps<IDataProvider>) => {
     return useCustomSelect({
+        ...props,
         resource: API_ENDPOINT.DATA_PROVIDERS.ALL,
         enabled: props?.enabled ?? true,
         optionValue: props?.optionValue ?? ((item: IDataProvider) => item.id ?? ''),
@@ -80,6 +95,7 @@ export const useSelectDataProvider = (props?: IUseSelectProps<IDataProvider>) =>
 
 export const useSelectItem = (props?: IUseSelectProps<IItem>) => {
     return useCustomSelect({
+        ...props,
         resource: API_ENDPOINT.ITEMS.ALL,
         enabled: props?.enabled ?? true,
         optionValue: props?.optionValue ?? ((item: IItem) => item.id ?? ''),
@@ -89,6 +105,7 @@ export const useSelectItem = (props?: IUseSelectProps<IItem>) => {
 
 export const useSelectGoogleFolder = (props?: IUseSelectProps<IGoogleDriveFolder>) => {
     return useCustomSelect({
+        ...props,
         resource: API_ENDPOINT.GOOGLE_DRIVE.FOLDERS_ALL,
         enabled: props?.enabled ?? true,
         optionValue: props?.optionValue ?? ((item: IGoogleDriveFolder) => item.id ?? ''),
@@ -98,6 +115,7 @@ export const useSelectGoogleFolder = (props?: IUseSelectProps<IGoogleDriveFolder
 
 export const useSelectCloudDataProvider = (props?: IUseSelectProps<ICloudDataProvider>) => {
     return useCustomSelect({
+        ...props,
         resource: API_ENDPOINT.CLOUD_DATA_PROVIDERS.ALL,
         enabled: props?.enabled ?? true,
         optionValue: props?.optionValue ?? ((item: ICloudDataProvider) => item.id ?? ''),
@@ -107,6 +125,7 @@ export const useSelectCloudDataProvider = (props?: IUseSelectProps<ICloudDataPro
 
 export const useSelectSimulationContext = (props?: IUseSelectProps<ISimulationContext>) => {
     return useCustomSelect({
+        ...props,
         resource: API_ENDPOINT.SIMULATION.CONTEXTS_ALL,
         enabled: props?.enabled ?? true,
         optionValue: props?.optionValue ?? ((item: ISimulationContext) => item.id ?? ''),
