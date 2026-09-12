@@ -40,11 +40,12 @@ flowchart TD
 ```
 
 ## 3. Scope & Key Changes (Phạm vi & Thay đổi Chính)
-- [src/config/endpoint.ts](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/config/endpoint.ts): `API_ENDPOINT.DISCOVERY_SESSIONS` và `API_ENDPOINT.DISCOVERY_URLS`.
-- [src/app/(root)/scraping/discovery/types.ts](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/app/(root)/scraping/discovery/types.ts): Enums validation status, interfaces `IDiscoverySession`, `IDiscoveryUrl`.
-- [src/app/(root)/scraping/discovery/page.tsx](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/app/(root)/scraping/discovery/page.tsx) & [hooks.ts](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/app/(root)/scraping/discovery/hooks.ts): Danh sách phiên, bộ lọc provider và modal tạo phiên.
-- [src/app/(root)/scraping/discovery/[id]/page.tsx](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/app/(root)/scraping/discovery/[id]/page.tsx) & [[id]/hooks.tsx](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/app/(root)/scraping/discovery/[id]/hooks.tsx): Trang chi tiết phiên, bảng URLs, action chấm điểm và batch enqueue.
-- [src/app/(root)/scraping/discovery/[id]/components/SessionOverviewCard.tsx](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/app/(root)/scraping/discovery/[id]/components/SessionOverviewCard.tsx): Thẻ tổng quan chỉ số phiên.
+- [src/config/endpoint.ts](file:///d:/Sources/Personal/only-one-fe/src/config/endpoint.ts): `API_ENDPOINT.DISCOVERY_SESSIONS` và `API_ENDPOINT.DISCOVERY_URLS`.
+- [src/app/(root)/scraping/discovery/types.ts](file:///d:/Sources/Personal/only-one-fe/src/app/(root)/scraping/discovery/types.ts): Enums validation status, interfaces `IDiscoverySession`, `IDiscoveryUrl`.
+- [src/app/(root)/scraping/discovery/constants.ts](file:///d:/Sources/Personal/only-one-fe/src/app/(root)/scraping/discovery/constants.ts): `DISCOVERY_SESSION_STATUS_COLOR_MAP`, `DISCOVERY_SESSION_STATUS_LABELS`, `DEFAULT_CREATE_SESSION_VALUES`.
+- [src/app/(root)/scraping/discovery/page.tsx](file:///d:/Sources/Personal/only-one-fe/src/app/(root)/scraping/discovery/page.tsx) & [hooks.ts](file:///d:/Sources/Personal/only-one-fe/src/app/(root)/scraping/discovery/hooks.ts): Danh sách phiên, bộ lọc provider và modal tạo phiên.
+- [src/app/(root)/scraping/discovery/[id]/page.tsx](file:///d:/Sources/Personal/only-one-fe/src/app/(root)/scraping/discovery/[id]/page.tsx) & [[id]/hooks.tsx](file:///d:/Sources/Personal/only-one-fe/src/app/(root)/scraping/discovery/[id]/hooks.tsx): Trang chi tiết phiên, bảng URLs, action chấm điểm và batch enqueue.
+- [src/app/(root)/scraping/discovery/[id]/components/SessionOverviewCard.tsx](file:///d:/Sources/Personal/only-one-fe/src/app/(root)/scraping/discovery/[id]/components/SessionOverviewCard.tsx): Thẻ tổng quan chỉ số phiên.
 
 ## 4. Verification Evidence & PR (Bằng chứng Nghiệm thu)
 - **Trạng thái Test**: 100% Passed (`npx eslint src && npx tsc --noEmit` exit code 0).
