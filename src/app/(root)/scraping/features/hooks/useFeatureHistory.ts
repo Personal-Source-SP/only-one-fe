@@ -4,7 +4,7 @@ import { customNotification } from '@/components/custom-antd';
 import { API_ENDPOINT } from '@/config';
 import { MessageType } from '@/enums';
 import { useCustomData, useCustomMutationData } from '@/hooks';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FEATURE_REGISTRY } from '../constants';
 import type { IConfigVersion, IDataProviderFeature } from '../types';
 
@@ -29,6 +29,12 @@ export const useFeatureHistory = ({ open, feature, onSuccess }: UseFeatureHistor
             return [...list].sort((a, b) => b.versionId - a.versionId);
         },
     });
+
+    useEffect(() => {
+        if (open && featureId) {
+            query.refetch();
+        }
+    }, [open, featureId, query]);
 
     const currentSelectedVersion = useMemo(() => {
         if (selectedVersionId !== undefined) {

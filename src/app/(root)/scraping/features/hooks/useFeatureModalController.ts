@@ -109,14 +109,16 @@ export const useFeatureModalController = ({
     }, [isSwitchingStatus, isDraft, versionsQuery.isLoading, mutation.mutation.isPending]);
 
     useEffect(() => {
+        if (open && feature.id) {
+            versionsQuery.refetch();
+        }
+    }, [open, feature.id, versionsQuery]);
+
+    useEffect(() => {
         if (!open) {
             setSelectedVersionId(undefined);
             form.resetFields();
             return;
-        }
-
-        if (activeVersion && selectedVersionId === undefined) {
-            setSelectedVersionId(activeVersion.versionId);
         }
 
         const config = (selectedVersion?.config || feature.config || {}) as TargetConfig;
@@ -138,7 +140,7 @@ export const useFeatureModalController = ({
         });
 
         form.setFieldsValue(baseInitialValues);
-    }, [open, form, feature, activeVersion, selectedVersionId, selectedVersion]);
+    }, [open, form, feature, selectedVersion]);
 
     const handleRollback = useCallback(
         async (targetVersionId?: number) => {
@@ -189,6 +191,7 @@ export const useFeatureModalController = ({
                 successNotification: () => {
                     onSuccess();
                     onClose();
+                    versionsQuery.refetch();
                     return {
                         type: MessageType.SUCCESS,
                         message: isDraft
@@ -203,7 +206,7 @@ export const useFeatureModalController = ({
                 }),
             });
         },
-        [feature, isDraft, handleCustomMutationData, onSuccess, onClose],
+        [feature, isDraft, handleCustomMutationData, onSuccess, onClose, versionsQuery],
     );
 
     const handleFormSubmit = useCallback(
