@@ -1,113 +1,33 @@
 'use client';
 
-import {
-    CustomButton,
-    CustomFlex,
-    CustomPopconfirm,
-    CustomSelect,
-    CustomSpace,
-} from '@/components/custom-antd';
+import { CustomButton, CustomFlex } from '@/components/custom-antd';
 import { Icon } from '@iconify/react';
-import { useMemo } from 'react';
+import { FeatureStatusSelect } from '../FeatureStatusSelect';
+import { FeatureVersionSelect } from '../FeatureVersionSelect';
 import { useFeatureModalContext } from '../../context';
-import { ConfigVersionType } from '../../enums';
 
 export const FeatureModalFooter = () => {
-    const {
-        form,
-        isDraft,
-        isLoading,
-        isViewingHistory,
-        versions,
-        selectedVersion,
-        onClose,
-        onRollback,
-        onSelectVersion,
-    } = useFeatureModalContext();
-
-    const versionOptions = useMemo(() => {
-        if (!versions.length) return [];
-
-        return [...versions]
-            .sort((a, b) => {
-                if (a.isActive && !b.isActive) return -1;
-                if (!a.isActive && b.isActive) return 1;
-                return b.versionId - a.versionId;
-            })
-            .map((v) => {
-                let changeLabel = 'Thủ công';
-                if (v.changeType === ConfigVersionType.AI_GENERATED) changeLabel = 'AI tạo';
-                if (v.changeType === ConfigVersionType.ROLLBACK) changeLabel = 'Khôi phục';
-
-                const text = v.isActive
-                    ? 'Current Version'
-                    : `Version ${v.versionId} - ${changeLabel}`;
-
-                return {
-                    value: v.versionId,
-                    label: (
-                        <CustomSpace size={6} className="w-full">
-                            <Icon
-                                icon="lucide:clock"
-                                className="w-3.5 h-3.5 text-hub-subtitle shrink-0"
-                            />
-                            <span
-                                className={
-                                    v.isActive
-                                        ? 'font-bold text-hub-primary'
-                                        : 'font-medium text-hub-title'
-                                }
-                            >
-                                {text}
-                            </span>
-                        </CustomSpace>
-                    ),
-                };
-            });
-    }, [versions]);
+    const { form, feature, isDraft, isLoading, isSwitchingStatus, onClose, onSwitchStatus } =
+        useFeatureModalContext();
 
     return (
-        <CustomFlex justify="space-between" align="center" className="w-full flex-wrap gap-2">
-            <CustomFlex align="center" gap="small">
-                {!isDraft && !!versions.length && (
-                    <CustomSelect
-                        className="w-64"
-                        options={versionOptions}
-                        value={selectedVersion?.versionId}
-                        disabled={versionOptions.length <= 1}
-                        styles={{ popup: { root: { width: 280 } } }}
-                        onChange={onSelectVersion}
+        <CustomFlex justify="space-between" align="center" className="w-full gap-2 flex-nowrap">
+            <CustomFlex align="center" gap="small" className="shrink-0">
+                <FeatureVersionSelect />
+
+                {/* Switch Status Toggle */}
+                {!isDraft && onSwitchStatus && (
+                    <FeatureStatusSelect
+                        status={feature.status}
+                        onChange={onSwitchStatus}
+                        loading={isSwitchingStatus}
+                        disabled={isSwitchingStatus}
                     />
                 )}
             </CustomFlex>
-            <CustomFlex align="center" gap="small" className="ml-auto flex-wrap">
-                {!isDraft && !!versions.length && (
-                    <CustomPopconfirm
-                        cancelText="Hủy"
-                        okText="Khôi phục"
-                        onConfirm={() => onRollback(selectedVersion?.versionId)}
-                        title={`Khôi phục phiên bản v${selectedVersion?.versionId}?`}
-                        description="Cấu hình hiện tại của tính năng sẽ được thay thế bằng snapshot này."
-                    >
-                        <CustomButton
-                            type="primary"
-                            loading={isLoading}
-                            disabled={!isViewingHistory}
-                            icon={<Icon icon="lucide:rotate-ccw" />}
-                            className={
-                                isViewingHistory
-                                    ? 'bg-amber-600 hover:bg-amber-500 border-amber-600 text-white'
-                                    : undefined
-                            }
-                        >
-                            Khôi phục
-                        </CustomButton>
-                    </CustomPopconfirm>
-                )}
-
+            <CustomFlex align="center" gap="small" className="ml-auto shrink-0">
                 <CustomButton
                     type="primary"
-                    disabled={isViewingHistory}
                     onClick={() => form.submit()}
                     icon={<Icon icon="lucide:save" />}
                 >

@@ -16,16 +16,16 @@ export const FeatureStatusUnconfiguredTrigger = ({
     return (
         <CustomTooltip title="Vui lòng hoàn tất và lưu cấu hình tính năng để mở khóa trạng thái">
             <CustomFlex
-                gap={6}
+                gap={8}
                 align="center"
-                className={`px-3 py-1.5 rounded-lg border text-xs cursor-not-allowed select-none ${currentConfig?.pillClass} ${className}`}
+                className={`!h-[40px] px-3.5 rounded-lg border text-sm cursor-not-allowed select-none ${currentConfig?.pillClass} ${className}`}
             >
                 <Icon
-                    className="text-sm shrink-0"
+                    className="text-base shrink-0"
                     icon={currentConfig?.icon || 'lucide:settings-2'}
                 />
                 <span className="font-medium">{currentConfig?.label}</span>
-                <Icon icon="lucide:lock" className="text-xs opacity-60 ml-0.5" />
+                <Icon icon="lucide:lock" className="text-sm opacity-60 ml-0.5" />
             </CustomFlex>
         </CustomTooltip>
     );

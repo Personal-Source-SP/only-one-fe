@@ -161,6 +161,7 @@ export const useFeatureModalController = ({
                 url: API_ENDPOINT.CONFIG_VERSION_FEATURES.ROLLBACK(feature.id, vId),
                 successNotification: () => {
                     onSuccess();
+                    onClose();
                     versionsQuery.refetch();
 
                     return {
@@ -175,7 +176,7 @@ export const useFeatureModalController = ({
                 }),
             });
         },
-        [feature, selectedVersion, versionsQuery, handleCustomMutationData, onSuccess],
+        [feature, selectedVersion, versionsQuery, handleCustomMutationData, onSuccess, onClose],
     );
 
     const executeSave = useCallback(

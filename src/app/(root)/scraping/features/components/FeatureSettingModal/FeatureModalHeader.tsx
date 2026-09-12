@@ -4,21 +4,13 @@ import { CustomFlex, CustomTag, CustomTypography } from '@/components/custom-ant
 import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
 import { useCallback } from 'react';
-import { FeatureStatusSelect } from '../FeatureStatusSelect';
 import { FEATURE_REGISTRY, SCRAPER_SERVICE_LABELS } from '../../constants';
 import { useFeatureModalContext } from '../../context';
 import { ConfigVersionType } from '../../enums';
 
 export const FeatureModalHeader = () => {
-    const {
-        feature,
-        isDraft,
-        authorName,
-        currentService,
-        selectedVersion,
-        isSwitchingStatus,
-        onSwitchStatus,
-    } = useFeatureModalContext();
+    const { feature, isDraft, authorName, currentService, selectedVersion } =
+        useFeatureModalContext();
 
     const def = FEATURE_REGISTRY[feature.type];
     const providerName = feature.dataProvider?.name;
@@ -68,19 +60,16 @@ export const FeatureModalHeader = () => {
                 >
                     <Icon icon={def.icon} className="text-lg" />
                 </CustomFlex>
-                <CustomFlex vertical gap={2}>
-                    <CustomFlex align="center" gap="small" wrap>
-                        <CustomTypography.Text strong className="text-base text-hub-title">
-                            {def.getTitle(isDraft, providerName)}
-                        </CustomTypography.Text>
-                        <CustomTag color="blue" className="font-medium text-xs m-0">
-                            {serviceLabel}
-                        </CustomTag>
-                    </CustomFlex>
-                </CustomFlex>
+                <CustomTypography.Text strong className="text-base text-hub-title">
+                    {def.getTitle(isDraft, providerName)}
+                </CustomTypography.Text>
             </CustomFlex>
 
             <CustomFlex align="center" gap="small" className="flex-wrap">
+                <CustomTag color="blue" className="font-medium text-xs m-0">
+                    {serviceLabel}
+                </CustomTag>
+
                 {/* Version Metadata Tags in Header */}
                 {!isDraft && selectedVersion && (
                     <CustomFlex align="center" gap="small" wrap>
@@ -109,18 +98,6 @@ export const FeatureModalHeader = () => {
                                 Phiên bản {selectedVersion.versionId}
                             </CustomTag>
                         )}
-                    </CustomFlex>
-                )}
-
-                {/* Switch Status Toggle */}
-                {!isDraft && onSwitchStatus && (
-                    <CustomFlex align="center" gap="small">
-                        <FeatureStatusSelect
-                            status={feature.status}
-                            onChange={onSwitchStatus}
-                            loading={isSwitchingStatus}
-                            disabled={isSwitchingStatus}
-                        />
                     </CustomFlex>
                 )}
             </CustomFlex>

@@ -35,7 +35,7 @@ export interface FeatureModalContextValue {
     onSuccess: () => void;
     onSelectVersion: (versionId?: number) => void;
     onRollback: (targetVersionId?: number) => Promise<void>;
-    onSwitchStatus: (targetStatus: DataProviderFeatureStatus) => void;
+    onSwitchStatus: (targetStatus: DataProviderFeatureStatus) => Promise<void>;
     setSelectedVersionId: (id?: number) => void;
     handleCancelConfirm: () => void;
     handleRollback: (targetVersionId?: number) => Promise<void>;
@@ -53,7 +53,7 @@ export interface FeatureModalProviderProps extends PropsWithChildren {
     isSwitchingStatus?: boolean;
     onClose: () => void;
     onSuccess: () => void;
-    onSwitchStatus: (featureId: string, targetStatus: DataProviderFeatureStatus) => void;
+    onSwitchStatus: (featureId: string, targetStatus: DataProviderFeatureStatus) => Promise<void>;
 }
 
 export const FeatureModalProvider = ({
@@ -98,8 +98,10 @@ export const FeatureModalProvider = ({
             onSuccess,
             onRollback: controller.handleRollback,
             onSelectVersion: controller.setSelectedVersionId,
-            onSwitchStatus: (targetStatus: DataProviderFeatureStatus) =>
-                onSwitchStatus(feature.id, targetStatus),
+            onSwitchStatus: async (targetStatus: DataProviderFeatureStatus) => {
+                await onSwitchStatus(feature.id, targetStatus);
+                onClose();
+            },
         }),
         [
             open,

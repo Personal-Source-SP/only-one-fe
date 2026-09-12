@@ -17,17 +17,18 @@ export const FeatureStatusTrigger = ({
 }: FeatureStatusTriggerProps) => {
     return (
         <CustomButton
-            size="small"
             loading={loading}
             disabled={disabled}
-            className={`h-auto py-1 px-3 rounded-lg border font-medium text-xs transition-all shadow-sm ${currentConfig?.pillClass} ${className}`}
+            className={`!h-[40px] px-3.5 rounded-lg border font-medium text-sm transition-all shadow-sm flex items-center justify-center ${currentConfig?.pillClass} ${className}`}
             {...props}
         >
-            <CustomFlex align="center" gap={6}>
-                <span className={`w-2 h-2 rounded-full shrink-0 ${currentConfig?.pulseClass}`} />
+            <CustomFlex align="center" gap={8}>
+                <span
+                    className={`w-2.5 h-2.5 rounded-full shrink-0 ${currentConfig?.pulseClass}`}
+                />
                 <span>{currentConfig?.label}</span>
                 {!loading && (
-                    <Icon icon="lucide:chevron-down" className="text-xs opacity-70 ml-0.5" />
+                    <Icon icon="lucide:chevron-down" className="text-sm opacity-70 ml-0.5" />
                 )}
             </CustomFlex>
         </CustomButton>
