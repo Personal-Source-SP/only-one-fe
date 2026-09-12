@@ -51,6 +51,18 @@ export const SEARCH_FORM_SECTIONS: FormSectionSchema[] = [
         visibleWhen: [ScraperServiceEnum.GENERIC, ScraperServiceEnum.API],
         fields: [
             {
+                name: 'mainContentSelector',
+                label: 'Selector nội dung chính',
+                type: 'text',
+                defaultValue: '',
+                placeholder: 'Ví dụ: #search-results, .product-list',
+                gridSpan: { xs: 24, md: 12 },
+                visibleWhen: [ScraperServiceEnum.GENERIC],
+                getRules: () => [
+                    { required: true, message: 'Vui lòng nhập selector nội dung chính' },
+                ],
+            },
+            {
                 name: 'resultSelector',
                 label: 'Selector danh sách kết quả',
                 type: 'text',
@@ -58,6 +70,9 @@ export const SEARCH_FORM_SECTIONS: FormSectionSchema[] = [
                 placeholder: 'Ví dụ: .search-results, .product-grid',
                 gridSpan: { xs: 24, md: 12 },
                 visibleWhen: [ScraperServiceEnum.GENERIC],
+                getRules: () => [
+                    { required: true, message: 'Vui lòng nhập selector danh sách kết quả' },
+                ],
             },
             {
                 name: 'waitForSelector',
@@ -74,7 +89,7 @@ export const SEARCH_FORM_SECTIONS: FormSectionSchema[] = [
                 type: 'text',
                 defaultValue: '',
                 placeholder: 'Mozilla/5.0...',
-                gridSpan: { xs: 24, md: 24 },
+                gridSpan: { xs: 24, md: 12 },
                 visibleWhen: [ScraperServiceEnum.GENERIC],
             },
             {
