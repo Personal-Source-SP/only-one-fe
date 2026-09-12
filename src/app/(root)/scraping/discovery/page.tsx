@@ -12,20 +12,22 @@ import { formatDate } from '@/libs';
 import { EyeOutlined, PlusOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
 import { CreateSessionModal } from './components/CreateSessionModal';
+import { DISCOVERY_SESSION_STATUS_COLOR_MAP } from './constants';
 import { useDiscoveryPage } from './hooks';
 import { DiscoverySessionStatus, type IDiscoverySession } from './types';
 
 const DiscoveryPage = () => {
     const router = useRouter();
+
     const {
         sessions,
         isLoading,
-        dataProviderOptions,
-        setSelectedProviderId,
-        setSearchTerm,
-        isCreateModalOpen,
-        setIsCreateModalOpen,
         isCreating,
+        isCreateModalOpen,
+        dataProviderOptions,
+        setSearchTerm,
+        setIsCreateModalOpen,
+        setSelectedProviderId,
         handleCreateSession,
     } = useDiscoveryPage();
 
@@ -54,15 +56,11 @@ const DiscoveryPage = () => {
             title: 'Trạng thái',
             dataIndex: 'status',
             key: 'status',
-            render: (status: DiscoverySessionStatus) => {
-                const colorMap = {
-                    [DiscoverySessionStatus.COMPLETED]: 'success',
-                    [DiscoverySessionStatus.IN_PROGRESS]: 'processing',
-                    [DiscoverySessionStatus.FAILED]: 'error',
-                    [DiscoverySessionStatus.PENDING]: 'default',
-                };
-                return <CustomTag color={colorMap[status]}>{status.toUpperCase()}</CustomTag>;
-            },
+            render: (status: DiscoverySessionStatus) => (
+                <CustomTag color={DISCOVERY_SESSION_STATUS_COLOR_MAP[status]}>
+                    {status.toUpperCase()}
+                </CustomTag>
+            ),
         },
         {
             title: 'URLs tìm thấy',
