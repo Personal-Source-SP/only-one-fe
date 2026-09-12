@@ -63,7 +63,7 @@ export const CodeEditorWidget = ({
                 label={<FormDiffLabel fieldKey={schema.name} label={labelText as string} />}
             >
                 <CodeDisplay
-                    code={fieldValue}
+                    code={fieldValue ?? ''}
                     language={rawProps.language}
                     maxHeight={rawProps.maxHeight}
                     isDisplayLanguage={rawProps.isDisplayLanguage ?? true}

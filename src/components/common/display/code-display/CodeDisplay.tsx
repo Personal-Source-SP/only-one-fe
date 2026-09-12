@@ -90,7 +90,7 @@ export const CodeDisplay = ({
     const { handleNotification } = useMainContext();
 
     const [isEditing, setIsEditing] = useState(false);
-    const [editedCode, setEditedCode] = useState(code);
+    const [editedCode, setEditedCode] = useState(code || '');
     const [isExpanded, setIsExpanded] = useState(expanded);
 
     const codeCardStyle: CSSProperties = {
@@ -105,11 +105,11 @@ export const CodeDisplay = ({
     };
 
     useEffect(() => {
-        handleFormat(code);
+        handleFormat(code || '');
     }, [code]);
 
-    const highlightJSON = (jsonString: string) => {
-        return jsonString
+    const highlightJSON = (jsonString: string = '') => {
+        return (jsonString || '')
             .replace(/("([^"\\]|\\.)*")\s*:/g, '<span class="text-blue-600 font-medium">$1</span>:')
             .replace(/:\s*("([^"\\]|\\.)*")/g, ': <span class="text-green-600">$1</span>')
             .replace(
@@ -122,7 +122,7 @@ export const CodeDisplay = ({
 
     const handleCopy = async () => {
         try {
-            await navigator.clipboard.writeText(editedCode);
+            await navigator.clipboard.writeText(editedCode || '');
 
             handleNotification({
                 duration: 2,
@@ -137,32 +137,33 @@ export const CodeDisplay = ({
         }
     };
 
-    const handleFormat = (currentCode: string, isOnCodeChange = false) => {
+    const handleFormat = (currentCode: string = '', isOnCodeChange = false) => {
+        const safeCode = currentCode ?? '';
         switch (language) {
             case 'json': {
                 try {
-                    const parsed = JSON.parse(currentCode);
+                    const parsed = JSON.parse(safeCode);
                     const formattedCode = JSON.stringify(parsed, null, 2);
                     setEditedCode(formattedCode);
                     if (isOnCodeChange) onCodeChange?.(formattedCode);
-                } catch (e) {
-                    setEditedCode(currentCode);
-                    if (isOnCodeChange) onCodeChange?.(currentCode);
+                } catch {
+                    setEditedCode(safeCode);
+                    if (isOnCodeChange) onCodeChange?.(safeCode);
                 }
                 break;
             }
 
             case 'javascript': {
-                const formattedCode = jsBeautify.js_beautify(currentCode, JS_BEAUTIFY_OPTIONS);
-                setEditedCode(formattedCode);
-                if (isOnCodeChange) onCodeChange?.(formattedCode);
+                const formattedCode = jsBeautify.js_beautify(safeCode, JS_BEAUTIFY_OPTIONS);
+                setEditedCode(formattedCode || safeCode);
+                if (isOnCodeChange) onCodeChange?.(formattedCode || safeCode);
                 break;
             }
 
             case 'html': {
-                const formattedCode = jsBeautify.html_beautify(currentCode, HTML_BEAUTIFY_OPTIONS);
-                setEditedCode(formattedCode);
-                if (isOnCodeChange) onCodeChange?.(formattedCode);
+                const formattedCode = jsBeautify.html_beautify(safeCode, HTML_BEAUTIFY_OPTIONS);
+                setEditedCode(formattedCode || safeCode);
+                if (isOnCodeChange) onCodeChange?.(formattedCode || safeCode);
                 break;
             }
         }
@@ -272,8 +273,8 @@ export const CodeDisplay = ({
                         dangerouslySetInnerHTML={{
                             __html:
                                 language === 'json'
-                                    ? highlightJSON(editedCode)
-                                    : editedCode
+                                    ? highlightJSON(editedCode || '')
+                                    : (editedCode || '')
                                           .replace(/&/g, '&amp;')
                                           .replace(/</g, '&lt;')
                                           .replace(/>/g, '&gt;')
