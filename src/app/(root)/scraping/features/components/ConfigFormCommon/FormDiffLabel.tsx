@@ -1,6 +1,6 @@
 'use client';
 
-import { type ReactNode } from 'react';
+import { ReactNode, useMemo } from 'react';
 import { CustomFlex, CustomTag } from '@/components/custom-antd';
 import { useFeatureModalContext } from '../../context';
 import { getDifferenceText } from '../../utils';
@@ -11,17 +11,20 @@ export type IFormDiffLabelProps = {
     className?: string;
 };
 
-export type FormDiffLabelProps = IFormDiffLabelProps;
-
-export const FormDiffLabel = ({ label, fieldKey, className }: FormDiffLabelProps) => {
+export const FormDiffLabel = ({ label, fieldKey, className }: IFormDiffLabelProps) => {
     const { feature, selectedVersion, isViewingHistory } = useFeatureModalContext();
 
-    const diffText = getDifferenceText({
-        fieldKey,
-        feature,
-        selectedVersion,
-        isViewingHistory,
-    });
+    const diffText = useMemo(
+        () =>
+            getDifferenceText({
+                fieldKey,
+                feature,
+                selectedVersion,
+                isViewingHistory,
+            }),
+        [fieldKey, feature, selectedVersion, isViewingHistory],
+    );
+
     if (!diffText) return <span className={className}>{label}</span>;
 
     return (

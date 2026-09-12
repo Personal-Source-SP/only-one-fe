@@ -1,5 +1,6 @@
 'use client';
 
+import { useMemo } from 'react';
 import { isFieldVisible } from '@/app/(root)/scraping/features/utils';
 import type { FormEvaluationContext, FormFieldSchema } from '@/app/(root)/scraping/features/types';
 import { CodeEditorWidget } from './CodeEditorWidget';
@@ -15,16 +16,23 @@ export type DynamicFormFieldProps = {
 };
 
 export const DynamicFormField = ({ schema, evaluationContext }: DynamicFormFieldProps) => {
-    if (!isFieldVisible(schema.visibleWhen, evaluationContext)) {
+    const isVisible = useMemo(
+        () => isFieldVisible(schema.visibleWhen, evaluationContext),
+        [evaluationContext, schema.visibleWhen],
+    );
+
+    const colProps = useMemo(() => {
+        const span =
+            typeof schema.gridSpan === 'function'
+                ? schema.gridSpan(evaluationContext)
+                : schema.gridSpan || 24;
+
+        return typeof span === 'number' ? { span } : span;
+    }, [evaluationContext, schema.gridSpan]);
+
+    if (!isVisible) {
         return null;
     }
-
-    const span =
-        typeof schema.gridSpan === 'function'
-            ? schema.gridSpan(evaluationContext)
-            : schema.gridSpan || 24;
-
-    const colProps = typeof span === 'number' ? { span } : span;
 
     switch (schema.type) {
         case 'select':

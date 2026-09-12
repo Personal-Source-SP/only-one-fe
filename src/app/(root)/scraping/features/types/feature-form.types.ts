@@ -111,10 +111,10 @@ export type SwitchCardFormFieldSchema = BaseFormFieldSchema & {
 };
 
 export type CodeEditorFieldProps = {
-    language?: string;
+    disabled?: boolean;
     maxHeight?: string;
     isDisplayLanguage?: boolean;
-    disabled?: boolean;
+    language?: 'javascript' | 'json' | 'html';
 };
 
 export type CodeEditorFormFieldSchema = BaseFormFieldSchema & {

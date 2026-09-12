@@ -5,6 +5,7 @@ import type {
     FormEvaluationContext,
     TextFormFieldSchema,
 } from '@/app/(root)/scraping/features/types';
+import { useMemo } from 'react';
 import { FormDiffLabel } from '../FormDiffLabel';
 
 export type TextFieldWidgetProps = {
@@ -14,15 +15,23 @@ export type TextFieldWidgetProps = {
 };
 
 export const TextFieldWidget = ({ schema, colProps, evaluationContext }: TextFieldWidgetProps) => {
-    const labelText =
-        typeof schema.label === 'function' ? schema.label(evaluationContext) : schema.label;
+    const labelText = useMemo(
+        () => (typeof schema.label === 'function' ? schema.label(evaluationContext) : schema.label),
+        [evaluationContext, schema.label],
+    );
 
-    const rules = schema.getRules ? schema.getRules(evaluationContext) : undefined;
+    const rules = useMemo(
+        () => (schema.getRules ? schema.getRules(evaluationContext) : undefined),
+        [evaluationContext, schema.getRules],
+    );
 
-    const rawProps =
-        typeof schema.fieldProps === 'function'
-            ? schema.fieldProps(evaluationContext)
-            : schema.fieldProps || {};
+    const rawProps = useMemo(
+        () =>
+            typeof schema.fieldProps === 'function'
+                ? schema.fieldProps(evaluationContext)
+                : schema.fieldProps || {},
+        [evaluationContext, schema.fieldProps],
+    );
 
     return (
         <CustomCol {...colProps}>

@@ -1,12 +1,13 @@
 'use client';
 
-import { CodeDisplay } from '@/components/common';
-import { CustomCol, CustomForm } from '@/components/custom-antd';
 import { useFeatureModalContext } from '@/app/(root)/scraping/features/context';
 import type {
     CodeEditorFormFieldSchema,
     FormEvaluationContext,
 } from '@/app/(root)/scraping/features/types';
+import { CodeDisplay } from '@/components/common';
+import { CustomCol, CustomForm } from '@/components/custom-antd';
+import { useCallback, useMemo } from 'react';
 import { FormDiffLabel } from '../FormDiffLabel';
 
 export type CodeEditorWidgetProps = {
@@ -24,15 +25,35 @@ export const CodeEditorWidget = ({
 
     const fieldValue = CustomForm.useWatch(schema.name, form);
 
-    const labelText =
-        typeof schema.label === 'function' ? schema.label(evaluationContext) : schema.label;
+    const labelText = useMemo(
+        () => (typeof schema.label === 'function' ? schema.label(evaluationContext) : schema.label),
+        [evaluationContext, schema.label],
+    );
 
-    const rules = schema.getRules ? schema.getRules(evaluationContext) : undefined;
+    const rules = useMemo(
+        () => (schema.getRules ? schema.getRules(evaluationContext) : undefined),
+        [evaluationContext, schema.getRules],
+    );
 
-    const rawProps =
-        typeof schema.fieldProps === 'function'
-            ? schema.fieldProps(evaluationContext)
-            : schema.fieldProps || {};
+    const rawProps = useMemo(
+        () =>
+            typeof schema.fieldProps === 'function'
+                ? schema.fieldProps(evaluationContext)
+                : schema.fieldProps || {},
+        [evaluationContext, schema.fieldProps],
+    );
+
+    const canEdit = useMemo(
+        () => !isViewingHistory && !rawProps.disabled,
+        [isViewingHistory, rawProps.disabled],
+    );
+
+    const handleCodeChange = useCallback(
+        (newCode: string): void => {
+            form.setFieldValue(schema.name, newCode);
+        },
+        [form, schema.name],
+    );
 
     return (
         <CustomCol {...colProps}>
@@ -42,17 +63,11 @@ export const CodeEditorWidget = ({
                 label={<FormDiffLabel fieldKey={schema.name} label={labelText as string} />}
             >
                 <CodeDisplay
-                    code={fieldValue || ''}
-                    maxHeight={rawProps.maxHeight || '220px'}
-                    language={(rawProps.language as any) || 'javascript'}
+                    code={fieldValue}
+                    language={rawProps.language}
+                    maxHeight={rawProps.maxHeight}
                     isDisplayLanguage={rawProps.isDisplayLanguage ?? true}
-                    onCodeChange={
-                        !isViewingHistory && !rawProps.disabled
-                            ? (newCode: string): void => {
-                                  form.setFieldValue(schema.name, newCode);
-                              }
-                            : undefined
-                    }
+                    onCodeChange={canEdit ? handleCodeChange : undefined}
                 />
             </CustomForm.Item>
         </CustomCol>

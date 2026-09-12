@@ -12,6 +12,7 @@ import type {
     FormEvaluationContext,
     SwitchCardFormFieldSchema,
 } from '@/app/(root)/scraping/features/types';
+import { useMemo } from 'react';
 import { FormDiffLabel } from '../FormDiffLabel';
 
 export type SwitchCardWidgetProps = {
@@ -27,18 +28,26 @@ export const SwitchCardWidget = ({
 }: SwitchCardWidgetProps) => {
     const { isViewingHistory } = useFeatureModalContext();
 
-    const labelText =
-        typeof schema.label === 'function' ? schema.label(evaluationContext) : schema.label;
+    const labelText = useMemo(
+        () => (typeof schema.label === 'function' ? schema.label(evaluationContext) : schema.label),
+        [evaluationContext, schema.label],
+    );
 
-    const desc =
-        typeof schema.description === 'function'
-            ? schema.description(evaluationContext)
-            : schema.description;
+    const desc = useMemo(
+        () =>
+            typeof schema.description === 'function'
+                ? schema.description(evaluationContext)
+                : schema.description,
+        [evaluationContext, schema.description],
+    );
 
-    const rawProps =
-        typeof schema.fieldProps === 'function'
-            ? schema.fieldProps(evaluationContext)
-            : schema.fieldProps || {};
+    const rawProps = useMemo(
+        () =>
+            typeof schema.fieldProps === 'function'
+                ? schema.fieldProps(evaluationContext)
+                : schema.fieldProps || {},
+        [evaluationContext, schema.fieldProps],
+    );
 
     return (
         <CustomCol {...colProps}>

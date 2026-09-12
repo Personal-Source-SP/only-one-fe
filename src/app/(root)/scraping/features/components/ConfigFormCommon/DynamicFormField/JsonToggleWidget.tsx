@@ -9,7 +9,7 @@ import {
     CustomTypography,
 } from '@/components/custom-antd';
 import { Icon } from '@iconify/react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useFeatureModalContext } from '@/app/(root)/scraping/features/context';
 import type {
     FormEvaluationContext,
@@ -35,20 +35,38 @@ export const JsonToggleWidget = ({
 
     const [hasContent, setHasContent] = useState<boolean>(Boolean(fieldValue?.trim()));
 
-    const rawProps =
-        (typeof schema.fieldProps === 'function'
-            ? schema.fieldProps(evaluationContext)
-            : schema.fieldProps) || {};
-    const iconName = (rawProps.icon as string) || 'lucide:code-2';
-    const defaultEmptyValue = (rawProps.defaultEmptyValue as string) || '{\n  \n}';
+    const rawProps = useMemo(
+        () =>
+            (typeof schema.fieldProps === 'function'
+                ? schema.fieldProps(evaluationContext)
+                : schema.fieldProps) || {},
+        [evaluationContext, schema.fieldProps],
+    );
 
-    const labelText =
-        typeof schema.label === 'function' ? schema.label(evaluationContext) : schema.label;
+    const iconName = useMemo(() => rawProps.icon || 'lucide:code-2', [rawProps.icon]);
 
-    const desc =
-        typeof schema.description === 'function'
-            ? schema.description(evaluationContext)
-            : schema.description;
+    const defaultEmptyValue = useMemo(
+        () => (rawProps.defaultEmptyValue as string) || '{\n  \n}',
+        [rawProps.defaultEmptyValue],
+    );
+
+    const labelText = useMemo(
+        () => (typeof schema.label === 'function' ? schema.label(evaluationContext) : schema.label),
+        [evaluationContext, schema.label],
+    );
+
+    const desc = useMemo(
+        () =>
+            typeof schema.description === 'function'
+                ? schema.description(evaluationContext)
+                : schema.description,
+        [evaluationContext, schema.description],
+    );
+
+    const canEdit = useMemo(
+        () => !isViewingHistory && !rawProps.disabled,
+        [isViewingHistory, rawProps.disabled],
+    );
 
     useEffect(() => {
         if (fieldValue && fieldValue.trim()) {
@@ -70,7 +88,15 @@ export const JsonToggleWidget = ({
                 form.setFieldValue(schema.name, undefined);
             }
         },
-        [fieldValue],
+        [defaultEmptyValue, fieldValue, form, schema.name],
+    );
+
+    const handleCodeChange = useCallback(
+        (newCode: string): void => {
+            cachedValueRef.current = newCode;
+            form.setFieldValue(schema.name, newCode);
+        },
+        [form, schema.name],
     );
 
     return (
@@ -109,16 +135,9 @@ export const JsonToggleWidget = ({
                     <CustomForm.Item name={schema.name} noStyle>
                         <CodeDisplay
                             language="json"
-                            code={fieldValue || ''}
-                            maxHeight={rawProps.maxHeight || '160px'}
-                            onCodeChange={
-                                !isViewingHistory && !rawProps.disabled
-                                    ? (newCode: string): void => {
-                                          cachedValueRef.current = newCode;
-                                          form.setFieldValue(schema.name, newCode);
-                                      }
-                                    : undefined
-                            }
+                            code={fieldValue}
+                            maxHeight={rawProps.maxHeight}
+                            onCodeChange={canEdit ? handleCodeChange : undefined}
                         />
                     </CustomForm.Item>
                 ) : (
