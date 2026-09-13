@@ -78,15 +78,15 @@ sequenceDiagram
 ```
 
 ## 3. Scope & Key Changes (Phạm vi & Thay đổi Chính)
-- [src/app/(public)/_components/auth/AuthHeroBanner.tsx](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/app/(public)/_components/auth/AuthHeroBanner.tsx): Banner hình ảnh công nghệ và thông điệp giá trị.
-- [src/app/(public)/_components/auth/AuthLayout.tsx](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/app/(public)/_components/auth/AuthLayout.tsx): Responsive split-screen layout grid.
-- [src/app/(public)/_components/auth/AuthCard.tsx](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/app/(public)/_components/auth/AuthCard.tsx): Container thẻ xác thực chuẩn hóa `<CustomCard>`.
-- [src/app/(public)/_components/auth/AuthSocialLogin.tsx](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/app/(public)/_components/auth/AuthSocialLogin.tsx): Nút đăng nhập Google OAuth.
-- [src/app/(public)/login/page.tsx](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/app/(public)/login/page.tsx): Trang đăng nhập hệ thống.
-- [src/app/(public)/register/page.tsx](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/app/(public)/register/page.tsx): Trang đăng ký tài khoản.
-- [src/app/(public)/forget-password/page.tsx](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/app/(public)/forget-password/page.tsx): Trang yêu cầu đặt lại mật khẩu.
-- [src/providers/data-provider.ts](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/providers/data-provider.ts): Axios interceptor `createSessionAxiosInstance` xử lý 401, retry queue và silent refresh.
-- [src/contexts/RefineContext.tsx](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/contexts/RefineContext.tsx): Quản lý `authProvider`, điều phối vòng đời đăng nhập, đăng xuất và làm mới phiên.
+- [src/app/(public)/_components/auth/AuthHeroBanner.tsx](file:///d:/Sources/Personal/only-one-fe/src/app/(public)/_components/auth/AuthHeroBanner.tsx): Banner hình ảnh công nghệ và thông điệp giá trị.
+- [src/app/(public)/_components/auth/AuthLayout.tsx](file:///d:/Sources/Personal/only-one-fe/src/app/(public)/_components/auth/AuthLayout.tsx): Responsive split-screen layout grid.
+- [src/app/(public)/_components/auth/AuthCard.tsx](file:///d:/Sources/Personal/only-one-fe/src/app/(public)/_components/auth/AuthCard.tsx): Container thẻ xác thực chuẩn hóa `<CustomCard>`.
+- [src/app/(public)/_components/auth/AuthSocialLogin.tsx](file:///d:/Sources/Personal/only-one-fe/src/app/(public)/_components/auth/AuthSocialLogin.tsx): Nút đăng nhập Google OAuth.
+- [src/app/(public)/login/page.tsx](file:///d:/Sources/Personal/only-one-fe/src/app/(public)/login/page.tsx): Trang đăng nhập hệ thống.
+- [src/app/(public)/register/page.tsx](file:///d:/Sources/Personal/only-one-fe/src/app/(public)/register/page.tsx): Trang đăng ký tài khoản.
+- [src/app/(public)/forget-password/page.tsx](file:///d:/Sources/Personal/only-one-fe/src/app/(public)/forget-password/page.tsx): Trang yêu cầu đặt lại mật khẩu.
+- [src/providers/data-provider.ts](file:///d:/Sources/Personal/only-one-fe/src/providers/data-provider.ts): Axios interceptor `createSessionAxiosInstance` xử lý 401, retry queue và silent refresh.
+- [src/contexts/RefineContext.tsx](file:///d:/Sources/Personal/only-one-fe/src/contexts/RefineContext.tsx): Quản lý `authProvider`, điều phối vòng đời đăng nhập, đăng xuất và làm mới phiên.
 
 ## 4. Verification Evidence & PR (Bằng chứng Nghiệm thu & PR)
 - **Trạng thái Test**: 100% Passed.

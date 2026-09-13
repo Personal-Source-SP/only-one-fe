@@ -4,7 +4,7 @@ title: Quản lý Điều hướng Phân hệ & Breadcrumbs Tập trung (Global 
 archived_at: 2026-09-04
 status: active
 references:
-  - only-one/archives/20260904-163000-scraping-discovery-module.md
+  - only-one/archives/20260913-154500-scraping-discovery-module.md
 affected_modules:
   - components/layout/section-tabs
   - libs/layout-helper
@@ -31,8 +31,8 @@ flowchart TD
 ```
 
 ## 3. Scope & Key Changes (Phạm vi & Thay đổi Chính)
-- [src/libs/layout-helper.ts](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/libs/layout-helper.ts): `getSectionBreadcrumbs(pathname)` phân tách pathname thành cây breadcrumb chuẩn hóa.
-- [src/components/layout/section-tabs/index.tsx](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/components/layout/section-tabs/index.tsx): Tích hợp `BreadcrumbNav` hiển thị dải breadcrumb khi `isSubRoute` thỏa mãn.
+- [src/libs/layout-helper.ts](file:///d:/Sources/Personal/only-one-fe/src/libs/layout-helper.ts): `getSectionBreadcrumbs(pathname)` phân tách pathname thành cây breadcrumb chuẩn hóa.
+- [src/components/layout/section-tabs/index.tsx](file:///d:/Sources/Personal/only-one-fe/src/components/layout/section-tabs/index.tsx): Tích hợp `BreadcrumbNav` hiển thị dải breadcrumb khi `isSubRoute` thỏa mãn.
 
 ## 4. Verification Evidence & PR (Bằng chứng Nghiệm thu)
 - **Trạng thái Test**: 100% Passed (`npx eslint src && npx tsc --noEmit` exit code 0).

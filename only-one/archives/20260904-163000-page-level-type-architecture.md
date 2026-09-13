@@ -4,7 +4,7 @@ title: Kiến trúc TypeScript Cấp Trang & Đồng vị Hóa Kiểu Dữ liệ
 archived_at: 2026-09-04
 status: active
 references:
-  - only-one/archives/20260904-163000-data-provider-management.md
+  - only-one/archives/20260913-154500-data-provider-and-features-architecture.md
 affected_modules:
   - interfaces
   - app/(root)/*
@@ -33,14 +33,14 @@ flowchart TD
 ```
 
 ## 3. Scope & Key Changes (Phạm vi & Thay đổi Chính)
-- [src/interfaces/](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/interfaces): Loại bỏ ambient domain namespaces, chỉ duy trì base contracts.
-- [src/app/(root)/scraping/data-providers/types.ts](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/app/(root)/scraping/data-providers/types.ts): Colocated data providers interfaces.
-- [src/app/(root)/scraping/features/[dataProviderId]/types.ts](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/app/(root)/scraping/features/[dataProviderId]/types.ts): Colocated feature interfaces.
-- [src/app/(root)/cloud-data/](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/app/(root)/cloud-data): Colocated cloud providers & items interfaces.
-- [src/app/(root)/google/](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/app/(root)/google): Colocated Google drive folders & files interfaces.
-- [src/app/(root)/schedule/](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/app/(root)/schedule): Colocated executions & jobs interfaces.
-- [src/app/(root)/simulation/](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/app/(root)/simulation): Colocated simulation contexts & items interfaces.
-- [src/app/(root)/setting/](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/app/(root)/setting): Colocated user & settings interfaces.
+- [src/interfaces/](file:///d:/Sources/Personal/only-one-fe/src/interfaces): Loại bỏ ambient domain namespaces, chỉ duy trì base contracts.
+- [src/app/(root)/scraping/data-providers/types.ts](file:///d:/Sources/Personal/only-one-fe/src/app/(root)/scraping/data-providers/types.ts): Colocated data providers interfaces.
+- [src/app/(root)/scraping/features/](file:///d:/Sources/Personal/only-one-fe/src/app/(root)/scraping/features): Colocated feature interfaces.
+- [src/app/(root)/cloud-data/](file:///d:/Sources/Personal/only-one-fe/src/app/(root)/cloud-data): Colocated cloud providers & items interfaces.
+- [src/app/(root)/google/](file:///d:/Sources/Personal/only-one-fe/src/app/(root)/google): Colocated Google drive folders & files interfaces.
+- [src/app/(root)/schedule/](file:///d:/Sources/Personal/only-one-fe/src/app/(root)/schedule): Colocated executions & jobs interfaces.
+- [src/app/(root)/simulation/](file:///d:/Sources/Personal/only-one-fe/src/app/(root)/simulation): Colocated simulation contexts & items interfaces.
+- [src/app/(root)/setting/](file:///d:/Sources/Personal/only-one-fe/src/app/(root)/setting): Colocated user & settings interfaces.
 
 ## 4. Verification Evidence & PR (Bằng chứng Nghiệm thu)
 - **Trạng thái Test**: 100% Passed (`npx eslint src && npx tsc --noEmit` exit code 0).
