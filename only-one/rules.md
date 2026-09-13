@@ -51,3 +51,5 @@
 - **[AVOID]** Storing active item IDs in persistent component state during modal initialization when the default behavior is to track the latest dynamic active item — Storing an ID on mount eagerly locks the view to stale cached data and ignores incoming background query updates.
 - **[ALWAYS]** Trigger query refetch (`query.refetch()`) upon modal re-open and after successful mutations for custom non-resource API endpoints that are not automatically invalidated by query cache managers.
 - **[AVOID]** Pairing `useCustomModalForm` with raw `<CustomModal>` and `<CustomForm>` — Always use the standard `<CustomModalForm>` wrapper from `@/components/common` to guarantee automatic binding of modal footer action buttons, form reset, responsive layout, and loading states.
+- **[NEVER]** Use catastrophic backtracking regex patterns like `([^"\\]|\\.)*` combined with lookahead/trailing matches (`\s*:`) for code/JSON syntax highlighters — Always use linear single-pass tokenization (`"(?:[^"\\]|\\.)*"`) and `useMemo` to prevent freezing the browser main thread.
+

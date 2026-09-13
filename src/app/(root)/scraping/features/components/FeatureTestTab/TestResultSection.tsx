@@ -11,9 +11,16 @@ import {
 import { FEATURE_SECTION_CONTAINER_CLASS } from '../../constants';
 import { useFeatureTestContext } from '../../context';
 import { SectionHeader } from '../ConfigFormCommon';
+import { useMemo } from 'react';
 
 export const TestResultSection = () => {
     const { testResult, errorMessage } = useFeatureTestContext();
+
+    const formattedCode = useMemo(
+        () => (testResult ? JSON.stringify(testResult, null, 2) : ''),
+        [testResult],
+    );
+
     return (
         <>
             {errorMessage && (
@@ -35,7 +42,7 @@ export const TestResultSection = () => {
                 />
 
                 {testResult ? (
-                    <CodeDisplay language="json" code={JSON.stringify(testResult, null, 2)} />
+                    <CodeDisplay language="json" code={formattedCode} />
                 ) : (
                     <CustomEmpty
                         description={

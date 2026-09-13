@@ -22,7 +22,7 @@ import {
 } from '@ant-design/icons';
 import * as jsBeautify from 'js-beautify';
 import dynamic from 'next/dynamic';
-import { CSSProperties, useEffect, useState } from 'react';
+import { CSSProperties, useEffect, useMemo, useState } from 'react';
 import ReactDiffViewer from 'react-diff-viewer-continued';
 
 const CustomMonacoEditor = dynamic(
@@ -109,15 +109,33 @@ export const CodeDisplay = ({
     }, [code]);
 
     const highlightJSON = (jsonString: string = '') => {
-        return (jsonString || '')
-            .replace(/("([^"\\]|\\.)*")\s*:/g, '<span class="text-blue-600 font-medium">$1</span>:')
-            .replace(/:\s*("([^"\\]|\\.)*")/g, ': <span class="text-green-600">$1</span>')
-            .replace(
-                /:\s*(true|false|null)/g,
-                ': <span class="text-purple-600 font-medium">$1</span>',
-            )
-            .replace(/:\s*(\d+\.?\d*)/g, ': <span class="text-orange-600 font-medium">$1</span>')
-            .replace(/([{}[\],])/g, '<span class="text-gray-700 font-bold">$1</span>');
+        if (!jsonString) return '';
+        const escaped = jsonString
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+
+        return escaped.replace(
+            /("(?:[^"\\]|\\.)*")(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+-]?\d+)?|[{}[\],]/g,
+            (match, p1, p2, p3) => {
+                if (p1) {
+                    if (p2) {
+                        return `<span class="text-blue-600 font-medium">${p1}</span>${p2}`;
+                    }
+                    return `<span class="text-green-600">${p1}</span>`;
+                }
+                if (p3) {
+                    return `<span class="text-purple-600 font-medium">${match}</span>`;
+                }
+                if (/^-?\d/.test(match)) {
+                    return `<span class="text-orange-600 font-medium">${match}</span>`;
+                }
+                if (/[{}[\],]/.test(match)) {
+                    return `<span class="text-gray-700 font-bold">${match}</span>`;
+                }
+                return match;
+            },
+        );
     };
 
     const handleCopy = async () => {
@@ -261,6 +279,19 @@ export const CodeDisplay = ({
         );
     };
 
+    const highlightedCode = useMemo(() => {
+        const safeCode = editedCode || '';
+        if (language === 'json') {
+            return highlightJSON(safeCode);
+        }
+        return safeCode
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }, [editedCode, language]);
+
     const renderInput = () => {
         if (!isEditing) {
             return (
@@ -271,15 +302,7 @@ export const CodeDisplay = ({
                     <code
                         className="text-gray-700"
                         dangerouslySetInnerHTML={{
-                            __html:
-                                language === 'json'
-                                    ? highlightJSON(editedCode || '')
-                                    : (editedCode || '')
-                                          .replace(/&/g, '&amp;')
-                                          .replace(/</g, '&lt;')
-                                          .replace(/>/g, '&gt;')
-                                          .replace(/"/g, '&quot;')
-                                          .replace(/'/g, '&#039;'),
+                            __html: highlightedCode,
                         }}
                     />
                 </pre>

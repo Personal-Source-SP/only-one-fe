@@ -9,10 +9,10 @@ export const FeatureTestTab = () => {
     return (
         <FeatureTestProvider>
             <CustomRow gutter={[16, 16]}>
-                <CustomCol xs={24} lg={10}>
+                <CustomCol span={24}>
                     <TestInputSection />
                 </CustomCol>
-                <CustomCol xs={24} lg={14}>
+                <CustomCol span={24}>
                     <TestResultSection />
                 </CustomCol>
             </CustomRow>
