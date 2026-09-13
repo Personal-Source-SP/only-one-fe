@@ -70,6 +70,12 @@ const generateFilter = (filters?: CrudFilters): Record<string, string> => {
     return queryFilters;
 };
 
+const appendQueryParams = (baseUrl: string, params: Record<string, any>): string => {
+    const queryString = qs.stringify(params, { skipNull: true, skipEmptyString: true });
+    if (!queryString) return baseUrl;
+    return `${baseUrl}${baseUrl.includes('?') ? '&' : '?'}${queryString}`;
+};
+
 export const getSessionToken = (session: Session | null): string | undefined => {
     return session?.user?.accessToken;
 };
@@ -271,9 +277,11 @@ export const RestServer = (
         if (generatedSort) queryPagination.sortBy = generatedSort;
 
         const url = `${apiUrl}/${resource}`;
-        const { data: apiResponseData } = await httpClient.get(
-            `${url}?${qs.stringify(queryPagination)}&${qs.stringify(queryFilters)}`,
-        );
+        const requestUrl = appendQueryParams(url, {
+            ...queryPagination,
+            ...queryFilters,
+        });
+        const { data: apiResponseData } = await httpClient.get(requestUrl);
 
         const unwrapped = unwrapResponseData(apiResponseData);
 
@@ -286,9 +294,9 @@ export const RestServer = (
     },
 
     getMany: async ({ resource, ids }) => {
-        const { data: apiResponseData } = await httpClient.get(
-            `${apiUrl}/${resource}?${qs.stringify({ id: ids })}`,
-        );
+        const url = `${apiUrl}/${resource}`;
+        const requestUrl = appendQueryParams(url, { id: ids });
+        const { data: apiResponseData } = await httpClient.get(requestUrl);
         const unwrapped = unwrapResponseData(apiResponseData);
         return { data: unwrapped.data };
     },
