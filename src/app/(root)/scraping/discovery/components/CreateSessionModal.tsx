@@ -1,104 +1,100 @@
 'use client';
 
+import { DataProviderFeatureType } from '@/app/(root)/scraping/features/enums';
+import { CustomModalForm } from '@/components/common';
 import {
     CustomForm,
     CustomInput,
     CustomInputNumber,
-    CustomModal,
     CustomSelect,
     type CustomSelectProps,
 } from '@/components/custom-antd';
-import { useEffect } from 'react';
-import type { CreateSessionFormValues } from '../types';
+import type { ISearchTargetConfig } from '@/app/(root)/scraping/features/types';
+import type { useSelectDataProvider, UseCustomModalFormResponse } from '@/hooks';
+import type { CreateSessionFormValues, IDiscoverySession } from '../types';
 
 interface CreateSessionModalProps {
-    open: boolean;
-    loading?: boolean;
+    modalForm: UseCustomModalFormResponse<
+        IDiscoverySession,
+        CreateSessionFormValues,
+        IDiscoverySession
+    >;
     dataProviderOptions?: CustomSelectProps['options'];
-    onCancel: () => void;
-    onSubmit: (values: CreateSessionFormValues) => void;
+    dataProviderQuery?: ReturnType<typeof useSelectDataProvider>['query'];
 }
 
 export const CreateSessionModal = ({
-    open,
-    loading = false,
+    modalForm,
     dataProviderOptions,
-    onCancel,
-    onSubmit,
+    dataProviderQuery,
 }: CreateSessionModalProps) => {
-    const [form] = CustomForm.useForm<CreateSessionFormValues>();
+    const { formProps } = modalForm;
 
-    useEffect(() => {
-        if (open) {
-            form.resetFields();
-            form.setFieldsValue({ depth: 1 });
+    const handleDataProviderChange = (value?: string) => {
+        if (!value) {
+            formProps.form?.setFieldValue('maxUrls', undefined);
+            return;
         }
-    }, [open, form]);
 
-    const handleOk = async () => {
-        const values = await form.validateFields();
-        const rawKeywords = values.targetKeywords;
-        const targetKeywords = rawKeywords
-            ? rawKeywords
-                  .split(',')
-                  .map((k) => k.trim())
-                  .filter(Boolean)
-            : [];
-
-        onSubmit({
-            dataProviderId: values.dataProviderId,
-            targetKeywords,
-            depth: values.depth,
-            maxUrls: values.maxUrls,
-        });
+        const dataProvider = dataProviderQuery?.data?.data?.find((item) => item.id === value);
+        const searchFeature = dataProvider?.features?.find(
+            (f) => f.type === DataProviderFeatureType.SEARCH,
+        );
+        const searchConfig = searchFeature?.config as ISearchTargetConfig | undefined;
+        formProps.form?.setFieldValue('maxUrls', searchConfig?.maxResults ?? undefined);
     };
 
     return (
-        <CustomModal
-            centered
-            open={open}
+        <CustomModalForm<IDiscoverySession, CreateSessionFormValues, IDiscoverySession>
+            width={720}
             cancelText="Hủy"
-            onOk={handleOk}
-            onCancel={onCancel}
-            confirmLoading={loading}
+            modalForm={modalForm}
             okText="Bắt đầu khám phá"
             title="Khởi tạo phiên khám phá mới (Discovery Session)"
+            createInitialValues={{
+                depth: 1,
+                dataProviderId: '',
+                targetKeywords: [],
+                maxUrls: undefined,
+            }}
         >
-            <CustomForm form={form} layout="vertical">
-                <CustomForm.Item
-                    name="dataProviderId"
-                    label="Nhà cung cấp dữ liệu"
-                    rules={[{ required: true, message: 'Vui lòng chọn nhà cung cấp' }]}
-                >
-                    <CustomSelect placeholder="Chọn nhà cung cấp" options={dataProviderOptions} />
-                </CustomForm.Item>
+            <CustomForm.Item
+                name="dataProviderId"
+                label="Nhà cung cấp dữ liệu"
+                rules={[{ required: true, message: 'Vui lòng chọn nhà cung cấp' }]}
+            >
+                <CustomSelect
+                    allowClear
+                    options={dataProviderOptions}
+                    placeholder="Chọn nhà cung cấp"
+                    onChange={handleDataProviderChange}
+                />
+            </CustomForm.Item>
 
-                <CustomForm.Item
-                    name="targetKeywords"
-                    label="Từ khóa sản phẩm mục tiêu (Target Keywords)"
-                >
-                    <CustomInput.TextArea
-                        rows={3}
-                        placeholder="Nhập các từ khóa cách nhau bởi dấu phẩy (ví dụ: Sony WH-1000XM4, iPhone 15 Pro, ...)"
-                    />
-                </CustomForm.Item>
+            <CustomForm.Item
+                name="targetKeywords"
+                label="Từ khóa sản phẩm mục tiêu (Target Keywords)"
+            >
+                <CustomSelect
+                    mode="tags"
+                    tokenSeparators={[',']}
+                    placeholder="Nhập các từ khóa cách nhau bởi dấu phẩy hoặc phím Enter (ví dụ: Sony WH-1000XM4, iPhone 15 Pro, ...)"
+                />
+            </CustomForm.Item>
 
-                <CustomForm.Item name="depth" label="Độ sâu thu thập (Crawl Depth)">
-                    <CustomInputNumber min={1} max={5} className="w-full" />
-                </CustomForm.Item>
+            <CustomForm.Item name="depth" label="Độ sâu thu thập (Crawl Depth)">
+                <CustomInputNumber min={1} max={5} className="w-full" />
+            </CustomForm.Item>
 
-                <CustomForm.Item
-                    name="maxUrls"
-                    label="Giới hạn URLs tối đa (Max URLs - Tùy chọn override)"
-                >
-                    <CustomInputNumber
-                        min={1}
-                        max={1000}
-                        className="w-full"
-                        placeholder="Mặc định lấy theo cấu hình Search"
-                    />
-                </CustomForm.Item>
-            </CustomForm>
-        </CustomModal>
+            <CustomForm.Item
+                name="maxUrls"
+                label="Giới hạn URLs tối đa (Max URLs - Tùy chọn override)"
+            >
+                <CustomInputNumber
+                    className="w-full"
+                    placeholder="Mặc định lấy theo cấu hình Search"
+                />
+            </CustomForm.Item>
+        </CustomModalForm>
     );
 };

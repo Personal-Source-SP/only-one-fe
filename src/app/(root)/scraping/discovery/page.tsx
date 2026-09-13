@@ -22,13 +22,11 @@ const DiscoveryPage = () => {
     const {
         sessions,
         isLoading,
-        isCreating,
-        isCreateModalOpen,
+        createModalForm,
         dataProviderOptions,
+        dataProviderQuery,
         setSearchTerm,
-        setIsCreateModalOpen,
         setSelectedProviderId,
-        handleCreateSession,
     } = useDiscoveryPage();
 
     const columns: ColumnsType<IDiscoverySession> = [
@@ -96,7 +94,7 @@ const DiscoveryPage = () => {
                 <CustomButton
                     type="primary"
                     icon={<PlusOutlined />}
-                    onClick={() => setIsCreateModalOpen(true)}
+                    onClick={() => createModalForm.show()}
                 >
                     Tạo phiên khám phá
                 </CustomButton>
@@ -134,11 +132,9 @@ const DiscoveryPage = () => {
                 />
             </ListWrapper>
             <CreateSessionModal
-                loading={isCreating}
-                open={isCreateModalOpen}
-                onSubmit={handleCreateSession}
+                modalForm={createModalForm}
+                dataProviderQuery={dataProviderQuery}
                 dataProviderOptions={dataProviderOptions}
-                onCancel={() => setIsCreateModalOpen(false)}
             />
         </>
     );

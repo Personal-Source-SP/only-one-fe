@@ -1,21 +1,30 @@
 import type { IDataProvider } from '@/app/(root)/scraping/data-providers/types';
 import type { Abstract } from '@/interfaces';
-import type { DiscoverySessionStatus } from '../enums';
+import type { DiscoverySessionStatus, ValidationBatchStatus } from '../enums';
 
 export interface IDiscoverySession extends Abstract {
     sessionCode: string;
     dataProviderId: string;
-    dataProvider?: IDataProvider;
     targetUrl: string;
     targetKeywords?: string[];
     status: DiscoverySessionStatus;
-    totalDiscovered: number;
-    totalValidated: number;
-    totalQueued: number;
     depth: number;
-    maxUrls: number;
+    maxUrls?: number;
+    autoValidate: boolean;
+    totalDiscovered: number;
+    totalQueued: number;
+    totalValidated: number;
+    validationStatus: ValidationBatchStatus;
+    matchedUrls: number;
+    noMatchUrls: number;
+    validationStartedAt?: Date;
+    validationCompletedAt?: Date;
+    validationReasonCancelled?: string;
     durationSeconds?: number;
     errorMessage?: string;
+
+    // Relations
+    dataProvider?: IDataProvider;
 }
 
 export interface CreateSessionFormValues {
@@ -23,6 +32,7 @@ export interface CreateSessionFormValues {
     targetKeywords?: string[];
     depth?: number;
     maxUrls?: number;
+    autoValidate?: boolean;
 }
 
 export interface ISessionSummaryResponse {

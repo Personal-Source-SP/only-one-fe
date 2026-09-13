@@ -5,17 +5,16 @@ import {
     DataProviderFeatureType,
 } from '@/app/(root)/scraping/features/enums';
 import { API_ENDPOINT } from '@/config';
-import { useCustomList, useCustomMutationData, useSelectDataProvider } from '@/hooks';
+import { useCustomList, useCustomModalForm, useSelectDataProvider } from '@/hooks';
 import type { CrudFilter } from '@refinedev/core';
 import { useMemo, useState } from 'react';
 import type { CreateSessionFormValues, IDiscoverySession } from './types';
 
 export const useDiscoveryPage = () => {
     const [searchTerm, setSearchTerm] = useState('');
-    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [selectedProviderId, setSelectedProviderId] = useState<string>();
 
-    const { options: dataProviderOptions } = useSelectDataProvider({
+    const { options: dataProviderOptions, query: dataProviderQuery } = useSelectDataProvider({
         filter: (provider) =>
             provider.features?.some(
                 (f) =>
@@ -23,7 +22,6 @@ export const useDiscoveryPage = () => {
                     f.status === DataProviderFeatureStatus.READY,
             ) ?? false,
     });
-    const { handleCustomMutationData, mutation } = useCustomMutationData();
 
     const filters: CrudFilter[] = useMemo(() => {
         const list: CrudFilter[] = [];
@@ -55,35 +53,40 @@ export const useDiscoveryPage = () => {
         resource: API_ENDPOINT.DISCOVERY_SESSIONS.BASE,
     });
 
-    const handleCreateSession = async (values: CreateSessionFormValues) => {
-        await handleCustomMutationData({
-            method: 'post',
-            url: API_ENDPOINT.DISCOVERY_SESSIONS.BASE,
-            values: {
+    const createModalForm = useCustomModalForm<
+        IDiscoverySession,
+        CreateSessionFormValues,
+        IDiscoverySession
+    >({
+        action: 'create',
+        resource: API_ENDPOINT.DISCOVERY_SESSIONS.BASE,
+        successMessage: 'Tạo phiên khám phá thành công',
+        onMutationSuccess: async () => {
+            await refetch();
+        },
+        onFinish: (values) => {
+            const rawKeywords = values.targetKeywords;
+            const targetKeywords = Array.isArray(rawKeywords)
+                ? rawKeywords.map((k) => k.trim()).filter(Boolean)
+                : undefined;
+
+            return {
+                ...values,
+                targetKeywords,
                 depth: values.depth || 1,
-                maxUrls: values.maxUrls,
-                dataProviderId: values.dataProviderId,
-                targetKeywords: values.targetKeywords,
-            },
-            successMessage: 'Tạo phiên khám phá thành công',
-            onSuccess: () => {
-                setIsCreateModalOpen(false);
-                refetch();
-            },
-        });
-    };
+            };
+        },
+    });
 
     return {
         sessions,
         isLoading,
+        searchTerm,
+        createModalForm,
+        dataProviderQuery,
         dataProviderOptions,
         selectedProviderId,
-        setSelectedProviderId,
-        searchTerm,
         setSearchTerm,
-        isCreateModalOpen,
-        setIsCreateModalOpen,
-        isCreating: mutation.mutation.isPending,
-        handleCreateSession,
+        setSelectedProviderId,
     };
 };
