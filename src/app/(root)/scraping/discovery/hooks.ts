@@ -15,12 +15,8 @@ export const useDiscoveryPage = () => {
     const [selectedProviderId, setSelectedProviderId] = useState<string>();
 
     const { options: dataProviderOptions, query: dataProviderQuery } = useSelectDataProvider({
-        filter: (provider) =>
-            provider.features?.some(
-                (f) =>
-                    f.type === DataProviderFeatureType.SEARCH &&
-                    f.status === DataProviderFeatureStatus.READY,
-            ) ?? false,
+        featureType: DataProviderFeatureType.SEARCH,
+        featureStatus: DataProviderFeatureStatus.READY,
     });
 
     const filters: CrudFilter[] = useMemo(() => {

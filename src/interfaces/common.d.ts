@@ -28,10 +28,10 @@ export interface SectionTab {
     label: string;
 }
 
-export interface Option {
+export interface Option<T = string | number> {
+    value: T;
     label: string;
     key?: string;
-    value?: string | number;
 }
 
 export type IDataOption = Option;

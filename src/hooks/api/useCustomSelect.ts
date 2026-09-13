@@ -1,12 +1,17 @@
-import { useMemo } from 'react';
 import type { ICloudDataProvider } from '@/app/(root)/cloud-data/providers/types';
 import type { IGoogleDriveFolder } from '@/app/(root)/google/drive/folders/types';
 import type { IDataProvider } from '@/app/(root)/scraping/data-providers/types';
+import type {
+    DataProviderFeatureStatus,
+    DataProviderFeatureType,
+} from '@/app/(root)/scraping/features/enums';
 import type { IItem } from '@/app/(root)/scraping/items/types';
 import type { IDataProviderItem } from '@/app/(root)/scraping/provider-items/types';
 import type { ISimulationContext } from '@/app/(root)/simulation/contexts/types';
 import { API_ENDPOINT } from '@/config';
+import type { Option } from '@/interfaces';
 import { BaseRecord, CrudFilter, useSelect } from '@refinedev/core';
+import { useMemo } from 'react';
 
 interface IUseSelectProps<T extends BaseRecord = any> {
     id?: string;
@@ -14,12 +19,10 @@ interface IUseSelectProps<T extends BaseRecord = any> {
     enabled?: boolean;
     defaultFilters?: CrudFilter[];
     type?: 'items' | 'data-provider' | 'data-provider-items';
-    optionValue?: (item: T) => string;
-    optionLabel?: (item: T) => string;
     filter?: (item: T) => boolean;
-    transform?: (
-        options: Array<{ label: string; value: string }>,
-    ) => Array<{ label: string; value: string }>;
+    optionLabel?: (item: T) => string;
+    optionValue?: (item: T) => string;
+    transform?: (options: Option<string>[]) => Option<string>[];
 }
 
 export const useCustomSelect = <T extends BaseRecord = any>(props: IUseSelectProps<T>) => {
@@ -80,10 +83,27 @@ export const useSelectDataProviderItem = (props?: IUseSelectProps<IDataProviderI
     });
 };
 
-export const useSelectDataProvider = (props?: IUseSelectProps<IDataProvider>) => {
+export interface IUseSelectDataProviderProps extends IUseSelectProps<IDataProvider> {
+    withFeatures?: boolean;
+    featureType?: DataProviderFeatureType;
+    featureStatus?: DataProviderFeatureStatus;
+}
+
+export const useSelectDataProvider = (props?: IUseSelectDataProviderProps) => {
+    let resource = API_ENDPOINT.DATA_PROVIDERS.ALL;
+    if (props?.withFeatures || props?.featureType || props?.featureStatus) {
+        const queryParams = new URLSearchParams();
+        if (props?.featureType) queryParams.set('featureType', props.featureType);
+        if (props?.featureStatus) queryParams.set('featureStatus', props.featureStatus);
+        const queryString = queryParams.toString();
+        resource = queryString
+            ? `${API_ENDPOINT.DATA_PROVIDERS.ALL_WITH_FEATURES}?${queryString}`
+            : API_ENDPOINT.DATA_PROVIDERS.ALL_WITH_FEATURES;
+    }
+
     return useCustomSelect({
         ...props,
-        resource: API_ENDPOINT.DATA_PROVIDERS.ALL,
+        resource: props?.resource ?? resource,
         enabled: props?.enabled ?? true,
         optionValue: props?.optionValue ?? ((item: IDataProvider) => item.id ?? ''),
         optionLabel:
