@@ -14,10 +14,10 @@ const DiscoveryDetailPage = () => {
     const {
         session,
         urls,
+        tableProps,
+        tableQuery,
         isLoading,
         queuedCount,
-        selectedRowKeys,
-        setSelectedRowKeys,
         columns,
         actions,
         filters,
@@ -32,19 +32,16 @@ const DiscoveryDetailPage = () => {
                 queuedCount={queuedCount}
             />
 
-            <ListWrapper actions={actions} filters={<FilterPanel fields={filters} />}>
+            <ListWrapper
+                actions={actions}
+                error={tableQuery.error}
+                isLoading={isLoading}
+                filters={<FilterPanel fields={filters} />}
+            >
                 <ListTable<IDiscoveryUrl>
                     columns={columns}
-                    tableProps={{
-                        dataSource: urls,
-                        rowKey: 'id',
-                        loading: isLoading,
-                        rowSelection: {
-                            selectedRowKeys,
-                            onChange: (keys) => setSelectedRowKeys(keys as string[]),
-                        },
-                        pagination: { pageSize: 10, showSizeChanger: true },
-                    }}
+                    tableProps={tableProps}
+                    tableQuery={tableQuery}
                 />
             </ListWrapper>
         </CustomSpace>

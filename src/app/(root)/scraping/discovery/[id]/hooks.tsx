@@ -13,18 +13,19 @@ import {
     CustomTag,
     CustomTypography,
     type ColumnsType,
+    type TableProps,
 } from '@/components/custom-antd';
 import { API_ENDPOINT } from '@/config';
-import { useCustomList, useCustomMutationData, useCustomOne } from '@/hooks';
+import { useCustomMutationData, useCustomOne, useCustomTable } from '@/hooks';
 import { formatDate } from '@/libs';
 import { CheckCircleOutlined, SendOutlined } from '@ant-design/icons';
 import { Icon } from '@iconify/react';
-import type { CrudFilter } from '@refinedev/core';
+import type React from 'react';
 import { useMemo, useState } from 'react';
 
 export const useDiscoveryDetailPage = (id: string) => {
-    const [searchTerm, setSearchTerm] = useState('');
     const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([]);
+
     const { handleCustomMutationData, mutation } = useCustomMutationData();
 
     // 1. Query Session Details
@@ -32,40 +33,32 @@ export const useDiscoveryDetailPage = (id: string) => {
         data: session,
         query: { isLoading: isSessionLoading, refetch: refetchSession },
     } = useCustomOne<IDiscoverySession>({
-        resource: API_ENDPOINT.DISCOVERY_SESSIONS.BASE,
         id,
         enabled: Boolean(id),
+        resource: API_ENDPOINT.DISCOVERY_SESSIONS.BASE,
     });
 
-    // 2. Query Discovered URLs
-    const queryFilters: CrudFilter[] = useMemo(() => {
-        const list: CrudFilter[] = [
-            {
-                field: 'sessionId',
-                operator: 'eq',
-                value: id,
-            },
-        ];
-        if (searchTerm) {
-            list.push({
-                field: 'search',
-                operator: 'contains',
-                value: searchTerm,
-            });
-        }
-        return list;
-    }, [id, searchTerm]);
-
-    const {
-        data: urls = [],
-        query: { isLoading: isUrlsLoading, refetch: refetchUrls },
-    } = useCustomList<IDiscoveryUrl>({
+    // 2. Query Discovered URLs via useCustomTable
+    const { tableProps, tableQuery, debouncedSearch } = useCustomTable<IDiscoveryUrl>({
         resource: API_ENDPOINT.DISCOVERY_URLS.BASE,
-        filters: queryFilters,
+        filters: {
+            permanent: [
+                {
+                    field: 'sessionId',
+                    operator: 'eq',
+                    value: id,
+                },
+            ],
+        },
         queryOptions: {
             enabled: Boolean(id),
         },
     });
+
+    const urls = useMemo(
+        () => (tableProps.dataSource ?? []) as unknown as IDiscoveryUrl[],
+        [tableProps.dataSource],
+    );
 
     const queuedCount = useMemo(
         () => urls.filter((u) => u.status === DiscoveryUrlStatus.QUEUED).length,
@@ -81,7 +74,7 @@ export const useDiscoveryDetailPage = (id: string) => {
             successMessage: `Đã đẩy ${selectedRowKeys.length} URLs vào hàng đợi cào`,
             onSuccess: () => {
                 setSelectedRowKeys([]);
-                refetchUrls();
+                tableQuery.refetch();
                 refetchSession();
             },
         });
@@ -94,7 +87,7 @@ export const useDiscoveryDetailPage = (id: string) => {
             method: 'post',
             successMessage: 'Bắt đầu quá trình đánh giá chất lượng URLs',
             onSuccess: () => {
-                refetchUrls();
+                tableQuery.refetch();
                 refetchSession();
             },
         });
@@ -234,16 +227,31 @@ export const useDiscoveryDetailPage = (id: string) => {
                 name: 'search',
                 type: 'input',
                 placeholder: 'Tìm kiếm theo URL hoặc tiêu đề...',
-                onChange: (val) => setSearchTerm(val?.toString() || ''),
+                onChange: (val) => debouncedSearch(val?.toString() || ''),
             },
         ],
-        [setSearchTerm],
+        [debouncedSearch],
+    );
+
+    const mergedTableProps: TableProps<IDiscoveryUrl> = useMemo(
+        () =>
+            ({
+                ...tableProps,
+                dataSource: urls,
+                rowSelection: {
+                    selectedRowKeys,
+                    onChange: (keys: React.Key[]) => setSelectedRowKeys(keys as string[]),
+                },
+            }) as TableProps<IDiscoveryUrl>,
+        [tableProps, urls, selectedRowKeys],
     );
 
     return {
         session,
         urls,
-        isLoading: isSessionLoading || isUrlsLoading,
+        tableProps: mergedTableProps,
+        tableQuery,
+        isLoading: isSessionLoading || tableQuery.isLoading,
         isEnqueuing: mutation.mutation.isPending,
         queuedCount,
         selectedRowKeys,
@@ -252,7 +260,7 @@ export const useDiscoveryDetailPage = (id: string) => {
         actions,
         filters,
         refetchAll: () => {
-            refetchUrls();
+            tableQuery.refetch();
             refetchSession();
         },
     };
