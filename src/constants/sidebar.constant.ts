@@ -142,6 +142,12 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
                 href: '/setting/appearance',
                 description: 'Tông màu và hiển thị giao diện',
             },
+            {
+                label: 'Hệ thống & Tunnel',
+                icon: 'noto:control-knobs',
+                href: '/setting/system',
+                description: 'Cấu hình Endpoint và Cloudflare Tunnel',
+            },
         ],
     },
 ];

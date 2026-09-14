@@ -29,6 +29,7 @@ export * from './custom-pagination';
 export * from './custom-picker';
 export * from './custom-popconfirm';
 export * from './custom-popover';
+export * from './custom-radio';
 export * from './custom-result';
 export * from './custom-row-col';
 export * from './custom-segmented';
