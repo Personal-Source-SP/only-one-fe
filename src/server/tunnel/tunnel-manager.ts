@@ -7,11 +7,11 @@ import type {
 } from '@/app/(root)/setting/system/types';
 
 class TunnelManager {
-    private process: ChildProcess | null = null;
     private status: TunnelStatus = 'idle';
     private publicUrl: string | null = null;
-    private activeMode: TunnelMode | null = null;
     private errorMessage: string | null = null;
+    private process: ChildProcess | null = null;
+    private activeMode: TunnelMode | null = null;
 
     constructor() {
         if (typeof process !== 'undefined') {
@@ -42,15 +42,16 @@ class TunnelManager {
         if (!isInstalled) {
             this.status = 'error';
             this.errorMessage =
-                'cloudflared chưa được cài đặt trên máy. Vui lòng cài đặt cloudflared trước.';
+                'Cloudflared chưa được cài đặt trên máy. Vui lòng cài đặt cloudflared trước.';
+
             return this.getStatus();
         }
 
         const port = process.env.PORT || '4000';
+        this.publicUrl = null;
+        this.errorMessage = null;
         this.status = 'starting';
         this.activeMode = config.mode;
-        this.errorMessage = null;
-        this.publicUrl = null;
 
         try {
             if (config.mode === 'named') {
@@ -58,12 +59,13 @@ class TunnelManager {
                     this.status = 'error';
                     this.errorMessage =
                         'Thiếu Cloudflare Tunnel Token cho chế độ Fixed Named Tunnel.';
+
                     return this.getStatus();
                 }
 
-                this.process = spawn('cloudflared', ['tunnel', 'run', '--token', config.token]);
-                this.publicUrl = config.customUrl || null;
                 this.status = 'connected';
+                this.publicUrl = config.customUrl || null;
+                this.process = spawn('cloudflared', ['tunnel', 'run', '--token', config.token]);
             } else {
                 this.process = spawn('cloudflared', [
                     'tunnel',
@@ -73,11 +75,13 @@ class TunnelManager {
             }
 
             this.setupProcessListeners();
+
             return this.getStatus();
         } catch (error: unknown) {
             const err = error as Error;
             this.status = 'error';
             this.errorMessage = err?.message || 'Lỗi khi khởi chạy tiến trình cloudflared';
+
             return this.getStatus();
         }
     }
@@ -89,6 +93,7 @@ class TunnelManager {
             } catch {
                 // Ignore kill errors
             }
+
             this.process = null;
         }
 

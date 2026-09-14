@@ -7,6 +7,7 @@ export async function POST(req: NextRequest) {
         const body = (await req.json()) as TunnelConfigDto;
         const manager = getTunnelManager();
         const result = await manager.start(body || { mode: 'quick' });
+
         return NextResponse.json(result, { status: 200 });
     } catch (error: unknown) {
         const err = error as Error;
