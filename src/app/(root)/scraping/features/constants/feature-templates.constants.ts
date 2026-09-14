@@ -10,11 +10,14 @@ const extractData = (html) => {
 };
 `;
 
-export const DEFAULT_SEARCH_FUNCTION_GENERATOR = `
+export const DEFAULT_SEARCH_FUNCTION_GENERATOR =
+    `
 const searchData = (html) => {
   const $ = cheerio.load(html);
   try {
-    const productElements = $('\${resultSelector}');
+    const productElements = $('` +
+    '${resultSelector}' +
+    `');
     const results = [];
 
     productElements.each((_, element) => {

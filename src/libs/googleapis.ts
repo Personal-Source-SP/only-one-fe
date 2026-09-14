@@ -1,6 +1,12 @@
 import { env } from '@/config';
-import { GOOGLE_SCOPES } from '@/constants';
 import axios from 'axios';
+
+export const GOOGLE_SCOPES = [
+    'email', // Lấy địa chỉ email của người dùng
+    'profile', // Lấy thông tin profile cơ bản của người dùng (tên, avatar, ...)
+    'https://www.googleapis.com/auth/drive.metadata.readonly', // Đọc metadata file & thư mục
+    'https://www.googleapis.com/auth/drive.readonly', // Truy cập chỉ-đọc vào tất cả file, thư mục
+];
 
 export interface IGoogleExchangeCodeRequest {
     access_token: string;

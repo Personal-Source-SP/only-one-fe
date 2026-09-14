@@ -1,10 +1,10 @@
+import { DataProviderFeatureType, ScraperServiceEnum } from '../enums';
 import {
     DEFAULT_API_FUNCTION_GENERATOR,
     DEFAULT_PARSER_FUNCTION_GENERATOR,
     DEFAULT_SEARCH_API_FUNCTION_GENERATOR,
     DEFAULT_SEARCH_FUNCTION_GENERATOR,
-} from '@/constants';
-import { DataProviderFeatureType, ScraperServiceEnum } from '../enums';
+} from './feature-templates.constants';
 
 export const FEATURE_MODAL_WIDTH = 900;
 export const FEATURE_SECTION_CONTAINER_CLASS =

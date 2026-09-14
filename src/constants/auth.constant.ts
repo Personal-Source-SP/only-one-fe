@@ -1,3 +1,5 @@
+export const AUTH_PUBLIC_PAGES = ['/login', '/register', '/forget-password'];
+
 /** User-safe messages for public auth flows (Vietnamese, no i18n layer). */
 export const AUTH_SIGN_IN_DEFAULT_FAILURE_MESSAGE =
     'Đăng nhập thất bại. Vui lòng kiểm tra lại email và mật khẩu.';

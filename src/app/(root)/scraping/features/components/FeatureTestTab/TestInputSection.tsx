@@ -9,9 +9,8 @@ import {
     CustomSpace,
     CustomTooltip,
 } from '@/components/custom-antd';
-import { DEFAULT_HTML_CONTENT_STRING } from '@/constants';
 import { Icon } from '@iconify/react';
-import { FEATURE_SECTION_CONTAINER_CLASS } from '../../constants';
+import { DEFAULT_HTML_CONTENT_STRING, FEATURE_SECTION_CONTAINER_CLASS } from '../../constants';
 import { useFeatureTestContext } from '../../context';
 import { ScraperServiceEnum } from '../../enums';
 import type { ISearchTargetConfig } from '../../types';

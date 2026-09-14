@@ -1,8 +1,7 @@
 import { API_ENDPOINT } from '@/config';
-import { DEFAULT_PARSER_FUNCTION_GENERATOR } from '@/constants';
 import { formatJsonString, safeParseJson } from '@/utilities';
 import type { IDataProvider } from '../../data-providers/types';
-import { DEFAULT_TARGET_CONFIG } from '../constants';
+import { DEFAULT_PARSER_FUNCTION_GENERATOR, DEFAULT_TARGET_CONFIG } from '../constants';
 import { DataProviderFeatureStatus, DataProviderFeatureType, ScraperServiceEnum } from '../enums';
 import type { IDataProviderFeature, ScrapingConfigFormValues, TargetConfig } from '../types';
 

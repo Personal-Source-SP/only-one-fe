@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-restricted-imports
 import type { PresetStatusColorType } from 'antd/es/_util/colors';
-import { DiscoverySessionStatus } from './types';
+import { DiscoverySessionStatus } from '../enums';
 
 export const DISCOVERY_SESSION_STATUS_COLOR_MAP: Record<
     DiscoverySessionStatus,
@@ -18,8 +18,3 @@ export const DISCOVERY_SESSION_STATUS_LABELS: Record<DiscoverySessionStatus, str
     [DiscoverySessionStatus.FAILED]: 'Thất bại',
     [DiscoverySessionStatus.PENDING]: 'Chờ xử lý',
 };
-
-export const DEFAULT_CREATE_SESSION_VALUES = {
-    depth: 1,
-    maxUrls: 50,
-} as const;
