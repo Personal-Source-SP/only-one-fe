@@ -2,12 +2,12 @@
 
 import { CustomApp, buildHubAntdTheme } from '@/components/custom-antd';
 import { plusJakartaSans } from '@/constants';
-import { useHubThemePalette } from '@/contexts/HubThemePaletteContext';
+import { useThemeStore } from '@/stores';
 import { ConfigProvider } from 'antd';
 import { PropsWithChildren, useLayoutEffect, useMemo, useState } from 'react';
 
 export const HubThemedConfigProvider = ({ children }: PropsWithChildren) => {
-    const { palette } = useHubThemePalette();
+    const palette = useThemeStore((state) => state.palette);
     const [antdTheme, setAntdTheme] = useState(buildHubAntdTheme);
 
     useLayoutEffect(() => {

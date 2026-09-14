@@ -127,6 +127,7 @@ export const API_ENDPOINT = {
     },
     SETTINGS: {
         BASE: prefix('settings'),
+        USER: (key: string) => prefix(`settings/user/${key}`),
     },
 } as const;
 
