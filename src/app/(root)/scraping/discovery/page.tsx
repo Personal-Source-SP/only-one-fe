@@ -8,6 +8,7 @@ import {
     type IFilterField,
 } from '@/components/common';
 import { CustomButton, CustomTag, type ColumnsType } from '@/components/custom-antd';
+import { RESOURCE } from '@/config';
 import { formatDate } from '@/libs';
 import { PlusOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
@@ -20,13 +21,13 @@ const DiscoveryPage = () => {
     const router = useRouter();
 
     const {
-        sessions,
-        isLoading,
+        tableProps,
+        tableQuery,
+        debouncedSearch,
+        setFilters,
         createModalForm,
         dataProviderOptions,
         dataProviderQuery,
-        setSearchTerm,
-        setSelectedProviderId,
     } = useDiscoveryPage();
 
     const columns: ColumnsType<IDiscoverySession> = [
@@ -93,28 +94,37 @@ const DiscoveryPage = () => {
             name: 'search',
             type: 'input',
             placeholder: 'Tìm theo mã phiên, URL...',
-            onChange: (val) => setSearchTerm(val?.toString() || ''),
+            onChange: (val) => debouncedSearch(val?.toString() ?? ''),
         },
         {
             name: 'dataProviderId',
             type: 'select',
             placeholder: 'Chọn nhà cung cấp',
             options: dataProviderOptions,
-            onChange: (val) => setSelectedProviderId(val?.toString() || undefined),
+            onChange: (val) =>
+                setFilters([
+                    {
+                        field: 'dataProviderId',
+                        operator: 'eq',
+                        value: val,
+                    },
+                ]),
         },
     ];
 
     return (
         <>
-            <ListWrapper actions={actions} filters={<FilterPanel fields={filters} />}>
+            <ListWrapper
+                actions={actions}
+                error={tableQuery.error}
+                isLoading={tableQuery.isLoading}
+                filters={<FilterPanel fields={filters} />}
+            >
                 <ListTable<IDiscoverySession>
                     columns={columns}
-                    tableProps={{
-                        dataSource: sessions,
-                        rowKey: 'id',
-                        loading: isLoading,
-                        pagination: { pageSize: 10, showSizeChanger: true },
-                    }}
+                    tableProps={tableProps}
+                    tableQuery={tableQuery}
+                    deleteResource={RESOURCE.DISCOVERY_SESSIONS}
                     onView={(record) => router.push(`/scraping/discovery/${record.id}`)}
                 />
             </ListWrapper>

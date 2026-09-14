@@ -5,49 +5,19 @@ import {
     DataProviderFeatureType,
 } from '@/app/(root)/scraping/features/enums';
 import { API_ENDPOINT } from '@/config';
-import { useCustomList, useCustomModalForm, useSelectDataProvider } from '@/hooks';
-import type { CrudFilter } from '@refinedev/core';
-import { useMemo, useState } from 'react';
+import { useCustomModalForm, useCustomTable, useSelectDataProvider } from '@/hooks';
 import type { CreateSessionFormValues, IDiscoverySession } from './types';
 
 export const useDiscoveryPage = () => {
-    const [searchTerm, setSearchTerm] = useState('');
-    const [selectedProviderId, setSelectedProviderId] = useState<string>();
-
     const { options: dataProviderOptions, query: dataProviderQuery } = useSelectDataProvider({
         featureType: DataProviderFeatureType.SEARCH,
         featureStatus: DataProviderFeatureStatus.READY,
     });
 
-    const filters: CrudFilter[] = useMemo(() => {
-        const list: CrudFilter[] = [];
-
-        if (selectedProviderId) {
-            list.push({
-                operator: 'eq',
-                field: 'dataProviderId',
-                value: selectedProviderId,
-            });
-        }
-
-        if (searchTerm) {
-            list.push({
-                field: 'search',
-                operator: 'contains',
-                value: searchTerm,
-            });
-        }
-
-        return list;
-    }, [selectedProviderId, searchTerm]);
-
-    const {
-        data: sessions = [],
-        query: { isLoading, refetch },
-    } = useCustomList<IDiscoverySession>({
-        filters,
-        resource: API_ENDPOINT.DISCOVERY_SESSIONS.BASE,
-    });
+    const { tableProps, tableQuery, debouncedSearch, setFilters, setCurrentPage } =
+        useCustomTable<IDiscoverySession>({
+            resource: API_ENDPOINT.DISCOVERY_SESSIONS.BASE,
+        });
 
     const createModalForm = useCustomModalForm<
         IDiscoverySession,
@@ -58,7 +28,7 @@ export const useDiscoveryPage = () => {
         resource: API_ENDPOINT.DISCOVERY_SESSIONS.BASE,
         successMessage: 'Tạo phiên khám phá thành công',
         onMutationSuccess: async () => {
-            await refetch();
+            await tableQuery.refetch();
         },
         onFinish: (values) => {
             const rawKeywords = values.targetKeywords;
@@ -75,14 +45,13 @@ export const useDiscoveryPage = () => {
     });
 
     return {
-        sessions,
-        isLoading,
-        searchTerm,
+        tableProps,
+        tableQuery,
+        debouncedSearch,
+        setFilters,
+        setCurrentPage,
         createModalForm,
         dataProviderQuery,
         dataProviderOptions,
-        selectedProviderId,
-        setSearchTerm,
-        setSelectedProviderId,
     };
 };
