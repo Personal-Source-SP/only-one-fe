@@ -9,7 +9,7 @@ import {
 } from '@/components/common';
 import { CustomButton, CustomTag, type ColumnsType } from '@/components/custom-antd';
 import { formatDate } from '@/libs';
-import { EyeOutlined, PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
 import { CreateSessionModal } from './components/CreateSessionModal';
 import { DISCOVERY_SESSION_STATUS_COLOR_MAP } from './constants';
@@ -72,20 +72,6 @@ const DiscoveryPage = () => {
             key: 'createdAt',
             render: (date: Date) => formatDate(date),
         },
-        {
-            title: 'Thao tác',
-            key: 'actions',
-            align: 'center',
-            render: (_, record) => (
-                <CustomButton
-                    type="link"
-                    icon={<EyeOutlined />}
-                    onClick={() => router.push(`/scraping/discovery/${record.id}`)}
-                >
-                    Xem URLs
-                </CustomButton>
-            ),
-        },
     ];
 
     const actions: CardAction[] = [
@@ -129,6 +115,7 @@ const DiscoveryPage = () => {
                         loading: isLoading,
                         pagination: { pageSize: 10, showSizeChanger: true },
                     }}
+                    onView={(record) => router.push(`/scraping/discovery/${record.id}`)}
                 />
             </ListWrapper>
             <CreateSessionModal
