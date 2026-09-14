@@ -4,4 +4,6 @@ import { Empty, EmptyProps } from 'antd';
 
 export type CustomEmptyProps = EmptyProps;
 
-export const CustomEmpty = (props: CustomEmptyProps) => <Empty {...props} />;
+export const CustomEmpty = ({ className = '', ...props }: CustomEmptyProps) => (
+    <Empty className={`w-full ${className}`.trim()} {...props} />
+);

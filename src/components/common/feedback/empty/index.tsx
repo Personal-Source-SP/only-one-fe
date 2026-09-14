@@ -105,9 +105,9 @@ export const Empty = ({
         <CustomEmpty
             style={style}
             image={finalImage}
-            className={className}
             styles={{ image: imageStyle }}
             description={finalDescription}
+            className={`w-full flex flex-col items-center justify-center ${className || ''}`.trim()}
         >
             {renderButton()}
         </CustomEmpty>

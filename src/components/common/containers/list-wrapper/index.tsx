@@ -240,13 +240,38 @@ export const ListWrapper = ({
     }
 
     if (hasError) {
-        return (
+        const errorContent = (
             <DataNotFound
+                fullWidth
                 onRetry={onRetry}
                 icon="lucide:alert-triangle"
                 title={finalErrorMessage}
                 message={finalErrorDescription}
             />
+        );
+
+        if (!withCard) {
+            return (
+                <CustomSpace
+                    size="middle"
+                    direction="vertical"
+                    className={`w-full p-3 sm:p-5 ${className}`.trim()}
+                >
+                    {breadcrumbNode}
+                    {errorContent}
+                </CustomSpace>
+            );
+        }
+
+        return (
+            <CustomSpace
+                size="middle"
+                direction="vertical"
+                className={`w-full ${className}`.trim()}
+            >
+                {breadcrumbNode}
+                {errorContent}
+            </CustomSpace>
         );
     }
 

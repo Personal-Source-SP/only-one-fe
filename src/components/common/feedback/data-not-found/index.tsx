@@ -21,7 +21,7 @@ export const DataNotFound = ({
     message = 'Vui lòng kiểm tra lại kết nối hoặc thử lại sau.',
     loading,
     compact = false,
-    fullWidth = false,
+    fullWidth = true,
     className = '',
     cardClassName = '',
     onRetry,
@@ -29,7 +29,7 @@ export const DataNotFound = ({
     if (compact) {
         return (
             <div
-                className={`flex flex-col items-center justify-center gap-2 py-8 px-4 text-center ${className}`.trim()}
+                className={`flex flex-col items-center justify-center gap-2 py-8 px-4 text-center w-full ${className}`.trim()}
             >
                 <Icon icon={icon} className="text-4xl text-gray-400 dark:text-gray-600" />
                 <p className="text-base font-medium text-gray-700 dark:text-gray-300 !mb-0">
