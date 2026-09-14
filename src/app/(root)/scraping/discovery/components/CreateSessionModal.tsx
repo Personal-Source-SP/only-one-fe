@@ -3,10 +3,12 @@
 import { DataProviderFeatureType } from '@/app/(root)/scraping/features/enums';
 import { CustomModalForm } from '@/components/common';
 import {
+    CustomFlex,
     CustomForm,
-    CustomInput,
     CustomInputNumber,
     CustomSelect,
+    CustomSwitch,
+    CustomTypography,
     type CustomSelectProps,
 } from '@/components/custom-antd';
 import type { ISearchTargetConfig } from '@/app/(root)/scraping/features/types';
@@ -56,6 +58,7 @@ export const CreateSessionModal = ({
                 dataProviderId: '',
                 targetKeywords: [],
                 maxUrls: undefined,
+                autoValidate: true,
             }}
         >
             <CustomForm.Item
@@ -94,6 +97,19 @@ export const CreateSessionModal = ({
                     className="w-full"
                     placeholder="Mặc định lấy theo cấu hình Search"
                 />
+            </CustomForm.Item>
+
+            <CustomForm.Item
+                name="autoValidate"
+                valuePropName="checked"
+                label="Tự động xác thực URL (Auto Validate)"
+            >
+                <CustomFlex align="center" gap="middle">
+                    <CustomSwitch />
+                    <CustomTypography.Text type="secondary" className="text-xs">
+                        Tự động kích hoạt hàng đợi xác thực các URL khám phá được ngay khi hoàn tất
+                    </CustomTypography.Text>
+                </CustomFlex>
             </CustomForm.Item>
         </CustomModalForm>
     );
