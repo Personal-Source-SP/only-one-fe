@@ -57,6 +57,9 @@ export const useFeatureModalController = ({
     >({
         enabled: Boolean(open && feature.id),
         url: API_ENDPOINT.CONFIG_VERSION_FEATURES.VERSIONS(feature.id),
+        queryOptions: {
+            refetchOnMount: 'always',
+        },
         transform: (data) => (Array.isArray(data) ? data : []) as IConfigVersion[],
     });
 
@@ -107,12 +110,6 @@ export const useFeatureModalController = ({
 
         return 'Đang xử lý...';
     }, [isSwitchingStatus, isDraft, versionsQuery.isLoading, mutation.mutation.isPending]);
-
-    useEffect(() => {
-        if (open && feature.id) {
-            versionsQuery.refetch();
-        }
-    }, [open, feature.id, versionsQuery]);
 
     useEffect(() => {
         if (!open) {

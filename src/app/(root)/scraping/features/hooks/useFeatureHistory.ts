@@ -24,17 +24,14 @@ export const useFeatureHistory = ({ open, feature, onSuccess }: UseFeatureHistor
     const { data: sortedVersions = [], query } = useCustomData<IConfigVersion[], IConfigVersion[]>({
         enabled: Boolean(open && featureId),
         url: API_ENDPOINT.CONFIG_VERSION_FEATURES.VERSIONS(featureId),
+        queryOptions: {
+            refetchOnMount: 'always',
+        },
         transform: (data) => {
             const list = (Array.isArray(data) ? data : []) as IConfigVersion[];
             return [...list].sort((a, b) => b.versionId - a.versionId);
         },
     });
-
-    useEffect(() => {
-        if (open && featureId) {
-            query.refetch();
-        }
-    }, [open, featureId, query]);
 
     const currentSelectedVersion = useMemo(() => {
         if (selectedVersionId !== undefined) {
