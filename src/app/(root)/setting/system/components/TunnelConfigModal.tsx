@@ -1,21 +1,23 @@
 'use client';
 
-import { FC, useEffect } from 'react';
+import { FC, useCallback, useEffect, useMemo } from 'react';
 import {
     CustomButton,
+    CustomFlex,
     CustomForm,
     CustomInput,
     CustomModal,
     CustomRadio,
+    CustomTypography,
 } from '@/components/custom-antd';
 import type { TunnelConfigDto } from '../types';
 
-interface TunnelConfigModalProps {
+export type TunnelConfigModalProps = {
     open: boolean;
     initialValues: TunnelConfigDto;
     onCancel: () => void;
     onSave: (values: TunnelConfigDto) => void;
-}
+};
 
 export const TunnelConfigModal: FC<TunnelConfigModalProps> = ({
     open,
@@ -32,47 +34,54 @@ export const TunnelConfigModal: FC<TunnelConfigModalProps> = ({
         }
     }, [open, initialValues, form]);
 
-    const handleOk = async () => {
+    const handleOk = useCallback(async () => {
         const values = await form.validateFields();
         onSave(values);
-    };
+    }, [form, onSave]);
+
+    const modalFooter = useMemo(
+        () => [
+            <CustomButton key="cancel" onClick={onCancel}>
+                Hủy
+            </CustomButton>,
+            <CustomButton key="submit" type="primary" onClick={handleOk}>
+                Lưu cấu hình
+            </CustomButton>,
+        ],
+        [onCancel, handleOk],
+    );
 
     return (
         <CustomModal
+            centered
+            width={600}
             open={open}
-            title="⚙️ Cấu hình Cloudflare Tunnel"
             onCancel={onCancel}
-            footer={[
-                <CustomButton key="cancel" onClick={onCancel}>
-                    Hủy
-                </CustomButton>,
-                <CustomButton key="submit" type="primary" onClick={handleOk}>
-                    Lưu cấu hình
-                </CustomButton>,
-            ]}
+            footer={modalFooter}
+            title="⚙️ Cấu hình Cloudflare Tunnel"
         >
             <CustomForm form={form} layout="vertical" initialValues={initialValues}>
                 <CustomForm.Item name="mode" label="Chế độ Tunnel" rules={[{ required: true }]}>
                     <CustomRadio.Group className="flex flex-col gap-2">
                         <CustomRadio value="quick">
-                            <div>
-                                <span className="font-semibold text-hub-title">
+                            <CustomFlex vertical>
+                                <CustomTypography.Text strong className="text-hub-title">
                                     Quick Tunnel (Tự động / Miễn phí)
-                                </span>
-                                <div className="text-xs text-hub-muted">
+                                </CustomTypography.Text>
+                                <CustomTypography.Text className="text-xs text-hub-muted">
                                     Zero-config, tự sinh URL ngẫu nhiên (*.trycloudflare.com).
-                                </div>
-                            </div>
+                                </CustomTypography.Text>
+                            </CustomFlex>
                         </CustomRadio>
                         <CustomRadio value="named">
-                            <div>
-                                <span className="font-semibold text-hub-title">
+                            <CustomFlex vertical>
+                                <CustomTypography.Text strong className="text-hub-title">
                                     Fixed Named Tunnel (Domain cố định)
-                                </span>
-                                <div className="text-xs text-hub-muted">
+                                </CustomTypography.Text>
+                                <CustomTypography.Text className="text-xs text-hub-muted">
                                     Cố định URL vĩnh viễn thông qua Cloudflare Tunnel Token.
-                                </div>
-                            </div>
+                                </CustomTypography.Text>
+                            </CustomFlex>
                         </CustomRadio>
                     </CustomRadio.Group>
                 </CustomForm.Item>
@@ -82,13 +91,13 @@ export const TunnelConfigModal: FC<TunnelConfigModalProps> = ({
                         <CustomForm.Item
                             name="token"
                             label="Cloudflare Tunnel Token"
+                            extra="Lấy từ Cloudflare Zero Trust Dashboard -> Access -> Tunnels"
                             rules={[
                                 {
                                     required: true,
                                     message: 'Vui lòng nhập Tunnel Token',
                                 },
                             ]}
-                            extra="Lấy từ Cloudflare Zero Trust Dashboard -> Access -> Tunnels"
                         >
                             <CustomInput.Password placeholder="eyJhIjoi..." />
                         </CustomForm.Item>
@@ -96,13 +105,13 @@ export const TunnelConfigModal: FC<TunnelConfigModalProps> = ({
                         <CustomForm.Item
                             name="customUrl"
                             label="Custom Public URL"
+                            extra="Ví dụ: https://app.yourdomain.com"
                             rules={[
                                 {
                                     required: true,
                                     message: 'Vui lòng nhập Public URL',
                                 },
                             ]}
-                            extra="Ví dụ: https://app.yourdomain.com"
                         >
                             <CustomInput placeholder="https://app.yourdomain.com" />
                         </CustomForm.Item>

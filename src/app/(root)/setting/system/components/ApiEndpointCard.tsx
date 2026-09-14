@@ -1,7 +1,5 @@
 'use client';
 
-import { FC, useEffect, useState } from 'react';
-import { Icon } from '@iconify/react';
 import {
     CustomButton,
     CustomCard,
@@ -10,20 +8,23 @@ import {
     customMessage,
     CustomTag,
     CustomTooltip,
+    CustomTypography,
 } from '@/components/custom-antd';
+import { Icon } from '@iconify/react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTunnel } from '../hooks/useTunnel';
 import { TunnelConfigModal } from './TunnelConfigModal';
 
-export const ApiEndpointCard: FC = () => {
+export const ApiEndpointCard = () => {
     const {
-        statusData,
         config,
         loading,
+        statusData,
         isConfigModalOpen,
-        setIsConfigModalOpen,
-        handleStart,
         handleStop,
+        handleStart,
         handleSaveConfig,
+        setIsConfigModalOpen,
     } = useTunnel();
 
     const [localEndpoint, setLocalEndpoint] = useState('http://localhost:4000');
@@ -34,32 +35,70 @@ export const ApiEndpointCard: FC = () => {
         }
     }, []);
 
-    const copyToClipboard = (text: string, label: string) => {
+    const isConnected = useMemo(
+        () => statusData.status === 'connected' && Boolean(statusData.url),
+        [statusData.status, statusData.url],
+    );
+
+    const isStarting = useMemo(
+        () => statusData.status === 'starting' || loading,
+        [statusData.status, loading],
+    );
+
+    const cardTitle = useMemo(
+        () => (
+            <CustomFlex align="center" gap={8} className="text-hub-title font-semibold">
+                <Icon icon="noto:sparkles" className="text-lg" />
+                <CustomTypography.Text strong className="text-inherit">
+                    Application & Tunnel Endpoint
+                </CustomTypography.Text>
+            </CustomFlex>
+        ),
+        [],
+    );
+
+    const tunnelTagClassName = useMemo(() => {
+        const baseClass = 'w-20 text-center font-mono font-medium border-none py-1';
+        if (isConnected) {
+            return `${baseClass} bg-emerald-500/10 text-emerald-500 font-semibold`;
+        }
+        return `${baseClass} bg-hub-section-muted text-hub-muted`;
+    }, [isConnected]);
+
+    const copyToClipboard = useCallback((text: string, label: string) => {
         navigator.clipboard.writeText(text);
         customMessage.success(`Đã sao chép ${label} vào clipboard`);
-    };
+    }, []);
 
-    const isConnected = statusData.status === 'connected' && Boolean(statusData.url);
-    const isStarting = statusData.status === 'starting' || loading;
+    const handleOpenConfigModal = useCallback(() => {
+        setIsConfigModalOpen(true);
+    }, [setIsConfigModalOpen]);
+
+    const handleCloseConfigModal = useCallback(() => {
+        setIsConfigModalOpen(false);
+    }, [setIsConfigModalOpen]);
+
+    const handleCopyLocalEndpoint = useCallback(() => {
+        copyToClipboard(localEndpoint, 'Local Endpoint');
+    }, [copyToClipboard, localEndpoint]);
+
+    const handleCopyTunnelEndpoint = useCallback(() => {
+        copyToClipboard(statusData.url || '', 'Tunnel Endpoint');
+    }, [copyToClipboard, statusData.url]);
 
     return (
         <>
             <CustomCard
-                title={
-                    <CustomFlex align="center" gap={8} className="text-hub-title font-semibold">
-                        <Icon icon="noto:sparkles" className="text-lg" />
-                        <span>Application & Tunnel Endpoint</span>
-                    </CustomFlex>
-                }
+                title={cardTitle}
                 className="w-full rounded-hub-card border-hub-border-card bg-hub-section shadow-sm"
             >
-                <div className="flex flex-col gap-4">
+                <CustomFlex vertical gap="middle">
                     {/* Row 1: Local Endpoint */}
                     <CustomFlex align="center" gap={12} className="w-full">
                         <CustomTag className="w-20 text-center font-mono font-medium text-hub-muted bg-hub-section-muted border-none py-1">
                             Local
                         </CustomTag>
-                        <div className="flex-1">
+                        <CustomFlex flex={1}>
                             <CustomInput
                                 readOnly
                                 value={localEndpoint}
@@ -68,31 +107,21 @@ export const ApiEndpointCard: FC = () => {
                                     <CustomTooltip title="Sao chép Local Endpoint">
                                         <Icon
                                             icon="lucide:copy"
+                                            onClick={handleCopyLocalEndpoint}
                                             className="cursor-pointer text-hub-muted hover:text-hub-primary transition-colors"
-                                            onClick={() =>
-                                                copyToClipboard(localEndpoint, 'Local Endpoint')
-                                            }
                                         />
                                     </CustomTooltip>
                                 }
                             />
-                        </div>
+                        </CustomFlex>
                     </CustomFlex>
 
                     {/* Row 2: Tunnel Endpoint */}
                     <CustomFlex align="center" gap={12} className="w-full">
-                        <CustomTag
-                            className={`w-20 text-center font-mono font-medium border-none py-1 ${
-                                isConnected
-                                    ? 'bg-emerald-500/10 text-emerald-500 font-semibold'
-                                    : 'bg-hub-section-muted text-hub-muted'
-                            }`}
-                        >
-                            Tunnel
-                        </CustomTag>
+                        <CustomTag className={tunnelTagClassName}>Tunnel</CustomTag>
 
                         {isConnected ? (
-                            <div className="flex-1 flex items-center gap-3">
+                            <CustomFlex flex={1} align="center" gap="middle">
                                 <CustomInput
                                     readOnly
                                     value={statusData.url || ''}
@@ -101,37 +130,31 @@ export const ApiEndpointCard: FC = () => {
                                         <CustomTooltip title="Sao chép Tunnel Endpoint">
                                             <Icon
                                                 icon="lucide:copy"
+                                                onClick={handleCopyTunnelEndpoint}
                                                 className="cursor-pointer text-hub-muted hover:text-hub-primary transition-colors"
-                                                onClick={() =>
-                                                    copyToClipboard(
-                                                        statusData.url || '',
-                                                        'Tunnel Endpoint',
-                                                    )
-                                                }
                                             />
                                         </CustomTooltip>
                                     }
                                 />
                                 <CustomButton
                                     danger
-                                    onClick={handleStop}
                                     loading={loading}
+                                    onClick={handleStop}
                                     icon={<Icon icon="lucide:square" className="text-sm" />}
                                 >
                                     Ngắt kết nối
                                 </CustomButton>
-                            </div>
+                            </CustomFlex>
                         ) : (
-                            <div className="flex-1 flex items-center gap-2">
-                                <button
-                                    type="button"
-                                    disabled={isStarting}
+                            <CustomFlex flex={1} align="center" gap="small">
+                                <CustomButton
+                                    type="primary"
+                                    loading={isStarting}
                                     onClick={handleStart}
-                                    className="inline-flex items-center gap-2 rounded-lg bg-orange-500 px-4 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-orange-600 transition-colors disabled:opacity-50 cursor-pointer"
+                                    icon={<Icon icon="lucide:cloud" className="text-base" />}
                                 >
-                                    <Icon icon="lucide:cloud" className="text-base" />
-                                    <span>{isStarting ? 'Đang kết nối...' : 'Enable'}</span>
-                                </button>
+                                    {isStarting ? 'Đang kết nối...' : 'Enable'}
+                                </CustomButton>
 
                                 <CustomButton
                                     type="text"
@@ -141,30 +164,32 @@ export const ApiEndpointCard: FC = () => {
                                             className="text-base text-hub-muted"
                                         />
                                     }
-                                    onClick={() => setIsConfigModalOpen(true)}
+                                    onClick={handleOpenConfigModal}
                                     className="hover:text-hub-primary"
                                 >
                                     Cấu hình
                                 </CustomButton>
-                            </div>
+                            </CustomFlex>
                         )}
                     </CustomFlex>
 
                     {/* Status hint / Error */}
                     {statusData.status === 'error' && (
-                        <div className="text-xs text-red-500 mt-1 flex items-center gap-1.5">
+                        <CustomFlex align="center" gap={6} className="mt-1 text-xs text-red-500">
                             <Icon icon="lucide:alert-circle" />
-                            <span>{statusData.error}</span>
-                        </div>
+                            <CustomTypography.Text type="danger" className="text-xs">
+                                {statusData.error}
+                            </CustomTypography.Text>
+                        </CustomFlex>
                     )}
-                </div>
+                </CustomFlex>
             </CustomCard>
 
             <TunnelConfigModal
                 open={isConfigModalOpen}
                 initialValues={config}
-                onCancel={() => setIsConfigModalOpen(false)}
                 onSave={handleSaveConfig}
+                onCancel={handleCloseConfigModal}
             />
         </>
     );
