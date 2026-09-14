@@ -11,51 +11,60 @@ import {
 } from '@/components/custom-antd';
 import { Icon } from '@iconify/react';
 import { ReactNode, useMemo } from 'react';
-import { FEATURE_MODAL_WIDTH } from '../../constants';
+import { FEATURE_MODAL_WIDTH, SCRAPER_SERVICE_LABELS } from '../../constants';
 import { useFeatureHistoryContext } from '../../context';
+import { ScraperServiceEnum } from '../../enums';
 import { VersionDetail } from './VersionDetail';
 import { VersionList } from './VersionList';
 
 export const FeatureHistoryModal = () => {
     const { open, feature, meta, sortedVersions, isLoading, onClose } = useFeatureHistoryContext();
 
+    const serviceLabel = useMemo(() => {
+        if (!feature?.service) return null;
+        return SCRAPER_SERVICE_LABELS[feature.service as ScraperServiceEnum] || feature.service;
+    }, [feature?.service]);
+
     const modalTitle = useMemo<ReactNode>(
         () => (
-            <CustomFlex align="center" gap="middle" className="pr-6">
-                <CustomFlex
-                    align="center"
-                    justify="center"
-                    className="w-10 h-10 rounded-xl bg-hub-primary/10 text-hub-primary shrink-0"
-                >
-                    <Icon icon={meta?.icon || 'lucide:history'} className="text-xl" />
-                </CustomFlex>
+            <CustomFlex
+                justify="space-between"
+                align="center"
+                className="w-full pr-6 flex-wrap gap-2"
+            >
+                <CustomFlex align="center" gap="middle">
+                    <CustomFlex
+                        align="center"
+                        justify="center"
+                        className={`p-2 rounded-xl shrink-0 ${meta?.accentClass || 'text-hub-primary bg-hub-primary/10'}`}
+                    >
+                        <Icon icon={meta?.icon || 'lucide:history'} className="text-lg" />
+                    </CustomFlex>
 
-                <CustomFlex vertical gap={2}>
                     <CustomFlex align="center" gap="small">
-                        <CustomTypography.Title level={5} className="!mb-0 !font-semibold">
-                            Lịch sử Cấu hình & Khôi phục Snapshot
-                        </CustomTypography.Title>
-                        {feature?.service && (
-                            <CustomTag color="blue" className="font-mono text-xs">
-                                {feature.service}
+                        <CustomTypography.Text strong className="text-base text-hub-title">
+                            Lịch sử Cấu hình: {meta?.label || 'Tính năng'}
+                        </CustomTypography.Text>
+                        {serviceLabel && (
+                            <CustomTag color="blue" className="font-medium text-xs m-0">
+                                {serviceLabel}
                             </CustomTag>
                         )}
                     </CustomFlex>
-                    <CustomTypography.Text type="secondary" className="text-xs">
-                        Theo dõi lịch sử chỉnh sửa và khôi phục snapshot cấu hình trước đó
-                    </CustomTypography.Text>
                 </CustomFlex>
             </CustomFlex>
         ),
-        [meta, feature],
+        [meta, serviceLabel],
     );
 
     return (
         <CustomModal
             open={open}
+            onCancel={onClose}
             title={modalTitle}
             width={FEATURE_MODAL_WIDTH}
-            onCancel={onClose}
+            bodyClassName="!p-2.5 sm:!p-4"
+            className="top-6 max-w-[96vw]"
             footer={
                 <CustomFlex justify="end">
                     <CustomButton onClick={onClose}>Đóng</CustomButton>
