@@ -130,6 +130,12 @@ export const API_ENDPOINT = {
         USER: (key: string) => prefix(`settings/user/${key}`),
         TUNNEL_CONFIG: prefix('settings/tunnel/config'),
     },
+    TUNNEL: {
+        BASE: '/api/tunnel',
+        START: '/api/tunnel/start',
+        STOP: '/api/tunnel/stop',
+        STATUS: '/api/tunnel/status',
+    },
 } as const;
 
 export const RESOURCE = {

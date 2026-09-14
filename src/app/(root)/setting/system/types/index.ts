@@ -1,12 +1,11 @@
 export type TunnelMode = 'quick' | 'named';
-
 export type TunnelStatus = 'idle' | 'starting' | 'connected' | 'error';
 
 export interface TunnelStatusResponse {
     status: TunnelStatus;
     url: string | null;
-    mode: TunnelMode | null;
     error: string | null;
+    mode: TunnelMode | null;
 }
 
 export interface TunnelConfigDto {
