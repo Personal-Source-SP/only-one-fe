@@ -62,9 +62,13 @@ export const getSectionBreadcrumbs = (pathname: string): BreadcrumbItem[] | null
                 .filter(Boolean);
 
             subSegments.forEach((segment, idx) => {
+                const decoded = decodeURIComponent(segment);
+                const isUuid =
+                    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(decoded);
+
                 breadcrumbs.push({
                     key: `sub-${idx}-${segment}`,
-                    label: decodeURIComponent(segment),
+                    label: isUuid ? 'Chi tiết' : decoded,
                 });
             });
         }

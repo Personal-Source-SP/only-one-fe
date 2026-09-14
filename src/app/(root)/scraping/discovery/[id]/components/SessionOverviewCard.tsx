@@ -139,10 +139,15 @@ export const SessionOverviewCard = ({
                                     strong
                                     className="text-sm text-hub-title truncate"
                                 >
-                                    {session?.dataProvider?.name || '—'}
+                                    {session?.dataProvider?.name ||
+                                        session?.dataProvider?.identifier ||
+                                        '—'}
                                 </CustomTypography.Text>
-                                <CustomTypography.Text className="font-mono text-xs text-hub-subtitle">
-                                    ID: {session?.dataProviderId || '—'}
+                                <CustomTypography.Text className="text-xs text-hub-subtitle truncate">
+                                    {session?.dataProvider?.baseUrl ||
+                                        (session?.dataProvider?.identifier
+                                            ? `@${session.dataProvider.identifier}`
+                                            : 'Nhà cung cấp')}
                                 </CustomTypography.Text>
                             </CustomFlex>
                         </SessionMetricCard>
