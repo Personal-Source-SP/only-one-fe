@@ -142,12 +142,12 @@ export const SectionTabLayout = ({ children }: PropsWithChildren) => {
                     ref={navRef}
                     component="nav"
                     aria-label="Section navigation"
-                    className="hub-section-panel mb-3 w-full overflow-hidden rounded-hub-card p-1.5 max-md:hidden hidden md:block md:p-2"
+                    className="hub-section-panel mb-3 w-fit max-w-full overflow-hidden rounded-hub-card p-1.5 max-md:hidden hidden md:flex md:p-1.5"
                 >
                     <CustomTabs
                         activeKey={activeKey}
                         onChange={handleTabChange}
-                        className={`hub-section-tabs w-full ${tabs.length <= 3 ? 'hub-section-tabs-fill' : ''}`}
+                        className="hub-section-tabs"
                         items={tabs.map((tab) => ({
                             key: tab.href,
                             label: tab.label,

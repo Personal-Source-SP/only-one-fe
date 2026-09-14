@@ -152,15 +152,15 @@ body {
     }
 }
 
-/* Section tabs — pill style, brand orange, mobile scrollable & segmented fill */
+/* Section tabs — pill style, brand orange, mobile scrollable */
 .hub-section-tabs.ant-tabs {
-    width: 100%;
+    width: auto;
 }
 
 .hub-section-tabs .ant-tabs-nav {
     margin: 0 !important;
     padding: 0 !important;
-    width: 100%;
+    width: auto;
 }
 
 .hub-section-tabs .ant-tabs-nav::before {
@@ -187,7 +187,7 @@ body {
     display: flex !important;
     flex-wrap: nowrap !important;
     gap: 4px;
-    width: 100%;
+    width: auto;
 }
 
 .hub-section-tabs .ant-tabs-ink-bar {
@@ -207,15 +207,6 @@ body {
     transition:
         background-color 0.2s ease,
         color 0.2s ease;
-}
-
-/* Segmented fill mode for short tab lists (<= 3 tabs) */
-.hub-section-tabs-fill .ant-tabs-nav-list {
-    width: 100%;
-}
-
-.hub-section-tabs-fill .ant-tabs-tab {
-    flex: 1 1 0%;
 }
 
 .hub-section-tabs .ant-tabs-tab:hover {
