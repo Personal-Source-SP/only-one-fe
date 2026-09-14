@@ -11,9 +11,9 @@ import {
     type IFilterField,
 } from '@/components/common';
 import { CustomButton } from '@/components/custom-antd';
-import { getDriveImageUrl } from '@/libs';
 import { GoogleDriveType, QualityMode } from '../enums';
 import type { IGoogleDriveFile } from './types';
+import { getDriveImageUrl } from './utils';
 
 import { usePhotosPage } from './hooks';
 import { SyncGoogleDrive, SyncLocal } from './components';

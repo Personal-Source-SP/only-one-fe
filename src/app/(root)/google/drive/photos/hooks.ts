@@ -6,9 +6,10 @@ import { API_ENDPOINT } from '@/config';
 import { CustomFilterType, MimeType, ViewFileMode } from '@/enums';
 import { useCustomData, useCustomTable, useSelectGoogleFolder } from '@/hooks';
 import type { FileItem, FilterItem } from '@/interfaces';
-import { getDriveImageUrl, isExpiredToken } from '@/libs';
+import { isExpiredToken } from '@/libs';
 import { QualityMode } from '../enums';
 import type { IGoogleAuth, IGoogleDriveFile } from './types';
+import { getDriveImageUrl } from './utils';
 
 import { columnOptions, qualityModeOptions, viewModeOptions } from './constants';
 
