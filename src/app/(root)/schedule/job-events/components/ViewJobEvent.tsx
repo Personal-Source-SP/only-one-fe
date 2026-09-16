@@ -64,14 +64,12 @@ export const ViewJobEvent = ({ isOpen, jobEvent, onClose }: ViewJobEventProps) =
 
     return (
         <CustomModal
-            modalProps={{
-                width: 700,
-                open: isOpen,
-                closable: true,
-                centered: true,
-                onCancel: onClose,
-                title: 'Xem sự kiện lịch biểu thực thi',
-            }}
+            width={700}
+            open={isOpen}
+            closable
+            centered
+            onCancel={onClose}
+            title="Xem sự kiện lịch biểu thực thi"
         >
             <CustomTabs defaultActiveKey="details" items={tabItems} />
         </CustomModal>

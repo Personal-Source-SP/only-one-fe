@@ -1,21 +1,21 @@
 'use client';
 
 import { DataProviderFeatureType } from '@/app/(root)/scraping/features/enums';
-import { CustomModalForm } from '@/components/common';
 import {
-    CustomFlex,
-    CustomForm,
-    CustomInputNumber,
-    CustomSelect,
-    CustomSwitch,
-    CustomTypography,
-    type CustomSelectProps,
-} from '@/components/custom-antd';
+    CustomInputForm,
+    CustomInputFormType,
+    CustomModalForm,
+    CustomSelectInput,
+    CustomSwitchForm,
+} from '@/components/common';
+import { type CustomSelectProps } from '@/components/custom-antd';
+import { FormRuleType } from '@/utilities';
 import type { ISearchTargetConfig } from '@/app/(root)/scraping/features/types';
 import type { useSelectDataProvider, UseCustomModalFormResponse } from '@/hooks';
 import type { CreateSessionFormValues, IDiscoverySession } from '../types';
+import { useCallback } from 'react';
 
-interface CreateSessionModalProps {
+type CreateSessionModalProps = {
     modalForm: UseCustomModalFormResponse<
         IDiscoverySession,
         CreateSessionFormValues,
@@ -23,7 +23,7 @@ interface CreateSessionModalProps {
     >;
     dataProviderOptions?: CustomSelectProps['options'];
     dataProviderQuery?: ReturnType<typeof useSelectDataProvider>['query'];
-}
+};
 
 export const CreateSessionModal = ({
     modalForm,
@@ -32,19 +32,22 @@ export const CreateSessionModal = ({
 }: CreateSessionModalProps) => {
     const { formProps } = modalForm;
 
-    const handleDataProviderChange = (value?: string) => {
-        if (!value) {
-            formProps.form?.setFieldValue('maxUrls', undefined);
-            return;
-        }
+    const handleDataProviderChange = useCallback(
+        (value?: string) => {
+            if (!value) {
+                formProps.form?.setFieldValue('maxUrls', undefined);
+                return;
+            }
 
-        const dataProvider = dataProviderQuery?.data?.data?.find((item) => item.id === value);
-        const searchFeature = dataProvider?.features?.find(
-            (f) => f.type === DataProviderFeatureType.SEARCH,
-        );
-        const searchConfig = searchFeature?.config as ISearchTargetConfig | undefined;
-        formProps.form?.setFieldValue('maxUrls', searchConfig?.maxResults ?? undefined);
-    };
+            const dataProvider = dataProviderQuery?.data?.data?.find((item) => item.id === value);
+            const searchFeature = dataProvider?.features?.find(
+                (f) => f.type === DataProviderFeatureType.SEARCH,
+            );
+            const searchConfig = searchFeature?.config as ISearchTargetConfig | undefined;
+            formProps.form?.setFieldValue('maxUrls', searchConfig?.maxResults ?? undefined);
+        },
+        [dataProviderQuery, formProps],
+    );
 
     return (
         <CustomModalForm<IDiscoverySession, CreateSessionFormValues, IDiscoverySession>
@@ -61,56 +64,49 @@ export const CreateSessionModal = ({
                 autoValidate: true,
             }}
         >
-            <CustomForm.Item
+            <CustomSelectInput
                 name="dataProviderId"
                 label="Nhà cung cấp dữ liệu"
-                rules={[{ required: true, message: 'Vui lòng chọn nhà cung cấp' }]}
-            >
-                <CustomSelect
-                    allowClear
-                    options={dataProviderOptions}
-                    placeholder="Chọn nhà cung cấp"
-                    onChange={handleDataProviderChange}
-                />
-            </CustomForm.Item>
+                rulesConfig={[
+                    { type: FormRuleType.Required, message: 'Vui lòng chọn nhà cung cấp' },
+                ]}
+                selectProps={{
+                    options: dataProviderOptions,
+                    placeholder: 'Chọn nhà cung cấp',
+                    onChange: handleDataProviderChange,
+                }}
+            />
 
-            <CustomForm.Item
+            <CustomSelectInput
                 name="targetKeywords"
                 label="Từ khóa sản phẩm mục tiêu (Target Keywords)"
-            >
-                <CustomSelect
-                    mode="tags"
-                    tokenSeparators={[',']}
-                    placeholder="Nhập các từ khóa cách nhau bởi dấu phẩy hoặc phím Enter (ví dụ: Sony WH-1000XM4, iPhone 15 Pro, ...)"
-                />
-            </CustomForm.Item>
+                selectProps={{
+                    mode: 'tags',
+                    tokenSeparators: [','],
+                    placeholder:
+                        'Nhập các từ khóa cách nhau bởi dấu phẩy hoặc phím Enter (ví dụ: Sony WH-1000XM4, iPhone 15 Pro, ...)',
+                }}
+            />
 
-            <CustomForm.Item name="depth" label="Độ sâu thu thập (Crawl Depth)">
-                <CustomInputNumber min={1} max={5} className="w-full" />
-            </CustomForm.Item>
+            <CustomInputForm
+                name="depth"
+                label="Độ sâu thu thập (Crawl Depth)"
+                type={CustomInputFormType.Number}
+                numberProps={{ min: 1, max: 5 }}
+            />
 
-            <CustomForm.Item
+            <CustomInputForm
                 name="maxUrls"
+                type={CustomInputFormType.Number}
                 label="Giới hạn URLs tối đa (Max URLs - Tùy chọn override)"
-            >
-                <CustomInputNumber
-                    className="w-full"
-                    placeholder="Mặc định lấy theo cấu hình Search"
-                />
-            </CustomForm.Item>
+                numberProps={{ placeholder: 'Mặc định lấy theo cấu hình Search' }}
+            />
 
-            <CustomForm.Item
+            <CustomSwitchForm
                 name="autoValidate"
-                valuePropName="checked"
                 label="Tự động xác thực URL (Auto Validate)"
-            >
-                <CustomFlex align="center" gap="middle">
-                    <CustomSwitch />
-                    <CustomTypography.Text type="secondary" className="text-xs">
-                        Tự động kích hoạt hàng đợi xác thực các URL khám phá được ngay khi hoàn tất
-                    </CustomTypography.Text>
-                </CustomFlex>
-            </CustomForm.Item>
+                description="Tự động kích hoạt hàng đợi xác thực các URL khám phá được ngay khi hoàn tất"
+            />
         </CustomModalForm>
     );
 };

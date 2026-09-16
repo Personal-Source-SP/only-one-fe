@@ -1,40 +1,38 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { API_ENDPOINT } from '@/config';
-import { useCustomModal, useCustomTable, useSelectGoogleFolder } from '@/hooks';
-import type { IGoogleDriveFolder } from './types';
+import { useCustomModalForm, useCustomTable, useSelectGoogleFolder } from '@/hooks';
+import { useState } from 'react';
+import type { FolderFormValues, GoogleFolderRecord } from './types';
 
 export const useGoogleFolderPage = () => {
     const [isOpenSyncFile, setIsOpenSyncFile] = useState(false);
 
     const { tableProps, tableQuery, debouncedSearch, setFilters } =
-        useCustomTable<IGoogleDriveFolder>({
+        useCustomTable<GoogleFolderRecord>({
             resource: API_ENDPOINT.GOOGLE_DRIVE.FOLDERS,
         });
 
-    const modalPropsData = useCustomModal({
+    const { options: folderOptions, query: queryFolderOptions } = useSelectGoogleFolder();
+
+    const modalForm = useCustomModalForm<GoogleFolderRecord, FolderFormValues, GoogleFolderRecord>({
         action: 'edit',
         resource: API_ENDPOINT.GOOGLE_DRIVE.FOLDERS,
+        onMutationSuccess: async () => {
+            await tableQuery.refetch();
+            await queryFolderOptions?.refetch();
+        },
     });
-
-    const { options: folderOptions, query: queryFolderOptions } = useSelectGoogleFolder({
-        enabled: false,
-    });
-
-    useEffect(() => {
-        queryFolderOptions?.refetch();
-    }, []);
 
     return {
+        debouncedSearch,
+        folderOptions,
+        isOpenSyncFile,
+        modalForm,
+        queryFolderOptions,
+        setFilters,
+        setIsOpenSyncFile,
         tableProps,
         tableQuery,
-        debouncedSearch,
-        setFilters,
-        isOpenSyncFile,
-        setIsOpenSyncFile,
-        modalPropsData,
-        folderOptions,
-        queryFolderOptions,
     };
 };

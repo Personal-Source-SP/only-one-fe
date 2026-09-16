@@ -5,11 +5,12 @@ import {
     CustomButton,
     CustomFlex,
     CustomForm,
-    CustomInput,
     CustomModal,
     CustomRadio,
     CustomTypography,
 } from '@/components/custom-antd';
+import { CustomInputForm, CustomInputFormType } from '@/components/common';
+import { FormRuleType } from '@/utilities';
 import type { TunnelConfigDto } from '../types';
 
 export type TunnelConfigModalProps = {
@@ -88,33 +89,34 @@ export const TunnelConfigModal: FC<TunnelConfigModalProps> = ({
 
                 {modeValue === 'named' && (
                     <>
-                        <CustomForm.Item
+                        <CustomInputForm
                             name="token"
                             label="Cloudflare Tunnel Token"
-                            extra="Lấy từ Cloudflare Zero Trust Dashboard -> Access -> Tunnels"
-                            rules={[
+                            type={CustomInputFormType.Password}
+                            formItemProps={{
+                                extra: 'Lấy từ Cloudflare Zero Trust Dashboard -> Access -> Tunnels',
+                            }}
+                            rulesConfig={[
                                 {
-                                    required: true,
+                                    type: FormRuleType.Required,
                                     message: 'Vui lòng nhập Tunnel Token',
                                 },
                             ]}
-                        >
-                            <CustomInput.Password placeholder="eyJhIjoi..." />
-                        </CustomForm.Item>
+                            passwordProps={{ placeholder: 'eyJhIjoi...' }}
+                        />
 
-                        <CustomForm.Item
+                        <CustomInputForm
                             name="customUrl"
                             label="Custom Public URL"
-                            extra="Ví dụ: https://app.yourdomain.com"
-                            rules={[
+                            formItemProps={{ extra: 'Ví dụ: https://app.yourdomain.com' }}
+                            rulesConfig={[
                                 {
-                                    required: true,
+                                    type: FormRuleType.Required,
                                     message: 'Vui lòng nhập Public URL',
                                 },
                             ]}
-                        >
-                            <CustomInput placeholder="https://app.yourdomain.com" />
-                        </CustomForm.Item>
+                            inputProps={{ placeholder: 'https://app.yourdomain.com' }}
+                        />
                     </>
                 )}
             </CustomForm>

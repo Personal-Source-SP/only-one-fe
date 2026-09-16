@@ -714,15 +714,13 @@ export const SyncGoogleDrive = ({
 
     return (
         <CustomModal
-            modalProps={{
-                width: 1200,
-                open: isOpen,
-                centered: true,
-                footer: renderFooter(),
-                title: 'Đồng bộ Google Drive',
-                loading:
-                    queryLoading || queryFolderOptions?.isLoading || queryGoogleAuths?.isLoading,
-            }}
+            width={1200}
+            open={isOpen}
+            centered
+            onCancel={onClose}
+            footer={renderFooter()}
+            title="Đồng bộ Google Drive"
+            loading={queryLoading || queryFolderOptions?.isLoading || queryGoogleAuths?.isLoading}
         >
             <CustomSpin spinning={loading}>
                 {isActiveGoogleAuth && (
