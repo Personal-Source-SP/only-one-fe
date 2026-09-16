@@ -38,7 +38,7 @@ flowchart TD
 ```
 
 ## 3. Scope & Key Changes (Phạm vi & Thay đổi Chính)
-- [src/constants/common.constant.ts](file:///d:/Sources/Personal/only-one-fe/src/constants/common.constant.ts): Pagination và sorter defaults.
+- [src/config/common.ts](file:///d:/Sources/Personal/only-one-fe/src/config/common.ts): Pagination và sorter defaults.
 - [src/providers/data-provider.ts](file:///d:/Sources/Personal/only-one-fe/src/providers/data-provider.ts): Hàm `unwrapResponseData` tự động unwrap dữ liệu API.
 - [src/hooks/common/](file:///d:/Sources/Personal/only-one-fe/src/hooks/common): `useDebounce`, `useMediaQuery`, `useHasRole`, `usePermission`, `useTableChange`.
 - [src/hooks/api/](file:///d:/Sources/Personal/only-one-fe/src/hooks/api): `useCustomList`, `useCustomOne`, `useCustomMutationData`, `useCustomData`, `useCustomDelete`, `useCustomTable`, `useCustomSelect`.
