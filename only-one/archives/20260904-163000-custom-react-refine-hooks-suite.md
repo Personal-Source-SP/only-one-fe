@@ -38,10 +38,10 @@ flowchart TD
 ```
 
 ## 3. Scope & Key Changes (Phạm vi & Thay đổi Chính)
-- [src/constants/common.constant.ts](file:///d:/Sources/Personal/only-one-fe/src/constants/common.constant.ts): Pagination và sorter defaults.
-- [src/providers/data-provider.ts](file:///d:/Sources/Personal/only-one-fe/src/providers/data-provider.ts): Hàm `unwrapResponseData` tự động unwrap dữ liệu API.
-- [src/hooks/common/](file:///d:/Sources/Personal/only-one-fe/src/hooks/common): `useDebounce`, `useMediaQuery`, `useHasRole`, `usePermission`, `useTableChange`.
-- [src/hooks/api/](file:///d:/Sources/Personal/only-one-fe/src/hooks/api): `useCustomList`, `useCustomOne`, `useCustomMutationData`, `useCustomData`, `useCustomDelete`, `useCustomTable`, `useCustomSelect`.
+- [api.ts](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/config/api.ts): Pagination và sorter defaults.
+- [data-provider.ts](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/providers/data-provider.ts): Hàm `unwrapResponseData` tự động unwrap dữ liệu API.
+- [hooks/common/](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/hooks/common): `useDebounce`, `useMediaQuery`, `useHasRole`, `usePermission`, `useTableChange`.
+- [hooks/api/](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/hooks/api): `useCustomList`, `useCustomOne`, `useCustomMutationData`, `useCustomData`, `useCustomDelete`, `useCustomTable`, `useCustomSelect`.
 
 ## 4. Verification Evidence & PR (Bằng chứng Nghiệm thu)
 - **Trạng thái Test**: 100% Passed (`npx eslint src && npx tsc --noEmit` exit code 0).

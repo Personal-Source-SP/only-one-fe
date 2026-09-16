@@ -26,9 +26,9 @@ affected_modules:
   - Sử dụng `useCustomMutationData` và `useCustomData` giao tiếp với `API_ENDPOINT.SETTINGS`, đảm bảo an toàn kiểu dữ liệu và tự động invalidate cache khi cập nhật.
 
 ## 3. Scope & Key Changes (Phạm vi & Thay đổi Chính)
-- [useThemeStore.ts](file:///d:/Sources/Personal/only-one-fe/src/stores/useThemeStore.ts): Store quản lý theme palette và sync logic.
-- [api.config.ts](file:///d:/Sources/Personal/only-one-fe/src/config/api.config.ts): Định nghĩa endpoints `/settings`.
-- [theme-palette-modal.tsx](file:///d:/Sources/Personal/only-one-fe/src/components/layout/theme-palette-modal.tsx): Modal giao diện người dùng cho phép chọn màu và chế độ hiển thị.
+- [useThemeStore.ts](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/stores/useThemeStore.ts): Store quản lý theme palette và sync logic.
+- [endpoint.ts](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/config/endpoint.ts): Định nghĩa endpoints `/settings`.
+- [UserPreferenceSync.tsx](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/components/UserPreferenceSync.tsx): Component đồng bộ dữ liệu giao diện và cấu hình người dùng.
 
 ## 4. Verification Evidence & PR (Bằng chứng Nghiệm thu & PR)
 - **Typecheck & Build**: `npx tsc --noEmit` $\rightarrow$ `PASS (0 errors)`.

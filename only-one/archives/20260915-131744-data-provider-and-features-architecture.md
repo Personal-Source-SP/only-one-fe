@@ -64,7 +64,7 @@ flowchart TD
 - [useFeatureHistory.ts](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/app/(root)/scraping/features/hooks/useFeatureHistory.ts): Quản lý query lịch sử phiên bản, loại bỏ infinite fetch loop.
 - [useFeatureModalController.ts](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/app/(root)/scraping/features/hooks/useFeatureModalController.ts): Điều khiển modal cấu hình tính năng.
 - [FeatureHistoryModal/index.tsx](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/app/(root)/scraping/features/components/FeatureHistoryModal/index.tsx): Modal xem lịch sử cấu hình với header compact và `SCRAPER_SERVICE_LABELS`.
-- [CodeDisplay.tsx](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/components/common/display/code-display/index.tsx): High-performance syntax tokenizer.
+- [CodeDisplay.tsx](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/components/common/display/code-display/CodeDisplay.tsx): High-performance syntax tokenizer.
 
 ## 4. Verification Evidence & PR (Bằng chứng Nghiệm thu & PR)
 - **Typecheck & Build**: `npm run build` $\rightarrow$ `PASS (0 errors)`.

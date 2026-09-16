@@ -26,8 +26,8 @@ affected_modules:
   - Hỗ trợ breadcrumbs điều hướng phân cấp trực quan kết hợp nút Quay lại (Back).
 
 ## 3. Scope & Key Changes (Phạm vi & Thay đổi Chính)
-- [section-tabs/index.tsx](file:///d:/Sources/Personal/only-one-fe/src/components/layout/section-tabs/index.tsx): Component SectionTabLayout chính.
-- [layout-helper.ts](file:///d:/Sources/Personal/only-one-fe/src/libs/layout-helper.ts): Helper trích xuất tab và breadcrumbs chuẩn hóa UUID.
+- [section-tabs/index.tsx](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/components/layout/section-tabs/index.tsx): Component SectionTabLayout chính.
+- [layout-helper.ts](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/libs/layout-helper.ts): Helper trích xuất tab và breadcrumbs chuẩn hóa UUID.
 
 ## 4. Verification Evidence & PR (Bằng chứng Nghiệm thu & PR)
 - **Typecheck & Build**: `npx tsc --noEmit` $\rightarrow$ `PASS (0 errors)`.

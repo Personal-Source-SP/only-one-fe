@@ -39,14 +39,14 @@ flowchart TD
 ```
 
 ## 3. Scope & Key Changes (Phạm vi & Thay đổi Chính)
-- [src/config/api.ts](file:///d:/Sources/Personal/only-one-fe/src/config/api.ts): Pagination & sorter default constants.
-- [src/config/date.ts](file:///d:/Sources/Personal/only-one-fe/src/config/date.ts): Date-time formatting tokens.
-- [src/config/endpoint.ts](file:///d:/Sources/Personal/only-one-fe/src/config/endpoint.ts): Typed REST endpoint dictionary & `RESOURCE` dictionary.
-- [src/config/env.ts](file:///d:/Sources/Personal/only-one-fe/src/config/env.ts): Safe environment variable reader.
-- [src/config/media.ts](file:///d:/Sources/Personal/only-one-fe/src/config/media.ts): Media constraints và fallback SVGs.
-- [src/config/status.ts](file:///d:/Sources/Personal/only-one-fe/src/config/status.ts): Ant Design status color mappings.
-- [src/config/index.ts](file:///d:/Sources/Personal/only-one-fe/src/config/index.ts): Barrel export tập trung.
-- [src/app/(root)/](file:///d:/Sources/Personal/only-one-fe/src/app/(root)): 11 trang danh sách (`data-providers`, `items`, `provider-items`, `scraping-data`, `cloud-data/*`, `simulation/*`, `schedule/*`, `google/*`, `setting/users`) đã chuyển toàn bộ `deleteResource` sang `RESOURCE.<NAME>`.
+- [src/config/api.ts](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/config/api.ts): Pagination & sorter default constants.
+- [src/config/date.ts](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/config/date.ts): Date-time formatting tokens.
+- [src/config/endpoint.ts](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/config/endpoint.ts): Typed REST endpoint dictionary & `RESOURCE` dictionary.
+- [src/config/env.ts](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/config/env.ts): Safe environment variable reader.
+- [src/config/media.ts](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/config/media.ts): Media constraints và fallback SVGs.
+- [src/config/status.ts](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/config/status.ts): Ant Design status color mappings.
+- [src/config/index.ts](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/config/index.ts): Barrel export tập trung.
+- [src/app/(root)/](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/app/(root)): 11 trang danh sách (`data-providers`, `items`, `provider-items`, `scraping-data`, `cloud-data/*`, `simulation/*`, `schedule/*`, `google/*`, `setting/users`) đã chuyển toàn bộ `deleteResource` sang `RESOURCE.<NAME>`.
 
 ## 4. Verification Evidence & PR (Bằng chứng Nghiệm thu)
 - **Trạng thái Test**: 100% Passed (`npx eslint src && npx tsc --noEmit` exit code 0).

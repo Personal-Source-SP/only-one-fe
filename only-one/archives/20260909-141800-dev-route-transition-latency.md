@@ -21,7 +21,7 @@ affected_modules:
   - Vô hiệu hóa `reactCompiler: false` trong `next.config.mjs` cho đến khi Turbopack tích hợp compiler native qua Rust SWC.
 
 ## 3. Scope & Key Changes (Phạm vi & Thay đổi Chính)
-- [next.config.mjs](file:///d:/Sources/Personal/only-one-fe/next.config.mjs): Tắt `reactCompiler`.
+- [next.config.mjs](file:///Users/kiem/Sources/PERSONAL/only-one-fe/next.config.mjs): Tắt `reactCompiler`.
 
 ## 4. Verification Evidence & PR (Bằng chứng Nghiệm thu & PR)
 - **Trạng thái Test**: Compile route chuyển từ vài giây xuống dưới 100ms.
