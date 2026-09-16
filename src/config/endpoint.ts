@@ -38,6 +38,8 @@ export const API_ENDPOINT = {
         BASE: prefix('data-provider-items'),
         ALL: prefix('data-provider-items/all'),
         DETAIL: (id: string | number) => prefix(`data-provider-items/${id}`),
+        SWITCH_STATUS: (id: string | number, active: boolean) =>
+            prefix(`data-provider-items/${id}/switch-status/${active}`),
     },
     ITEMS: {
         BASE: prefix('items'),

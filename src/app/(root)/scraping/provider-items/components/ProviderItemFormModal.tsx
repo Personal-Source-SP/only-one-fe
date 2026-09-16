@@ -6,24 +6,26 @@ import {
     CustomSelectInput,
     CustomSwitchForm,
 } from '@/components/common';
-import type { UseCustomModalFormResponse } from '@/hooks';
+import type { UseCustomModalFormResponse, useSelectDataProvider } from '@/hooks';
 import { FormRuleType } from '@/utilities';
 import type {
     ProviderItemFormValues,
     ProviderItemRecord,
 } from '@/app/(root)/scraping/provider-items/types';
+import type { IDataProvider } from '../../data-providers/types';
+import type { Option } from '@/interfaces';
 
-interface ProviderItemFormModalProps {
+type ProviderItemFormModalProps = {
     modalForm: UseCustomModalFormResponse<
         ProviderItemRecord,
         ProviderItemFormValues,
         ProviderItemRecord
     >;
-    itemOptions?: { label: string; value: string }[];
-    dataProviderOptions?: { label: string; value: string }[];
-    cloudDataProviderOptions?: { label: string; value: string }[];
-    dataProviderQuery?: any;
-}
+    itemOptions?: Option[];
+    dataProviderOptions?: Option[];
+    cloudDataProviderOptions?: Option[];
+    dataProviderQuery?: ReturnType<typeof useSelectDataProvider>['query'];
+};
 
 export const ProviderItemFormModal = ({
     modalForm,
@@ -36,8 +38,8 @@ export const ProviderItemFormModal = ({
 
     return (
         <CustomModalForm<ProviderItemRecord, ProviderItemFormValues, ProviderItemRecord>
-            modalForm={modalForm}
             width={640}
+            modalForm={modalForm}
             title={
                 mode === 'create'
                     ? 'Thêm mới đối tượng nhà cung cấp'
@@ -45,8 +47,8 @@ export const ProviderItemFormModal = ({
             }
             createInitialValues={{
                 itemId: '',
-                dataProviderId: '',
                 itemUrl: '',
+                dataProviderId: '',
                 cloudDataProviderId: undefined,
                 autoProcessScraping: true,
                 checkDuplicateData: true,
@@ -58,9 +60,9 @@ export const ProviderItemFormModal = ({
                 label="Tên đối tượng"
                 rulesConfig={[{ type: FormRuleType.Required, message: 'Vui lòng chọn đối tượng' }]}
                 selectProps={{
+                    allowClear: true,
                     options: itemOptions,
                     placeholder: 'Chọn đối tượng',
-                    allowClear: true,
                 }}
             />
 
@@ -71,13 +73,14 @@ export const ProviderItemFormModal = ({
                     { type: FormRuleType.Required, message: 'Vui lòng chọn nhà cung cấp' },
                 ]}
                 selectProps={{
+                    allowClear: true,
                     options: dataProviderOptions,
                     placeholder: 'Chọn nhà cung cấp',
-                    allowClear: true,
                     onChange: (value) => {
                         const dataProvider = dataProviderQuery?.data?.data?.find(
-                            (option: any) => option.id === value,
+                            (option: IDataProvider) => option.id === value,
                         );
+
                         if (dataProvider?.baseUrl) {
                             formProps.form?.setFieldValue('itemUrl', dataProvider.baseUrl);
                         }
@@ -88,19 +91,19 @@ export const ProviderItemFormModal = ({
             <CustomInputForm
                 name="itemUrl"
                 label="URL cơ sở"
+                inputProps={{ placeholder: 'Nhập URL đối tượng' }}
                 rulesConfig={[
                     { type: FormRuleType.Required, message: 'Vui lòng nhập URL đối tượng' },
                 ]}
-                inputProps={{ placeholder: 'Nhập URL đối tượng' }}
             />
 
             <CustomSelectInput
                 name="cloudDataProviderId"
                 label="Nhà cung cấp kho dữ liệu"
                 selectProps={{
+                    allowClear: true,
                     options: cloudDataProviderOptions,
                     placeholder: 'Chọn nhà cung cấp kho dữ liệu (nếu có)',
-                    allowClear: true,
                 }}
             />
 

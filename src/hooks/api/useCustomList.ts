@@ -1,8 +1,9 @@
 import { useMemo } from 'react';
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE, DEFAULT_SORTERS } from '@/config';
-import { getErrorNotification, NotificationAction } from '@/utilities';
+import { applyDataTransform, resolveQueryErrorNotification } from '@/utilities';
 import type { BaseRecord, HttpError } from '@refinedev/core';
 import { useList } from '@refinedev/core';
+import type { IBaseApiNotificationRequest, IBaseApiTransformRequest } from '@/interfaces';
 
 type RefineUseListRequest<TData extends BaseRecord> = NonNullable<
     Parameters<typeof useList<TData, HttpError>>[0]
@@ -11,16 +12,16 @@ type RefineUseListRequest<TData extends BaseRecord> = NonNullable<
 export type UseCustomListRequest<
     TData extends BaseRecord = BaseRecord,
     TTransformed = TData[],
-> = Omit<RefineUseListRequest<TData>, 'resource'> & {
-    resource: string;
-    errorMessage?: string;
-    successMessage?: string;
-    transform?: (data: TData[]) => TTransformed;
-};
+> = Omit<RefineUseListRequest<TData>, 'resource' | 'errorNotification' | 'successNotification'> &
+    IBaseApiNotificationRequest &
+    IBaseApiTransformRequest<TData[], TTransformed> & {
+        resource: string;
+    };
 
 export const useCustomList = <TData extends BaseRecord = BaseRecord, TTransformed = TData[]>({
     resource,
     errorMessage,
+    errorDescription,
     pagination,
     sorters,
     errorNotification,
@@ -31,18 +32,18 @@ export const useCustomList = <TData extends BaseRecord = BaseRecord, TTransforme
     const refineResult = useList<TData, HttpError>({
         ...rest,
         resource,
+        sorters: sorters ?? DEFAULT_SORTERS,
         pagination: pagination ?? {
             pageSize: DEFAULT_PAGE_SIZE,
             currentPage: DEFAULT_PAGE_INDEX,
         },
-        sorters: sorters ?? DEFAULT_SORTERS,
-        errorNotification: getErrorNotification({
-            resource,
-            errorNotification,
-            message: errorMessage,
-            action: NotificationAction.Load,
-        }),
         successNotification,
+        errorNotification: resolveQueryErrorNotification({
+            resource,
+            errorMessage,
+            errorDescription,
+            errorNotification,
+        }),
     });
 
     const rawList = useMemo(() => {
@@ -50,19 +51,14 @@ export const useCustomList = <TData extends BaseRecord = BaseRecord, TTransforme
         return Array.isArray(items) ? (items as TData[]) : [];
     }, [refineResult.query.data?.data, refineResult.result?.data]);
 
-    const transformedData = useMemo(() => {
-        if (transform) {
-            return transform(rawList);
-        }
-        return rawList as unknown as TTransformed;
-    }, [rawList, transform]);
+    const transformedData = useMemo(
+        () => applyDataTransform(rawList, undefined, transform),
+        [rawList, transform],
+    );
 
     return {
         ...refineResult,
         data: transformedData,
-        result: {
-            ...refineResult.result,
-            data: transformedData as any,
-        },
+        result: { ...refineResult.result, data: transformedData as any },
     };
 };

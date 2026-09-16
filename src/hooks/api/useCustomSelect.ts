@@ -9,31 +9,39 @@ import type { IItem } from '@/app/(root)/scraping/items/types';
 import type { IDataProviderItem } from '@/app/(root)/scraping/provider-items/types';
 import type { ISimulationContext } from '@/app/(root)/simulation/contexts/types';
 import { API_ENDPOINT } from '@/config';
-import type { Option } from '@/interfaces';
+import type { IBaseApiQueryRequest, IBaseApiTransformRequest, Option } from '@/interfaces';
+import { applyDataTransform } from '@/utilities';
 import { BaseRecord, CrudFilter, useSelect } from '@refinedev/core';
 import { useMemo } from 'react';
 
-interface IUseSelectProps<T extends BaseRecord = any> {
+export interface IUseSelectProps<T extends BaseRecord = any>
+    extends IBaseApiQueryRequest, IBaseApiTransformRequest<Option<string>[], Option<string>[]> {
     id?: string;
     resource?: string;
-    enabled?: boolean;
     defaultFilters?: CrudFilter[];
     type?: 'items' | 'data-provider' | 'data-provider-items';
     filter?: (item: T) => boolean;
     optionLabel?: (item: T) => string;
     optionValue?: (item: T) => string;
-    transform?: (options: Option<string>[]) => Option<string>[];
 }
 
 export const useCustomSelect = <T extends BaseRecord = any>(props: IUseSelectProps<T>) => {
-    const { enabled, resource, defaultFilters, optionValue, optionLabel, filter, transform } =
-        props;
+    const {
+        enabled,
+        queryOptions,
+        resource,
+        defaultFilters,
+        optionValue,
+        optionLabel,
+        filter,
+        transform,
+    } = props;
 
     const { options, query } = useSelect<T>({
         resource: resource ?? '',
         pagination: { mode: 'off' },
         filters: defaultFilters ?? undefined,
-        queryOptions: { enabled: enabled ?? false },
+        queryOptions: { enabled: enabled ?? false, ...queryOptions },
         sorters: [{ field: 'createdAt', order: 'desc' }],
         optionValue: optionValue ?? ((item: any) => item.id ?? ''),
         optionLabel: optionLabel ?? ((item: any) => item.name ?? ''),
@@ -51,11 +59,8 @@ export const useCustomSelect = <T extends BaseRecord = any>(props: IUseSelectPro
             }));
         }
 
-        if (transform) {
-            return transform(resultOptions);
-        }
-        return resultOptions;
-    }, [options, filter, query.data?.data, optionValue, optionLabel, transform]);
+        return applyDataTransform(resultOptions, query.data, transform);
+    }, [options, filter, query.data, optionValue, optionLabel, transform]);
 
     return { options: transformedOptions, query };
 };

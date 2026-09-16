@@ -1,14 +1,17 @@
+import type { IBaseApiQueryRequest } from '@/interfaces';
 import { useTable } from '@refinedev/antd';
-import { CrudFilter, CrudSort, Pagination } from '@refinedev/core';
+import type { CrudFilter, CrudSort, Pagination } from '@refinedev/core';
 
-export const useTableContainer = (props: {
+export interface IUseTableContainerProps extends IBaseApiQueryRequest {
     resource: string;
-    enabled?: boolean;
     defaultSorters?: CrudSort[];
     defaultFilters?: CrudFilter[];
     defaultPagination?: Pagination;
-}) => {
-    const { resource, enabled, defaultPagination, defaultSorters, defaultFilters } = props;
+}
+
+export const useTableContainer = (props: IUseTableContainerProps) => {
+    const { resource, enabled, queryOptions, defaultPagination, defaultSorters, defaultFilters } =
+        props;
 
     const {
         currentPage,
@@ -24,12 +27,10 @@ export const useTableContainer = (props: {
     } = useTable({
         resource,
         syncWithLocation: false,
-        pagination: defaultPagination
-            ? defaultPagination
-            : {
-                  pageSize: 10,
-                  mode: 'server',
-              },
+        pagination: defaultPagination ?? {
+            pageSize: 10,
+            mode: 'server',
+        },
         sorters: defaultSorters
             ? {
                   mode: 'server',
@@ -45,6 +46,7 @@ export const useTableContainer = (props: {
         },
         queryOptions: {
             enabled: enabled ?? true,
+            ...queryOptions,
         },
     });
 

@@ -1,66 +1,28 @@
-import { getErrorNotification, getSuccessNotification, NotificationAction } from '@/utilities';
+import { NotificationAction, resolveApiUrl, resolveMutationNotifications } from '@/utilities';
 import type { BaseKey, BaseRecord, HttpError, OpenNotificationParams } from '@refinedev/core';
 import { useApiUrl, useCustomMutation } from '@refinedev/core';
+import type { IBaseApiCallbackRequest, IBaseApiNotificationRequest } from '@/interfaces';
 
 export interface CustomDeleteVariables {
     id?: BaseKey;
     ids?: BaseKey[];
 }
 
-export interface HandleCustomDeleteRequest<TData extends BaseRecord = BaseRecord> {
+export interface HandleCustomDeleteRequest<TData extends BaseRecord = BaseRecord>
+    extends IBaseApiNotificationRequest, IBaseApiCallbackRequest<TData> {
     id?: BaseKey;
     ids?: BaseKey[];
-    errorMessage?: string;
-    successMessage?: string;
-    errorNotification?:
-        | OpenNotificationParams
-        | false
-        | ((
-              error?: any,
-              values?: any,
-              resource?: string,
-          ) => OpenNotificationParams | false | undefined);
-    successNotification?:
-        | OpenNotificationParams
-        | false
-        | ((
-              data?: any,
-              values?: any,
-              resource?: string,
-          ) => OpenNotificationParams | false | undefined);
-    onSuccess?: (data: TData) => void | Promise<void>;
-    onError?: (error: HttpError) => void | Promise<void>;
 }
 
-export interface UseCustomDeleteRequest<TData extends BaseRecord = BaseRecord> {
-    resource?: string;
-    errorMessage?: string;
-    successMessage?: string;
-    errorNotification?:
-        | OpenNotificationParams
-        | false
-        | ((
-              error?: any,
-              values?: any,
-              resource?: string,
-          ) => OpenNotificationParams | false | undefined);
-    successNotification?:
-        | OpenNotificationParams
-        | false
-        | ((
-              data?: any,
-              values?: any,
-              resource?: string,
-          ) => OpenNotificationParams | false | undefined);
-    onSuccess?: (data: TData) => void | Promise<void>;
-    onError?: (error: HttpError) => void | Promise<void>;
-}
+export interface UseCustomDeleteRequest<TData extends BaseRecord = BaseRecord>
+    extends IBaseApiNotificationRequest, IBaseApiCallbackRequest<TData> {}
 
 export interface UseCustomDeleteResponse<TData extends BaseRecord = BaseRecord> {
+    isLoading: boolean;
+    mutation: ReturnType<typeof useCustomMutation<TData, HttpError, CustomDeleteVariables>>;
     handleDelete: (
         requestOrIds: HandleCustomDeleteRequest<TData> | (string | number)[],
     ) => Promise<TData | void>;
-    mutation: ReturnType<typeof useCustomMutation<TData, HttpError, CustomDeleteVariables>>;
 }
 
 export const useCustomDelete = <TData extends BaseRecord = any>({
@@ -94,35 +56,30 @@ export const useCustomDelete = <TData extends BaseRecord = any>({
             onSuccess: requestOnSuccess,
         } = req;
 
-        const url = id ? `${apiUrl}/${resource}/${id}` : `${apiUrl}/${resource ?? ''}`;
+        const targetPath = id ? `${resource}/${id}` : (resource ?? '');
+        const url = resolveApiUrl(targetPath, apiUrl);
 
-        const resolvedErrorNotification =
-            requestErrorNotification !== undefined
-                ? requestErrorNotification
-                : errorNotification !== undefined
-                  ? errorNotification
-                  : getErrorNotification({
-                        resource,
-                        action: NotificationAction.Delete,
-                        message: requestErrorMessage ?? errorMessage,
-                    });
-
-        const resolvedSuccessNotification =
-            requestSuccessNotification !== undefined
-                ? requestSuccessNotification
-                : successNotification !== undefined
-                  ? successNotification
-                  : getSuccessNotification({
-                        resource,
-                        action: NotificationAction.Delete,
-                        message: requestSuccessMessage ?? successMessage,
-                    });
+        const {
+            errorNotification: resolvedErrorNotification,
+            successNotification: resolvedSuccessNotification,
+        } = resolveMutationNotifications({
+            resource,
+            action: NotificationAction.Delete,
+            requestErrorMessage,
+            requestErrorNotification,
+            hookErrorMessage: errorMessage,
+            hookErrorNotification: errorNotification,
+            requestSuccessMessage,
+            requestSuccessNotification,
+            hookSuccessMessage: successMessage,
+            hookSuccessNotification: successNotification,
+        });
 
         try {
             const response = await mutation.mutateAsync({
+                url,
                 method: 'delete',
                 values: ids?.length ? { ids } : {},
-                url,
                 errorNotification: resolvedErrorNotification as OpenNotificationParams | false,
                 successNotification: resolvedSuccessNotification as OpenNotificationParams | false,
             });
@@ -137,6 +94,7 @@ export const useCustomDelete = <TData extends BaseRecord = any>({
 
     return {
         mutation,
+        isLoading: mutation.mutation.isPending,
         handleDelete,
     };
 };

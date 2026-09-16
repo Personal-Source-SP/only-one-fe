@@ -1,8 +1,16 @@
-import { getErrorNotification, getSuccessNotification, NotificationAction } from '@/utilities';
+import {
+    createFormFinishHandler,
+    createSaveButtonProps,
+    getErrorNotification,
+    getFormNotificationAction,
+    getSuccessNotification,
+} from '@/utilities';
 import { useModalForm } from '@refinedev/antd';
 import type { BaseRecord, GetOneResponse, HttpError } from '@refinedev/core';
 import type { ButtonProps, FormInstance, FormProps } from '@/components/custom-antd';
-import type { FormMode } from './useCustomDrawerForm';
+import type { FormMode, IBaseApiNotificationRequest, InitialValuesMapper } from '@/interfaces';
+
+export type { FormMode };
 
 type ModalFormProps<TVariables> = FormProps<TVariables>;
 type ModalFormFinishVariables<TVariables> = TVariables | FormData;
@@ -13,28 +21,21 @@ type RefineUseModalFormRequest<
     TData extends BaseRecord,
 > = NonNullable<Parameters<typeof useModalForm<TQueryFnData, HttpError, TVariables, TData>>[0]>;
 
-type InitialValuesMapper<TQueryFnData extends BaseRecord, TVariables> = (
-    data: TQueryFnData,
-) => Partial<TVariables>;
-
 type UseCustomModalRequest<
     TQueryFnData extends BaseRecord,
     TVariables,
     TData extends BaseRecord,
 > = Omit<
     RefineUseModalFormRequest<TQueryFnData, ModalFormFinishVariables<TVariables>, TData>,
-    'formProps' | 'onFinish'
-> & {
-    formProps?: FormProps<TVariables>;
-    errorDescription?: string;
-    errorMessage?: string;
-    successDescription?: string;
-    successMessage?: string;
-    initialValuesMapper?: InitialValuesMapper<TQueryFnData, TVariables>;
-    onFinish?: (
-        values: TVariables,
-    ) => Promise<TVariables | FormData | void> | TVariables | FormData | void;
-};
+    'formProps' | 'onFinish' | 'errorNotification' | 'successNotification'
+> &
+    IBaseApiNotificationRequest & {
+        formProps?: FormProps<TVariables>;
+        initialValuesMapper?: InitialValuesMapper<TQueryFnData, TVariables>;
+        onFinish?: (
+            values: TVariables,
+        ) => Promise<TVariables | FormData | void> | TVariables | FormData | void;
+    };
 
 type BaseModalFormReturnType = ReturnType<typeof useModalForm>;
 
@@ -47,12 +48,6 @@ export type UseCustomModalFormResponse<
     resource?: string;
     formProps: ModalFormProps<TVariables>;
     saveButtonProps: ButtonProps & { onClick: () => void };
-};
-
-const FORM_NOTIFICATION_ACTION: Record<string, NotificationAction> = {
-    edit: NotificationAction.Edit,
-    clone: NotificationAction.Clone,
-    create: NotificationAction.Create,
 };
 
 export const useCustomModalForm = <
@@ -119,27 +114,21 @@ export const useCustomModalForm = <
             errorNotification,
             message: errorMessage,
             description: errorDescription,
-            action: FORM_NOTIFICATION_ACTION[action ?? ''] ?? NotificationAction.Save,
+            action: getFormNotificationAction(action as FormMode),
         }),
         successNotification: getSuccessNotification({
             resource,
             successNotification,
             message: successMessage,
             description: successDescription,
-            action: FORM_NOTIFICATION_ACTION[action ?? ''] ?? NotificationAction.Save,
+            action: getFormNotificationAction(action as FormMode),
         }),
     });
 
-    const originalOnFinish = modalForm.formProps.onFinish;
-    const customOnFinish = async (values: TVariables) => {
-        if (onFinish) {
-            const result = await onFinish(values);
-            if (result) {
-                return originalOnFinish?.(result as ModalFormFinishVariables<TVariables>);
-            }
-        }
-        return originalOnFinish?.(values);
-    };
+    const customOnFinish = createFormFinishHandler<TVariables>(
+        modalForm.formProps.onFinish,
+        onFinish,
+    );
 
     return {
         ...modalForm,
@@ -150,5 +139,6 @@ export const useCustomModalForm = <
             form: modalForm.formProps.form as unknown as FormInstance<TVariables>,
             onFinish: customOnFinish,
         } as ModalFormProps<TVariables>,
+        saveButtonProps: createSaveButtonProps(undefined, modalForm.formProps.form),
     } as unknown as UseCustomModalFormResponse<TQueryFnData, TVariables, TData>;
 };

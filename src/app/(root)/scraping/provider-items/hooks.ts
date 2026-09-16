@@ -14,19 +14,42 @@ import {
 import type { ProviderItemFormValues, ProviderItemRecord } from './types';
 
 export const useDataProviderItemPage = () => {
-    const [loading, setLoading] = useState(false);
-    const [openProcessScrapeDataModal, setOpenProcessScrapeDataModal] = useState(false);
-    const [selectedDataProviderItemIds, setSelectedDataProviderItemIds] = useState<string[]>([]);
-
+    const [switchingId, setSwitchingId] = useState<string | null>(null);
     const { options: itemOptions } = useSelectItem();
     const { options: cloudDataProviderOptions } = useSelectCloudDataProvider();
     const { options: dataProviderOptions, query: dataProviderQuery } = useSelectDataProvider();
 
-    const { handleCustomMutationData: handleUpdate } = useCustomMutationData();
     const { tableProps, tableQuery, debouncedSearch, setFilters, setCurrentPage } =
         useCustomTable<ProviderItemRecord>({
             resource: API_ENDPOINT.DATA_PROVIDER_ITEMS.BASE,
         });
+
+    const { handleCustomMutationData: handleUpdate } = useCustomMutationData({
+        method: 'put',
+        successNotification: (data) => {
+            if (!data?.data?.isSuccess) {
+                return {
+                    type: MessageType.ERROR,
+                    message: 'Chuyển trạng thái thất bại',
+                    description: data?.data?.message ?? 'Chuyển trạng thái thất bại',
+                };
+            }
+
+            tableQuery?.refetch();
+
+            return {
+                type: MessageType.SUCCESS,
+                message: 'Chuyển trạng thái thành công',
+            };
+        },
+        errorNotification: (error) => {
+            return {
+                type: MessageType.ERROR,
+                message: 'Chuyển trạng thái thất bại',
+                description: error?.message ?? 'Chuyển trạng thái thất bại',
+            };
+        },
+    });
 
     const createModalForm = useCustomModalForm<
         ProviderItemRecord,
@@ -52,8 +75,8 @@ export const useDataProviderItemPage = () => {
         },
         initialValuesMapper: (record) => ({
             itemId: record.itemId,
-            dataProviderId: record.dataProviderId,
             itemUrl: record.itemUrl,
+            dataProviderId: record.dataProviderId,
             cloudDataProviderId: record.cloudDataProviderId,
             autoProcessScraping: record.autoProcessScraping,
             checkDuplicateData: record.checkDuplicateData,
@@ -61,46 +84,20 @@ export const useDataProviderItemPage = () => {
         }),
     });
 
-    const handleSwitchStatus = (id: string, active: boolean) => {
-        setLoading(true);
-
-        handleUpdate({
-            values: {},
-            method: 'put',
-            url: `data-provider-items/${id}/switch-status/${active}`,
-            successNotification: (data) => {
-                if (!data?.data?.isSuccess) {
-                    setLoading(false);
-
-                    return {
-                        type: MessageType.ERROR,
-                        message: 'Chuyển trạng thái thất bại',
-                        description: data?.data?.message ?? 'Chuyển trạng thái thất bại',
-                    };
-                }
-
-                tableQuery?.refetch();
-                setLoading(false);
-
-                return {
-                    type: MessageType.SUCCESS,
-                    message: 'Chuyển trạng thái thành công',
-                };
-            },
-            errorNotification: (error) => {
-                setLoading(false);
-
-                return {
-                    type: MessageType.ERROR,
-                    message: 'Chuyển trạng thái thất bại',
-                    description: error?.message ?? 'Chuyển trạng thái thất bại',
-                };
-            },
-        });
+    const handleSwitchStatus = async (id: string, active: boolean) => {
+        if (switchingId) return;
+        setSwitchingId(id);
+        try {
+            await handleUpdate({
+                url: API_ENDPOINT.DATA_PROVIDER_ITEMS.SWITCH_STATUS(id, active),
+            });
+        } finally {
+            setSwitchingId(null);
+        }
     };
 
     return {
-        loading,
+        switchingId,
         tableProps,
         tableQuery,
         debouncedSearch,
@@ -108,10 +105,6 @@ export const useDataProviderItemPage = () => {
         setCurrentPage,
         createModalForm,
         editModalForm,
-        openProcessScrapeDataModal,
-        setOpenProcessScrapeDataModal,
-        selectedDataProviderItemIds,
-        setSelectedDataProviderItemIds,
         itemOptions,
         cloudDataProviderOptions,
         dataProviderOptions,
