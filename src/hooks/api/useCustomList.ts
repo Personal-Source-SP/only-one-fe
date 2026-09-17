@@ -44,19 +44,19 @@ export const useCustomList = <TData extends BaseRecord = BaseRecord, TTransforme
         ...resolvedNotifications,
     });
 
-    const rawList = useMemo(() => {
-        const items = refineResult.query.data?.data ?? refineResult.result?.data ?? [];
-        return Array.isArray(items) ? (items as TData[]) : [];
-    }, [refineResult.query.data?.data, refineResult.result?.data]);
-
     const transformedData = useMemo(
-        () => applyDataTransform(rawList, undefined, transform),
-        [rawList, transform],
+        () =>
+            applyDataTransform(
+                (refineResult.query.data?.data ?? []) as unknown as TData[],
+                refineResult.query.data,
+                transform,
+            ),
+        [refineResult.query.data, transform],
     );
 
     return {
         ...refineResult,
         data: transformedData,
-        result: { ...refineResult.result, data: transformedData as unknown as TData[] },
+        isLoading: refineResult.query.isLoading,
     };
 };

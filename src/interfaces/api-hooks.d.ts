@@ -80,15 +80,15 @@ export interface IBaseApiMutationResponse<
     mutation: ReturnType<typeof useCustomMutation<TData, HttpError, TPayload>>;
 }
 
-export interface IBaseApiQueryResponse<
-    TData = unknown,
-    TQueryData extends BaseRecord = BaseRecord,
-> extends IBaseApiDataResponse<TData> {
+export interface IBaseApiQueryResponse<TData = unknown, TQueryData extends BaseRecord = BaseRecord>
+    extends IBaseApiDataResponse<TData>, IBaseApiLoadingResponse {
     query: ReturnType<typeof useCustom<TQueryData, HttpError>>['query'];
     result: ReturnType<typeof useCustom<TQueryData, HttpError>>['result'];
 }
 
-export interface IBaseApiFormResponse<TVariables = Record<string, unknown>> {
+export interface IBaseApiFormResponse<
+    TVariables = Record<string, unknown>,
+> extends IBaseApiLoadingResponse {
     mode: FormMode;
     resource?: string;
     formProps: FormProps<TVariables>;

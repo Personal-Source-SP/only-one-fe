@@ -99,5 +99,6 @@ export const useCustomTable = <
             onChange: handleTableChange,
             rowKey: (record: TTransformed): string => resolveRowKey(record, rowKey),
         },
+        isLoading: Boolean(result.tableQuery.isLoading),
     };
 };

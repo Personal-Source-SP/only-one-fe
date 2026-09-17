@@ -45,16 +45,14 @@ export const useCustomOne = <TData extends BaseRecord = BaseRecord, TTransformed
         },
     });
 
-    const rawData = refineResult.query.data?.data ?? refineResult.result;
-
     const transformedData = useMemo(
-        () => applyDataTransform(rawData, undefined, transform),
-        [rawData, transform],
+        () => applyDataTransform(refineResult.query.data?.data, refineResult.query.data, transform),
+        [refineResult.query.data, transform],
     );
 
     return {
         ...refineResult,
         data: transformedData,
-        result: transformedData,
+        isLoading: refineResult.query.isLoading,
     };
 };

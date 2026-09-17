@@ -71,11 +71,12 @@ export const useTableContainer = (props: IUseTableContainerProps) => {
         setCurrentPage,
         pageSize,
         setPageSize,
-        filters,
+        filters: tableFilters,
         setFilters,
-        sorters,
+        sorters: tableSorters,
         setSorters,
         tableProps,
         tableQuery,
+        isLoading: Boolean(tableQuery?.isLoading),
     };
 };

@@ -128,5 +128,6 @@ export const useCustomDrawerForm = <
             drawerForm.saveButtonProps,
             drawerForm.formProps.form,
         ),
+        isLoading: Boolean(drawerForm.formLoading),
     } as unknown as UseCustomDrawerFormResponse<TQueryFnData, TVariables, TData>;
 };

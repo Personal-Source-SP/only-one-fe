@@ -92,7 +92,7 @@ export const useCustomSelect = <T extends BaseRecord = BaseRecord>(props: IUseSe
         return applyDataTransform(resultOptions, query.data, transform);
     }, [options, filter, query.data, getValue, getLabel, transform]);
 
-    return { options: transformedOptions, query };
+    return { options: transformedOptions, query, isLoading: query.isLoading };
 };
 
 export const useSelectDataProviderItem = (props?: IUseSelectProps<IDataProviderItem>) => {

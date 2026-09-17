@@ -124,5 +124,6 @@ export const useCustomModalForm = <
             onFinish: customOnFinish,
         } as ModalFormProps<TVariables>,
         saveButtonProps: createSaveButtonProps(undefined, modalForm.formProps.form),
+        isLoading: Boolean(modalForm.formLoading),
     } as unknown as UseCustomModalFormResponse<TQueryFnData, TVariables, TData>;
 };

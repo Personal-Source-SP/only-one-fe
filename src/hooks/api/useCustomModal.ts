@@ -69,5 +69,13 @@ export const useCustomModal = <
         onMutationSuccess: handleMutationSuccess,
     });
 
-    return { open, formProps, modalProps, formLoading, show, close };
+    return {
+        open,
+        formProps,
+        modalProps,
+        formLoading,
+        show,
+        close,
+        isLoading: Boolean(formLoading),
+    };
 };

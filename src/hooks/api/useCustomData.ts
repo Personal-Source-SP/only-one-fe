@@ -57,11 +57,9 @@ export const useCustomData = <TData extends BaseRecord = BaseRecord, TTransforme
         ...resolvedNotifications,
     });
 
-    const rawResponse = result?.data;
-    const unwrappedData = useMemo(() => unwrapApiResponse<TData>(rawResponse), [rawResponse]);
     const transformedData = useMemo(
-        () => applyDataTransform(unwrappedData, rawResponse, transform),
-        [unwrappedData, rawResponse, transform],
+        () => applyDataTransform(unwrapApiResponse<TData>(query.data?.data), query.data, transform),
+        [query.data, transform],
     );
 
     return {
@@ -69,5 +67,6 @@ export const useCustomData = <TData extends BaseRecord = BaseRecord, TTransforme
         apiUrl,
         result,
         data: transformedData,
+        isLoading: query.isLoading,
     };
 };
