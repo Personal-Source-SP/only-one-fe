@@ -1,14 +1,18 @@
 import {
     createFormFinishHandler,
     createSaveButtonProps,
-    getErrorNotification,
-    getFormNotificationAction,
-    getSuccessNotification,
+    resolveFormNotifications,
 } from '@/utilities';
 import { useModalForm } from '@refinedev/antd';
 import type { BaseRecord, GetOneResponse, HttpError } from '@refinedev/core';
 import type { ButtonProps, FormInstance, FormProps } from '@/components/custom-antd';
-import type { FormMode, IBaseApiNotificationRequest, InitialValuesMapper } from '@/interfaces';
+import type {
+    FormMode,
+    IBaseApiFormRequest,
+    IBaseApiFormResponse,
+    IBaseApiNotificationRequest,
+    InitialValuesMapper,
+} from '@/interfaces';
 
 export type { FormMode };
 
@@ -29,13 +33,8 @@ type UseCustomModalRequest<
     RefineUseModalFormRequest<TQueryFnData, ModalFormFinishVariables<TVariables>, TData>,
     'formProps' | 'onFinish' | 'errorNotification' | 'successNotification'
 > &
-    IBaseApiNotificationRequest & {
-        formProps?: FormProps<TVariables>;
-        initialValuesMapper?: InitialValuesMapper<TQueryFnData, TVariables>;
-        onFinish?: (
-            values: TVariables,
-        ) => Promise<TVariables | FormData | void> | TVariables | FormData | void;
-    };
+    IBaseApiNotificationRequest &
+    IBaseApiFormRequest<TQueryFnData, TVariables>;
 
 type BaseModalFormReturnType = ReturnType<typeof useModalForm>;
 
@@ -43,12 +42,7 @@ export type UseCustomModalFormResponse<
     TQueryFnData extends BaseRecord = BaseRecord,
     TVariables = Record<string, never>,
     TData extends BaseRecord = TQueryFnData,
-> = Omit<BaseModalFormReturnType, 'formProps'> & {
-    mode: FormMode;
-    resource?: string;
-    formProps: ModalFormProps<TVariables>;
-    saveButtonProps: ButtonProps & { onClick: () => void };
-};
+> = Omit<BaseModalFormReturnType, 'formProps'> & IBaseApiFormResponse<TVariables>;
 
 export const useCustomModalForm = <
     TQueryFnData extends BaseRecord = BaseRecord,
@@ -96,6 +90,17 @@ export const useCustomModalForm = <
         },
     };
 
+    const resolvedNotifications = resolveFormNotifications({
+        resource,
+        action,
+        errorMessage,
+        errorDescription,
+        errorNotification,
+        successMessage,
+        successDescription,
+        successNotification,
+    });
+
     const modalForm = useModalForm<
         TQueryFnData,
         HttpError,
@@ -109,20 +114,7 @@ export const useCustomModalForm = <
         autoResetForm,
         redirect,
         warnWhenUnsavedChanges,
-        errorNotification: getErrorNotification({
-            resource,
-            errorNotification,
-            message: errorMessage,
-            description: errorDescription,
-            action: getFormNotificationAction(action as FormMode),
-        }),
-        successNotification: getSuccessNotification({
-            resource,
-            successNotification,
-            message: successMessage,
-            description: successDescription,
-            action: getFormNotificationAction(action as FormMode),
-        }),
+        ...resolvedNotifications,
     });
 
     const customOnFinish = createFormFinishHandler<TVariables>(

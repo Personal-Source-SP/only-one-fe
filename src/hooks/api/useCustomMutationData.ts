@@ -1,3 +1,11 @@
+import type {
+    CustomHttpMethod,
+    IBaseApiCallbackRequest,
+    IBaseApiMutationResponse,
+    IBaseApiNotificationRequest,
+    IBaseApiUrlRequest,
+    IBaseApiUrlResponse,
+} from '@/interfaces';
 import {
     getMethodNotificationAction,
     resolveApiUrl,
@@ -5,16 +13,13 @@ import {
 } from '@/utilities';
 import type { BaseRecord, HttpError } from '@refinedev/core';
 import { useApiUrl, useCustomMutation } from '@refinedev/core';
-import type {
-    CustomHttpMethod,
-    IBaseApiCallbackRequest,
-    IBaseApiNotificationRequest,
-    IBaseApiUrlRequest,
-} from '@/interfaces';
 
 export type CustomMutationMethod = Extract<CustomHttpMethod, 'post' | 'put' | 'delete' | 'patch'>;
 
-export interface CustomMutationDataRequest<TPayload = any, TData extends BaseRecord = BaseRecord>
+export interface CustomMutationDataRequest<
+    TPayload = unknown,
+    TData extends BaseRecord = BaseRecord,
+>
     extends IBaseApiUrlRequest, IBaseApiNotificationRequest, IBaseApiCallbackRequest<TData> {
     values?: TPayload;
     method?: CustomMutationMethod;
@@ -25,19 +30,14 @@ export interface UseCustomMutationDataRequest<TData extends BaseRecord = BaseRec
     method?: CustomMutationMethod;
 }
 
-export interface UseCustomMutationDataResponse<TData extends BaseRecord, TPayload> {
-    apiUrl: string;
-    isLoading: boolean;
-    mutation: ReturnType<typeof useCustomMutation<TData, HttpError, TPayload>>;
+export interface UseCustomMutationDataResponse<TData extends BaseRecord, TPayload = unknown>
+    extends IBaseApiUrlResponse, IBaseApiMutationResponse<TData, TPayload> {
     handleCustomMutationData: (
         request: CustomMutationDataRequest<TPayload, TData>,
     ) => Promise<TData>;
 }
 
-export const useCustomMutationData = <
-    TData extends BaseRecord = any,
-    TPayload = Record<string, any>,
->({
+export const useCustomMutationData = <TData extends BaseRecord = BaseRecord, TPayload = unknown>({
     resource,
     method: defaultMethod = 'post',
     errorMessage,
@@ -84,8 +84,8 @@ export const useCustomMutationData = <
                 method,
                 url: targetUrl,
                 values: values ?? ({} as TPayload),
-                errorNotification: resolvedErrorNotification as any,
-                successNotification: resolvedSuccessNotification as any,
+                errorNotification: resolvedErrorNotification,
+                successNotification: resolvedSuccessNotification,
             });
 
             await (requestOnSuccess ?? onSuccess)?.(response.data);

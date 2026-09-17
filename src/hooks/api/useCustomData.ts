@@ -2,37 +2,35 @@ import type {
     CustomHttpMethod,
     IBaseApiNotificationRequest,
     IBaseApiQueryRequest,
+    IBaseApiQueryResponse,
     IBaseApiTransformRequest,
     IBaseApiUrlRequest,
+    IBaseApiUrlResponse,
 } from '@/interfaces';
 import {
     applyDataTransform,
     resolveApiUrl,
-    resolveQueryErrorNotification,
+    resolveQueryNotifications,
     unwrapApiResponse,
 } from '@/utilities';
 import type { BaseRecord, HttpError } from '@refinedev/core';
 import { useApiUrl, useCustom } from '@refinedev/core';
 import { useMemo } from 'react';
 
-export interface UseCustomDataRequest<TData extends BaseRecord = any, TTransformed = TData>
+export interface UseCustomDataRequest<TData extends BaseRecord = BaseRecord, TTransformed = TData>
     extends
         IBaseApiUrlRequest,
         IBaseApiNotificationRequest,
         IBaseApiQueryRequest<Parameters<typeof useCustom<TData, HttpError>>[0]['queryOptions']>,
         IBaseApiTransformRequest<TData, TTransformed> {
     method?: CustomHttpMethod;
-    query?: Record<string, any>;
+    query?: Record<string, unknown>;
 }
 
-export interface UseCustomDataResponse<TData = any> {
-    apiUrl: string;
-    data: TData | undefined;
-    query: ReturnType<typeof useCustom<any, HttpError>>['query'];
-    result: ReturnType<typeof useCustom<any, HttpError>>['result'];
-}
+export interface UseCustomDataResponse<TData = unknown, TQueryData extends BaseRecord = BaseRecord>
+    extends IBaseApiUrlResponse, IBaseApiQueryResponse<TData, TQueryData> {}
 
-export const useCustomData = <TData extends BaseRecord = any, TTransformed = TData>({
+export const useCustomData = <TData extends BaseRecord = BaseRecord, TTransformed = TData>({
     url,
     query,
     resource,
@@ -49,18 +47,20 @@ export const useCustomData = <TData extends BaseRecord = any, TTransformed = TDa
     const apiUrl = useApiUrl();
     const targetUrl = resolveApiUrl(url, apiUrl);
 
+    const resolvedNotifications = resolveQueryNotifications({
+        resource,
+        errorMessage,
+        errorDescription,
+        errorNotification,
+        successNotification,
+    });
+
     const { query: customQuery, result } = useCustom<TData, HttpError>({
         method,
         url: targetUrl,
         config: { query },
         queryOptions: { enabled, refetchInterval, ...queryOptions },
-        successNotification,
-        errorNotification: resolveQueryErrorNotification({
-            resource,
-            errorMessage,
-            errorDescription,
-            errorNotification,
-        }),
+        ...resolvedNotifications,
     });
 
     const rawResponse = result?.data;

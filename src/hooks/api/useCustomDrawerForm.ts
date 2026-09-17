@@ -1,14 +1,19 @@
 import {
     createFormFinishHandler,
     createSaveButtonProps,
-    getErrorNotification,
-    getFormNotificationAction,
-    getSuccessNotification,
+    resolveFormNotifications,
 } from '@/utilities';
+
 import { useDrawerForm } from '@refinedev/antd';
 import type { BaseRecord, GetOneResponse, HttpError } from '@refinedev/core';
 import type { ButtonProps, FormInstance, FormProps } from '@/components/custom-antd';
-import type { FormMode, IBaseApiNotificationRequest, InitialValuesMapper } from '@/interfaces';
+import type {
+    FormMode,
+    IBaseApiFormRequest,
+    IBaseApiFormResponse,
+    IBaseApiNotificationRequest,
+    InitialValuesMapper,
+} from '@/interfaces';
 
 export type { FormMode };
 
@@ -29,13 +34,8 @@ type UseCustomDrawerRequest<
     RefineUseDrawerFormRequest<TQueryFnData, DrawerFormFinishVariables<TVariables>, TData>,
     'formProps' | 'onFinish' | 'errorNotification' | 'successNotification'
 > &
-    IBaseApiNotificationRequest & {
-        formProps?: FormProps<TVariables>;
-        initialValuesMapper?: InitialValuesMapper<TQueryFnData, TVariables>;
-        onFinish?: (
-            values: TVariables,
-        ) => Promise<TVariables | FormData | void> | TVariables | FormData | void;
-    };
+    IBaseApiNotificationRequest &
+    IBaseApiFormRequest<TQueryFnData, TVariables>;
 
 type BaseDrawerFormReturnType = ReturnType<typeof useDrawerForm>;
 
@@ -43,12 +43,7 @@ export type UseCustomDrawerFormResponse<
     TQueryFnData extends BaseRecord = BaseRecord,
     TVariables = Record<string, never>,
     TData extends BaseRecord = TQueryFnData,
-> = Omit<BaseDrawerFormReturnType, 'formProps'> & {
-    mode: FormMode;
-    resource?: string;
-    formProps: DrawerFormProps<TVariables>;
-    saveButtonProps: ButtonProps & { onClick: () => void };
-};
+> = Omit<BaseDrawerFormReturnType, 'formProps'> & IBaseApiFormResponse<TVariables>;
 
 export const useCustomDrawerForm = <
     TQueryFnData extends BaseRecord = BaseRecord,
@@ -96,6 +91,17 @@ export const useCustomDrawerForm = <
         },
     };
 
+    const resolvedNotifications = resolveFormNotifications({
+        resource,
+        action,
+        errorMessage,
+        errorDescription,
+        errorNotification,
+        successMessage,
+        successDescription,
+        successNotification,
+    });
+
     const drawerForm = useDrawerForm<
         TQueryFnData,
         HttpError,
@@ -109,20 +115,7 @@ export const useCustomDrawerForm = <
         autoResetForm,
         redirect,
         warnWhenUnsavedChanges,
-        errorNotification: getErrorNotification({
-            resource,
-            errorNotification,
-            message: errorMessage,
-            description: errorDescription,
-            action: getFormNotificationAction(action as FormMode),
-        }),
-        successNotification: getSuccessNotification({
-            resource,
-            successNotification,
-            message: successMessage,
-            description: successDescription,
-            action: getFormNotificationAction(action as FormMode),
-        }),
+        ...resolvedNotifications,
     });
 
     const customOnFinish = createFormFinishHandler<TVariables>(

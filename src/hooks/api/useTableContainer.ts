@@ -1,17 +1,40 @@
-import type { IBaseApiQueryRequest } from '@/interfaces';
+import type {
+    IBaseApiNotificationRequest,
+    IBaseApiQueryRequest,
+    IBaseApiResourceRequest,
+} from '@/interfaces';
+import { resolveQueryNotifications } from '@/utilities';
 import { useTable } from '@refinedev/antd';
 import type { CrudFilter, CrudSort, Pagination } from '@refinedev/core';
 
-export interface IUseTableContainerProps extends IBaseApiQueryRequest {
-    resource: string;
+export interface IUseTableContainerProps
+    extends IBaseApiResourceRequest, IBaseApiQueryRequest, IBaseApiNotificationRequest {
     defaultSorters?: CrudSort[];
     defaultFilters?: CrudFilter[];
     defaultPagination?: Pagination;
 }
 
 export const useTableContainer = (props: IUseTableContainerProps) => {
-    const { resource, enabled, queryOptions, defaultPagination, defaultSorters, defaultFilters } =
-        props;
+    const {
+        resource,
+        enabled,
+        queryOptions,
+        defaultPagination,
+        defaultSorters,
+        defaultFilters,
+        errorMessage,
+        errorDescription,
+        errorNotification,
+        successNotification = false,
+    } = props;
+
+    const resolvedNotifications = resolveQueryNotifications({
+        resource,
+        errorMessage,
+        errorDescription,
+        errorNotification,
+        successNotification,
+    });
 
     const {
         currentPage,
@@ -48,6 +71,7 @@ export const useTableContainer = (props: IUseTableContainerProps) => {
             enabled: enabled ?? true,
             ...queryOptions,
         },
+        ...resolvedNotifications,
     });
 
     return {

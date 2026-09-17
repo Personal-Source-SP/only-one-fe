@@ -9,15 +9,24 @@ import type { IItem } from '@/app/(root)/scraping/items/types';
 import type { IDataProviderItem } from '@/app/(root)/scraping/provider-items/types';
 import type { ISimulationContext } from '@/app/(root)/simulation/contexts/types';
 import { API_ENDPOINT } from '@/config';
-import type { IBaseApiQueryRequest, IBaseApiTransformRequest, Option } from '@/interfaces';
-import { applyDataTransform } from '@/utilities';
+import type {
+    IBaseApiNotificationRequest,
+    IBaseApiQueryRequest,
+    IBaseApiResourceRequest,
+    IBaseApiTransformRequest,
+    Option,
+} from '@/interfaces';
+import { applyDataTransform, resolveQueryNotifications } from '@/utilities';
 import { BaseRecord, CrudFilter, useSelect } from '@refinedev/core';
 import { useMemo } from 'react';
 
-export interface IUseSelectProps<T extends BaseRecord = any>
-    extends IBaseApiQueryRequest, IBaseApiTransformRequest<Option<string>[], Option<string>[]> {
+export interface IUseSelectProps<T extends BaseRecord = BaseRecord>
+    extends
+        IBaseApiResourceRequest,
+        IBaseApiNotificationRequest,
+        IBaseApiQueryRequest,
+        IBaseApiTransformRequest<Option<string>[], Option<string>[]> {
     id?: string;
-    resource?: string;
     defaultFilters?: CrudFilter[];
     type?: 'items' | 'data-provider' | 'data-provider-items';
     filter?: (item: T) => boolean;
@@ -25,7 +34,19 @@ export interface IUseSelectProps<T extends BaseRecord = any>
     optionValue?: (item: T) => string;
 }
 
-export const useCustomSelect = <T extends BaseRecord = any>(props: IUseSelectProps<T>) => {
+const getDefaultOptionValue = <T extends BaseRecord>(item: T): string => {
+    return String(item.id ?? '');
+};
+
+const getDefaultOptionLabel = <T extends BaseRecord>(item: T): string => {
+    const record = item as Record<string, unknown>;
+    if (typeof record.name === 'string') return record.name;
+    if (typeof record.title === 'string') return record.title;
+    if (typeof record.label === 'string') return record.label;
+    return String(item.id ?? '');
+};
+
+export const useCustomSelect = <T extends BaseRecord = BaseRecord>(props: IUseSelectProps<T>) => {
     const {
         enabled,
         queryOptions,
@@ -35,7 +56,22 @@ export const useCustomSelect = <T extends BaseRecord = any>(props: IUseSelectPro
         optionLabel,
         filter,
         transform,
+        errorMessage,
+        errorDescription,
+        errorNotification,
+        successNotification = false,
     } = props;
+
+    const resolvedNotifications = resolveQueryNotifications({
+        resource,
+        errorMessage,
+        errorDescription,
+        errorNotification,
+        successNotification,
+    });
+
+    const getValue = optionValue ?? getDefaultOptionValue;
+    const getLabel = optionLabel ?? getDefaultOptionLabel;
 
     const { options, query } = useSelect<T>({
         resource: resource ?? '',
@@ -43,16 +79,15 @@ export const useCustomSelect = <T extends BaseRecord = any>(props: IUseSelectPro
         filters: defaultFilters ?? undefined,
         queryOptions: { enabled: enabled ?? false, ...queryOptions },
         sorters: [{ field: 'createdAt', order: 'desc' }],
-        optionValue: optionValue ?? ((item: any) => item.id ?? ''),
-        optionLabel: optionLabel ?? ((item: any) => item.name ?? ''),
+        optionValue: getValue,
+        optionLabel: getLabel,
+        ...resolvedNotifications,
     });
 
     const transformedOptions = useMemo(() => {
         let resultOptions = options;
         if (filter && query.data?.data) {
             const rawData = query.data.data as T[];
-            const getValue = optionValue ?? ((item: any) => item.id ?? '');
-            const getLabel = optionLabel ?? ((item: any) => item.name ?? '');
             resultOptions = rawData.filter(filter).map((item) => ({
                 label: getLabel(item),
                 value: getValue(item),
@@ -60,7 +95,7 @@ export const useCustomSelect = <T extends BaseRecord = any>(props: IUseSelectPro
         }
 
         return applyDataTransform(resultOptions, query.data, transform);
-    }, [options, filter, query.data, optionValue, optionLabel, transform]);
+    }, [options, filter, query.data, getValue, getLabel, transform]);
 
     return { options: transformedOptions, query };
 };

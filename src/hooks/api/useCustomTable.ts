@@ -1,6 +1,6 @@
 import { useDebounceSearch, useTableChange } from '@/hooks';
 import type { IBaseApiNotificationRequest, IBaseApiTransformRequest } from '@/interfaces';
-import { applyDataTransform, resolveQueryErrorNotification } from '@/utilities';
+import { applyDataTransform, resolveQueryNotifications } from '@/utilities';
 import { useTable } from '@refinedev/antd';
 import type { BaseRecord, HttpError } from '@refinedev/core';
 import { useMemo } from 'react';
@@ -19,6 +19,26 @@ export type UseCustomTableRequest<
         rowKey?: keyof TTransformed | ((record: TTransformed) => string);
     };
 
+const resolveRowKey = <TRecord extends BaseRecord>(
+    record: TRecord,
+    rowKey?: keyof TRecord | ((record: TRecord) => string),
+): string => {
+    if (typeof rowKey === 'function') {
+        return rowKey(record);
+    }
+    if (rowKey) {
+        return String(record[rowKey]);
+    }
+    const rec = record as Record<string, unknown>;
+    if (rec.id !== undefined && rec.id !== null) {
+        return String(rec.id);
+    }
+    if (rec._id !== undefined && rec._id !== null) {
+        return String(rec._id);
+    }
+    return '';
+};
+
 export const useCustomTable = <
     TData extends BaseRecord = BaseRecord,
     TTransformed extends BaseRecord = TData,
@@ -34,6 +54,14 @@ export const useCustomTable = <
     transform,
     ...rest
 }: UseCustomTableRequest<TData, TTransformed>) => {
+    const resolvedNotifications = resolveQueryNotifications({
+        resource,
+        errorMessage,
+        errorDescription,
+        errorNotification,
+        successNotification,
+    });
+
     const result = useTable<TData, HttpError>({
         ...rest,
         resource,
@@ -46,13 +74,7 @@ export const useCustomTable = <
             initial: [{ field: 'createdAt', order: 'desc' }],
             ...sorters,
         },
-        errorNotification: resolveQueryErrorNotification({
-            resource,
-            errorNotification,
-            errorMessage,
-            errorDescription,
-        }),
-        successNotification,
+        ...resolvedNotifications,
     });
 
     const { handleTableChange } = useTableChange<TData>({
@@ -79,17 +101,7 @@ export const useCustomTable = <
             ...result.tableProps,
             dataSource: transformedDataSource,
             onChange: handleTableChange,
-            rowKey: (record: TTransformed): string => {
-                if (typeof rowKey === 'function') {
-                    return rowKey(record);
-                }
-
-                if (rowKey) {
-                    return String(record[rowKey]);
-                }
-
-                return String(record.id ?? (record as Record<string, unknown>)._id ?? '');
-            },
+            rowKey: (record: TTransformed): string => resolveRowKey(record, rowKey),
         },
     };
 };

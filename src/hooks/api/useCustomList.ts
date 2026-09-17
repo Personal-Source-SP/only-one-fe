@@ -1,9 +1,9 @@
-import { useMemo } from 'react';
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE, DEFAULT_SORTERS } from '@/config';
-import { applyDataTransform, resolveQueryErrorNotification } from '@/utilities';
+import type { IBaseApiNotificationRequest, IBaseApiTransformRequest } from '@/interfaces';
+import { applyDataTransform, resolveQueryNotifications } from '@/utilities';
 import type { BaseRecord, HttpError } from '@refinedev/core';
 import { useList } from '@refinedev/core';
-import type { IBaseApiNotificationRequest, IBaseApiTransformRequest } from '@/interfaces';
+import { useMemo } from 'react';
 
 type RefineUseListRequest<TData extends BaseRecord> = NonNullable<
     Parameters<typeof useList<TData, HttpError>>[0]
@@ -29,6 +29,14 @@ export const useCustomList = <TData extends BaseRecord = BaseRecord, TTransforme
     transform,
     ...rest
 }: UseCustomListRequest<TData, TTransformed>) => {
+    const resolvedNotifications = resolveQueryNotifications({
+        resource,
+        errorMessage,
+        errorDescription,
+        errorNotification,
+        successNotification,
+    });
+
     const refineResult = useList<TData, HttpError>({
         ...rest,
         resource,
@@ -37,13 +45,7 @@ export const useCustomList = <TData extends BaseRecord = BaseRecord, TTransforme
             pageSize: DEFAULT_PAGE_SIZE,
             currentPage: DEFAULT_PAGE_INDEX,
         },
-        successNotification,
-        errorNotification: resolveQueryErrorNotification({
-            resource,
-            errorMessage,
-            errorDescription,
-            errorNotification,
-        }),
+        ...resolvedNotifications,
     });
 
     const rawList = useMemo(() => {
@@ -59,6 +61,6 @@ export const useCustomList = <TData extends BaseRecord = BaseRecord, TTransforme
     return {
         ...refineResult,
         data: transformedData,
-        result: { ...refineResult.result, data: transformedData as any },
+        result: { ...refineResult.result, data: transformedData as unknown as TData[] },
     };
 };

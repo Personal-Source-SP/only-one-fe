@@ -1,7 +1,11 @@
 import { NotificationAction, resolveApiUrl, resolveMutationNotifications } from '@/utilities';
 import type { BaseKey, BaseRecord, HttpError, OpenNotificationParams } from '@refinedev/core';
 import { useApiUrl, useCustomMutation } from '@refinedev/core';
-import type { IBaseApiCallbackRequest, IBaseApiNotificationRequest } from '@/interfaces';
+import type {
+    IBaseApiCallbackRequest,
+    IBaseApiMutationResponse,
+    IBaseApiNotificationRequest,
+} from '@/interfaces';
 
 export interface CustomDeleteVariables {
     id?: BaseKey;
@@ -17,15 +21,15 @@ export interface HandleCustomDeleteRequest<TData extends BaseRecord = BaseRecord
 export interface UseCustomDeleteRequest<TData extends BaseRecord = BaseRecord>
     extends IBaseApiNotificationRequest, IBaseApiCallbackRequest<TData> {}
 
-export interface UseCustomDeleteResponse<TData extends BaseRecord = BaseRecord> {
-    isLoading: boolean;
-    mutation: ReturnType<typeof useCustomMutation<TData, HttpError, CustomDeleteVariables>>;
+export interface UseCustomDeleteResponse<
+    TData extends BaseRecord = BaseRecord,
+> extends IBaseApiMutationResponse<TData, CustomDeleteVariables> {
     handleDelete: (
         requestOrIds: HandleCustomDeleteRequest<TData> | (string | number)[],
     ) => Promise<TData | void>;
 }
 
-export const useCustomDelete = <TData extends BaseRecord = any>({
+export const useCustomDelete = <TData extends BaseRecord = BaseRecord>({
     resource,
     errorMessage,
     errorNotification,
@@ -80,8 +84,8 @@ export const useCustomDelete = <TData extends BaseRecord = any>({
                 url,
                 method: 'delete',
                 values: ids?.length ? { ids } : {},
-                errorNotification: resolvedErrorNotification as OpenNotificationParams | false,
-                successNotification: resolvedSuccessNotification as OpenNotificationParams | false,
+                errorNotification: resolvedErrorNotification,
+                successNotification: resolvedSuccessNotification,
             });
 
             await (requestOnSuccess ?? onSuccess)?.(response.data);

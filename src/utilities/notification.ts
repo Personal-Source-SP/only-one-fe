@@ -72,11 +72,18 @@ export const getErrorNotification = <TNotification = OpenNotificationParams | fa
 
     return ((error?: HttpError) => {
         const backendMessage = getBackendErrorMessage(error);
-        const finalDescription = description ?? message ?? defaultTitle;
+        let finalDescription = defaultTitle;
+        if (description !== undefined) {
+            finalDescription = description;
+        } else if (message !== undefined) {
+            finalDescription = message;
+        }
+
+        const finalMessage = backendMessage || message || defaultTitle;
 
         return {
             type: 'error',
-            message: backendMessage || message || defaultTitle,
+            message: finalMessage,
             ...(finalDescription === undefined ? {} : { description: finalDescription }),
         };
     }) as TNotification;

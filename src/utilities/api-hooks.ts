@@ -5,6 +5,7 @@ import type {
     FormMode,
     IBaseApiNotificationRequest,
 } from '@/interfaces';
+import type { HttpError, OpenNotificationParams, SuccessErrorNotification } from '@refinedev/core';
 import { getErrorNotification, getSuccessNotification, NotificationAction } from './notification';
 
 /**
@@ -78,10 +79,11 @@ export const resolveMutationNotifications = ({
     } else if (hookErrorNotification !== undefined) {
         errorNotification = hookErrorNotification;
     } else {
+        const message = requestErrorMessage !== undefined ? requestErrorMessage : hookErrorMessage;
         errorNotification = getErrorNotification({
             resource,
             action,
-            message: requestErrorMessage ?? hookErrorMessage,
+            message,
         });
     }
 
@@ -91,10 +93,12 @@ export const resolveMutationNotifications = ({
     } else if (hookSuccessNotification !== undefined) {
         successNotification = hookSuccessNotification;
     } else {
+        const message =
+            requestSuccessMessage !== undefined ? requestSuccessMessage : hookSuccessMessage;
         successNotification = getSuccessNotification({
             resource,
             action,
-            message: requestSuccessMessage ?? hookSuccessMessage,
+            message,
         });
     }
 
@@ -107,17 +111,18 @@ export const resolveMutationNotifications = ({
 /**
  * Unwraps standard backend API envelope ({ isSuccess, data, meta, errors }).
  */
-export const unwrapApiResponse = <T = any>(rawResponse: any): T | undefined => {
+export const unwrapApiResponse = <T = unknown>(rawResponse: unknown): T | undefined => {
     if (!rawResponse) return undefined;
+    const record = rawResponse as Record<string, unknown>;
     if (
-        rawResponse?.data !== undefined &&
-        (rawResponse?.isSuccess !== undefined ||
-            rawResponse?.errors !== undefined ||
-            rawResponse?.meta !== undefined)
+        record?.data !== undefined &&
+        (record?.isSuccess !== undefined ||
+            record?.errors !== undefined ||
+            record?.meta !== undefined)
     ) {
-        return rawResponse.data;
+        return record.data as T;
     }
-    return rawResponse?.data !== undefined ? rawResponse.data : rawResponse;
+    return record?.data !== undefined ? (record.data as T) : (rawResponse as T);
 };
 
 /**
@@ -125,8 +130,8 @@ export const unwrapApiResponse = <T = any>(rawResponse: any): T | undefined => {
  */
 export const applyDataTransform = <TData, TTransformed>(
     data: TData | undefined,
-    rawResponse?: any,
-    transform?: (data: TData | undefined, rawResponse?: any) => TTransformed,
+    rawResponse?: unknown,
+    transform?: (data: TData | undefined, rawResponse?: unknown) => TTransformed,
 ): TTransformed => {
     if (transform) {
         return transform(data, rawResponse);
@@ -138,7 +143,7 @@ export const applyDataTransform = <TData, TTransformed>(
  * Resolves error notification for load/query operations.
  */
 export const resolveQueryErrorNotification = (
-    params: IBaseApiNotificationRequest & { action?: NotificationAction },
+    params: IBaseApiNotificationRequest<any, any, any> & { action?: NotificationAction },
 ): ApiNotificationParam => {
     if (params.errorNotification !== undefined) {
         return params.errorNotification;
@@ -149,6 +154,52 @@ export const resolveQueryErrorNotification = (
         description: params.errorDescription,
         action: params.action ?? NotificationAction.Load,
     });
+};
+
+/**
+ * Resolves query notifications with error enabled and success disabled by default.
+ */
+export const resolveQueryNotifications = (
+    params: IBaseApiNotificationRequest<any, any, any> & { action?: NotificationAction },
+): SuccessErrorNotification<any, any, any> => ({
+    errorNotification: resolveQueryErrorNotification(params),
+    successNotification: params.successNotification ?? false,
+});
+
+export interface ResolveFormNotificationsParams extends IBaseApiNotificationRequest<any, any, any> {
+    action?: FormMode | string;
+}
+
+/**
+ * Resolves form notifications (error + success) mapped to FormMode action.
+ */
+export const resolveFormNotifications = ({
+    resource,
+    action = 'create',
+    errorMessage,
+    errorDescription,
+    errorNotification,
+    successMessage,
+    successDescription,
+    successNotification,
+}: ResolveFormNotificationsParams): SuccessErrorNotification<any, any, any> => {
+    const notificationAction = getFormNotificationAction(action as FormMode);
+    return {
+        errorNotification: getErrorNotification({
+            resource,
+            errorNotification,
+            message: errorMessage,
+            description: errorDescription,
+            action: notificationAction,
+        }),
+        successNotification: getSuccessNotification({
+            resource,
+            successNotification,
+            message: successMessage,
+            description: successDescription,
+            action: notificationAction,
+        }),
+    };
 };
 
 /**
@@ -167,8 +218,8 @@ export const createSaveButtonProps = (
 /**
  * Creates form finish handler wrapping custom and original onFinish.
  */
-export const createFormFinishHandler = <TVariables>(
-    originalOnFinish: ((values: any) => Promise<any> | any) | undefined,
+export const createFormFinishHandler = <TVariables = Record<string, unknown>>(
+    originalOnFinish: ((values: TVariables | FormData) => Promise<unknown> | unknown) | undefined,
     customOnFinish?: (
         values: TVariables,
     ) => Promise<TVariables | FormData | void> | TVariables | FormData | void,
@@ -177,7 +228,7 @@ export const createFormFinishHandler = <TVariables>(
         if (customOnFinish) {
             const result = await customOnFinish(values);
             if (result) {
-                return originalOnFinish?.(result);
+                return originalOnFinish?.(result as TVariables | FormData);
             }
             return;
         }

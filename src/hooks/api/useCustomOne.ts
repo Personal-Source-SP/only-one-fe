@@ -1,8 +1,8 @@
-import { useMemo } from 'react';
-import { applyDataTransform, resolveQueryErrorNotification } from '@/utilities';
+import type { IBaseApiNotificationRequest, IBaseApiTransformRequest } from '@/interfaces';
+import { applyDataTransform, resolveQueryNotifications } from '@/utilities';
 import type { BaseRecord, HttpError } from '@refinedev/core';
 import { useOne } from '@refinedev/core';
-import type { IBaseApiNotificationRequest, IBaseApiTransformRequest } from '@/interfaces';
+import { useMemo } from 'react';
 
 type RefineUseOneRequest<TData extends BaseRecord> = Parameters<typeof useOne<TData, HttpError>>[0];
 
@@ -30,20 +30,29 @@ export const useCustomOne = <TData extends BaseRecord = BaseRecord, TTransformed
     transform,
     ...rest
 }: UseCustomOneRequest<TData, TTransformed>) => {
+    const resolvedNotifications = resolveQueryNotifications({
+        resource,
+        errorMessage,
+        errorDescription,
+        errorNotification,
+        successNotification,
+    });
+
+    const isEnabled =
+        enabled !== undefined
+            ? enabled
+            : queryOptions?.enabled !== undefined
+              ? queryOptions.enabled
+              : Boolean(id);
+
     const refineResult = useOne<TData, HttpError>({
         ...rest,
         resource,
         id: id ?? '',
-        errorNotification: resolveQueryErrorNotification({
-            resource,
-            errorMessage,
-            errorDescription,
-            errorNotification,
-        }),
-        successNotification,
+        ...resolvedNotifications,
         queryOptions: {
             ...queryOptions,
-            enabled: enabled ?? queryOptions?.enabled ?? Boolean(id),
+            enabled: isEnabled,
         },
     });
 
