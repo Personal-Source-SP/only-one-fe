@@ -64,27 +64,26 @@ export const useCustomModalForm = <
     TVariables,
     TData
 > => {
-    const queryOptions: UseCustomModalRequest<TQueryFnData, TVariables, TData>['queryOptions'] = {
-        ...rest.queryOptions,
-        select: (response: GetOneResponse<TQueryFnData>): GetOneResponse<TData> => {
-            const selectedResponse = rest.queryOptions?.select
-                ? rest.queryOptions.select(response)
-                : (response as unknown as GetOneResponse<TData>);
+    const queryOptions: UseCustomModalRequest<TQueryFnData, TVariables, TData>['queryOptions'] =
+        initialValuesMapper
+            ? {
+                  ...rest.queryOptions,
+                  select: (response: GetOneResponse<TQueryFnData>): GetOneResponse<TData> => {
+                      const data = response?.data;
+                      if (!data) {
+                          return response as unknown as GetOneResponse<TData>;
+                      }
 
-            const selectedData = selectedResponse?.data;
-            if (!initialValuesMapper || !selectedData) {
-                return selectedResponse;
-            }
-
-            return {
-                ...selectedResponse,
-                data: {
-                    ...selectedData,
-                    ...initialValuesMapper(selectedData as unknown as TQueryFnData),
-                } as unknown as TData,
-            };
-        },
-    };
+                      return {
+                          ...response,
+                          data: {
+                              ...data,
+                              ...initialValuesMapper(data),
+                          } as unknown as TData,
+                      };
+                  },
+              }
+            : rest.queryOptions;
 
     const resolvedNotifications = resolveFormNotifications({
         resource,
@@ -109,21 +108,16 @@ export const useCustomModalForm = <
         ...resolvedNotifications,
     });
 
-    const customOnFinish = createFormFinishHandler<TVariables>(
-        modalForm.formProps.onFinish,
-        onFinish,
-    );
-
     return {
         ...modalForm,
         resource,
         mode: action as FormMode,
+        isLoading: Boolean(modalForm.formLoading),
+        saveButtonProps: createSaveButtonProps(undefined, modalForm.formProps.form),
         formProps: {
             ...modalForm.formProps,
             form: modalForm.formProps.form as unknown as FormInstance<TVariables>,
-            onFinish: customOnFinish,
+            onFinish: createFormFinishHandler<TVariables>(modalForm.formProps.onFinish, onFinish),
         } as ModalFormProps<TVariables>,
-        saveButtonProps: createSaveButtonProps(undefined, modalForm.formProps.form),
-        isLoading: Boolean(modalForm.formLoading),
     } as unknown as UseCustomModalFormResponse<TQueryFnData, TVariables, TData>;
 };

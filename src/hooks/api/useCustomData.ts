@@ -21,8 +21,8 @@ export interface UseCustomDataRequest<TData extends BaseRecord = BaseRecord, TTr
     extends
         IBaseApiUrlRequest,
         IBaseApiNotificationRequest,
-        IBaseApiQueryRequest<Parameters<typeof useCustom<TData, HttpError>>[0]['queryOptions']>,
-        IBaseApiTransformRequest<TData, TTransformed> {
+        IBaseApiTransformRequest<TData, TTransformed>,
+        IBaseApiQueryRequest<Parameters<typeof useCustom<TData, HttpError>>[0]['queryOptions']> {
     method?: CustomHttpMethod;
     config?: Parameters<typeof useCustom<TData, HttpError>>[0]['config'];
 }

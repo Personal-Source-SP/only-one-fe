@@ -65,27 +65,26 @@ export const useCustomDrawerForm = <
     TVariables,
     TData
 > => {
-    const queryOptions: UseCustomDrawerRequest<TQueryFnData, TVariables, TData>['queryOptions'] = {
-        ...rest.queryOptions,
-        select: (response: GetOneResponse<TQueryFnData>): GetOneResponse<TData> => {
-            const selectedResponse = rest.queryOptions?.select
-                ? rest.queryOptions.select(response)
-                : (response as unknown as GetOneResponse<TData>);
+    const queryOptions: UseCustomDrawerRequest<TQueryFnData, TVariables, TData>['queryOptions'] =
+        initialValuesMapper
+            ? {
+                  ...rest.queryOptions,
+                  select: (response: GetOneResponse<TQueryFnData>): GetOneResponse<TData> => {
+                      const data = response?.data;
+                      if (!data) {
+                          return response as unknown as GetOneResponse<TData>;
+                      }
 
-            const selectedData = selectedResponse?.data;
-            if (!initialValuesMapper || !selectedData) {
-                return selectedResponse;
-            }
-
-            return {
-                ...selectedResponse,
-                data: {
-                    ...selectedData,
-                    ...initialValuesMapper(selectedData as unknown as TQueryFnData),
-                } as unknown as TData,
-            };
-        },
-    };
+                      return {
+                          ...response,
+                          data: {
+                              ...data,
+                              ...initialValuesMapper(data),
+                          } as unknown as TData,
+                      };
+                  },
+              }
+            : rest.queryOptions;
 
     const resolvedNotifications = resolveFormNotifications({
         resource,
@@ -110,24 +109,19 @@ export const useCustomDrawerForm = <
         ...resolvedNotifications,
     });
 
-    const customOnFinish = createFormFinishHandler<TVariables>(
-        drawerForm.formProps.onFinish,
-        onFinish,
-    );
-
     return {
         ...drawerForm,
         resource,
         mode: action as FormMode,
+        isLoading: Boolean(drawerForm.formLoading),
         formProps: {
             ...drawerForm.formProps,
             form: drawerForm.formProps.form as unknown as FormInstance<TVariables>,
-            onFinish: customOnFinish,
+            onFinish: createFormFinishHandler<TVariables>(drawerForm.formProps.onFinish, onFinish),
         } as DrawerFormProps<TVariables>,
         saveButtonProps: createSaveButtonProps(
             drawerForm.saveButtonProps,
             drawerForm.formProps.form,
         ),
-        isLoading: Boolean(drawerForm.formLoading),
     } as unknown as UseCustomDrawerFormResponse<TQueryFnData, TVariables, TData>;
 };
