@@ -1,28 +1,29 @@
 import { useMemo } from 'react';
-import { getErrorNotification, NotificationAction } from '@/utilities';
+import { applyDataTransform, resolveQueryErrorNotification } from '@/utilities';
 import type { BaseRecord, HttpError } from '@refinedev/core';
 import { useOne } from '@refinedev/core';
+import type { IBaseApiNotificationRequest, IBaseApiTransformRequest } from '@/interfaces';
 
 type RefineUseOneRequest<TData extends BaseRecord> = Parameters<typeof useOne<TData, HttpError>>[0];
 
 export type UseCustomOneRequest<TData extends BaseRecord = BaseRecord, TTransformed = TData> = Omit<
     RefineUseOneRequest<TData>,
-    'id' | 'queryOptions' | 'resource'
-> & {
-    resource: string;
-    id?: RefineUseOneRequest<TData>['id'] | null;
-    enabled?: boolean;
-    errorMessage?: string;
-    queryOptions?: RefineUseOneRequest<TData>['queryOptions'];
-    successMessage?: string;
-    transform?: (data: TData | undefined) => TTransformed;
-};
+    'id' | 'queryOptions' | 'resource' | 'errorNotification' | 'successNotification'
+> &
+    IBaseApiNotificationRequest &
+    IBaseApiTransformRequest<TData, TTransformed> & {
+        resource: string;
+        id?: RefineUseOneRequest<TData>['id'] | null;
+        enabled?: boolean;
+        queryOptions?: RefineUseOneRequest<TData>['queryOptions'];
+    };
 
 export const useCustomOne = <TData extends BaseRecord = BaseRecord, TTransformed = TData>({
     id,
     resource,
     enabled,
     errorMessage,
+    errorDescription,
     queryOptions,
     errorNotification,
     successNotification = false,
@@ -33,11 +34,11 @@ export const useCustomOne = <TData extends BaseRecord = BaseRecord, TTransformed
         ...rest,
         resource,
         id: id ?? '',
-        errorNotification: getErrorNotification({
+        errorNotification: resolveQueryErrorNotification({
             resource,
+            errorMessage,
+            errorDescription,
             errorNotification,
-            message: errorMessage,
-            action: NotificationAction.Load,
         }),
         successNotification,
         queryOptions: {
@@ -48,12 +49,10 @@ export const useCustomOne = <TData extends BaseRecord = BaseRecord, TTransformed
 
     const rawData = refineResult.query.data?.data ?? refineResult.result;
 
-    const transformedData = useMemo(() => {
-        if (transform) {
-            return transform(rawData);
-        }
-        return rawData as unknown as TTransformed;
-    }, [rawData, transform]);
+    const transformedData = useMemo(
+        () => applyDataTransform(rawData, undefined, transform),
+        [rawData, transform],
+    );
 
     return {
         ...refineResult,

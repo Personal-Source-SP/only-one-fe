@@ -615,14 +615,13 @@ export const SyncLocal = ({
 
     return (
         <CustomModal
-            modalProps={{
-                width: 1200,
-                open: isOpen,
-                centered: true,
-                loading: queryLoading,
-                footer: renderFooter(),
-                title: 'Đồng bộ từ thư mục máy tính',
-            }}
+            width={1200}
+            open={isOpen}
+            centered
+            onCancel={onClose}
+            loading={queryLoading}
+            footer={renderFooter()}
+            title="Đồng bộ từ thư mục máy tính"
         >
             <CustomSpin spinning={loading}>
                 {isPermissionsGranted && (

@@ -156,14 +156,12 @@ export const ViewScheduleJobList = ({ isOpen, scheduleId, onClose }: ViewSchedul
 
     return (
         <CustomModal
-            modalProps={{
-                width: 1200,
-                open: isOpen,
-                closable: true,
-                centered: true,
-                onCancel: onClose,
-                title: 'Xem sự kiện lịch biểu thực thi',
-            }}
+            width={1200}
+            open={isOpen}
+            closable
+            centered
+            onCancel={onClose}
+            title="Xem sự kiện lịch biểu thực thi"
         >
             <ListWrapper
                 error={tableQuery.error}

@@ -1,49 +1,79 @@
+import type { IBaseApiCallbackRequest, IBaseApiNotificationRequest } from '@/interfaces';
+import {
+    getErrorNotification,
+    getFormNotificationAction,
+    getSuccessNotification,
+} from '@/utilities';
 import { useModalForm } from '@refinedev/antd';
-import { OpenNotificationParams } from '@refinedev/core';
+import type { BaseRecord, HttpError } from '@refinedev/core';
 
-interface IUseCustomModalProps {
+export interface IUseCustomModalProps<
+    TQueryFnData extends BaseRecord = any,
+    TVariables = any,
+    TData extends BaseRecord = TQueryFnData,
+>
+    extends IBaseApiNotificationRequest, IBaseApiCallbackRequest<TData> {
     resource: string;
-    action?: 'create' | 'edit';
     autoResetForm?: boolean;
+    action?: 'create' | 'edit';
     warnWhenUnsavedChanges?: boolean;
-    errorNotification?:
-        | OpenNotificationParams
-        | false
-        | ((
-              error?: any,
-              values?: any,
-              resource?: string,
-          ) => OpenNotificationParams | false | undefined);
-    successNotification?:
-        | OpenNotificationParams
-        | false
-        | ((
-              data?: any,
-              values?: any,
-              resource?: string,
-          ) => OpenNotificationParams | false | undefined);
     onMutationError?: (error: any) => void;
     onMutationSuccess?: (data: any) => void;
 }
 
-export const useCustomModal = (props: IUseCustomModalProps) => {
-    const { open, show, close, formProps, modalProps, formLoading } = useModalForm({
-        resource: props.resource,
-        action: props?.action ?? 'create',
-        autoResetForm: props?.autoResetForm ?? true,
-        warnWhenUnsavedChanges: props?.warnWhenUnsavedChanges ?? false,
-        errorNotification: props?.errorNotification ?? false,
-        successNotification: props?.successNotification ?? false,
-        onMutationError: props?.onMutationError,
-        onMutationSuccess: props?.onMutationSuccess,
+export const useCustomModal = <
+    TQueryFnData extends BaseRecord = any,
+    TVariables = any,
+    TData extends BaseRecord = TQueryFnData,
+>(
+    props: IUseCustomModalProps<TQueryFnData, TVariables, TData>,
+) => {
+    const {
+        resource,
+        action = 'create',
+        autoResetForm = true,
+        warnWhenUnsavedChanges = false,
+        errorMessage,
+        errorDescription,
+        errorNotification,
+        successMessage,
+        successDescription,
+        successNotification,
+        onMutationError,
+        onMutationSuccess,
+        onError,
+        onSuccess,
+    } = props;
+
+    const { open, show, close, formProps, modalProps, formLoading } = useModalForm<
+        TQueryFnData,
+        HttpError,
+        TVariables,
+        TData
+    >({
+        resource,
+        action,
+        autoResetForm,
+        warnWhenUnsavedChanges,
+        errorNotification: getErrorNotification({
+            resource,
+            errorNotification,
+            message: errorMessage,
+            description: errorDescription,
+            action: getFormNotificationAction(action),
+        }) as any,
+        successNotification: getSuccessNotification({
+            resource,
+            successNotification,
+            message: successMessage,
+            description: successDescription,
+            action: getFormNotificationAction(action),
+        }) as any,
+        onMutationError: onMutationError ?? (onError ? (error: any) => onError(error) : undefined),
+        onMutationSuccess:
+            onMutationSuccess ??
+            (onSuccess ? (data: any) => onSuccess(data?.data ?? data) : undefined),
     });
 
-    return {
-        open,
-        show,
-        close,
-        formProps,
-        modalProps,
-        formLoading,
-    };
+    return { open, formProps, modalProps, formLoading, show, close };
 };

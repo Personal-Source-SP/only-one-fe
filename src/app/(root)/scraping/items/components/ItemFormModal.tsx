@@ -5,17 +5,17 @@ import type { UseCustomModalFormResponse } from '@/hooks';
 import { FormRuleType } from '@/utilities';
 import type { ItemFormValues, ItemRecord } from '@/app/(root)/scraping/items/types';
 
-interface ItemFormModalProps {
+type ItemFormModalProps = {
     modalForm: UseCustomModalFormResponse<ItemRecord, ItemFormValues, ItemRecord>;
-}
+};
 
 export const ItemFormModal = ({ modalForm }: ItemFormModalProps) => {
     const { mode } = modalForm;
 
     return (
         <CustomModalForm<ItemRecord, ItemFormValues, ItemRecord>
-            modalForm={modalForm}
             width={600}
+            modalForm={modalForm}
             title={mode === 'create' ? 'Thêm mới đối tượng' : 'Chỉnh sửa đối tượng'}
             createInitialValues={{
                 name: '',
@@ -26,6 +26,7 @@ export const ItemFormModal = ({ modalForm }: ItemFormModalProps) => {
             <CustomInputForm
                 name="name"
                 label="Tên đối tượng"
+                inputProps={{ placeholder: 'Nhập tên đối tượng' }}
                 rulesConfig={[
                     { type: FormRuleType.Required, message: 'Vui lòng nhập tên đối tượng' },
                     {
@@ -34,7 +35,6 @@ export const ItemFormModal = ({ modalForm }: ItemFormModalProps) => {
                         message: 'Tên đối tượng không được vượt quá 255 ký tự',
                     },
                 ]}
-                inputProps={{ placeholder: 'Nhập tên đối tượng' }}
             />
 
             <CustomInputForm
@@ -49,8 +49,8 @@ export const ItemFormModal = ({ modalForm }: ItemFormModalProps) => {
                     },
                 ]}
                 inputProps={{
-                    placeholder: 'Nhập mã đối tượng',
                     disabled: mode === 'edit',
+                    placeholder: 'Nhập mã đối tượng',
                 }}
             />
 

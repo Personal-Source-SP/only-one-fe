@@ -21,15 +21,8 @@ import type { IDataProvider } from './types';
 const DataProviderPage = () => {
     const router = useRouter();
 
-    const {
-        tableProps,
-        tableQuery,
-        createModalForm,
-        editModalForm,
-        debouncedSearch,
-        setFilters,
-        setCurrentPage,
-    } = useDataProviderPage();
+    const { tableProps, tableQuery, createModalForm, editModalForm, debouncedSearch } =
+        useDataProviderPage();
 
     const columns: ColumnsType<IDataProvider> = [
         {

@@ -7,7 +7,7 @@ import { slugify } from '@/libs';
 import { FormRuleType } from '@/utilities';
 import { ThunderboltOutlined } from '@ant-design/icons';
 import { useCallback } from 'react';
-import { DATA_PROVIDER_INITIAL_VALUES, DATA_PROVIDER_LIMITS } from '../constants';
+import { DATA_PROVIDER_LIMITS } from '../constants';
 import type { DataProviderFormValues, IDataProvider } from '../types';
 
 type DataProviderFormModalProps = {
@@ -40,8 +40,12 @@ export const DataProviderFormModal = ({ modalForm }: DataProviderFormModalProps)
         <CustomModalForm<IDataProvider, DataProviderFormValues, IDataProvider>
             width={600}
             modalForm={modalForm}
-            createInitialValues={DATA_PROVIDER_INITIAL_VALUES}
             title={mode === 'create' ? 'Thêm mới nhà cung cấp' : 'Chỉnh sửa nhà cung cấp'}
+            createInitialValues={{
+                name: '',
+                baseUrl: '',
+                identifier: '',
+            }}
         >
             <CustomInputForm
                 name="name"

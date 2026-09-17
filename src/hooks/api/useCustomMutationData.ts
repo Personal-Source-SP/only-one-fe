@@ -1,78 +1,38 @@
-import { getErrorNotification, getSuccessNotification, NotificationAction } from '@/utilities';
-import type { BaseRecord, HttpError, OpenNotificationParams } from '@refinedev/core';
+import {
+    getMethodNotificationAction,
+    resolveApiUrl,
+    resolveMutationNotifications,
+} from '@/utilities';
+import type { BaseRecord, HttpError } from '@refinedev/core';
 import { useApiUrl, useCustomMutation } from '@refinedev/core';
+import type {
+    CustomHttpMethod,
+    IBaseApiCallbackRequest,
+    IBaseApiNotificationRequest,
+    IBaseApiUrlRequest,
+} from '@/interfaces';
 
-export type CustomMutationMethod = 'post' | 'put' | 'delete' | 'patch';
+export type CustomMutationMethod = Extract<CustomHttpMethod, 'post' | 'put' | 'delete' | 'patch'>;
 
-export interface CustomMutationDataRequest<TPayload = any, TData extends BaseRecord = BaseRecord> {
-    url: string;
-    errorMessage?: string;
-    errorNotification?:
-        | OpenNotificationParams
-        | false
-        | ((
-              error?: any,
-              values?: any,
-              resource?: string,
-          ) => OpenNotificationParams | false | undefined | any);
-    method?: CustomMutationMethod;
-    successMessage?: string;
-    successNotification?:
-        | OpenNotificationParams
-        | false
-        | ((
-              data?: any,
-              values?: any,
-              resource?: string,
-          ) => OpenNotificationParams | false | undefined | any);
+export interface CustomMutationDataRequest<TPayload = any, TData extends BaseRecord = BaseRecord>
+    extends IBaseApiUrlRequest, IBaseApiNotificationRequest, IBaseApiCallbackRequest<TData> {
     values?: TPayload;
-    onSuccess?: (data: TData) => void | Promise<void>;
-    onError?: (error: HttpError) => void | Promise<void>;
+    method?: CustomMutationMethod;
 }
 
-export interface UseCustomMutationDataRequest<TData extends BaseRecord = BaseRecord> {
-    errorMessage?: string;
-    errorNotification?:
-        | OpenNotificationParams
-        | false
-        | ((
-              error?: any,
-              values?: any,
-              resource?: string,
-          ) => OpenNotificationParams | false | undefined | any);
+export interface UseCustomMutationDataRequest<TData extends BaseRecord = BaseRecord>
+    extends IBaseApiNotificationRequest, IBaseApiCallbackRequest<TData> {
     method?: CustomMutationMethod;
-    resource?: string;
-    successMessage?: string;
-    successNotification?:
-        | OpenNotificationParams
-        | false
-        | ((
-              data?: any,
-              values?: any,
-              resource?: string,
-          ) => OpenNotificationParams | false | undefined | any);
-    onSuccess?: (data: TData) => void | Promise<void>;
-    onError?: (error: HttpError) => void | Promise<void>;
 }
 
 export interface UseCustomMutationDataResponse<TData extends BaseRecord, TPayload> {
     apiUrl: string;
+    isLoading: boolean;
+    mutation: ReturnType<typeof useCustomMutation<TData, HttpError, TPayload>>;
     handleCustomMutationData: (
         request: CustomMutationDataRequest<TPayload, TData>,
     ) => Promise<TData>;
-    mutation: ReturnType<typeof useCustomMutation<TData, HttpError, TPayload>>;
 }
-
-const getNotificationAction = (method: CustomMutationMethod): NotificationAction => {
-    switch (method) {
-        case 'post':
-            return NotificationAction.Create;
-        case 'delete':
-            return NotificationAction.Delete;
-        default:
-            return NotificationAction.Update;
-    }
-};
 
 export const useCustomMutationData = <
     TData extends BaseRecord = any,
@@ -94,41 +54,35 @@ export const useCustomMutationData = <
         url,
         values,
         method = defaultMethod,
+        onError: requestOnError,
         errorMessage: requestErrorMessage,
         errorNotification: requestErrorNotification,
+        onSuccess: requestOnSuccess,
         successMessage: requestSuccessMessage,
         successNotification: requestSuccessNotification,
-        onSuccess: requestOnSuccess,
-        onError: requestOnError,
     }: CustomMutationDataRequest<TPayload, TData>): Promise<TData> => {
-        const targetUrl = url.startsWith('http') || url.startsWith('/') ? url : `${apiUrl}/${url}`;
+        const targetUrl = resolveApiUrl(url, apiUrl);
 
-        const resolvedErrorNotification =
-            requestErrorNotification !== undefined
-                ? requestErrorNotification
-                : errorNotification !== undefined
-                  ? errorNotification
-                  : getErrorNotification({
-                        resource,
-                        action: getNotificationAction(method),
-                        message: requestErrorMessage ?? errorMessage,
-                    });
-
-        const resolvedSuccessNotification =
-            requestSuccessNotification !== undefined
-                ? requestSuccessNotification
-                : successNotification !== undefined
-                  ? successNotification
-                  : getSuccessNotification({
-                        resource,
-                        action: getNotificationAction(method),
-                        message: requestSuccessMessage ?? successMessage,
-                    });
+        const {
+            errorNotification: resolvedErrorNotification,
+            successNotification: resolvedSuccessNotification,
+        } = resolveMutationNotifications({
+            resource,
+            action: getMethodNotificationAction(method),
+            requestErrorMessage,
+            requestErrorNotification,
+            hookErrorMessage: errorMessage,
+            hookErrorNotification: errorNotification,
+            requestSuccessMessage,
+            requestSuccessNotification,
+            hookSuccessMessage: successMessage,
+            hookSuccessNotification: successNotification,
+        });
 
         try {
             const response = await mutation.mutateAsync({
-                url: targetUrl,
                 method,
+                url: targetUrl,
                 values: values ?? ({} as TPayload),
                 errorNotification: resolvedErrorNotification as any,
                 successNotification: resolvedSuccessNotification as any,
@@ -145,6 +99,7 @@ export const useCustomMutationData = <
     return {
         apiUrl,
         mutation,
+        isLoading: mutation.mutation.isPending,
         handleCustomMutationData,
     };
 };

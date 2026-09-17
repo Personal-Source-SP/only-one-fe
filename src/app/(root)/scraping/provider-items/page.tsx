@@ -13,21 +13,18 @@ import { formatDate } from '@/libs';
 import { RESOURCE } from '@/config';
 
 import { useDataProviderItemPage } from './hooks';
-import { ProcessScrapeData, ProviderItemFormModal } from './components';
+import { ProviderItemFormModal } from './components';
 import type { ProviderItemRecord } from './types';
 
 const DataProviderItemPage = () => {
     const {
-        loading,
+        switchingId,
         tableProps,
         tableQuery,
-        debouncedSearch,
         setFilters,
+        debouncedSearch,
         createModalForm,
         editModalForm,
-        openProcessScrapeDataModal,
-        setOpenProcessScrapeDataModal,
-        selectedDataProviderItemIds,
         itemOptions,
         cloudDataProviderOptions,
         dataProviderOptions,
@@ -83,6 +80,7 @@ const DataProviderItemPage = () => {
             align: 'center',
             render: (isActive: boolean, record: ProviderItemRecord) => (
                 <CustomToggle
+                    loading={switchingId === record.id}
                     size="small"
                     checked={isActive}
                     onChange={(checked) => handleSwitchStatus(record.id, checked)}
@@ -157,7 +155,7 @@ const DataProviderItemPage = () => {
             <ListWrapper
                 actions={actions}
                 error={tableQuery.error}
-                isLoading={loading || tableQuery.isLoading}
+                isLoading={tableQuery.isLoading}
                 filters={<FilterPanel fields={filters} />}
             >
                 <ListTable<ProviderItemRecord>
@@ -172,27 +170,18 @@ const DataProviderItemPage = () => {
             <ProviderItemFormModal
                 modalForm={createModalForm}
                 itemOptions={itemOptions ?? []}
+                dataProviderQuery={dataProviderQuery}
                 dataProviderOptions={dataProviderOptions ?? []}
                 cloudDataProviderOptions={cloudDataProviderOptions ?? []}
-                dataProviderQuery={dataProviderQuery}
             />
 
             <ProviderItemFormModal
                 modalForm={editModalForm}
                 itemOptions={itemOptions ?? []}
+                dataProviderQuery={dataProviderQuery}
                 dataProviderOptions={dataProviderOptions ?? []}
                 cloudDataProviderOptions={cloudDataProviderOptions ?? []}
-                dataProviderQuery={dataProviderQuery}
             />
-
-            {openProcessScrapeDataModal && (
-                <ProcessScrapeData
-                    key="process-scrape-data"
-                    open={openProcessScrapeDataModal}
-                    onClose={() => setOpenProcessScrapeDataModal(false)}
-                    selectedDataProviderItemIds={selectedDataProviderItemIds}
-                />
-            )}
         </>
     );
 };

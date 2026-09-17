@@ -1,5 +1,6 @@
-import type { useCustomModal } from '@/hooks';
+import type { UseCustomModalFormResponse } from '@/hooks';
 import type { IDataOption } from '@/interfaces';
+import { FieldsEnum } from './constants';
 
 export interface IGoogleDriveFolder {
     id: string;
@@ -14,9 +15,12 @@ export interface IGoogleDriveFolder {
 
 export type GoogleFolderRecord = IGoogleDriveFolder;
 
+export type FolderFormValues = {
+    [FieldsEnum.Name]: string;
+    [FieldsEnum.ParentFolderId]?: string;
+};
+
 export type FolderModalProps = {
     folderOptions: IDataOption[];
-    modalPropsData: ReturnType<typeof useCustomModal>;
-    onSubmit: () => void;
-    onClose?: () => void;
+    modalForm: UseCustomModalFormResponse<GoogleFolderRecord, FolderFormValues, GoogleFolderRecord>;
 };

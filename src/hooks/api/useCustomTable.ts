@@ -1,8 +1,9 @@
-import { useMemo } from 'react';
-import { getErrorNotification, NotificationAction } from '@/utilities';
+import { useDebounceSearch, useTableChange } from '@/hooks';
+import type { IBaseApiNotificationRequest, IBaseApiTransformRequest } from '@/interfaces';
+import { applyDataTransform, resolveQueryErrorNotification } from '@/utilities';
 import { useTable } from '@refinedev/antd';
 import type { BaseRecord, HttpError } from '@refinedev/core';
-import { useDebounceSearch, useTableChange } from '@/hooks';
+import { useMemo } from 'react';
 
 type RefineUseTableRequest<TData extends BaseRecord> = NonNullable<
     Parameters<typeof useTable<TData, HttpError>>[0]
@@ -11,13 +12,12 @@ type RefineUseTableRequest<TData extends BaseRecord> = NonNullable<
 export type UseCustomTableRequest<
     TData extends BaseRecord = BaseRecord,
     TTransformed extends BaseRecord = TData,
-> = Omit<RefineUseTableRequest<TData>, 'resource'> & {
-    resource: string;
-    errorMessage?: string;
-    successMessage?: string;
-    rowKey?: keyof TTransformed | ((record: TTransformed) => string);
-    transform?: (data: TData[]) => TTransformed[];
-};
+> = Omit<RefineUseTableRequest<TData>, 'resource' | 'errorNotification' | 'successNotification'> &
+    IBaseApiNotificationRequest &
+    IBaseApiTransformRequest<TData[], TTransformed[]> & {
+        resource: string;
+        rowKey?: keyof TTransformed | ((record: TTransformed) => string);
+    };
 
 export const useCustomTable = <
     TData extends BaseRecord = BaseRecord,
@@ -25,6 +25,7 @@ export const useCustomTable = <
 >({
     resource,
     errorMessage,
+    errorDescription,
     pagination,
     sorters,
     errorNotification,
@@ -45,11 +46,11 @@ export const useCustomTable = <
             initial: [{ field: 'createdAt', order: 'desc' }],
             ...sorters,
         },
-        errorNotification: getErrorNotification({
+        errorNotification: resolveQueryErrorNotification({
             resource,
             errorNotification,
-            message: errorMessage,
-            action: NotificationAction.Load,
+            errorMessage,
+            errorDescription,
         }),
         successNotification,
     });
@@ -67,10 +68,7 @@ export const useCustomTable = <
 
     const rawDataSource = (result.tableProps.dataSource ?? []) as TData[];
     const transformedDataSource = useMemo<TTransformed[]>(() => {
-        if (transform) {
-            return transform(rawDataSource);
-        }
-        return rawDataSource as unknown as TTransformed[];
+        return applyDataTransform(rawDataSource, undefined, transform);
     }, [rawDataSource, transform]);
 
     return {

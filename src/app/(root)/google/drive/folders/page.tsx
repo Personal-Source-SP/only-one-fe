@@ -19,14 +19,14 @@ import type { GoogleFolderRecord } from './types';
 
 const FolderPage = () => {
     const {
+        modalForm,
         tableProps,
         tableQuery,
-        debouncedSearch,
-        isOpenSyncFile,
-        setIsOpenSyncFile,
-        modalPropsData,
         folderOptions,
+        isOpenSyncFile,
         queryFolderOptions,
+        debouncedSearch,
+        setIsOpenSyncFile,
     } = useGoogleFolderPage();
 
     const columns: ColumnsType<GoogleFolderRecord> = [
@@ -115,15 +115,11 @@ const FolderPage = () => {
                     tableProps={tableProps}
                     tableQuery={tableQuery}
                     deleteResource={RESOURCE.GOOGLE_FOLDERS}
-                    onEdit={(record) => modalPropsData?.show?.(record?.id)}
+                    onEdit={(record) => modalForm.show(record?.id)}
                 />
             </ListWrapper>
 
-            <FolderModal
-                modalPropsData={modalPropsData}
-                folderOptions={folderOptions ?? []}
-                onSubmit={() => {}}
-            />
+            <FolderModal modalForm={modalForm} folderOptions={folderOptions ?? []} />
 
             <SyncGoogleDrive
                 isOpen={isOpenSyncFile}
