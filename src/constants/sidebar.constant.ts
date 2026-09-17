@@ -126,6 +126,19 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
         ],
     },
     {
+        label: 'Công cụ',
+        icon: 'noto:hammer-and-wrench',
+        sectionHref: '/tool/network-device',
+        children: [
+            {
+                label: 'Thiết bị mạng',
+                icon: 'noto:satellite-antenna',
+                href: '/tool/network-device',
+                description: 'Quản lý, quét mạng và chẩn đoán thiết bị',
+            },
+        ],
+    },
+    {
         label: 'Quản lý',
         icon: 'flat-color-icons:settings',
         sectionHref: '/setting/users',

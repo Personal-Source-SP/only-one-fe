@@ -136,6 +136,14 @@ export const API_ENDPOINT = {
         STOP: '/api/tunnel/stop',
         STATUS: '/api/tunnel/status',
     },
+    NETWORK_DEVICES: {
+        BASE: prefix('network-devices'),
+        ALL: prefix('network-devices/all'),
+        DETAIL: (id: string | number) => prefix(`network-devices/${id}`),
+        SCAN: prefix('network-devices/scan'),
+        SCAN_STATUS: prefix('network-devices/scan/status'),
+        APPROACH_EXECUTE: prefix('network-devices/approach/execute'),
+    },
 } as const;
 
 export const RESOURCE = {
@@ -158,4 +166,5 @@ export const RESOURCE = {
     USERS: API_ENDPOINT.USERS.BASE,
     NOTIFICATIONS: API_ENDPOINT.NOTIFICATIONS.BASE,
     SETTINGS: API_ENDPOINT.SETTINGS.BASE,
+    NETWORK_DEVICES: API_ENDPOINT.NETWORK_DEVICES.BASE,
 } as const;
