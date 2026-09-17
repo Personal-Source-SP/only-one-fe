@@ -50,10 +50,10 @@ export const useCustomDrawerForm = <
     TVariables = Record<string, never>,
     TData extends BaseRecord = TQueryFnData,
 >({
-    action = 'create',
     resource,
-    autoResetForm = true,
+    action = 'create',
     redirect = false,
+    autoResetForm = true,
     warnWhenUnsavedChanges = false,
     errorNotification,
     successNotification,
@@ -101,11 +101,11 @@ export const useCustomDrawerForm = <
         TData
     >({
         ...rest,
-        resource,
-        queryOptions,
         action,
-        autoResetForm,
+        resource,
         redirect,
+        queryOptions,
+        autoResetForm,
         warnWhenUnsavedChanges,
         ...resolvedNotifications,
     });

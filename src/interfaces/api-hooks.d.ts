@@ -18,7 +18,7 @@ export type NotificationCallback<T = any> = (
     resource?: string,
 ) => OpenNotificationParams | false | undefined;
 
-export type ApiNotificationParam = SuccessErrorNotification<any, any, any>['errorNotification'];
+export type ApiNotificationParam = SuccessErrorNotification['errorNotification'];
 
 export type InitialValuesMapper<TQueryFnData extends BaseRecord, TVariables> = (
     data: TQueryFnData,

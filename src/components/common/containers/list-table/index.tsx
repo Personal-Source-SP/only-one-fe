@@ -187,7 +187,7 @@ export function ListTable<RecordType extends BaseRecord = BaseRecord>({
                                 onConfirm={async () => {
                                     const id = getRecordId(record);
                                     if (id != null && id !== '') {
-                                        handleDelete([String(id)]);
+                                        handleDelete(id);
                                         if (onDeleteSuccess) await onDeleteSuccess();
                                         await tableQuery?.refetch();
                                     }

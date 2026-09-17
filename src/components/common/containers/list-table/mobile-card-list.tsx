@@ -1,6 +1,6 @@
 import { DeleteOutlined } from '@ant-design/icons';
 import type { useTableReturnType } from '@refinedev/antd';
-import type { BaseRecord } from '@refinedev/core';
+import type { BaseKey, BaseRecord } from '@refinedev/core';
 import { get, isEmpty, isNil } from 'lodash';
 import type { Key, MouseEvent, ReactNode } from 'react';
 
@@ -31,7 +31,7 @@ export interface MobileCardListProps<RecordType extends BaseRecord> {
     customRowActions: TableCustomAction<RecordType>[];
     tableQuery?: useTableReturnType<RecordType>['tableQuery'];
     getCustomActionItems: (record: RecordType) => MenuProps['items'];
-    handleDelete?: (ids: string[]) => void;
+    handleDelete?: (id: BaseKey) => void;
     onDeleteSuccess?: () => void | Promise<void>;
     renderMobileCard?: (record: RecordType, actionItems: MenuProps['items']) => ReactNode;
 }
@@ -74,7 +74,7 @@ export function MobileCardList<RecordType extends BaseRecord>({
                                 onConfirm={async () => {
                                     const id = getRecordId(record);
                                     if (id != null && id !== '') {
-                                        handleDelete?.([String(id)]);
+                                        handleDelete?.(id);
                                         if (onDeleteSuccess) await onDeleteSuccess();
                                         await tableQuery?.refetch();
                                     }

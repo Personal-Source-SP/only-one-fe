@@ -186,7 +186,7 @@ const ScrapingDataPage = () => {
                         displayMode={viewMode}
                         columns={columnDisplay}
                         onClickFile={handlePhotoClick}
-                        onDeleteFile={(fileId: string) => handleDelete([fileId])}
+                        onDeleteFile={(fileId: string) => handleDelete(fileId)}
                     />
                 )}
             </ListWrapper>

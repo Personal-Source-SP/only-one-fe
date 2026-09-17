@@ -49,11 +49,11 @@ export const useCustomData = <TData extends BaseRecord = BaseRecord, TTransforme
         successNotification,
     });
 
-    const { query: customQuery, result } = useCustom<TData, HttpError>({
+    const { query, result } = useCustom<TData, HttpError>({
         method,
-        url: targetUrl,
         config,
         queryOptions,
+        url: targetUrl,
         ...resolvedNotifications,
     });
 
@@ -65,9 +65,9 @@ export const useCustomData = <TData extends BaseRecord = BaseRecord, TTransforme
     );
 
     return {
+        query,
         apiUrl,
         result,
-        query: customQuery,
         data: transformedData,
     };
 };

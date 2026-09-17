@@ -1,5 +1,5 @@
 import { NotificationAction, resolveApiUrl, resolveMutationNotifications } from '@/utilities';
-import type { BaseKey, BaseRecord, HttpError, OpenNotificationParams } from '@refinedev/core';
+import type { BaseKey, BaseRecord, HttpError } from '@refinedev/core';
 import { useApiUrl, useCustomMutation } from '@refinedev/core';
 import type {
     IBaseApiCallbackRequest,
@@ -7,15 +7,9 @@ import type {
     IBaseApiNotificationRequest,
 } from '@/interfaces';
 
-export interface CustomDeleteVariables {
-    id?: BaseKey;
-    ids?: BaseKey[];
-}
-
 export interface HandleCustomDeleteRequest<TData extends BaseRecord = BaseRecord>
     extends IBaseApiNotificationRequest, IBaseApiCallbackRequest<TData> {
-    id?: BaseKey;
-    ids?: BaseKey[];
+    id: BaseKey;
 }
 
 export interface UseCustomDeleteRequest<TData extends BaseRecord = BaseRecord>
@@ -23,9 +17,9 @@ export interface UseCustomDeleteRequest<TData extends BaseRecord = BaseRecord>
 
 export interface UseCustomDeleteResponse<
     TData extends BaseRecord = BaseRecord,
-> extends IBaseApiMutationResponse<TData, CustomDeleteVariables> {
+> extends IBaseApiMutationResponse<TData, Record<string, unknown>> {
     handleDelete: (
-        requestOrIds: HandleCustomDeleteRequest<TData> | (string | number)[],
+        requestOrId: HandleCustomDeleteRequest<TData> | BaseKey,
     ) => Promise<TData | void>;
 }
 
@@ -37,23 +31,20 @@ export const useCustomDelete = <TData extends BaseRecord = BaseRecord>({
     onSuccess,
 }: UseCustomDeleteRequest<TData> = {}): UseCustomDeleteResponse<TData> => {
     const apiUrl = useApiUrl();
-    const mutation = useCustomMutation<TData, HttpError, CustomDeleteVariables>();
+    const mutation = useCustomMutation<TData, HttpError, Record<string, unknown>>();
 
     const handleDelete = async (
-        requestOrIds: HandleCustomDeleteRequest<TData> | (string | number)[],
+        requestOrId: HandleCustomDeleteRequest<TData> | BaseKey,
     ): Promise<TData | void> => {
-        const isArrayIds = Array.isArray(requestOrIds);
-        const req: HandleCustomDeleteRequest<TData> = isArrayIds
-            ? { ids: requestOrIds as BaseKey[] }
-            : requestOrIds;
+        const isPrimitive = typeof requestOrId === 'string' || typeof requestOrId === 'number';
+        const req: HandleCustomDeleteRequest<TData> = isPrimitive
+            ? { id: requestOrId }
+            : requestOrId;
 
         const {
             id,
-            ids,
             errorNotification: requestErrorNotification,
             successNotification: requestSuccessNotification,
-            onError: requestOnError,
-            onSuccess: requestOnSuccess,
         } = req;
 
         const targetPath = id ? `${resource}/${id}` : (resource ?? '');
@@ -74,17 +65,17 @@ export const useCustomDelete = <TData extends BaseRecord = BaseRecord>({
         try {
             const response = await mutation.mutateAsync({
                 url,
+                values: {},
                 method: 'delete',
-                values: ids?.length ? { ids } : {},
                 errorNotification: resolvedErrorNotification,
                 successNotification: resolvedSuccessNotification,
             });
 
-            await (requestOnSuccess ?? onSuccess)?.(response.data);
+            await onSuccess?.(response.data);
             return response.data;
         } catch (error) {
-            await (requestOnError ?? onError)?.(error as HttpError);
-            if (!isArrayIds) throw error;
+            await onError?.(error as HttpError);
+            if (!isPrimitive) throw error;
         }
     };
 
