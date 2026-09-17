@@ -8,7 +8,7 @@ references:
   - only-one/archives/20260916-215800-common-api-hooks-interfaces.md
 affected_modules:
   - src/interfaces/api-hooks.d.ts
-  - src/utilities/api-hooks.ts
+  - src/utilities/api-hooks/
   - src/hooks/api/
 ---
 
@@ -36,7 +36,7 @@ affected_modules:
 - **`IBaseApiTransformRequest<TData, TTransformed>`**: Chuẩn hóa callback transform nhận `(data: TData, rawResponse?: unknown) => TTransformed`.
 - **`IBaseApiUrlRequest`**: Chuẩn hóa tham số `{ url: string }`.
 
-### 2.2 Pure Utility Helpers ([`src/utilities/api-hooks.ts`](file:///d:/Sources/Personal/only-one-fe/src/utilities/api-hooks.ts))
+### 2.2 Pure Utility Helpers ([`src/utilities/api-hooks/`](file:///d:/Sources/Personal/only-one-fe/src/utilities/api-hooks/))
 - **`applyDataTransform`**: Thực hiện chuyển đổi dữ liệu an toàn với fallback đơn cấp.
 - **`resolveQueryNotifications` / `resolveMutationNotifications` / `resolveFormNotifications`**: Chuẩn hóa việc phân giải thông báo theo thứ tự ưu tiên `Request Props > Hook Props > Default Fallback`, tôn trọng cờ `false` (tắt thông báo) và dynamic callbacks.
 - **`createSaveButtonProps`**: Tự động bind sự kiện kích hoạt submit form của Ant Design `form?.submit()`.

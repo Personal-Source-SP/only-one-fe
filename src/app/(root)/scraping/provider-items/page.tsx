@@ -154,7 +154,6 @@ const DataProviderItemPage = () => {
         <>
             <ListWrapper
                 actions={actions}
-                error={tableQuery.error}
                 isLoading={tableQuery.isLoading}
                 filters={<FilterPanel fields={filters} />}
             >

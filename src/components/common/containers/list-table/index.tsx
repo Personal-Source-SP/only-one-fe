@@ -3,7 +3,6 @@
 import type { ColumnType, ColumnsType, MenuProps, TableProps } from '@/components/custom-antd';
 import {
     CustomButton,
-    CustomCard,
     CustomDropdown,
     CustomGrid,
     CustomPopconfirm,
@@ -17,7 +16,7 @@ import { useCallback, useMemo, useRef, useState } from 'react';
 
 import { DataNotFound, PaginationControls } from '@/components/common';
 import { useCustomDelete, usePagePermissions } from '@/hooks';
-import { evaluateShow } from '@/utilities';
+import { evaluateShow, getBackendErrorMessage } from '@/utilities';
 import { MobileCardList } from './mobile-card-list';
 import { getRecordId } from './utils';
 
@@ -77,9 +76,6 @@ export interface ListTableProps<RecordType extends BaseRecord> extends TableProp
     /** Custom message for DataNotFound empty state */
     emptyMessage?: string;
 
-    /** Retry callback for empty/error state */
-    onRetry?: () => void;
-
     /** Render custom card trên màn hình nhỏ. Khuyến khích sử dụng CustomCard. Nếu không có sẽ hiển thị bảng cuộn ngang */
     renderMobileCard?: (record: RecordType, actionItems: MenuProps['items']) => ReactNode;
 }
@@ -103,16 +99,15 @@ export function ListTable<RecordType extends BaseRecord = BaseRecord>({
     usePaginationControls = true,
     emptyTitle,
     emptyMessage,
-    onRetry,
     renderMobileCard,
     ...restProps
 }: ListTableProps<RecordType>) {
     const keepOpenRef = useRef(false);
+    const screens = CustomGrid.useBreakpoint();
     const permissions = usePagePermissions(permissionGroup);
+    const isMobile = (screens.xs || screens.sm) && !screens.md;
 
     const [openDropdownId, setOpenDropdownId] = useState<string | number>();
-    const screens = CustomGrid.useBreakpoint();
-    const isMobile = (screens.xs || screens.sm) && !screens.md;
 
     const { handleDelete } = useCustomDelete({
         resource: deleteResource ?? '',
@@ -352,12 +347,12 @@ export function ListTable<RecordType extends BaseRecord = BaseRecord>({
         return [...(styleColumns || []), actionsColumn];
     }, [
         columns,
+        customRowActions,
         getCustomActionItems,
         getColumnWidthStyle,
         handleCloseDropdown,
         showActionsColumn,
         openDropdownId,
-        customRowActions,
     ]);
 
     const mergedLoading = useMemo(
@@ -411,9 +406,9 @@ export function ListTable<RecordType extends BaseRecord = BaseRecord>({
                 emptyText: (
                     <DataNotFound
                         compact
+                        onRetry={tableQuery?.refetch}
                         title={emptyTitle ?? 'Không có dữ liệu'}
                         message={emptyMessage ?? 'Chưa có bản ghi nào phù hợp.'}
-                        onRetry={onRetry}
                     />
                 ),
             },
@@ -434,7 +429,6 @@ export function ListTable<RecordType extends BaseRecord = BaseRecord>({
             emptyMessage,
             mergedScroll,
             mergedPagination,
-            onRetry,
         ],
     );
 
@@ -457,6 +451,17 @@ export function ListTable<RecordType extends BaseRecord = BaseRecord>({
             },
         };
     }, [usePaginationControls, basePaginationObj]);
+
+    if (tableQuery?.error) {
+        return (
+            <DataNotFound
+                onRetry={tableQuery?.refetch}
+                icon="lucide:alert-triangle"
+                title="Tải dữ liệu không thành công"
+                message={getBackendErrorMessage(tableQuery.error)}
+            />
+        );
+    }
 
     return (
         <div className="w-full">

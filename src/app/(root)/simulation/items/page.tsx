@@ -82,8 +82,7 @@ const SimulationItemsPage = () => {
         <>
             <ListWrapper
                 actions={actions}
-                error={tableQuery.error}
-                isLoading={loading || tableQuery.isLoading}
+                isLoading={tableQuery.isLoading}
                 filters={<FilterPanel fields={filters} />}
             >
                 <ListTable<SimulationItemRecord>

@@ -168,7 +168,6 @@ const ScrapingDataPage = () => {
         <>
             <ListWrapper
                 actions={actions}
-                error={tableContainerData?.tableQuery?.error}
                 isLoading={tableContainerData?.tableQuery?.isLoading}
                 filters={<FilterPanel fields={filters} />}
             >

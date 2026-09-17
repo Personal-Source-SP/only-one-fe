@@ -4,7 +4,7 @@ import { normalizeResourceKey } from './resource';
 /**
  * Pulls a human-readable message out of an error thrown by the data provider.
  */
-const getBackendErrorMessage = (error?: HttpError | Error): string | undefined => {
+export const getBackendErrorMessage = (error?: HttpError | Error | null): string | undefined => {
     const message = error?.message?.trim();
     return message ? message : undefined;
 };

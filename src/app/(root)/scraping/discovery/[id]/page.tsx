@@ -209,7 +209,6 @@ const DiscoveryDetailPage = () => {
             <ListWrapper
                 actions={actions}
                 isLoading={isLoading}
-                error={tableQuery.error}
                 filters={<FilterPanel fields={filters} />}
             >
                 <ListTable<IDiscoveryUrl>

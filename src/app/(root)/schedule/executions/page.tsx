@@ -136,7 +136,6 @@ const ScheduleExecutionPage = () => {
         <>
             <ListWrapper
                 actions={actions}
-                error={tableQuery.error}
                 isLoading={loading || tableQuery.isLoading}
                 filters={<FilterPanel fields={filters} />}
             >

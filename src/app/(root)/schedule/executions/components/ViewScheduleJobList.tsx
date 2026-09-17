@@ -164,7 +164,6 @@ export const ViewScheduleJobList = ({ isOpen, scheduleId, onClose }: ViewSchedul
             title="Xem sự kiện lịch biểu thực thi"
         >
             <ListWrapper
-                error={tableQuery.error}
                 isLoading={tableQuery.isLoading}
                 filters={<FilterPanel fields={filters} />}
             >

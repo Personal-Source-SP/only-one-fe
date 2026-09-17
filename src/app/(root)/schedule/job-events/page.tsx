@@ -82,7 +82,6 @@ const JobEvents = () => {
     return (
         <>
             <ListWrapper
-                error={tableQuery.error}
                 isLoading={tableQuery.isLoading}
                 filters={<FilterPanel fields={filters} />}
             >

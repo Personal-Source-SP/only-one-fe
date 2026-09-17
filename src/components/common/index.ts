@@ -4,6 +4,7 @@ export * from './containers/content-section';
 export * from './containers/filter-panel';
 export * from './containers/list-table';
 export * from './containers/list-wrapper';
+export * from './containers/wrapper-form-modal';
 export * from './containers/pagination-controls';
 
 // Display
@@ -24,12 +25,13 @@ export * from './feedback/unsaved-changes-notifier-app-router';
 
 // Forms
 export * from './forms/custom-drawer-form';
+export * from './forms/custom-form-field';
 export * from './forms/custom-form-list';
 export * from './forms/custom-input-form';
 export * from './forms/custom-modal-form';
 export * from './forms/custom-range-picker';
 export * from './forms/custom-select-input';
 export * from './forms/custom-switch-form';
-export * from './forms/custom-upload';
+export * from './forms/custom-upload-form';
 export * from './forms/form-modal-layout';
 export * from './forms/html-editor';
