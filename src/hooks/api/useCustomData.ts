@@ -67,6 +67,6 @@ export const useCustomData = <TData extends BaseRecord = BaseRecord, TTransforme
         apiUrl,
         result,
         data: transformedData,
-        isLoading: query.isLoading,
+        isLoading: Boolean(query.isLoading),
     };
 };

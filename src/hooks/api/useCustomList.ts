@@ -45,18 +45,13 @@ export const useCustomList = <TData extends BaseRecord = BaseRecord, TTransforme
     });
 
     const transformedData = useMemo(
-        () =>
-            applyDataTransform(
-                (refineResult.query.data?.data ?? []) as unknown as TData[],
-                refineResult.query.data,
-                transform,
-            ),
+        () => applyDataTransform(refineResult.query.data?.data, refineResult.query.data, transform),
         [refineResult.query.data, transform],
     );
 
     return {
         ...refineResult,
         data: transformedData,
-        isLoading: refineResult.query.isLoading,
+        isLoading: Boolean(refineResult.query.isLoading),
     };
 };

@@ -16,7 +16,12 @@ import type {
     IBaseApiTransformRequest,
     Option,
 } from '@/interfaces';
-import { applyDataTransform, resolveQueryNotifications } from '@/utilities';
+import {
+    applyDataTransform,
+    getDefaultOptionLabel,
+    getDefaultOptionValue,
+    resolveQueryNotifications,
+} from '@/utilities';
 import { BaseRecord, CrudFilter, useSelect } from '@refinedev/core';
 import { useMemo } from 'react';
 
@@ -33,18 +38,6 @@ export interface IUseSelectProps<T extends BaseRecord = BaseRecord>
     optionLabel?: (item: T) => string;
     optionValue?: (item: T) => string;
 }
-
-const getDefaultOptionValue = <T extends BaseRecord>(item: T): string => {
-    return String(item.id ?? '');
-};
-
-const getDefaultOptionLabel = <T extends BaseRecord>(item: T): string => {
-    const record = item as Record<string, unknown>;
-    if (typeof record.name === 'string') return record.name;
-    if (typeof record.title === 'string') return record.title;
-    if (typeof record.label === 'string') return record.label;
-    return String(item.id ?? '');
-};
 
 export const useCustomSelect = <T extends BaseRecord = BaseRecord>(props: IUseSelectProps<T>) => {
     const {

@@ -1,5 +1,5 @@
 import type { IBaseApiNotificationRequest, IBaseApiResourceRequest } from '@/interfaces';
-import { resolveFormNotifications } from '@/utilities';
+import { resolveFormNotifications, unwrapApiResponse } from '@/utilities';
 import { useModalForm } from '@refinedev/antd';
 import type { BaseRecord, HttpError } from '@refinedev/core';
 
@@ -34,26 +34,6 @@ export const useCustomModal = <
         onMutationSuccess,
     } = props;
 
-    const resolvedNotifications = resolveFormNotifications({
-        resource,
-        action,
-        errorNotification,
-        successNotification,
-    });
-
-    const handleMutationSuccess = onMutationSuccess
-        ? (response: any) => {
-              const payload = response?.data !== undefined ? response.data : response;
-              onMutationSuccess(payload);
-          }
-        : undefined;
-
-    const handleMutationError = onMutationError
-        ? (error: HttpError) => {
-              onMutationError(error);
-          }
-        : undefined;
-
     const { open, show, close, formProps, modalProps, formLoading } = useModalForm<
         TQueryFnData,
         HttpError,
@@ -64,9 +44,17 @@ export const useCustomModal = <
         action,
         autoResetForm,
         warnWhenUnsavedChanges,
-        ...resolvedNotifications,
-        onMutationError: handleMutationError,
-        onMutationSuccess: handleMutationSuccess,
+        ...resolveFormNotifications({
+            resource,
+            action,
+            errorNotification,
+            successNotification,
+        }),
+        onMutationError,
+        onMutationSuccess: onMutationSuccess
+            ? (response: unknown) =>
+                  onMutationSuccess((unwrapApiResponse<TData>(response) ?? response) as TData)
+            : undefined,
     });
 
     return {
@@ -74,8 +62,8 @@ export const useCustomModal = <
         formProps,
         modalProps,
         formLoading,
+        isLoading: Boolean(formLoading),
         show,
         close,
-        isLoading: Boolean(formLoading),
     };
 };

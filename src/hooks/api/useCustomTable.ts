@@ -1,6 +1,6 @@
 import { useDebounceSearch, useTableChange } from '@/hooks';
 import type { IBaseApiNotificationRequest, IBaseApiTransformRequest } from '@/interfaces';
-import { applyDataTransform, resolveQueryNotifications } from '@/utilities';
+import { applyDataTransform, resolveQueryNotifications, resolveRowKey } from '@/utilities';
 import { useTable } from '@refinedev/antd';
 import type { BaseRecord, HttpError } from '@refinedev/core';
 import { useMemo } from 'react';
@@ -18,26 +18,6 @@ export type UseCustomTableRequest<
         resource: string;
         rowKey?: keyof TTransformed | ((record: TTransformed) => string);
     };
-
-const resolveRowKey = <TRecord extends BaseRecord>(
-    record: TRecord,
-    rowKey?: keyof TRecord | ((record: TRecord) => string),
-): string => {
-    if (typeof rowKey === 'function') {
-        return rowKey(record);
-    }
-    if (rowKey) {
-        return String(record[rowKey]);
-    }
-    const rec = record as Record<string, unknown>;
-    if (rec.id !== undefined && rec.id !== null) {
-        return String(rec.id);
-    }
-    if (rec._id !== undefined && rec._id !== null) {
-        return String(rec._id);
-    }
-    return '';
-};
 
 export const useCustomTable = <
     TData extends BaseRecord = BaseRecord,
@@ -84,10 +64,13 @@ export const useCustomTable = <
         setCurrentPage: result.setCurrentPage,
     });
 
-    const rawDataSource = (result.tableProps.dataSource ?? []) as TData[];
     const transformedDataSource = useMemo<TTransformed[]>(() => {
-        return applyDataTransform(rawDataSource, undefined, transform);
-    }, [rawDataSource, transform]);
+        return applyDataTransform(
+            result.tableProps.dataSource as TData[] | undefined,
+            result.tableQuery.data,
+            transform,
+        );
+    }, [result.tableProps.dataSource, result.tableQuery.data, transform]);
 
     return {
         ...result,

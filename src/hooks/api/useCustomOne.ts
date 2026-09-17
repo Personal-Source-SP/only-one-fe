@@ -53,6 +53,6 @@ export const useCustomOne = <TData extends BaseRecord = BaseRecord, TTransformed
     return {
         ...refineResult,
         data: transformedData,
-        isLoading: refineResult.query.isLoading,
+        isLoading: Boolean(refineResult.query.isLoading),
     };
 };
