@@ -18,13 +18,13 @@ affected_modules:
 - **Giá trị (Value)**: Thiết lập hệ thống Base Common Interfaces và tập trung các hàm Pure Utility tái sử dụng, giúp giảm 40%+ mã nguồn lặp lại, tối ưu type composition và đảm bảo tính nhất quán 100% khi tương tác với Refine & Backend API.
 
 ## 2. Key Architecture & Decisions (Kiến trúc & Quyết định Then chốt)
-- **Base Interface Composition** ([`src/interfaces/api-hooks.d.ts`](file:///d:/Sources/Personal/only-one-fe/src/interfaces/api-hooks.d.ts)):
+- **Base Interface Composition** ([`src/interfaces/api-hooks.d.ts`](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/interfaces/api-hooks.d.ts)):
   - `IBaseApiNotificationRequest`: Chuẩn hóa toàn bộ props notification (`errorMessage`, `successMessage`, `errorDescription`, `successDescription`, `errorNotification`, `successNotification`).
   - `IBaseApiCallbackRequest<TData>`: Chuẩn hóa callbacks `onSuccess`, `onError`.
   - `IBaseApiUrlRequest`: Chuẩn hóa `{ url: string }`.
   - `IBaseApiQueryRequest<TOptions>`: Chuẩn hóa `{ enabled?`, `refetchInterval?`, `queryOptions? }`.
   - `IBaseApiTransformRequest<TData, TTransformed>`: Chuẩn hóa `{ transform?: (data, rawResponse) => TTransformed }`.
-- **Pure Utility Helpers** ([`src/utilities/api-hooks.ts`](file:///d:/Sources/Personal/only-one-fe/src/utilities/api-hooks.ts)):
+- **Pure Utility Helpers** ([`src/utilities/api-hooks.ts`](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/utilities/api-hooks.ts)):
   - `unwrapApiResponse`: Bóc tách ApiResponse envelope an toàn.
   - `applyDataTransform`: Xử lý transformation fallback an toàn.
   - `resolveQueryErrorNotification`: Chuẩn hóa xử lý lỗi query/load.
@@ -34,9 +34,9 @@ affected_modules:
   - `resolveApiUrl`: Nối URL tuyệt đối hoặc baseURL an toàn.
 
 ## 3. Scope & Key Changes (Phạm vi & Thay đổi Chính)
-- [src/interfaces/api-hooks.d.ts](file:///d:/Sources/Personal/only-one-fe/src/interfaces/api-hooks.d.ts): Định nghĩa các Base Interfaces.
-- [src/utilities/api-hooks.ts](file:///d:/Sources/Personal/only-one-fe/src/utilities/api-hooks.ts): Tập hợp các helper utilities cho API hooks.
-- [src/hooks/api/](file:///d:/Sources/Personal/only-one-fe/src/hooks/api): Chuẩn hóa 100% toàn bộ các hooks (`useCustomData.ts`, `useCustomMutationData.ts`, `useCustomDelete.ts`, `useCustomOne.ts`, `useCustomList.ts`, `useCustomTable.ts`, `useCustomModalForm.ts`, `useCustomDrawerForm.ts`, `useCustomModal.ts`, `useCustomSelect.ts`, `useTableContainer.ts`).
+- [src/interfaces/api-hooks.d.ts](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/interfaces/api-hooks.d.ts): Định nghĩa các Base Interfaces.
+- [src/utilities/api-hooks.ts](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/utilities/api-hooks.ts): Tập hợp các helper utilities cho API hooks.
+- [src/hooks/api/](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/hooks/api): Chuẩn hóa 100% toàn bộ các hooks (`useCustomData.ts`, `useCustomMutationData.ts`, `useCustomDelete.ts`, `useCustomOne.ts`, `useCustomList.ts`, `useCustomTable.ts`, `useCustomModalForm.ts`, `useCustomDrawerForm.ts`, `useCustomModal.ts`, `useCustomSelect.ts`, `useTableContainer.ts`).
 
 ## 4. Verification Evidence & PR (Bằng chứng Nghiệm thu)
 - **Trạng thái Test**: 100% Passed (`npx tsc --noEmit` exit code 0, `npx eslint` exit code 0).

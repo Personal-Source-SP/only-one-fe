@@ -25,11 +25,11 @@ affected_modules:
 - **Unified Validation System**: Sử dụng `buildFormRules` kết hợp `FormRuleType` (`Required`, `Url`, `Code`, v.v.) thay cho regex thủ công.
 
 ## 3. Scope & Key Changes (Phạm vi & Thay đổi Chính)
-- [src/app/(root)/system/tunnel/components/TunnelConfigModal.tsx](file:///d:/Sources/Personal/only-one-fe/src/app/(root)/system/tunnel/components/TunnelConfigModal.tsx): Chuẩn hóa `CustomModalForm`, sử dụng `CustomInputForm` và validation rules.
-- [src/app/(root)/system/accounts/components/CreateSessionModal.tsx](file:///d:/Sources/Personal/only-one-fe/src/app/(root)/system/accounts/components/CreateSessionModal.tsx): Chuẩn hóa `CustomModalForm` với dynamic session inputs.
-- [src/app/(root)/google/drive/folders/components/FolderModal.tsx](file:///d:/Sources/Personal/only-one-fe/src/app/(root)/google/drive/folders/components/FolderModal.tsx): Chuẩn hóa `CustomModalForm`, loại bỏ legacy `modalProps`.
-- [src/app/(root)/schedule/executions/components/ViewJobEvent.tsx](file:///d:/Sources/Personal/only-one-fe/src/app/(root)/schedule/executions/components/ViewJobEvent.tsx): Tái cấu trúc dialog hiển thị sự kiện job theo `CustomModal` phẳng.
-- [src/app/(root)/schedule/executions/components/ViewScheduleJobList.tsx](file:///d:/Sources/Personal/only-one-fe/src/app/(root)/schedule/executions/components/ViewScheduleJobList.tsx): Chuẩn hóa dialog quản lý schedule jobs.
+- [src/app/(root)/system/tunnel/components/TunnelConfigModal.tsx](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/app/(root)/system/tunnel/components/TunnelConfigModal.tsx): Chuẩn hóa `CustomModalForm`, sử dụng `CustomInputForm` và validation rules.
+- [src/app/(root)/system/accounts/components/CreateSessionModal.tsx](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/app/(root)/system/accounts/components/CreateSessionModal.tsx): Chuẩn hóa `CustomModalForm` với dynamic session inputs.
+- [src/app/(root)/google/drive/folders/components/FolderModal.tsx](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/app/(root)/google/drive/folders/components/FolderModal.tsx): Chuẩn hóa `CustomModalForm`, loại bỏ legacy `modalProps`.
+- [src/app/(root)/schedule/executions/components/ViewJobEvent.tsx](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/app/(root)/schedule/executions/components/ViewJobEvent.tsx): Tái cấu trúc dialog hiển thị sự kiện job theo `CustomModal` phẳng.
+- [src/app/(root)/schedule/executions/components/ViewScheduleJobList.tsx](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/app/(root)/schedule/executions/components/ViewScheduleJobList.tsx): Chuẩn hóa dialog quản lý schedule jobs.
 
 ## 4. Verification Evidence & PR (Bằng chứng Nghiệm thu)
 - **Trạng thái Test**: 100% Passed (`npx tsc --noEmit` exit code 0, `npx eslint` exit code 0).

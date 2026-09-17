@@ -4,7 +4,7 @@ title: Kiến trúc TypeScript Cấp Trang & Đồng vị Hóa Kiểu Dữ liệ
 archived_at: 2026-09-04
 status: active
 references:
-  - only-one/archives/20260913-154500-data-provider-and-features-architecture.md
+  - only-one/archives/20260915-131744-data-provider-and-features-architecture.md
 affected_modules:
   - interfaces
   - app/(root)/*
