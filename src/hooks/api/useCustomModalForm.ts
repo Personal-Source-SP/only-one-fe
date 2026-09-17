@@ -54,11 +54,7 @@ export const useCustomModalForm = <
     autoResetForm = true,
     redirect = false,
     warnWhenUnsavedChanges = false,
-    errorDescription,
-    errorMessage,
     errorNotification,
-    successDescription,
-    successMessage,
     successNotification,
     initialValuesMapper,
     onFinish,
@@ -93,11 +89,7 @@ export const useCustomModalForm = <
     const resolvedNotifications = resolveFormNotifications({
         resource,
         action,
-        errorMessage,
-        errorDescription,
         errorNotification,
-        successMessage,
-        successDescription,
         successNotification,
     });
 

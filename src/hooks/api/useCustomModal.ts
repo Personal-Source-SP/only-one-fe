@@ -1,8 +1,4 @@
-import type {
-    IBaseApiCallbackRequest,
-    IBaseApiNotificationRequest,
-    IBaseApiResourceRequest,
-} from '@/interfaces';
+import type { IBaseApiNotificationRequest, IBaseApiResourceRequest } from '@/interfaces';
 import { resolveFormNotifications } from '@/utilities';
 import { useModalForm } from '@refinedev/antd';
 import type { BaseRecord, HttpError } from '@refinedev/core';
@@ -12,7 +8,7 @@ export interface IUseCustomModalProps<
     TVariables = Record<string, unknown>,
     TData extends BaseRecord = TQueryFnData,
 >
-    extends IBaseApiResourceRequest, IBaseApiNotificationRequest, IBaseApiCallbackRequest<TData> {
+    extends IBaseApiResourceRequest, IBaseApiNotificationRequest {
     autoResetForm?: boolean;
     action?: 'create' | 'edit';
     warnWhenUnsavedChanges?: boolean;
@@ -32,45 +28,31 @@ export const useCustomModal = <
         action = 'create',
         autoResetForm = true,
         warnWhenUnsavedChanges = false,
-        errorMessage,
-        errorDescription,
         errorNotification,
-        successMessage,
-        successDescription,
         successNotification,
         onMutationError,
         onMutationSuccess,
-        onError,
-        onSuccess,
     } = props;
 
     const resolvedNotifications = resolveFormNotifications({
         resource,
         action,
-        errorMessage,
-        errorDescription,
         errorNotification,
-        successMessage,
-        successDescription,
         successNotification,
     });
 
-    const handleMutationSuccess =
-        onMutationSuccess || onSuccess
-            ? (response: any) => {
-                  const payload = response?.data !== undefined ? response.data : response;
-                  if (onMutationSuccess) onMutationSuccess(payload);
-                  if (onSuccess) onSuccess(payload);
-              }
-            : undefined;
+    const handleMutationSuccess = onMutationSuccess
+        ? (response: any) => {
+              const payload = response?.data !== undefined ? response.data : response;
+              onMutationSuccess(payload);
+          }
+        : undefined;
 
-    const handleMutationError =
-        onMutationError || onError
-            ? (error: HttpError) => {
-                  if (onMutationError) onMutationError(error);
-                  if (onError) onError(error);
-              }
-            : undefined;
+    const handleMutationError = onMutationError
+        ? (error: HttpError) => {
+              onMutationError(error);
+          }
+        : undefined;
 
     const { open, show, close, formProps, modalProps, formLoading } = useModalForm<
         TQueryFnData,

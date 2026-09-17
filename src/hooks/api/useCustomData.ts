@@ -24,7 +24,7 @@ export interface UseCustomDataRequest<TData extends BaseRecord = BaseRecord, TTr
         IBaseApiQueryRequest<Parameters<typeof useCustom<TData, HttpError>>[0]['queryOptions']>,
         IBaseApiTransformRequest<TData, TTransformed> {
     method?: CustomHttpMethod;
-    query?: Record<string, unknown>;
+    config?: Parameters<typeof useCustom<TData, HttpError>>[0]['config'];
 }
 
 export interface UseCustomDataResponse<TData = unknown, TQueryData extends BaseRecord = BaseRecord>
@@ -32,15 +32,11 @@ export interface UseCustomDataResponse<TData = unknown, TQueryData extends BaseR
 
 export const useCustomData = <TData extends BaseRecord = BaseRecord, TTransformed = TData>({
     url,
-    query,
+    config,
     resource,
-    enabled = true,
     method = 'get',
-    errorMessage,
-    errorDescription,
     errorNotification,
     successNotification = false,
-    refetchInterval,
     queryOptions,
     transform,
 }: UseCustomDataRequest<TData, TTransformed>): UseCustomDataResponse<TTransformed> => {
@@ -49,8 +45,6 @@ export const useCustomData = <TData extends BaseRecord = BaseRecord, TTransforme
 
     const resolvedNotifications = resolveQueryNotifications({
         resource,
-        errorMessage,
-        errorDescription,
         errorNotification,
         successNotification,
     });
@@ -58,8 +52,8 @@ export const useCustomData = <TData extends BaseRecord = BaseRecord, TTransforme
     const { query: customQuery, result } = useCustom<TData, HttpError>({
         method,
         url: targetUrl,
-        config: { query },
-        queryOptions: { enabled, refetchInterval, ...queryOptions },
+        config,
+        queryOptions,
         ...resolvedNotifications,
     });
 

@@ -40,9 +40,7 @@ export interface UseCustomMutationDataResponse<TData extends BaseRecord, TPayloa
 export const useCustomMutationData = <TData extends BaseRecord = BaseRecord, TPayload = unknown>({
     resource,
     method: defaultMethod = 'post',
-    errorMessage,
     errorNotification,
-    successMessage,
     successNotification,
     onSuccess,
     onError,
@@ -55,10 +53,8 @@ export const useCustomMutationData = <TData extends BaseRecord = BaseRecord, TPa
         values,
         method = defaultMethod,
         onError: requestOnError,
-        errorMessage: requestErrorMessage,
         errorNotification: requestErrorNotification,
         onSuccess: requestOnSuccess,
-        successMessage: requestSuccessMessage,
         successNotification: requestSuccessNotification,
     }: CustomMutationDataRequest<TPayload, TData>): Promise<TData> => {
         const targetUrl = resolveApiUrl(url, apiUrl);
@@ -69,13 +65,9 @@ export const useCustomMutationData = <TData extends BaseRecord = BaseRecord, TPa
         } = resolveMutationNotifications({
             resource,
             action: getMethodNotificationAction(method),
-            requestErrorMessage,
             requestErrorNotification,
-            hookErrorMessage: errorMessage,
             hookErrorNotification: errorNotification,
-            requestSuccessMessage,
             requestSuccessNotification,
-            hookSuccessMessage: successMessage,
             hookSuccessNotification: successNotification,
         });
 

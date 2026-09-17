@@ -85,12 +85,12 @@ export const SyncGoogleDrive = ({
     const { handleMessage } = useMainContext();
 
     const { options: folderOptionResult, query: queryFolderOptions } = useSelectGoogleFolder({
-        enabled: typeof defaultFolderOptions !== 'object',
+        queryOptions: { enabled: typeof defaultFolderOptions !== 'object' },
     });
 
     const { result: googleAuthsResult, query: queryGoogleAuths } = useCustomData({
         url: 'google-auth',
-        enabled: typeof defaultGoogleAuths !== 'object',
+        queryOptions: { enabled: typeof defaultGoogleAuths !== 'object' },
     });
 
     const { handleCustomMutationData } = useCustomMutationData();

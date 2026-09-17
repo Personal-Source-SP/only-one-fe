@@ -31,8 +31,8 @@ export const useScrapingDataPage = () => {
 
     const tableContainerData = useTableContainer({
         resource: API_ENDPOINT.SCRAPING_DATA.BASE,
-        defaultSorters: [{ field: 'lastModified', order: 'desc' }],
-        defaultPagination: {
+        sorters: [{ field: 'lastModified', order: 'desc' }],
+        pagination: {
             pageSize: 30,
             mode: 'server',
         },

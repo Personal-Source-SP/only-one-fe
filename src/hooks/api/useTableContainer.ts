@@ -9,29 +9,24 @@ import type { CrudFilter, CrudSort, Pagination } from '@refinedev/core';
 
 export interface IUseTableContainerProps
     extends IBaseApiResourceRequest, IBaseApiQueryRequest, IBaseApiNotificationRequest {
-    defaultSorters?: CrudSort[];
-    defaultFilters?: CrudFilter[];
-    defaultPagination?: Pagination;
+    sorters?: CrudSort[];
+    filters?: CrudFilter[];
+    pagination?: Pagination;
 }
 
 export const useTableContainer = (props: IUseTableContainerProps) => {
     const {
         resource,
-        enabled,
         queryOptions,
-        defaultPagination,
-        defaultSorters,
-        defaultFilters,
-        errorMessage,
-        errorDescription,
+        pagination,
+        sorters,
+        filters,
         errorNotification,
         successNotification = false,
     } = props;
 
     const resolvedNotifications = resolveQueryNotifications({
         resource,
-        errorMessage,
-        errorDescription,
         errorNotification,
         successNotification,
     });
@@ -41,23 +36,23 @@ export const useTableContainer = (props: IUseTableContainerProps) => {
         setCurrentPage,
         pageSize,
         setPageSize,
-        filters,
+        filters: tableFilters,
         setFilters,
-        sorters,
+        sorters: tableSorters,
         setSorters,
         tableQuery,
         tableProps,
     } = useTable({
         resource,
         syncWithLocation: false,
-        pagination: defaultPagination ?? {
+        pagination: pagination ?? {
             pageSize: 10,
             mode: 'server',
         },
-        sorters: defaultSorters
+        sorters: sorters
             ? {
                   mode: 'server',
-                  initial: defaultSorters,
+                  initial: sorters,
               }
             : {
                   mode: 'server',
@@ -65,12 +60,9 @@ export const useTableContainer = (props: IUseTableContainerProps) => {
               },
         filters: {
             mode: 'server',
-            initial: defaultFilters ?? [],
+            initial: filters ?? [],
         },
-        queryOptions: {
-            enabled: enabled ?? true,
-            ...queryOptions,
-        },
+        queryOptions,
         ...resolvedNotifications,
     });
 

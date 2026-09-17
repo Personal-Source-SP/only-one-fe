@@ -19,7 +19,7 @@ export const useDiscoveryDetailPage = (id: string) => {
         query: { isLoading: isSessionLoading, refetch: refetchSession },
     } = useCustomOne<IDiscoverySession>({
         id,
-        enabled: Boolean(id),
+        queryOptions: { enabled: Boolean(id) },
         resource: API_ENDPOINT.DISCOVERY_SESSIONS.BASE,
     });
 
@@ -55,7 +55,10 @@ export const useDiscoveryDetailPage = (id: string) => {
             url: API_ENDPOINT.DISCOVERY_SESSIONS.ENQUEUE_URLS(id),
             values: { urlIds: selectedRowKeys },
             method: 'post',
-            successMessage: `Đã đẩy ${selectedRowKeys.length} URLs vào hàng đợi cào`,
+            successNotification: {
+                type: 'success',
+                message: `Đã đẩy ${selectedRowKeys.length} URLs vào hàng đợi cào`,
+            },
             onSuccess: () => {
                 setSelectedRowKeys([]);
                 tableQuery.refetch();
@@ -69,7 +72,10 @@ export const useDiscoveryDetailPage = (id: string) => {
             url: API_ENDPOINT.DISCOVERY_SESSIONS.VALIDATE(id),
             values: {},
             method: 'post',
-            successMessage: 'Bắt đầu quá trình đánh giá chất lượng URLs',
+            successNotification: {
+                type: 'success',
+                message: 'Bắt đầu quá trình đánh giá chất lượng URLs',
+            },
             onSuccess: () => {
                 tableQuery.refetch();
                 refetchSession();

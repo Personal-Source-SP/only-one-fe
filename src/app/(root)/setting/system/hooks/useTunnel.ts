@@ -64,7 +64,10 @@ export const useTunnel = () => {
             method: 'post',
             values: config,
             url: API_ENDPOINT.TUNNEL.START,
-            successMessage: 'Đang khởi động Cloudflare Tunnel...',
+            successNotification: {
+                type: 'success',
+                message: 'Đang khởi động Cloudflare Tunnel...',
+            },
         });
     }, [config, mutateTunnel]);
 
@@ -73,7 +76,7 @@ export const useTunnel = () => {
             method: 'post',
             values: {},
             url: API_ENDPOINT.TUNNEL.STOP,
-            successMessage: 'Đã dừng Tunnel',
+            successNotification: { type: 'success', message: 'Đã dừng Tunnel' },
         });
     }, [mutateTunnel]);
 
@@ -83,7 +86,10 @@ export const useTunnel = () => {
                 method: 'put',
                 values: newConfig,
                 url: API_ENDPOINT.SETTINGS.TUNNEL_CONFIG,
-                successMessage: 'Đã lưu cấu hình Tunnel vào tài khoản',
+                successNotification: {
+                    type: 'success',
+                    message: 'Đã lưu cấu hình Tunnel vào tài khoản',
+                },
             });
         },
         [mutateConfig],

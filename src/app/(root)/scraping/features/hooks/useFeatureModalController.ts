@@ -55,9 +55,9 @@ export const useFeatureModalController = ({
         IConfigVersion[],
         IConfigVersion[]
     >({
-        enabled: Boolean(open && feature.id),
         url: API_ENDPOINT.CONFIG_VERSION_FEATURES.VERSIONS(feature.id),
         queryOptions: {
+            enabled: Boolean(open && feature.id),
             refetchOnMount: 'always',
         },
         transform: (data) => (Array.isArray(data) ? data : []) as IConfigVersion[],

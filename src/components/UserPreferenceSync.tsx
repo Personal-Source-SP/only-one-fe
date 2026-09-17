@@ -13,9 +13,9 @@ export const UserPreferenceSync = () => {
 
     const { data } = useCustomData<{ data: { value?: { palette?: string } } }>({
         method: 'get',
-        enabled: status === 'authenticated',
         url: API_ENDPOINT.SETTINGS.USER('appearance'),
         queryOptions: {
+            enabled: status === 'authenticated',
             retry: false,
             refetchOnWindowFocus: false,
         },

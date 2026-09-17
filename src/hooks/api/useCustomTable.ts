@@ -44,8 +44,6 @@ export const useCustomTable = <
     TTransformed extends BaseRecord = TData,
 >({
     resource,
-    errorMessage,
-    errorDescription,
     pagination,
     sorters,
     errorNotification,
@@ -56,8 +54,6 @@ export const useCustomTable = <
 }: UseCustomTableRequest<TData, TTransformed>) => {
     const resolvedNotifications = resolveQueryNotifications({
         resource,
-        errorMessage,
-        errorDescription,
         errorNotification,
         successNotification,
     });

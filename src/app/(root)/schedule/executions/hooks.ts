@@ -21,9 +21,11 @@ export const useScheduleExecutionPage = () => {
 
     const { handleCustomMutationData } = useCustomMutationData();
 
-    const { options: itemOptions, query: itemQuery } = useSelectItem({ enabled: false });
+    const { options: itemOptions, query: itemQuery } = useSelectItem({
+        queryOptions: { enabled: false },
+    });
     const { options: dataProviderOptions, query: dataProviderQuery } = useSelectDataProvider({
-        enabled: false,
+        queryOptions: { enabled: false },
     });
 
     const { tableProps, tableQuery, debouncedSearch, setFilters, setCurrentPage } =

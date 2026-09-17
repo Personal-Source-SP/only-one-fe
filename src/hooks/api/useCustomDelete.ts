@@ -31,9 +31,7 @@ export interface UseCustomDeleteResponse<
 
 export const useCustomDelete = <TData extends BaseRecord = BaseRecord>({
     resource,
-    errorMessage,
     errorNotification,
-    successMessage,
     successNotification,
     onError,
     onSuccess,
@@ -52,8 +50,6 @@ export const useCustomDelete = <TData extends BaseRecord = BaseRecord>({
         const {
             id,
             ids,
-            errorMessage: requestErrorMessage,
-            successMessage: requestSuccessMessage,
             errorNotification: requestErrorNotification,
             successNotification: requestSuccessNotification,
             onError: requestOnError,
@@ -69,13 +65,9 @@ export const useCustomDelete = <TData extends BaseRecord = BaseRecord>({
         } = resolveMutationNotifications({
             resource,
             action: NotificationAction.Delete,
-            requestErrorMessage,
             requestErrorNotification,
-            hookErrorMessage: errorMessage,
             hookErrorNotification: errorNotification,
-            requestSuccessMessage,
             requestSuccessNotification,
-            hookSuccessMessage: successMessage,
             hookSuccessNotification: successNotification,
         });
 

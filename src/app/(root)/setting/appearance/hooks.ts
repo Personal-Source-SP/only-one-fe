@@ -19,7 +19,10 @@ export const useSettingAppearancePage = () => {
                 method: 'put',
                 values: { value: { palette: next } },
                 url: API_ENDPOINT.SETTINGS.USER('appearance'),
-                successMessage: 'Cập nhật giao diện thành công',
+                successNotification: {
+                    type: 'success',
+                    message: 'Cập nhật giao diện thành công',
+                },
             });
         },
         [setPalette, handleCustomMutationData],

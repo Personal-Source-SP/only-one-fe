@@ -14,16 +14,12 @@ export type UseCustomOneRequest<TData extends BaseRecord = BaseRecord, TTransfor
     IBaseApiTransformRequest<TData, TTransformed> & {
         resource: string;
         id?: RefineUseOneRequest<TData>['id'] | null;
-        enabled?: boolean;
         queryOptions?: RefineUseOneRequest<TData>['queryOptions'];
     };
 
 export const useCustomOne = <TData extends BaseRecord = BaseRecord, TTransformed = TData>({
     id,
     resource,
-    enabled,
-    errorMessage,
-    errorDescription,
     queryOptions,
     errorNotification,
     successNotification = false,
@@ -32,18 +28,11 @@ export const useCustomOne = <TData extends BaseRecord = BaseRecord, TTransformed
 }: UseCustomOneRequest<TData, TTransformed>) => {
     const resolvedNotifications = resolveQueryNotifications({
         resource,
-        errorMessage,
-        errorDescription,
         errorNotification,
         successNotification,
     });
 
-    const isEnabled =
-        enabled !== undefined
-            ? enabled
-            : queryOptions?.enabled !== undefined
-              ? queryOptions.enabled
-              : Boolean(id);
+    const isEnabled = queryOptions?.enabled !== undefined ? queryOptions.enabled : Boolean(id);
 
     const refineResult = useOne<TData, HttpError>({
         ...rest,

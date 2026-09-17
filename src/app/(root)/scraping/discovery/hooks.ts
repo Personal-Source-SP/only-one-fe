@@ -26,7 +26,7 @@ export const useDiscoveryPage = () => {
     >({
         action: 'create',
         resource: API_ENDPOINT.DISCOVERY_SESSIONS.BASE,
-        successMessage: 'Tạo phiên khám phá thành công',
+        successNotification: { type: 'success', message: 'Tạo phiên khám phá thành công' },
         onMutationSuccess: async () => {
             await tableQuery.refetch();
         },

@@ -34,11 +34,11 @@ export const usePhotosPage = () => {
 
     const { result: googleAuthsResult, query: queryGoogleAuths } = useCustomData({
         url: 'google-auth',
-        enabled: false,
+        queryOptions: { enabled: false },
     });
 
     const { options: folderOptions, query: queryFolderOptions } = useSelectGoogleFolder({
-        enabled: false,
+        queryOptions: { enabled: false },
     });
 
     const googleDriveFiles = useMemo<IGoogleDriveFile[]>(() => {

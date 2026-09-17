@@ -38,10 +38,6 @@ export interface IBaseApiNotificationRequest<
     TVariables = any,
 > extends SuccessErrorNotification<TData, TError, TVariables> {
     resource?: string;
-    errorMessage?: string;
-    successMessage?: string;
-    errorDescription?: string;
-    successDescription?: string;
 }
 
 export interface IBaseApiCallbackRequest<TData = any> {
@@ -50,8 +46,6 @@ export interface IBaseApiCallbackRequest<TData = any> {
 }
 
 export interface IBaseApiQueryRequest<TOptions = any> {
-    enabled?: boolean;
-    refetchInterval?: number | false;
     queryOptions?: TOptions;
 }
 

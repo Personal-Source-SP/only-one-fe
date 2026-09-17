@@ -14,7 +14,7 @@ export const useFeaturesView = () => {
     // 1. Query Data Provider details
     const { query: providerQuery, data: provider } = useCustomOne<IDataProvider>({
         id: dataProviderId,
-        enabled: Boolean(dataProviderId),
+        queryOptions: { enabled: Boolean(dataProviderId) },
         resource: API_ENDPOINT.DATA_PROVIDERS.BASE,
     });
 

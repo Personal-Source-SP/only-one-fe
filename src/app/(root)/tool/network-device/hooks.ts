@@ -61,7 +61,10 @@ export const useNetworkDevicePage = () => {
                     url: API_ENDPOINT.NETWORK_DEVICES.SCAN,
                     method: 'post',
                     values,
-                    successMessage: 'Đã kích hoạt quét mạng bất đồng bộ thành công',
+                    successNotification: {
+                        type: 'success',
+                        message: 'Đã kích hoạt quét mạng bất đồng bộ thành công',
+                    },
                 });
                 setIsScanModalOpen(false);
                 await scanStatusQuery.refetch();
@@ -81,7 +84,10 @@ export const useNetworkDevicePage = () => {
                     url: API_ENDPOINT.NETWORK_DEVICES.APPROACH_EXECUTE,
                     method: 'post',
                     values: payload,
-                    successMessage: 'Thực thi chẩn đoán hoàn tất',
+                    successNotification: {
+                        type: 'success',
+                        message: 'Thực thi chẩn đoán hoàn tất',
+                    },
                 })) as unknown as IApproachResultResponse;
                 setApproachResult(res);
             } finally {

@@ -47,15 +47,11 @@ export const getMethodNotificationAction = (
 
 export interface ResolveMutationNotificationsParams {
     resource?: string;
-    action: NotificationAction;
+    action?: NotificationAction;
     requestErrorNotification?: ApiNotificationParam;
     hookErrorNotification?: ApiNotificationParam;
-    requestErrorMessage?: string;
-    hookErrorMessage?: string;
     requestSuccessNotification?: ApiNotificationParam;
     hookSuccessNotification?: ApiNotificationParam;
-    requestSuccessMessage?: string;
-    hookSuccessMessage?: string;
 }
 
 /**
@@ -63,15 +59,11 @@ export interface ResolveMutationNotificationsParams {
  */
 export const resolveMutationNotifications = ({
     resource,
-    action,
+    action = NotificationAction.Create,
     requestErrorNotification,
     hookErrorNotification,
-    requestErrorMessage,
-    hookErrorMessage,
     requestSuccessNotification,
     hookSuccessNotification,
-    requestSuccessMessage,
-    hookSuccessMessage,
 }: ResolveMutationNotificationsParams) => {
     let errorNotification: ApiNotificationParam;
     if (requestErrorNotification !== undefined) {
@@ -79,11 +71,9 @@ export const resolveMutationNotifications = ({
     } else if (hookErrorNotification !== undefined) {
         errorNotification = hookErrorNotification;
     } else {
-        const message = requestErrorMessage !== undefined ? requestErrorMessage : hookErrorMessage;
         errorNotification = getErrorNotification({
             resource,
             action,
-            message,
         });
     }
 
@@ -93,12 +83,9 @@ export const resolveMutationNotifications = ({
     } else if (hookSuccessNotification !== undefined) {
         successNotification = hookSuccessNotification;
     } else {
-        const message =
-            requestSuccessMessage !== undefined ? requestSuccessMessage : hookSuccessMessage;
         successNotification = getSuccessNotification({
             resource,
             action,
-            message,
         });
     }
 
@@ -150,8 +137,6 @@ export const resolveQueryErrorNotification = (
     }
     return getErrorNotification({
         resource: params.resource,
-        message: params.errorMessage,
-        description: params.errorDescription,
         action: params.action ?? NotificationAction.Load,
     });
 };
@@ -176,11 +161,7 @@ export interface ResolveFormNotificationsParams extends IBaseApiNotificationRequ
 export const resolveFormNotifications = ({
     resource,
     action = 'create',
-    errorMessage,
-    errorDescription,
     errorNotification,
-    successMessage,
-    successDescription,
     successNotification,
 }: ResolveFormNotificationsParams): SuccessErrorNotification<any, any, any> => {
     const notificationAction = getFormNotificationAction(action as FormMode);
@@ -188,15 +169,11 @@ export const resolveFormNotifications = ({
         errorNotification: getErrorNotification({
             resource,
             errorNotification,
-            message: errorMessage,
-            description: errorDescription,
             action: notificationAction,
         }),
         successNotification: getSuccessNotification({
             resource,
             successNotification,
-            message: successMessage,
-            description: successDescription,
             action: notificationAction,
         }),
     };

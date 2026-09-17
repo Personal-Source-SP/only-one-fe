@@ -55,11 +55,7 @@ export const useCustomDrawerForm = <
     autoResetForm = true,
     redirect = false,
     warnWhenUnsavedChanges = false,
-    errorDescription,
-    errorMessage,
     errorNotification,
-    successDescription,
-    successMessage,
     successNotification,
     initialValuesMapper,
     onFinish,
@@ -94,11 +90,7 @@ export const useCustomDrawerForm = <
     const resolvedNotifications = resolveFormNotifications({
         resource,
         action,
-        errorMessage,
-        errorDescription,
         errorNotification,
-        successMessage,
-        successDescription,
         successNotification,
     });
 

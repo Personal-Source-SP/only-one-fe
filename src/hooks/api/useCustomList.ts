@@ -20,8 +20,6 @@ export type UseCustomListRequest<
 
 export const useCustomList = <TData extends BaseRecord = BaseRecord, TTransformed = TData[]>({
     resource,
-    errorMessage,
-    errorDescription,
     pagination,
     sorters,
     errorNotification,
@@ -31,8 +29,6 @@ export const useCustomList = <TData extends BaseRecord = BaseRecord, TTransforme
 }: UseCustomListRequest<TData, TTransformed>) => {
     const resolvedNotifications = resolveQueryNotifications({
         resource,
-        errorMessage,
-        errorDescription,
         errorNotification,
         successNotification,
     });

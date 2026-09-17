@@ -24,10 +24,10 @@ export interface IUseSelectProps<T extends BaseRecord = BaseRecord>
     extends
         IBaseApiResourceRequest,
         IBaseApiNotificationRequest,
-        IBaseApiQueryRequest,
+        IBaseApiQueryRequest<Parameters<typeof useSelect<T>>[0]['queryOptions']>,
         IBaseApiTransformRequest<Option<string>[], Option<string>[]> {
     id?: string;
-    defaultFilters?: CrudFilter[];
+    filters?: CrudFilter[];
     type?: 'items' | 'data-provider' | 'data-provider-items';
     filter?: (item: T) => boolean;
     optionLabel?: (item: T) => string;
@@ -48,24 +48,19 @@ const getDefaultOptionLabel = <T extends BaseRecord>(item: T): string => {
 
 export const useCustomSelect = <T extends BaseRecord = BaseRecord>(props: IUseSelectProps<T>) => {
     const {
-        enabled,
         queryOptions,
         resource,
-        defaultFilters,
+        filters,
         optionValue,
         optionLabel,
         filter,
         transform,
-        errorMessage,
-        errorDescription,
         errorNotification,
         successNotification = false,
     } = props;
 
     const resolvedNotifications = resolveQueryNotifications({
         resource,
-        errorMessage,
-        errorDescription,
         errorNotification,
         successNotification,
     });
@@ -76,8 +71,8 @@ export const useCustomSelect = <T extends BaseRecord = BaseRecord>(props: IUseSe
     const { options, query } = useSelect<T>({
         resource: resource ?? '',
         pagination: { mode: 'off' },
-        filters: defaultFilters ?? undefined,
-        queryOptions: { enabled: enabled ?? false, ...queryOptions },
+        filters,
+        queryOptions,
         sorters: [{ field: 'createdAt', order: 'desc' }],
         optionValue: getValue,
         optionLabel: getLabel,
@@ -117,7 +112,10 @@ export const useSelectDataProviderItem = (props?: IUseSelectProps<IDataProviderI
     return useCustomSelect({
         ...props,
         resource,
-        enabled: !!props?.id || (props?.enabled ?? false),
+        queryOptions: {
+            enabled: !!props?.id || (props?.queryOptions?.enabled ?? false),
+            ...props?.queryOptions,
+        },
         optionValue: props?.optionValue ?? ((item: IDataProviderItem) => item.itemUrl ?? ''),
         optionLabel: props?.optionLabel ?? ((item: IDataProviderItem) => item.itemUrl ?? ''),
     });
@@ -144,7 +142,10 @@ export const useSelectDataProvider = (props?: IUseSelectDataProviderProps) => {
     return useCustomSelect({
         ...props,
         resource: props?.resource ?? resource,
-        enabled: props?.enabled ?? true,
+        queryOptions: {
+            enabled: props?.queryOptions?.enabled ?? true,
+            ...props?.queryOptions,
+        },
         optionValue: props?.optionValue ?? ((item: IDataProvider) => item.id ?? ''),
         optionLabel:
             props?.optionLabel ??
@@ -157,7 +158,10 @@ export const useSelectItem = (props?: IUseSelectProps<IItem>) => {
     return useCustomSelect({
         ...props,
         resource: API_ENDPOINT.ITEMS.ALL,
-        enabled: props?.enabled ?? true,
+        queryOptions: {
+            enabled: props?.queryOptions?.enabled ?? true,
+            ...props?.queryOptions,
+        },
         optionValue: props?.optionValue ?? ((item: IItem) => item.id ?? ''),
         optionLabel: props?.optionLabel ?? ((item: IItem) => item.name ?? ''),
     });
@@ -167,7 +171,10 @@ export const useSelectGoogleFolder = (props?: IUseSelectProps<IGoogleDriveFolder
     return useCustomSelect({
         ...props,
         resource: API_ENDPOINT.GOOGLE_DRIVE.FOLDERS_ALL,
-        enabled: props?.enabled ?? true,
+        queryOptions: {
+            enabled: props?.queryOptions?.enabled ?? true,
+            ...props?.queryOptions,
+        },
         optionValue: props?.optionValue ?? ((item: IGoogleDriveFolder) => item.id ?? ''),
         optionLabel: props?.optionLabel ?? ((item: IGoogleDriveFolder) => item.name ?? ''),
     });
@@ -177,7 +184,10 @@ export const useSelectCloudDataProvider = (props?: IUseSelectProps<ICloudDataPro
     return useCustomSelect({
         ...props,
         resource: API_ENDPOINT.CLOUD_DATA_PROVIDERS.ALL,
-        enabled: props?.enabled ?? true,
+        queryOptions: {
+            enabled: props?.queryOptions?.enabled ?? true,
+            ...props?.queryOptions,
+        },
         optionValue: props?.optionValue ?? ((item: ICloudDataProvider) => item.id ?? ''),
         optionLabel: props?.optionLabel ?? ((item: ICloudDataProvider) => item.name ?? ''),
     });
@@ -187,7 +197,10 @@ export const useSelectSimulationContext = (props?: IUseSelectProps<ISimulationCo
     return useCustomSelect({
         ...props,
         resource: API_ENDPOINT.SIMULATION.CONTEXTS_ALL,
-        enabled: props?.enabled ?? true,
+        queryOptions: {
+            enabled: props?.queryOptions?.enabled ?? true,
+            ...props?.queryOptions,
+        },
         optionValue: props?.optionValue ?? ((item: ISimulationContext) => item.id ?? ''),
         optionLabel: props?.optionLabel ?? ((item: ISimulationContext) => item.name ?? ''),
     });

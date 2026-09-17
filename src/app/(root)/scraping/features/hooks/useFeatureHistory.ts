@@ -22,9 +22,9 @@ export const useFeatureHistory = ({ open, feature, onSuccess }: UseFeatureHistor
     const meta = useMemo(() => (feature ? FEATURE_REGISTRY[feature.type] : null), [feature]);
 
     const { data: sortedVersions = [], query } = useCustomData<IConfigVersion[], IConfigVersion[]>({
-        enabled: Boolean(open && featureId),
         url: API_ENDPOINT.CONFIG_VERSION_FEATURES.VERSIONS(featureId),
         queryOptions: {
+            enabled: Boolean(open && featureId),
             refetchOnMount: 'always',
         },
         transform: (data) => {

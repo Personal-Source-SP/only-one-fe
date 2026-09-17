@@ -69,7 +69,7 @@ export const ProcessScrapeData = ({
 
     const { options: dataProviderItemOptions, query: dataProviderItemQuery } =
         useSelectDataProviderItem({
-            enabled: false,
+            queryOptions: { enabled: false },
             id: itemIds?.length === 1 ? itemIds[0] : undefined,
             type: itemIds?.length ? 'items' : 'data-provider-items',
             optionValue: (item: IDataProviderItem) => item.id ?? '',
