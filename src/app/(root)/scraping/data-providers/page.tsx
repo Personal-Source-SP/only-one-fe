@@ -2,7 +2,7 @@
 
 import {
     ListWrapper,
-    type CardAction,
+    type ICardAction,
     type IFilterField,
     type IFormField,
 } from '@/components/common';
@@ -83,7 +83,7 @@ export default function DataProviderPage() {
         },
     ];
 
-    const actions: CardAction[] = [
+    const actions: ICardAction[] = [
         {
             label: 'Thêm nhà cung cấp',
             icon: <PlusOutlined />,

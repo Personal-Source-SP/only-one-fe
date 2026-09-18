@@ -7,7 +7,7 @@ import {
     ListTable,
     ListWrapper,
     StatusTag,
-    type CardAction,
+    type ICardAction,
     type IFilterField,
 } from '@/components/common';
 import { capitalizeFirstLetter, formatDate, getEnumKeyByValue } from '@/libs';
@@ -109,7 +109,7 @@ const ScheduleExecutionPage = () => {
         },
     ];
 
-    const actions: CardAction[] = [
+    const actions: ICardAction[] = [
         {
             component: (
                 <CustomButton

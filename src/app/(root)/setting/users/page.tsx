@@ -7,7 +7,7 @@ import {
     FilterPanel,
     ListTable,
     ListWrapper,
-    type CardAction,
+    type ICardAction,
     type IFilterField,
 } from '@/components/common';
 import { formatDate } from '@/libs';
@@ -70,7 +70,7 @@ const UsersPage = () => {
         },
     ];
 
-    const actions: CardAction[] = [
+    const actions: ICardAction[] = [
         {
             component: (
                 <CustomButton

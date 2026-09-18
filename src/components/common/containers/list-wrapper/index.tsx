@@ -6,7 +6,7 @@ import {
     WrapperFormModal,
     WrapperHeader,
     type BreadcrumbItem,
-    type CardAction,
+    type ICardAction,
     type IFilterField,
     type ListTableProps,
     type WrapperFormModalProps,
@@ -40,7 +40,7 @@ export type ListWrapperProps<
     permissionGroup?: string;
 
     /** Actions displayed in the top-right corner above the filter table */
-    actions?: CardAction[];
+    actions?: ICardAction[];
 
     /** Breadcrumb navigation items rendered above the main card/container */
     breadcrumb?: BreadcrumbItem[];

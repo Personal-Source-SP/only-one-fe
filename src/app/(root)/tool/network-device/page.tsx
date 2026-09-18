@@ -4,7 +4,7 @@ import {
     FilterPanel,
     ListTable,
     ListWrapper,
-    type CardAction,
+    type ICardAction,
     type IFilterField,
 } from '@/components/common';
 import {
@@ -211,7 +211,7 @@ export default function NetworkDevicePage() {
     );
 
     // 3. Actions for ListWrapper Header
-    const actions: CardAction[] = useMemo(
+    const actions: ICardAction[] = useMemo(
         () => [
             {
                 key: 'refresh',

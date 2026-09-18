@@ -7,7 +7,7 @@ import {
     FilterPanel,
     ListWrapper,
     MediaLightbox,
-    type CardAction,
+    type ICardAction,
     type IFilterField,
 } from '@/components/common';
 import { CustomButton } from '@/components/custom-antd';
@@ -42,7 +42,7 @@ const PhotosPage = () => {
         filterItems,
     } = usePhotosPage();
 
-    const actions = useMemo<CardAction[]>(
+    const actions = useMemo<ICardAction[]>(
         () => [
             {
                 component: (

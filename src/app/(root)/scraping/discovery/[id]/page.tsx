@@ -9,7 +9,7 @@ import {
     FilterPanel,
     ListTable,
     ListWrapper,
-    type CardAction,
+    type ICardAction,
     type IFilterField,
 } from '@/components/common';
 import {
@@ -146,7 +146,7 @@ const DiscoveryDetailPage = () => {
         [],
     );
 
-    const actions: CardAction[] = useMemo(
+    const actions: ICardAction[] = useMemo(
         () => [
             {
                 component: (

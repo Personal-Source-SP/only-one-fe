@@ -4,7 +4,7 @@ import {
     FilterPanel,
     ListTable,
     ListWrapper,
-    type CardAction,
+    type ICardAction,
     type IFilterField,
 } from '@/components/common';
 import { CustomButton, CustomTag, type ColumnsType } from '@/components/custom-antd';
@@ -75,7 +75,7 @@ const DiscoveryPage = () => {
         },
     ];
 
-    const actions: CardAction[] = [
+    const actions: ICardAction[] = [
         {
             component: (
                 <CustomButton

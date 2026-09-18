@@ -4,7 +4,7 @@ import { FilterPanel, type IFilterField } from '@/components/common';
 import { CustomCard, CustomFlex } from '@/components/custom-antd';
 import { cloneElement, isValidElement, useMemo, type ReactElement, type ReactNode } from 'react';
 
-export type CardAction = {
+export interface ICardAction {
     /** Button or action component (for example: <Button>Create</Button>) */
     component?: ReactNode;
 
@@ -25,12 +25,12 @@ export type CardAction = {
 
     /** Optional click handler for mobile actions dropdown */
     onClick?: () => void;
-};
+}
 
 export type WrapperHeaderProps = {
     withCard?: boolean;
     className?: string;
-    allowedActions?: CardAction[];
+    allowedActions?: ICardAction[];
     mobileActionsButton?: ReactNode;
     filters?: IFilterField[] | ReactNode;
 };

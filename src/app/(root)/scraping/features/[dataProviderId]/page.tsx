@@ -4,7 +4,7 @@ import {
     DataNotFound,
     ListWrapper,
     type BreadcrumbItem,
-    type CardAction,
+    type ICardAction,
 } from '@/components/common';
 import {
     CustomButton,
@@ -105,7 +105,7 @@ const DataProviderFeaturesPage = () => {
         [provider?.name, router],
     );
 
-    const actions: CardAction[] = useMemo(
+    const actions: ICardAction[] = useMemo(
         () => [
             {
                 component: (

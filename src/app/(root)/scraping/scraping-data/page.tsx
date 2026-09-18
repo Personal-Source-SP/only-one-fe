@@ -9,7 +9,7 @@ import {
     ListTable,
     ListWrapper,
     MediaLightbox,
-    type CardAction,
+    type ICardAction,
     type IFilterField,
 } from '@/components/common';
 import { ColumnsType, CustomButton, CustomFlex, CustomSelect } from '@/components/custom-antd';
@@ -115,7 +115,7 @@ const ScrapingDataPage = () => {
         },
     ];
 
-    const actions: CardAction[] = [
+    const actions: ICardAction[] = [
         {
             component: (
                 <CustomButton

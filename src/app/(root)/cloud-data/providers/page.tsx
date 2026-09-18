@@ -7,7 +7,7 @@ import {
     ListTable,
     ListWrapper,
     StatusTag,
-    type CardAction,
+    type ICardAction,
     type IFilterField,
 } from '@/components/common';
 import { capitalizeFirstLetter, formatDate, formatFileSize } from '@/libs';
@@ -81,7 +81,7 @@ const CloudDataProvider = () => {
         },
     ];
 
-    const actions: CardAction[] = [
+    const actions: ICardAction[] = [
         {
             component: (
                 <CustomButton
