@@ -56,7 +56,7 @@ export const ListContainer = <
 >({
     withCard = true,
     className = '',
-    isLoading,
+    isLoading = false,
     children,
     actions = [],
     permissionGroup,
