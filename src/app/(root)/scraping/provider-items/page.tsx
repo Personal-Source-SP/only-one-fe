@@ -7,7 +7,13 @@ import {
     type IFilterField,
     type IFormField,
 } from '@/components/common';
-import { ColumnsType, CustomButton, CustomToggle } from '@/components/custom-antd';
+import {
+    ColumnsType,
+    CustomButton,
+    CustomFlex,
+    CustomToggle,
+    CustomTypography,
+} from '@/components/custom-antd';
 import { API_ENDPOINT, RESOURCE } from '@/config';
 import { MessageType } from '@/enums';
 import {
@@ -20,13 +26,10 @@ import {
 } from '@/hooks';
 import { formatDate } from '@/libs';
 import { PlusOutlined } from '@ant-design/icons';
-import { useState } from 'react';
 import { PROVIDER_ITEM_FIELDS } from './constants';
-import type { ProviderItemFormValues, ProviderItemRecord } from './types';
+import type { IDataProviderItemFormValues, ProviderItemRecord } from './types';
 
 export default function DataProviderItemPage() {
-    const [switchingId, setSwitchingId] = useState<string | null>(null);
-
     const { options: itemOptions } = useSelectItem();
     const { options: cloudDataProviderOptions } = useSelectCloudDataProvider();
     const { options: dataProviderOptions, query: dataProviderQuery } = useSelectDataProvider();
@@ -61,21 +64,9 @@ export default function DataProviderItemPage() {
         }),
     });
 
-    const handleSwitchStatus = async (id: string, active: boolean) => {
-        if (switchingId) return;
-        setSwitchingId(id);
-        try {
-            await handleUpdate({
-                url: API_ENDPOINT.DATA_PROVIDER_ITEMS.SWITCH_STATUS(id, active),
-            });
-        } finally {
-            setSwitchingId(null);
-        }
-    };
-
     const createModalForm = useCustomModalForm<
         ProviderItemRecord,
-        ProviderItemFormValues,
+        IDataProviderItemFormValues,
         ProviderItemRecord
     >({
         action: 'create',
@@ -87,7 +78,7 @@ export default function DataProviderItemPage() {
 
     const editModalForm = useCustomModalForm<
         ProviderItemRecord,
-        ProviderItemFormValues,
+        IDataProviderItemFormValues,
         ProviderItemRecord
     >({
         action: 'edit',
@@ -114,20 +105,22 @@ export default function DataProviderItemPage() {
             ellipsis: true,
             width: 200,
             render: (_: unknown, record: ProviderItemRecord) => (
-                <div className="flex flex-col gap-1">
-                    <span className="font-semibold text-sm">{record?.item?.name ?? '---'}</span>
-                    <span className="text-xs text-hub-subtitle">
+                <CustomFlex vertical gap={4}>
+                    <CustomTypography.Text strong className="text-sm">
+                        {record?.item?.name ?? '---'}
+                    </CustomTypography.Text>
+                    <CustomTypography.Text type="secondary" className="text-xs">
                         {record?.dataProvider?.name ?? '---'}
-                    </span>
-                    <a
-                        href={record.itemUrl}
+                    </CustomTypography.Text>
+                    <CustomTypography.Link
                         target="_blank"
                         rel="noreferrer"
-                        className="text-xs text-hub-primary hover:underline truncate"
+                        href={record.itemUrl}
+                        className="text-xs truncate"
                     >
                         {record.itemUrl}
-                    </a>
-                </div>
+                    </CustomTypography.Link>
+                </CustomFlex>
             ),
         },
         {
@@ -148,10 +141,13 @@ export default function DataProviderItemPage() {
             ...PROVIDER_ITEM_FIELDS.IS_ACTIVE.table,
             render: (isActive: boolean, record: ProviderItemRecord) => (
                 <CustomToggle
-                    loading={switchingId === record.id}
                     size="small"
                     checked={isActive}
-                    onChange={(checked) => handleSwitchStatus(record.id, checked)}
+                    onChange={(checked) =>
+                        handleUpdate({
+                            url: API_ENDPOINT.DATA_PROVIDER_ITEMS.SWITCH_STATUS(record.id, checked),
+                        })
+                    }
                 />
             ),
         },
@@ -220,30 +216,30 @@ export default function DataProviderItemPage() {
         },
     ];
 
-    const formFields: IFormField<ProviderItemFormValues>[] = [
+    const formFields: IFormField<IDataProviderItemFormValues>[] = [
         {
             name: PROVIDER_ITEM_FIELDS.ITEM_ID.key,
             label: PROVIDER_ITEM_FIELDS.ITEM_ID.label,
-            type: 'select',
+            ...PROVIDER_ITEM_FIELDS.ITEM_ID.form,
             options: itemOptions,
-            rulesConfig: PROVIDER_ITEM_FIELDS.ITEM_ID.form?.rulesConfig,
         },
         {
             name: PROVIDER_ITEM_FIELDS.DATA_PROVIDER_ID.key,
             label: PROVIDER_ITEM_FIELDS.DATA_PROVIDER_ID.label,
-            type: 'select',
+            ...PROVIDER_ITEM_FIELDS.DATA_PROVIDER_ID.form,
             options: dataProviderOptions,
-            rulesConfig: PROVIDER_ITEM_FIELDS.DATA_PROVIDER_ID.form?.rulesConfig,
             selectProps: {
                 onChange: (value: unknown) => {
                     const dataProvider = dataProviderQuery?.data?.data?.find(
                         (option: IDataProvider) => option.id === value,
                     );
+
                     if (dataProvider?.baseUrl) {
                         createModalForm.formProps.form?.setFieldValue(
                             'itemUrl',
                             dataProvider.baseUrl,
                         );
+
                         editModalForm.formProps.form?.setFieldValue(
                             'itemUrl',
                             dataProvider.baseUrl,
@@ -260,31 +256,28 @@ export default function DataProviderItemPage() {
         {
             name: PROVIDER_ITEM_FIELDS.CLOUD_DATA_PROVIDER_ID.key,
             label: PROVIDER_ITEM_FIELDS.CLOUD_DATA_PROVIDER_ID.label,
-            type: 'select',
+            ...PROVIDER_ITEM_FIELDS.CLOUD_DATA_PROVIDER_ID.form,
             options: cloudDataProviderOptions,
         },
         {
-            name: 'autoProcessScraping',
-            label: 'Tự động cào dữ liệu',
-            type: 'switch',
-            description: 'Tự động lên lịch cào dữ liệu định kỳ từ nhà cung cấp',
+            name: PROVIDER_ITEM_FIELDS.AUTO_PROCESS_SCRAPING.key,
+            label: PROVIDER_ITEM_FIELDS.AUTO_PROCESS_SCRAPING.label,
+            ...PROVIDER_ITEM_FIELDS.AUTO_PROCESS_SCRAPING.form,
         },
         {
-            name: 'checkDuplicateData',
-            label: 'Kiểm tra dữ liệu trùng lặp',
-            type: 'switch',
-            description: 'Kiểm tra và loại bỏ dữ liệu trùng lặp trước khi lưu',
+            name: PROVIDER_ITEM_FIELDS.CHECK_DUPLICATE_DATA.key,
+            label: PROVIDER_ITEM_FIELDS.CHECK_DUPLICATE_DATA.label,
+            ...PROVIDER_ITEM_FIELDS.CHECK_DUPLICATE_DATA.form,
         },
         {
-            name: 'isSavedToCloudData',
-            label: 'Lưu vào kho dữ liệu',
-            type: 'switch',
-            description: 'Tự động đồng bộ dữ liệu đã cào vào kho dữ liệu cloud',
+            name: PROVIDER_ITEM_FIELDS.IS_SAVED_TO_CLOUD_DATA.key,
+            label: PROVIDER_ITEM_FIELDS.IS_SAVED_TO_CLOUD_DATA.label,
+            ...PROVIDER_ITEM_FIELDS.IS_SAVED_TO_CLOUD_DATA.form,
         },
     ];
 
     return (
-        <ListContainer<ProviderItemRecord, ProviderItemFormValues>
+        <ListContainer<ProviderItemRecord, IDataProviderItemFormValues>
             filters={filters}
             actions={actions}
             table={{

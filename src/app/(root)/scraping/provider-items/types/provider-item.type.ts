@@ -28,8 +28,6 @@ export interface IDataProviderItemFormValues {
     isSavedToCloudData?: boolean;
 }
 
-export type ProviderItemFormValues = IDataProviderItemFormValues;
-
 export type ProviderItemRecord = IDataProviderItem & {
     autoProcessScraping?: boolean;
     checkDuplicateData?: boolean;

@@ -52,6 +52,7 @@ export interface IFieldFormConfig {
     colSpan?: number;
     type?: FormFieldType;
     placeholder?: string;
+    description?: ReactNode;
     rulesConfig?: FormRuleConfig[];
 }
 

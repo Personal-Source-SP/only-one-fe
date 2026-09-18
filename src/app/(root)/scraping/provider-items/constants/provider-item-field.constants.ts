@@ -89,6 +89,22 @@ export const PROVIDER_ITEM_FIELDS = {
             align: 'center',
         },
     },
+    AUTO_PROCESS_SCRAPING: {
+        key: 'autoProcessScraping',
+        label: 'Tự động cào dữ liệu',
+        form: {
+            type: 'switch',
+            description: 'Tự động lên lịch cào dữ liệu định kỳ từ nhà cung cấp',
+        },
+    },
+    CHECK_DUPLICATE_DATA: {
+        key: 'checkDuplicateData',
+        label: 'Kiểm tra dữ liệu trùng lặp',
+        form: {
+            type: 'switch',
+            description: 'Kiểm tra và loại bỏ dữ liệu trùng lặp trước khi lưu',
+        },
+    },
     IS_SAVED_TO_CLOUD_DATA: {
         key: 'isSavedToCloudData',
         label: 'Lưu vào kho dữ liệu',
@@ -96,6 +112,10 @@ export const PROVIDER_ITEM_FIELDS = {
             title: 'Lưu Cloud',
             width: 120,
             align: 'center',
+        },
+        form: {
+            type: 'switch',
+            description: 'Tự động đồng bộ dữ liệu đã cào vào kho dữ liệu cloud',
         },
     },
     CREATED_AT: {
