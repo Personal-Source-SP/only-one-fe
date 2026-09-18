@@ -1,23 +1,16 @@
 'use client';
 
-import { PlusOutlined } from '@ant-design/icons';
+import { ListContainer, StatusTag, type ICardAction, type IFilterField } from '@/components/common';
 import { ColumnsType, CustomButton } from '@/components/custom-antd';
-import {
-    FilterPanel,
-    ListTable,
-    ListContainer,
-    StatusTag,
-    type ICardAction,
-    type IFilterField,
-} from '@/components/common';
-import { formatDate } from '@/libs';
 import { RESOURCE } from '@/config';
-
-import { useSimulationItemsPage } from './hooks';
+import { formatDate } from '@/libs';
+import { PlusOutlined } from '@ant-design/icons';
 import { SimulationItemFormModal } from './components';
+import { SIMULATION_ITEM_FIELDS } from './constants';
+import { useSimulationItemsPage } from './hooks';
 import type { SimulationItemRecord } from './types';
 
-const SimulationItemsPage = () => {
+export default function SimulationItemsPage() {
     const {
         loading,
         tableProps,
@@ -35,28 +28,27 @@ const SimulationItemsPage = () => {
             dataIndex: 'index',
             width: 60,
             align: 'center',
-            render: (_: any, __: any, index: number) => index + 1,
+            render: (_: unknown, __: unknown, index: number) => index + 1,
         },
         {
-            title: 'Trạng thái',
-            dataIndex: 'status',
-            key: 'status',
-            width: 130,
-            align: 'center',
+            dataIndex: SIMULATION_ITEM_FIELDS.STATUS.key,
+            key: SIMULATION_ITEM_FIELDS.STATUS.key,
+            ...SIMULATION_ITEM_FIELDS.STATUS.table,
             render: (status: string) => <StatusTag status={status} />,
         },
         {
-            title: 'Hết hạn',
-            dataIndex: 'expiresAt',
-            key: 'expiresAt',
-            width: 200,
-            sorter: true,
+            dataIndex: SIMULATION_ITEM_FIELDS.EXPIRES_AT.key,
+            key: SIMULATION_ITEM_FIELDS.EXPIRES_AT.key,
+            ...SIMULATION_ITEM_FIELDS.EXPIRES_AT.table,
             render: (expiresAt: Date) => formatDate(expiresAt),
         },
     ];
 
     const actions: ICardAction[] = [
         {
+            label: 'Thêm mô phỏng',
+            icon: <PlusOutlined />,
+            permissionAction: 'create',
             component: (
                 <CustomButton
                     type="primary"
@@ -73,6 +65,7 @@ const SimulationItemsPage = () => {
         {
             name: 'search',
             type: 'input',
+            isPrimary: true,
             placeholder: 'Tìm kiếm mô phỏng...',
             onChange: (value) => debouncedSearch(value?.toString() ?? ''),
         },
@@ -82,17 +75,16 @@ const SimulationItemsPage = () => {
         <>
             <ListContainer
                 actions={actions}
-                isLoading={tableQuery.isLoading}
-                filters={<FilterPanel fields={filters} />}
-            >
-                <ListTable<SimulationItemRecord>
-                    columns={columns}
-                    tableProps={tableProps}
-                    tableQuery={tableQuery}
-                    deleteResource={RESOURCE.SIMULATION_ITEMS}
-                    onEdit={(record) => editModalForm.show(record.id)}
-                />
-            </ListContainer>
+                isLoading={loading || tableQuery.isLoading}
+                filters={filters}
+                table={{
+                    columns,
+                    tableProps,
+                    tableQuery,
+                    deleteResource: RESOURCE.SIMULATION_ITEMS,
+                    onEdit: (record) => editModalForm.show(record.id),
+                }}
+            />
 
             <SimulationItemFormModal
                 modalForm={createModalForm}
@@ -105,6 +97,4 @@ const SimulationItemsPage = () => {
             />
         </>
     );
-};
-
-export default SimulationItemsPage;
+}

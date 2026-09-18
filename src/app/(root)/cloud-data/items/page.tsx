@@ -1,27 +1,35 @@
 'use client';
 
-import Link from 'next/link';
-import { PlusOutlined } from '@ant-design/icons';
+import { ListContainer, StatusTag, type ICardAction, type IFilterField } from '@/components/common';
 import { ColumnsType, CustomButton, CustomFlex, CustomTooltip } from '@/components/custom-antd';
-import {
-    FilterPanel,
-    ListTable,
-    ListContainer,
-    StatusTag,
-    type ICardAction,
-    type IFilterField,
-} from '@/components/common';
+import { API_ENDPOINT, RESOURCE } from '@/config';
 import { MimeType } from '@/enums';
+import { useCustomModalForm, useCustomTable, useSelectCloudDataProvider } from '@/hooks';
 import { formatDate, formatFileSize } from '@/libs';
-import { RESOURCE } from '@/config';
-
-import { useCloudDataItemPage } from './hooks';
+import { PlusOutlined } from '@ant-design/icons';
+import Link from 'next/link';
 import { CloudItemFormModal } from './components';
-import type { CloudItemRecord } from './types';
+import { CLOUD_DATA_ITEM_FIELDS } from './constants';
+import type { CloudItemFormValues, CloudItemRecord } from './types';
 
-const CloudDataItem = () => {
-    const { tableProps, tableQuery, debouncedSearch, createModalForm, cloudDataProviderOptions } =
-        useCloudDataItemPage();
+export default function CloudDataItemPage() {
+    const { options: cloudDataProviderOptions } = useSelectCloudDataProvider();
+
+    const { tableProps, tableQuery, debouncedSearch } = useCustomTable<CloudItemRecord>({
+        resource: API_ENDPOINT.CLOUD_DATA_ITEMS.BASE,
+    });
+
+    const createModalForm = useCustomModalForm<
+        CloudItemRecord,
+        CloudItemFormValues,
+        CloudItemRecord
+    >({
+        action: 'create',
+        resource: API_ENDPOINT.CLOUD_DATA_ITEMS.BASE,
+        onMutationSuccess: async () => {
+            await tableQuery.refetch();
+        },
+    });
 
     const columns: ColumnsType<CloudItemRecord> = [
         {
@@ -30,14 +38,12 @@ const CloudDataItem = () => {
             dataIndex: 'index',
             width: 60,
             align: 'center',
-            render: (_: any, __: any, index: number) => index + 1,
+            render: (_: unknown, __: unknown, index: number) => index + 1,
         },
         {
-            title: 'Tên file',
-            dataIndex: 'fileName',
-            key: 'fileName',
-            width: 200,
-            ellipsis: true,
+            dataIndex: CLOUD_DATA_ITEM_FIELDS.FILE_NAME.key,
+            key: CLOUD_DATA_ITEM_FIELDS.FILE_NAME.key,
+            ...CLOUD_DATA_ITEM_FIELDS.FILE_NAME.table,
             render: (fileName: string) => (
                 <CustomTooltip title={fileName}>
                     <span
@@ -50,11 +56,9 @@ const CloudDataItem = () => {
             ),
         },
         {
-            title: 'Đường dẫn',
-            dataIndex: 'pathUrl',
-            key: 'pathUrl',
-            width: 250,
-            ellipsis: true,
+            dataIndex: CLOUD_DATA_ITEM_FIELDS.PATH_URL.key,
+            key: CLOUD_DATA_ITEM_FIELDS.PATH_URL.key,
+            ...CLOUD_DATA_ITEM_FIELDS.PATH_URL.table,
             render: (pathUrl: string, record: CloudItemRecord) => {
                 if (record.mimeType?.startsWith(MimeType.IMAGE)) {
                     return (
@@ -81,41 +85,36 @@ const CloudDataItem = () => {
             },
         },
         {
-            title: 'Trạng thái',
-            dataIndex: 'isActive',
-            key: 'isActive',
-            width: 150,
-            align: 'center',
+            dataIndex: CLOUD_DATA_ITEM_FIELDS.IS_ACTIVE.key,
+            key: CLOUD_DATA_ITEM_FIELDS.IS_ACTIVE.key,
+            ...CLOUD_DATA_ITEM_FIELDS.IS_ACTIVE.table,
             render: (isActive: boolean) => <StatusTag status={isActive ? 'active' : 'inactive'} />,
         },
         {
-            title: 'Loại file',
-            dataIndex: 'mimeType',
-            key: 'mimeType',
-            width: 150,
-            ellipsis: true,
+            dataIndex: CLOUD_DATA_ITEM_FIELDS.MIME_TYPE.key,
+            key: CLOUD_DATA_ITEM_FIELDS.MIME_TYPE.key,
+            ...CLOUD_DATA_ITEM_FIELDS.MIME_TYPE.table,
             render: (mimeType: string) => <StatusTag status={mimeType} />,
         },
         {
-            title: 'Dung lượng',
-            dataIndex: 'fileSize',
-            key: 'fileSize',
-            width: 150,
-            align: 'center',
+            dataIndex: CLOUD_DATA_ITEM_FIELDS.FILE_SIZE.key,
+            key: CLOUD_DATA_ITEM_FIELDS.FILE_SIZE.key,
+            ...CLOUD_DATA_ITEM_FIELDS.FILE_SIZE.table,
             render: (fileSize: number) => (fileSize ? formatFileSize(fileSize) : '-'),
         },
         {
-            title: 'Ngày tạo',
-            dataIndex: 'createdAt',
-            key: 'createdAt',
-            width: 200,
-            sorter: true,
+            dataIndex: CLOUD_DATA_ITEM_FIELDS.CREATED_AT.key,
+            key: CLOUD_DATA_ITEM_FIELDS.CREATED_AT.key,
+            ...CLOUD_DATA_ITEM_FIELDS.CREATED_AT.table,
             render: (createdAt: Date) => formatDate(createdAt),
         },
     ];
 
     const actions: ICardAction[] = [
         {
+            label: 'Thêm dữ liệu',
+            icon: <PlusOutlined />,
+            permissionAction: 'create',
             component: (
                 <CustomButton
                     type="primary"
@@ -132,6 +131,7 @@ const CloudDataItem = () => {
         {
             name: 'search',
             type: 'input',
+            isPrimary: true,
             placeholder: 'Tìm kiếm dữ liệu đám mây...',
             onChange: (value) => debouncedSearch(value?.toString() ?? ''),
         },
@@ -139,18 +139,16 @@ const CloudDataItem = () => {
 
     return (
         <>
-            <ListContainer
+            <ListContainer<CloudItemRecord, CloudItemFormValues>
+                filters={filters}
                 actions={actions}
-                isLoading={tableQuery.isLoading}
-                filters={<FilterPanel fields={filters} />}
-            >
-                <ListTable<CloudItemRecord>
-                    columns={columns}
-                    tableProps={tableProps}
-                    tableQuery={tableQuery}
-                    deleteResource={RESOURCE.CLOUD_DATA_ITEMS}
-                />
-            </ListContainer>
+                table={{
+                    columns,
+                    tableProps,
+                    tableQuery,
+                    deleteResource: RESOURCE.CLOUD_DATA_ITEMS,
+                }}
+            />
 
             <CloudItemFormModal
                 modalForm={createModalForm}
@@ -158,6 +156,4 @@ const CloudDataItem = () => {
             />
         </>
     );
-};
-
-export default CloudDataItem;
+}

@@ -1,21 +1,16 @@
 'use client';
 
+import { ListContainer, StatusTag, type IFilterField } from '@/components/common';
 import { ColumnsType } from '@/components/custom-antd';
-import {
-    FilterPanel,
-    ListTable,
-    ListContainer,
-    StatusTag,
-    type IFilterField,
-} from '@/components/common';
 import { formatDate } from '@/libs';
-
+import { useState } from 'react';
+import { ViewJobEvent } from './components';
+import { JOB_EVENT_FIELDS } from './constants';
 import { ScheduleJobEventType } from './enums';
 import { useScheduleJobEventsPage } from './hooks';
-import { ViewJobEvent } from './components';
 import type { JobEventRecord } from './types';
 
-const JobEvents = () => {
+export default function ScheduleJobEventsPage() {
     const { tableProps, tableQuery, debouncedSearch, selectedJobEvent, setSelectedJobEvent } =
         useScheduleJobEventsPage();
 
@@ -26,46 +21,36 @@ const JobEvents = () => {
             dataIndex: 'index',
             width: 60,
             align: 'center',
-            render: (_: any, __: any, index: number) => index + 1,
+            render: (_: unknown, __: unknown, index: number) => index + 1,
         },
         {
-            title: 'Loại sự kiện',
-            dataIndex: 'eventType',
-            key: 'eventType',
-            width: 150,
-            ellipsis: true,
+            dataIndex: JOB_EVENT_FIELDS.EVENT_TYPE.key,
+            key: JOB_EVENT_FIELDS.EVENT_TYPE.key,
+            ...JOB_EVENT_FIELDS.EVENT_TYPE.table,
             render: (type: ScheduleJobEventType) => <StatusTag status={type} />,
         },
         {
-            title: 'Nội dung sự kiện',
-            dataIndex: 'eventMessage',
-            key: 'eventMessage',
-            width: 150,
-            ellipsis: true,
+            dataIndex: JOB_EVENT_FIELDS.EVENT_MESSAGE.key,
+            key: JOB_EVENT_FIELDS.EVENT_MESSAGE.key,
+            ...JOB_EVENT_FIELDS.EVENT_MESSAGE.table,
             render: (eventMessage: string) => eventMessage ?? '---',
         },
         {
-            title: 'Bắt đầu',
-            dataIndex: 'startedAt',
-            key: 'startedAt',
-            width: 200,
-            sorter: true,
+            dataIndex: JOB_EVENT_FIELDS.STARTED_AT.key,
+            key: JOB_EVENT_FIELDS.STARTED_AT.key,
+            ...JOB_EVENT_FIELDS.STARTED_AT.table,
             render: (startedAt: Date) => formatDate(startedAt),
         },
         {
-            title: 'Kết thúc',
-            dataIndex: 'finishedAt',
-            key: 'finishedAt',
-            width: 200,
-            sorter: true,
+            dataIndex: JOB_EVENT_FIELDS.FINISHED_AT.key,
+            key: JOB_EVENT_FIELDS.FINISHED_AT.key,
+            ...JOB_EVENT_FIELDS.FINISHED_AT.table,
             render: (finishedAt: Date) => formatDate(finishedAt),
         },
         {
-            title: 'Số lần thử',
-            dataIndex: 'retryCount',
-            key: 'retryCount',
-            width: 100,
-            align: 'center',
+            dataIndex: JOB_EVENT_FIELDS.RETRY_COUNT.key,
+            key: JOB_EVENT_FIELDS.RETRY_COUNT.key,
+            ...JOB_EVENT_FIELDS.RETRY_COUNT.table,
             render: (retryCount: number) => retryCount ?? 0,
         },
     ];
@@ -74,6 +59,7 @@ const JobEvents = () => {
         {
             name: 'search',
             type: 'input',
+            isPrimary: true,
             placeholder: 'Tìm kiếm sự kiện lịch biểu...',
             onChange: (value) => debouncedSearch(value?.toString() ?? ''),
         },
@@ -83,15 +69,14 @@ const JobEvents = () => {
         <>
             <ListContainer
                 isLoading={tableQuery.isLoading}
-                filters={<FilterPanel fields={filters} />}
-            >
-                <ListTable<JobEventRecord>
-                    columns={columns}
-                    tableProps={tableProps}
-                    tableQuery={tableQuery}
-                    onView={(record) => setSelectedJobEvent(record)}
-                />
-            </ListContainer>
+                filters={filters}
+                table={{
+                    columns,
+                    tableProps,
+                    tableQuery,
+                    onView: (record) => setSelectedJobEvent(record),
+                }}
+            />
 
             {!!selectedJobEvent && (
                 <ViewJobEvent
@@ -102,6 +87,4 @@ const JobEvents = () => {
             )}
         </>
     );
-};
-
-export default JobEvents;
+}

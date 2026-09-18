@@ -1,182 +1,252 @@
-# Page Feature Architecture
+# Feature Page Architecture (App Router & ListContainer)
 
 ## Standard Feature Page Directory Structure
 
-Each Feature Page (e.g., `src/pages/<feature>/`) MUST adhere to a self-encapsulated modular directory structure:
+Each Feature Page in Next.js App Router (e.g., `src/app/(root)/<domain>/<feature>/`) MUST adhere to a self-encapsulated modular directory structure:
 
 ```text
-src/pages/<feature>/
-├── index.tsx              # Presentation Orchestrator (ListWrapper, ListTable, FilterPanel, Drawers)
-├── components/            # Page-specific UI sub-components (FormDrawer, Modals, Details)
-│   └── index.ts           # Barrel export for all sub-components
-├── hooks/                 # Headless API & Business Hooks (Data fetching, table, drawer forms, mutations)
-│   └── index.ts           # Barrel export for all page hooks
-├── constants/             # Page constants modular directory (Columns, filters, form configs, table limits)
-│   ├── columns.constant.ts # Table columns configuration & custom cell rendering helpers
-│   ├── filter.constant.ts  # Default filter values & static select options
-│   ├── form.constant.ts    # Drawer/modal form initial values & validation rules
-│   └── index.ts            # Barrel export for all page constants
-├── enums/                 # Feature enums
-│   └── index.ts           # Barrel export
-├── types/                 # Interface & type definitions (Data models, FormValues, Params)
-│   └── index.ts           # Barrel export
-└── utils/                 # Pure helper functions (Converters, Formatters, Parsers)
-    └── index.ts           # Barrel export
+src/app/(root)/<domain>/<feature>/
+├── constants/
+│   ├── <feature>-field.constants.ts # Single Source of Truth for IFieldMetadata (keys, labels, table & form rules)
+│   └── index.ts                     # Barrel export for all page constants
+├── types/
+│   ├── <feature>.type.ts            # Canonical Entity interface extending IAbstract, FormValues
+│   └── index.ts                     # Barrel export for all page types
+├── enums/
+│   └── index.ts                     # Barrel export for domain-specific enums
+├── components/                      # Optional custom modals, tabs, or domain-specific widgets
+│   └── index.ts                     # Barrel export for sub-components
+├── hooks/                           # Optional complex domain hooks (if page logic > 200 LOC)
+│   └── index.ts                     # Barrel export for page hooks
+└── page.tsx                         # Declarative Presentation Orchestrator (< 200 LOC) using ListContainer
 ```
 
 ---
 
-## Headless API Hook & UI Separation Architecture
+## Single Source of Truth: `IFieldMetadata` & `ListContainer` Architecture
 
-To keep the Main Page (`index.tsx`) clean, declarative, and well below the **200 LOC ceiling**, encapsulate **all API fetching, mutations, and Refine hook wiring inside dedicated page hooks** (`src/pages/<feature>/hooks/`):
+To keep the Feature Page (`page.tsx`) declarative, robust, and well below the **200 LOC ceiling**, follow this standard:
 
-### 1. Separation of Responsibilities
-- **Data & Logic Layer (`src/pages/<feature>/hooks/`)**:
-  - Encapsulates `useCustomTable`, `useCustomDrawerForm`, `useCustomSelect`, and ad-hoc mutations.
-  - Handles `initialValuesMapper`, `onFinish` payload transformation, `onMutationSuccess` table refetching, and search debouncing.
-  - Exposes clean, structured data objects and action callbacks to the UI.
-- **Presentation Layer (`src/pages/<feature>/index.tsx` & `components/`)**:
-  - Consumes the headless page hook(s).
-  - Prepares table columns via `useMemo`, filter controls, and action triggers.
-  - Renders `<ListWrapper>`, `<ListTable>`, and Form Drawers without embedding raw API logic.
+### 1. Field Metadata Definition (`constants/<feature>-field.constants.ts`)
 
-### 2. Code Example: Headless Page Hook (`hooks/use-feature-page.ts`)
+Define all column labels, table layout props, and form input configurations in a centralized object:
 
-```tsx
-import { API_ENDPOINT } from "@/config";
-import { useCustomDrawerForm, useCustomSelect, useCustomTable } from "@/hooks";
-import type { Feature, FeatureFormValues, CategoryOption } from "../types";
+```typescript
+import type { IFieldMetadata } from '@/interfaces';
+import { FormRuleType } from '@/utilities';
 
-export const useFeaturePage = () => {
-  // 1. Table Orchestration
-  const {
-    tableProps,
-    tableQuery,
-    debouncedSearch,
-    setFilters,
-  } = useCustomTable<Feature>({
-    resource: API_ENDPOINT.FEATURES.BASE,
-  });
-
-  // 2. Form Drawer Orchestration (Create & Edit)
-  const createDrawerForm = useCustomDrawerForm<Feature, FeatureFormValues, Feature>({
-    action: "create",
-    resource: API_ENDPOINT.FEATURES.BASE,
-    onMutationSuccess: async () => {
-      await tableQuery.refetch();
+export const DATA_PROVIDER_FIELDS = {
+    NAME: {
+        key: 'name',
+        label: 'Tên nhà cung cấp',
+        table: {
+            title: 'Tên',
+            width: '25%',
+            sorter: true,
+            ellipsis: true,
+        },
+        form: {
+            type: 'input',
+            placeholder: 'Nhập tên nhà cung cấp',
+            rulesConfig: [
+                {
+                    type: FormRuleType.Required,
+                    message: 'Vui lòng nhập tên nhà cung cấp',
+                },
+                {
+                    type: FormRuleType.Max,
+                    max: 255,
+                    message: 'Tên không được vượt quá 255 ký tự',
+                },
+            ],
+        },
     },
-  });
-
-  const editDrawerForm = useCustomDrawerForm<Feature, FeatureFormValues, Feature>({
-    action: "edit",
-    resource: API_ENDPOINT.FEATURES.BASE,
-    onMutationSuccess: async () => {
-      await tableQuery.refetch();
+    IDENTIFIER: {
+        key: 'identifier',
+        label: 'Mã nhà cung cấp',
+        table: {
+            title: 'Mã',
+            width: '15%',
+            sorter: true,
+            ellipsis: true,
+        },
+        form: {
+            type: 'input',
+            placeholder: 'Nhập mã nhà cung cấp',
+            rulesConfig: [
+                {
+                    type: FormRuleType.Required,
+                    message: 'Vui lòng nhập mã nhà cung cấp',
+                },
+                {
+                    type: FormRuleType.Code,
+                    message: 'Mã chỉ được chứa chữ cái thường, số và gạch ngang',
+                },
+            ],
+        },
     },
-  });
-
-  // 3. Dropdown Options Loader
-  const { options: categoryOptions } = useCustomSelect<CategoryOption>({
-    resource: API_ENDPOINT.CATEGORIES.BASE,
-    optionLabel: "name",
-    optionValue: "id",
-  });
-
-  return {
-    table: {
-      tableProps,
-      tableQuery,
-      debouncedSearch,
-      setFilters,
+    CREATED_AT: {
+        key: 'createdAt',
+        label: 'Ngày tạo',
+        table: {
+            title: 'Ngày tạo',
+            width: '15%',
+            sorter: true,
+        },
     },
-    drawers: {
-      createDrawerForm,
-      editDrawerForm,
-    },
-    options: {
-      categoryOptions,
-    },
-  };
-};
+} as const satisfies Record<string, IFieldMetadata>;
 ```
 
-### 3. Code Example: Main Page Orchestrator (`index.tsx`)
+### 2. Main Page Orchestrator (`page.tsx`)
+
+A standard CRUD page consumes `ListContainer` (`@/components/common`) along with `useCustomTable` and `useCustomModalForm` (or `useCustomDrawerForm`):
 
 ```tsx
-import { useMemo } from "react";
-import { useTranslation } from "next-i18next";
-import { ListTable, ListWrapper } from "@/components";
-import { PermissionGroups } from "@/enums";
-import { FeatureFormDrawer } from "./components";
-import { useFeaturePage } from "./hooks";
-import type { ColumnsType } from "antd/es/table";
-import type { Feature } from "./types";
+'use client';
 
-const FeaturePage = () => {
-  const { t } = useTranslation();
-  const { table, drawers, options } = useFeaturePage();
+import {
+    ListContainer,
+    type ICardAction,
+    type IFilterField,
+    type IFormField,
+} from '@/components/common';
+import { CustomButton, type ColumnsType } from '@/components/custom-antd';
+import { API_ENDPOINT, RESOURCE } from '@/config';
+import { useCustomModalForm, useCustomTable, type FormMode } from '@/hooks';
+import { formatDate } from '@/libs';
+import { PlusOutlined } from '@ant-design/icons';
+import { DATA_PROVIDER_FIELDS } from './constants';
+import type { IDataProvider, IDataProviderFormValues } from './types';
 
-  const columns: ColumnsType<Feature> = useMemo(() => [
-    {
-      title: t("pages.features.columns.name"),
-      dataIndex: "name",
-      key: "name",
-    },
-  ], [t]);
+export default function DataProviderPage() {
+    const { tableProps, tableQuery, debouncedSearch } = useCustomTable<IDataProvider>({
+        resource: API_ENDPOINT.DATA_PROVIDERS.BASE,
+    });
 
-  const actions = useMemo(() => (
-    <Button type="primary" onClick={() => drawers.createDrawerForm.show()}>
-      {t("pages.features.actions.create")}
-    </Button>
-  ), [drawers.createDrawerForm, t]);
+    const createModalForm = useCustomModalForm<IDataProvider, IDataProviderFormValues, IDataProvider>({
+        action: 'create',
+        resource: API_ENDPOINT.DATA_PROVIDERS.BASE,
+        onMutationSuccess: async () => {
+            await tableQuery.refetch();
+        },
+    });
 
-  return (
-    <>
-      <ListWrapper
-        actions={actions}
-        isLoading={table.tableQuery.isLoading}
-        permissionGroup={PermissionGroups.FEATURE}
-      >
-        <ListTable
-          columns={columns}
-          tableProps={table.tableProps}
-          tableQuery={table.tableQuery}
-          onEdit={(record) => drawers.editDrawerForm.show(record.id)}
+    const editModalForm = useCustomModalForm<IDataProvider, IDataProviderFormValues, IDataProvider>({
+        action: 'edit',
+        resource: API_ENDPOINT.DATA_PROVIDERS.BASE,
+        onMutationSuccess: async () => {
+            await tableQuery.refetch();
+        },
+        initialValuesMapper: (record) => ({
+            name: record.name,
+            identifier: record.identifier,
+        }),
+    });
+
+    const columns: ColumnsType<IDataProvider> = [
+        {
+            dataIndex: DATA_PROVIDER_FIELDS.NAME.key,
+            key: DATA_PROVIDER_FIELDS.NAME.key,
+            ...DATA_PROVIDER_FIELDS.NAME.table,
+        },
+        {
+            dataIndex: DATA_PROVIDER_FIELDS.IDENTIFIER.key,
+            key: DATA_PROVIDER_FIELDS.IDENTIFIER.key,
+            ...DATA_PROVIDER_FIELDS.IDENTIFIER.table,
+        },
+        {
+            dataIndex: DATA_PROVIDER_FIELDS.CREATED_AT.key,
+            key: DATA_PROVIDER_FIELDS.CREATED_AT.key,
+            ...DATA_PROVIDER_FIELDS.CREATED_AT.table,
+            render: (createdAt: Date) => formatDate(createdAt),
+        },
+    ];
+
+    const actions: ICardAction[] = [
+        {
+            label: 'Thêm nhà cung cấp',
+            icon: <PlusOutlined />,
+            permissionAction: 'create',
+            component: (
+                <CustomButton
+                    type="primary"
+                    icon={<PlusOutlined />}
+                    onClick={() => createModalForm.show()}
+                >
+                    Thêm nhà cung cấp
+                </CustomButton>
+            ),
+        },
+    ];
+
+    const filters: IFilterField[] = [
+        {
+            name: 'search',
+            type: 'input',
+            isPrimary: true,
+            placeholder: `Tìm kiếm theo ${DATA_PROVIDER_FIELDS.NAME.label.toLowerCase()}`,
+            onChange: (value) => debouncedSearch(value?.toString() ?? ''),
+        },
+    ];
+
+    const formFields: IFormField<IDataProviderFormValues>[] = [
+        {
+            name: DATA_PROVIDER_FIELDS.NAME.key,
+            label: DATA_PROVIDER_FIELDS.NAME.label,
+            ...DATA_PROVIDER_FIELDS.NAME.form,
+        },
+        {
+            name: DATA_PROVIDER_FIELDS.IDENTIFIER.key,
+            label: DATA_PROVIDER_FIELDS.IDENTIFIER.label,
+            disabled: (mode: FormMode) => mode === 'edit',
+            ...DATA_PROVIDER_FIELDS.IDENTIFIER.form,
+        },
+    ];
+
+    return (
+        <ListContainer<IDataProvider, IDataProviderFormValues>
+            filters={filters}
+            actions={actions}
+            table={{
+                columns,
+                tableProps,
+                tableQuery,
+                deleteResource: RESOURCE.DATA_PROVIDERS,
+                onEdit: (record) => editModalForm.show(record.id),
+            }}
+            formModal={[
+                {
+                    modalForm: createModalForm,
+                    title: 'Thêm mới nhà cung cấp',
+                    sections: [{ type: 'plain', fields: formFields }],
+                    createInitialValues: { name: '', identifier: '' },
+                },
+                {
+                    modalForm: editModalForm,
+                    title: 'Chỉnh sửa nhà cung cấp',
+                    sections: [{ type: 'plain', fields: formFields }],
+                },
+            ]}
         />
-      </ListWrapper>
-
-      <FeatureFormDrawer
-        drawerForm={drawers.createDrawerForm}
-        categoryOptions={options.categoryOptions}
-      />
-      <FeatureFormDrawer
-        drawerForm={drawers.editDrawerForm}
-        categoryOptions={options.categoryOptions}
-      />
-    </>
-  );
-};
-
-export default FeaturePage;
+    );
+}
 ```
 
 ---
 
-## Conventions in `index.tsx` (Main Page Component)
+## Conventions in `page.tsx`
 
 ### 1. Import Statement Ordering
 Group imports into 3 distinct sections separated by a single blank line:
-1. Third-party dependencies (React, Ant Design, Icons, i18next).
-2. Shared project components, hooks, and utilities (`@/components`, `@/hooks`, `@/utilities`, `@/enums`, `@/config`).
-3. Local page files (`./components`, `./hooks`, `./constants`, `./enums`, `./types`, `./utils`).
+1. Third-party dependencies (React, Next.js, Ant Design, Icons).
+2. Shared project components, hooks, configs, and utilities (`@/components`, `@/hooks`, `@/utilities`, `@/enums`, `@/config`, `@/libs`).
+3. Local feature module files (`./components`, `./hooks`, `./constants`, `./enums`, `./types`, `./utils`).
 
 ### 2. Component Declaration Order & Formatting
 Declarations inside `.tsx` components MUST follow the role-ordered pipeline:
 
-$$\text{Constants} \rightarrow \text{State \& Hooks} \rightarrow \text{Memos (useMemo)} \rightarrow \text{Effects (useEffect)} \rightarrow \text{Callbacks (useCallback)} \rightarrow \text{JSX Return}$$
+$$\text{Constants} \rightarrow \text{State \& Hooks} \rightarrow \text{Columns \& Actions} \rightarrow \text{Filters \& Form Fields} \rightarrow \text{JSX Return}$$
 
-- **Line Length Sorting**: Within each role group, sort variable and hook declaration lines **from shortest to longest** (character count).
-- **Group Separation**: Separate distinct role groups by **exactly one blank line**.
-- **File Length Ceiling**: Keep each component file within **200 lines**. Move API logic and data fetching into `hooks/` and UI pieces into `components/`.
+- **File Length Ceiling**: Keep each page file strictly within **200 lines**.
 - **Empty Array Check**: Standardize empty array checks using `!list?.length` across the project.
-- **Debug-Friendly Return**: ALWAYS assign configurations (`actions`, `filters`, `columns`) and computed JSX elements to descriptive variables before returning.
+- **Debug-Friendly Return**: ALWAYS assign configurations (`actions`, `filters`, `columns`, `formFields`) to descriptive variables before passing to `<ListContainer />`.

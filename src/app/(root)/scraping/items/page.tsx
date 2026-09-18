@@ -1,66 +1,75 @@
 'use client';
 
-import { PlusOutlined } from '@ant-design/icons';
-import { ColumnType, ColumnsType, CustomButton, CustomTag } from '@/components/custom-antd';
 import {
-    FilterPanel,
-    ListTable,
     ListContainer,
     StatusTag,
     type ICardAction,
     type IFilterField,
+    type IFormField,
 } from '@/components/common';
+import { ColumnType, ColumnsType, CustomButton, CustomTag } from '@/components/custom-antd';
+import { API_ENDPOINT, RESOURCE } from '@/config';
+import { useCustomModalForm, useCustomTable, type FormMode } from '@/hooks';
 import { formatDate } from '@/libs';
-import { RESOURCE } from '@/config';
-
+import { PlusOutlined } from '@ant-design/icons';
+import { useState } from 'react';
+import { ImportData, ProcessScrapeData } from './components';
+import { ITEM_FIELDS } from './constants';
 import { DataImportType, ProductMappingStatus } from './enums';
-import { useItemPage } from './hooks';
-import { ImportData, ItemFormModal, ProcessScrapeData } from './components';
-import type { ItemRecord } from './types';
+import type { IItem, IItemFormValues, ItemRecord } from './types';
 
-const ItemPage = () => {
-    const {
-        tableProps,
-        tableQuery,
-        debouncedSearch,
-        createModalForm,
-        editModalForm,
-        openImportItemModal,
-        setOpenImportItemModal,
-        selectedItemIds,
-        openProcessScrapeDataModal,
-        setOpenProcessScrapeDataModal,
-    } = useItemPage();
+export default function ItemPage() {
+    const [openImportItemModal, setOpenImportItemModal] = useState(false);
+    const [selectedItemIds, setSelectedItemIds] = useState<string[]>([]);
+    const [openProcessScrapeDataModal, setOpenProcessScrapeDataModal] = useState(false);
+
+    const { tableProps, tableQuery, debouncedSearch } = useCustomTable<ItemRecord>({
+        resource: API_ENDPOINT.ITEMS.BASE,
+    });
+
+    const createModalForm = useCustomModalForm<ItemRecord, IItemFormValues, ItemRecord>({
+        action: 'create',
+        resource: API_ENDPOINT.ITEMS.BASE,
+        onMutationSuccess: async () => {
+            await tableQuery.refetch();
+        },
+    });
+
+    const editModalForm = useCustomModalForm<ItemRecord, IItemFormValues, ItemRecord>({
+        action: 'edit',
+        resource: API_ENDPOINT.ITEMS.BASE,
+        onMutationSuccess: async () => {
+            await tableQuery.refetch();
+        },
+        initialValuesMapper: (record) => ({
+            name: record.name,
+            code: record.code ?? '',
+            tags: Array.isArray(record.tags) ? record.tags.join(', ') : (record.tags ?? ''),
+        }),
+    });
 
     const columns: ColumnsType<ItemRecord> = [
         {
-            title: 'Tên thư mục',
-            dataIndex: 'name',
-            key: 'name',
-            ellipsis: true,
-            sorter: true,
-            width: '25%',
+            dataIndex: ITEM_FIELDS.NAME.key,
+            key: ITEM_FIELDS.NAME.key,
+            ...ITEM_FIELDS.NAME.table,
         },
         {
-            key: 'mappingStatus',
-            title: 'Trạng thái ánh xạ',
-            dataIndex: 'mappingStatus',
+            dataIndex: ITEM_FIELDS.MAPPING_STATUS.key,
+            key: ITEM_FIELDS.MAPPING_STATUS.key,
+            ...ITEM_FIELDS.MAPPING_STATUS.table,
             render: (mappingStatus: ProductMappingStatus) => <StatusTag status={mappingStatus} />,
-            width: '15%',
         },
         {
-            key: 'code',
-            title: 'Mã',
-            align: 'center',
-            dataIndex: 'code',
+            dataIndex: ITEM_FIELDS.CODE.key,
+            key: ITEM_FIELDS.CODE.key,
+            ...ITEM_FIELDS.CODE.table,
             render: (code: string) => <StatusTag status={code} />,
-            width: '15%',
         },
         {
-            key: 'tags',
-            title: 'Tags',
-            align: 'center',
-            dataIndex: 'tags',
+            dataIndex: ITEM_FIELDS.TAGS.key,
+            key: ITEM_FIELDS.TAGS.key,
+            ...ITEM_FIELDS.TAGS.table,
             render: (tags: string[]) =>
                 tags?.map((tag) => (
                     <span key={tag}>
@@ -69,15 +78,58 @@ const ItemPage = () => {
                         </CustomTag>
                     </span>
                 )),
-            width: '20%',
         },
         {
-            title: 'Ngày tạo',
-            dataIndex: 'createdAt',
-            key: 'createdAt',
-            sorter: true,
+            dataIndex: ITEM_FIELDS.CREATED_AT.key,
+            key: ITEM_FIELDS.CREATED_AT.key,
+            ...ITEM_FIELDS.CREATED_AT.table,
             render: (createdAt: Date) => formatDate(createdAt),
-            width: '25%',
+        },
+    ];
+
+    const actions: ICardAction[] = [
+        {
+            label: 'Thêm đối tượng',
+            icon: <PlusOutlined />,
+            permissionAction: 'create',
+            component: (
+                <CustomButton
+                    type="primary"
+                    icon={<PlusOutlined />}
+                    onClick={() => createModalForm.show()}
+                >
+                    Thêm đối tượng
+                </CustomButton>
+            ),
+        },
+    ];
+
+    const filters: IFilterField[] = [
+        {
+            name: 'search',
+            type: 'input',
+            isPrimary: true,
+            placeholder: `Tìm kiếm theo ${ITEM_FIELDS.NAME.label.toLowerCase()}...`,
+            onChange: (value) => debouncedSearch(value?.toString() ?? ''),
+        },
+    ];
+
+    const formFields: IFormField<IItemFormValues>[] = [
+        {
+            name: ITEM_FIELDS.NAME.key,
+            label: ITEM_FIELDS.NAME.label,
+            ...ITEM_FIELDS.NAME.form,
+        },
+        {
+            name: ITEM_FIELDS.CODE.key,
+            label: ITEM_FIELDS.CODE.label,
+            disabled: (mode: FormMode) => mode === 'edit',
+            ...ITEM_FIELDS.CODE.form,
+        },
+        {
+            name: ITEM_FIELDS.TAGS.key,
+            label: ITEM_FIELDS.TAGS.label,
+            ...ITEM_FIELDS.TAGS.form,
         },
     ];
 
@@ -107,69 +159,50 @@ const ItemPage = () => {
         },
     ];
 
-    const actions: ICardAction[] = [
-        {
-            component: (
-                <CustomButton
-                    type="primary"
-                    icon={<PlusOutlined />}
-                    onClick={() => createModalForm.show()}
-                >
-                    Thêm đối tượng
-                </CustomButton>
-            ),
-        },
-    ];
-
-    const filters: IFilterField[] = [
-        {
-            name: 'search',
-            type: 'input',
-            placeholder: 'Tìm kiếm đối tượng...',
-            onChange: (value) => debouncedSearch(value?.toString() ?? ''),
-        },
-    ];
-
     return (
-        <>
-            <ListContainer
-                actions={actions}
-                isLoading={tableQuery.isLoading}
-                filters={<FilterPanel fields={filters} />}
-            >
-                <ListTable<ItemRecord>
-                    columns={columns}
-                    tableProps={tableProps}
-                    tableQuery={tableQuery}
-                    deleteResource={RESOURCE.ITEMS}
-                    onEdit={(record) => editModalForm.show(record.id)}
-                />
-            </ListContainer>
-
-            <ItemFormModal modalForm={createModalForm} />
-            <ItemFormModal modalForm={editModalForm} />
-
-            {openImportItemModal && (
-                <ImportData
-                    key="import-item"
-                    open={openImportItemModal}
-                    dataType={DataImportType.ITEM}
-                    onSuccess={() => tableQuery.refetch()}
-                    onClose={() => setOpenImportItemModal(false)}
-                    columns={importDataColumns as unknown as ColumnType<Record<string, any>>[]}
-                />
-            )}
-
-            {openProcessScrapeDataModal && (
-                <ProcessScrapeData
-                    key="process-scrape-data"
-                    open={openProcessScrapeDataModal}
-                    selectedItemIds={selectedItemIds}
-                    onClose={() => setOpenProcessScrapeDataModal(false)}
-                />
-            )}
-        </>
+        <ListContainer<ItemRecord, IItemFormValues>
+            filters={filters}
+            actions={actions}
+            table={{
+                columns,
+                tableProps,
+                tableQuery,
+                deleteResource: RESOURCE.ITEMS,
+                onEdit: (record) => editModalForm.show(record.id),
+            }}
+            formModal={[
+                {
+                    modalForm: createModalForm,
+                    title: 'Thêm mới đối tượng',
+                    sections: [{ type: 'plain', fields: formFields }],
+                    createInitialValues: { name: '', code: '', tags: '' },
+                },
+                {
+                    modalForm: editModalForm,
+                    title: 'Chỉnh sửa đối tượng',
+                    sections: [{ type: 'plain', fields: formFields }],
+                },
+            ]}
+            customModals={[
+                openImportItemModal ? (
+                    <ImportData
+                        key="import-item"
+                        open={openImportItemModal}
+                        dataType={DataImportType.ITEM}
+                        onSuccess={() => tableQuery.refetch()}
+                        onClose={() => setOpenImportItemModal(false)}
+                        columns={importDataColumns as unknown as ColumnType<Record<string, any>>[]}
+                    />
+                ) : null,
+                openProcessScrapeDataModal ? (
+                    <ProcessScrapeData
+                        key="process-scrape-data"
+                        open={openProcessScrapeDataModal}
+                        selectedItemIds={selectedItemIds}
+                        onClose={() => setOpenProcessScrapeDataModal(false)}
+                    />
+                ) : null,
+            ]}
+        />
     );
-};
-
-export default ItemPage;
+}

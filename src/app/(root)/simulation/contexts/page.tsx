@@ -1,24 +1,17 @@
 'use client';
 
-import { PlusOutlined } from '@ant-design/icons';
+import { ListContainer, StatusTag, type ICardAction, type IFilterField } from '@/components/common';
 import { ColumnsType, CustomButton } from '@/components/custom-antd';
-import {
-    FilterPanel,
-    ListTable,
-    ListContainer,
-    StatusTag,
-    type ICardAction,
-    type IFilterField,
-} from '@/components/common';
-import { formatDate } from '@/libs';
 import { RESOURCE } from '@/config';
-
+import { formatDate } from '@/libs';
+import { PlusOutlined } from '@ant-design/icons';
+import { SimulationContextFormModal } from './components';
+import { SIMULATION_CONTEXT_FIELDS } from './constants';
 import { SimulationService } from './enums';
 import { useSimulationContextsPage } from './hooks';
-import { SimulationContextFormModal } from './components';
 import type { SimulationContextRecord } from './types';
 
-const SimulationContextsPage = () => {
+export default function SimulationContextsPage() {
     const { loading, tableProps, tableQuery, debouncedSearch, createModalForm, editModalForm } =
         useSimulationContextsPage();
 
@@ -29,49 +22,43 @@ const SimulationContextsPage = () => {
             dataIndex: 'index',
             width: 60,
             align: 'center',
-            render: (_: any, __: any, index: number) => index + 1,
+            render: (_: unknown, __: unknown, index: number) => index + 1,
         },
         {
-            title: 'Tên ngữ cảnh',
-            dataIndex: 'name',
-            key: 'name',
-            width: 200,
-            ellipsis: true,
+            dataIndex: SIMULATION_CONTEXT_FIELDS.NAME.key,
+            key: SIMULATION_CONTEXT_FIELDS.NAME.key,
+            ...SIMULATION_CONTEXT_FIELDS.NAME.table,
         },
         {
-            title: 'URL nguồn',
-            dataIndex: 'baseUrl',
-            key: 'baseUrl',
-            width: 220,
-            ellipsis: true,
+            dataIndex: SIMULATION_CONTEXT_FIELDS.BASE_URL.key,
+            key: SIMULATION_CONTEXT_FIELDS.BASE_URL.key,
+            ...SIMULATION_CONTEXT_FIELDS.BASE_URL.table,
         },
         {
-            title: 'Dịch vụ thực thi',
-            dataIndex: 'serviceExecution',
-            key: 'serviceExecution',
-            width: 180,
+            dataIndex: SIMULATION_CONTEXT_FIELDS.SERVICE_EXECUTION.key,
+            key: SIMULATION_CONTEXT_FIELDS.SERVICE_EXECUTION.key,
+            ...SIMULATION_CONTEXT_FIELDS.SERVICE_EXECUTION.table,
             render: (serviceExecution: SimulationService) => serviceExecution,
         },
         {
-            title: 'Trạng thái',
-            dataIndex: 'status',
-            key: 'status',
-            width: 130,
-            align: 'center',
+            dataIndex: SIMULATION_CONTEXT_FIELDS.STATUS.key,
+            key: SIMULATION_CONTEXT_FIELDS.STATUS.key,
+            ...SIMULATION_CONTEXT_FIELDS.STATUS.table,
             render: (status: string) => <StatusTag status={status} />,
         },
         {
-            title: 'Chạy gần nhất',
-            dataIndex: 'lastSuccessfulRunAt',
-            key: 'lastSuccessfulRunAt',
-            width: 200,
-            sorter: true,
+            dataIndex: SIMULATION_CONTEXT_FIELDS.LAST_SUCCESSFUL_RUN_AT.key,
+            key: SIMULATION_CONTEXT_FIELDS.LAST_SUCCESSFUL_RUN_AT.key,
+            ...SIMULATION_CONTEXT_FIELDS.LAST_SUCCESSFUL_RUN_AT.table,
             render: (lastSuccessfulRunAt: Date) => formatDate(lastSuccessfulRunAt),
         },
     ];
 
     const actions: ICardAction[] = [
         {
+            label: 'Thêm ngữ cảnh',
+            icon: <PlusOutlined />,
+            permissionAction: 'create',
             component: (
                 <CustomButton
                     type="primary"
@@ -88,6 +75,7 @@ const SimulationContextsPage = () => {
         {
             name: 'search',
             type: 'input',
+            isPrimary: true,
             placeholder: 'Tìm kiếm ngữ cảnh...',
             onChange: (value) => debouncedSearch(value?.toString() ?? ''),
         },
@@ -98,21 +86,18 @@ const SimulationContextsPage = () => {
             <ListContainer
                 actions={actions}
                 isLoading={loading || tableQuery.isLoading}
-                filters={<FilterPanel fields={filters} />}
-            >
-                <ListTable<SimulationContextRecord>
-                    columns={columns}
-                    tableProps={tableProps}
-                    tableQuery={tableQuery}
-                    deleteResource={RESOURCE.SIMULATION_CONTEXTS}
-                    onEdit={(record) => editModalForm.show(record.id)}
-                />
-            </ListContainer>
+                filters={filters}
+                table={{
+                    columns,
+                    tableProps,
+                    tableQuery,
+                    deleteResource: RESOURCE.SIMULATION_CONTEXTS,
+                    onEdit: (record) => editModalForm.show(record.id),
+                }}
+            />
 
             <SimulationContextFormModal modalForm={createModalForm} />
             <SimulationContextFormModal modalForm={editModalForm} />
         </>
     );
-};
-
-export default SimulationContextsPage;
+}

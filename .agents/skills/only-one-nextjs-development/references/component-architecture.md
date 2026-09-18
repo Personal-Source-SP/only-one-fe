@@ -9,42 +9,19 @@
   - Place the `type <ComponentName>Props` declaration immediately above the component function definition.
   - Property ordering: Declare all required props first, followed by optional props (`?`) separated by a single blank line, sorted from shortest to longest line length.
 
-  ```typescript
-  type OrderDetailDrawerProps = {
-    isOpen: boolean;
-    isLoading: boolean;
-    onClose: () => void;
+- ✅ **Leverage Common Container & Form Primitives (`@/components/common`)**:
+  - **`ListContainer`**: Orchestrates table, filtering, action bar, mobile dropdown menus, and modal/drawer forms in a single unified container.
+  - **`FormModalContainer` / `CustomModalForm`**: Standardized dialog wrapper for create/edit forms with automated button binding, responsive width, and polymorphic sections (`plain`, `card`, `collapse`, `tabs`).
+  - **Atomic Inputs**: Use atomic inputs in `@/components/common/forms` (`CustomInputForm`, `CustomSelectInput`, `CustomDatePickerForm`, `CustomCodeEditorForm`, `CustomJsonToggleForm`).
 
-    order?: Order | null;
-  };
+- ✅ **Declarative Form Schema (`IFormField<TValues>`)**:
+  - Use typed form fields with `IFormField<TValues>` configured from `constants/*-field.constants.ts`.
+  - Use `FormRuleType` from `@/utilities` for validation rules (`FormRuleType.Required`, `FormRuleType.Email`, `FormRuleType.Url`, `FormRuleType.Code`, `FormRuleType.Max`).
 
-  export const OrderDetailDrawer = ({
-    isOpen,
-    isLoading,
-    onClose,
-    order,
-  }: OrderDetailDrawerProps) => {
-    // ...
-  };
-  ```
-
-- ✅ **Leverage Common Components (`src/components`)**:
-  - MUST audit and reuse available common components in `@/components` (`ListWrapper`, `ListTable`, `FilterPanel`, `CardAction`, `CustomDrawerForm`, `CustomInputForm`, `CustomSelectInput`, `CustomModal`, `UploadImage`) rather than creating bespoke duplicates.
-- ✅ **Form Drawer Pattern (`<CustomDrawerForm>`)**:
-  - Receive the `drawerForm` prop (derived from `useCustomDrawerForm`).
-  - Use `<CustomDrawerForm>` as the root form container paired with `createInitialValues`.
-  - Use `<CustomInputForm>` (supporting `type="text" | "number" | "html" | ...`) for text and numerical inputs.
-  - Use `<CustomSelectInput>` for dropdown controls (configured with `selectProps={{ showSearch: true, options }}`).
-  - Specify validation rules using `FormRuleType` from `@/utilities` (e.g., `type: FormRuleType.Required`).
 - ✅ **Component Directory Layout (Simple vs Complex)**:
-  - **Simple Component**: Authored in a **single `.tsx` file** (e.g., `components/ModeFormDrawer.tsx`). Maintain a maximum limit of **200 lines per file**.
-  - **Complex Component**: Encapsulated in a **dedicated subdirectory** (e.g., `components/ModeFormDrawer/`) containing a main `index.tsx` and partitioned sub-components (`ModeFormBasic.tsx`, `ModeFormAdvanced.tsx`).
+  - **Simple Component**: Authored in a **single `.tsx` file** (e.g., `components/ItemImportModal.tsx`). Maintain a maximum limit of **200 lines per file**.
+  - **Complex Component**: Encapsulated in a **dedicated subdirectory** (e.g., `components/ProcessScrapeData/`) containing a main `index.tsx` and partitioned sub-components.
   - Re-export all sub-components through `components/index.ts`.
-- ✅ **Semantic HTML & Stable List Keys**:
-  - Favor semantic HTML5 tags (`<section>`, `<article>`, `<header>`, `<nav>`) over excessive `<div>` wrapping.
-  - ALWAYS provide a unique, stable `key` prop for every element rendered within `.map()` loops.
-- ✅ **Design System & Styling**:
-  - Reuse Ant Design components (`Button`, `Tag`, `Typography`, `Card`, `Space`).
-  - Use centralized constant palettes for badge/status styling (`ACTIVE_STATUS_COLORS`, `BOOLEAN_TAG_COLORS`).
-- ✅ **Debug-Friendly Return-by-Variable**:
-  - ALWAYS bind computed JSX elements or data structures to descriptive variables prior to returning.
+
+- ✅ **Custom Ant Design Primitives (`@/components/custom-antd`)**:
+  - Favor custom Ant Design components (`CustomButton`, `CustomTag`, `CustomTypography`, `CustomCard`, `CustomSpace`, `CustomFlex`) over raw HTML with ad-hoc classes.

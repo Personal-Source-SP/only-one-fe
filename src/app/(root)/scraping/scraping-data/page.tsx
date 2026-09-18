@@ -1,28 +1,28 @@
 'use client';
 
-import Link from 'next/link';
-import { PlusOutlined } from '@ant-design/icons';
-import { Icon } from '@iconify/react';
+import type { IItem } from '@/app/(root)/scraping/items/types';
 import {
     FileGroups,
     FilterPanel,
-    ListTable,
     ListContainer,
+    ListTable,
     MediaLightbox,
     type ICardAction,
     type IFilterField,
 } from '@/components/common';
 import { ColumnsType, CustomButton, CustomFlex, CustomSelect } from '@/components/custom-antd';
+import { RESOURCE } from '@/config';
 import { DisplayMode } from '@/enums';
 import { formatDate } from '@/libs';
-import { RESOURCE } from '@/config';
-
-import type { IItem } from '@/app/(root)/scraping/items/types';
-import { useScrapingDataPage } from './hooks';
+import { PlusOutlined } from '@ant-design/icons';
+import { Icon } from '@iconify/react';
+import Link from 'next/link';
 import { ProcessScrapeData } from './components';
+import { SCRAPING_DATA_FIELDS } from './constants';
+import { useScrapingDataPage } from './hooks';
 import type { ScrapingDataRecord } from './types';
 
-const ScrapingDataPage = () => {
+export default function ScrapingDataPage() {
     const {
         openProcessScrapeDataModal,
         setOpenProcessScrapeDataModal,
@@ -42,45 +42,33 @@ const ScrapingDataPage = () => {
 
     const columns: ColumnsType<ScrapingDataRecord> = [
         {
-            title: 'Đối tượng',
-            dataIndex: 'item',
-            key: 'item',
-            ellipsis: true,
-            width: '25%',
+            dataIndex: SCRAPING_DATA_FIELDS.ITEM.key,
+            key: SCRAPING_DATA_FIELDS.ITEM.key,
+            ...SCRAPING_DATA_FIELDS.ITEM.table,
             render: (item: IItem) => item?.name ?? '---',
         },
         {
-            title: 'ID dữ liệu',
-            dataIndex: 'dataId',
-            key: 'dataId',
-            ellipsis: true,
-            sorter: true,
-            width: '20%',
+            dataIndex: SCRAPING_DATA_FIELDS.DATA_ID.key,
+            key: SCRAPING_DATA_FIELDS.DATA_ID.key,
+            ...SCRAPING_DATA_FIELDS.DATA_ID.table,
             render: (dataId: string) => dataId ?? '---',
         },
         {
-            title: 'Loại',
-            dataIndex: 'type',
-            key: 'type',
-            sorter: true,
-            width: '20%',
+            dataIndex: SCRAPING_DATA_FIELDS.TYPE.key,
+            key: SCRAPING_DATA_FIELDS.TYPE.key,
+            ...SCRAPING_DATA_FIELDS.TYPE.table,
             render: (type: string) => type ?? '---',
         },
         {
-            title: 'Ngày sửa đổi',
-            dataIndex: 'lastModified',
-            key: 'lastModified',
-            sorter: true,
-            width: '20%',
+            dataIndex: SCRAPING_DATA_FIELDS.LAST_MODIFIED.key,
+            key: SCRAPING_DATA_FIELDS.LAST_MODIFIED.key,
+            ...SCRAPING_DATA_FIELDS.LAST_MODIFIED.table,
             render: (lastModified: Date) => formatDate(lastModified),
         },
         {
-            title: 'URL',
-            dataIndex: 'url',
-            key: 'url',
-            sorter: true,
-            width: '15%',
-            align: 'center',
+            dataIndex: SCRAPING_DATA_FIELDS.URL.key,
+            key: SCRAPING_DATA_FIELDS.URL.key,
+            ...SCRAPING_DATA_FIELDS.URL.table,
             render: (url: string) =>
                 url ? (
                     <CustomFlex align="center" justify="center">
@@ -117,6 +105,9 @@ const ScrapingDataPage = () => {
 
     const actions: ICardAction[] = [
         {
+            label: 'Cào dữ liệu',
+            icon: <PlusOutlined />,
+            permissionAction: 'create',
             component: (
                 <CustomButton
                     type="primary"
@@ -128,6 +119,7 @@ const ScrapingDataPage = () => {
             ),
         },
         {
+            label: 'Trình chiếu',
             component: (
                 <CustomButton type="primary" onClick={() => setIsLightboxOpen(true)}>
                     Trình chiếu
@@ -139,7 +131,7 @@ const ScrapingDataPage = () => {
                 <CustomSelect
                     value={displayMode}
                     className="w-[130px]"
-                    onChange={(value: any) => setDisplayMode(value as DisplayMode)}
+                    onChange={(value: unknown) => setDisplayMode(value as DisplayMode)}
                     options={displayModeOptions}
                 />
             ),
@@ -150,6 +142,7 @@ const ScrapingDataPage = () => {
         {
             name: 'search',
             type: 'input',
+            isPrimary: true,
             placeholder: 'Tìm kiếm dữ liệu cào...',
             onChange: (value) => {
                 tableContainerData.setCurrentPage(1);
@@ -209,6 +202,4 @@ const ScrapingDataPage = () => {
             )}
         </>
     );
-};
-
-export default ScrapingDataPage;
+}
