@@ -16,18 +16,18 @@ import { useState } from 'react';
 import { ImportData, ProcessScrapeData } from './components';
 import { ITEM_FIELDS } from './constants';
 import { DataImportType, ProductMappingStatus } from './enums';
-import type { IItem, IItemFormValues, ItemRecord } from './types';
+import type { IItem, IItemFormValues } from './types';
 
 export default function ItemPage() {
     const [openImportItemModal, setOpenImportItemModal] = useState(false);
     const [selectedItemIds, setSelectedItemIds] = useState<string[]>([]);
     const [openProcessScrapeDataModal, setOpenProcessScrapeDataModal] = useState(false);
 
-    const { tableProps, tableQuery, debouncedSearch } = useCustomTable<ItemRecord>({
+    const { tableProps, tableQuery, debouncedSearch } = useCustomTable<IItem>({
         resource: API_ENDPOINT.ITEMS.BASE,
     });
 
-    const createModalForm = useCustomModalForm<ItemRecord, IItemFormValues, ItemRecord>({
+    const createModalForm = useCustomModalForm<IItem, IItemFormValues, IItem>({
         action: 'create',
         resource: API_ENDPOINT.ITEMS.BASE,
         onMutationSuccess: async () => {
@@ -35,7 +35,7 @@ export default function ItemPage() {
         },
     });
 
-    const editModalForm = useCustomModalForm<ItemRecord, IItemFormValues, ItemRecord>({
+    const editModalForm = useCustomModalForm<IItem, IItemFormValues, IItem>({
         action: 'edit',
         resource: API_ENDPOINT.ITEMS.BASE,
         onMutationSuccess: async () => {
@@ -48,7 +48,7 @@ export default function ItemPage() {
         }),
     });
 
-    const columns: ColumnsType<ItemRecord> = [
+    const columns: ColumnsType<IItem> = [
         {
             dataIndex: ITEM_FIELDS.NAME.key,
             key: ITEM_FIELDS.NAME.key,
@@ -133,7 +133,7 @@ export default function ItemPage() {
         },
     ];
 
-    const importDataColumns: ColumnType<ItemRecord>[] = [
+    const importDataColumns: ColumnType<IItem>[] = [
         {
             title: 'Tên đối tượng',
             dataIndex: 'name',
@@ -160,7 +160,7 @@ export default function ItemPage() {
     ];
 
     return (
-        <ListContainer<ItemRecord, IItemFormValues>
+        <ListContainer<IItem, IItemFormValues>
             filters={filters}
             actions={actions}
             table={{

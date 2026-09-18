@@ -13,7 +13,3 @@ export interface IItemFormValues {
     code: string;
     tags?: string;
 }
-
-export type ItemRecord = IItem;
-export type ImportItemRecord = IItem;
-export type ItemFormValues = IItemFormValues;
