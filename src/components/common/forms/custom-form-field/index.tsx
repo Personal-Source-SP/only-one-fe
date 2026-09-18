@@ -6,41 +6,63 @@ import {
     CustomSelectInput,
     CustomSwitchForm,
 } from '@/components/common';
+import type { FormInstance } from '@/components/custom-antd';
 import { CustomCol } from '@/components/custom-antd';
-import type { ReactNode } from 'react';
+import type { FormMode } from '@/hooks';
 import type {
-    CustomFormFieldProps,
     ICustomFormField,
+    IFormField,
     IInputFormField,
     INumberFormField,
     IPasswordFormField,
     ISelectFormField,
     ISwitchFormField,
     ITextAreaFormField,
-} from './types';
+} from '@/interfaces';
+import { useCallback, useMemo, type ReactNode } from 'react';
+export type {
+    IBaseFormField,
+    ICustomFormField,
+    IFormField,
+    IInputFormField,
+    INumberFormField,
+    IPasswordFormField,
+    ISelectFormField,
+    ISwitchFormField,
+    ITextAreaFormField,
+} from '@/interfaces';
 
-export * from './types';
+export type CustomFormFieldProps<TValues = unknown> = {
+    mode: FormMode;
+    field: IFormField<TValues>;
+    withCol?: boolean;
+    form?: FormInstance<TValues>;
+};
 
 export const CustomFormField = <TValues extends object = Record<string, unknown>>({
-    field,
-    form,
     mode,
+    field,
     withCol = true,
+    form,
 }: CustomFormFieldProps<TValues>) => {
     const { name, label, rulesConfig, disabled, formItemProps } = field;
 
-    const colSpan = field.colSpan ?? 24;
-    const isDisabled = typeof disabled === 'function' ? disabled(mode, form) : disabled;
+    const colSpan = useMemo(() => field.colSpan ?? 24, [field.colSpan]);
 
-    let fieldContent: ReactNode = null;
+    const isDisabled = useMemo(
+        () => (typeof disabled === 'function' ? disabled(mode, form) : disabled),
+        [disabled, mode, form],
+    );
 
-    if (field.type === 'custom' || ('render' in field && field.render)) {
-        fieldContent = (field as ICustomFormField<TValues>).render(form, mode);
-    } else {
+    const renderFieldContent = useCallback((): ReactNode => {
+        if (field.type === 'custom' || ('render' in field && field.render)) {
+            return (field as ICustomFormField<TValues>).render(form, mode);
+        }
+
         switch (field.type) {
             case 'select': {
                 const selectField = field as ISelectFormField<TValues>;
-                fieldContent = (
+                return (
                     <CustomSelectInput
                         name={name as any}
                         label={label}
@@ -54,11 +76,10 @@ export const CustomFormField = <TValues extends object = Record<string, unknown>
                         }}
                     />
                 );
-                break;
             }
             case 'switch': {
                 const switchField = field as ISwitchFormField<TValues>;
-                fieldContent = (
+                return (
                     <CustomSwitchForm
                         name={name}
                         label={label}
@@ -71,11 +92,10 @@ export const CustomFormField = <TValues extends object = Record<string, unknown>
                         }}
                     />
                 );
-                break;
             }
             case 'textarea': {
                 const textField = field as ITextAreaFormField<TValues>;
-                fieldContent = (
+                return (
                     <CustomInputForm
                         name={name}
                         label={label}
@@ -89,11 +109,10 @@ export const CustomFormField = <TValues extends object = Record<string, unknown>
                         }}
                     />
                 );
-                break;
             }
             case 'number': {
                 const numberField = field as INumberFormField<TValues>;
-                fieldContent = (
+                return (
                     <CustomInputForm
                         name={name}
                         label={label}
@@ -107,11 +126,10 @@ export const CustomFormField = <TValues extends object = Record<string, unknown>
                         }}
                     />
                 );
-                break;
             }
             case 'password': {
                 const passwordField = field as IPasswordFormField<TValues>;
-                fieldContent = (
+                return (
                     <CustomInputForm
                         name={name}
                         label={label}
@@ -125,7 +143,6 @@ export const CustomFormField = <TValues extends object = Record<string, unknown>
                         }}
                     />
                 );
-                break;
             }
             case 'input':
             default: {
@@ -139,7 +156,7 @@ export const CustomFormField = <TValues extends object = Record<string, unknown>
                         ? inputField.addonBefore(form, mode)
                         : inputField.addonBefore;
 
-                fieldContent = (
+                return (
                     <CustomInputForm
                         name={name}
                         label={label}
@@ -154,18 +171,17 @@ export const CustomFormField = <TValues extends object = Record<string, unknown>
                         }}
                     />
                 );
-                break;
             }
         }
-    }
+    }, [field, form, mode, formItemProps, isDisabled, label, name, rulesConfig]);
 
     if (!withCol) {
-        return fieldContent;
+        return renderFieldContent();
     }
 
     return (
         <CustomCol key={String(name)} span={colSpan}>
-            {fieldContent}
+            {renderFieldContent()}
         </CustomCol>
     );
 };

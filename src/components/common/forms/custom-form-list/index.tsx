@@ -1,6 +1,5 @@
 'use client';
 
-import { PlusOutlined } from '@ant-design/icons';
 import {
     CustomButton,
     CustomForm,
@@ -8,6 +7,7 @@ import {
     type FormListFieldData,
     type FormListOperation,
 } from '@/components/custom-antd';
+import { PlusOutlined } from '@ant-design/icons';
 import type { ReactNode } from 'react';
 
 export type CustomFormListProps = {
@@ -32,10 +32,10 @@ export const CustomFormList = ({
                     {children(fields, operation, meta)}
                     <CustomForm.Item>
                         <CustomButton
-                            type="dashed"
-                            onClick={() => operation.add()}
                             block
+                            type="dashed"
                             icon={<PlusOutlined />}
+                            onClick={() => operation.add()}
                         >
                             {addText}
                         </CustomButton>
