@@ -1,7 +1,7 @@
 'use client';
 
 import { Loading, UnsavedChangesNotifierAppRouter } from '@/components/common';
-import { UserPreferenceSync } from '@/components/UserPreferenceSync';
+import { useUserPreferenceSync } from '@/hooks';
 import {
     AUTH_PUBLIC_PAGES,
     AUTH_REGISTER_UNKNOWN_FAILURE_MESSAGE,
@@ -27,6 +27,7 @@ type AppProps = {
 };
 
 const App = ({ children, defaultMode }: PropsWithChildren<AppProps>) => {
+    useUserPreferenceSync();
     const { data: session, status } = useSession();
 
     const to = usePathname();
@@ -243,7 +244,6 @@ const App = ({ children, defaultMode }: PropsWithChildren<AppProps>) => {
             >
                 {children}
                 <UnsavedChangesNotifierAppRouter />
-                <UserPreferenceSync />
             </Refine>
         </ColorModeContextProvider>
     );

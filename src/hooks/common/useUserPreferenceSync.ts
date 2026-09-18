@@ -1,5 +1,3 @@
-'use client';
-
 import { API_ENDPOINT } from '@/config';
 import { resolveHubThemePalette } from '@/constants';
 import { useCustomData } from '@/hooks';
@@ -7,7 +5,7 @@ import { useThemeStore } from '@/stores';
 import { useSession } from 'next-auth/react';
 import { useEffect } from 'react';
 
-export const UserPreferenceSync = () => {
+export const useUserPreferenceSync = () => {
     const { status } = useSession();
     const setPalette = useThemeStore((state) => state.setPalette);
 
@@ -27,6 +25,4 @@ export const UserPreferenceSync = () => {
             setPalette(resolveHubThemePalette(serverPalette));
         }
     }, [data, setPalette]);
-
-    return null;
 };
