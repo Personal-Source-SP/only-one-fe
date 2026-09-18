@@ -1,14 +1,20 @@
 'use client';
 
-import { ListContainer, StatusTag, type ICardAction, type IFilterField } from '@/components/common';
+import {
+    ListContainer,
+    StatusTag,
+    type ICardAction,
+    type IFilterField,
+    type IFormField,
+} from '@/components/common';
 import { ColumnsType, CustomButton } from '@/components/custom-antd';
 import { RESOURCE } from '@/config';
 import { formatDate } from '@/libs';
+import { FormRuleType } from '@/utilities';
 import { PlusOutlined } from '@ant-design/icons';
-import { SimulationItemFormModal } from './components';
 import { SIMULATION_ITEM_FIELDS } from './constants';
 import { useSimulationItemsPage } from './hooks';
-import type { SimulationItemRecord } from './types';
+import type { SimulationItemFormValues, SimulationItemRecord } from './types';
 
 export default function SimulationItemsPage() {
     const {
@@ -71,30 +77,64 @@ export default function SimulationItemsPage() {
         },
     ];
 
+    const formFields: IFormField<SimulationItemFormValues>[] = [
+        {
+            name: 'name',
+            label: 'Tên đối tượng mô phỏng',
+            type: 'input',
+            rulesConfig: [{ type: FormRuleType.Required, message: 'Vui lòng nhập tên đối tượng' }],
+            inputProps: { placeholder: 'Nhập tên đối tượng mô phỏng' },
+        },
+        {
+            name: 'simulationContextId',
+            label: 'Ngữ cảnh mô phỏng',
+            type: 'select',
+            rulesConfig: [{ type: FormRuleType.Required, message: 'Vui lòng chọn ngữ cảnh' }],
+            selectProps: {
+                options: simulationContextOptions ?? [],
+                placeholder: 'Chọn ngữ cảnh',
+                allowClear: true,
+            },
+        },
+        {
+            name: 'payload',
+            label: 'Payload (JSON)',
+            type: 'input',
+            inputProps: { placeholder: '{}' },
+        },
+    ];
+
     return (
-        <>
-            <ListContainer
-                actions={actions}
-                isLoading={loading || tableQuery.isLoading}
-                filters={filters}
-                table={{
-                    columns,
-                    tableProps,
-                    tableQuery,
-                    deleteResource: RESOURCE.SIMULATION_ITEMS,
-                    onEdit: (record) => editModalForm.show(record.id),
-                }}
-            />
-
-            <SimulationItemFormModal
-                modalForm={createModalForm}
-                simulationContextOptions={simulationContextOptions ?? []}
-            />
-
-            <SimulationItemFormModal
-                modalForm={editModalForm}
-                simulationContextOptions={simulationContextOptions ?? []}
-            />
-        </>
+        <ListContainer
+            actions={actions}
+            isLoading={loading || tableQuery.isLoading}
+            filters={filters}
+            table={{
+                columns,
+                tableProps,
+                tableQuery,
+                deleteResource: RESOURCE.SIMULATION_ITEMS,
+                onEdit: (record) => editModalForm.show(record.id),
+            }}
+            formModal={[
+                {
+                    modalForm: createModalForm,
+                    title: 'Thêm mới mô phỏng',
+                    width: 600,
+                    createInitialValues: {
+                        name: '',
+                        simulationContextId: '',
+                        payload: JSON.stringify({}, null, 2),
+                    },
+                    sections: [{ type: 'plain', fields: formFields }],
+                },
+                {
+                    modalForm: editModalForm,
+                    title: 'Chỉnh sửa mô phỏng',
+                    width: 600,
+                    sections: [{ type: 'plain', fields: formFields }],
+                },
+            ]}
+        />
     );
 }

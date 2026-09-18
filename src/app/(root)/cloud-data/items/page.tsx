@@ -1,6 +1,12 @@
 'use client';
 
-import { ListContainer, StatusTag, type ICardAction, type IFilterField } from '@/components/common';
+import {
+    ListContainer,
+    StatusTag,
+    type ICardAction,
+    type IFilterField,
+    type IFormField,
+} from '@/components/common';
 import { ColumnsType, CustomButton, CustomFlex, CustomTooltip } from '@/components/custom-antd';
 import { API_ENDPOINT, RESOURCE } from '@/config';
 import { MimeType } from '@/enums';
@@ -8,7 +14,6 @@ import { useCustomModalForm, useCustomTable, useSelectCloudDataProvider } from '
 import { formatDate, formatFileSize } from '@/libs';
 import { PlusOutlined } from '@ant-design/icons';
 import Link from 'next/link';
-import { CloudItemFormModal } from './components';
 import { CLOUD_DATA_ITEM_FIELDS } from './constants';
 import type { CloudItemFormValues, CloudItemRecord } from './types';
 
@@ -137,23 +142,46 @@ export default function CloudDataItemPage() {
         },
     ];
 
-    return (
-        <>
-            <ListContainer<CloudItemRecord, CloudItemFormValues>
-                filters={filters}
-                actions={actions}
-                table={{
-                    columns,
-                    tableProps,
-                    tableQuery,
-                    deleteResource: RESOURCE.CLOUD_DATA_ITEMS,
-                }}
-            />
+    const formFields: IFormField<CloudItemFormValues>[] = [
+        {
+            name: CLOUD_DATA_ITEM_FIELDS.CLOUD_DATA_PROVIDER_ID.key,
+            label: CLOUD_DATA_ITEM_FIELDS.CLOUD_DATA_PROVIDER_ID.label,
+            type: 'select',
+            options: cloudDataProviderOptions ?? [],
+            rulesConfig: CLOUD_DATA_ITEM_FIELDS.CLOUD_DATA_PROVIDER_ID.form?.rulesConfig,
+        },
+        {
+            name: 'file',
+            label: 'Tệp dữ liệu',
+            type: 'upload',
+            uploadProps: {
+                maxCount: 1,
+                accept: '*/*',
+            },
+        },
+    ];
 
-            <CloudItemFormModal
-                modalForm={createModalForm}
-                cloudDataProviderOptions={cloudDataProviderOptions ?? []}
-            />
-        </>
+    return (
+        <ListContainer<CloudItemRecord, CloudItemFormValues>
+            filters={filters}
+            actions={actions}
+            table={{
+                columns,
+                tableProps,
+                tableQuery,
+                deleteResource: RESOURCE.CLOUD_DATA_ITEMS,
+            }}
+            formModal={[
+                {
+                    modalForm: createModalForm,
+                    title: 'Thêm mới dữ liệu đám mây',
+                    sections: [{ type: 'plain', fields: formFields }],
+                    createInitialValues: {
+                        cloudDataProviderId: '',
+                        file: undefined,
+                    },
+                },
+            ]}
+        />
     );
 }

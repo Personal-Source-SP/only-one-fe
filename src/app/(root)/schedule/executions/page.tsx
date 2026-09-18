@@ -1,15 +1,22 @@
 'use client';
 
-import { ListContainer, StatusTag, type ICardAction, type IFilterField } from '@/components/common';
+import {
+    ListContainer,
+    StatusTag,
+    type ICardAction,
+    type IFilterField,
+    type IFormField,
+} from '@/components/common';
 import { ColumnsType, CustomButton, CustomToggle } from '@/components/custom-antd';
 import { RESOURCE } from '@/config';
 import { capitalizeFirstLetter, formatDate, getEnumKeyByValue } from '@/libs';
+import { FormRuleType } from '@/utilities';
 import { PlusOutlined } from '@ant-design/icons';
-import { ScheduleExecutionFormModal, ViewScheduleJobList } from './components';
+import { ViewScheduleJobList } from './components';
 import { EXECUTION_FIELDS } from './constants';
 import { CronExpression, ExecutionServiceEnum, ScheduleType } from './enums';
 import { useScheduleExecutionPage } from './hooks';
-import type { ScheduleExecutionRecord } from './types';
+import type { ScheduleExecutionFormValues, ScheduleExecutionRecord } from './types';
 
 export default function ScheduleExecutionPage() {
     const {
@@ -115,6 +122,48 @@ export default function ScheduleExecutionPage() {
         },
     ];
 
+    const formFields: IFormField<ScheduleExecutionFormValues>[] = [
+        {
+            name: 'name',
+            label: 'Tên lịch biểu',
+            type: 'input',
+            rulesConfig: [{ type: FormRuleType.Required, message: 'Vui lòng nhập tên lịch biểu' }],
+            inputProps: { placeholder: 'Nhập tên lịch biểu' },
+        },
+        {
+            name: 'cronExpression',
+            label: 'Biểu thức Cron',
+            type: 'input',
+            rulesConfig: [{ type: FormRuleType.Required, message: 'Vui lòng nhập biểu thức Cron' }],
+            inputProps: { placeholder: 'Ví dụ: 0 0 * * *' },
+        },
+        {
+            name: 'dataProviderId',
+            label: 'Nhà cung cấp (nếu có)',
+            type: 'select',
+            selectProps: {
+                options: dataProviderOptions ?? [],
+                placeholder: 'Chọn nhà cung cấp',
+                allowClear: true,
+            },
+        },
+        {
+            name: 'itemId',
+            label: 'Đối tượng (nếu có)',
+            type: 'select',
+            selectProps: {
+                options: itemOptions ?? [],
+                placeholder: 'Chọn đối tượng',
+                allowClear: true,
+            },
+        },
+        {
+            name: 'isActive',
+            label: 'Trạng thái hoạt động',
+            type: 'switch',
+        },
+    ];
+
     return (
         <>
             <ListContainer
@@ -128,18 +177,28 @@ export default function ScheduleExecutionPage() {
                     deleteResource: RESOURCE.SCHEDULES,
                     onEdit: (record) => editModalForm.show(record.id),
                 }}
-            />
-
-            <ScheduleExecutionFormModal
-                modalForm={createModalForm}
-                itemOptions={itemOptions ?? []}
-                dataProviderOptions={dataProviderOptions ?? []}
-            />
-
-            <ScheduleExecutionFormModal
-                modalForm={editModalForm}
-                itemOptions={itemOptions ?? []}
-                dataProviderOptions={dataProviderOptions ?? []}
+                formModal={[
+                    {
+                        modalForm: createModalForm,
+                        title: 'Thêm mới lịch biểu thực thi',
+                        width: 600,
+                        createInitialValues: {
+                            name: '',
+                            type: '',
+                            cronExpression: '',
+                            dataProviderId: undefined,
+                            itemId: undefined,
+                            isActive: true,
+                        },
+                        sections: [{ type: 'plain', fields: formFields }],
+                    },
+                    {
+                        modalForm: editModalForm,
+                        title: 'Chỉnh sửa lịch biểu thực thi',
+                        width: 600,
+                        sections: [{ type: 'plain', fields: formFields }],
+                    },
+                ]}
             />
 
             {!!selectedScheduleId && (

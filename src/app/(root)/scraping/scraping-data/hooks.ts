@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react';
 import { API_ENDPOINT } from '@/config';
 import { useMainContext } from '@/contexts/MainContext';
-import { CustomFilterType, DisplayMode, MessageType, ViewFileMode } from '@/enums';
+import { DisplayMode, MessageType, ViewFileMode } from '@/enums';
 import {
     useCustomDelete,
     useCustomModal,
@@ -11,10 +11,8 @@ import {
     useSelectItem,
     useTableContainer,
 } from '@/hooks';
-import type { IBaseApiResponse, IFileItem, IFilterItem } from '@/interfaces';
+import type { IBaseApiResponse, IFileItem } from '@/interfaces';
 import type { IScrapingData } from './types';
-
-import { columnDisplayOptions, dataTypeOptions, viewModeOptions } from './constants';
 
 export const useScrapingDataPage = () => {
     const { handleMessage } = useMainContext();
@@ -89,59 +87,6 @@ export const useScrapingDataPage = () => {
         }));
     }, [tableContainerData?.tableQuery?.data?.data]);
 
-    const customFilterItems = useMemo(() => {
-        const filterItems: IFilterItem[] = [
-            {
-                span: displayMode === DisplayMode.TABLE ? 6 : 4,
-                field: 'dataProviderId',
-                title: 'Nhà cung cấp',
-                showSearch: true,
-                allowClear: true,
-                type: CustomFilterType.SELECT,
-                options: dataProviderOptions ?? [],
-            },
-            {
-                span: displayMode === DisplayMode.TABLE ? 6 : 4,
-                field: 'itemId',
-                title: 'Đối tượng',
-                showSearch: true,
-                type: CustomFilterType.SELECT,
-                options: itemOptions ?? [],
-            },
-            {
-                span: displayMode === DisplayMode.TABLE ? 6 : 4,
-                field: 'type',
-                title: 'Loại dữ liệu',
-                showSearch: true,
-                type: CustomFilterType.SELECT,
-                options: dataTypeOptions,
-            },
-        ];
-
-        if (displayMode === DisplayMode.LIST) {
-            filterItems.push(
-                {
-                    span: 4,
-                    value: viewMode,
-                    placeholder: 'Chế độ xem',
-                    type: CustomFilterType.SELECT,
-                    onChange: (value: ViewFileMode) => setViewMode(value),
-                    options: viewModeOptions,
-                },
-                {
-                    span: 2,
-                    value: columnDisplay,
-                    placeholder: 'Số cột',
-                    type: CustomFilterType.SELECT,
-                    onChange: (value: number) => setColumnDisplay(value),
-                    options: columnDisplayOptions,
-                },
-            );
-        }
-
-        return filterItems;
-    }, [columnDisplay, viewMode, displayMode, itemOptions, dataProviderOptions]);
-
     const handlePhotoClick = (scrapingDataId: string) => {
         const index = photoItems?.findIndex((photo) => photo.id === scrapingDataId);
         if (index !== undefined) {
@@ -166,7 +111,8 @@ export const useScrapingDataPage = () => {
         handleDelete,
         modalPropsData,
         photoItems,
-        customFilterItems,
         handlePhotoClick,
+        itemOptions,
+        dataProviderOptions,
     };
 };

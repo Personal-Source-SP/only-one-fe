@@ -1,15 +1,21 @@
 'use client';
 
-import { ListContainer, StatusTag, type ICardAction, type IFilterField } from '@/components/common';
+import {
+    ListContainer,
+    StatusTag,
+    type ICardAction,
+    type IFilterField,
+    type IFormField,
+} from '@/components/common';
 import { ColumnsType, CustomButton } from '@/components/custom-antd';
 import { RESOURCE } from '@/config';
 import { formatDate } from '@/libs';
+import { FormRuleType } from '@/utilities';
 import { PlusOutlined } from '@ant-design/icons';
-import { SimulationContextFormModal } from './components';
 import { SIMULATION_CONTEXT_FIELDS } from './constants';
 import { SimulationService } from './enums';
 import { useSimulationContextsPage } from './hooks';
-import type { SimulationContextRecord } from './types';
+import type { SimulationContextFormValues, SimulationContextRecord } from './types';
 
 export default function SimulationContextsPage() {
     const { loading, tableProps, tableQuery, debouncedSearch, createModalForm, editModalForm } =
@@ -81,23 +87,59 @@ export default function SimulationContextsPage() {
         },
     ];
 
-    return (
-        <>
-            <ListContainer
-                actions={actions}
-                isLoading={loading || tableQuery.isLoading}
-                filters={filters}
-                table={{
-                    columns,
-                    tableProps,
-                    tableQuery,
-                    deleteResource: RESOURCE.SIMULATION_CONTEXTS,
-                    onEdit: (record) => editModalForm.show(record.id),
-                }}
-            />
+    const formFields: IFormField<SimulationContextFormValues>[] = [
+        {
+            name: 'name',
+            label: 'Tên ngữ cảnh',
+            type: 'input',
+            rulesConfig: [{ type: FormRuleType.Required, message: 'Vui lòng nhập tên ngữ cảnh' }],
+            inputProps: { placeholder: 'Nhập tên ngữ cảnh' },
+        },
+        {
+            name: 'description',
+            label: 'Mô tả',
+            type: 'input',
+            inputProps: { placeholder: 'Nhập mô tả ngữ cảnh' },
+        },
+        {
+            name: 'defaultPayload',
+            label: 'Payload mặc định (JSON)',
+            type: 'input',
+            inputProps: { placeholder: '{}' },
+        },
+    ];
 
-            <SimulationContextFormModal modalForm={createModalForm} />
-            <SimulationContextFormModal modalForm={editModalForm} />
-        </>
+    return (
+        <ListContainer
+            actions={actions}
+            isLoading={loading || tableQuery.isLoading}
+            filters={filters}
+            table={{
+                columns,
+                tableProps,
+                tableQuery,
+                deleteResource: RESOURCE.SIMULATION_CONTEXTS,
+                onEdit: (record) => editModalForm.show(record.id),
+            }}
+            formModal={[
+                {
+                    modalForm: createModalForm,
+                    title: 'Thêm mới ngữ cảnh mô phỏng',
+                    width: 600,
+                    createInitialValues: {
+                        name: '',
+                        description: '',
+                        defaultPayload: JSON.stringify({}, null, 2),
+                    },
+                    sections: [{ type: 'plain', fields: formFields }],
+                },
+                {
+                    modalForm: editModalForm,
+                    title: 'Chỉnh sửa ngữ cảnh mô phỏng',
+                    width: 600,
+                    sections: [{ type: 'plain', fields: formFields }],
+                },
+            ]}
+        />
     );
 }
