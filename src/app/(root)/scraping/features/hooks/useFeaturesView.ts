@@ -2,7 +2,7 @@
 
 import { useCallback, useState } from 'react';
 import { useParams } from 'next/navigation';
-import type { IDataProvider } from '@/app/(root)/scraping/data-providers/types';
+import type { IDataProvider } from '@/app/(root)/scraping/data-providers/types/data-provider.type';
 import { API_ENDPOINT } from '@/config';
 import { useCustomList, useCustomOne } from '@/hooks';
 import type { HistoryModalState, IDataProviderFeature } from '../types';

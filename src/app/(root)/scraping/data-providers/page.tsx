@@ -14,7 +14,7 @@ import { formatDate, slugify } from '@/libs';
 import { PlusOutlined, ThunderboltOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
 import { DATA_PROVIDER_FIELDS } from './constants';
-import type { DataProviderFormValues, IDataProvider } from './types';
+import type { IDataProvider, IDataProviderFormValues } from './types/data-provider.type';
 
 export default function DataProviderPage() {
     const router = useRouter();
@@ -25,7 +25,7 @@ export default function DataProviderPage() {
 
     const createModalForm = useCustomModalForm<
         IDataProvider,
-        DataProviderFormValues,
+        IDataProviderFormValues,
         IDataProvider
     >({
         action: 'create',
@@ -35,18 +35,20 @@ export default function DataProviderPage() {
         },
     });
 
-    const editModalForm = useCustomModalForm<IDataProvider, DataProviderFormValues, IDataProvider>({
-        action: 'edit',
-        resource: API_ENDPOINT.DATA_PROVIDERS.BASE,
-        onMutationSuccess: async () => {
-            await tableQuery.refetch();
+    const editModalForm = useCustomModalForm<IDataProvider, IDataProviderFormValues, IDataProvider>(
+        {
+            action: 'edit',
+            resource: API_ENDPOINT.DATA_PROVIDERS.BASE,
+            onMutationSuccess: async () => {
+                await tableQuery.refetch();
+            },
+            initialValuesMapper: (record) => ({
+                name: record.name,
+                baseUrl: record.baseUrl,
+                identifier: record.identifier,
+            }),
         },
-        initialValuesMapper: (record) => ({
-            name: record.name,
-            baseUrl: record.baseUrl,
-            identifier: record.identifier,
-        }),
-    });
+    );
 
     const columns: ColumnsType<IDataProvider> = [
         {
@@ -108,7 +110,7 @@ export default function DataProviderPage() {
         },
     ];
 
-    const formFields: IFormField<DataProviderFormValues>[] = [
+    const formFields: IFormField<IDataProviderFormValues>[] = [
         {
             name: DATA_PROVIDER_FIELDS.NAME.key,
             label: DATA_PROVIDER_FIELDS.NAME.label,
@@ -150,7 +152,7 @@ export default function DataProviderPage() {
     ];
 
     return (
-        <ListWrapper<IDataProvider, DataProviderFormValues>
+        <ListWrapper<IDataProvider, IDataProviderFormValues>
             filters={filters}
             actions={actions}
             table={{

@@ -1,6 +1,6 @@
 'use client';
 
-import type { IDataProvider } from '@/app/(root)/scraping/data-providers/types';
+import type { IDataProvider } from '@/app/(root)/scraping/data-providers/types/data-provider.type';
 import { API_ENDPOINT } from '@/config';
 import { MessageType } from '@/enums';
 import { useCustomMutationData } from '@/hooks';

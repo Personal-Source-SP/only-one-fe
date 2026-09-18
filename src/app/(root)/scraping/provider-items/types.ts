@@ -1,5 +1,5 @@
 import type { ICloudDataProvider } from '@/app/(root)/cloud-data/providers/types';
-import type { IDataProvider } from '@/app/(root)/scraping/data-providers/types';
+import type { IDataProvider } from '@/app/(root)/scraping/data-providers/types/data-provider.type';
 import type { IItem } from '@/app/(root)/scraping/items/types';
 import type { LocalFolderRegistrationStatusEnum } from './enums';
 import type { IAbstract } from '@/interfaces';

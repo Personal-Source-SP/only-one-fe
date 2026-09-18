@@ -12,7 +12,7 @@ import type {
     ProviderItemFormValues,
     ProviderItemRecord,
 } from '@/app/(root)/scraping/provider-items/types';
-import type { IDataProvider } from '../../data-providers/types';
+import type { IDataProvider } from '../../data-providers/types/data-provider.type';
 import type { IOption } from '@/interfaces';
 
 type ProviderItemFormModalProps = {

@@ -1,4 +1,4 @@
-import type { IDataProvider } from '@/app/(root)/scraping/data-providers/types';
+import type { IDataProvider } from '@/app/(root)/scraping/data-providers/types/data-provider.type';
 import type { IAbstract } from '@/interfaces';
 import type { DiscoverySessionStatus, ValidationBatchStatus } from '../enums';
 

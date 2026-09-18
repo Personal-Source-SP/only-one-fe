@@ -1,6 +1,6 @@
 import type { ICloudDataProvider } from '@/app/(root)/cloud-data/providers/types';
 import type { IGoogleDriveFolder } from '@/app/(root)/google/drive/folders/types';
-import type { IDataProvider } from '@/app/(root)/scraping/data-providers/types';
+import type { IDataProvider } from '@/app/(root)/scraping/data-providers/types/data-provider.type';
 import type {
     DataProviderFeatureStatus,
     DataProviderFeatureType,

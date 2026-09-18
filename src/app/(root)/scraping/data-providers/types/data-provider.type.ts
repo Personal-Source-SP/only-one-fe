@@ -14,7 +14,7 @@ export interface IDataProvider extends IAbstract {
     dataProviderItems?: IDataProviderItem[];
 }
 
-export interface DataProviderFormValues {
+export interface IDataProviderFormValues {
     name: string;
     baseUrl: string;
     identifier: string;
