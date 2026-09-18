@@ -1,6 +1,5 @@
 // Containers
 export * from './containers/breadcrumb-nav';
-export * from './containers/content-section';
 export * from './containers/filter-panel';
 export * from './containers/list-table';
 export * from './containers/list-wrapper';
