@@ -1,7 +1,7 @@
 'use client';
 
 import { Loading, UnsavedChangesNotifierAppRouter } from '@/components/common';
-import { useUserPreferenceSync } from '@/hooks';
+import { env } from '@/config';
 import {
     AUTH_PUBLIC_PAGES,
     AUTH_REGISTER_UNKNOWN_FAILURE_MESSAGE,
@@ -9,7 +9,6 @@ import {
     KEY_SESSION_STORAGE,
     mapNextAuthSignInErrorMessage,
 } from '@/constants';
-import { env } from '@/config';
 import { ColorModeContextProvider } from '@/contexts/ColorModeContext';
 import { accessControlProvider } from '@/providers/access-control-provider';
 import { RestServer, createSessionAxiosInstance } from '@/providers/data-provider';
@@ -27,13 +26,13 @@ type AppProps = {
 };
 
 const App = ({ children, defaultMode }: PropsWithChildren<AppProps>) => {
-    useUserPreferenceSync();
     const { data: session, status } = useSession();
 
     const to = usePathname();
     const router = useRouter();
-    const isAuthPublicPage = AUTH_PUBLIC_PAGES.includes(to);
+
     const apiUrl = env.apiUrl;
+    const isAuthPublicPage = AUTH_PUBLIC_PAGES.includes(to);
 
     const [sessionBootstrapComplete, setSessionBootstrapComplete] = useState(false);
 

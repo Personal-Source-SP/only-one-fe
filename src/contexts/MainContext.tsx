@@ -1,15 +1,20 @@
 'use client';
 
 import { Loading } from '@/components/common';
+import { API_ENDPOINT } from '@/config';
+import { resolveHubThemePalette } from '@/constants';
 import { SocketProvider } from '@/contexts/SocketContext';
 import { MessageType, NotificationType, Theme } from '@/enums';
+import { useCustomData } from '@/hooks';
+import { useThemeStore } from '@/stores';
 import {
     IconType,
     NoticeType,
     useCustomMessage,
     useCustomNotification,
 } from '@/components/custom-antd';
-import { createContext, PropsWithChildren, useContext, useState } from 'react';
+import { useSession } from 'next-auth/react';
+import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react';
 
 import { MainLayout } from '@/components/layout';
 
@@ -47,6 +52,26 @@ export const MainProvider = ({
 
     const [messageApi, messageContextHolder] = useCustomMessage();
     const [notificationApi, notificationContextHolder] = useCustomNotification();
+
+    const { status } = useSession();
+    const setPalette = useThemeStore((state) => state.setPalette);
+
+    const { data: userPreference } = useCustomData<{ data: { value?: { palette?: string } } }>({
+        method: 'get',
+        url: API_ENDPOINT.SETTINGS.USER('appearance'),
+        queryOptions: {
+            retry: false,
+            refetchOnWindowFocus: false,
+            enabled: status === 'authenticated',
+        },
+    });
+
+    useEffect(() => {
+        const serverPalette = userPreference?.data?.value?.palette;
+        if (serverPalette) {
+            setPalette(resolveHubThemePalette(serverPalette));
+        }
+    }, [userPreference, setPalette]);
 
     const handleLoading = (loading: boolean) => {
         setLoading(loading);

@@ -10,4 +10,3 @@ export * from './usePermission';
 export * from './useSearchParamsString';
 export * from './useSocket';
 export * from './useTableChange';
-export * from './useUserPreferenceSync';
