@@ -92,7 +92,6 @@ export const CustomModalForm = <
             footer={modalFooter}
             destroyOnHidden={destroyOnHidden}
             width={screens.md ? width : '100%'}
-            confirmLoading={modalProps.confirmLoading}
         >
             {isLoading ? (
                 <CustomSkeleton active paragraph={{ rows: skeletonRows }} />
