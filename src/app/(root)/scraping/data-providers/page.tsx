@@ -11,7 +11,6 @@ import { API_ENDPOINT, RESOURCE } from '@/config';
 import type { FormMode } from '@/hooks';
 import { useCustomModalForm, useCustomTable } from '@/hooks';
 import { formatDate, slugify } from '@/libs';
-import { FormRuleType } from '@/utilities';
 import { PlusOutlined, ThunderboltOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
 import { DATA_PROVIDER_FIELDS } from './constants';
@@ -51,12 +50,9 @@ export default function DataProviderPage() {
 
     const columns: ColumnsType<IDataProvider> = [
         {
-            title: DATA_PROVIDER_FIELDS.NAME.tableTitle,
             dataIndex: DATA_PROVIDER_FIELDS.NAME.key,
             key: DATA_PROVIDER_FIELDS.NAME.key,
-            ellipsis: true,
-            sorter: true,
-            width: DATA_PROVIDER_FIELDS.NAME.width,
+            ...DATA_PROVIDER_FIELDS.NAME.table,
             render: (name: string, record) => (
                 <CustomButton
                     type="link"
@@ -68,28 +64,20 @@ export default function DataProviderPage() {
             ),
         },
         {
-            title: DATA_PROVIDER_FIELDS.IDENTIFIER.tableTitle,
             dataIndex: DATA_PROVIDER_FIELDS.IDENTIFIER.key,
             key: DATA_PROVIDER_FIELDS.IDENTIFIER.key,
-            ellipsis: true,
-            sorter: true,
-            width: DATA_PROVIDER_FIELDS.IDENTIFIER.width,
+            ...DATA_PROVIDER_FIELDS.IDENTIFIER.table,
         },
         {
-            title: DATA_PROVIDER_FIELDS.BASE_URL.tableTitle,
             dataIndex: DATA_PROVIDER_FIELDS.BASE_URL.key,
             key: DATA_PROVIDER_FIELDS.BASE_URL.key,
-            ellipsis: true,
-            sorter: true,
-            width: DATA_PROVIDER_FIELDS.BASE_URL.width,
+            ...DATA_PROVIDER_FIELDS.BASE_URL.table,
         },
         {
-            title: DATA_PROVIDER_FIELDS.CREATED_AT.tableTitle,
             dataIndex: DATA_PROVIDER_FIELDS.CREATED_AT.key,
             key: DATA_PROVIDER_FIELDS.CREATED_AT.key,
-            sorter: true,
+            ...DATA_PROVIDER_FIELDS.CREATED_AT.table,
             render: (createdAt: Date) => formatDate(createdAt),
-            width: DATA_PROVIDER_FIELDS.CREATED_AT.width,
         },
     ];
 
@@ -123,26 +111,12 @@ export default function DataProviderPage() {
     const formFields: IFormField<DataProviderFormValues>[] = [
         {
             name: DATA_PROVIDER_FIELDS.NAME.key,
-            type: 'input',
             label: DATA_PROVIDER_FIELDS.NAME.label,
-            placeholder: DATA_PROVIDER_FIELDS.NAME.placeholder,
-            rulesConfig: [
-                {
-                    type: FormRuleType.Required,
-                    message: DATA_PROVIDER_FIELDS.NAME.requiredMessage,
-                },
-                {
-                    type: FormRuleType.Max,
-                    max: DATA_PROVIDER_FIELDS.NAME.maxLength,
-                    message: `${DATA_PROVIDER_FIELDS.NAME.label} không được vượt quá ${DATA_PROVIDER_FIELDS.NAME.maxLength} ký tự`,
-                },
-            ],
+            ...DATA_PROVIDER_FIELDS.NAME.form,
         },
         {
             name: DATA_PROVIDER_FIELDS.IDENTIFIER.key,
-            type: 'input',
             label: DATA_PROVIDER_FIELDS.IDENTIFIER.label,
-            placeholder: DATA_PROVIDER_FIELDS.IDENTIFIER.placeholder,
             disabled: (mode: FormMode) => mode === 'edit',
             addonAfter: (form, mode: FormMode) =>
                 mode === 'create' ? (
@@ -155,7 +129,7 @@ export default function DataProviderPage() {
                             if (currentName) {
                                 form.setFieldValue(
                                     DATA_PROVIDER_FIELDS.IDENTIFIER.key,
-                                    slugify(currentName, DATA_PROVIDER_FIELDS.IDENTIFIER.maxLength),
+                                    slugify(currentName, 20),
                                 );
                                 form.validateFields([DATA_PROVIDER_FIELDS.IDENTIFIER.key]);
                             }
@@ -166,34 +140,12 @@ export default function DataProviderPage() {
                         Tự động sinh
                     </CustomButton>
                 ) : undefined,
-            rulesConfig: [
-                {
-                    type: FormRuleType.Required,
-                    message: DATA_PROVIDER_FIELDS.IDENTIFIER.requiredMessage,
-                },
-                {
-                    type: FormRuleType.Max,
-                    max: DATA_PROVIDER_FIELDS.IDENTIFIER.maxLength,
-                    message: `${DATA_PROVIDER_FIELDS.IDENTIFIER.label} không được vượt quá ${DATA_PROVIDER_FIELDS.IDENTIFIER.maxLength} ký tự`,
-                },
-                {
-                    type: FormRuleType.Code,
-                    message: DATA_PROVIDER_FIELDS.IDENTIFIER.messages?.code,
-                },
-            ],
+            ...DATA_PROVIDER_FIELDS.IDENTIFIER.form,
         },
         {
             name: DATA_PROVIDER_FIELDS.BASE_URL.key,
-            type: 'input',
             label: DATA_PROVIDER_FIELDS.BASE_URL.label,
-            placeholder: DATA_PROVIDER_FIELDS.BASE_URL.placeholder,
-            rulesConfig: [
-                { type: FormRuleType.Url },
-                {
-                    type: FormRuleType.Required,
-                    message: DATA_PROVIDER_FIELDS.BASE_URL.requiredMessage,
-                },
-            ],
+            ...DATA_PROVIDER_FIELDS.BASE_URL.form,
         },
     ];
 

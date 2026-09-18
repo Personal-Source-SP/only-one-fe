@@ -11,11 +11,11 @@ import type {
     TextAreaProps,
 } from '@/components/custom-antd';
 import type { FormMode } from '@/hooks';
+import type { FormFieldType } from '@/interfaces';
 import type { FormRuleConfig } from '@/utilities';
 import type { ReactNode } from 'react';
 
-export type FormFieldType =
-    'input' | 'number' | 'password' | 'textarea' | 'select' | 'switch' | 'custom';
+export type { FormFieldType };
 
 export interface IBaseFormField<TValues = unknown> {
     name: keyof TValues | string;
