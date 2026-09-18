@@ -25,75 +25,75 @@ export interface IErrorItem {
 
 export type ApiError = string | IErrorItem | IErrorItem[];
 
-export namespace NBaseApi {
-    export interface IRequest {
-        baseURL: string;
-        timeout?: number;
-        accessToken?: string;
-        withCredentials?: boolean;
-    }
+export interface IBaseApiRequest {
+    baseURL: string;
+    timeout?: number;
+    accessToken?: string;
+    withCredentials?: boolean;
+}
 
-    export interface IResponse<T> {
-        data: T | null;
-        status?: number;
-        errorMessage?: string;
-    }
+export interface IBaseApiResponse<T> {
+    data: T | null;
+    status?: number;
+    errorMessage?: string;
+}
 
-    export interface IPaginationResponse<T> {
-        data: T[];
-        meta: {
-            itemsPerPage: number;
-            totalItems?: number;
-            currentPage?: number;
-            totalPages?: number;
-            sortBy: SortBy<T>;
-            searchBy: Column<T>[];
-            search: string;
-            select: string[];
-            filter?: {
-                [column: string]: string | string[];
-            };
-            cursor?: string;
-        };
-        links: {
-            first?: string;
-            previous?: string;
-            current: string;
-            next?: string;
-            last?: string;
-        };
-    }
+export interface IBaseApiPaginationLinks {
+    first?: string;
+    previous?: string;
+    current: string;
+    next?: string;
+    last?: string;
+}
 
-    export interface IGetRequest {
-        endPoint: string;
-        params?: URLSearchParams;
-        headers?: Record<string, string>;
-    }
+export interface IBaseApiPaginationMeta<T> {
+    itemsPerPage: number;
+    totalItems?: number;
+    currentPage?: number;
+    totalPages?: number;
+    sortBy: SortBy<T>;
+    searchBy: Column<T>[];
+    search: string;
+    select: string[];
+    filter?: Record<string, string | string[]>;
+    cursor?: string;
+}
 
-    export interface IDeleteRequest {
-        endPoint: string;
-        params?: URLSearchParams;
-        headers?: Record<string, string>;
-    }
+export interface IBaseApiPaginationResponse<T> {
+    data: T[];
+    meta: IBaseApiPaginationMeta<T>;
+    links: IBaseApiPaginationLinks;
+}
 
-    export interface IPostRequest {
-        endPoint: string;
-        data: Record<string, any>;
-        params?: URLSearchParams;
-        headers?: Record<string, string>;
-    }
+export interface IBaseApiGetRequest {
+    endPoint: string;
+    params?: URLSearchParams;
+    headers?: Record<string, string>;
+}
 
-    export interface IPutRequest {
-        endPoint: string;
-        data: Record<string, any>;
-        params?: URLSearchParams;
-        headers?: Record<string, string>;
-    }
+export interface IBaseApiDeleteRequest {
+    endPoint: string;
+    params?: URLSearchParams;
+    headers?: Record<string, string>;
+}
 
-    export interface IPatchRequest {
-        endPoint: string;
-        data: Record<string, any>;
-        params?: URLSearchParams;
-        headers?: Record<string, string>;
-    }
+export interface IBaseApiPostRequest {
+    endPoint: string;
+    data: Record<string, unknown>;
+    params?: URLSearchParams;
+    headers?: Record<string, string>;
+}
+
+export interface IBaseApiPutRequest {
+    endPoint: string;
+    data: Record<string, unknown>;
+    params?: URLSearchParams;
+    headers?: Record<string, string>;
+}
+
+export interface IBaseApiPatchRequest {
+    endPoint: string;
+    data: Record<string, unknown>;
+    params?: URLSearchParams;
+    headers?: Record<string, string>;
 }

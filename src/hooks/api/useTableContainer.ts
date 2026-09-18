@@ -4,17 +4,40 @@ import type {
     IBaseApiResourceRequest,
 } from '@/interfaces';
 import { resolveQueryNotifications } from '@/utilities';
+import type { useTableProps } from '@refinedev/antd';
 import { useTable } from '@refinedev/antd';
-import type { CrudFilter, CrudSort, Pagination } from '@refinedev/core';
+import type {
+    BaseRecord,
+    CrudFilter,
+    CrudSort,
+    GetListResponse,
+    HttpError,
+    Pagination,
+} from '@refinedev/core';
 
-export interface IUseTableContainerProps
-    extends IBaseApiResourceRequest, IBaseApiQueryRequest, IBaseApiNotificationRequest {
+export interface IUseTableContainerProps<
+    TQueryFnData extends BaseRecord = BaseRecord,
+    TError extends HttpError = HttpError,
+    TData extends BaseRecord = TQueryFnData,
+>
+    extends
+        IBaseApiResourceRequest,
+        IBaseApiQueryRequest<
+            useTableProps<TQueryFnData, TError, TData, GetListResponse<TData>>['queryOptions']
+        >,
+        IBaseApiNotificationRequest<GetListResponse<TData>, TError> {
     sorters?: CrudSort[];
     filters?: CrudFilter[];
     pagination?: Pagination;
 }
 
-export const useTableContainer = (props: IUseTableContainerProps) => {
+export const useTableContainer = <
+    TQueryFnData extends BaseRecord = BaseRecord,
+    TError extends HttpError = HttpError,
+    TData extends BaseRecord = TQueryFnData,
+>(
+    props: IUseTableContainerProps<TQueryFnData, TError, TData>,
+) => {
     const {
         resource,
         queryOptions,
@@ -25,7 +48,7 @@ export const useTableContainer = (props: IUseTableContainerProps) => {
         successNotification = false,
     } = props;
 
-    const resolvedNotifications = resolveQueryNotifications({
+    const resolvedNotifications = resolveQueryNotifications<GetListResponse<TData>, TError>({
         resource,
         errorNotification,
         successNotification,

@@ -7,6 +7,7 @@ import {
     CustomSwitchForm,
 } from '@/components/common';
 import type { UseCustomModalFormResponse } from '@/hooks';
+import type { IOption } from '@/interfaces';
 import { FormRuleType } from '@/utilities';
 import type {
     ScheduleExecutionFormValues,
@@ -19,8 +20,8 @@ interface ScheduleExecutionFormModalProps {
         ScheduleExecutionFormValues,
         ScheduleExecutionRecord
     >;
-    itemOptions?: { label: string; value: string }[];
-    dataProviderOptions?: { label: string; value: string }[];
+    itemOptions?: IOption<string>[];
+    dataProviderOptions?: IOption<string>[];
 }
 
 export const ScheduleExecutionFormModal = ({

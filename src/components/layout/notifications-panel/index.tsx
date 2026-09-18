@@ -66,7 +66,7 @@ type NotificationsPanelProps = {
 export const NotificationsPanel = ({ onClose }: NotificationsPanelProps) => {
     const [activeTab, setActiveTab] = useState<NotificationTab>(NotificationTab.ALL);
 
-    const tableContainerData = useTableContainer({
+    const tableContainerData = useTableContainer<INotification>({
         resource: API_ENDPOINT.NOTIFICATIONS.BASE,
     });
 
@@ -86,7 +86,8 @@ export const NotificationsPanel = ({ onClose }: NotificationsPanelProps) => {
     }, [activeTab]);
 
     const filterNotifications = useMemo(() => {
-        const notifications = tableContainerData.tableQuery?.data?.data as INotification[];
+        const notifications = (tableContainerData.tableQuery?.data?.data ??
+            []) as unknown as INotification[];
         if (!notifications) return [];
 
         return notifications;

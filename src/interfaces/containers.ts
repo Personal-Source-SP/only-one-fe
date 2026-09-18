@@ -1,19 +1,16 @@
-import type {
-    CustomPicker,
-    InputProps,
-    MenuProps,
-    SegmentedProps,
-    SelectProps,
-} from '@/components/custom-antd';
-import type { Dayjs } from 'dayjs';
-import type { ComponentProps, Key, MouseEvent, ReactNode } from 'react';
+import type { MenuProps } from '@/components/custom-antd';
+import type { Key, MouseEvent, ReactNode } from 'react';
+import type { FilterType, FilterValue, IFilterField, IFilterOption } from './filter';
 import type { IFieldFormConfig } from './forms';
+
+// Re-export filter contracts for backward compatibility
+export type { FilterType, FilterValue, IFilterField, IFilterOption };
 
 // --- Field & Metadata Config ---
 export interface IFieldTableConfig {
     title?: string;
     sorter?: boolean;
-    hsidden?: boolean;
+    hidden?: boolean;
     ellipsis?: boolean;
     width?: string | number;
 }
@@ -37,37 +34,8 @@ export interface IBreadcrumbItem {
     onClick?: () => void;
 }
 
-// --- Filters Contract ---
-export type FilterValue =
-    string | number | boolean | string[] | number[] | [Dayjs, Dayjs] | null | undefined;
-
-export type FilterType = 'input' | 'select' | 'dateRange' | 'segmented';
-
-export interface IFilterOption {
-    label: ReactNode;
-    value: string | number | null | undefined;
-}
-
-export interface IFilterField {
-    name: string;
-    type: FilterType;
-    label?: ReactNode;
-    value?: FilterValue;
-    className?: string;
-    isPrimary?: boolean;
-    enableDateRangePresets?: boolean;
-    placeholder?: string | [string, string];
-    onChange?: (value: FilterValue) => void;
-
-    options?: IFilterOption[];
-    inputProps?: InputProps;
-    selectProps?: SelectProps;
-    segmentedProps?: SegmentedProps;
-    rangePickerProps?: ComponentProps<typeof CustomPicker.RangePicker>;
-}
-
 // --- List Table Custom Action ---
-export interface TableCustomAction<RecordType> {
+export interface ITableCustomAction<RecordType> {
     key: string;
     icon?: ReactNode;
     tooltip?: string;
@@ -82,7 +50,7 @@ export interface TableCustomAction<RecordType> {
 }
 
 // --- Mobile Card List Menu Item ---
-export type ActionMenuItem = NonNullable<MenuProps['items']>[number] & {
+export type IActionMenuItem = NonNullable<MenuProps['items']>[number] & {
     key?: Key;
     icon?: ReactNode;
     danger?: boolean;

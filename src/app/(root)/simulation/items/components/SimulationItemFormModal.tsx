@@ -2,6 +2,7 @@
 
 import { CustomInputForm, CustomModalForm, CustomSelectInput } from '@/components/common';
 import type { UseCustomModalFormResponse } from '@/hooks';
+import type { IOption } from '@/interfaces';
 import { FormRuleType } from '@/utilities';
 import type {
     SimulationItemFormValues,
@@ -14,7 +15,7 @@ interface SimulationItemFormModalProps {
         SimulationItemFormValues,
         SimulationItemRecord
     >;
-    simulationContextOptions?: { label: string; value: string }[];
+    simulationContextOptions?: IOption<string>[];
 }
 
 export const SimulationItemFormModal = ({

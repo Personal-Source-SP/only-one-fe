@@ -1,5 +1,13 @@
 import { KEY_LOCAL_STORAGE, KEY_SESSION_STORAGE } from '@/constants';
-import { NBaseApi } from '@/interfaces';
+import type {
+    IBaseApiDeleteRequest,
+    IBaseApiGetRequest,
+    IBaseApiPatchRequest,
+    IBaseApiPostRequest,
+    IBaseApiPutRequest,
+    IBaseApiRequest,
+    IBaseApiResponse,
+} from '@/interfaces';
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
 import { signOut } from 'next-auth/react';
 import { isEmpty } from 'lodash';
@@ -7,7 +15,7 @@ import { isEmpty } from 'lodash';
 export class BaseApi {
     private httpClient: AxiosInstance;
 
-    constructor(request: NBaseApi.IRequest) {
+    constructor(request: IBaseApiRequest) {
         const { baseURL, timeout, withCredentials, accessToken } = request;
 
         this.httpClient = axios.create({
@@ -81,7 +89,7 @@ export class BaseApi {
         );
     }
 
-    async get<T>(request: NBaseApi.IGetRequest): Promise<NBaseApi.IResponse<T | null>> {
+    async get<T>(request: IBaseApiGetRequest): Promise<IBaseApiResponse<T | null>> {
         const { endPoint, params, headers } = request;
 
         return this.httpClient
@@ -107,7 +115,7 @@ export class BaseApi {
             });
     }
 
-    async delete<T>(request: NBaseApi.IDeleteRequest): Promise<NBaseApi.IResponse<T | null>> {
+    async delete<T>(request: IBaseApiDeleteRequest): Promise<IBaseApiResponse<T | null>> {
         const { endPoint, params, headers } = request;
 
         return this.httpClient
@@ -133,7 +141,7 @@ export class BaseApi {
             });
     }
 
-    async post<T>(request: NBaseApi.IPostRequest): Promise<NBaseApi.IResponse<T | null>> {
+    async post<T>(request: IBaseApiPostRequest): Promise<IBaseApiResponse<T | null>> {
         const { endPoint, data, params, headers } = request;
 
         return this.httpClient
@@ -159,7 +167,7 @@ export class BaseApi {
             });
     }
 
-    async put<T>(request: NBaseApi.IPutRequest): Promise<NBaseApi.IResponse<T | null>> {
+    async put<T>(request: IBaseApiPutRequest): Promise<IBaseApiResponse<T | null>> {
         const { endPoint, data, params, headers } = request;
 
         return this.httpClient
@@ -185,7 +193,7 @@ export class BaseApi {
             });
     }
 
-    async patch<T>(request: NBaseApi.IPatchRequest): Promise<NBaseApi.IResponse<T | null>> {
+    async patch<T>(request: IBaseApiPatchRequest): Promise<IBaseApiResponse<T | null>> {
         const { endPoint, data, params, headers } = request;
 
         return this.httpClient

@@ -1,6 +1,5 @@
 'use client';
 
-import { FormModalLayout } from '@/components/common';
 import {
     ColumnType,
     CustomButton,
@@ -10,6 +9,7 @@ import {
     CustomDatePicker,
     CustomFlex,
     CustomForm,
+    CustomModal,
     CustomRow,
     CustomSelect,
     CustomSpace,
@@ -27,7 +27,7 @@ import type {
     IScrapeDataRequest,
     IScrapeDataResponse,
 } from '@/app/(root)/scraping/scraping-data/types';
-import type { NBaseApi } from '@/interfaces';
+import type { IBaseApiResponse } from '@/interfaces';
 import { Icon } from '@iconify/react';
 
 import dayjs from 'dayjs';
@@ -165,7 +165,7 @@ export const ProcessScrapeData = ({
                 },
                 url: 'scraping-data/process-scrape-data',
                 successNotification(data) {
-                    const response = data?.data as NBaseApi.IResponse<IScrapeDataResponse>;
+                    const response = data?.data as IBaseApiResponse<IScrapeDataResponse>;
 
                     if (!response?.data) {
                         setIsLoading(false);
@@ -379,16 +379,13 @@ export const ProcessScrapeData = ({
     };
 
     return (
-        <FormModalLayout
-            formLoading={false}
-            modalProps={{
-                open,
-                width: 900,
-                centered: true,
-                loading: isLoading,
-                title: 'Cào dữ liệu',
-                footer: renderFooter(),
-            }}
+        <CustomModal
+            open={open}
+            width={900}
+            centered
+            loading={isLoading}
+            title="Cào dữ liệu"
+            footer={renderFooter()}
         >
             <CustomSpace direction="vertical" className="w-full h-full px-3 overflow-x-hidden">
                 <CustomCard className="mb-4 bg-green-50 border-green-200" size="small">
@@ -406,6 +403,6 @@ export const ProcessScrapeData = ({
                     </CustomSpace>
                 </CustomSpin>
             </CustomSpace>
-        </FormModalLayout>
+        </CustomModal>
     );
 };

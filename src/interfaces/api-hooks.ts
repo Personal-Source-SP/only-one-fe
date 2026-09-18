@@ -12,9 +12,9 @@ export type CustomHttpMethod = 'get' | 'post' | 'put' | 'delete' | 'patch';
 
 export type FormMode = 'create' | 'edit' | 'clone';
 
-export type NotificationCallback<T = any> = (
+export type NotificationCallback<T = unknown> = (
     dataOrError?: T,
-    values?: any,
+    values?: unknown,
     resource?: string,
 ) => OpenNotificationParams | false | undefined;
 
@@ -33,23 +33,23 @@ export interface IBaseApiResourceRequest {
 }
 
 export interface IBaseApiNotificationRequest<
-    TData = any,
-    TError = any,
-    TVariables = any,
+    TData = unknown,
+    TError = unknown,
+    TVariables = unknown,
 > extends SuccessErrorNotification<TData, TError, TVariables> {
     resource?: string;
 }
 
-export interface IBaseApiCallbackRequest<TData = any> {
+export interface IBaseApiCallbackRequest<TData = unknown> {
     onSuccess?: (data: TData) => void | Promise<void>;
     onError?: (error: HttpError) => void | Promise<void>;
 }
 
-export interface IBaseApiQueryRequest<TOptions = any> {
+export interface IBaseApiQueryRequest<TOptions = unknown> {
     queryOptions?: TOptions;
 }
 
-export interface IBaseApiTransformRequest<TData = any, TTransformed = TData> {
+export interface IBaseApiTransformRequest<TData = unknown, TTransformed = TData> {
     transform?: (data: TData | undefined, rawResponse?: unknown) => TTransformed;
 }
 

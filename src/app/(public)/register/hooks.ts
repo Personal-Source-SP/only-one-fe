@@ -4,14 +4,14 @@ import { useCallback } from 'react';
 import { useMainContext } from '@/contexts/MainContext';
 import { NotificationType } from '@/enums';
 import { CustomForm } from '@/components/custom-antd';
-import { IAuth } from '@/interfaces';
+import type { IAuthRegisterFormValues } from '@/interfaces';
 
 export const useRegisterPage = () => {
     const { handleNotification } = useMainContext();
-    const [form] = CustomForm.useForm<IAuth.IRegisterFormValues>();
+    const [form] = CustomForm.useForm<IAuthRegisterFormValues>();
 
     const handleRegister = useCallback(
-        async (_values: IAuth.IRegisterFormValues) => {
+        async (_values: IAuthRegisterFormValues) => {
             handleNotification({
                 type: NotificationType.INFO,
                 message: 'Tính năng đang được phát triển',

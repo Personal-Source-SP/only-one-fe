@@ -2,12 +2,13 @@
 
 import { CustomModalForm, CustomSelectInput, CustomUpload } from '@/components/common';
 import type { UseCustomModalFormResponse } from '@/hooks';
+import type { IOption } from '@/interfaces';
 import { FormRuleType } from '@/utilities';
 import type { CloudItemFormValues, CloudItemRecord } from '@/app/(root)/cloud-data/items/types';
 
 interface CloudItemFormModalProps {
     modalForm: UseCustomModalFormResponse<CloudItemRecord, CloudItemFormValues, CloudItemRecord>;
-    cloudDataProviderOptions?: { label: string; value: string }[];
+    cloudDataProviderOptions?: IOption<string>[];
 }
 
 export const CloudItemFormModal = ({

@@ -11,15 +11,12 @@ import type {
 import type { FormMode } from '@/hooks';
 import type { FormRuleConfig } from '@/utilities';
 import type { ReactNode } from 'react';
+import type { IOption } from './component';
 
 export type FormFieldType =
     'input' | 'number' | 'password' | 'textarea' | 'select' | 'switch' | 'custom';
 
-export interface IOption<T = string | number> {
-    value: T;
-    label: string;
-    key?: string;
-}
+export type { IOption };
 
 export interface IFieldFormConfig {
     colSpan?: number;

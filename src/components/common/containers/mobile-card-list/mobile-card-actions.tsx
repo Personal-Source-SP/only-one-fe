@@ -8,10 +8,10 @@ import { useCallback, type Key, type MouseEvent, type ReactNode } from 'react';
 
 import type { MenuProps } from '@/components/custom-antd';
 import { CustomButton, CustomPopconfirm } from '@/components/custom-antd';
-import type { ActionMenuItem } from '@/interfaces';
+import type { IActionMenuItem } from '@/interfaces';
 import { getRecordId } from './utils';
 
-export type { ActionMenuItem };
+export type { IActionMenuItem as ActionMenuItem, IActionMenuItem };
 
 export interface MobileCardActionsProps<RecordType extends BaseRecord> {
     record: RecordType;
@@ -30,14 +30,14 @@ export function MobileCardActions<RecordType extends BaseRecord>({
 }: MobileCardActionsProps<RecordType>) {
     if (!actions || isEmpty(actions)) return null;
 
-    const getActionButtonLabel = useCallback((item: ActionMenuItem) => {
+    const getActionButtonLabel = useCallback((item: IActionMenuItem) => {
         if (typeof item.label === 'string') return item.label;
         if (item.key === 'view') return 'Xem chi tiết';
         if (item.key === 'edit') return 'Chỉnh sửa';
         return item.label;
     }, []);
 
-    const renderActionItem = useCallback((item: ActionMenuItem) => {
+    const renderActionItem = useCallback((item: IActionMenuItem) => {
         if (!item) return null;
 
         if (item.key === 'delete') {
@@ -90,7 +90,7 @@ export function MobileCardActions<RecordType extends BaseRecord>({
 
     return (
         <div className="mt-2.5 border-t border-hub-border-card/60 pt-3 grid grid-cols-2 gap-2 w-full [&>:last-child:nth-child(odd)]:col-span-2">
-            {actions.map((item) => renderActionItem(item as ActionMenuItem))}
+            {actions.map((item) => renderActionItem(item as IActionMenuItem))}
         </div>
     );
 }

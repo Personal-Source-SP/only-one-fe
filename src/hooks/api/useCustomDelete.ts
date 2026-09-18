@@ -1,5 +1,5 @@
 import { NotificationAction, resolveApiUrl, resolveMutationNotifications } from '@/utilities';
-import type { BaseKey, BaseRecord, HttpError } from '@refinedev/core';
+import type { BaseKey, BaseRecord, CustomResponse, HttpError } from '@refinedev/core';
 import { useApiUrl, useCustomMutation } from '@refinedev/core';
 import type {
     IBaseApiCallbackRequest,
@@ -8,12 +8,16 @@ import type {
 } from '@/interfaces';
 
 export interface HandleCustomDeleteRequest<TData extends BaseRecord = BaseRecord>
-    extends IBaseApiNotificationRequest, IBaseApiCallbackRequest<TData> {
+    extends
+        IBaseApiNotificationRequest<CustomResponse<TData>, HttpError, Record<string, unknown>>,
+        IBaseApiCallbackRequest<TData> {
     id: BaseKey;
 }
 
 export interface UseCustomDeleteRequest<TData extends BaseRecord = BaseRecord>
-    extends IBaseApiNotificationRequest, IBaseApiCallbackRequest<TData> {}
+    extends
+        IBaseApiNotificationRequest<CustomResponse<TData>, HttpError, Record<string, unknown>>,
+        IBaseApiCallbackRequest<TData> {}
 
 export interface UseCustomDeleteResponse<
     TData extends BaseRecord = BaseRecord,

@@ -34,5 +34,4 @@ export * from './forms/custom-range-picker';
 export * from './forms/custom-select-input';
 export * from './forms/custom-switch-form';
 export * from './forms/custom-upload-form';
-export * from './forms/form-modal-layout';
 export * from './forms/html-editor';

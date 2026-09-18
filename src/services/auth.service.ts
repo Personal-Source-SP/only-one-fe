@@ -1,5 +1,5 @@
 import { getApiBaseUrl } from '@/libs';
-import { IAuth } from '@/interfaces';
+import type { IAuthLoginRequest, IAuthLoginResponse, IAuthRefreshResponse } from '@/interfaces';
 import { BaseApi } from './base.service';
 
 class AuthService extends BaseApi {
@@ -9,17 +9,17 @@ class AuthService extends BaseApi {
         });
     }
 
-    async login(request: IAuth.ILoginRequest): Promise<IAuth.ILoginResponse | null> {
-        const result = await this.post<IAuth.ILoginResponse>({
-            data: request,
+    async login(request: IAuthLoginRequest): Promise<IAuthLoginResponse | null> {
+        const result = await this.post<IAuthLoginResponse>({
+            data: request as unknown as Record<string, unknown>,
             endPoint: '/auth/login',
         });
 
         return result?.data || null;
     }
 
-    async refreshToken(refreshToken: string): Promise<IAuth.IRefreshResponse | null> {
-        const result = await this.post<IAuth.IRefreshResponse>({
+    async refreshToken(refreshToken: string): Promise<IAuthRefreshResponse | null> {
+        const result = await this.post<IAuthRefreshResponse>({
             data: { refreshToken },
             endPoint: '/auth/refresh-token',
         });

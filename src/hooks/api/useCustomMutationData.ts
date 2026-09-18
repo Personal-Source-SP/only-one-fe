@@ -11,7 +11,12 @@ import {
     resolveApiUrl,
     resolveMutationNotifications,
 } from '@/utilities';
-import type { BaseRecord, HttpError } from '@refinedev/core';
+import type {
+    BaseRecord,
+    CustomResponse,
+    HttpError,
+    SuccessErrorNotification,
+} from '@refinedev/core';
 import { useApiUrl, useCustomMutation } from '@refinedev/core';
 
 export type CustomMutationMethod = Extract<CustomHttpMethod, 'post' | 'put' | 'delete' | 'patch'>;
@@ -20,13 +25,21 @@ export interface CustomMutationDataRequest<
     TPayload = unknown,
     TData extends BaseRecord = BaseRecord,
 >
-    extends IBaseApiUrlRequest, IBaseApiNotificationRequest, IBaseApiCallbackRequest<TData> {
+    extends
+        IBaseApiUrlRequest,
+        IBaseApiNotificationRequest<CustomResponse<TData>, HttpError, TPayload>,
+        IBaseApiCallbackRequest<TData> {
     values?: TPayload;
     method?: CustomMutationMethod;
 }
 
-export interface UseCustomMutationDataRequest<TData extends BaseRecord = BaseRecord>
-    extends IBaseApiNotificationRequest, IBaseApiCallbackRequest<TData> {
+export interface UseCustomMutationDataRequest<
+    TData extends BaseRecord = BaseRecord,
+    TPayload = unknown,
+>
+    extends
+        IBaseApiNotificationRequest<CustomResponse<TData>, HttpError, TPayload>,
+        IBaseApiCallbackRequest<TData> {
     method?: CustomMutationMethod;
 }
 
@@ -76,8 +89,10 @@ export const useCustomMutationData = <TData extends BaseRecord = BaseRecord, TPa
                 method,
                 url: targetUrl,
                 values: values ?? ({} as TPayload),
-                errorNotification: resolvedErrorNotification,
-                successNotification: resolvedSuccessNotification,
+                errorNotification:
+                    resolvedErrorNotification as SuccessErrorNotification['errorNotification'],
+                successNotification:
+                    resolvedSuccessNotification as SuccessErrorNotification['successNotification'],
             });
 
             await (requestOnSuccess ?? onSuccess)?.(response.data);

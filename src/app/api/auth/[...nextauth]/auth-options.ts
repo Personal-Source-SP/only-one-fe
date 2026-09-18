@@ -1,4 +1,4 @@
-import { IAuth } from '@/interfaces';
+import type { IAuthPayload } from '@/interfaces';
 import { authService } from '@/services';
 import { AxiosError } from 'axios';
 import { jwtDecode } from 'jwt-decode';
@@ -45,7 +45,7 @@ export const authOptions: NextAuthOptions = {
 
                     const { accessToken, refreshToken } = response;
 
-                    const decodedAccessToken = jwtDecode<IAuth.IPayload>(accessToken);
+                    const decodedAccessToken = jwtDecode<IAuthPayload>(accessToken);
 
                     const user: Awaitable<User> = {
                         ...decodedAccessToken,

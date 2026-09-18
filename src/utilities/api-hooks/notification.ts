@@ -35,27 +35,43 @@ export const getMethodNotificationAction = (
     return METHOD_NOTIFICATION_ACTION[method] ?? NotificationAction.Update;
 };
 
-export interface ResolveMutationNotificationsParams {
+export interface ResolveMutationNotificationsParams<TData = any, TError = any, TVariables = any> {
     resource?: string;
     action?: NotificationAction;
-    requestErrorNotification?: ApiNotificationParam;
-    hookErrorNotification?: ApiNotificationParam;
-    requestSuccessNotification?: ApiNotificationParam;
-    hookSuccessNotification?: ApiNotificationParam;
+    requestErrorNotification?: SuccessErrorNotification<
+        TData,
+        TError,
+        TVariables
+    >['errorNotification'];
+    hookErrorNotification?: SuccessErrorNotification<
+        TData,
+        TError,
+        TVariables
+    >['errorNotification'];
+    requestSuccessNotification?: SuccessErrorNotification<
+        TData,
+        TError,
+        TVariables
+    >['successNotification'];
+    hookSuccessNotification?: SuccessErrorNotification<
+        TData,
+        TError,
+        TVariables
+    >['successNotification'];
 }
 
 /**
  * Resolves error and success notification configs with Request > Hook > Default precedence.
  */
-export const resolveMutationNotifications = ({
+export const resolveMutationNotifications = <TData = any, TError = any, TVariables = any>({
     resource,
     action = NotificationAction.Create,
     requestErrorNotification,
     hookErrorNotification,
     requestSuccessNotification,
     hookSuccessNotification,
-}: ResolveMutationNotificationsParams) => {
-    let errorNotification: ApiNotificationParam;
+}: ResolveMutationNotificationsParams<TData, TError, TVariables>) => {
+    let errorNotification: SuccessErrorNotification<TData, TError, TVariables>['errorNotification'];
     if (requestErrorNotification !== undefined) {
         errorNotification = requestErrorNotification;
     } else if (hookErrorNotification !== undefined) {
@@ -67,7 +83,11 @@ export const resolveMutationNotifications = ({
         });
     }
 
-    let successNotification: ApiNotificationParam;
+    let successNotification: SuccessErrorNotification<
+        TData,
+        TError,
+        TVariables
+    >['successNotification'];
     if (requestSuccessNotification !== undefined) {
         successNotification = requestSuccessNotification;
     } else if (hookSuccessNotification !== undefined) {
@@ -88,11 +108,11 @@ export const resolveMutationNotifications = ({
 /**
  * Resolves error notification for load/query operations.
  */
-export const resolveQueryErrorNotification = (
-    params: IBaseApiNotificationRequest & { action?: NotificationAction },
+export const resolveQueryErrorNotification = <TData = any, TError = any>(
+    params: IBaseApiNotificationRequest<TData, TError> & { action?: NotificationAction },
 ): ApiNotificationParam => {
     if (params.errorNotification !== undefined) {
-        return params.errorNotification;
+        return params.errorNotification as ApiNotificationParam;
     }
 
     return getErrorNotification({
@@ -104,11 +124,12 @@ export const resolveQueryErrorNotification = (
 /**
  * Resolves query notifications with error enabled and success disabled by default.
  */
-export const resolveQueryNotifications = (
-    params: IBaseApiNotificationRequest & { action?: NotificationAction },
+export const resolveQueryNotifications = <TData = any, TError = any>(
+    params: IBaseApiNotificationRequest<TData, TError> & { action?: NotificationAction },
 ): SuccessErrorNotification => ({
     errorNotification: resolveQueryErrorNotification(params),
-    successNotification: params.successNotification ?? false,
+    successNotification:
+        (params.successNotification as SuccessErrorNotification['successNotification']) ?? false,
 });
 
 export interface ResolveFormNotificationsParams extends IBaseApiNotificationRequest {

@@ -1,16 +1,16 @@
 'use client';
 
-import { FormModalLayout } from '@/components/common';
 import {
     ColumnType,
     CustomButton,
     CustomCard,
+    CustomDataTable,
     CustomFlex,
+    CustomModal,
     CustomResult,
     CustomSpace,
     CustomSpin,
     CustomSteps,
-    CustomDataTable,
     CustomTypography,
     CustomUpload,
     StepsProps,
@@ -24,7 +24,7 @@ import type {
     IImportDataResponse,
     IPreviewImportDataResponse,
 } from '@/app/(root)/scraping/scraping-data/types';
-import type { NBaseApi } from '@/interfaces';
+import type { IBaseApiResponse } from '@/interfaces';
 import { FileExcelOutlined } from '@ant-design/icons';
 import { Icon } from '@iconify/react';
 import { useState } from 'react';
@@ -92,7 +92,7 @@ export const ImportData = ({ open, dataType, columns, onClose, onSuccess }: Impo
                 url: `import-data/preview-import-data/${dataType}`,
                 values: formData,
                 successNotification(data) {
-                    const response = data?.data as NBaseApi.IResponse<IPreviewImportDataResponse>;
+                    const response = data?.data as IBaseApiResponse<IPreviewImportDataResponse>;
 
                     if (!response?.data) {
                         return {
@@ -136,7 +136,7 @@ export const ImportData = ({ open, dataType, columns, onClose, onSuccess }: Impo
                     data: previewItemData?.data ?? [],
                 },
                 successNotification(data) {
-                    const response = data?.data as NBaseApi.IResponse<IImportDataResponse>;
+                    const response = data?.data as IBaseApiResponse<IImportDataResponse>;
 
                     if (!response?.data) {
                         return {
@@ -368,16 +368,13 @@ export const ImportData = ({ open, dataType, columns, onClose, onSuccess }: Impo
     };
 
     return (
-        <FormModalLayout
-            formLoading={false}
-            modalProps={{
-                open,
-                width: 900,
-                centered: true,
-                loading: isLoading,
-                title: 'Nhập dữ liệu',
-                footer: renderFooter(),
-            }}
+        <CustomModal
+            open={open}
+            width={900}
+            centered
+            loading={isLoading}
+            title="Nhập dữ liệu"
+            footer={renderFooter()}
         >
             <CustomSpace direction="vertical" className="w-full h-full px-3 overflow-x-hidden">
                 <CustomCard className="mb-4 bg-green-50 border-green-200" size="small">
@@ -395,6 +392,6 @@ export const ImportData = ({ open, dataType, columns, onClose, onSuccess }: Impo
                     </CustomSpace>
                 </CustomSpin>
             </CustomSpace>
-        </FormModalLayout>
+        </CustomModal>
     );
 };

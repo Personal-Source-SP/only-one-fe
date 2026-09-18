@@ -8,5 +8,5 @@ export interface INotification extends IAbstract {
     path?: string;
     userId?: string;
     description?: string;
-    data?: Record<string, any>;
+    data?: Record<string, unknown>;
 }

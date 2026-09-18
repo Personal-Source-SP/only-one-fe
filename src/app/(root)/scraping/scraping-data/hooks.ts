@@ -11,7 +11,7 @@ import {
     useSelectItem,
     useTableContainer,
 } from '@/hooks';
-import type { IFileItem, IFilterItem, NBaseApi } from '@/interfaces';
+import type { IBaseApiResponse, IFileItem, IFilterItem } from '@/interfaces';
 import type { IScrapingData } from './types';
 
 import { columnDisplayOptions, dataTypeOptions, viewModeOptions } from './constants';
@@ -29,7 +29,7 @@ export const useScrapingDataPage = () => {
     const [isLightboxOpen, setIsLightboxOpen] = useState<boolean>(false);
     const [currentPhotoIndex, setCurrentPhotoIndex] = useState<number>(0);
 
-    const tableContainerData = useTableContainer({
+    const tableContainerData = useTableContainer<IScrapingData>({
         resource: API_ENDPOINT.SCRAPING_DATA.BASE,
         sorters: [{ field: 'lastModified', order: 'desc' }],
         pagination: {
@@ -43,12 +43,13 @@ export const useScrapingDataPage = () => {
 
     const { handleDelete } = useCustomDelete({
         resource: API_ENDPOINT.SCRAPING_DATA.BASE,
-        errorNotification: (error: any) => ({
+        errorNotification: (error) => ({
             type: MessageType.ERROR,
             message: error?.message || 'Xóa dữ liệu không thành công',
         }),
-        successNotification: (data: NBaseApi.IResponse<boolean>) => {
-            if (data?.status === 200) {
+        successNotification: (data) => {
+            const response = data as unknown as IBaseApiResponse<boolean>;
+            if (response?.status === 200) {
                 tableContainerData?.tableQuery?.refetch();
 
                 handleMessage({
@@ -73,7 +74,8 @@ export const useScrapingDataPage = () => {
     });
 
     const photoItems: IFileItem[] = useMemo(() => {
-        const scrapingDatas = (tableContainerData?.tableQuery?.data?.data ?? []) as IScrapingData[];
+        const scrapingDatas = (tableContainerData?.tableQuery?.data?.data ??
+            []) as unknown as IScrapingData[];
 
         if (!scrapingDatas?.length) return [];
 

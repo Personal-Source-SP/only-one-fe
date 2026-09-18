@@ -6,7 +6,7 @@ import { useLogin } from '@refinedev/core';
 import { useMainContext } from '@/contexts/MainContext';
 import { NotificationType } from '@/enums';
 import { KEY_SESSION_STORAGE, mapNextAuthSignInErrorMessage } from '@/constants';
-import { IAuth } from '@/interfaces';
+import type { IAuthLoginRequest } from '@/interfaces';
 
 export const useLoginPage = () => {
     const { isPending, mutate: login } = useLogin();
@@ -15,7 +15,7 @@ export const useLoginPage = () => {
     const [rememberMe, setRememberMe] = useState(false);
 
     const handleLogin = useCallback(
-        async (values: IAuth.ILoginRequest) => {
+        async (values: IAuthLoginRequest) => {
             login(
                 {
                     email: values.email,
