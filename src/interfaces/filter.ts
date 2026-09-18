@@ -53,16 +53,3 @@ export interface IFilterItem {
 
     onChange?(value: unknown): void;
 }
-
-export interface IActionTableItem {
-    key: string;
-    label: string;
-    icon: ReactNode;
-    onClick?(record: unknown): void;
-}
-
-export interface ISearchFilterItem {
-    name?: string;
-    span?: number;
-    placeholder?: string;
-}

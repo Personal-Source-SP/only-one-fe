@@ -1,6 +1,3 @@
-export type SortBy<T> = [keyof T & string, 'ASC' | 'DESC'][];
-export type Column<T> = keyof T & string;
-
 export interface IAbstract {
     id: string;
     createdAt?: Date;
@@ -36,33 +33,6 @@ export interface IBaseApiResponse<T> {
     data: T | null;
     status?: number;
     errorMessage?: string;
-}
-
-export interface IBaseApiPaginationLinks {
-    first?: string;
-    previous?: string;
-    current: string;
-    next?: string;
-    last?: string;
-}
-
-export interface IBaseApiPaginationMeta<T> {
-    itemsPerPage: number;
-    totalItems?: number;
-    currentPage?: number;
-    totalPages?: number;
-    sortBy: SortBy<T>;
-    searchBy: Column<T>[];
-    search: string;
-    select: string[];
-    filter?: Record<string, string | string[]>;
-    cursor?: string;
-}
-
-export interface IBaseApiPaginationResponse<T> {
-    data: T[];
-    meta: IBaseApiPaginationMeta<T>;
-    links: IBaseApiPaginationLinks;
 }
 
 export interface IBaseApiGetRequest {

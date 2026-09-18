@@ -2,7 +2,6 @@ import type { ButtonProps, FormProps } from '@/components/custom-antd';
 import type {
     BaseRecord,
     HttpError,
-    OpenNotificationParams,
     SuccessErrorNotification,
     useCustom,
     useCustomMutation,
@@ -11,12 +10,6 @@ import type {
 export type CustomHttpMethod = 'get' | 'post' | 'put' | 'delete' | 'patch';
 
 export type FormMode = 'create' | 'edit' | 'clone';
-
-export type NotificationCallback<T = unknown> = (
-    dataOrError?: T,
-    values?: unknown,
-    resource?: string,
-) => OpenNotificationParams | false | undefined;
 
 export type ApiNotificationParam = SuccessErrorNotification['errorNotification'];
 

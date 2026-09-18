@@ -1,10 +1,6 @@
 import type { MenuProps } from '@/components/custom-antd';
 import type { Key, MouseEvent, ReactNode } from 'react';
-import type { FilterType, FilterValue, IFilterField, IFilterOption } from './filter';
 import type { IFieldFormConfig } from './forms';
-
-// Re-export filter contracts for backward compatibility
-export type { FilterType, FilterValue, IFilterField, IFilterOption };
 
 // --- Field & Metadata Config ---
 export interface IFieldTableConfig {
