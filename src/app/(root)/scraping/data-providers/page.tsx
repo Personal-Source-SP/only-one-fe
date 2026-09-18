@@ -1,7 +1,7 @@
 'use client';
 
 import {
-    ListWrapper,
+    ListContainer,
     type ICardAction,
     type IFilterField,
     type IFormField,
@@ -152,7 +152,7 @@ export default function DataProviderPage() {
     ];
 
     return (
-        <ListWrapper<IDataProvider, IDataProviderFormValues>
+        <ListContainer<IDataProvider, IDataProviderFormValues>
             filters={filters}
             actions={actions}
             table={{
@@ -165,15 +165,15 @@ export default function DataProviderPage() {
             }}
             formModal={[
                 {
-                    sections: [{ fields: formFields }],
                     modalForm: createModalForm,
                     title: 'Thêm mới nhà cung cấp',
                     createInitialValues: { name: '', baseUrl: '', identifier: '' },
+                    sections: [{ type: 'card', fields: formFields }],
                 },
                 {
-                    sections: [{ fields: formFields }],
                     modalForm: editModalForm,
                     title: 'Chỉnh sửa nhà cung cấp',
+                    sections: [{ type: 'card', fields: formFields }],
                 },
             ]}
         />

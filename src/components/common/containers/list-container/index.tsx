@@ -196,8 +196,3 @@ export const ListContainer = <
         </>
     );
 };
-
-/**
- * @deprecated Use `ListContainer` instead.
- */
-export const ListWrapper = ListContainer;

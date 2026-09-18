@@ -186,37 +186,62 @@ export type IFormField<TValues = unknown> =
 export type FormSectionType = 'card' | 'plain' | 'collapse' | 'tabs';
 
 /**
- * Interface cơ sở chứa toàn bộ các thuộc tính dùng chung của Form Section.
+ * Interface cơ sở tối giản chứa các thuộc tính dùng chung 100% của mọi Form Section.
  */
 export interface IBaseFormSection<TValues = unknown> {
+    type: FormSectionType;
     id?: string;
-    title?: ReactNode;
-    description?: ReactNode;
-    icon?: string;
-    badge?: ReactNode;
-    badgeColor?: string;
-    extra?: ReactNode;
     className?: string;
-    gutter?: [number, number];
     visible?: boolean | ((mode: FormMode, form?: FormInstance<TValues>) => boolean);
 }
 
-export interface ICardFormSection<TValues = unknown> extends IBaseFormSection<TValues> {
-    type?: 'card';
+/**
+ * Interface cơ sở cho các Section chứa danh sách field trực tiếp.
+ */
+export interface IFieldFormSection<TValues = unknown> extends IBaseFormSection<TValues> {
     fields: IFormField<TValues>[];
+    gutter?: [number, number];
 }
 
-export interface IPlainFormSection<TValues = unknown> extends IBaseFormSection<TValues> {
+/**
+ * Section dạng Plain (không có khung viền Card / Collapse, chỉ có text title/description đơn giản).
+ */
+export interface IPlainFormSection<TValues = unknown> extends IFieldFormSection<TValues> {
     type: 'plain';
-    fields: IFormField<TValues>[];
+    title?: ReactNode;
+    description?: ReactNode;
 }
 
-export interface ICollapseFormSection<TValues = unknown> extends IBaseFormSection<TValues> {
+/**
+ * Interface cơ sở cho các Section có Header đầy đủ (hỗ trợ icon, badge, extra, collapsible).
+ */
+export interface IHeaderFormSection<TValues = unknown> extends IFieldFormSection<TValues> {
+    icon?: string;
+    title?: ReactNode;
+    badge?: ReactNode;
+    extra?: ReactNode;
+    badgeColor?: string;
+    description?: ReactNode;
+}
+
+/**
+ * Section dạng Card (khung viền Card, header đầy đủ và danh sách fields).
+ */
+export interface ICardFormSection<TValues = unknown> extends IHeaderFormSection<TValues> {
+    type: 'card';
+}
+
+/**
+ * Section dạng Collapse (khung viền, header hỗ trợ đóng mở accordion).
+ */
+export interface ICollapseFormSection<TValues = unknown> extends IHeaderFormSection<TValues> {
     type: 'collapse';
     defaultCollapsed?: boolean;
-    fields: IFormField<TValues>[];
 }
 
+/**
+ * Item cấu hình cho từng tab trong TabsFormSection.
+ */
 export interface IFormTabItem<TValues = unknown> {
     key: string;
     label: ReactNode;
@@ -229,13 +254,16 @@ export interface IFormTabItem<TValues = unknown> {
     visible?: boolean | ((mode: FormMode, form?: FormInstance<TValues>) => boolean);
 }
 
+/**
+ * Section dạng Tabs (phân tách fields theo tab navigation).
+ */
 export interface ITabsFormSection<TValues = unknown> extends IBaseFormSection<TValues> {
     type: 'tabs';
+    items: IFormTabItem<TValues>[];
     activeKey?: string;
     defaultActiveKey?: string;
-    onChange?: (activeKey: string) => void;
     tabsProps?: Omit<CustomTabsProps, 'items' | 'activeKey' | 'defaultActiveKey' | 'onChange'>;
-    items: IFormTabItem<TValues>[];
+    onChange?: (activeKey: string) => void;
 }
 
 export type IFormSection<TValues = unknown> =
