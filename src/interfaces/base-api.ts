@@ -1,6 +1,30 @@
 export type SortBy<T> = [keyof T & string, 'ASC' | 'DESC'][];
 export type Column<T> = keyof T & string;
 
+export interface IAbstract {
+    id: string;
+    createdAt?: Date;
+    createdBy?: string | null;
+    updatedBy?: string | null;
+    updatedAt?: Date;
+    deletedBy?: string | null;
+    deletedAt?: Date | null;
+}
+
+export interface IPaginationRequest {
+    page?: number;
+    limit?: number;
+    filter?: string;
+    sortBy?: string[];
+}
+
+export interface IErrorItem {
+    code: string;
+    message?: string;
+}
+
+export type ApiError = string | IErrorItem | IErrorItem[];
+
 export namespace NBaseApi {
     export interface IRequest {
         baseURL: string;

@@ -8,15 +8,10 @@ import { useCallback, type Key, type MouseEvent, type ReactNode } from 'react';
 
 import type { MenuProps } from '@/components/custom-antd';
 import { CustomButton, CustomPopconfirm } from '@/components/custom-antd';
+import type { ActionMenuItem } from '@/interfaces';
 import { getRecordId } from './utils';
 
-export type ActionMenuItem = NonNullable<MenuProps['items']>[number] & {
-    key?: Key;
-    icon?: ReactNode;
-    danger?: boolean;
-    label?: ReactNode;
-    onClick?: (info?: { domEvent?: MouseEvent<HTMLElement>; key?: Key }) => void;
-};
+export type { ActionMenuItem };
 
 export interface MobileCardActionsProps<RecordType extends BaseRecord> {
     record: RecordType;

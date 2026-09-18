@@ -2,10 +2,10 @@
 export * from './containers/breadcrumb-nav';
 export * from './containers/filter-panel';
 export * from './containers/list-table';
-export * from './containers/list-wrapper';
+export * from './containers/list-container';
 export * from './containers/mobile-card-list';
-export * from './containers/wrapper-header';
-export * from './containers/wrapper-form-modal';
+export * from './containers/list-header';
+export * from './containers/form-modal-container';
 export * from './containers/pagination-controls';
 
 // Display

@@ -12,6 +12,7 @@ import {
 } from '@/components/custom-antd';
 import type { Dayjs } from 'dayjs';
 import type { ComponentProps, ReactNode } from 'react';
+import type { IFilterOption, FilterValue, IFilterField } from '@/interfaces';
 import { useCallback, useMemo, useState } from 'react';
 
 import { FilterDateRange } from './FilterDateRange';
@@ -19,57 +20,7 @@ import { FilterInput } from './FilterInput';
 import { FilterSegmented } from './FilterSegmented';
 import { FilterSelect } from './FilterSelect';
 
-export type FilterValue =
-    string | number | boolean | string[] | number[] | [Dayjs, Dayjs] | null | undefined;
-
-export interface FilterOption {
-    label: ReactNode;
-    value: string | number | null | undefined;
-}
-
-export interface IFilterField {
-    /** Filter field name (identifier) */
-    name: string;
-
-    /** Placeholder text */
-    placeholder?: string | [string, string];
-
-    /** Filter control type */
-    type: 'input' | 'select' | 'dateRange' | 'segmented';
-
-    /** Current value */
-    value?: FilterValue;
-
-    /** Visible label above control */
-    label?: ReactNode;
-
-    /** Callback when the value changes */
-    onChange?: (value: FilterValue) => void;
-
-    /** Option list for the select box */
-    options?: FilterOption[];
-
-    /** Custom CSS class for this filter field */
-    className?: string;
-
-    /** Deep custom props for Ant Design Select */
-    selectProps?: SelectProps;
-
-    /** Deep custom props for Ant Design Input */
-    inputProps?: InputProps;
-
-    /** Deep custom props for Ant Design RangePicker */
-    rangePickerProps?: ComponentProps<typeof CustomPicker.RangePicker>;
-
-    /** Enable default quick date range presets */
-    enableDateRangePresets?: boolean;
-
-    /** Deep custom props for Ant Design Segmented */
-    segmentedProps?: SegmentedProps;
-
-    /** Force field to stay inline as primary filter on mobile */
-    isPrimary?: boolean;
-}
+export type { FilterValue, IFilterOption as FilterOption, IFilterField };
 
 export type FilterPanelProps = {
     /** Filter field configuration array */

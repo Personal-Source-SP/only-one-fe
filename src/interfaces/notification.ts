@@ -1,5 +1,5 @@
 import { NotificationType } from '@/enums';
-import { IAbstract } from './common';
+import type { IAbstract } from './base-api';
 
 export interface INotification extends IAbstract {
     title: string;

@@ -1,33 +1,13 @@
 'use client';
 
-import { FilterPanel, type IFilterField } from '@/components/common';
+import { FilterPanel } from '@/components/common';
 import { CustomCard, CustomFlex } from '@/components/custom-antd';
+import type { ICardAction, IFilterField } from '@/interfaces';
 import { cloneElement, isValidElement, useMemo, type ReactElement, type ReactNode } from 'react';
 
-export interface ICardAction {
-    /** Button or action component (for example: <Button>Create</Button>) */
-    component?: ReactNode;
+export type { ICardAction, IFilterField };
 
-    /** Required permission for showing this action */
-    permissionAction?: 'create' | 'update' | 'delete' | 'read';
-
-    /** Optional menu label for mobile actions dropdown */
-    label?: ReactNode;
-
-    /** Optional menu icon for mobile actions dropdown */
-    icon?: ReactNode;
-
-    /** Unique key for dropdown menu item */
-    key?: string;
-
-    /** Danger styling for dropdown menu item */
-    danger?: boolean;
-
-    /** Optional click handler for mobile actions dropdown */
-    onClick?: () => void;
-}
-
-export type WrapperHeaderProps = {
+export type ListHeaderProps = {
     withCard?: boolean;
     className?: string;
     allowedActions?: ICardAction[];
@@ -35,13 +15,15 @@ export type WrapperHeaderProps = {
     filters?: IFilterField[] | ReactNode;
 };
 
-export const WrapperHeader = ({
+export type WrapperHeaderProps = ListHeaderProps;
+
+export const ListHeader = ({
     withCard = false,
     className = '',
     allowedActions = [],
     mobileActionsButton,
     filters,
-}: WrapperHeaderProps) => {
+}: ListHeaderProps) => {
     const { hasFilters, filterComponent } = useMemo(() => {
         if (!filters) return { hasFilters: false, filterComponent: null };
 
@@ -108,7 +90,7 @@ export const WrapperHeader = ({
                 </CustomFlex>
             </CustomFlex>
         ),
-        [filters, allowedActions, mobileActionsButton, withCard],
+        [filters, allowedActions, mobileActionsButton],
     );
 
     if (!hasHeader) return null;
@@ -119,3 +101,8 @@ export const WrapperHeader = ({
 
     return contentComponent;
 };
+
+/**
+ * @deprecated Use `ListHeader` instead.
+ */
+export const WrapperHeader = ListHeader;

@@ -2,14 +2,11 @@
 
 import {
     BreadcrumbNav,
+    FormModalContainer,
+    ListHeader,
     ListTable,
-    WrapperFormModal,
-    WrapperHeader,
-    type BreadcrumbItem,
-    type ICardAction,
-    type IFilterField,
+    type FormModalContainerProps,
     type ListTableProps,
-    type WrapperFormModalProps,
 } from '@/components/common';
 import {
     CustomButton,
@@ -22,55 +19,38 @@ import {
     type MenuProps,
 } from '@/components/custom-antd';
 import { usePagePermissions } from '@/hooks';
+import type { IBreadcrumbItem, ICardAction, IFilterField } from '@/interfaces';
 import { DownOutlined } from '@ant-design/icons';
 import type { BaseRecord } from '@refinedev/core';
 import { useMemo, type ReactNode } from 'react';
 
-export type ListWrapperProps<
+export type { IBreadcrumbItem as BreadcrumbItem, ICardAction, IFilterField };
+
+export type ListContainerProps<
     RecordType extends BaseRecord = BaseRecord,
     TValues extends object = Record<string, unknown>,
 > = {
-    /** The resource name (e.g. "users", "devices", "vouchers") */
     resource?: string;
-
-    /** Content inside the Card (usually ListTable or custom views) */
     children?: ReactNode;
-
-    /** Permission group for automatically checking action permissions */
     permissionGroup?: string;
-
-    /** Actions displayed in the top-right corner above the filter table */
     actions?: ICardAction[];
-
-    /** Breadcrumb navigation items rendered above the main card/container */
-    breadcrumb?: BreadcrumbItem[];
-
-    /** Custom title for mobile actions dropdown (default: "Thao tác") */
+    breadcrumb?: IBreadcrumbItem[];
     mobileActionsTitle?: ReactNode;
-
-    /** Filter field array (auto-renders FilterPanel) or custom ReactNode */
     filters?: IFilterField[] | ReactNode;
-
-    /** Whether the list is loading */
     isLoading?: boolean;
-
-    /** Whether to wrap header and children in one Card */
     withCard?: boolean;
-
-    /** Additional CSS class for the outer container */
     className?: string;
-
-    /** Built-in ListTable configuration */
     table?: ListTableProps<RecordType>;
-
-    /** Built-in Schema-driven Form Modal configuration */
-    formModal?: WrapperFormModalProps<RecordType, TValues>[];
-
-    /** Additional modal / drawer nodes */
+    formModal?: FormModalContainerProps<RecordType, TValues>[];
     customModals?: ReactNode[];
 };
 
-export const ListWrapper = <
+export type ListWrapperProps<
+    RecordType extends BaseRecord = BaseRecord,
+    TValues extends object = Record<string, unknown>,
+> = ListContainerProps<RecordType, TValues>;
+
+export const ListContainer = <
     RecordType extends BaseRecord = BaseRecord,
     TValues extends object = Record<string, unknown>,
 >({
@@ -86,7 +66,7 @@ export const ListWrapper = <
     table,
     formModal,
     customModals,
-}: ListWrapperProps<RecordType, TValues>) => {
+}: ListContainerProps<RecordType, TValues>) => {
     const permissions = usePagePermissions(permissionGroup);
 
     const allowedActions = useMemo(
@@ -167,7 +147,7 @@ export const ListWrapper = <
                                 direction="vertical"
                                 className="w-full p-3 sm:p-5"
                             >
-                                <WrapperHeader
+                                <ListHeader
                                     filters={filters}
                                     withCard={!withCard}
                                     allowedActions={allowedActions}
@@ -186,7 +166,7 @@ export const ListWrapper = <
                         </CustomCard>
                     ) : (
                         <>
-                            <WrapperHeader
+                            <ListHeader
                                 filters={filters}
                                 withCard={withCard}
                                 allowedActions={allowedActions}
@@ -208,7 +188,7 @@ export const ListWrapper = <
 
             {/** Form Modals */}
             {formModal?.map((modalProps, index) => (
-                <WrapperFormModal key={index} {...modalProps} />
+                <FormModalContainer key={index} {...modalProps} />
             ))}
 
             {/** Custom Modals */}
@@ -216,3 +196,8 @@ export const ListWrapper = <
         </>
     );
 };
+
+/**
+ * @deprecated Use `ListContainer` instead.
+ */
+export const ListWrapper = ListContainer;

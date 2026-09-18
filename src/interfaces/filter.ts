@@ -1,23 +1,23 @@
 import { CustomFilterType } from '@/enums';
 import { CrudOperators } from '@refinedev/core';
 import { ReactNode } from 'react';
-import { IOption } from './common';
+import type { IOption } from './forms';
 
 export interface IFilterItem {
     span: number;
     type: CustomFilterType;
 
     value?: any;
+    field?: string;
     title?: string;
     options?: IOption[];
     placeholder?: string;
     showSearch?: boolean;
     allowClear?: boolean;
     mode?: 'multiple' | 'tags';
-
-    field?: string;
-    onChange?: (value: any) => void;
     operation?: Exclude<CrudOperators, 'or' | 'and'>;
+
+    onChange?: (value: any) => void;
 }
 
 export interface IActionTableItem {

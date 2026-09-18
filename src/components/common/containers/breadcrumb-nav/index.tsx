@@ -1,23 +1,16 @@
 'use client';
 
 import { CustomButton, CustomFlex } from '@/components/custom-antd';
+import type { IBreadcrumbItem } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { useCallback, useMemo, type ReactNode } from 'react';
 
-export type BreadcrumbItem = {
-    key?: string;
-    href?: string;
-    label: ReactNode;
-    icon?: ReactNode;
-    iconName?: string;
-    separator?: ReactNode;
-    onClick?: () => void;
-};
+export type { IBreadcrumbItem as BreadcrumbItem };
 
 export type BreadcrumbNavProps = {
     className?: string;
     separator?: ReactNode;
-    items?: BreadcrumbItem[];
+    items?: IBreadcrumbItem[];
 };
 
 export const BreadcrumbNav = ({ items = [], separator, className = '' }: BreadcrumbNavProps) => {
@@ -36,7 +29,7 @@ export const BreadcrumbNav = ({ items = [], separator, className = '' }: Breadcr
     );
 
     const renderItemContent = useCallback(
-        (item: BreadcrumbItem, isLast: boolean, itemIcon: ReactNode) => {
+        (item: IBreadcrumbItem, isLast: boolean, itemIcon: ReactNode) => {
             if (isLast && !item.onClick && !item.href) {
                 return (
                     <CustomFlex
@@ -81,7 +74,7 @@ export const BreadcrumbNav = ({ items = [], separator, className = '' }: Breadcr
     );
 
     const renderItemBreadcrumb = useCallback(
-        (item: BreadcrumbItem, index: number) => {
+        (item: IBreadcrumbItem, index: number) => {
             const isLast = index === lastIndex;
             const itemSeparator = item.separator || separator || defaultSeparator;
             const itemIcon =

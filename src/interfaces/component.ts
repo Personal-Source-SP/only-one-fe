@@ -1,7 +1,6 @@
-import { CodeDisplayProps } from '@/components/common';
 import type { FormInstance, Rule } from '@/components/custom-antd';
 import { ReactNode } from 'react';
-import { IOption } from './common';
+import type { IOption } from './forms';
 
 export type CustomCardPadding = 'sm' | 'lg' | 'none' | 'default' | 'responsive';
 
@@ -29,7 +28,14 @@ export interface IFormFieldItem {
     elementBottomRender?: ReactNode;
     onChange?: (value: unknown, form?: FormInstance) => void;
 
-    codeProps?: Omit<CodeDisplayProps, 'code' | 'onCodeChange'>;
+    codeProps?: {
+        title?: string;
+        loading?: boolean;
+        expanded?: boolean;
+        maxHeight?: string;
+        language?: 'json' | 'javascript' | 'html';
+        isDisplayLanguage?: boolean;
+    };
 
     inputProps?: {
         placeholder?: string;

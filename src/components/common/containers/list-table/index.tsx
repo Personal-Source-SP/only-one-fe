@@ -17,26 +17,16 @@ import { useCallback, useMemo, useRef, useState } from 'react';
 import { DataNotFound, MobileCardList, PaginationControls } from '@/components/common';
 import { useCustomDelete, usePagePermissions } from '@/hooks';
 import { evaluateShow, getBackendErrorMessage } from '@/utilities';
+import type { TableCustomAction } from '@/interfaces';
 import { getRecordId } from './utils';
+
+export type { TableCustomAction };
 
 const tableHeaderCellProps: { style: CSSProperties } = {
     style: {
         paddingInline: 16,
     },
 };
-
-export interface TableCustomAction<RecordType> {
-    key: string;
-    icon?: ReactNode;
-    tooltip?: string;
-    danger?: boolean;
-    keepOpen?: boolean;
-    width?: number | string;
-    allowedRoles?: string[];
-    show?: boolean | ((record: RecordType) => boolean);
-    onClick: (record: RecordType) => void;
-    render?: (record: RecordType, closeDropdown: () => void) => ReactNode;
-}
 
 export interface ListTableProps<RecordType extends BaseRecord> extends TableProps<RecordType> {
     /** Permission group for automatically checking View/Edit/Delete actions */

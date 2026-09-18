@@ -1,15 +1,14 @@
 'use client';
 
-import type { IFormField } from '@/components/common';
 import { CustomFormField, CustomModalForm } from '@/components/common';
-import type { FormInstance } from '@/components/custom-antd';
-import { CustomRow } from '@/components/custom-antd';
+import { CustomRow, type FormInstance } from '@/components/custom-antd';
 import type { FormMode, UseCustomModalFormResponse } from '@/hooks';
+import type { IFormField } from '@/interfaces';
 import type { BaseRecord } from '@refinedev/core';
 import type { ReactNode } from 'react';
 import { useMemo } from 'react';
 
-export type WrapperFormModalProps<
+export type FormModalContainerProps<
     TQueryFnData extends BaseRecord = BaseRecord,
     TValues extends object = Record<string, unknown>,
     TData extends BaseRecord = TQueryFnData,
@@ -24,7 +23,13 @@ export type WrapperFormModalProps<
     children?: ReactNode | ((form: FormInstance<TValues> | undefined, mode: FormMode) => ReactNode);
 };
 
-export const WrapperFormModal = <
+export type WrapperFormModalProps<
+    TQueryFnData extends BaseRecord = BaseRecord,
+    TValues extends object = Record<string, unknown>,
+    TData extends BaseRecord = TQueryFnData,
+> = FormModalContainerProps<TQueryFnData, TValues, TData>;
+
+export const FormModalContainer = <
     TQueryFnData extends BaseRecord = BaseRecord,
     TValues extends object = Record<string, unknown>,
     TData extends BaseRecord = TQueryFnData,
@@ -37,7 +42,7 @@ export const WrapperFormModal = <
     createInitialValues = {} as TValues,
     fields,
     children,
-}: WrapperFormModalProps<TQueryFnData, TValues, TData>) => {
+}: FormModalContainerProps<TQueryFnData, TValues, TData>) => {
     const { mode, formProps } = modalForm;
 
     const content = useMemo(() => {
@@ -76,3 +81,8 @@ export const WrapperFormModal = <
         </CustomModalForm>
     );
 };
+
+/**
+ * @deprecated Use `FormModalContainer` instead.
+ */
+export const WrapperFormModal = FormModalContainer;
