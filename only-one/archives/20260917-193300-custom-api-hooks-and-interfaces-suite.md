@@ -28,7 +28,7 @@ affected_modules:
 
 ## 2. Key Architecture & Decisions (Kiến trúc & Quyết định Then chốt)
 
-### 2.1 Base Type Contracts ([`src/interfaces/api-hooks.d.ts`](file:///d:/Sources/Personal/only-one-fe/src/interfaces/api-hooks.d.ts))
+### 2.1 Base Type Contracts ([`src/interfaces/api-hooks.d.ts`](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/interfaces/api-hooks.d.ts))
 - **`IBaseApiLoadingResponse`**: Định nghĩa contract bắt buộc `{ isLoading: boolean }`.
 - **`IBaseApiQueryResponse<TData, TQueryData>`**: Kế thừa `IBaseApiDataResponse<TData>` và `IBaseApiLoadingResponse`, cung cấp `{ data, query, result, isLoading }`.
 - **`IBaseApiFormResponse<TVariables>`**: Kế thừa `IBaseApiLoadingResponse`, cung cấp `{ formProps, saveButtonProps, mode, resource, isLoading }`.
@@ -36,13 +36,14 @@ affected_modules:
 - **`IBaseApiTransformRequest<TData, TTransformed>`**: Chuẩn hóa callback transform nhận `(data: TData, rawResponse?: unknown) => TTransformed`.
 - **`IBaseApiUrlRequest`**: Chuẩn hóa tham số `{ url: string }`.
 
-### 2.2 Pure Utility Helpers ([`src/utilities/api-hooks/`](file:///d:/Sources/Personal/only-one-fe/src/utilities/api-hooks/))
-- **`applyDataTransform`**: Thực hiện chuyển đổi dữ liệu an toàn với fallback đơn cấp.
-- **`resolveQueryNotifications` / `resolveMutationNotifications` / `resolveFormNotifications`**: Chuẩn hóa việc phân giải thông báo theo thứ tự ưu tiên `Request Props > Hook Props > Default Fallback`, tôn trọng cờ `false` (tắt thông báo) và dynamic callbacks.
-- **`createSaveButtonProps`**: Tự động bind sự kiện kích hoạt submit form của Ant Design `form?.submit()`.
-- **`createFormFinishHandler`**: Bọc luồng `onFinish` tùy biến với `originalOnFinish` của Refine.
+### 2.2 Modular Utility Helpers ([`src/utilities/api-hooks/`](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/utilities/api-hooks/))
+- **`applyDataTransform`** (`transform.ts`): Thực hiện chuyển đổi dữ liệu an toàn với fallback đơn cấp.
+- **`resolveQueryNotifications` / `resolveMutationNotifications` / `resolveFormNotifications`** (`notification.ts`): Chuẩn hóa việc phân giải thông báo theo thứ tự ưu tiên `Request Props > Hook Props > Default Fallback`, tôn trọng cờ `false` (tắt thông báo) và dynamic callbacks.
+- **`createSaveButtonProps` / `createFormFinishHandler`** (`form.ts`): Tự động bind sự kiện submit form và bọc luồng `onFinish` tùy biến.
+- **`buildSelectOptions`** (`select.ts`): Chuyển đổi dữ liệu sang options cho Select component.
+- **`resolveTablePagination` / `resolveTableSorters`** (`table.ts`): Chuẩn hóa cấu hình phân trang và sắp xếp bảng.
 
-### 2.3 Danh mục 11 Custom API Hooks Chuẩn hóa ([`src/hooks/api/`](file:///d:/Sources/Personal/only-one-fe/src/hooks/api))
+### 2.3 Danh mục 11 Custom API Hooks Chuẩn hóa ([`src/hooks/api/`](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/hooks/api))
 1. **`useCustomData`**: Query dữ liệu tùy biến qua URL endpoint, trả về `data`, `query`, `result`, `isLoading`.
 2. **`useCustomList`**: Query danh sách bản ghi theo resource, trả về `data`, `query`, `result`, `isLoading`.
 3. **`useCustomOne`**: Query chi tiết 1 bản ghi theo resource và ID, trả về `data`, `query`, `result`, `isLoading`.
@@ -56,9 +57,9 @@ affected_modules:
 11. **`useCustomModal`**: Quản lý Modal tương tác liên kết mutation; trả về `open`, `formProps`, `modalProps`, `isLoading`.
 
 ## 3. Scope & Key Changes (Phạm vi & Thay đổi Chính)
-- [`src/interfaces/api-hooks.d.ts`](file:///d:/Sources/Personal/only-one-fe/src/interfaces/api-hooks.d.ts): Định nghĩa các base type và response contract.
-- [`src/utilities/api-hooks.ts`](file:///d:/Sources/Personal/only-one-fe/src/utilities/api-hooks.ts): Tập trung các pure utilities type-safe.
-- [`src/hooks/api/`](file:///d:/Sources/Personal/only-one-fe/src/hooks/api): Chuẩn hóa toàn bộ 11 hooks.
+- [src/interfaces/api-hooks.d.ts](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/interfaces/api-hooks.d.ts): Định nghĩa các base type và response contract.
+- [src/utilities/api-hooks/](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/utilities/api-hooks/): Cấu trúc modular các pure utilities (`form.ts`, `notification.ts`, `select.ts`, `table.ts`, `transform.ts`, `url.ts`, `index.ts`).
+- [src/hooks/api/](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/hooks/api): Chuẩn hóa toàn bộ 11 hooks.
 
 ## 4. Verification Evidence & PR (Bằng chứng Nghiệm thu)
 - **TypeScript Compilation**: `npx tsc --noEmit` ➔ 100% Passed (0 errors).

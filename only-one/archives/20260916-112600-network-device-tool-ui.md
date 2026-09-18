@@ -21,7 +21,7 @@ affected_modules:
   - Header thống kê trực quan `<NetworkDeviceStatsHeader />` với 4 cards metric và banner trạng thái quét mạng tự động polling.
   - Modal kích hoạt quét mạng mới `<NetworkScanModal />` với cấu hình subnet và timeout.
   - Modal chi tiết thiết bị `<DeviceDetailModal />` hiển thị hardware specs, ONVIF stream profiles với nút Copy RTSP URL nhanh.
-  - Drawer chẩn đoán sandbox `<DeviceApproachDrawer />` cho phép thực thi trực tiếp 3 hướng tiếp cận (`NETWORK_DISCOVERY`, `PORT_SCAN`, `PROTOCOL_AUTH`) và xem kết quả JSON/Formatted ngay lập tức.
+  - Modal chẩn đoán sandbox `<DeviceApproachModal />` cho phép thực thi trực tiếp 3 hướng tiếp cận (`NETWORK_DISCOVERY`, `PORT_SCAN`, `PROTOCOL_AUTH`) và xem kết quả JSON/Formatted ngay lập tức.
 
 ## 2. Key Architecture & Decisions (Kiến trúc & Quyết định Then chốt)
 - **Colocation Pattern**: Toàn bộ `types/`, `enums/`, `constants/`, `components/`, và `hooks.ts` được đặt trực tiếp bên trong `src/app/(root)/tool/network-device/`.
@@ -33,21 +33,21 @@ flowchart TD
     Page["/tool/network-device (Page)"]
     Page --> Stats["NetworkDeviceStatsHeader (Metrics & Scan Banner)"]
     Page --> ListWrap["ListWrapper & FilterPanel"]
-    ListWrap --> Table["ListTable (deleteResource, onView, customRowActions)"]
+    Page --> Table["ListTable (deleteResource, onView, customRowActions)"]
     
     Table -->|onView| DetailModal["DeviceDetailModal (Specs & RTSP Profiles)"]
-    Table -->|customRowAction ⚡| ApproachDrawer["DeviceApproachDrawer (Sandbox Runner)"]
+    Table -->|customRowAction ⚡| ApproachModal["DeviceApproachModal (Sandbox Runner)"]
     ListWrap -->|Button Quét Mạng| ScanModal["NetworkScanModal (Subnet & Timeout Form)"]
 ```
 
 ## 3. Scope & Key Changes (Phạm vi & Thay đổi Chính)
-- [`src/app/(root)/tool/network-device/page.tsx`](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/app/(root)/tool/network-device/page.tsx): Trang danh sách thiết bị mạng chính.
-- [`src/app/(root)/tool/network-device/hooks.ts`](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/app/(root)/tool/network-device/hooks.ts): Custom hooks `useNetworkScanStatus`, `useTriggerNetworkScan`, `useExecuteApproach`.
-- [`src/app/(root)/tool/network-device/components/NetworkDeviceStatsHeader.tsx`](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/app/(root)/tool/network-device/components/NetworkDeviceStatsHeader.tsx): Header thống kê và banner tiến độ quét mạng.
-- [`src/app/(root)/tool/network-device/components/NetworkScanModal.tsx`](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/app/(root)/tool/network-device/components/NetworkScanModal.tsx): Modal kích hoạt quét mạng subnet mới.
-- [`src/app/(root)/tool/network-device/components/DeviceDetailModal.tsx`](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/app/(root)/tool/network-device/components/DeviceDetailModal.tsx): Modal xem thông tin chi tiết thiết bị & RTSP streams.
-- [`src/app/(root)/tool/network-device/components/DeviceApproachDrawer.tsx`](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/app/(root)/tool/network-device/components/DeviceApproachDrawer.tsx): Drawer chẩn đoán và thử nghiệm approach.
-- [`src/app/(root)/tool/network-device/types/index.ts`](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/app/(root)/tool/network-device/types/index.ts): Định nghĩa kiểu dữ liệu `INetworkDevice`, `IStreamProfile`, `INetworkDeviceApproachResult`.
+- [src/app/(root)/tool/network-device/page.tsx](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/app/(root)/tool/network-device/page.tsx): Trang danh sách thiết bị mạng chính.
+- [src/app/(root)/tool/network-device/hooks.ts](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/app/(root)/tool/network-device/hooks.ts): Custom hooks `useNetworkScanStatus`, `useTriggerNetworkScan`, `useExecuteApproach`.
+- [src/app/(root)/tool/network-device/components/NetworkDeviceStatsHeader.tsx](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/app/(root)/tool/network-device/components/NetworkDeviceStatsHeader.tsx): Header thống kê và banner tiến độ quét mạng.
+- [src/app/(root)/tool/network-device/components/NetworkScanModal.tsx](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/app/(root)/tool/network-device/components/NetworkScanModal.tsx): Modal kích hoạt quét mạng subnet mới.
+- [src/app/(root)/tool/network-device/components/DeviceDetailModal.tsx](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/app/(root)/tool/network-device/components/DeviceDetailModal.tsx): Modal xem thông tin chi tiết thiết bị & RTSP streams.
+- [src/app/(root)/tool/network-device/components/DeviceApproachModal.tsx](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/app/(root)/tool/network-device/components/DeviceApproachModal.tsx): Modal chẩn đoán và thử nghiệm approach.
+- [src/app/(root)/tool/network-device/types/index.ts](file:///Users/kiem/Sources/PERSONAL/only-one-fe/src/app/(root)/tool/network-device/types/index.ts): Định nghĩa kiểu dữ liệu `INetworkDevice`, `IStreamProfile`, `INetworkDeviceApproachResult`.
 
 ## 4. Verification Evidence & PR (Bằng chứng Nghiệm thu & PR)
 - **TypeScript & Build**: `npm run build` $\rightarrow$ `PASS (0 errors)`.
