@@ -1,4 +1,10 @@
 import type {
+    CustomCheckbox,
+    CustomCheckboxProps,
+    CustomPicker,
+    CustomPickerProps,
+    CustomRadioGroupProps,
+    CustomTabsProps,
     FormInstance,
     FormItemProps,
     InputNumberProps,
@@ -7,14 +13,38 @@ import type {
     SelectProps,
     SwitchProps,
     TextAreaProps,
+    UploadProps,
 } from '@/components/custom-antd';
 import type { FormMode } from '@/hooks';
 import type { FormRuleConfig } from '@/utilities';
-import type { ReactNode } from 'react';
+import type { ComponentProps, ReactNode } from 'react';
 import type { IOption } from './component';
 
+export interface IHtmlEditorFieldProps {
+    value?: string;
+    onChange?: (value: string) => void;
+    placeholder?: string;
+    rows?: number;
+    disabled?: boolean;
+    className?: string;
+}
+
 export type FormFieldType =
-    'input' | 'number' | 'password' | 'textarea' | 'select' | 'switch' | 'custom';
+    | 'input'
+    | 'number'
+    | 'password'
+    | 'textarea'
+    | 'select'
+    | 'switch'
+    | 'date_picker'
+    | 'range_picker'
+    | 'upload'
+    | 'html_editor'
+    | 'code_editor'
+    | 'json_toggle'
+    | 'radio_group'
+    | 'checkbox_group'
+    | 'custom';
 
 export type { IOption };
 
@@ -28,6 +58,7 @@ export interface IFieldFormConfig {
 export interface IBaseFormField<TValues = unknown> {
     name: keyof TValues | string;
     label?: ReactNode;
+    description?: ReactNode;
     colSpan?: number;
     rulesConfig?: FormRuleConfig[];
     formItemProps?: Omit<FormItemProps, 'children' | 'label' | 'name' | 'rules'>;
@@ -71,13 +102,64 @@ export interface ISelectFormField<TValues = unknown> extends IBaseFormField<TVal
 
 export interface ISwitchFormField<TValues = unknown> extends IBaseFormField<TValues> {
     type: 'switch';
-    description?: ReactNode;
     switchProps?: SwitchProps;
 }
 
 export interface ICustomFormField<TValues = unknown> extends IBaseFormField<TValues> {
     type: 'custom';
     render: (form: FormInstance<TValues> | undefined, mode: FormMode) => ReactNode;
+}
+
+export interface IDatePickerFormField<TValues = unknown> extends IBaseFormField<TValues> {
+    type: 'date_picker';
+    placeholder?: string;
+    pickerProps?: CustomPickerProps;
+}
+
+export interface IRangePickerFormField<TValues = unknown> extends IBaseFormField<TValues> {
+    type: 'range_picker';
+    rangePickerProps?: ComponentProps<typeof CustomPicker.RangePicker>;
+}
+
+export interface IUploadFormField<TValues = unknown> extends IBaseFormField<TValues> {
+    type: 'upload';
+    uploadProps?: UploadProps;
+}
+
+export interface IHtmlEditorFormField<TValues = unknown> extends IBaseFormField<TValues> {
+    type: 'html_editor';
+    placeholder?: string;
+    rows?: number;
+    editorProps?: Omit<
+        IHtmlEditorFieldProps,
+        'value' | 'onChange' | 'placeholder' | 'rows' | 'disabled'
+    >;
+}
+
+export interface ICodeEditorFormField<TValues = unknown> extends IBaseFormField<TValues> {
+    type: 'code_editor';
+    language?: 'javascript' | 'json' | 'html';
+    maxHeight?: string;
+    isDisplayLanguage?: boolean;
+}
+
+export interface IJsonToggleFormField<TValues = unknown> extends IBaseFormField<TValues> {
+    type: 'json_toggle';
+    icon?: string;
+    defaultEmptyValue?: string;
+    maxHeight?: string;
+}
+
+export interface IRadioGroupFormField<TValues = unknown> extends IBaseFormField<TValues> {
+    type: 'radio_group';
+    options?: CustomRadioGroupProps['options'];
+    radioGroupProps?: CustomRadioGroupProps;
+}
+
+export interface ICheckboxGroupFormField<TValues = unknown> extends IBaseFormField<TValues> {
+    type: 'checkbox_group';
+    options?: ComponentProps<typeof CustomCheckbox.Group>['options'];
+    checkboxGroupProps?: ComponentProps<typeof CustomCheckbox.Group>;
 }
 
 export type IFormField<TValues = unknown> =
@@ -87,4 +169,77 @@ export type IFormField<TValues = unknown> =
     | ITextAreaFormField<TValues>
     | ISelectFormField<TValues>
     | ISwitchFormField<TValues>
+    | IDatePickerFormField<TValues>
+    | IRangePickerFormField<TValues>
+    | IUploadFormField<TValues>
+    | IHtmlEditorFormField<TValues>
+    | ICodeEditorFormField<TValues>
+    | IJsonToggleFormField<TValues>
+    | IRadioGroupFormField<TValues>
+    | ICheckboxGroupFormField<TValues>
     | ICustomFormField<TValues>;
+
+// ==========================================
+// POLYMORPHIC FORM SECTION CONTRACTS
+// ==========================================
+
+export type FormSectionType = 'card' | 'plain' | 'collapse' | 'tabs';
+
+/**
+ * Interface cơ sở chứa toàn bộ các thuộc tính dùng chung của Form Section.
+ */
+export interface IBaseFormSection<TValues = unknown> {
+    id?: string;
+    title?: ReactNode;
+    description?: ReactNode;
+    icon?: string;
+    badge?: ReactNode;
+    badgeColor?: string;
+    extra?: ReactNode;
+    className?: string;
+    gutter?: [number, number];
+    visible?: boolean | ((mode: FormMode, form?: FormInstance<TValues>) => boolean);
+}
+
+export interface ICardFormSection<TValues = unknown> extends IBaseFormSection<TValues> {
+    type?: 'card';
+    fields: IFormField<TValues>[];
+}
+
+export interface IPlainFormSection<TValues = unknown> extends IBaseFormSection<TValues> {
+    type: 'plain';
+    fields: IFormField<TValues>[];
+}
+
+export interface ICollapseFormSection<TValues = unknown> extends IBaseFormSection<TValues> {
+    type: 'collapse';
+    defaultCollapsed?: boolean;
+    fields: IFormField<TValues>[];
+}
+
+export interface IFormTabItem<TValues = unknown> {
+    key: string;
+    label: ReactNode;
+    icon?: string;
+    badge?: ReactNode;
+    badgeColor?: string;
+    disabled?: boolean;
+    gutter?: [number, number];
+    fields: IFormField<TValues>[];
+    visible?: boolean | ((mode: FormMode, form?: FormInstance<TValues>) => boolean);
+}
+
+export interface ITabsFormSection<TValues = unknown> extends IBaseFormSection<TValues> {
+    type: 'tabs';
+    activeKey?: string;
+    defaultActiveKey?: string;
+    onChange?: (activeKey: string) => void;
+    tabsProps?: Omit<CustomTabsProps, 'items' | 'activeKey' | 'defaultActiveKey' | 'onChange'>;
+    items: IFormTabItem<TValues>[];
+}
+
+export type IFormSection<TValues = unknown> =
+    | ICardFormSection<TValues>
+    | IPlainFormSection<TValues>
+    | ICollapseFormSection<TValues>
+    | ITabsFormSection<TValues>;

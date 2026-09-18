@@ -165,13 +165,13 @@ export default function DataProviderPage() {
             }}
             formModal={[
                 {
-                    fields: formFields,
+                    sections: [{ fields: formFields }],
                     modalForm: createModalForm,
                     title: 'Thêm mới nhà cung cấp',
                     createInitialValues: { name: '', baseUrl: '', identifier: '' },
                 },
                 {
-                    fields: formFields,
+                    sections: [{ fields: formFields }],
                     modalForm: editModalForm,
                     title: 'Chỉnh sửa nhà cung cấp',
                 },

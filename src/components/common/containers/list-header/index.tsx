@@ -15,8 +15,6 @@ export type ListHeaderProps = {
     filters?: IFilterField[] | ReactNode;
 };
 
-export type WrapperHeaderProps = ListHeaderProps;
-
 export const ListHeader = ({
     withCard = false,
     className = '',
@@ -101,8 +99,3 @@ export const ListHeader = ({
 
     return contentComponent;
 };
-
-/**
- * @deprecated Use `ListHeader` instead.
- */
-export const WrapperHeader = ListHeader;

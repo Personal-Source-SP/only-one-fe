@@ -1,35 +1,60 @@
 'use client';
 
 import {
+    CustomCheckboxGroupForm,
+    CustomCodeEditorForm,
+    CustomDatePickerForm,
+    CustomHtmlEditorForm,
     CustomInputForm,
     CustomInputFormType,
+    CustomJsonToggleForm,
+    CustomRadioGroupForm,
+    CustomRangePicker,
     CustomSelectInput,
     CustomSwitchForm,
+    CustomUpload,
 } from '@/components/common';
 import type { FormInstance } from '@/components/custom-antd';
 import { CustomCol } from '@/components/custom-antd';
 import type { FormMode } from '@/hooks';
 import type {
+    ICheckboxGroupFormField,
+    ICodeEditorFormField,
     ICustomFormField,
+    IDatePickerFormField,
     IFormField,
+    IHtmlEditorFormField,
     IInputFormField,
+    IJsonToggleFormField,
     INumberFormField,
     IPasswordFormField,
+    IRadioGroupFormField,
+    IRangePickerFormField,
     ISelectFormField,
     ISwitchFormField,
     ITextAreaFormField,
+    IUploadFormField,
 } from '@/interfaces';
 import { useCallback, useMemo, type ReactNode } from 'react';
+
 export type {
     IBaseFormField,
+    ICheckboxGroupFormField,
+    ICodeEditorFormField,
     ICustomFormField,
+    IDatePickerFormField,
     IFormField,
+    IHtmlEditorFormField,
     IInputFormField,
+    IJsonToggleFormField,
     INumberFormField,
     IPasswordFormField,
+    IRadioGroupFormField,
+    IRangePickerFormField,
     ISelectFormField,
     ISwitchFormField,
     ITextAreaFormField,
+    IUploadFormField,
 } from '@/interfaces';
 
 export type CustomFormFieldProps<TValues = unknown> = {
@@ -64,7 +89,7 @@ export const CustomFormField = <TValues extends object = Record<string, unknown>
                 const selectField = field as ISelectFormField<TValues>;
                 return (
                     <CustomSelectInput
-                        name={name as any}
+                        name={name}
                         label={label}
                         rulesConfig={rulesConfig}
                         formItemProps={formItemProps}
@@ -141,6 +166,126 @@ export const CustomFormField = <TValues extends object = Record<string, unknown>
                             placeholder: passwordField.placeholder,
                             ...passwordField.passwordProps,
                         }}
+                    />
+                );
+            }
+            case 'range_picker': {
+                const rangePickerField = field as IRangePickerFormField<TValues>;
+                return (
+                    <CustomRangePicker
+                        name={name}
+                        label={label}
+                        rulesConfig={rulesConfig}
+                        formItemProps={formItemProps}
+                        rangePickerProps={{
+                            disabled: isDisabled,
+                            ...rangePickerField.rangePickerProps,
+                        }}
+                    />
+                );
+            }
+            case 'date_picker': {
+                const datePickerField = field as IDatePickerFormField<TValues>;
+                return (
+                    <CustomDatePickerForm
+                        name={name}
+                        label={label}
+                        disabled={isDisabled}
+                        rulesConfig={rulesConfig}
+                        formItemProps={formItemProps}
+                        placeholder={datePickerField.placeholder}
+                        pickerProps={datePickerField.pickerProps}
+                    />
+                );
+            }
+            case 'upload': {
+                const uploadField = field as IUploadFormField<TValues>;
+                return (
+                    <CustomUpload
+                        name={name}
+                        label={label}
+                        rulesConfig={rulesConfig}
+                        formItemProps={formItemProps}
+                        uploadProps={{
+                            disabled: isDisabled,
+                            ...uploadField.uploadProps,
+                        }}
+                    />
+                );
+            }
+            case 'html_editor': {
+                const htmlField = field as IHtmlEditorFormField<TValues>;
+                return (
+                    <CustomHtmlEditorForm
+                        name={name}
+                        label={label}
+                        disabled={isDisabled}
+                        rows={htmlField.rows}
+                        rulesConfig={rulesConfig}
+                        formItemProps={formItemProps}
+                        placeholder={htmlField.placeholder}
+                        editorProps={htmlField.editorProps}
+                    />
+                );
+            }
+
+            case 'code_editor': {
+                const codeField = field as ICodeEditorFormField<TValues>;
+                return (
+                    <CustomCodeEditorForm
+                        form={form}
+                        name={name}
+                        label={label}
+                        disabled={isDisabled}
+                        rulesConfig={rulesConfig}
+                        formItemProps={formItemProps}
+                        language={codeField.language}
+                        maxHeight={codeField.maxHeight}
+                        isDisplayLanguage={codeField.isDisplayLanguage}
+                    />
+                );
+            }
+            case 'json_toggle': {
+                const jsonToggleField = field as IJsonToggleFormField<TValues>;
+                return (
+                    <CustomJsonToggleForm
+                        form={form}
+                        name={name}
+                        label={label}
+                        disabled={isDisabled}
+                        icon={jsonToggleField.icon}
+                        formItemProps={formItemProps}
+                        maxHeight={jsonToggleField.maxHeight}
+                        description={jsonToggleField.description}
+                        defaultEmptyValue={jsonToggleField.defaultEmptyValue}
+                    />
+                );
+            }
+            case 'radio_group': {
+                const radioField = field as IRadioGroupFormField<TValues>;
+                return (
+                    <CustomRadioGroupForm
+                        name={name}
+                        label={label}
+                        rulesConfig={rulesConfig}
+                        formItemProps={formItemProps}
+                        disabled={isDisabled}
+                        options={radioField.options}
+                        radioGroupProps={radioField.radioGroupProps}
+                    />
+                );
+            }
+            case 'checkbox_group': {
+                const checkboxField = field as ICheckboxGroupFormField<TValues>;
+                return (
+                    <CustomCheckboxGroupForm
+                        name={name}
+                        label={label}
+                        rulesConfig={rulesConfig}
+                        formItemProps={formItemProps}
+                        disabled={isDisabled}
+                        options={checkboxField.options}
+                        checkboxGroupProps={checkboxField.checkboxGroupProps}
                     />
                 );
             }

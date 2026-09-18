@@ -1,9 +1,9 @@
 'use client';
 
-import { CustomFormField, CustomModalForm } from '@/components/common';
-import { CustomRow, type FormInstance } from '@/components/custom-antd';
+import { CustomFormSection, CustomModalForm } from '@/components/common';
+import type { FormInstance } from '@/components/custom-antd';
 import type { FormMode, UseCustomModalFormResponse } from '@/hooks';
-import type { IFormField } from '@/interfaces';
+import type { IFormSection } from '@/interfaces';
 import type { BaseRecord } from '@refinedev/core';
 import type { ReactNode } from 'react';
 import { useMemo } from 'react';
@@ -19,7 +19,7 @@ export type FormModalContainerProps<
     width?: number | string;
     title?: string | ReactNode;
     createInitialValues?: TValues;
-    fields?: IFormField<TValues>[];
+    sections?: IFormSection<TValues>[];
     children?: ReactNode | ((form: FormInstance<TValues> | undefined, mode: FormMode) => ReactNode);
 };
 
@@ -40,25 +40,14 @@ export const FormModalContainer = <
     width = 600,
     title,
     createInitialValues = {} as TValues,
-    fields,
+    sections,
     children,
 }: FormModalContainerProps<TQueryFnData, TValues, TData>) => {
     const { mode, formProps } = modalForm;
 
     const content = useMemo(() => {
-        if (fields?.length) {
-            return (
-                <CustomRow gutter={[16, 0]}>
-                    {fields.map((field) => (
-                        <CustomFormField
-                            mode={mode}
-                            field={field}
-                            form={formProps.form}
-                            key={String(field.name)}
-                        />
-                    ))}
-                </CustomRow>
-            );
+        if (sections?.length) {
+            return <CustomFormSection sections={sections} form={formProps.form} mode={mode} />;
         }
 
         if (typeof children === 'function') {
@@ -66,7 +55,7 @@ export const FormModalContainer = <
         }
 
         return children;
-    }, [fields, children, formProps.form, mode]);
+    }, [sections, children, formProps.form, mode]);
 
     return (
         <CustomModalForm<TQueryFnData, TValues, TData>
@@ -81,8 +70,3 @@ export const FormModalContainer = <
         </CustomModalForm>
     );
 };
-
-/**
- * @deprecated Use `FormModalContainer` instead.
- */
-export const WrapperFormModal = FormModalContainer;

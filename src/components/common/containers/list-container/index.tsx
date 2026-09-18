@@ -31,18 +31,18 @@ export type ListContainerProps<
     TValues extends object = Record<string, unknown>,
 > = {
     resource?: string;
+    withCard?: boolean;
+    className?: string;
+    isLoading?: boolean;
     children?: ReactNode;
-    permissionGroup?: string;
     actions?: ICardAction[];
+    permissionGroup?: string;
+    customModals?: ReactNode[];
     breadcrumb?: IBreadcrumbItem[];
     mobileActionsTitle?: ReactNode;
     filters?: IFilterField[] | ReactNode;
-    isLoading?: boolean;
-    withCard?: boolean;
-    className?: string;
     table?: ListTableProps<RecordType>;
     formModal?: FormModalContainerProps<RecordType, TValues>[];
-    customModals?: ReactNode[];
 };
 
 export type ListWrapperProps<
@@ -54,18 +54,18 @@ export const ListContainer = <
     RecordType extends BaseRecord = BaseRecord,
     TValues extends object = Record<string, unknown>,
 >({
+    withCard = true,
+    className = '',
+    isLoading,
     children,
-    permissionGroup,
     actions = [],
+    permissionGroup,
+    customModals,
     breadcrumb,
     mobileActionsTitle,
     filters,
-    isLoading,
-    withCard = true,
-    className = '',
     table,
     formModal,
-    customModals,
 }: ListContainerProps<RecordType, TValues>) => {
     const permissions = usePagePermissions(permissionGroup);
 
