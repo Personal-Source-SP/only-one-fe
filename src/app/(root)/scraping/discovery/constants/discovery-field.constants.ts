@@ -100,3 +100,47 @@ export const DISCOVERY_SESSION_FIELDS = {
         },
     },
 } as const satisfies Record<string, IFieldMetadata>;
+
+export const DISCOVERY_URL_FIELDS = {
+    URL: {
+        key: 'url',
+        label: 'Tiêu đề & Đường dẫn',
+        table: {
+            title: 'Tiêu đề & Đường dẫn',
+        },
+    },
+    MATCH_RESULT: {
+        key: 'matchResult',
+        label: 'Độ khớp',
+        table: {
+            title: 'Độ khớp',
+            width: '13%',
+        },
+    },
+    FOUND_AT_DEPTH: {
+        key: 'foundAtDepth',
+        label: 'Độ sâu phát hiện',
+        table: {
+            title: 'Độ sâu phát hiện',
+            align: 'center',
+            width: '12%',
+        },
+    },
+    STATUS: {
+        key: 'status',
+        label: 'Trạng thái',
+        table: {
+            title: 'Trạng thái',
+            width: '13%',
+        },
+    },
+    CREATED_AT: {
+        key: 'createdAt',
+        label: 'Ngày phát hiện',
+        table: {
+            title: 'Ngày phát hiện',
+            width: '15%',
+            sorter: true,
+        },
+    },
+} as const satisfies Record<string, IFieldMetadata>;
