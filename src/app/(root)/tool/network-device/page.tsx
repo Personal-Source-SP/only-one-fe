@@ -3,7 +3,7 @@
 import {
     FilterPanel,
     ListTable,
-    ListWrapper,
+    ListContainer,
     type ICardAction,
     type IFilterField,
 } from '@/components/common';
@@ -256,7 +256,7 @@ export default function NetworkDevicePage() {
             <NetworkDeviceStatsHeader stats={stats} scanStatus={currentScanStatus} />
 
             {/* Standard ListWrapper & ListTable */}
-            <ListWrapper
+            <ListContainer
                 actions={actions}
                 isLoading={tableQuery.isLoading}
                 filters={<FilterPanel fields={filters} />}
@@ -276,7 +276,7 @@ export default function NetworkDevicePage() {
                         },
                     ]}
                 />
-            </ListWrapper>
+            </ListContainer>
 
             <NetworkScanModal
                 open={isScanModalOpen}

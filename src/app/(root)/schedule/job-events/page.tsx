@@ -4,7 +4,7 @@ import { ColumnsType } from '@/components/custom-antd';
 import {
     FilterPanel,
     ListTable,
-    ListWrapper,
+    ListContainer,
     StatusTag,
     type IFilterField,
 } from '@/components/common';
@@ -81,7 +81,7 @@ const JobEvents = () => {
 
     return (
         <>
-            <ListWrapper
+            <ListContainer
                 isLoading={tableQuery.isLoading}
                 filters={<FilterPanel fields={filters} />}
             >
@@ -91,7 +91,7 @@ const JobEvents = () => {
                     tableQuery={tableQuery}
                     onView={(record) => setSelectedJobEvent(record)}
                 />
-            </ListWrapper>
+            </ListContainer>
 
             {!!selectedJobEvent && (
                 <ViewJobEvent

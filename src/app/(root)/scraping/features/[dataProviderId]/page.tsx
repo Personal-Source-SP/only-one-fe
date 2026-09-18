@@ -2,7 +2,7 @@
 
 import {
     DataNotFound,
-    ListWrapper,
+    ListContainer,
     type BreadcrumbItem,
     type ICardAction,
 } from '@/components/common';
@@ -151,7 +151,7 @@ const DataProviderFeaturesPage = () => {
     );
 
     return (
-        <ListWrapper
+        <ListContainer
             withCard={false}
             actions={actions}
             isLoading={isLoading}
@@ -208,7 +208,7 @@ const DataProviderFeaturesPage = () => {
                     </FeatureHistoryProvider>
                 )}
             </CustomSpace>
-        </ListWrapper>
+        </ListContainer>
     );
 };
 

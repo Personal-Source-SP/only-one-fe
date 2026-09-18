@@ -5,7 +5,7 @@ import { ColumnsType, CustomButton } from '@/components/custom-antd';
 import {
     FilterPanel,
     ListTable,
-    ListWrapper,
+    ListContainer,
     type ICardAction,
     type IFilterField,
 } from '@/components/common';
@@ -104,7 +104,7 @@ const FolderPage = () => {
 
     return (
         <>
-            <ListWrapper
+            <ListContainer
                 actions={actions}
                 isLoading={tableQuery.isLoading}
                 filters={<FilterPanel fields={filters} />}
@@ -116,7 +116,7 @@ const FolderPage = () => {
                     deleteResource={RESOURCE.GOOGLE_FOLDERS}
                     onEdit={(record) => modalForm.show(record?.id)}
                 />
-            </ListWrapper>
+            </ListContainer>
 
             <FolderModal modalForm={modalForm} folderOptions={folderOptions ?? []} />
 

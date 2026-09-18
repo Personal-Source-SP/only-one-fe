@@ -8,7 +8,7 @@ import {
 import {
     FilterPanel,
     ListTable,
-    ListWrapper,
+    ListContainer,
     type ICardAction,
     type IFilterField,
 } from '@/components/common';
@@ -206,7 +206,7 @@ const DiscoveryDetailPage = () => {
                 queuedCount={queuedCount}
             />
 
-            <ListWrapper
+            <ListContainer
                 actions={actions}
                 isLoading={isLoading}
                 filters={<FilterPanel fields={filters} />}
@@ -216,7 +216,7 @@ const DiscoveryDetailPage = () => {
                     tableQuery={tableQuery}
                     tableProps={mergedTableProps}
                 />
-            </ListWrapper>
+            </ListContainer>
         </CustomSpace>
     );
 };

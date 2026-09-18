@@ -5,7 +5,7 @@ import { ColumnsType, CustomButton } from '@/components/custom-antd';
 import {
     FilterPanel,
     ListTable,
-    ListWrapper,
+    ListContainer,
     StatusTag,
     type ICardAction,
     type IFilterField,
@@ -95,7 +95,7 @@ const SimulationContextsPage = () => {
 
     return (
         <>
-            <ListWrapper
+            <ListContainer
                 actions={actions}
                 isLoading={loading || tableQuery.isLoading}
                 filters={<FilterPanel fields={filters} />}
@@ -107,7 +107,7 @@ const SimulationContextsPage = () => {
                     deleteResource={RESOURCE.SIMULATION_CONTEXTS}
                     onEdit={(record) => editModalForm.show(record.id)}
                 />
-            </ListWrapper>
+            </ListContainer>
 
             <SimulationContextFormModal modalForm={createModalForm} />
             <SimulationContextFormModal modalForm={editModalForm} />

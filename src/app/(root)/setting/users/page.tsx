@@ -6,7 +6,7 @@ import { ColumnsType, CustomButton } from '@/components/custom-antd';
 import {
     FilterPanel,
     ListTable,
-    ListWrapper,
+    ListContainer,
     type ICardAction,
     type IFilterField,
 } from '@/components/common';
@@ -95,7 +95,7 @@ const UsersPage = () => {
 
     return (
         <>
-            <ListWrapper
+            <ListContainer
                 actions={actions}
                 isLoading={tableQuery.isLoading}
                 filters={<FilterPanel fields={filters} />}
@@ -107,7 +107,7 @@ const UsersPage = () => {
                     deleteResource={RESOURCE.USERS}
                     onEdit={(record) => editModalForm.show(record.id)}
                 />
-            </ListWrapper>
+            </ListContainer>
 
             <UserFormModal modalForm={createModalForm} />
             <UserFormModal modalForm={editModalForm} />

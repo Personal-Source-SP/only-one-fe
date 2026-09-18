@@ -5,7 +5,7 @@ import { ColumnType, ColumnsType, CustomButton, CustomTag } from '@/components/c
 import {
     FilterPanel,
     ListTable,
-    ListWrapper,
+    ListContainer,
     StatusTag,
     type ICardAction,
     type IFilterField,
@@ -132,7 +132,7 @@ const ItemPage = () => {
 
     return (
         <>
-            <ListWrapper
+            <ListContainer
                 actions={actions}
                 isLoading={tableQuery.isLoading}
                 filters={<FilterPanel fields={filters} />}
@@ -144,7 +144,7 @@ const ItemPage = () => {
                     deleteResource={RESOURCE.ITEMS}
                     onEdit={(record) => editModalForm.show(record.id)}
                 />
-            </ListWrapper>
+            </ListContainer>
 
             <ItemFormModal modalForm={createModalForm} />
             <ItemFormModal modalForm={editModalForm} />

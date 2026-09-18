@@ -6,7 +6,7 @@ import { ColumnsType, CustomButton, CustomFlex, CustomTooltip } from '@/componen
 import {
     FilterPanel,
     ListTable,
-    ListWrapper,
+    ListContainer,
     StatusTag,
     type ICardAction,
     type IFilterField,
@@ -139,7 +139,7 @@ const CloudDataItem = () => {
 
     return (
         <>
-            <ListWrapper
+            <ListContainer
                 actions={actions}
                 isLoading={tableQuery.isLoading}
                 filters={<FilterPanel fields={filters} />}
@@ -150,7 +150,7 @@ const CloudDataItem = () => {
                     tableQuery={tableQuery}
                     deleteResource={RESOURCE.CLOUD_DATA_ITEMS}
                 />
-            </ListWrapper>
+            </ListContainer>
 
             <CloudItemFormModal
                 modalForm={createModalForm}

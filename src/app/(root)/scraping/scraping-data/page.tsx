@@ -7,7 +7,7 @@ import {
     FileGroups,
     FilterPanel,
     ListTable,
-    ListWrapper,
+    ListContainer,
     MediaLightbox,
     type ICardAction,
     type IFilterField,
@@ -166,7 +166,7 @@ const ScrapingDataPage = () => {
 
     return (
         <>
-            <ListWrapper
+            <ListContainer
                 actions={actions}
                 isLoading={tableContainerData?.tableQuery?.isLoading}
                 filters={<FilterPanel fields={filters} />}
@@ -188,7 +188,7 @@ const ScrapingDataPage = () => {
                         onDeleteFile={(fileId: string) => handleDelete(fileId)}
                     />
                 )}
-            </ListWrapper>
+            </ListContainer>
 
             <MediaLightbox
                 isOpen={isLightboxOpen}

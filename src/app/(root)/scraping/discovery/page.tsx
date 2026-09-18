@@ -3,7 +3,7 @@
 import {
     FilterPanel,
     ListTable,
-    ListWrapper,
+    ListContainer,
     type ICardAction,
     type IFilterField,
 } from '@/components/common';
@@ -114,7 +114,7 @@ const DiscoveryPage = () => {
 
     return (
         <>
-            <ListWrapper
+            <ListContainer
                 actions={actions}
                 isLoading={tableQuery.isLoading}
                 filters={<FilterPanel fields={filters} />}
@@ -126,7 +126,7 @@ const DiscoveryPage = () => {
                     deleteResource={RESOURCE.DISCOVERY_SESSIONS}
                     onView={(record) => router.push(`/scraping/discovery/${record.id}`)}
                 />
-            </ListWrapper>
+            </ListContainer>
             <CreateSessionModal
                 modalForm={createModalForm}
                 dataProviderQuery={dataProviderQuery}

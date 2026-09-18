@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import {
     FilterPanel,
     ListTable,
-    ListWrapper,
+    ListContainer,
     StatusTag,
     type IFilterField,
 } from '@/components/common';
@@ -163,7 +163,7 @@ export const ViewScheduleJobList = ({ isOpen, scheduleId, onClose }: ViewSchedul
             onCancel={onClose}
             title="Xem sự kiện lịch biểu thực thi"
         >
-            <ListWrapper
+            <ListContainer
                 isLoading={tableQuery.isLoading}
                 filters={<FilterPanel fields={filters} />}
             >
@@ -172,7 +172,7 @@ export const ViewScheduleJobList = ({ isOpen, scheduleId, onClose }: ViewSchedul
                     tableProps={tableProps}
                     tableQuery={tableQuery}
                 />
-            </ListWrapper>
+            </ListContainer>
         </CustomModal>
     );
 };

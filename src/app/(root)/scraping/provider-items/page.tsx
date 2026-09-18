@@ -5,7 +5,7 @@ import { ColumnsType, CustomButton, CustomSpace, CustomToggle } from '@/componen
 import {
     FilterPanel,
     ListTable,
-    ListWrapper,
+    ListContainer,
     type ICardAction,
     type IFilterField,
 } from '@/components/common';
@@ -152,7 +152,7 @@ const DataProviderItemPage = () => {
 
     return (
         <>
-            <ListWrapper
+            <ListContainer
                 actions={actions}
                 isLoading={tableQuery.isLoading}
                 filters={<FilterPanel fields={filters} />}
@@ -164,7 +164,7 @@ const DataProviderItemPage = () => {
                     deleteResource={RESOURCE.DATA_PROVIDER_ITEMS}
                     onEdit={(record) => editModalForm.show(record.id)}
                 />
-            </ListWrapper>
+            </ListContainer>
 
             <ProviderItemFormModal
                 modalForm={createModalForm}

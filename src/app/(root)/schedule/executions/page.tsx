@@ -5,7 +5,7 @@ import { ColumnsType, CustomButton, CustomToggle } from '@/components/custom-ant
 import {
     FilterPanel,
     ListTable,
-    ListWrapper,
+    ListContainer,
     StatusTag,
     type ICardAction,
     type IFilterField,
@@ -134,7 +134,7 @@ const ScheduleExecutionPage = () => {
 
     return (
         <>
-            <ListWrapper
+            <ListContainer
                 actions={actions}
                 isLoading={loading || tableQuery.isLoading}
                 filters={<FilterPanel fields={filters} />}
@@ -146,7 +146,7 @@ const ScheduleExecutionPage = () => {
                     deleteResource={RESOURCE.SCHEDULES}
                     onEdit={(record) => editModalForm.show(record.id)}
                 />
-            </ListWrapper>
+            </ListContainer>
 
             <ScheduleExecutionFormModal
                 modalForm={createModalForm}

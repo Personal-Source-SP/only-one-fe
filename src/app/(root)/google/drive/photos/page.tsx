@@ -5,7 +5,7 @@ import { Icon } from '@iconify/react';
 import {
     FileGroups,
     FilterPanel,
-    ListWrapper,
+    ListContainer,
     MediaLightbox,
     type ICardAction,
     type IFilterField,
@@ -101,7 +101,7 @@ const PhotosPage = () => {
 
     return (
         <>
-            <ListWrapper
+            <ListContainer
                 actions={actions}
                 isLoading={tableQuery.isLoading}
                 filters={<FilterPanel fields={filters} />}
@@ -112,7 +112,7 @@ const PhotosPage = () => {
                     displayMode={viewMode}
                     onClickFile={handlePhotoClick}
                 />
-            </ListWrapper>
+            </ListContainer>
 
             <MediaLightbox
                 isOpen={isLightboxOpen}

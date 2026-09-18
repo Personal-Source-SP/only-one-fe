@@ -53,7 +53,7 @@ export const CustomModalForm = <
 }: CustomModalFormProps<TQueryFnData, TValues, TData>) => {
     const screens = useBreakpoint();
 
-    const { mode, formProps, modalProps, formLoading: loading } = modalForm;
+    const { mode, formProps, modalProps, isLoading } = modalForm;
 
     const initialValues = useMemo(() => {
         if (mode === 'create') return createInitialValues;
@@ -79,10 +79,10 @@ export const CustomModalForm = <
     }, [mode, title]);
 
     useEffect(() => {
-        if (!modalProps.open && !loading) {
+        if (!modalProps.open && !isLoading) {
             formProps.form?.resetFields();
         }
-    }, [loading, modalProps.open, formProps.form]);
+    }, [isLoading, modalProps.open, formProps.form]);
 
     return (
         <CustomModal
@@ -94,19 +94,19 @@ export const CustomModalForm = <
             width={screens.md ? width : '100%'}
             confirmLoading={modalProps.confirmLoading}
         >
-            <CustomSkeleton active={loading} paragraph={{ rows: skeletonRows }}>
-                <div style={{ display: loading ? 'none' : undefined }}>
-                    <CustomForm<TValues>
-                        {...formProps}
-                        layout="vertical"
-                        initialValues={initialValues}
-                        onFinish={formProps.onFinish}
-                        className={`[&_.ant-form-item]:mb-4 ${formProps?.className ?? ''}`.trim()}
-                    >
-                        {children}
-                    </CustomForm>
-                </div>
-            </CustomSkeleton>
+            {isLoading ? (
+                <CustomSkeleton active paragraph={{ rows: skeletonRows }} />
+            ) : (
+                <CustomForm<TValues>
+                    {...formProps}
+                    layout="vertical"
+                    initialValues={initialValues}
+                    onFinish={formProps.onFinish}
+                    className={`[&_.ant-form-item]:mb-4 ${formProps?.className ?? ''}`.trim()}
+                >
+                    {children}
+                </CustomForm>
+            )}
         </CustomModal>
     );
 };

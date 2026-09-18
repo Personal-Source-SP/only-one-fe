@@ -5,7 +5,7 @@ import { ColumnsType, CustomButton } from '@/components/custom-antd';
 import {
     FilterPanel,
     ListTable,
-    ListWrapper,
+    ListContainer,
     StatusTag,
     type ICardAction,
     type IFilterField,
@@ -106,7 +106,7 @@ const CloudDataProvider = () => {
 
     return (
         <>
-            <ListWrapper
+            <ListContainer
                 actions={actions}
                 isLoading={tableQuery.isLoading}
                 filters={<FilterPanel fields={filters} />}
@@ -118,7 +118,7 @@ const CloudDataProvider = () => {
                     deleteResource={RESOURCE.CLOUD_DATA_PROVIDERS}
                     onEdit={(record) => editModalForm.show(record.id)}
                 />
-            </ListWrapper>
+            </ListContainer>
 
             <CloudProviderFormModal modalForm={createModalForm} />
             <CloudProviderFormModal modalForm={editModalForm} />

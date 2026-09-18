@@ -5,7 +5,7 @@ import { ColumnsType, CustomButton } from '@/components/custom-antd';
 import {
     FilterPanel,
     ListTable,
-    ListWrapper,
+    ListContainer,
     StatusTag,
     type ICardAction,
     type IFilterField,
@@ -80,7 +80,7 @@ const SimulationItemsPage = () => {
 
     return (
         <>
-            <ListWrapper
+            <ListContainer
                 actions={actions}
                 isLoading={tableQuery.isLoading}
                 filters={<FilterPanel fields={filters} />}
@@ -92,7 +92,7 @@ const SimulationItemsPage = () => {
                     deleteResource={RESOURCE.SIMULATION_ITEMS}
                     onEdit={(record) => editModalForm.show(record.id)}
                 />
-            </ListWrapper>
+            </ListContainer>
 
             <SimulationItemFormModal
                 modalForm={createModalForm}

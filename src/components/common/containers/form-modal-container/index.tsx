@@ -59,6 +59,7 @@ export const FormModalContainer = <
 
     return (
         <CustomModalForm<TQueryFnData, TValues, TData>
+            {...modalForm}
             width={width}
             title={title}
             okText={okText}
