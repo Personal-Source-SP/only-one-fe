@@ -27,6 +27,17 @@ export interface SectionTab {
     icon?: string;
     label: string;
 }
+export interface IFieldMetadata<TKey extends string = string> {
+    key: TKey;
+    label: string;
+    tableTitle?: string;
+    placeholder?: string;
+    width?: string | number;
+    maxLength?: number;
+    minLength?: number;
+    requiredMessage?: string;
+    messages?: Record<string, string>;
+}
 
 export interface Option<T = string | number> {
     value: T;

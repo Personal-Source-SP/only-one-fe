@@ -17,6 +17,7 @@ import {
     CustomDropdown,
     CustomFlex,
     CustomSpace,
+    CustomSpin,
     CustomTypography,
     type MenuProps,
 } from '@/components/custom-antd';
@@ -66,7 +67,7 @@ export type ListWrapperProps<
     formModal?: WrapperFormModalProps<RecordType, TValues>[];
 
     /** Additional modal / drawer nodes */
-    modals?: ReactNode | ReactNode[];
+    customModals?: ReactNode[];
 };
 
 export const ListWrapper = <
@@ -84,7 +85,7 @@ export const ListWrapper = <
     className = '',
     table,
     formModal,
-    modals,
+    customModals,
 }: ListWrapperProps<RecordType, TValues>) => {
     const permissions = usePagePermissions(permissionGroup);
 
@@ -150,52 +151,68 @@ export const ListWrapper = <
     }, [allowedActions.length, mobileActionMenuItems, mobileActionsTitle]);
 
     return (
-        <CustomSpace
-            size="middle"
-            direction="vertical"
-            className={`w-full ${!withCard ? 'p-3 sm:p-5 ' : ''}${className}`.trim()}
-        >
-            <BreadcrumbNav items={breadcrumb} />
+        <>
+            <CustomSpace
+                size="middle"
+                direction="vertical"
+                className={`w-full ${!withCard ? 'p-3 sm:p-5 ' : ''}${className}`.trim()}
+            >
+                <CustomSpin spinning={isLoading}>
+                    <BreadcrumbNav items={breadcrumb} />
 
-            {withCard ? (
-                <CustomCard styles={{ body: { padding: 0 } }} className="overflow-hidden">
-                    <CustomSpace direction="vertical" size="middle" className="w-full p-3 sm:p-5">
-                        <WrapperHeader
-                            filters={filters}
-                            withCard={!withCard}
-                            allowedActions={allowedActions}
-                            mobileActionsButton={mobileActionsButton}
-                        />
+                    {withCard ? (
+                        <CustomCard styles={{ body: { padding: 0 } }} className="overflow-hidden">
+                            <CustomSpace
+                                size="middle"
+                                direction="vertical"
+                                className="w-full p-3 sm:p-5"
+                            >
+                                <WrapperHeader
+                                    filters={filters}
+                                    withCard={!withCard}
+                                    allowedActions={allowedActions}
+                                    mobileActionsButton={mobileActionsButton}
+                                />
 
-                        {table && (
-                            <ListTable<RecordType> permissionGroup={permissionGroup} {...table} />
-                        )}
+                                {table && (
+                                    <ListTable<RecordType>
+                                        permissionGroup={permissionGroup}
+                                        {...table}
+                                    />
+                                )}
 
-                        {children}
-                    </CustomSpace>
-                </CustomCard>
-            ) : (
-                <>
-                    <WrapperHeader
-                        filters={filters}
-                        withCard={withCard}
-                        allowedActions={allowedActions}
-                        mobileActionsButton={mobileActionsButton}
-                    />
+                                {children}
+                            </CustomSpace>
+                        </CustomCard>
+                    ) : (
+                        <>
+                            <WrapperHeader
+                                filters={filters}
+                                withCard={withCard}
+                                allowedActions={allowedActions}
+                                mobileActionsButton={mobileActionsButton}
+                            />
 
-                    {table && (
-                        <ListTable<RecordType> permissionGroup={permissionGroup} {...table} />
+                            {table && (
+                                <ListTable<RecordType>
+                                    permissionGroup={permissionGroup}
+                                    {...table}
+                                />
+                            )}
+
+                            {children}
+                        </>
                     )}
+                </CustomSpin>
+            </CustomSpace>
 
-                    {children}
-                </>
-            )}
-
+            {/** Form Modals */}
             {formModal?.map((modalProps, index) => (
                 <WrapperFormModal key={index} {...modalProps} />
             ))}
 
-            {modals && (Array.isArray(modals) ? modals.map((m) => m) : modals)}
-        </CustomSpace>
+            {/** Custom Modals */}
+            {customModals?.length ? customModals.map((modal) => modal) : null}
+        </>
     );
 };
