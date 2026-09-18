@@ -4,7 +4,9 @@ import {
     BreadcrumbNav,
     ListTable,
     WrapperFormModal,
+    WrapperHeader,
     type BreadcrumbItem,
+    type CardAction,
     type IFilterField,
     type ListTableProps,
     type WrapperFormModalProps,
@@ -22,30 +24,6 @@ import { usePagePermissions } from '@/hooks';
 import { DownOutlined } from '@ant-design/icons';
 import type { BaseRecord } from '@refinedev/core';
 import { useMemo, type ReactNode } from 'react';
-import { ListWrapperHeader } from './list-wrapper-header';
-
-export type CardAction = {
-    /** Button or action component (for example: <Button>Create</Button>) */
-    component?: ReactNode;
-
-    /** Required permission for showing this action */
-    permissionAction?: 'create' | 'update' | 'delete' | 'read';
-
-    /** Optional menu label for mobile actions dropdown */
-    label?: ReactNode;
-
-    /** Optional menu icon for mobile actions dropdown */
-    icon?: ReactNode;
-
-    /** Unique key for dropdown menu item */
-    key?: string;
-
-    /** Danger styling for dropdown menu item */
-    danger?: boolean;
-
-    /** Optional click handler for mobile actions dropdown */
-    onClick?: () => void;
-};
 
 export type ListWrapperProps<
     RecordType extends BaseRecord = BaseRecord,
@@ -110,11 +88,6 @@ export const ListWrapper = <
 }: ListWrapperProps<RecordType, TValues>) => {
     const permissions = usePagePermissions(permissionGroup);
 
-    const breadcrumbNode = useMemo(() => {
-        if (!breadcrumb || breadcrumb.length === 0) return null;
-        return <BreadcrumbNav items={breadcrumb} />;
-    }, [breadcrumb]);
-
     const allowedActions = useMemo(
         () =>
             actions.filter((action) => {
@@ -176,64 +149,53 @@ export const ListWrapper = <
         );
     }, [allowedActions.length, mobileActionMenuItems, mobileActionsTitle]);
 
-    const header = useMemo(
-        () => (
-            <ListWrapperHeader
-                filters={filters}
-                allowedActions={allowedActions}
-                mobileActionsButton={mobileActionsButton}
-            />
-        ),
-        [filters, allowedActions, mobileActionsButton],
-    );
-
-    const contentNode = useMemo(() => {
-        if (table) {
-            return (
-                <>
-                    <ListTable<RecordType> permissionGroup={permissionGroup} {...table} />
-                    {children}
-                </>
-            );
-        }
-
-        return children;
-    }, [table, permissionGroup, children]);
-
-    const formModalsNode = useMemo(
-        () => (
-            <>
-                {formModal?.map((modalProps, index) => (
-                    <WrapperFormModal key={index} {...modalProps} />
-                ))}
-                {modals && (Array.isArray(modals) ? modals.map((m) => m) : modals)}
-            </>
-        ),
-        [formModal, modals],
-    );
-
     return (
         <CustomSpace
             size="middle"
             direction="vertical"
             className={`w-full ${!withCard ? 'p-3 sm:p-5 ' : ''}${className}`.trim()}
         >
-            {breadcrumbNode}
+            <BreadcrumbNav items={breadcrumb} />
+
             {withCard ? (
                 <CustomCard styles={{ body: { padding: 0 } }} className="overflow-hidden">
                     <CustomSpace direction="vertical" size="middle" className="w-full p-3 sm:p-5">
-                        {header}
-                        {contentNode}
+                        <WrapperHeader
+                            filters={filters}
+                            withCard={!withCard}
+                            allowedActions={allowedActions}
+                            mobileActionsButton={mobileActionsButton}
+                        />
+
+                        {table && (
+                            <ListTable<RecordType> permissionGroup={permissionGroup} {...table} />
+                        )}
+
+                        {children}
                     </CustomSpace>
                 </CustomCard>
             ) : (
                 <>
-                    {header && <CustomCard className="w-full">{header}</CustomCard>}
-                    {contentNode}
+                    <WrapperHeader
+                        filters={filters}
+                        withCard={withCard}
+                        allowedActions={allowedActions}
+                        mobileActionsButton={mobileActionsButton}
+                    />
+
+                    {table && (
+                        <ListTable<RecordType> permissionGroup={permissionGroup} {...table} />
+                    )}
+
+                    {children}
                 </>
             )}
 
-            {formModalsNode}
+            {formModal?.map((modalProps, index) => (
+                <WrapperFormModal key={index} {...modalProps} />
+            ))}
+
+            {modals && (Array.isArray(modals) ? modals.map((m) => m) : modals)}
         </CustomSpace>
     );
 };

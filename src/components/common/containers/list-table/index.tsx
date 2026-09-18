@@ -14,10 +14,9 @@ import type { BaseRecord } from '@refinedev/core';
 import type { CSSProperties, ReactNode } from 'react';
 import { useCallback, useMemo, useRef, useState } from 'react';
 
-import { DataNotFound, PaginationControls } from '@/components/common';
+import { DataNotFound, MobileCardList, PaginationControls } from '@/components/common';
 import { useCustomDelete, usePagePermissions } from '@/hooks';
 import { evaluateShow, getBackendErrorMessage } from '@/utilities';
-import { MobileCardList } from './mobile-card-list';
 import { getRecordId } from './utils';
 
 const tableHeaderCellProps: { style: CSSProperties } = {
@@ -40,24 +39,14 @@ export interface TableCustomAction<RecordType> {
 }
 
 export interface ListTableProps<RecordType extends BaseRecord> extends TableProps<RecordType> {
+    /** Permission group for automatically checking View/Edit/Delete actions */
+    permissionGroup?: string;
+
     /** Table props returned from Refine's useTable hook */
     tableProps: TableProps<RecordType>;
 
     /** Table query returned from Refine's useTable for automatic refetch after delete. */
     tableQuery?: useTableReturnType<RecordType>['tableQuery'];
-
-    /** Permission group for automatically checking View/Edit/Delete actions */
-    permissionGroup?: string;
-
-    /** Resource path for automatic delete handling. */
-    deleteResource?: string;
-    showDelete?: boolean | ((record: RecordType) => boolean);
-
-    /** Called after automatic delete succeeds. */
-    onDeleteSuccess?: () => void | Promise<void>;
-
-    /** Additional custom actions */
-    customRowActions?: TableCustomAction<RecordType>[];
 
     /** View detail callback */
     onView?: (record: RecordType) => void;
@@ -66,6 +55,14 @@ export interface ListTableProps<RecordType extends BaseRecord> extends TableProp
     /** Edit callback */
     onEdit?: (record: RecordType) => void;
     showEdit?: boolean | ((record: RecordType) => boolean);
+
+    /** Delete callback */
+    deleteResource?: string;
+    onDeleteSuccess?: () => void | Promise<void>;
+    showDelete?: boolean | ((record: RecordType) => boolean);
+
+    /** Additional custom actions */
+    customRowActions?: TableCustomAction<RecordType>[];
 
     /** Whether to use custom PaginationControls UI below table */
     usePaginationControls?: boolean;
@@ -81,25 +78,24 @@ export interface ListTableProps<RecordType extends BaseRecord> extends TableProp
 }
 
 export function ListTable<RecordType extends BaseRecord = BaseRecord>({
+    permissionGroup,
     tableProps,
     tableQuery,
-    permissionGroup,
-    deleteResource,
-    showDelete,
-    onDeleteSuccess,
-    customRowActions = [],
-    columns,
-    loading,
-    pagination,
-    className = '',
     onView,
     showView,
     onEdit,
     showEdit,
+    deleteResource,
+    onDeleteSuccess,
+    showDelete,
+    customRowActions = [],
     usePaginationControls = true,
+    pagination,
     emptyTitle,
     emptyMessage,
     renderMobileCard,
+    columns,
+    className = '',
     ...restProps
 }: ListTableProps<RecordType>) {
     const keepOpenRef = useRef(false);
@@ -355,11 +351,6 @@ export function ListTable<RecordType extends BaseRecord = BaseRecord>({
         openDropdownId,
     ]);
 
-    const mergedLoading = useMemo(
-        () => (loading !== undefined ? loading : tableProps.loading),
-        [loading, tableProps.loading],
-    );
-
     const mergedScroll = useMemo(() => {
         const baseScroll = restProps.scroll ?? tableProps.scroll;
 
@@ -469,7 +460,6 @@ export function ListTable<RecordType extends BaseRecord = BaseRecord>({
                 <MobileCardList
                     columns={columns}
                     tableQuery={tableQuery}
-                    customRowActions={customRowActions}
                     dataSource={mergedTableProps.dataSource}
                     handleDelete={handleDelete}
                     onDeleteSuccess={onDeleteSuccess}
@@ -480,7 +470,7 @@ export function ListTable<RecordType extends BaseRecord = BaseRecord>({
                 <CustomTable
                     columns={columnsWithActions}
                     tableProps={mergedTableProps}
-                    loading={Boolean(mergedLoading)}
+                    loading={Boolean(tableProps?.loading)}
                 />
             )}
 

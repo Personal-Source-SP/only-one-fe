@@ -4,6 +4,8 @@ export * from './containers/content-section';
 export * from './containers/filter-panel';
 export * from './containers/list-table';
 export * from './containers/list-wrapper';
+export * from './containers/mobile-card-list';
+export * from './containers/wrapper-header';
 export * from './containers/wrapper-form-modal';
 export * from './containers/pagination-controls';
 

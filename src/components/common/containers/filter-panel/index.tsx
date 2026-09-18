@@ -71,7 +71,7 @@ export interface IFilterField {
     isPrimary?: boolean;
 }
 
-export interface FilterPanelProps {
+export type FilterPanelProps = {
     /** Filter field configuration array */
     fields: IFilterField[];
 
@@ -95,7 +95,7 @@ export interface FilterPanelProps {
 
     /** Optional callback when resetting filters in modal */
     onResetFilters?: () => void;
-}
+};
 
 export const FilterPanel = ({
     fields,
@@ -235,6 +235,7 @@ export const FilterPanel = ({
             {isMobileModalActive && (
                 <CustomModal
                     closable
+                    width={520}
                     maskClosable
                     open={isModalOpen}
                     onCancel={() => setIsModalOpen(false)}
@@ -264,7 +265,6 @@ export const FilterPanel = ({
                             </CustomButton>
                         </div>
                     }
-                    width={520}
                 >
                     <div className="flex flex-col gap-2.5 px-3 py-2">
                         {modalFields.map((field) => {
