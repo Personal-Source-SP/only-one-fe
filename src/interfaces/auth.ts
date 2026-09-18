@@ -1,10 +1,10 @@
-export declare namespace IAuth {
-    interface ILoginRequest {
+export namespace IAuth {
+    export interface ILoginRequest {
         email: string;
         password: string;
     }
 
-    interface IPayload {
+    export interface IPayload {
         id: string;
         email: string;
         firstName: string;
@@ -15,7 +15,7 @@ export declare namespace IAuth {
         exp: number;
     }
 
-    interface ILoginResponse {
+    export interface ILoginResponse {
         id: string;
         email: string;
         firstName: string;
@@ -24,19 +24,19 @@ export declare namespace IAuth {
         refreshToken: string;
     }
 
-    interface IRefreshResponse {
+    export interface IRefreshResponse {
         accessToken: string;
         refreshToken: string;
     }
 
-    interface IRegisterFormValues {
+    export interface IRegisterFormValues {
         name: string;
         email: string;
         password: string;
         confirmPassword: string;
     }
 
-    interface IForgetPasswordFormValues {
+    export interface IForgetPasswordFormValues {
         email: string;
     }
 }

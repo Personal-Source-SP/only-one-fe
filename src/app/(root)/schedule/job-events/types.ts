@@ -1,8 +1,8 @@
 import type { ScheduleJobEventType } from './enums';
-import type { Abstract } from '@/interfaces';
+import type { IAbstract } from '@/interfaces';
 import type { IScheduleJob } from '@/app/(root)/schedule/executions/types';
 
-export interface IScheduleJobEvent extends Abstract {
+export interface IScheduleJobEvent extends IAbstract {
     scheduleJobId: string;
     eventType: ScheduleJobEventType;
     eventMessage: string;

@@ -1,6 +1,6 @@
-import { SidebarItem } from '@/interfaces';
+import { ISidebarItem } from '@/interfaces';
 
-export const SIDEBAR_ITEMS: SidebarItem[] = [
+export const SIDEBAR_ITEMS: ISidebarItem[] = [
     {
         label: 'Tổng quan',
         icon: 'emojione:bar-chart',

@@ -1,14 +1,14 @@
 'use client';
 
 import { CustomButton } from '@/components/custom-antd';
-import { SidebarItem } from '@/interfaces';
+import { ISidebarItem } from '@/interfaces';
 import { Icon } from '@iconify/react';
 
 type SidebarNavItemProps = {
-    item: SidebarItem;
+    item: ISidebarItem;
     isActive: boolean;
     isCollapsed: boolean;
-    onItemClick: (item: SidebarItem) => void;
+    onItemClick: (item: ISidebarItem) => void;
 };
 
 export const SidebarNavItem = ({

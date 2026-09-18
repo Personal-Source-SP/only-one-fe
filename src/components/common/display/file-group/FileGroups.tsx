@@ -10,7 +10,7 @@ import {
 import { Empty } from '@/components/common';
 import { MimeType } from '@/enums';
 import { ViewFileMode } from '@/enums';
-import { FileGroup, FileItem } from '@/interfaces';
+import { IFileGroup, IFileItem } from '@/interfaces';
 import { DeleteOutlined, DownloadOutlined, EyeOutlined } from '@ant-design/icons';
 import { useMemo, useState } from 'react';
 import { DEFAULT_FILE_IMAGE_URL } from '@/constants';
@@ -21,7 +21,7 @@ import { ImageItemDetail } from './ImageItemDetail';
 import { VideoItemDetail } from './VideoItemDetail';
 
 type FileGroupsProps = {
-    data: FileItem[];
+    data: IFileItem[];
     columns: number;
     displayMode: ViewFileMode;
     mimeType?: MimeType;
@@ -41,7 +41,7 @@ export const FileGroups = ({
 }: FileGroupsProps) => {
     const [loadingFiles, setLoadingFiles] = useState<Set<string>>(new Set());
 
-    const groupedFiles: FileGroup[] = useMemo(() => {
+    const groupedFiles: IFileGroup[] = useMemo(() => {
         const fileFilters = data?.filter((file) => file.mimeType?.startsWith(mimeType));
         if (!fileFilters?.length) return [];
 
@@ -65,7 +65,7 @@ export const FileGroups = ({
 
                         return groups;
                     },
-                    {} as Record<string, FileItem[]>,
+                    {} as Record<string, IFileItem[]>,
                 );
 
                 return Object.entries(groupedByDate).map(([date, files]) => ({
@@ -87,7 +87,7 @@ export const FileGroups = ({
 
                         return groups;
                     },
-                    {} as Record<string, FileItem[]>,
+                    {} as Record<string, IFileItem[]>,
                 );
 
                 return Object.entries(groupedByFolder).map(([folder, files]) => ({
@@ -114,7 +114,7 @@ export const FileGroups = ({
         [groupedFiles],
     );
 
-    const handleDownloadFile = (file: FileItem) => {
+    const handleDownloadFile = (file: IFileItem) => {
         if (onDownloadFile) {
             onDownloadFile(file.id ?? '');
         } else {
@@ -127,7 +127,7 @@ export const FileGroups = ({
         }
     };
 
-    const renderGroupHeader = (group: FileGroup) => {
+    const renderGroupHeader = (group: IFileGroup) => {
         switch (displayMode) {
             case ViewFileMode.DATE: {
                 return (
@@ -160,7 +160,7 @@ export const FileGroups = ({
         }
     };
 
-    const renderActionOverlay = (file: FileItem) => (
+    const renderActionOverlay = (file: IFileItem) => (
         <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
             <div className="flex gap-2">
                 <CustomTooltip title="Xem chi tiết">
@@ -200,7 +200,7 @@ export const FileGroups = ({
         </div>
     );
 
-    const renderFileTag = (file: FileItem) => {
+    const renderFileTag = (file: IFileItem) => {
         const timestamp = file.lastModified ?? file.createdAt;
         if (!timestamp) return null;
 
@@ -221,7 +221,7 @@ export const FileGroups = ({
         );
     };
 
-    const renderContent = (file: FileItem) => {
+    const renderContent = (file: IFileItem) => {
         switch (file.mimeType) {
             case MimeType.IMAGE: {
                 return (
@@ -250,7 +250,7 @@ export const FileGroups = ({
         }
     };
 
-    const renderItem = (file: FileItem) => {
+    const renderItem = (file: IFileItem) => {
         const isImage = file.mimeType.startsWith(MimeType.IMAGE);
 
         return (

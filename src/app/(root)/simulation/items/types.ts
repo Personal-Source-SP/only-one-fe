@@ -1,8 +1,8 @@
 import type { SimulationItemStatus } from './enums';
-import type { Abstract } from '@/interfaces';
+import type { IAbstract } from '@/interfaces';
 import type { ISimulationContext } from '@/app/(root)/simulation/contexts/types';
 
-export interface ISimulationItem extends Abstract {
+export interface ISimulationItem extends IAbstract {
     simulationContextId: string;
     status: SimulationItemStatus;
     expiresAt?: Date;

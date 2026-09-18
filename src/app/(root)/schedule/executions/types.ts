@@ -4,10 +4,10 @@ import type {
     ScheduleJobType,
     ScheduleType,
 } from './enums';
-import type { Abstract } from '@/interfaces';
+import type { IAbstract } from '@/interfaces';
 import type { IScheduleJobEvent } from '@/app/(root)/schedule/job-events/types';
 
-export interface IScheduleJob extends Abstract {
+export interface IScheduleJob extends IAbstract {
     scheduleId: string;
     scheduleType: ScheduleType;
     executionService: ExecutionServiceEnum;
@@ -25,7 +25,7 @@ export interface IScheduleJob extends Abstract {
     scheduleJobEvents?: IScheduleJobEvent[];
 }
 
-export interface ISchedule extends Abstract {
+export interface ISchedule extends IAbstract {
     type: ScheduleType;
     executionService: ExecutionServiceEnum;
     cronExpression: string;

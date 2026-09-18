@@ -1,6 +1,6 @@
 'use client';
 
-import { SidebarItem } from '@/interfaces';
+import { ISidebarItem } from '@/interfaces';
 import { usePathname, useRouter } from 'next/navigation';
 import { Fragment, useCallback, useEffect, useMemo } from 'react';
 
@@ -14,7 +14,7 @@ type SidebarProps = {
     setCollapsed: (collapsed: boolean) => void;
 };
 
-const resolveItemHref = (item: SidebarItem): string | undefined => {
+const resolveItemHref = (item: ISidebarItem): string | undefined => {
     if (item.href) {
         return item.href;
     }
@@ -42,7 +42,7 @@ export const Sidebar = ({ mobileOpen, setMobileOpen, collapsed, setCollapsed }: 
     }, [mobileOpen]);
 
     const handleMenuClick = useCallback(
-        (item: SidebarItem) => {
+        (item: ISidebarItem) => {
             const href = resolveItemHref(item);
 
             if (href) {
@@ -56,7 +56,7 @@ export const Sidebar = ({ mobileOpen, setMobileOpen, collapsed, setCollapsed }: 
     );
 
     const isItemActive = useCallback(
-        (item: SidebarItem): boolean => {
+        (item: ISidebarItem): boolean => {
             if (item.href === pathname) {
                 return true;
             }

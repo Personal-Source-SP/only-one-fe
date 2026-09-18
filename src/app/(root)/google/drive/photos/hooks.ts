@@ -5,7 +5,7 @@ import { isNumber } from 'lodash';
 import { API_ENDPOINT } from '@/config';
 import { CustomFilterType, MimeType, ViewFileMode } from '@/enums';
 import { useCustomData, useCustomTable, useSelectGoogleFolder } from '@/hooks';
-import type { FileItem, FilterItem } from '@/interfaces';
+import type { IFileItem, IFilterItem } from '@/interfaces';
 import { isExpiredToken } from '@/libs';
 import { QualityMode } from '../enums';
 import type { IGoogleAuth, IGoogleDriveFile } from './types';
@@ -64,7 +64,7 @@ export const usePhotosPage = () => {
         );
     }, [googleAuthsResult?.data?.data]);
 
-    const photoItems: FileItem[] = useMemo(() => {
+    const photoItems: IFileItem[] = useMemo(() => {
         if (!googleDriveFiles?.length) return [];
 
         return googleDriveFiles?.map((file) => ({
@@ -111,7 +111,7 @@ export const usePhotosPage = () => {
         }
     };
 
-    const filterItems: FilterItem[] = [
+    const filterItems: IFilterItem[] = [
         {
             span: 4,
             value: viewMode,

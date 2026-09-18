@@ -14,7 +14,7 @@ import type {
     IBaseApiQueryRequest,
     IBaseApiResourceRequest,
     IBaseApiTransformRequest,
-    Option,
+    IOption,
 } from '@/interfaces';
 import {
     applyDataTransform,
@@ -30,7 +30,7 @@ export interface IUseSelectProps<T extends BaseRecord = BaseRecord>
         IBaseApiResourceRequest,
         IBaseApiNotificationRequest,
         IBaseApiQueryRequest<Parameters<typeof useSelect<T>>[0]['queryOptions']>,
-        IBaseApiTransformRequest<Option<string>[], Option<string>[]> {
+        IBaseApiTransformRequest<IOption<string>[], IOption<string>[]> {
     id?: string;
     filters?: CrudFilter[];
     type?: 'items' | 'data-provider' | 'data-provider-items';

@@ -1,5 +1,5 @@
 import type { UseCustomModalFormResponse } from '@/hooks';
-import type { IDataOption } from '@/interfaces';
+import type { IOption } from '@/interfaces';
 import { FieldsEnum } from './constants';
 
 export interface IGoogleDriveFolder {
@@ -21,6 +21,6 @@ export type FolderFormValues = {
 };
 
 export type FolderModalProps = {
-    folderOptions: IDataOption[];
+    folderOptions: IOption[];
     modalForm: UseCustomModalFormResponse<GoogleFolderRecord, FolderFormValues, GoogleFolderRecord>;
 };

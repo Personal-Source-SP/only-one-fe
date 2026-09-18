@@ -4,7 +4,7 @@ import { API_ENDPOINT } from '@/config';
 import { CustomAvatar, CustomButton, CustomCard, CustomSpace } from '@/components/custom-antd';
 import { NotificationTab, NotificationType } from '@/enums';
 import { useTableContainer } from '@/hooks';
-import { Notification } from '@/interfaces';
+import { INotification } from '@/interfaces';
 import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
 import { CrudFilter } from '@refinedev/core';
@@ -24,7 +24,7 @@ const notificationText: Record<NotificationType, string> = {
     [NotificationType.UPDATE]: 'Cập nhật',
 };
 
-const renderNotification = (notification: Notification) => {
+const renderNotification = (notification: INotification) => {
     return (
         <div
             key={notification.id}
@@ -86,7 +86,7 @@ export const NotificationsPanel = ({ onClose }: NotificationsPanelProps) => {
     }, [activeTab]);
 
     const filterNotifications = useMemo(() => {
-        const notifications = tableContainerData.tableQuery?.data?.data as Notification[];
+        const notifications = tableContainerData.tableQuery?.data?.data as INotification[];
         if (!notifications) return [];
 
         return notifications;

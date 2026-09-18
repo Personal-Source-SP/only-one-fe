@@ -29,7 +29,7 @@ import { MessageType, MimeType } from '@/enums';
 import { useMainContext } from '@/contexts/MainContext';
 import { GoogleDriveType } from '../../enums';
 import { useCustomData, useCustomMutationData, useSelectGoogleFolder } from '@/hooks';
-import type { IDataOption } from '@/interfaces';
+import type { IOption } from '@/interfaces';
 import { formatDate, getGoogleAuthUrl, isExpiredToken } from '@/libs';
 import { Icon } from '@iconify/react';
 import Link from 'next/link';
@@ -57,7 +57,7 @@ type SyncGoogleDriveProps = {
     isOpen: boolean;
     queryLoading: boolean;
     defaultType?: GoogleDriveType;
-    defaultFolderOptions?: IDataOption[];
+    defaultFolderOptions?: IOption[];
     defaultGoogleAuths?: IGoogleAuth[];
     onClose: () => void;
     onSuccess: () => void;

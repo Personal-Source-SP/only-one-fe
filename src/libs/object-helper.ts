@@ -1,6 +1,6 @@
-import { Option } from '@/interfaces';
+import { IOption } from '@/interfaces';
 
-export const enumToOptions = (enumObj: object): Option[] => {
+export const enumToOptions = (enumObj: object): IOption[] => {
     return Object.entries(enumObj)
         .filter(([key, value]) => typeof value !== 'number' || isNaN(Number(key)))
         .map(([key, value]) => ({

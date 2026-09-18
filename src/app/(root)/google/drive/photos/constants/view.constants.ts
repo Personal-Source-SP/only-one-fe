@@ -1,8 +1,8 @@
 import { ViewFileMode } from '@/enums';
-import { FilterItem } from '@/interfaces';
+import { IFilterItem } from '@/interfaces';
 import { QualityMode } from '../../enums';
 
-type FilterOptions = NonNullable<FilterItem['options']>;
+type FilterOptions = NonNullable<IFilterItem['options']>;
 
 export const viewModeOptions: FilterOptions = [
     { value: ViewFileMode.ALL, label: 'Xem tất cả' },

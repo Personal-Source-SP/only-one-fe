@@ -11,7 +11,7 @@ import {
     useSelectItem,
     useTableContainer,
 } from '@/hooks';
-import type { FileItem, FilterItem, NBaseApi } from '@/interfaces';
+import type { IFileItem, IFilterItem, NBaseApi } from '@/interfaces';
 import type { IScrapingData } from './types';
 
 import { columnDisplayOptions, dataTypeOptions, viewModeOptions } from './constants';
@@ -72,7 +72,7 @@ export const useScrapingDataPage = () => {
         resource: API_ENDPOINT.SCRAPING_DATA.BASE,
     });
 
-    const photoItems: FileItem[] = useMemo(() => {
+    const photoItems: IFileItem[] = useMemo(() => {
         const scrapingDatas = (tableContainerData?.tableQuery?.data?.data ?? []) as IScrapingData[];
 
         if (!scrapingDatas?.length) return [];
@@ -88,7 +88,7 @@ export const useScrapingDataPage = () => {
     }, [tableContainerData?.tableQuery?.data?.data]);
 
     const customFilterItems = useMemo(() => {
-        const filterItems: FilterItem[] = [
+        const filterItems: IFilterItem[] = [
             {
                 span: displayMode === DisplayMode.TABLE ? 6 : 4,
                 field: 'dataProviderId',

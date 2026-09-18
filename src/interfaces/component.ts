@@ -1,7 +1,7 @@
 import { CodeDisplayProps } from '@/components/common';
-import { Option } from '@/interfaces';
 import type { FormInstance, Rule } from '@/components/custom-antd';
 import { ReactNode } from 'react';
+import { IOption } from './common';
 
 export type CustomCardPadding = 'sm' | 'lg' | 'none' | 'default' | 'responsive';
 
@@ -15,7 +15,7 @@ export type CustomTagStatus = 'active' | 'running' | 'draft' | 'error' | 'warnin
 
 export type CustomAlertType = 'info' | 'success' | 'warning' | 'error';
 
-export interface FormFieldItem {
+export interface IFormFieldItem {
     name: string;
     label: string;
     type: 'input' | 'select' | 'textarea' | 'switch' | 'code-display' | 'upload';
@@ -39,7 +39,7 @@ export interface FormFieldItem {
 
     selectProps?: {
         placeholder?: string;
-        options?: Option[];
+        options?: IOption[];
         allowClear?: boolean;
         showSearch?: boolean;
     };

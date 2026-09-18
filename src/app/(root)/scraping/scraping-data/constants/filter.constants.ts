@@ -1,7 +1,7 @@
 import { DisplayMode, ViewFileMode } from '@/enums';
-import { FilterItem } from '@/interfaces';
+import { IFilterItem } from '@/interfaces';
 
-type FilterOptions = NonNullable<FilterItem['options']>;
+type FilterOptions = NonNullable<IFilterItem['options']>;
 
 export const dataTypeOptions: FilterOptions = [
     { label: 'Ảnh', value: 'image' },

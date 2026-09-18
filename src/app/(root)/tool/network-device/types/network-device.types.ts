@@ -1,4 +1,4 @@
-import { Abstract } from '@/interfaces';
+import { IAbstract } from '@/interfaces';
 import { NetworkDeviceType } from '../enums';
 
 export interface IStreamResolution {
@@ -31,7 +31,7 @@ export interface IOnvifMetadata {
     deviceInformation?: IDeviceInformation;
 }
 
-export interface INetworkDevice extends Abstract {
+export interface INetworkDevice extends IAbstract {
     id: string;
     ipAddress: string;
     isOnline: boolean;

@@ -1,8 +1,8 @@
 import type { IDataProvider } from '@/app/(root)/scraping/data-providers/types';
-import type { Abstract } from '@/interfaces';
+import type { IAbstract } from '@/interfaces';
 import type { DiscoverySessionStatus, ValidationBatchStatus } from '../enums';
 
-export interface IDiscoverySession extends Abstract {
+export interface IDiscoverySession extends IAbstract {
     sessionCode: string;
     dataProviderId: string;
     targetUrl: string;

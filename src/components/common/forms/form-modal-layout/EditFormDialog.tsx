@@ -3,7 +3,7 @@
 import { useMainContext } from '@/contexts/MainContext';
 import { MessageType } from '@/enums';
 import { useCustomModal } from '@/hooks';
-import { FormFieldItem } from '@/interfaces';
+import { IFormFieldItem } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import {
     CustomButton,
@@ -21,7 +21,7 @@ import { FormModalLayout } from './FormModalLayout';
 type EditFormDialogProps = {
     id: string;
     resource: string;
-    formFields: FormFieldItem[];
+    formFields: IFormFieldItem[];
     title?: string;
     width?: number;
     topRender?: ReactNode;

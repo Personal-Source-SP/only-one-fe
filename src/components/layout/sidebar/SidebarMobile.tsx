@@ -1,6 +1,6 @@
 import { CustomButton, CustomDrawer } from '@/components/custom-antd';
 import { SIDEBAR_ITEMS } from '@/constants';
-import { SidebarItem } from '@/interfaces';
+import { ISidebarItem } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { Fragment } from 'react/jsx-runtime';
 
@@ -11,8 +11,8 @@ import { SidebarProfile } from './SidebarProfile';
 type SidebarMobileProps = {
     mobileOpen: boolean;
     setMobileOpen: (open: boolean) => void;
-    handleMenuClick: (item: SidebarItem) => void;
-    isItemActive: (item: SidebarItem) => boolean;
+    handleMenuClick: (item: ISidebarItem) => void;
+    isItemActive: (item: ISidebarItem) => boolean;
 };
 
 export const SidebarMobile = ({

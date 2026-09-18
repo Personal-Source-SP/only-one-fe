@@ -1,5 +1,5 @@
 import { SERVER_IS_NOT_READY_MESSAGE } from '@/constants';
-import { PaginationRequest, ApiError } from '@/interfaces';
+import { IPaginationRequest, ApiError } from '@/interfaces';
 import { CrudFilters, CrudOperators, CrudSorting, DataProvider, HttpError } from '@refinedev/core';
 import axios, { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
 
@@ -268,7 +268,7 @@ export const RestServer = (
         const { currentPage = 1, pageSize = 10 } = pagination ?? {};
 
         const queryFilters = generateFilter(filters);
-        const queryPagination: PaginationRequest = {
+        const queryPagination: IPaginationRequest = {
             page: currentPage,
             limit: pageSize,
         };

@@ -13,11 +13,11 @@ import {
     UploadFile,
 } from '@/components/custom-antd';
 import { CodeDisplay } from '@/components/common';
-import { FormFieldItem } from '@/interfaces';
+import { IFormFieldItem } from '@/interfaces';
 import { Icon } from '@iconify/react';
 import { ChangeEvent } from 'react';
 
-export const renderFormFields = (formField: FormFieldItem, formProps: FormProps<any>) => {
+export const renderFormFields = (formField: IFormFieldItem, formProps: FormProps<any>) => {
     let formFieldElement = null;
     const formItemProps: Record<string, any> = {
         name: formField.name,

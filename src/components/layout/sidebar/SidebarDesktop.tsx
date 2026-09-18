@@ -1,5 +1,5 @@
 import { SIDEBAR_ITEMS } from '@/constants';
-import { SidebarItem } from '@/interfaces';
+import { ISidebarItem } from '@/interfaces';
 
 import { SidebarNavItem } from '@/components/layout/sidebar/SidebarNavItem';
 import { SidebarLogo } from '@/components/layout/sidebar/SidebarLogo';
@@ -8,8 +8,8 @@ import { SidebarProfile } from '@/components/layout/sidebar/SidebarProfile';
 type SidebarDesktopProps = {
     collapsed: boolean;
     handleLogoClick: () => void;
-    handleMenuClick: (item: SidebarItem) => void;
-    isItemActive: (item: SidebarItem) => boolean;
+    handleMenuClick: (item: ISidebarItem) => void;
+    isItemActive: (item: ISidebarItem) => boolean;
 };
 
 export const SidebarDesktop = ({

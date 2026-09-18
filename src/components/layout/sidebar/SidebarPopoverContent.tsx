@@ -1,11 +1,11 @@
 import { CustomButton } from '@/components/custom-antd';
-import { SidebarItem } from '@/interfaces';
+import { ISidebarItem } from '@/interfaces';
 import { Icon } from '@iconify/react';
 
 type SidebarPopoverContentProps = {
-    item: SidebarItem;
+    item: ISidebarItem;
     activeMenu: string;
-    handleMenuClick: (item: SidebarItem) => void;
+    handleMenuClick: (item: ISidebarItem) => void;
 };
 
 export const SidebarPopoverContent = ({
@@ -20,7 +20,7 @@ export const SidebarPopoverContent = ({
         </div>
 
         <div className="space-y-1">
-            {item.children?.map((child: SidebarItem) => {
+            {item.children?.map((child: ISidebarItem) => {
                 const isSubActive = activeMenu === child.href;
 
                 return (

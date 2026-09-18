@@ -2,9 +2,9 @@ import type { ICloudDataProvider } from '@/app/(root)/cloud-data/providers/types
 import type { IDataProvider } from '@/app/(root)/scraping/data-providers/types';
 import type { IItem } from '@/app/(root)/scraping/items/types';
 import type { LocalFolderRegistrationStatusEnum } from './enums';
-import type { Abstract } from '@/interfaces';
+import type { IAbstract } from '@/interfaces';
 
-export interface IDataProviderItem extends Abstract {
+export interface IDataProviderItem extends IAbstract {
     itemId: string;
     itemUrl: string;
     dataProviderId: string;

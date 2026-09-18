@@ -1,7 +1,7 @@
 import type { SimulationContextStatus, SimulationService } from './enums';
-import type { Abstract } from '@/interfaces';
+import type { IAbstract } from '@/interfaces';
 
-export interface ISimulationContext extends Abstract {
+export interface ISimulationContext extends IAbstract {
     name: string;
     baseUrl: string;
     status: SimulationContextStatus;

@@ -1,5 +1,5 @@
 import type { IDataProvider } from '@/app/(root)/scraping/data-providers/types';
-import type { Abstract } from '@/interfaces';
+import type { IAbstract } from '@/interfaces';
 import type {
     DataProviderFeatureErrorType,
     DataProviderFeatureStatus,
@@ -11,7 +11,7 @@ import type { TargetConfig } from './target-config.types';
 
 export interface IDataProviderFeature<
     TConfig extends TargetConfig = TargetConfig,
-> extends Abstract {
+> extends IAbstract {
     dataProviderId: string;
     type: DataProviderFeatureType;
     service: ScraperServiceEnum;

@@ -13,7 +13,7 @@ import type {
     ProviderItemRecord,
 } from '@/app/(root)/scraping/provider-items/types';
 import type { IDataProvider } from '../../data-providers/types';
-import type { Option } from '@/interfaces';
+import type { IOption } from '@/interfaces';
 
 type ProviderItemFormModalProps = {
     modalForm: UseCustomModalFormResponse<
@@ -21,9 +21,9 @@ type ProviderItemFormModalProps = {
         ProviderItemFormValues,
         ProviderItemRecord
     >;
-    itemOptions?: Option[];
-    dataProviderOptions?: Option[];
-    cloudDataProviderOptions?: Option[];
+    itemOptions?: IOption[];
+    dataProviderOptions?: IOption[];
+    cloudDataProviderOptions?: IOption[];
     dataProviderQuery?: ReturnType<typeof useSelectDataProvider>['query'];
 };
 

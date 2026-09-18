@@ -1,21 +1,21 @@
-type SortBy<T> = [keyof T & string, 'ASC' | 'DESC'][];
-type Column<T> = keyof T & string;
+export type SortBy<T> = [keyof T & string, 'ASC' | 'DESC'][];
+export type Column<T> = keyof T & string;
 
-export declare namespace NBaseApi {
-    interface IRequest {
+export namespace NBaseApi {
+    export interface IRequest {
         baseURL: string;
         timeout?: number;
         accessToken?: string;
         withCredentials?: boolean;
     }
 
-    interface IResponse<T> {
+    export interface IResponse<T> {
         data: T | null;
         status?: number;
         errorMessage?: string;
     }
 
-    interface IPaginationResponse<T> {
+    export interface IPaginationResponse<T> {
         data: T[];
         meta: {
             itemsPerPage: number;
@@ -40,33 +40,33 @@ export declare namespace NBaseApi {
         };
     }
 
-    interface IGetRequest {
+    export interface IGetRequest {
         endPoint: string;
         params?: URLSearchParams;
         headers?: Record<string, string>;
     }
 
-    interface IDeleteRequest {
+    export interface IDeleteRequest {
         endPoint: string;
         params?: URLSearchParams;
         headers?: Record<string, string>;
     }
 
-    interface IPostRequest {
-        endPoint: string;
-        data: Record<string, any>;
-        params?: URLSearchParams;
-        headers?: Record<string, string>;
-    }
-
-    interface IPutRequest {
+    export interface IPostRequest {
         endPoint: string;
         data: Record<string, any>;
         params?: URLSearchParams;
         headers?: Record<string, string>;
     }
 
-    interface IPatchRequest {
+    export interface IPutRequest {
+        endPoint: string;
+        data: Record<string, any>;
+        params?: URLSearchParams;
+        headers?: Record<string, string>;
+    }
+
+    export interface IPatchRequest {
         endPoint: string;
         data: Record<string, any>;
         params?: URLSearchParams;

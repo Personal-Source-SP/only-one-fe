@@ -1,11 +1,11 @@
 import type { BreadcrumbItem } from '@/components/common';
 import { SIDEBAR_ITEMS } from '@/constants';
-import type { SectionTab, SidebarItem } from '@/interfaces';
+import type { ISectionTab, ISidebarItem } from '@/interfaces';
 
 const pathnameMatchesHref = (pathname: string, href: string): boolean =>
     pathname === href || pathname.startsWith(`${href}/`);
 
-export const getSectionTabs = (pathname: string): SectionTab[] | null => {
+export const getSectionTabs = (pathname: string): ISectionTab[] | null => {
     for (const item of SIDEBAR_ITEMS) {
         if (!item.children?.length || item.children.length < 2) {
             continue;
@@ -20,7 +20,7 @@ export const getSectionTabs = (pathname: string): SectionTab[] | null => {
         }
 
         return item.children
-            .filter((child): child is SidebarItem & { href: string } => Boolean(child.href))
+            .filter((child): child is ISidebarItem & { href: string } => Boolean(child.href))
             .map((child) => ({
                 href: child.href,
                 icon: child.icon,
@@ -79,7 +79,10 @@ export const getSectionBreadcrumbs = (pathname: string): BreadcrumbItem[] | null
     return null;
 };
 
-export const findInformationPage = (pathname: string, items: SidebarItem[]): SidebarItem | null => {
+export const findInformationPage = (
+    pathname: string,
+    items: ISidebarItem[],
+): ISidebarItem | null => {
     for (const item of items) {
         if (item.href === pathname) {
             return item;
@@ -96,7 +99,7 @@ export const findInformationPage = (pathname: string, items: SidebarItem[]): Sid
     return null;
 };
 
-export const getPageTitle = (pathname: string, items?: SidebarItem[]): string => {
+export const getPageTitle = (pathname: string, items?: ISidebarItem[]): string => {
     const found = findInformationPage(pathname, items || SIDEBAR_ITEMS);
     return found?.label || 'O-O Hub';
 };

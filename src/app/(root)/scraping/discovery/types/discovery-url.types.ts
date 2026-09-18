@@ -1,4 +1,4 @@
-import type { Abstract } from '@/interfaces';
+import type { IAbstract } from '@/interfaces';
 import type {
     DiscoveryUrlStatus,
     DiscoveryValidationStatus,
@@ -7,7 +7,7 @@ import type {
     ValidationUserAction,
 } from '../enums';
 
-export interface IDiscoveryUrl extends Abstract {
+export interface IDiscoveryUrl extends IAbstract {
     sessionId: string;
     sessionCode?: string;
     dataProviderId: string;
