@@ -114,8 +114,8 @@ const DataProviderPage = () => {
             name: 'identifier',
             type: 'input',
             label: 'Mã nhà cung cấp',
-            disabled: (mode: FormMode) => mode === 'edit',
             placeholder: 'Nhập mã nhà cung cấp',
+            disabled: (mode: FormMode) => mode === 'edit',
             addonAfter: (form, mode: FormMode) =>
                 mode === 'create' ? (
                     <CustomButton
@@ -168,8 +168,8 @@ const DataProviderPage = () => {
 
     return (
         <ListWrapper<IDataProvider, DataProviderFormValues>
-            actions={actions}
             filters={filters}
+            actions={actions}
             table={{
                 columns,
                 tableProps,
@@ -180,15 +180,15 @@ const DataProviderPage = () => {
             }}
             formModal={[
                 {
+                    fields: formFields,
                     modalForm: createModalForm,
                     title: 'Thêm mới nhà cung cấp',
                     createInitialValues: { name: '', baseUrl: '', identifier: '' },
-                    fields: formFields,
                 },
                 {
+                    fields: formFields,
                     modalForm: editModalForm,
                     title: 'Chỉnh sửa nhà cung cấp',
-                    fields: formFields,
                 },
             ]}
         />
