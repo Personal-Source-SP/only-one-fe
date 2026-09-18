@@ -37,7 +37,7 @@ export const FormModalContainer = <
     modalForm,
     okText,
     cancelText,
-    width = 600,
+    width,
     title,
     createInitialValues = {} as TValues,
     sections,
@@ -60,8 +60,8 @@ export const FormModalContainer = <
     return (
         <CustomModalForm<TQueryFnData, TValues, TData>
             width={width}
-            okText={okText}
             title={title}
+            okText={okText}
             modalForm={modalForm}
             cancelText={cancelText}
             createInitialValues={createInitialValues}

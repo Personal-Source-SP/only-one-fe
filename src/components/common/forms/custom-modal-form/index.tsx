@@ -23,15 +23,15 @@ type CustomModalFormProps<
 > = {
     createInitialValues: TValues;
     modalForm: UseCustomModalFormResponse<TQueryFnData, TValues, TData>;
-    extra?: ReactNode;
-    children?: ReactNode;
-    skeletonRows?: number;
-    width?: number | string;
-    destroyOnClose?: boolean;
     zIndex?: number;
+    extra?: ReactNode;
     title?: ReactNode;
     okText?: ReactNode;
+    children?: ReactNode;
+    skeletonRows?: number;
     cancelText?: ReactNode;
+    width?: number | string;
+    destroyOnHidden?: boolean;
 };
 
 export const CustomModalForm = <
@@ -41,21 +41,19 @@ export const CustomModalForm = <
 >({
     createInitialValues,
     modalForm,
-    extra,
-    children,
-    skeletonRows = 8,
-    width = 680,
-    destroyOnClose = true,
     zIndex = 1200,
+    extra,
     title,
     okText = 'Lưu',
+    children,
+    skeletonRows = 8,
     cancelText = 'Hủy',
+    width = 680,
+    destroyOnHidden = true,
 }: CustomModalFormProps<TQueryFnData, TValues, TData>) => {
-    const { mode, formProps, modalProps, formLoading: loading } = modalForm;
-
     const screens = useBreakpoint();
 
-    const open = useMemo(() => modalProps.open, [modalProps.open]);
+    const { mode, formProps, modalProps, formLoading: loading } = modalForm;
 
     const initialValues = useMemo(() => {
         if (mode === 'create') return createInitialValues;
@@ -75,38 +73,40 @@ export const CustomModalForm = <
         [extra, okText, cancelText, modalForm?.saveButtonProps, modalProps.onCancel],
     );
 
-    const defaultTitle = useMemo(() => {
+    const titleModal = useMemo(() => {
+        if (title) return title;
         return mode === 'create' ? 'Tạo mới' : 'Chỉnh sửa';
-    }, [mode]);
+    }, [mode, title]);
 
     useEffect(() => {
-        if (!open && !loading) {
+        if (!modalProps.open && !loading) {
             formProps.form?.resetFields();
         }
-    }, [loading, open, formProps.form]);
+    }, [loading, modalProps.open, formProps.form]);
 
     return (
         <CustomModal
             {...modalProps}
             zIndex={zIndex}
+            title={titleModal}
             footer={modalFooter}
-            destroyOnClose={destroyOnClose}
+            destroyOnHidden={destroyOnHidden}
             width={screens.md ? width : '100%'}
             confirmLoading={modalProps.confirmLoading}
-            title={title !== undefined ? title : defaultTitle}
         >
-            {loading ? <CustomSkeleton active paragraph={{ rows: skeletonRows }} /> : null}
-            <div style={{ display: loading ? 'none' : undefined }}>
-                <CustomForm<TValues>
-                    {...formProps}
-                    layout="vertical"
-                    initialValues={initialValues}
-                    onFinish={formProps.onFinish}
-                    className={`[&_.ant-form-item]:mb-4 ${formProps?.className ?? ''}`.trim()}
-                >
-                    {children}
-                </CustomForm>
-            </div>
+            <CustomSkeleton active={loading} paragraph={{ rows: skeletonRows }}>
+                <div style={{ display: loading ? 'none' : undefined }}>
+                    <CustomForm<TValues>
+                        {...formProps}
+                        layout="vertical"
+                        initialValues={initialValues}
+                        onFinish={formProps.onFinish}
+                        className={`[&_.ant-form-item]:mb-4 ${formProps?.className ?? ''}`.trim()}
+                    >
+                        {children}
+                    </CustomForm>
+                </div>
+            </CustomSkeleton>
         </CustomModal>
     );
 };
