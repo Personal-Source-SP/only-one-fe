@@ -1,6 +1,5 @@
 import type {
     CustomCheckbox,
-    CustomCheckboxProps,
     CustomPicker,
     CustomPickerProps,
     CustomRadioGroupProps,
@@ -18,7 +17,6 @@ import type {
 import type { FormMode } from '@/hooks';
 import type { FormRuleConfig } from '@/utilities';
 import type { ComponentProps, ReactNode } from 'react';
-import type { IOption } from './component';
 
 export interface IHtmlEditorFieldProps {
     value?: string;
@@ -45,8 +43,6 @@ export type FormFieldType =
     | 'radio_group'
     | 'checkbox_group'
     | 'custom';
-
-export type { IOption };
 
 export interface IBaseFormField<TValues = unknown> {
     name: keyof TValues | string;
