@@ -19,7 +19,7 @@ affected_modules:
   - Thiếu an toàn khi `dataProvider` đôi khi không có hàm `getApiUrl` trong một số ngữ cảnh SSR/Client.
   - Nhập nhằng giữa trạng thái `isLoading` khi query và `formLoading` khi submit form hoặc tạo mới.
 - **Giá trị (Value)**:
-  - Cung cấp bộ custom hook chuẩn hóa 100% cho tầng giao tiếp API: `useCustomData`, `useCustomOne`, `useCustomList`, `useCustomTable`, `useCustomSelect`, `useCustomDelete`, `useCustomModalForm`, `useCustomDrawerForm`, `useTableContainer`, `useCustomMutationData`.
+  - Cung cấp bộ custom hook chuẩn hóa 100% cho tầng giao tiếp API: `useCustomData`, `useCustomOne`, `useCustomList`, `useCustomTable`, `useCustomSelect`, `useCustomDelete`, `useCustomModalForm`, `useCustomDrawerForm`, `useCustomMutationData`.
   - Tự động unwrap API envelope, tích hợp notification chuẩn Toast/Message, xử lý fallback URL an toàn và định nghĩa rõ ràng vòng đời trạng thái `isLoading` / `formLoading`.
 
 ## 2. Key Architecture & Decisions (Kiến trúc & Quyết định Then chốt)

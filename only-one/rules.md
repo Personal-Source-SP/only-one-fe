@@ -76,4 +76,8 @@
 - **[AVOID]** Re-exporting shared domain types (e.g. `export type { IOption }`) across multiple interface files when canonically exported from `src/interfaces/component.ts`.
 - **[PREFER]** Pure layout container pattern for `ListContainer` (`top`, `children`, `bottom` slots) with direct composition of `<ListTable />` and standalone `<FormModalContainer />` over nested prop passing (`table`, `formModal`, `customModals`).
 - **[AVOID]** Declaring redundant type aliases (`ItemRecord = IItem`, `ImportItemRecord = IItem`, `ItemFormValues = IItemFormValues`) in page-level type files — Use canonical interface names (`IItem`, `IItemFormValues`) directly across components, table hooks, and modal forms to keep type contracts clean and unfragmented.
+- **[PREFER]** Passing unified `table: UseCustomTableResponse<RecordType, TTransformed>` directly to `<ListTable />` over passing fragmented `tableProps` and `tableQuery` props separately.
+- **[PREFER]** Shorthand `table.setFieldFilter(field, value)` with automatic operator resolution (`in` for array, `eq` for primitive), automatic page reset (`currentPage = 1`), and automatic empty-value cleanup over verbose manual `table.setFilters([{ field, operator: 'eq', value }])`.
+- **[AVOID]** Treating valid falsy filter values (`false`, `0`) as empty when sanitizing or resetting table query filters — Only purge `undefined`, `null`, `""`, and empty arrays `[]`.
+
 
