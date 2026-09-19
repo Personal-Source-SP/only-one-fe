@@ -13,7 +13,9 @@ type TableLike = {
 
 export const useNetworkDeviceStats = (table: TableLike) => {
     const stats = useMemo(() => {
-        const devices = (table.tableProps?.dataSource as INetworkDevice[]) || [];
+        const devices = Array.isArray(table.tableProps?.dataSource)
+            ? (table.tableProps.dataSource as INetworkDevice[])
+            : [];
         const total = table.tableProps?.pagination
             ? (table.tableProps.pagination as { total?: number }).total || devices.length
             : devices.length;

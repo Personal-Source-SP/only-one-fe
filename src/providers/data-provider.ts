@@ -202,6 +202,16 @@ export const unwrapResponseData = <T = any>(
         return { data: payload, total: 0 };
     }
 
+    // Nested Paginated inside ResponseDto envelope: { isSuccess: true, data: { data: T[], meta: ... } }
+    if (payload.data && typeof payload.data === 'object' && Array.isArray(payload.data.data)) {
+        return {
+            data: payload.data.data,
+            meta: payload.data.meta || payload.meta,
+            extraData: payload.data.extraData || payload.extraData,
+            total: payload.data.meta?.totalItems ?? payload.data.data.length,
+        };
+    }
+
     // Paginated: { data: T[], meta: { totalItems: number, ... }, links: { ... } }
     if (Array.isArray(payload.data) && payload.meta) {
         return {

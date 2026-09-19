@@ -1,6 +1,12 @@
-'use client';
-
-import { CustomForm, CustomInput, CustomInputNumber, CustomModal } from '@/components/custom-antd';
+import {
+    CustomButton,
+    CustomFlex,
+    CustomForm,
+    CustomInput,
+    CustomInputNumber,
+    CustomModal,
+} from '@/components/custom-antd';
+import { Icon } from '@iconify/react';
 import type { ITriggerScanRequest } from '../types';
 
 type NetworkScanModalProps = {
@@ -24,10 +30,20 @@ export const NetworkScanModal = ({ open, onClose, onSubmit, loading }: NetworkSc
             title="🔍 Kích hoạt Quét Mạng LAN"
             open={open}
             onCancel={onClose}
-            onOk={handleOk}
-            confirmLoading={loading}
-            okText="Bắt đầu quét"
-            cancelText="Hủy"
+            width={520}
+            footer={
+                <CustomFlex justify="flex-end" gap="small">
+                    <CustomButton onClick={onClose}>Hủy</CustomButton>
+                    <CustomButton
+                        type="primary"
+                        icon={<Icon icon="mdi:radar" />}
+                        onClick={handleOk}
+                        loading={loading}
+                    >
+                        Bắt đầu quét
+                    </CustomButton>
+                </CustomFlex>
+            }
         >
             <CustomForm
                 form={form}
