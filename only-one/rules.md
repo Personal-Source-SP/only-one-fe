@@ -79,5 +79,10 @@
 - **[PREFER]** Passing unified `table: UseCustomTableResponse<RecordType, TTransformed>` directly to `<ListTable />` over passing fragmented `tableProps` and `tableQuery` props separately.
 - **[PREFER]** Shorthand `table.setFieldFilter(field, value)` with automatic operator resolution (`in` for array, `eq` for primitive), automatic page reset (`currentPage = 1`), and automatic empty-value cleanup over verbose manual `table.setFilters([{ field, operator: 'eq', value }])`.
 - **[AVOID]** Treating valid falsy filter values (`false`, `0`) as empty when sanitizing or resetting table query filters — Only purge `undefined`, `null`, `""`, and empty arrays `[]`.
+- **[NEVER]** Declare inline table/form orchestration and raw queries directly inside `page.tsx` — Encapsulate table pagination, filter logic, modal mutation states, and data flow coordination into a dedicated hook in `hooks/use<Feature>Page.ts` to keep `page.tsx` purely declarative and under 160 LOC.
+- **[NEVER]** Pass `onSearch` prop to `IFilterField` for text search inputs — Always use `onChange: (val) => debouncedSearch(val?.toString() ?? '')` with `isPrimary: true` to avoid TypeScript contract errors and maintain uniform filter semantics.
+- **[AVOID]** Monolithic modal components exceeding 180 LOC — Extract specialized preview cards (e.g. `ApproachResultCard`) and nested lists/sub-views (e.g. `OnvifProfilesList`) into dedicated sub-components in `components/` to adhere to single responsibility.
+- **[AVOID]** Writing single large coordinator hooks containing multiple unrelated concerns — Decompose into specialized sub-hooks (e.g. `useNetworkScanStatus`, `useNetworkDeviceModals`, `useNetworkDeviceStats`) and assemble them cleanly inside `use<Feature>Page.ts`.
+
 
 
