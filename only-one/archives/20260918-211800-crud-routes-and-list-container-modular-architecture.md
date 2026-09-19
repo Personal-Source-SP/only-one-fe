@@ -2,10 +2,12 @@
 id: 20260918-211800-crud-routes-and-list-container-modular-architecture
 title: Kiến Trúc Declarative ListContainer, IFieldMetadata & Tái Cấu Trúc Toàn Bộ Route CRUD
 archived_at: 2026-09-18
-status: active
+status: superseded
 references:
   - only-one/archives/20260918-211800-custom-api-hooks-architecture.md
   - only-one/archives/20260918-211800-polymorphic-form-sections-and-inputs-architecture.md
+  - only-one/archives/20260919-140500-improve-common-containers.md
+  - only-one/archives/20260919-143800-refactor-remaining-pages-remove-field-metadata.md
 affected_modules:
   - src/components/common/containers/list-container/
   - src/interfaces/containers.ts
@@ -14,6 +16,12 @@ affected_modules:
 ---
 
 # Archive: Kiến Trúc Declarative ListContainer, IFieldMetadata & Tái Cấu Trúc Toàn Bộ Route CRUD
+
+> [!NOTE]
+> **Superseded Notice (2026-09-19)**:
+> Kiến trúc `ListContainer` với prop `table` / `formModal` và `IFieldMetadata` monolithic trong tài liệu này đã được nâng cấp toàn diện bởi:
+> 1. [20260919-140500-improve-common-containers.md](file:///d:/Sources/Personal/only-one-fe/only-one/archives/20260919-140500-improve-common-containers.md): `ListContainer` trở thành Pure Layout Container (`top`, `children`, `bottom`) áp dụng React Composition pattern.
+> 2. [20260919-143800-refactor-remaining-pages-remove-field-metadata.md](file:///d:/Sources/Personal/only-one-fe/only-one/archives/20260919-143800-refactor-remaining-pages-remove-field-metadata.md): Xóa bỏ `IFieldMetadata` và `*-field.constants.ts`, chuyển sang custom page hooks (`hooks/use*Page.ts`) và khai báo trực tiếp `columns` / `formFields`.
 
 ## 1. Problem & Core Value (Bài toán & Giá trị Cốt lõi)
 - **Vấn đề (Problem)**:
