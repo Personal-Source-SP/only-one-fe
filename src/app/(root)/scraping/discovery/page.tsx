@@ -1,9 +1,6 @@
 'use client';
 
-import {
-    DataProviderFeatureStatus,
-    DataProviderFeatureType,
-} from '@/app/(root)/scraping/features/enums';
+import { DataProviderFeatureType } from '@/app/(root)/scraping/features/enums';
 import type { ISearchTargetConfig } from '@/app/(root)/scraping/features/types';
 import {
     FormModalContainer,
@@ -14,12 +11,13 @@ import {
     type IFormField,
 } from '@/components/common';
 import { CustomButton, CustomTag, type ColumnsType } from '@/components/custom-antd';
-import { API_ENDPOINT, RESOURCE } from '@/config';
-import { useCustomModalForm, useCustomTable, useSelectDataProvider } from '@/hooks';
+import { RESOURCE } from '@/config';
 import { formatDate } from '@/libs';
+import { FormRuleType } from '@/utilities';
 import { PlusOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
-import { DISCOVERY_SESSION_FIELDS, DISCOVERY_SESSION_STATUS_COLOR_MAP } from './constants';
+import { DISCOVERY_SESSION_STATUS_COLOR_MAP } from './constants';
+import { useDiscoveryPage } from './hooks';
 import {
     DiscoverySessionStatus,
     type CreateSessionFormValues,
@@ -29,46 +27,23 @@ import {
 export default function DiscoveryPage() {
     const router = useRouter();
 
-    const { options: dataProviderOptions, query: dataProviderQuery } = useSelectDataProvider({
-        featureType: DataProviderFeatureType.SEARCH,
-        featureStatus: DataProviderFeatureStatus.READY,
-    });
-
-    const { tableProps, tableQuery, debouncedSearch, setFilters } =
-        useCustomTable<IDiscoverySession>({
-            resource: API_ENDPOINT.DISCOVERY_SESSIONS.BASE,
-        });
-
-    const createModalForm = useCustomModalForm<
-        IDiscoverySession,
-        CreateSessionFormValues,
-        IDiscoverySession
-    >({
-        action: 'create',
-        resource: API_ENDPOINT.DISCOVERY_SESSIONS.BASE,
-        successNotification: { type: 'success', message: 'Tạo phiên khám phá thành công' },
-        onMutationSuccess: async () => {
-            await tableQuery.refetch();
-        },
-        onFinish: (values) => {
-            const rawKeywords = values.targetKeywords;
-            const targetKeywords = Array.isArray(rawKeywords)
-                ? rawKeywords.map((k) => k.trim()).filter(Boolean)
-                : undefined;
-
-            return {
-                ...values,
-                targetKeywords,
-                depth: values.depth || 1,
-            };
-        },
-    });
+    const {
+        dataProviderOptions,
+        dataProviderQuery,
+        tableProps,
+        tableQuery,
+        debouncedSearch,
+        setFilters,
+        createModalForm,
+    } = useDiscoveryPage();
 
     const columns: ColumnsType<IDiscoverySession> = [
         {
-            dataIndex: DISCOVERY_SESSION_FIELDS.SESSION_CODE.key,
-            key: DISCOVERY_SESSION_FIELDS.SESSION_CODE.key,
-            ...DISCOVERY_SESSION_FIELDS.SESSION_CODE.table,
+            title: 'Mã phiên',
+            dataIndex: 'sessionCode',
+            key: 'sessionCode',
+            width: '15%',
+            sorter: true,
             render: (code: string, record) => (
                 <CustomButton
                     type="link"
@@ -80,20 +55,26 @@ export default function DiscoveryPage() {
             ),
         },
         {
+            title: 'Nhà cung cấp',
             dataIndex: ['dataProvider', 'name'],
-            key: DISCOVERY_SESSION_FIELDS.DATA_PROVIDER.key,
-            ...DISCOVERY_SESSION_FIELDS.DATA_PROVIDER.table,
+            key: 'dataProviderId',
+            width: '18%',
+            ellipsis: true,
             render: (name: string) => name || '—',
         },
         {
-            dataIndex: DISCOVERY_SESSION_FIELDS.TARGET_URL.key,
-            key: DISCOVERY_SESSION_FIELDS.TARGET_URL.key,
-            ...DISCOVERY_SESSION_FIELDS.TARGET_URL.table,
+            title: 'URL Khám phá',
+            dataIndex: 'targetUrl',
+            key: 'targetUrl',
+            width: '25%',
+            ellipsis: true,
         },
         {
-            dataIndex: DISCOVERY_SESSION_FIELDS.STATUS.key,
-            key: DISCOVERY_SESSION_FIELDS.STATUS.key,
-            ...DISCOVERY_SESSION_FIELDS.STATUS.table,
+            title: 'Trạng thái',
+            dataIndex: 'status',
+            key: 'status',
+            width: '12%',
+            align: 'center',
             render: (status: DiscoverySessionStatus) => (
                 <CustomTag color={DISCOVERY_SESSION_STATUS_COLOR_MAP[status]}>
                     {status?.toUpperCase()}
@@ -101,14 +82,18 @@ export default function DiscoveryPage() {
             ),
         },
         {
-            dataIndex: DISCOVERY_SESSION_FIELDS.TOTAL_DISCOVERED.key,
-            key: DISCOVERY_SESSION_FIELDS.TOTAL_DISCOVERED.key,
-            ...DISCOVERY_SESSION_FIELDS.TOTAL_DISCOVERED.table,
+            title: 'URLs tìm thấy',
+            dataIndex: 'totalDiscovered',
+            key: 'totalDiscovered',
+            width: '12%',
+            align: 'right',
         },
         {
-            dataIndex: DISCOVERY_SESSION_FIELDS.CREATED_AT.key,
-            key: DISCOVERY_SESSION_FIELDS.CREATED_AT.key,
-            ...DISCOVERY_SESSION_FIELDS.CREATED_AT.table,
+            title: 'Ngày tạo',
+            dataIndex: 'createdAt',
+            key: 'createdAt',
+            width: '15%',
+            sorter: true,
             render: (date: Date) => formatDate(date),
         },
     ];
@@ -156,8 +141,16 @@ export default function DiscoveryPage() {
 
     const formFields: IFormField<CreateSessionFormValues>[] = [
         {
-            name: DISCOVERY_SESSION_FIELDS.DATA_PROVIDER.key,
-            label: DISCOVERY_SESSION_FIELDS.DATA_PROVIDER.label,
+            name: 'dataProviderId',
+            label: 'Nhà cung cấp',
+            type: 'select',
+            placeholder: 'Chọn nhà cung cấp',
+            rulesConfig: [
+                {
+                    type: FormRuleType.Required,
+                    message: 'Vui lòng chọn nhà cung cấp',
+                },
+            ],
             selectProps: {
                 options: dataProviderOptions,
                 onChange: (value: string | undefined) => {
@@ -178,34 +171,38 @@ export default function DiscoveryPage() {
                     );
                 },
             },
-            ...DISCOVERY_SESSION_FIELDS.DATA_PROVIDER.form,
         },
         {
-            name: DISCOVERY_SESSION_FIELDS.TARGET_KEYWORDS.key,
-            label: DISCOVERY_SESSION_FIELDS.TARGET_KEYWORDS.label,
+            name: 'targetKeywords',
+            label: 'Từ khóa sản phẩm mục tiêu (Target Keywords)',
+            type: 'select',
+            placeholder:
+                'Nhập các từ khóa cách nhau bởi dấu phẩy hoặc phím Enter (ví dụ: Sony WH-1000XM4, iPhone 15 Pro, ...)',
             selectProps: {
                 mode: 'tags' as const,
                 tokenSeparators: [','],
             },
-            ...DISCOVERY_SESSION_FIELDS.TARGET_KEYWORDS.form,
         },
         {
-            name: DISCOVERY_SESSION_FIELDS.DEPTH.key,
-            label: DISCOVERY_SESSION_FIELDS.DEPTH.label,
+            name: 'depth',
+            label: 'Độ sâu thu thập (Crawl Depth)',
+            type: 'number',
+            placeholder: 'Nhập độ sâu thu thập',
             numberProps: { min: 1, max: 5 },
-            ...DISCOVERY_SESSION_FIELDS.DEPTH.form,
         },
         {
-            name: DISCOVERY_SESSION_FIELDS.MAX_URLS.key,
-            label: DISCOVERY_SESSION_FIELDS.MAX_URLS.label,
+            name: 'maxUrls',
+            label: 'Giới hạn URLs tối đa (Max URLs - Tùy chọn override)',
+            type: 'number',
+            placeholder: 'Mặc định lấy theo cấu hình Search',
             numberProps: { min: 1 },
-            ...DISCOVERY_SESSION_FIELDS.MAX_URLS.form,
         },
         {
-            name: DISCOVERY_SESSION_FIELDS.AUTO_VALIDATE.key,
-            label: DISCOVERY_SESSION_FIELDS.AUTO_VALIDATE.label,
-            description: DISCOVERY_SESSION_FIELDS.AUTO_VALIDATE.description,
-            ...DISCOVERY_SESSION_FIELDS.AUTO_VALIDATE.form,
+            name: 'autoValidate',
+            label: 'Tự động xác thực URL (Auto Validate)',
+            description:
+                'Tự động kích hoạt hàng đợi xác thực các URL khám phá được ngay khi hoàn tất',
+            type: 'switch',
         },
     ];
 

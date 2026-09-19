@@ -10,48 +10,18 @@ import {
     type IFormField,
 } from '@/components/common';
 import { ColumnsType, CustomButton } from '@/components/custom-antd';
-import { API_ENDPOINT, RESOURCE } from '@/config';
-import { useCustomModalForm, useCustomTable, type FormMode } from '@/hooks';
+import { RESOURCE } from '@/config';
+import type { FormMode } from '@/hooks';
 import { capitalizeFirstLetter, enumToOptions, formatDate, formatFileSize } from '@/libs';
+import { FormRuleType } from '@/utilities';
 import { PlusOutlined } from '@ant-design/icons';
-import { CLOUD_DATA_PROVIDER_FIELDS } from './constants';
 import { CloudDataProviderType } from './enums';
+import { useCloudProviderPage } from './hooks';
 import type { CloudProviderFormValues, CloudProviderRecord } from './types';
 
 export default function CloudDataProviderPage() {
-    const { tableProps, tableQuery, debouncedSearch } = useCustomTable<CloudProviderRecord>({
-        resource: API_ENDPOINT.CLOUD_DATA_PROVIDERS.BASE,
-    });
-
-    const createModalForm = useCustomModalForm<
-        CloudProviderRecord,
-        CloudProviderFormValues,
-        CloudProviderRecord
-    >({
-        action: 'create',
-        resource: API_ENDPOINT.CLOUD_DATA_PROVIDERS.BASE,
-        onMutationSuccess: async () => {
-            await tableQuery.refetch();
-        },
-    });
-
-    const editModalForm = useCustomModalForm<
-        CloudProviderRecord,
-        CloudProviderFormValues,
-        CloudProviderRecord
-    >({
-        action: 'edit',
-        resource: API_ENDPOINT.CLOUD_DATA_PROVIDERS.BASE,
-        onMutationSuccess: async () => {
-            await tableQuery.refetch();
-        },
-        initialValuesMapper: (record) => ({
-            name: record.name,
-            type: record.type,
-            config: record.config ? JSON.stringify(record.config, null, 2) : undefined,
-            isActive: record.isActive,
-        }),
-    });
+    const { tableProps, tableQuery, debouncedSearch, createModalForm, editModalForm } =
+        useCloudProviderPage();
 
     const columns: ColumnsType<CloudProviderRecord> = [
         {
@@ -63,40 +33,51 @@ export default function CloudDataProviderPage() {
             render: (_: unknown, __: unknown, index: number) => index + 1,
         },
         {
-            dataIndex: CLOUD_DATA_PROVIDER_FIELDS.NAME.key,
-            key: CLOUD_DATA_PROVIDER_FIELDS.NAME.key,
-            ...CLOUD_DATA_PROVIDER_FIELDS.NAME.table,
+            title: 'Tên kho',
+            dataIndex: 'name',
+            key: 'name',
+            width: 200,
+            ellipsis: true,
         },
         {
-            dataIndex: CLOUD_DATA_PROVIDER_FIELDS.TYPE.key,
-            key: CLOUD_DATA_PROVIDER_FIELDS.TYPE.key,
-            ...CLOUD_DATA_PROVIDER_FIELDS.TYPE.table,
+            title: 'Loại',
+            dataIndex: 'type',
+            key: 'type',
+            width: 150,
             render: (type: CloudDataProviderType) => (
                 <StatusTag status={capitalizeFirstLetter(type)} />
             ),
         },
         {
-            dataIndex: CLOUD_DATA_PROVIDER_FIELDS.IS_ACTIVE.key,
-            key: CLOUD_DATA_PROVIDER_FIELDS.IS_ACTIVE.key,
-            ...CLOUD_DATA_PROVIDER_FIELDS.IS_ACTIVE.table,
+            title: 'Trạng thái',
+            dataIndex: 'isActive',
+            key: 'isActive',
+            width: 150,
+            align: 'center',
             render: (isActive: boolean) => <StatusTag status={isActive ? 'active' : 'inactive'} />,
         },
         {
-            dataIndex: CLOUD_DATA_PROVIDER_FIELDS.TOTAL_ITEMS.key,
-            key: CLOUD_DATA_PROVIDER_FIELDS.TOTAL_ITEMS.key,
-            ...CLOUD_DATA_PROVIDER_FIELDS.TOTAL_ITEMS.table,
+            title: 'Tổng số dữ liệu',
+            dataIndex: 'totalItems',
+            key: 'totalItems',
+            width: 150,
+            align: 'center',
             render: (totalItems: number) => totalItems?.toLocaleString() ?? 0,
         },
         {
-            dataIndex: CLOUD_DATA_PROVIDER_FIELDS.TOTAL_SIZE.key,
-            key: CLOUD_DATA_PROVIDER_FIELDS.TOTAL_SIZE.key,
-            ...CLOUD_DATA_PROVIDER_FIELDS.TOTAL_SIZE.table,
+            title: 'Tổng dung lượng',
+            dataIndex: 'totalSize',
+            key: 'totalSize',
+            width: 150,
+            align: 'center',
             render: (totalSize: number) => formatFileSize(totalSize),
         },
         {
-            dataIndex: CLOUD_DATA_PROVIDER_FIELDS.CREATED_AT.key,
-            key: CLOUD_DATA_PROVIDER_FIELDS.CREATED_AT.key,
-            ...CLOUD_DATA_PROVIDER_FIELDS.CREATED_AT.table,
+            title: 'Ngày tạo',
+            dataIndex: 'createdAt',
+            key: 'createdAt',
+            width: 200,
+            sorter: true,
             render: (createdAt: Date) => formatDate(createdAt),
         },
     ];
@@ -130,27 +111,41 @@ export default function CloudDataProviderPage() {
 
     const formFields: IFormField<CloudProviderFormValues>[] = [
         {
-            name: CLOUD_DATA_PROVIDER_FIELDS.NAME.key,
-            label: CLOUD_DATA_PROVIDER_FIELDS.NAME.label,
-            ...CLOUD_DATA_PROVIDER_FIELDS.NAME.form,
+            name: 'name',
+            label: 'Tên kho',
+            type: 'input',
+            placeholder: 'Nhập tên nhà cung cấp',
+            rulesConfig: [
+                {
+                    type: FormRuleType.Required,
+                    message: 'Vui lòng nhập tên nhà cung cấp',
+                },
+            ],
         },
         {
-            name: CLOUD_DATA_PROVIDER_FIELDS.TYPE.key,
-            label: CLOUD_DATA_PROVIDER_FIELDS.TYPE.label,
+            name: 'type',
+            label: 'Loại',
             type: 'select',
+            placeholder: 'Chọn loại',
             options: enumToOptions(CloudDataProviderType) ?? [],
             disabled: (mode: FormMode) => mode === 'edit',
-            rulesConfig: CLOUD_DATA_PROVIDER_FIELDS.TYPE.form?.rulesConfig,
+            rulesConfig: [
+                {
+                    type: FormRuleType.Required,
+                    message: 'Vui lòng chọn loại nhà cung cấp',
+                },
+            ],
         },
         {
-            name: CLOUD_DATA_PROVIDER_FIELDS.CONFIG.key,
-            label: CLOUD_DATA_PROVIDER_FIELDS.CONFIG.label,
-            ...CLOUD_DATA_PROVIDER_FIELDS.CONFIG.form,
+            name: 'config',
+            label: 'Cấu hình (JSON)',
+            type: 'input',
+            placeholder: '{"channelId": ""}',
         },
         {
-            name: CLOUD_DATA_PROVIDER_FIELDS.IS_ACTIVE.key,
-            label: CLOUD_DATA_PROVIDER_FIELDS.IS_ACTIVE.label,
-            ...CLOUD_DATA_PROVIDER_FIELDS.IS_ACTIVE.form,
+            name: 'isActive',
+            label: 'Trạng thái',
+            type: 'switch',
         },
     ];
 

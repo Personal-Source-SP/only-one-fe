@@ -1,7 +1,6 @@
 'use client';
 
 import {
-    DISCOVERY_URL_FIELDS,
     DISCOVERY_URL_STATUS_COLOR_MAP,
     VALIDATION_MATCH_RESULT_COLOR_MAP,
     VALIDATION_MATCH_RESULT_LABELS,
@@ -105,9 +104,9 @@ export default function DiscoveryDetailPage() {
 
     const columns: ColumnsType<IDiscoveryUrl> = [
         {
-            dataIndex: DISCOVERY_URL_FIELDS.URL.key,
-            key: DISCOVERY_URL_FIELDS.URL.key,
-            ...DISCOVERY_URL_FIELDS.URL.table,
+            title: 'Tiêu đề & Đường dẫn',
+            dataIndex: 'url',
+            key: 'url',
             render: (url: string, record) => (
                 <CustomFlex vertical gap={4}>
                     <CustomTypography.Text strong className="text-hub-title text-sm">
@@ -142,9 +141,10 @@ export default function DiscoveryDetailPage() {
             ),
         },
         {
-            dataIndex: DISCOVERY_URL_FIELDS.MATCH_RESULT.key,
-            key: DISCOVERY_URL_FIELDS.MATCH_RESULT.key,
-            ...DISCOVERY_URL_FIELDS.MATCH_RESULT.table,
+            title: 'Độ khớp',
+            dataIndex: 'matchResult',
+            key: 'matchResult',
+            width: '13%',
             render: (match?: ValidationMatchResult) => {
                 if (!match) return <span className="text-xs text-slate-400">—</span>;
                 return (
@@ -155,9 +155,11 @@ export default function DiscoveryDetailPage() {
             },
         },
         {
-            dataIndex: DISCOVERY_URL_FIELDS.FOUND_AT_DEPTH.key,
-            key: DISCOVERY_URL_FIELDS.FOUND_AT_DEPTH.key,
-            ...DISCOVERY_URL_FIELDS.FOUND_AT_DEPTH.table,
+            title: 'Độ sâu phát hiện',
+            dataIndex: 'foundAtDepth',
+            key: 'foundAtDepth',
+            align: 'center',
+            width: '12%',
             render: (depth: number) => (
                 <CustomTag color="cyan" className="rounded-md font-mono text-xs px-2 py-0.5">
                     Level {depth || 1}
@@ -165,9 +167,10 @@ export default function DiscoveryDetailPage() {
             ),
         },
         {
-            dataIndex: DISCOVERY_URL_FIELDS.STATUS.key,
-            key: DISCOVERY_URL_FIELDS.STATUS.key,
-            ...DISCOVERY_URL_FIELDS.STATUS.table,
+            title: 'Trạng thái',
+            dataIndex: 'status',
+            key: 'status',
+            width: '13%',
             render: (status: DiscoveryUrlStatus) => (
                 <CustomTag color={DISCOVERY_URL_STATUS_COLOR_MAP[status]}>
                     {status?.toUpperCase()}
@@ -175,9 +178,11 @@ export default function DiscoveryDetailPage() {
             ),
         },
         {
-            dataIndex: DISCOVERY_URL_FIELDS.CREATED_AT.key,
-            key: DISCOVERY_URL_FIELDS.CREATED_AT.key,
-            ...DISCOVERY_URL_FIELDS.CREATED_AT.table,
+            title: 'Ngày phát hiện',
+            dataIndex: 'createdAt',
+            key: 'createdAt',
+            width: '15%',
+            sorter: true,
             render: (date: Date) => formatDate(date),
         },
     ];

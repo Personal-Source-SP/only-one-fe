@@ -4,7 +4,6 @@ import { ListContainer, ListTable, StatusTag, type IFilterField } from '@/compon
 import { ColumnsType } from '@/components/custom-antd';
 import { formatDate } from '@/libs';
 import { ViewJobEvent } from './components';
-import { JOB_EVENT_FIELDS } from './constants';
 import { ScheduleJobEventType } from './enums';
 import { useScheduleJobEventsPage } from './hooks';
 import type { JobEventRecord } from './types';
@@ -23,33 +22,43 @@ export default function ScheduleJobEventsPage() {
             render: (_: unknown, __: unknown, index: number) => index + 1,
         },
         {
-            dataIndex: JOB_EVENT_FIELDS.EVENT_TYPE.key,
-            key: JOB_EVENT_FIELDS.EVENT_TYPE.key,
-            ...JOB_EVENT_FIELDS.EVENT_TYPE.table,
+            title: 'Loại sự kiện',
+            dataIndex: 'eventType',
+            key: 'eventType',
+            width: 150,
+            ellipsis: true,
             render: (type: ScheduleJobEventType) => <StatusTag status={type} />,
         },
         {
-            dataIndex: JOB_EVENT_FIELDS.EVENT_MESSAGE.key,
-            key: JOB_EVENT_FIELDS.EVENT_MESSAGE.key,
-            ...JOB_EVENT_FIELDS.EVENT_MESSAGE.table,
+            title: 'Nội dung sự kiện',
+            dataIndex: 'eventMessage',
+            key: 'eventMessage',
+            width: 150,
+            ellipsis: true,
             render: (eventMessage: string) => eventMessage ?? '---',
         },
         {
-            dataIndex: JOB_EVENT_FIELDS.STARTED_AT.key,
-            key: JOB_EVENT_FIELDS.STARTED_AT.key,
-            ...JOB_EVENT_FIELDS.STARTED_AT.table,
+            title: 'Bắt đầu',
+            dataIndex: 'startedAt',
+            key: 'startedAt',
+            width: 200,
+            sorter: true,
             render: (startedAt: Date) => formatDate(startedAt),
         },
         {
-            dataIndex: JOB_EVENT_FIELDS.FINISHED_AT.key,
-            key: JOB_EVENT_FIELDS.FINISHED_AT.key,
-            ...JOB_EVENT_FIELDS.FINISHED_AT.table,
+            title: 'Kết thúc',
+            dataIndex: 'finishedAt',
+            key: 'finishedAt',
+            width: 200,
+            sorter: true,
             render: (finishedAt: Date) => formatDate(finishedAt),
         },
         {
-            dataIndex: JOB_EVENT_FIELDS.RETRY_COUNT.key,
-            key: JOB_EVENT_FIELDS.RETRY_COUNT.key,
-            ...JOB_EVENT_FIELDS.RETRY_COUNT.table,
+            title: 'Số lần thử',
+            dataIndex: 'retryCount',
+            key: 'retryCount',
+            width: 100,
+            align: 'center',
             render: (retryCount: number) => retryCount ?? 0,
         },
     ];

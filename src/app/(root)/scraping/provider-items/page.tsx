@@ -17,87 +17,26 @@ import {
     CustomTypography,
 } from '@/components/custom-antd';
 import { API_ENDPOINT, RESOURCE } from '@/config';
-import { MessageType } from '@/enums';
-import {
-    useCustomModalForm,
-    useCustomMutationData,
-    useCustomTable,
-    useSelectCloudDataProvider,
-    useSelectDataProvider,
-    useSelectItem,
-} from '@/hooks';
 import { formatDate } from '@/libs';
+import { FormRuleType } from '@/utilities';
 import { PlusOutlined } from '@ant-design/icons';
-import { PROVIDER_ITEM_FIELDS } from './constants';
+import { useProviderItemPage } from './hooks';
 import type { IDataProviderItemFormValues, ProviderItemRecord } from './types';
 
 export default function DataProviderItemPage() {
-    const { options: itemOptions } = useSelectItem();
-    const { options: cloudDataProviderOptions } = useSelectCloudDataProvider();
-    const { options: dataProviderOptions, query: dataProviderQuery } = useSelectDataProvider();
-
-    const { tableProps, tableQuery, debouncedSearch, setFilters } =
-        useCustomTable<ProviderItemRecord>({
-            resource: API_ENDPOINT.DATA_PROVIDER_ITEMS.BASE,
-        });
-
-    const { handleCustomMutationData: handleUpdate } = useCustomMutationData({
-        method: 'put',
-        successNotification: (data) => {
-            if (!data?.data?.isSuccess) {
-                return {
-                    type: MessageType.ERROR,
-                    message: 'Chuyển trạng thái thất bại',
-                    description: data?.data?.message ?? 'Chuyển trạng thái thất bại',
-                };
-            }
-
-            tableQuery?.refetch();
-
-            return {
-                type: MessageType.SUCCESS,
-                message: 'Chuyển trạng thái thành công',
-            };
-        },
-        errorNotification: (error) => ({
-            type: MessageType.ERROR,
-            message: 'Chuyển trạng thái thất bại',
-            description: error?.message ?? 'Chuyển trạng thái thất bại',
-        }),
-    });
-
-    const createModalForm = useCustomModalForm<
-        ProviderItemRecord,
-        IDataProviderItemFormValues,
-        ProviderItemRecord
-    >({
-        action: 'create',
-        resource: API_ENDPOINT.DATA_PROVIDER_ITEMS.BASE,
-        onMutationSuccess: async () => {
-            await tableQuery.refetch();
-        },
-    });
-
-    const editModalForm = useCustomModalForm<
-        ProviderItemRecord,
-        IDataProviderItemFormValues,
-        ProviderItemRecord
-    >({
-        action: 'edit',
-        resource: API_ENDPOINT.DATA_PROVIDER_ITEMS.BASE,
-        onMutationSuccess: async () => {
-            await tableQuery.refetch();
-        },
-        initialValuesMapper: (record) => ({
-            itemId: record.itemId,
-            itemUrl: record.itemUrl,
-            dataProviderId: record.dataProviderId,
-            cloudDataProviderId: record.cloudDataProviderId,
-            autoProcessScraping: record.autoProcessScraping,
-            checkDuplicateData: record.checkDuplicateData,
-            isSavedToCloudData: record.isSavedToCloudData,
-        }),
-    });
+    const {
+        itemOptions,
+        cloudDataProviderOptions,
+        dataProviderOptions,
+        dataProviderQuery,
+        tableProps,
+        tableQuery,
+        debouncedSearch,
+        setFilters,
+        handleUpdate,
+        createModalForm,
+        editModalForm,
+    } = useProviderItemPage();
 
     const columns: ColumnsType<ProviderItemRecord> = [
         {
@@ -126,21 +65,27 @@ export default function DataProviderItemPage() {
             ),
         },
         {
-            dataIndex: PROVIDER_ITEM_FIELDS.LAST_SCRAPED_TIMESTAMP.key,
-            key: PROVIDER_ITEM_FIELDS.LAST_SCRAPED_TIMESTAMP.key,
-            ...PROVIDER_ITEM_FIELDS.LAST_SCRAPED_TIMESTAMP.table,
+            title: 'Ngày cào gần nhất',
+            dataIndex: 'lastScrapedTimestamp',
+            key: 'lastScrapedTimestamp',
+            width: 150,
+            sorter: true,
             render: (lastScrapedTimestamp: Date) => formatDate(lastScrapedTimestamp),
         },
         {
-            dataIndex: PROVIDER_ITEM_FIELDS.CREATED_AT.key,
-            key: PROVIDER_ITEM_FIELDS.CREATED_AT.key,
-            ...PROVIDER_ITEM_FIELDS.CREATED_AT.table,
+            title: 'Ngày tạo',
+            dataIndex: 'createdAt',
+            key: 'createdAt',
+            width: 150,
+            sorter: true,
             render: (createdAt: Date) => formatDate(createdAt),
         },
         {
-            dataIndex: PROVIDER_ITEM_FIELDS.IS_ACTIVE.key,
-            key: PROVIDER_ITEM_FIELDS.IS_ACTIVE.key,
-            ...PROVIDER_ITEM_FIELDS.IS_ACTIVE.table,
+            title: 'Trạng thái',
+            dataIndex: 'isActive',
+            key: 'isActive',
+            width: 140,
+            align: 'center',
             render: (isActive: boolean, record: ProviderItemRecord) => (
                 <CustomToggle
                     size="small"
@@ -154,9 +99,11 @@ export default function DataProviderItemPage() {
             ),
         },
         {
-            dataIndex: PROVIDER_ITEM_FIELDS.IS_SAVED_TO_CLOUD_DATA.key,
-            key: PROVIDER_ITEM_FIELDS.IS_SAVED_TO_CLOUD_DATA.key,
-            ...PROVIDER_ITEM_FIELDS.IS_SAVED_TO_CLOUD_DATA.table,
+            title: 'Lưu Cloud',
+            dataIndex: 'isSavedToCloudData',
+            key: 'isSavedToCloudData',
+            width: 120,
+            align: 'center',
             render: (isSavedToCloudData: boolean) => (
                 <CustomToggle size="small" checked={isSavedToCloudData} disabled />
             ),
@@ -220,16 +167,30 @@ export default function DataProviderItemPage() {
 
     const formFields: IFormField<IDataProviderItemFormValues>[] = [
         {
-            name: PROVIDER_ITEM_FIELDS.ITEM_ID.key,
-            label: PROVIDER_ITEM_FIELDS.ITEM_ID.label,
-            ...PROVIDER_ITEM_FIELDS.ITEM_ID.form,
+            name: 'itemId',
+            label: 'Tên đối tượng',
+            type: 'select',
+            placeholder: 'Chọn đối tượng',
             options: itemOptions,
+            rulesConfig: [
+                {
+                    type: FormRuleType.Required,
+                    message: 'Vui lòng chọn đối tượng',
+                },
+            ],
         },
         {
-            name: PROVIDER_ITEM_FIELDS.DATA_PROVIDER_ID.key,
-            label: PROVIDER_ITEM_FIELDS.DATA_PROVIDER_ID.label,
-            ...PROVIDER_ITEM_FIELDS.DATA_PROVIDER_ID.form,
+            name: 'dataProviderId',
+            label: 'Nhà cung cấp',
+            type: 'select',
+            placeholder: 'Chọn nhà cung cấp',
             options: dataProviderOptions,
+            rulesConfig: [
+                {
+                    type: FormRuleType.Required,
+                    message: 'Vui lòng chọn nhà cung cấp',
+                },
+            ],
             selectProps: {
                 onChange: (value: unknown) => {
                     const dataProvider = dataProviderQuery?.data?.data?.find(
@@ -251,30 +212,45 @@ export default function DataProviderItemPage() {
             },
         },
         {
-            name: PROVIDER_ITEM_FIELDS.ITEM_URL.key,
-            label: PROVIDER_ITEM_FIELDS.ITEM_URL.label,
-            ...PROVIDER_ITEM_FIELDS.ITEM_URL.form,
+            name: 'itemUrl',
+            label: 'URL đối tượng',
+            type: 'input',
+            placeholder: 'Nhập URL đối tượng',
+            rulesConfig: [
+                {
+                    type: FormRuleType.Required,
+                    message: 'Vui lòng nhập URL đối tượng',
+                },
+                {
+                    type: FormRuleType.Url,
+                    message: 'URL không hợp lệ',
+                },
+            ],
         },
         {
-            name: PROVIDER_ITEM_FIELDS.CLOUD_DATA_PROVIDER_ID.key,
-            label: PROVIDER_ITEM_FIELDS.CLOUD_DATA_PROVIDER_ID.label,
-            ...PROVIDER_ITEM_FIELDS.CLOUD_DATA_PROVIDER_ID.form,
+            name: 'cloudDataProviderId',
+            label: 'Nhà cung cấp kho dữ liệu',
+            type: 'select',
+            placeholder: 'Chọn nhà cung cấp kho dữ liệu (nếu có)',
             options: cloudDataProviderOptions,
         },
         {
-            name: PROVIDER_ITEM_FIELDS.AUTO_PROCESS_SCRAPING.key,
-            label: PROVIDER_ITEM_FIELDS.AUTO_PROCESS_SCRAPING.label,
-            ...PROVIDER_ITEM_FIELDS.AUTO_PROCESS_SCRAPING.form,
+            name: 'autoProcessScraping',
+            label: 'Tự động cào dữ liệu',
+            type: 'switch',
+            description: 'Tự động lên lịch cào dữ liệu định kỳ từ nhà cung cấp',
         },
         {
-            name: PROVIDER_ITEM_FIELDS.CHECK_DUPLICATE_DATA.key,
-            label: PROVIDER_ITEM_FIELDS.CHECK_DUPLICATE_DATA.label,
-            ...PROVIDER_ITEM_FIELDS.CHECK_DUPLICATE_DATA.form,
+            name: 'checkDuplicateData',
+            label: 'Kiểm tra dữ liệu trùng lặp',
+            type: 'switch',
+            description: 'Kiểm tra và loại bỏ dữ liệu trùng lặp trước khi lưu',
         },
         {
-            name: PROVIDER_ITEM_FIELDS.IS_SAVED_TO_CLOUD_DATA.key,
-            label: PROVIDER_ITEM_FIELDS.IS_SAVED_TO_CLOUD_DATA.label,
-            ...PROVIDER_ITEM_FIELDS.IS_SAVED_TO_CLOUD_DATA.form,
+            name: 'isSavedToCloudData',
+            label: 'Lưu vào kho dữ liệu',
+            type: 'switch',
+            description: 'Tự động đồng bộ dữ liệu đã cào vào kho dữ liệu cloud',
         },
     ];
 

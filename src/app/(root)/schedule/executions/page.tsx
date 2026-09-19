@@ -15,7 +15,6 @@ import { capitalizeFirstLetter, formatDate, getEnumKeyByValue } from '@/libs';
 import { FormRuleType } from '@/utilities';
 import { PlusOutlined } from '@ant-design/icons';
 import { ViewScheduleJobList } from './components';
-import { EXECUTION_FIELDS } from './constants';
 import { CronExpression, ExecutionServiceEnum, ScheduleType } from './enums';
 import { useScheduleExecutionPage } from './hooks';
 import type { ScheduleExecutionFormValues, ScheduleExecutionRecord } from './types';
@@ -45,48 +44,62 @@ export default function ScheduleExecutionPage() {
             render: (_: unknown, __: unknown, index: number) => index + 1,
         },
         {
-            dataIndex: EXECUTION_FIELDS.EXECUTION_SERVICE.key,
-            key: EXECUTION_FIELDS.EXECUTION_SERVICE.key,
-            ...EXECUTION_FIELDS.EXECUTION_SERVICE.table,
+            title: 'Loại dịch vụ',
+            dataIndex: 'executionService',
+            key: 'executionService',
+            width: 150,
+            ellipsis: true,
             render: (executionService: ExecutionServiceEnum) => (
                 <StatusTag status={executionService} />
             ),
         },
         {
-            dataIndex: EXECUTION_FIELDS.TYPE.key,
-            key: EXECUTION_FIELDS.TYPE.key,
-            ...EXECUTION_FIELDS.TYPE.table,
+            title: 'Loại lịch biểu',
+            dataIndex: 'type',
+            key: 'type',
+            width: 150,
+            ellipsis: true,
             render: (type: ScheduleType) => <StatusTag status={type} />,
         },
         {
-            dataIndex: EXECUTION_FIELDS.CRON_EXPRESSION.key,
-            key: EXECUTION_FIELDS.CRON_EXPRESSION.key,
-            ...EXECUTION_FIELDS.CRON_EXPRESSION.table,
+            title: 'Lịch biểu cron',
+            dataIndex: 'cronExpression',
+            key: 'cronExpression',
+            width: 150,
+            ellipsis: true,
             render: (value: string) =>
                 capitalizeFirstLetter(getEnumKeyByValue(CronExpression, value) ?? '---'),
         },
         {
-            dataIndex: EXECUTION_FIELDS.NEXT_RUN_AT.key,
-            key: EXECUTION_FIELDS.NEXT_RUN_AT.key,
-            ...EXECUTION_FIELDS.NEXT_RUN_AT.table,
+            title: 'Chạy gần nhất',
+            dataIndex: 'nextRunAt',
+            key: 'nextRunAt',
+            width: 400,
+            sorter: true,
             render: (nextRunAt: Date) => formatDate(nextRunAt),
         },
         {
-            dataIndex: EXECUTION_FIELDS.LAST_RUN_AT.key,
-            key: EXECUTION_FIELDS.LAST_RUN_AT.key,
-            ...EXECUTION_FIELDS.LAST_RUN_AT.table,
+            title: 'Chạy cuối cùng',
+            dataIndex: 'lastRunAt',
+            key: 'lastRunAt',
+            width: 400,
+            sorter: true,
             render: (lastRunAt: Date) => formatDate(lastRunAt),
         },
         {
-            dataIndex: EXECUTION_FIELDS.JOB_COUNT.key,
-            key: EXECUTION_FIELDS.JOB_COUNT.key,
-            ...EXECUTION_FIELDS.JOB_COUNT.table,
+            title: 'Công việc',
+            dataIndex: 'jobCount',
+            key: 'jobCount',
+            width: 200,
+            align: 'center',
             render: (jobCount: number) => jobCount ?? 0,
         },
         {
-            dataIndex: EXECUTION_FIELDS.IS_ACTIVE.key,
-            key: EXECUTION_FIELDS.IS_ACTIVE.key,
-            ...EXECUTION_FIELDS.IS_ACTIVE.table,
+            title: 'Trạng thái',
+            dataIndex: 'isActive',
+            key: 'isActive',
+            width: 200,
+            align: 'center',
             render: (isActive: boolean, record: ScheduleExecutionRecord) => (
                 <CustomToggle
                     size="small"

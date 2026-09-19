@@ -14,7 +14,6 @@ import { RESOURCE } from '@/config';
 import { formatDate } from '@/libs';
 import { FormRuleType } from '@/utilities';
 import { PlusOutlined } from '@ant-design/icons';
-import { SIMULATION_CONTEXT_FIELDS } from './constants';
 import { SimulationService } from './enums';
 import { useSimulationContextsPage } from './hooks';
 import type { SimulationContextFormValues, SimulationContextRecord } from './types';
@@ -33,31 +32,40 @@ export default function SimulationContextsPage() {
             render: (_: unknown, __: unknown, index: number) => index + 1,
         },
         {
-            dataIndex: SIMULATION_CONTEXT_FIELDS.NAME.key,
-            key: SIMULATION_CONTEXT_FIELDS.NAME.key,
-            ...SIMULATION_CONTEXT_FIELDS.NAME.table,
+            title: 'Tên ngữ cảnh',
+            dataIndex: 'name',
+            key: 'name',
+            width: 200,
+            ellipsis: true,
         },
         {
-            dataIndex: SIMULATION_CONTEXT_FIELDS.BASE_URL.key,
-            key: SIMULATION_CONTEXT_FIELDS.BASE_URL.key,
-            ...SIMULATION_CONTEXT_FIELDS.BASE_URL.table,
+            title: 'URL nguồn',
+            dataIndex: 'baseUrl',
+            key: 'baseUrl',
+            width: 220,
+            ellipsis: true,
         },
         {
-            dataIndex: SIMULATION_CONTEXT_FIELDS.SERVICE_EXECUTION.key,
-            key: SIMULATION_CONTEXT_FIELDS.SERVICE_EXECUTION.key,
-            ...SIMULATION_CONTEXT_FIELDS.SERVICE_EXECUTION.table,
+            title: 'Dịch vụ thực thi',
+            dataIndex: 'serviceExecution',
+            key: 'serviceExecution',
+            width: 180,
             render: (serviceExecution: SimulationService) => serviceExecution,
         },
         {
-            dataIndex: SIMULATION_CONTEXT_FIELDS.STATUS.key,
-            key: SIMULATION_CONTEXT_FIELDS.STATUS.key,
-            ...SIMULATION_CONTEXT_FIELDS.STATUS.table,
+            title: 'Trạng thái',
+            dataIndex: 'status',
+            key: 'status',
+            width: 130,
+            align: 'center',
             render: (status: string) => <StatusTag status={status} />,
         },
         {
-            dataIndex: SIMULATION_CONTEXT_FIELDS.LAST_SUCCESSFUL_RUN_AT.key,
-            key: SIMULATION_CONTEXT_FIELDS.LAST_SUCCESSFUL_RUN_AT.key,
-            ...SIMULATION_CONTEXT_FIELDS.LAST_SUCCESSFUL_RUN_AT.table,
+            title: 'Chạy gần nhất',
+            dataIndex: 'lastSuccessfulRunAt',
+            key: 'lastSuccessfulRunAt',
+            width: 200,
+            sorter: true,
             render: (lastSuccessfulRunAt: Date) => formatDate(lastSuccessfulRunAt),
         },
     ];

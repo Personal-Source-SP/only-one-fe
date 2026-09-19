@@ -10,33 +10,18 @@ import {
     type IFormField,
 } from '@/components/common';
 import { ColumnsType, CustomButton, CustomFlex, CustomTooltip } from '@/components/custom-antd';
-import { API_ENDPOINT, RESOURCE } from '@/config';
+import { RESOURCE } from '@/config';
 import { MimeType } from '@/enums';
-import { useCustomModalForm, useCustomTable, useSelectCloudDataProvider } from '@/hooks';
 import { formatDate, formatFileSize } from '@/libs';
+import { FormRuleType } from '@/utilities';
 import { PlusOutlined } from '@ant-design/icons';
 import Link from 'next/link';
-import { CLOUD_DATA_ITEM_FIELDS } from './constants';
+import { useCloudItemPage } from './hooks';
 import type { CloudItemFormValues, CloudItemRecord } from './types';
 
 export default function CloudDataItemPage() {
-    const { options: cloudDataProviderOptions } = useSelectCloudDataProvider();
-
-    const { tableProps, tableQuery, debouncedSearch } = useCustomTable<CloudItemRecord>({
-        resource: API_ENDPOINT.CLOUD_DATA_ITEMS.BASE,
-    });
-
-    const createModalForm = useCustomModalForm<
-        CloudItemRecord,
-        CloudItemFormValues,
-        CloudItemRecord
-    >({
-        action: 'create',
-        resource: API_ENDPOINT.CLOUD_DATA_ITEMS.BASE,
-        onMutationSuccess: async () => {
-            await tableQuery.refetch();
-        },
-    });
+    const { tableProps, tableQuery, debouncedSearch, createModalForm, cloudDataProviderOptions } =
+        useCloudItemPage();
 
     const columns: ColumnsType<CloudItemRecord> = [
         {
@@ -48,9 +33,11 @@ export default function CloudDataItemPage() {
             render: (_: unknown, __: unknown, index: number) => index + 1,
         },
         {
-            dataIndex: CLOUD_DATA_ITEM_FIELDS.FILE_NAME.key,
-            key: CLOUD_DATA_ITEM_FIELDS.FILE_NAME.key,
-            ...CLOUD_DATA_ITEM_FIELDS.FILE_NAME.table,
+            title: 'Tên file',
+            dataIndex: 'fileName',
+            key: 'fileName',
+            width: 200,
+            ellipsis: true,
             render: (fileName: string) => (
                 <CustomTooltip title={fileName}>
                     <span
@@ -63,9 +50,11 @@ export default function CloudDataItemPage() {
             ),
         },
         {
-            dataIndex: CLOUD_DATA_ITEM_FIELDS.PATH_URL.key,
-            key: CLOUD_DATA_ITEM_FIELDS.PATH_URL.key,
-            ...CLOUD_DATA_ITEM_FIELDS.PATH_URL.table,
+            title: 'Đường dẫn',
+            dataIndex: 'pathUrl',
+            key: 'pathUrl',
+            width: 250,
+            ellipsis: true,
             render: (pathUrl: string, record: CloudItemRecord) => {
                 if (record.mimeType?.startsWith(MimeType.IMAGE)) {
                     return (
@@ -92,27 +81,35 @@ export default function CloudDataItemPage() {
             },
         },
         {
-            dataIndex: CLOUD_DATA_ITEM_FIELDS.IS_ACTIVE.key,
-            key: CLOUD_DATA_ITEM_FIELDS.IS_ACTIVE.key,
-            ...CLOUD_DATA_ITEM_FIELDS.IS_ACTIVE.table,
+            title: 'Trạng thái',
+            dataIndex: 'isActive',
+            key: 'isActive',
+            width: 150,
+            align: 'center',
             render: (isActive: boolean) => <StatusTag status={isActive ? 'active' : 'inactive'} />,
         },
         {
-            dataIndex: CLOUD_DATA_ITEM_FIELDS.MIME_TYPE.key,
-            key: CLOUD_DATA_ITEM_FIELDS.MIME_TYPE.key,
-            ...CLOUD_DATA_ITEM_FIELDS.MIME_TYPE.table,
+            title: 'Loại file',
+            dataIndex: 'mimeType',
+            key: 'mimeType',
+            width: 150,
+            ellipsis: true,
             render: (mimeType: string) => <StatusTag status={mimeType} />,
         },
         {
-            dataIndex: CLOUD_DATA_ITEM_FIELDS.FILE_SIZE.key,
-            key: CLOUD_DATA_ITEM_FIELDS.FILE_SIZE.key,
-            ...CLOUD_DATA_ITEM_FIELDS.FILE_SIZE.table,
+            title: 'Dung lượng',
+            dataIndex: 'fileSize',
+            key: 'fileSize',
+            width: 150,
+            align: 'center',
             render: (fileSize: number) => (fileSize ? formatFileSize(fileSize) : '-'),
         },
         {
-            dataIndex: CLOUD_DATA_ITEM_FIELDS.CREATED_AT.key,
-            key: CLOUD_DATA_ITEM_FIELDS.CREATED_AT.key,
-            ...CLOUD_DATA_ITEM_FIELDS.CREATED_AT.table,
+            title: 'Ngày tạo',
+            dataIndex: 'createdAt',
+            key: 'createdAt',
+            width: 200,
+            sorter: true,
             render: (createdAt: Date) => formatDate(createdAt),
         },
     ];
@@ -146,11 +143,17 @@ export default function CloudDataItemPage() {
 
     const formFields: IFormField<CloudItemFormValues>[] = [
         {
-            name: CLOUD_DATA_ITEM_FIELDS.CLOUD_DATA_PROVIDER_ID.key,
-            label: CLOUD_DATA_ITEM_FIELDS.CLOUD_DATA_PROVIDER_ID.label,
+            name: 'cloudDataProviderId',
+            label: 'Nhà cung cấp kho dữ liệu',
             type: 'select',
+            placeholder: 'Chọn nhà cung cấp',
             options: cloudDataProviderOptions ?? [],
-            rulesConfig: CLOUD_DATA_ITEM_FIELDS.CLOUD_DATA_PROVIDER_ID.form?.rulesConfig,
+            rulesConfig: [
+                {
+                    type: FormRuleType.Required,
+                    message: 'Vui lòng chọn nhà cung cấp',
+                },
+            ],
         },
         {
             name: 'file',

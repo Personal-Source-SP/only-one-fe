@@ -10,55 +10,41 @@ import {
     type IFormField,
 } from '@/components/common';
 import { ColumnsType, CustomButton } from '@/components/custom-antd';
-import { API_ENDPOINT, RESOURCE } from '@/config';
-import { useCustomModalForm, useCustomTable } from '@/hooks';
+import { RESOURCE } from '@/config';
 import { formatDate } from '@/libs';
+import { FormRuleType } from '@/utilities';
 import { PlusOutlined } from '@ant-design/icons';
 import { Icon } from '@iconify/react';
-import { USER_FIELDS } from './constants';
-import type { IUserFormValues, UserFormValues, UserRecord } from './types';
+import { useUsersPage } from './hooks';
+import type { IUserFormValues, UserRecord } from './types';
 
 export default function UsersPage() {
-    const { tableProps, tableQuery, debouncedSearch } = useCustomTable<UserRecord>({
-        resource: API_ENDPOINT.USERS.BASE,
-    });
-
-    const createModalForm = useCustomModalForm<UserRecord, UserFormValues, UserRecord>({
-        action: 'create',
-        resource: API_ENDPOINT.USERS.BASE,
-        onMutationSuccess: async () => {
-            await tableQuery.refetch();
-        },
-    });
-
-    const editModalForm = useCustomModalForm<UserRecord, UserFormValues, UserRecord>({
-        action: 'edit',
-        resource: API_ENDPOINT.USERS.BASE,
-        onMutationSuccess: async () => {
-            await tableQuery.refetch();
-        },
-        initialValuesMapper: (record) => ({
-            userName: record.userName,
-            email: record.email,
-            isActive: record.isActive,
-        }),
-    });
+    const { tableProps, tableQuery, debouncedSearch, createModalForm, editModalForm } =
+        useUsersPage();
 
     const columns: ColumnsType<UserRecord> = [
         {
-            dataIndex: USER_FIELDS.EMAIL.key,
-            key: USER_FIELDS.EMAIL.key,
-            ...USER_FIELDS.EMAIL.table,
+            title: 'Email',
+            dataIndex: 'email',
+            key: 'email',
+            width: '25%',
+            sorter: true,
+            ellipsis: true,
         },
         {
-            dataIndex: USER_FIELDS.USER_NAME.key,
-            key: USER_FIELDS.USER_NAME.key,
-            ...USER_FIELDS.USER_NAME.table,
+            title: 'Tên người dùng',
+            dataIndex: 'userName',
+            key: 'userName',
+            width: '25%',
+            sorter: true,
+            ellipsis: true,
         },
         {
-            dataIndex: USER_FIELDS.IS_ACTIVE.key,
-            key: USER_FIELDS.IS_ACTIVE.key,
-            ...USER_FIELDS.IS_ACTIVE.table,
+            title: 'Trạng thái',
+            dataIndex: 'isActive',
+            key: 'isActive',
+            width: '15%',
+            align: 'center',
             render: (isActive: boolean) =>
                 isActive ? (
                     <Icon icon="lucide:check" className="w-full text-green-500" />
@@ -67,9 +53,11 @@ export default function UsersPage() {
                 ),
         },
         {
-            dataIndex: USER_FIELDS.GOOGLE_AUTH.key,
-            key: USER_FIELDS.GOOGLE_AUTH.key,
-            ...USER_FIELDS.GOOGLE_AUTH.table,
+            title: 'Kết nối Google',
+            dataIndex: 'googleAuths',
+            key: 'googleAuths',
+            width: '15%',
+            align: 'center',
             render: (googleAuths: IGoogleAuth[]) =>
                 googleAuths && googleAuths.length > 0 ? (
                     <Icon icon="lucide:check" className="w-full text-green-500" />
@@ -78,9 +66,11 @@ export default function UsersPage() {
                 ),
         },
         {
-            dataIndex: USER_FIELDS.CREATED_AT.key,
-            key: USER_FIELDS.CREATED_AT.key,
-            ...USER_FIELDS.CREATED_AT.table,
+            title: 'Ngày tạo',
+            dataIndex: 'createdAt',
+            key: 'createdAt',
+            width: '20%',
+            sorter: true,
             render: (createdAt: Date) => formatDate(createdAt),
         },
     ];
@@ -114,19 +104,37 @@ export default function UsersPage() {
 
     const formFields: IFormField<IUserFormValues>[] = [
         {
-            name: USER_FIELDS.USER_NAME.key,
-            label: USER_FIELDS.USER_NAME.label,
-            ...USER_FIELDS.USER_NAME.form,
+            name: 'userName',
+            label: 'Tên người dùng',
+            type: 'input',
+            placeholder: 'Nhập tên người dùng',
+            rulesConfig: [
+                {
+                    type: FormRuleType.Required,
+                    message: 'Vui lòng nhập tên người dùng',
+                },
+            ],
         },
         {
-            name: USER_FIELDS.EMAIL.key,
-            label: USER_FIELDS.EMAIL.label,
-            ...USER_FIELDS.EMAIL.form,
+            name: 'email',
+            label: 'Email',
+            type: 'input',
+            placeholder: 'Nhập email',
+            rulesConfig: [
+                {
+                    type: FormRuleType.Required,
+                    message: 'Vui lòng nhập email',
+                },
+                {
+                    type: FormRuleType.Email,
+                    message: 'Email không đúng định dạng',
+                },
+            ],
         },
         {
-            name: USER_FIELDS.IS_ACTIVE.key,
-            label: USER_FIELDS.IS_ACTIVE.label,
-            ...USER_FIELDS.IS_ACTIVE.form,
+            name: 'isActive',
+            label: 'Trạng thái',
+            type: 'switch',
         },
     ];
 

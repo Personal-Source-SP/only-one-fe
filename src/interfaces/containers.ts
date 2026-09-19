@@ -1,23 +1,5 @@
 import type { MenuProps } from '@/components/custom-antd';
 import type { Key, MouseEvent, ReactNode } from 'react';
-import type { IFieldFormConfig } from './forms';
-
-export interface IFieldTableConfig {
-    title?: string;
-    sorter?: boolean;
-    hidden?: boolean;
-    ellipsis?: boolean;
-    width?: string | number;
-    align?: 'left' | 'right' | 'center';
-}
-
-export interface IFieldMetadata<TKey extends string = string> {
-    key: TKey;
-    label: string;
-    description?: string;
-    form?: IFieldFormConfig;
-    table?: IFieldTableConfig;
-}
 
 // --- Breadcrumb Contract ---
 export interface IBreadcrumbItem {

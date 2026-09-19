@@ -18,7 +18,6 @@ import { PlusOutlined } from '@ant-design/icons';
 import { Icon } from '@iconify/react';
 import Link from 'next/link';
 import { ProcessScrapeData } from './components';
-import { SCRAPING_DATA_FIELDS } from './constants';
 import { useScrapingDataPage } from './hooks';
 import type { ScrapingDataRecord } from './types';
 
@@ -42,33 +41,45 @@ export default function ScrapingDataPage() {
 
     const columns: ColumnsType<ScrapingDataRecord> = [
         {
-            dataIndex: SCRAPING_DATA_FIELDS.ITEM.key,
-            key: SCRAPING_DATA_FIELDS.ITEM.key,
-            ...SCRAPING_DATA_FIELDS.ITEM.table,
+            title: 'Đối tượng',
+            dataIndex: 'item',
+            key: 'item',
+            width: '25%',
+            ellipsis: true,
             render: (item: IItem) => item?.name ?? '---',
         },
         {
-            dataIndex: SCRAPING_DATA_FIELDS.DATA_ID.key,
-            key: SCRAPING_DATA_FIELDS.DATA_ID.key,
-            ...SCRAPING_DATA_FIELDS.DATA_ID.table,
+            title: 'ID dữ liệu',
+            dataIndex: 'dataId',
+            key: 'dataId',
+            width: '20%',
+            sorter: true,
+            ellipsis: true,
             render: (dataId: string) => dataId ?? '---',
         },
         {
-            dataIndex: SCRAPING_DATA_FIELDS.TYPE.key,
-            key: SCRAPING_DATA_FIELDS.TYPE.key,
-            ...SCRAPING_DATA_FIELDS.TYPE.table,
+            title: 'Loại',
+            dataIndex: 'type',
+            key: 'type',
+            width: '20%',
+            sorter: true,
             render: (type: string) => type ?? '---',
         },
         {
-            dataIndex: SCRAPING_DATA_FIELDS.LAST_MODIFIED.key,
-            key: SCRAPING_DATA_FIELDS.LAST_MODIFIED.key,
-            ...SCRAPING_DATA_FIELDS.LAST_MODIFIED.table,
+            title: 'Ngày sửa đổi',
+            dataIndex: 'lastModified',
+            key: 'lastModified',
+            width: '20%',
+            sorter: true,
             render: (lastModified: Date) => formatDate(lastModified),
         },
         {
-            dataIndex: SCRAPING_DATA_FIELDS.URL.key,
-            key: SCRAPING_DATA_FIELDS.URL.key,
-            ...SCRAPING_DATA_FIELDS.URL.table,
+            title: 'URL',
+            dataIndex: 'url',
+            key: 'url',
+            width: '15%',
+            sorter: true,
+            align: 'center',
             render: (url: string) =>
                 url ? (
                     <CustomFlex align="center" justify="center">

@@ -14,7 +14,6 @@ import { RESOURCE } from '@/config';
 import { formatDate } from '@/libs';
 import { FormRuleType } from '@/utilities';
 import { PlusOutlined } from '@ant-design/icons';
-import { SIMULATION_ITEM_FIELDS } from './constants';
 import { useSimulationItemsPage } from './hooks';
 import type { SimulationItemFormValues, SimulationItemRecord } from './types';
 
@@ -39,15 +38,19 @@ export default function SimulationItemsPage() {
             render: (_: unknown, __: unknown, index: number) => index + 1,
         },
         {
-            dataIndex: SIMULATION_ITEM_FIELDS.STATUS.key,
-            key: SIMULATION_ITEM_FIELDS.STATUS.key,
-            ...SIMULATION_ITEM_FIELDS.STATUS.table,
+            title: 'Trạng thái',
+            dataIndex: 'status',
+            key: 'status',
+            width: 130,
+            align: 'center',
             render: (status: string) => <StatusTag status={status} />,
         },
         {
-            dataIndex: SIMULATION_ITEM_FIELDS.EXPIRES_AT.key,
-            key: SIMULATION_ITEM_FIELDS.EXPIRES_AT.key,
-            ...SIMULATION_ITEM_FIELDS.EXPIRES_AT.table,
+            title: 'Hết hạn',
+            dataIndex: 'expiresAt',
+            key: 'expiresAt',
+            width: 200,
+            sorter: true,
             render: (expiresAt: Date) => formatDate(expiresAt),
         },
     ];
