@@ -10,7 +10,7 @@ import { useCustomMutationData, useCustomOne, useCustomTable } from '@/hooks';
 import { useMemo } from 'react';
 
 export const useDiscoveryDetailPage = (id: string) => {
-    const { handleCustomMutationData, mutation } = useCustomMutationData();
+    const { handleCustomMutationData, isLoading: isEnqueuing } = useCustomMutationData();
 
     const {
         data: session,
@@ -49,18 +49,20 @@ export const useDiscoveryDetailPage = (id: string) => {
     );
 
     const handleBatchEnqueue = async () => {
-        if (table.selectedRowKeys.length === 0) return;
+        if (!table.selectionProps.hasSelected) return;
+
         await handleCustomMutationData({
-            url: API_ENDPOINT.DISCOVERY_SESSIONS.ENQUEUE_URLS(id),
-            values: { urlIds: table.selectedRowKeys as string[] },
             method: 'post',
+            url: API_ENDPOINT.DISCOVERY_SESSIONS.ENQUEUE_URLS(id),
+            values: { urlIds: table.selectionProps.selectedRowKeys as string[] },
             successNotification: {
                 type: 'success',
-                message: `Đã đẩy ${table.selectedRowKeys.length} URLs vào hàng đợi cào`,
+                message: `Đã đẩy ${table.selectionProps.selectedCount} URLs vào hàng đợi cào`,
             },
             onSuccess: () => {
-                table.clearSelection();
+                table.selectionProps.clearSelection();
                 table.tableQuery.refetch();
+
                 refetchSession();
             },
         });
@@ -68,9 +70,9 @@ export const useDiscoveryDetailPage = (id: string) => {
 
     const handleTriggerValidation = async () => {
         await handleCustomMutationData({
-            url: API_ENDPOINT.DISCOVERY_SESSIONS.VALIDATE(id),
             values: {},
             method: 'post',
+            url: API_ENDPOINT.DISCOVERY_SESSIONS.VALIDATE(id),
             successNotification: {
                 type: 'success',
                 message: 'Bắt đầu quá trình đánh giá chất lượng URLs',
@@ -83,19 +85,12 @@ export const useDiscoveryDetailPage = (id: string) => {
     };
 
     return {
-        session,
         urls,
         table,
-        debouncedSearch: table.debouncedSearch,
-        isEnqueuing: mutation.mutation.isPending,
-        isLoading: isSessionLoading || table.isLoading,
+        session,
         queuedCount,
-        selectedRowKeys: table.selectedRowKeys,
+        isEnqueuing,
         handleBatchEnqueue,
         handleTriggerValidation,
-        refetchAll: () => {
-            table.tableQuery.refetch();
-            refetchSession();
-        },
     };
 };

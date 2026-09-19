@@ -59,25 +59,6 @@ export const useCustomTable = <
         ...resolvedNotifications,
     });
 
-    const [selectedRowKeys, setSelectedRowKeys] = useState<Key[]>([]);
-
-    const transformedDataSource = useMemo<TTransformed[]>(() => {
-        return applyDataTransform(
-            result.tableProps.dataSource as TData[] | undefined,
-            result.tableQuery.data,
-            transform,
-        );
-    }, [result.tableProps.dataSource, result.tableQuery.data, transform]);
-
-    const resolvedRowSelection = useMemo(() => {
-        if (!enableRowSelection && !rowSelection) return undefined;
-        if (rowSelection) return rowSelection;
-        return {
-            selectedRowKeys,
-            onChange: (keys: Key[]) => setSelectedRowKeys(keys),
-        };
-    }, [enableRowSelection, rowSelection, selectedRowKeys]);
-
     const handleTableChange = useTableChange<TTransformed>({
         setSorters: result.setSorters,
         setPageSize: result.setPageSize,
@@ -89,26 +70,60 @@ export const useCustomTable = <
         setCurrentPage: result.setCurrentPage,
     });
 
-    const customTableProps: TableProps<TTransformed> = {
-        pagination: result.tableProps.pagination,
-        loading: result.tableProps.loading,
-        dataSource: transformedDataSource,
-        onChange: handleTableChange,
-        rowKey: (record: TTransformed): string => resolveRowKey(record, rowKey),
-        ...(resolvedRowSelection ? { rowSelection: resolvedRowSelection } : {}),
-    };
+    const [selectedRowKeys, setSelectedRowKeys] = useState<Key[]>([]);
+
+    const resolvedRowSelection = useMemo(() => {
+        if (!enableRowSelection && !rowSelection) return undefined;
+        if (rowSelection) return rowSelection;
+
+        return {
+            selectedRowKeys,
+            onChange: (keys: Key[]) => setSelectedRowKeys(keys),
+        };
+    }, [enableRowSelection, rowSelection, selectedRowKeys]);
+
+    const customTableProps: TableProps<TTransformed> = useMemo(() => {
+        const transformedDataSource = applyDataTransform(
+            result.tableProps.dataSource as TData[] | undefined,
+            result.tableQuery.data,
+            transform,
+        );
+
+        return {
+            onChange: handleTableChange,
+            dataSource: transformedDataSource,
+            loading: result.tableProps.loading,
+            pagination: result.tableProps.pagination,
+            rowKey: (record: TTransformed): string => resolveRowKey(record, rowKey),
+            ...(resolvedRowSelection ? { rowSelection: resolvedRowSelection } : {}),
+        };
+    }, [
+        rowKey,
+        resolvedRowSelection,
+        result.tableQuery.data,
+        result.tableProps.loading,
+        result.tableProps.dataSource,
+        result.tableProps.pagination,
+        transform,
+        handleTableChange,
+    ]);
+
+    const selectionProps = useMemo(() => {
+        return {
+            selectedRowKeys,
+            setSelectedRowKeys,
+            selectedCount: selectedRowKeys.length,
+            hasSelected: selectedRowKeys.length > 0,
+            clearSelection: () => setSelectedRowKeys([]),
+        };
+    }, [selectedRowKeys]);
 
     return {
         ...result,
+        selectionProps,
         tableProps: customTableProps,
         isLoading: Boolean(result.tableQuery.isLoading),
         debouncedSearch,
-        handleTableChange,
-        selectedRowKeys,
-        setSelectedRowKeys,
-        selectedCount: selectedRowKeys.length,
-        hasSelected: selectedRowKeys.length > 0,
-        clearSelection: () => setSelectedRowKeys([]),
     };
 };
 

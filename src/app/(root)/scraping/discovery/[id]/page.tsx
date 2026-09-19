@@ -1,15 +1,5 @@
 'use client';
 
-import {
-    DISCOVERY_URL_STATUS_COLOR_MAP,
-    VALIDATION_MATCH_RESULT_COLOR_MAP,
-    VALIDATION_MATCH_RESULT_LABELS,
-} from '@/app/(root)/scraping/discovery/constants';
-import {
-    DiscoveryUrlStatus,
-    ValidationMatchResult,
-    type IDiscoveryUrl,
-} from '@/app/(root)/scraping/discovery/types';
 import { ListContainer, ListTable, type ICardAction, type IFilterField } from '@/components/common';
 import {
     CustomButton,
@@ -22,6 +12,12 @@ import { formatDate } from '@/libs';
 import { CheckCircleOutlined, SendOutlined } from '@ant-design/icons';
 import { Icon } from '@iconify/react';
 import { useParams } from 'next/navigation';
+import {
+    DISCOVERY_URL_STATUS_COLOR_MAP,
+    VALIDATION_MATCH_RESULT_COLOR_MAP,
+    VALIDATION_MATCH_RESULT_LABELS,
+} from '../constants';
+import { DiscoveryUrlStatus, ValidationMatchResult, type IDiscoveryUrl } from '../types';
 import { SessionOverviewCard } from './components';
 import { useDiscoveryDetailPage } from './hooks';
 
@@ -30,14 +26,11 @@ export default function DiscoveryDetailPage() {
     const id = (params?.id as string) || '';
 
     const {
-        session,
         urls,
         table,
-        debouncedSearch,
-        isLoading,
+        session,
         isEnqueuing,
         queuedCount,
-        selectedRowKeys,
         handleBatchEnqueue,
         handleTriggerValidation,
     } = useDiscoveryDetailPage(id);
@@ -142,9 +135,9 @@ export default function DiscoveryDetailPage() {
                     loading={isEnqueuing}
                     icon={<SendOutlined />}
                     onClick={handleBatchEnqueue}
-                    disabled={selectedRowKeys.length === 0}
+                    disabled={!table.selectionProps.hasSelected}
                 >
-                    Đẩy vào hàng đợi cào ({selectedRowKeys.length})
+                    Đẩy vào hàng đợi cào ({table.selectionProps.selectedCount})
                 </CustomButton>
             ),
         },
@@ -152,11 +145,11 @@ export default function DiscoveryDetailPage() {
 
     const filters: IFilterField[] = [
         {
-            name: 'search',
             type: 'input',
+            name: 'search',
             isPrimary: true,
             placeholder: 'Tìm kiếm theo URL hoặc tiêu đề...',
-            onChange: (val) => debouncedSearch(val?.toString() || ''),
+            onChange: (val) => table.debouncedSearch(val?.toString() || ''),
         },
     ];
 
@@ -164,7 +157,7 @@ export default function DiscoveryDetailPage() {
         <ListContainer
             actions={actions}
             filters={filters}
-            isLoading={isLoading}
+            isLoading={table.isLoading}
             top={
                 <SessionOverviewCard
                     sessionId={id}
