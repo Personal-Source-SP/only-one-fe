@@ -10,7 +10,7 @@ export const useItemPage = () => {
     const [selectedItemIds, setSelectedItemIds] = useState<string[]>([]);
     const [openProcessScrapeDataModal, setOpenProcessScrapeDataModal] = useState(false);
 
-    const { tableProps, tableQuery, debouncedSearch } = useCustomTable<IItem>({
+    const table = useCustomTable<IItem>({
         resource: API_ENDPOINT.ITEMS.BASE,
     });
 
@@ -18,7 +18,7 @@ export const useItemPage = () => {
         action: 'create',
         resource: API_ENDPOINT.ITEMS.BASE,
         onMutationSuccess: async () => {
-            await tableQuery.refetch();
+            await table.tableQuery.refetch();
         },
     });
 
@@ -26,7 +26,7 @@ export const useItemPage = () => {
         action: 'edit',
         resource: API_ENDPOINT.ITEMS.BASE,
         onMutationSuccess: async () => {
-            await tableQuery.refetch();
+            await table.tableQuery.refetch();
         },
         initialValuesMapper: (record) => ({
             name: record.name,
@@ -36,9 +36,8 @@ export const useItemPage = () => {
     });
 
     return {
-        tableProps,
-        tableQuery,
-        debouncedSearch,
+        table,
+        debouncedSearch: table.debouncedSearch,
         createModalForm,
         editModalForm,
         openImportItemModal,

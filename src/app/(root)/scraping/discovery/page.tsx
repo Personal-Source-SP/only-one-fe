@@ -30,8 +30,7 @@ export default function DiscoveryPage() {
     const {
         dataProviderOptions,
         dataProviderQuery,
-        tableProps,
-        tableQuery,
+        table,
         debouncedSearch,
         setFilters,
         createModalForm,
@@ -211,8 +210,7 @@ export default function DiscoveryPage() {
             <ListContainer filters={filters} actions={actions}>
                 <ListTable<IDiscoverySession>
                     columns={columns}
-                    tableProps={tableProps}
-                    tableQuery={tableQuery}
+                    table={table}
                     deleteResource={RESOURCE.DISCOVERY_SESSIONS}
                     onView={(record) => router.push(`/scraping/discovery/${record.id}`)}
                 />

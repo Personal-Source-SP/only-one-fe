@@ -21,27 +21,26 @@ export const useDiscoveryDetailPage = (id: string) => {
         resource: API_ENDPOINT.DISCOVERY_SESSIONS.BASE,
     });
 
-    const { tableProps, tableQuery, debouncedSearch, selectedRowKeys, clearSelection } =
-        useCustomTable<IDiscoveryUrl>({
-            resource: API_ENDPOINT.DISCOVERY_URLS.BASE,
-            enableRowSelection: true,
-            filters: {
-                permanent: [
-                    {
-                        value: id,
-                        operator: 'eq',
-                        field: 'sessionId',
-                    },
-                ],
-            },
-            queryOptions: {
-                enabled: Boolean(id),
-            },
-        });
+    const table = useCustomTable<IDiscoveryUrl>({
+        resource: API_ENDPOINT.DISCOVERY_URLS.BASE,
+        enableRowSelection: true,
+        filters: {
+            permanent: [
+                {
+                    value: id,
+                    operator: 'eq',
+                    field: 'sessionId',
+                },
+            ],
+        },
+        queryOptions: {
+            enabled: Boolean(id),
+        },
+    });
 
     const urls = useMemo(
-        () => (tableProps.dataSource ?? []) as unknown as IDiscoveryUrl[],
-        [tableProps.dataSource],
+        () => (table.tableProps.dataSource ?? []) as unknown as IDiscoveryUrl[],
+        [table.tableProps.dataSource],
     );
 
     const queuedCount = useMemo(
@@ -50,18 +49,18 @@ export const useDiscoveryDetailPage = (id: string) => {
     );
 
     const handleBatchEnqueue = async () => {
-        if (selectedRowKeys.length === 0) return;
+        if (table.selectedRowKeys.length === 0) return;
         await handleCustomMutationData({
             url: API_ENDPOINT.DISCOVERY_SESSIONS.ENQUEUE_URLS(id),
-            values: { urlIds: selectedRowKeys as string[] },
+            values: { urlIds: table.selectedRowKeys as string[] },
             method: 'post',
             successNotification: {
                 type: 'success',
-                message: `Đã đẩy ${selectedRowKeys.length} URLs vào hàng đợi cào`,
+                message: `Đã đẩy ${table.selectedRowKeys.length} URLs vào hàng đợi cào`,
             },
             onSuccess: () => {
-                clearSelection();
-                tableQuery.refetch();
+                table.clearSelection();
+                table.tableQuery.refetch();
                 refetchSession();
             },
         });
@@ -77,7 +76,7 @@ export const useDiscoveryDetailPage = (id: string) => {
                 message: 'Bắt đầu quá trình đánh giá chất lượng URLs',
             },
             onSuccess: () => {
-                tableQuery.refetch();
+                table.tableQuery.refetch();
                 refetchSession();
             },
         });
@@ -86,17 +85,16 @@ export const useDiscoveryDetailPage = (id: string) => {
     return {
         session,
         urls,
-        tableProps,
-        tableQuery,
-        debouncedSearch,
+        table,
+        debouncedSearch: table.debouncedSearch,
         isEnqueuing: mutation.mutation.isPending,
-        isLoading: isSessionLoading || tableQuery.isLoading,
+        isLoading: isSessionLoading || table.isLoading,
         queuedCount,
-        selectedRowKeys,
+        selectedRowKeys: table.selectedRowKeys,
         handleBatchEnqueue,
         handleTriggerValidation,
         refetchAll: () => {
-            tableQuery.refetch();
+            table.tableQuery.refetch();
             refetchSession();
         },
     };

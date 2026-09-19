@@ -9,11 +9,10 @@ import {
     CustomPopconfirm,
     CustomTable,
 } from '@/components/custom-antd';
-import { useCustomDelete, usePagePermissions } from '@/hooks';
+import { useCustomDelete, usePagePermissions, type UseCustomTableResponse } from '@/hooks';
 import type { ITableCustomAction } from '@/interfaces';
 import { evaluateShow, getBackendErrorMessage } from '@/utilities';
 import { DeleteOutlined, EditOutlined, EllipsisOutlined, EyeOutlined } from '@ant-design/icons';
-import type { useTableReturnType } from '@refinedev/antd';
 import type { BaseRecord } from '@refinedev/core';
 import type { CSSProperties, ReactNode } from 'react';
 import { useCallback, useMemo, useRef, useState } from 'react';
@@ -25,31 +24,31 @@ const tableHeaderCellProps: { style: CSSProperties } = {
     },
 };
 
-export interface ListTableProps<RecordType extends BaseRecord> extends TableProps<RecordType> {
+export interface ListTableProps<
+    RecordType extends BaseRecord = BaseRecord,
+    TTransformed extends BaseRecord = RecordType,
+> extends TableProps<TTransformed> {
     /** Permission group for automatically checking View/Edit/Delete actions */
     permissionGroup?: string;
 
-    /** Table props returned from Refine's useTable hook */
-    tableProps: TableProps<RecordType>;
-
-    /** Table query returned from Refine's useTable for automatic refetch after delete. */
-    tableQuery?: useTableReturnType<RecordType>['tableQuery'];
+    /** Response trọn gói trả về từ useCustomTable hook */
+    table: UseCustomTableResponse<RecordType, TTransformed>;
 
     /** View detail callback */
-    onView?: (record: RecordType) => void;
-    showView?: boolean | ((record: RecordType) => boolean);
+    onView?: (record: TTransformed) => void;
+    showView?: boolean | ((record: TTransformed) => boolean);
 
     /** Edit callback */
-    onEdit?: (record: RecordType) => void;
-    showEdit?: boolean | ((record: RecordType) => boolean);
+    onEdit?: (record: TTransformed) => void;
+    showEdit?: boolean | ((record: TTransformed) => boolean);
 
     /** Delete callback */
     deleteResource?: string;
     onDeleteSuccess?: () => void | Promise<void>;
-    showDelete?: boolean | ((record: RecordType) => boolean);
+    showDelete?: boolean | ((record: TTransformed) => boolean);
 
     /** Additional custom actions */
-    customRowActions?: ITableCustomAction<RecordType>[];
+    customRowActions?: ITableCustomAction<TTransformed>[];
 
     /** Whether to use custom PaginationControls UI below table */
     usePaginationControls?: boolean;
@@ -61,13 +60,15 @@ export interface ListTableProps<RecordType extends BaseRecord> extends TableProp
     emptyMessage?: string;
 
     /** Render custom card trên màn hình nhỏ. Khuyến khích sử dụng CustomCard. Nếu không có sẽ hiển thị bảng cuộn ngang */
-    renderMobileCard?: (record: RecordType, actionItems: MenuProps['items']) => ReactNode;
+    renderMobileCard?: (record: TTransformed, actionItems: MenuProps['items']) => ReactNode;
 }
 
-export function ListTable<RecordType extends BaseRecord = BaseRecord>({
+export function ListTable<
+    RecordType extends BaseRecord = BaseRecord,
+    TTransformed extends BaseRecord = RecordType,
+>({
     permissionGroup,
-    tableProps,
-    tableQuery,
+    table,
     onView,
     showView,
     onEdit,
@@ -84,7 +85,9 @@ export function ListTable<RecordType extends BaseRecord = BaseRecord>({
     columns,
     className = '',
     ...restProps
-}: ListTableProps<RecordType>) {
+}: ListTableProps<RecordType, TTransformed>) {
+    const { tableProps, tableQuery } = table;
+
     const keepOpenRef = useRef(false);
     const screens = CustomGrid.useBreakpoint();
     const permissions = usePagePermissions(permissionGroup);
@@ -112,7 +115,7 @@ export function ListTable<RecordType extends BaseRecord = BaseRecord>({
         setOpenDropdownId(undefined);
     }, []);
 
-    const getColumnWidthStyle = useCallback((column: ColumnType<RecordType>) => {
+    const getColumnWidthStyle = useCallback((column: ColumnsType<TTransformed>[number]) => {
         if (!column.width) return {};
 
         return {
@@ -123,7 +126,7 @@ export function ListTable<RecordType extends BaseRecord = BaseRecord>({
     }, []);
 
     const getCustomActionItems = useCallback(
-        (record: RecordType): MenuProps['items'] => {
+        (record: TTransformed): MenuProps['items'] => {
             const items: MenuProps['items'] = [];
 
             const canShowView = hasView && evaluateShow(showView, record);
@@ -241,7 +244,7 @@ export function ListTable<RecordType extends BaseRecord = BaseRecord>({
     const columnsWithActions = useMemo(() => {
         const styleColumns = (columns || []).map((column) => ({
             ...column,
-            onCell: (record: RecordType, rowIndex?: number) => {
+            onCell: (record: TTransformed, rowIndex?: number) => {
                 const customProps = column?.onCell?.(record, rowIndex);
                 return {
                     ...customProps,
@@ -251,7 +254,7 @@ export function ListTable<RecordType extends BaseRecord = BaseRecord>({
                     },
                 };
             },
-            onHeaderCell: (col: ColumnsType<RecordType>[number]) => {
+            onHeaderCell: (col: ColumnsType<TTransformed>[number]) => {
                 const customProps = column?.onHeaderCell?.(col as never);
                 return {
                     ...tableHeaderCellProps,
@@ -285,7 +288,7 @@ export function ListTable<RecordType extends BaseRecord = BaseRecord>({
                     whiteSpace: 'nowrap',
                 },
             }),
-            render: (_: unknown, record: RecordType) => {
+            render: (_: unknown, record: TTransformed) => {
                 const actionItems = getCustomActionItems(record);
                 if (!actionItems?.length) return null;
 
@@ -375,9 +378,11 @@ export function ListTable<RecordType extends BaseRecord = BaseRecord>({
         };
     }, [basePaginationObj, usePaginationControls]);
 
-    const mergedTableProps = useMemo<TableProps<any>>(
-        () => ({
-            ...tableProps,
+    const mergedTableProps = useMemo<TableProps<TTransformed>>(() => {
+        const { columns: _tableColumns, ...cleanTableProps } = tableProps;
+
+        return {
+            ...cleanTableProps,
             ...restProps,
             tableLayout: 'fixed',
             locale: {
@@ -398,17 +403,16 @@ export function ListTable<RecordType extends BaseRecord = BaseRecord>({
                 `overflow-hidden rounded-xl border border-solid border-hub-border-card shadow-sm ${className}`.trim(),
             scroll: mergedScroll,
             pagination: mergedPagination,
-        }),
-        [
-            tableProps,
-            restProps,
-            className,
-            emptyTitle,
-            emptyMessage,
-            mergedScroll,
-            mergedPagination,
-        ],
-    );
+        };
+    }, [
+        tableProps,
+        restProps,
+        className,
+        emptyTitle,
+        emptyMessage,
+        mergedScroll,
+        mergedPagination,
+    ]);
 
     const paginationData = useMemo(() => {
         if (!usePaginationControls || !basePaginationObj) return null;
@@ -444,9 +448,9 @@ export function ListTable<RecordType extends BaseRecord = BaseRecord>({
     return (
         <div className="w-full">
             {isMobile ? (
-                <MobileCardList
+                <MobileCardList<TTransformed>
                     columns={columns}
-                    tableQuery={tableQuery}
+                    tableQuery={tableQuery as never}
                     dataSource={mergedTableProps.dataSource}
                     handleDelete={handleDelete}
                     onDeleteSuccess={onDeleteSuccess}

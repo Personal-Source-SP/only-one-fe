@@ -20,8 +20,7 @@ import type { SimulationItemFormValues, SimulationItemRecord } from './types';
 export default function SimulationItemsPage() {
     const {
         loading,
-        tableProps,
-        tableQuery,
+        table,
         debouncedSearch,
         createModalForm,
         editModalForm,
@@ -113,13 +112,12 @@ export default function SimulationItemsPage() {
         <>
             <ListContainer
                 actions={actions}
-                isLoading={loading || tableQuery.isLoading}
+                isLoading={loading || table.tableQuery.isLoading}
                 filters={filters}
             >
                 <ListTable<SimulationItemRecord>
                     columns={columns}
-                    tableProps={tableProps}
-                    tableQuery={tableQuery}
+                    table={table}
                     deleteResource={RESOURCE.SIMULATION_ITEMS}
                     onEdit={(record) => editModalForm.show(record.id)}
                 />

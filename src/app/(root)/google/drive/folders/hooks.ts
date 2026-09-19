@@ -8,10 +8,9 @@ import type { FolderFormValues, GoogleFolderRecord } from './types';
 export const useGoogleFolderPage = () => {
     const [isOpenSyncFile, setIsOpenSyncFile] = useState(false);
 
-    const { tableProps, tableQuery, debouncedSearch, setFilters } =
-        useCustomTable<GoogleFolderRecord>({
-            resource: API_ENDPOINT.GOOGLE_DRIVE.FOLDERS,
-        });
+    const table = useCustomTable<GoogleFolderRecord>({
+        resource: API_ENDPOINT.GOOGLE_DRIVE.FOLDERS,
+    });
 
     const { options: folderOptions, query: queryFolderOptions } = useSelectGoogleFolder();
 
@@ -19,20 +18,19 @@ export const useGoogleFolderPage = () => {
         action: 'edit',
         resource: API_ENDPOINT.GOOGLE_DRIVE.FOLDERS,
         onMutationSuccess: async () => {
-            await tableQuery.refetch();
+            await table.tableQuery.refetch();
             await queryFolderOptions?.refetch();
         },
     });
 
     return {
-        debouncedSearch,
+        debouncedSearch: table.debouncedSearch,
         folderOptions,
         isOpenSyncFile,
         modalForm,
         queryFolderOptions,
-        setFilters,
+        setFilters: table.setFilters,
         setIsOpenSyncFile,
-        tableProps,
-        tableQuery,
+        table,
     };
 };

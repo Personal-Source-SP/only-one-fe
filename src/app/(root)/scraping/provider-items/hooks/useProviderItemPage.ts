@@ -17,10 +17,9 @@ export const useProviderItemPage = () => {
     const { options: cloudDataProviderOptions } = useSelectCloudDataProvider();
     const { options: dataProviderOptions, query: dataProviderQuery } = useSelectDataProvider();
 
-    const { tableProps, tableQuery, debouncedSearch, setFilters } =
-        useCustomTable<ProviderItemRecord>({
-            resource: API_ENDPOINT.DATA_PROVIDER_ITEMS.BASE,
-        });
+    const table = useCustomTable<ProviderItemRecord>({
+        resource: API_ENDPOINT.DATA_PROVIDER_ITEMS.BASE,
+    });
 
     const { handleCustomMutationData: handleUpdate } = useCustomMutationData({
         method: 'put',
@@ -33,7 +32,7 @@ export const useProviderItemPage = () => {
                 };
             }
 
-            tableQuery?.refetch();
+            table.tableQuery?.refetch();
 
             return {
                 type: MessageType.SUCCESS,
@@ -55,7 +54,7 @@ export const useProviderItemPage = () => {
         action: 'create',
         resource: API_ENDPOINT.DATA_PROVIDER_ITEMS.BASE,
         onMutationSuccess: async () => {
-            await tableQuery.refetch();
+            await table.tableQuery.refetch();
         },
     });
 
@@ -67,7 +66,7 @@ export const useProviderItemPage = () => {
         action: 'edit',
         resource: API_ENDPOINT.DATA_PROVIDER_ITEMS.BASE,
         onMutationSuccess: async () => {
-            await tableQuery.refetch();
+            await table.tableQuery.refetch();
         },
         initialValuesMapper: (record) => ({
             itemId: record.itemId,
@@ -85,10 +84,9 @@ export const useProviderItemPage = () => {
         cloudDataProviderOptions,
         dataProviderOptions,
         dataProviderQuery,
-        tableProps,
-        tableQuery,
-        debouncedSearch,
-        setFilters,
+        table,
+        debouncedSearch: table.debouncedSearch,
+        setFilters: table.setFilters,
         handleUpdate,
         createModalForm,
         editModalForm,

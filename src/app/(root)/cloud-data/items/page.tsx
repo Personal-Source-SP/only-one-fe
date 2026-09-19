@@ -20,7 +20,7 @@ import { useCloudItemPage } from './hooks';
 import type { CloudItemFormValues, CloudItemRecord } from './types';
 
 export default function CloudDataItemPage() {
-    const { tableProps, tableQuery, debouncedSearch, createModalForm, cloudDataProviderOptions } =
+    const { table, debouncedSearch, createModalForm, cloudDataProviderOptions } =
         useCloudItemPage();
 
     const columns: ColumnsType<CloudItemRecord> = [
@@ -171,8 +171,7 @@ export default function CloudDataItemPage() {
             <ListContainer filters={filters} actions={actions}>
                 <ListTable<CloudItemRecord>
                     columns={columns}
-                    tableProps={tableProps}
-                    tableQuery={tableQuery}
+                    table={table}
                     deleteResource={RESOURCE.CLOUD_DATA_ITEMS}
                 />
             </ListContainer>

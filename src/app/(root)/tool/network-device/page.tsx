@@ -33,8 +33,7 @@ const { Text } = CustomTypography;
 
 export default function NetworkDevicePage() {
     const {
-        tableProps,
-        tableQuery,
+        table,
         debouncedSearch,
         setFilters,
         currentScanStatus,
@@ -217,15 +216,15 @@ export default function NetworkDevicePage() {
                 key: 'refresh',
                 label: 'Làm mới',
                 icon: <Icon icon="mdi:refresh" />,
-                onClick: () => tableQuery.refetch(),
+                onClick: () => table.tableQuery.refetch(),
                 component: (
                     <button
-                        onClick={() => tableQuery.refetch()}
+                        onClick={() => table.tableQuery.refetch()}
                         className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg border border-slate-200 bg-white hover:bg-slate-50 transition-colors"
                     >
                         <Icon
                             icon="mdi:refresh"
-                            className={tableQuery.isFetching ? 'animate-spin' : ''}
+                            className={table.tableQuery.isFetching ? 'animate-spin' : ''}
                         />
                         Làm mới
                     </button>
@@ -247,7 +246,7 @@ export default function NetworkDevicePage() {
                 ),
             },
         ],
-        [tableQuery, setIsScanModalOpen],
+        [table.tableQuery, setIsScanModalOpen],
     );
 
     return (
@@ -258,13 +257,12 @@ export default function NetworkDevicePage() {
             {/* Standard ListWrapper & ListTable */}
             <ListContainer
                 actions={actions}
-                isLoading={tableQuery.isLoading}
+                isLoading={table.tableQuery.isLoading}
                 filters={<FilterPanel fields={filters} />}
             >
                 <ListTable<INetworkDevice>
                     columns={columns}
-                    tableProps={tableProps}
-                    tableQuery={tableQuery}
+                    table={table}
                     deleteResource={RESOURCE.NETWORK_DEVICES}
                     onView={(record) => setSelectedDeviceForDetail(record)}
                     customRowActions={[

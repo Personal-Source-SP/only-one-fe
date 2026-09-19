@@ -32,8 +32,7 @@ export default function DiscoveryDetailPage() {
     const {
         session,
         urls,
-        tableProps,
-        tableQuery,
+        table,
         debouncedSearch,
         isLoading,
         isEnqueuing,
@@ -175,11 +174,7 @@ export default function DiscoveryDetailPage() {
                 />
             }
         >
-            <ListTable<IDiscoveryUrl>
-                columns={columns}
-                tableQuery={tableQuery}
-                tableProps={tableProps}
-            />
+            <ListTable<IDiscoveryUrl> columns={columns} table={table} />
         </ListContainer>
     );
 }

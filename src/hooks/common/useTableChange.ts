@@ -44,5 +44,5 @@ export const useTableChange = <TData>({
         [setCurrentPage, setPageSize, setSorters],
     );
 
-    return { handleTableChange };
+    return handleTableChange;
 };

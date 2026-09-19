@@ -22,8 +22,7 @@ import type { ScheduleExecutionFormValues, ScheduleExecutionRecord } from './typ
 export default function ScheduleExecutionPage() {
     const {
         loading,
-        tableProps,
-        tableQuery,
+        table,
         debouncedSearch,
         createModalForm,
         editModalForm,
@@ -183,13 +182,12 @@ export default function ScheduleExecutionPage() {
         <>
             <ListContainer
                 actions={actions}
-                isLoading={loading || tableQuery.isLoading}
+                isLoading={loading || table.tableQuery.isLoading}
                 filters={filters}
             >
                 <ListTable<ScheduleExecutionRecord>
                     columns={columns}
-                    tableProps={tableProps}
-                    tableQuery={tableQuery}
+                    table={table}
                     deleteResource={RESOURCE.SCHEDULES}
                     onEdit={(record) => editModalForm.show(record.id)}
                 />

@@ -28,10 +28,9 @@ export const useScheduleExecutionPage = () => {
         queryOptions: { enabled: false },
     });
 
-    const { tableProps, tableQuery, debouncedSearch, setFilters, setCurrentPage } =
-        useCustomTable<ScheduleExecutionRecord>({
-            resource: API_ENDPOINT.SCHEDULES.BASE,
-        });
+    const table = useCustomTable<ScheduleExecutionRecord>({
+        resource: API_ENDPOINT.SCHEDULES.BASE,
+    });
 
     const createModalForm = useCustomModalForm<
         ScheduleExecutionRecord,
@@ -41,7 +40,7 @@ export const useScheduleExecutionPage = () => {
         action: 'create',
         resource: API_ENDPOINT.SCHEDULES.BASE,
         onMutationSuccess: async () => {
-            await tableQuery.refetch();
+            await table.tableQuery.refetch();
         },
     });
 
@@ -53,7 +52,7 @@ export const useScheduleExecutionPage = () => {
         action: 'edit',
         resource: API_ENDPOINT.SCHEDULES.BASE,
         onMutationSuccess: async () => {
-            await tableQuery.refetch();
+            await table.tableQuery.refetch();
         },
         initialValuesMapper: (record) => ({
             name: record.name ?? '',
@@ -96,7 +95,7 @@ export const useScheduleExecutionPage = () => {
                 }
 
                 setLoading(false);
-                tableQuery?.refetch();
+                table.tableQuery?.refetch();
 
                 return {
                     type: MessageType.SUCCESS,
@@ -134,7 +133,7 @@ export const useScheduleExecutionPage = () => {
                 }
 
                 setLoading(false);
-                tableQuery?.refetch();
+                table.tableQuery?.refetch();
 
                 return {
                     type: MessageType.SUCCESS,
@@ -155,11 +154,10 @@ export const useScheduleExecutionPage = () => {
 
     return {
         loading,
-        tableProps,
-        tableQuery,
-        debouncedSearch,
-        setFilters,
-        setCurrentPage,
+        table,
+        debouncedSearch: table.debouncedSearch,
+        setFilters: table.setFilters,
+        setCurrentPage: table.setCurrentPage,
         createModalForm,
         editModalForm,
         type,

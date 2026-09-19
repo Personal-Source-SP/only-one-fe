@@ -9,7 +9,7 @@ import { useScheduleJobEventsPage } from './hooks';
 import type { JobEventRecord } from './types';
 
 export default function ScheduleJobEventsPage() {
-    const { tableProps, tableQuery, debouncedSearch, selectedJobEvent, setSelectedJobEvent } =
+    const { table, debouncedSearch, selectedJobEvent, setSelectedJobEvent } =
         useScheduleJobEventsPage();
 
     const columns: ColumnsType<JobEventRecord> = [
@@ -75,11 +75,10 @@ export default function ScheduleJobEventsPage() {
 
     return (
         <>
-            <ListContainer isLoading={tableQuery.isLoading} filters={filters}>
+            <ListContainer isLoading={table.tableQuery.isLoading} filters={filters}>
                 <ListTable<JobEventRecord>
                     columns={columns}
-                    tableProps={tableProps}
-                    tableQuery={tableQuery}
+                    table={table}
                     onView={(record) => setSelectedJobEvent(record)}
                 />
             </ListContainer>

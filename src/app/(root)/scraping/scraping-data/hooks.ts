@@ -7,9 +7,9 @@ import { DisplayMode, MessageType, ViewFileMode } from '@/enums';
 import {
     useCustomDelete,
     useCustomModal,
+    useCustomTable,
     useSelectDataProvider,
     useSelectItem,
-    useTableContainer,
 } from '@/hooks';
 import type { IBaseApiResponse, IFileItem } from '@/interfaces';
 import type { IScrapingData } from './types';
@@ -27,9 +27,11 @@ export const useScrapingDataPage = () => {
     const [isLightboxOpen, setIsLightboxOpen] = useState<boolean>(false);
     const [currentPhotoIndex, setCurrentPhotoIndex] = useState<number>(0);
 
-    const tableContainerData = useTableContainer<IScrapingData>({
+    const table = useCustomTable<IScrapingData>({
         resource: API_ENDPOINT.SCRAPING_DATA.BASE,
-        sorters: [{ field: 'lastModified', order: 'desc' }],
+        sorters: {
+            initial: [{ field: 'lastModified', order: 'desc' }],
+        },
         pagination: {
             pageSize: 30,
             mode: 'server',
@@ -48,7 +50,7 @@ export const useScrapingDataPage = () => {
         successNotification: (data) => {
             const response = data as unknown as IBaseApiResponse<boolean>;
             if (response?.status === 200) {
-                tableContainerData?.tableQuery?.refetch();
+                table.tableQuery?.refetch();
 
                 handleMessage({
                     content: 'Xóa dữ liệu thành công',
@@ -72,8 +74,7 @@ export const useScrapingDataPage = () => {
     });
 
     const photoItems: IFileItem[] = useMemo(() => {
-        const scrapingDatas = (tableContainerData?.tableQuery?.data?.data ??
-            []) as unknown as IScrapingData[];
+        const scrapingDatas = (table.tableProps.dataSource ?? []) as unknown as IScrapingData[];
 
         if (!scrapingDatas?.length) return [];
 
@@ -85,7 +86,7 @@ export const useScrapingDataPage = () => {
             folderName: item.dataProvider?.name ?? '',
             lastModified: item.lastModified ?? item.createdAt ?? new Date(),
         }));
-    }, [tableContainerData?.tableQuery?.data?.data]);
+    }, [table.tableProps.dataSource]);
 
     const handlePhotoClick = (scrapingDataId: string) => {
         const index = photoItems?.findIndex((photo) => photo.id === scrapingDataId);
@@ -107,7 +108,8 @@ export const useScrapingDataPage = () => {
         isLightboxOpen,
         setIsLightboxOpen,
         currentPhotoIndex,
-        tableContainerData,
+        table,
+        debouncedSearch: table.debouncedSearch,
         handleDelete,
         modalPropsData,
         photoItems,

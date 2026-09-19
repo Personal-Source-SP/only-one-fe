@@ -23,7 +23,7 @@ type ViewScheduleJobListProps = {
 };
 
 export const ViewScheduleJobList = ({ isOpen, scheduleId, onClose }: ViewScheduleJobListProps) => {
-    const { tableProps, tableQuery, setFilters } = useCustomTable<IScheduleJob>({
+    const table = useCustomTable<IScheduleJob>({
         resource: API_ENDPOINT.SCHEDULES.JOBS(scheduleId),
     });
 
@@ -34,7 +34,7 @@ export const ViewScheduleJobList = ({ isOpen, scheduleId, onClose }: ViewSchedul
             dataIndex: 'index',
             width: 60,
             align: 'center',
-            render: (_: any, __: any, index: number) => index + 1,
+            render: (_: unknown, __: unknown, index: number) => index + 1,
         },
         {
             title: 'Công việc',
@@ -124,7 +124,7 @@ export const ViewScheduleJobList = ({ isOpen, scheduleId, onClose }: ViewSchedul
                     { label: 'Thủ công', value: ScheduleJobTriggerType.MANUAL },
                 ],
                 onChange: (val) =>
-                    setFilters([
+                    table.setFilters([
                         {
                             field: 'triggerType',
                             operator: 'eq',
@@ -142,7 +142,7 @@ export const ViewScheduleJobList = ({ isOpen, scheduleId, onClose }: ViewSchedul
                     { label: 'Nhà cung cấp', value: ScheduleType.DATA_PROVIDER },
                 ],
                 onChange: (val) =>
-                    setFilters([
+                    table.setFilters([
                         {
                             field: 'scheduleType',
                             operator: 'eq',
@@ -151,7 +151,7 @@ export const ViewScheduleJobList = ({ isOpen, scheduleId, onClose }: ViewSchedul
                     ]),
             },
         ],
-        [setFilters],
+        [table.setFilters],
     );
 
     return (
@@ -164,14 +164,10 @@ export const ViewScheduleJobList = ({ isOpen, scheduleId, onClose }: ViewSchedul
             title="Xem sự kiện lịch biểu thực thi"
         >
             <ListContainer
-                isLoading={tableQuery.isLoading}
+                isLoading={table.tableQuery.isLoading}
                 filters={<FilterPanel fields={filters} />}
             >
-                <ListTable<IScheduleJob>
-                    columns={columns}
-                    tableProps={tableProps}
-                    tableQuery={tableQuery}
-                />
+                <ListTable<IScheduleJob> columns={columns} table={table} />
             </ListContainer>
         </CustomModal>
     );

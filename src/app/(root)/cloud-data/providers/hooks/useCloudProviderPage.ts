@@ -5,7 +5,7 @@ import { useCustomModalForm, useCustomTable } from '@/hooks';
 import type { CloudProviderFormValues, CloudProviderRecord } from '../types';
 
 export const useCloudProviderPage = () => {
-    const { tableProps, tableQuery, debouncedSearch } = useCustomTable<CloudProviderRecord>({
+    const table = useCustomTable<CloudProviderRecord>({
         resource: API_ENDPOINT.CLOUD_DATA_PROVIDERS.BASE,
     });
 
@@ -17,7 +17,7 @@ export const useCloudProviderPage = () => {
         action: 'create',
         resource: API_ENDPOINT.CLOUD_DATA_PROVIDERS.BASE,
         onMutationSuccess: async () => {
-            await tableQuery.refetch();
+            await table.tableQuery.refetch();
         },
     });
 
@@ -29,7 +29,7 @@ export const useCloudProviderPage = () => {
         action: 'edit',
         resource: API_ENDPOINT.CLOUD_DATA_PROVIDERS.BASE,
         onMutationSuccess: async () => {
-            await tableQuery.refetch();
+            await table.tableQuery.refetch();
         },
         initialValuesMapper: (record) => ({
             name: record.name,
@@ -40,9 +40,8 @@ export const useCloudProviderPage = () => {
     });
 
     return {
-        tableProps,
-        tableQuery,
-        debouncedSearch,
+        table,
+        debouncedSearch: table.debouncedSearch,
         createModalForm,
         editModalForm,
     };

@@ -5,7 +5,7 @@ import { useCustomModalForm, useCustomTable } from '@/hooks';
 import type { IUserFormValues, UserFormValues, UserRecord } from '../types';
 
 export const useUsersPage = () => {
-    const { tableProps, tableQuery, debouncedSearch } = useCustomTable<UserRecord>({
+    const table = useCustomTable<UserRecord>({
         resource: API_ENDPOINT.USERS.BASE,
     });
 
@@ -13,7 +13,7 @@ export const useUsersPage = () => {
         action: 'create',
         resource: API_ENDPOINT.USERS.BASE,
         onMutationSuccess: async () => {
-            await tableQuery.refetch();
+            await table.tableQuery.refetch();
         },
     });
 
@@ -21,7 +21,7 @@ export const useUsersPage = () => {
         action: 'edit',
         resource: API_ENDPOINT.USERS.BASE,
         onMutationSuccess: async () => {
-            await tableQuery.refetch();
+            await table.tableQuery.refetch();
         },
         initialValuesMapper: (record) => ({
             userName: record.userName,
@@ -31,9 +31,8 @@ export const useUsersPage = () => {
     });
 
     return {
-        tableProps,
-        tableQuery,
-        debouncedSearch,
+        table,
+        debouncedSearch: table.debouncedSearch,
         createModalForm,
         editModalForm,
     };

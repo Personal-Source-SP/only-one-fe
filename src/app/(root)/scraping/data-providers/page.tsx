@@ -20,8 +20,7 @@ import type { IDataProvider, IDataProviderFormValues } from './types/data-provid
 
 export default function DataProviderPage() {
     const router = useRouter();
-    const { tableProps, tableQuery, debouncedSearch, createModalForm, editModalForm } =
-        useDataProviderPage();
+    const { table, debouncedSearch, createModalForm, editModalForm } = useDataProviderPage();
 
     const columns: ColumnsType<IDataProvider> = [
         {
@@ -175,8 +174,7 @@ export default function DataProviderPage() {
             <ListContainer filters={filters} actions={actions}>
                 <ListTable<IDataProvider>
                     columns={columns}
-                    tableProps={tableProps}
-                    tableQuery={tableQuery}
+                    table={table}
                     deleteResource={RESOURCE.DATA_PROVIDERS}
                     onEdit={(record) => editModalForm.show(record.id)}
                     onView={(record) => router.push(`/scraping/features/${record.id}`)}

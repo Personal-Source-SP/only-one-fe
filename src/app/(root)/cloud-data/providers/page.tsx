@@ -20,8 +20,7 @@ import { useCloudProviderPage } from './hooks';
 import type { CloudProviderFormValues, CloudProviderRecord } from './types';
 
 export default function CloudDataProviderPage() {
-    const { tableProps, tableQuery, debouncedSearch, createModalForm, editModalForm } =
-        useCloudProviderPage();
+    const { table, debouncedSearch, createModalForm, editModalForm } = useCloudProviderPage();
 
     const columns: ColumnsType<CloudProviderRecord> = [
         {
@@ -154,8 +153,7 @@ export default function CloudDataProviderPage() {
             <ListContainer filters={filters} actions={actions}>
                 <ListTable<CloudProviderRecord>
                     columns={columns}
-                    tableProps={tableProps}
-                    tableQuery={tableQuery}
+                    table={table}
                     deleteResource={RESOURCE.CLOUD_DATA_PROVIDERS}
                     onEdit={(record) => editModalForm.show(record.id)}
                 />

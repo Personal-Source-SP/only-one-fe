@@ -14,10 +14,9 @@ import {
 
 export const useNetworkDevicePage = () => {
     // 1. Table Data & Query using Refine useCustomTable
-    const { tableProps, tableQuery, debouncedSearch, setFilters, setCurrentPage } =
-        useCustomTable<INetworkDevice>({
-            resource: RESOURCE.NETWORK_DEVICES,
-        });
+    const table = useCustomTable<INetworkDevice>({
+        resource: RESOURCE.NETWORK_DEVICES,
+    });
 
     // 2. Scan Status Polling Query
     const { data: scanStatusData, query: scanStatusQuery } = useCustomData<IScanStatusResponse>({
@@ -104,9 +103,9 @@ export const useNetworkDevicePage = () => {
 
     // 6. Computed Stats
     const stats = useMemo(() => {
-        const devices = (tableProps?.dataSource as INetworkDevice[]) || [];
-        const total = tableProps?.pagination
-            ? (tableProps.pagination as any).total || devices.length
+        const devices = (table.tableProps?.dataSource as INetworkDevice[]) || [];
+        const total = table.tableProps?.pagination
+            ? (table.tableProps.pagination as { total?: number }).total || devices.length
             : devices.length;
         const onlineCount = devices.filter((d) => d.isOnline).length;
         const cameraCount = devices.filter((d) => d.deviceType === NetworkDeviceType.CAMERA).length;
@@ -116,14 +115,13 @@ export const useNetworkDevicePage = () => {
         const iotCount = devices.filter((d) => d.deviceType === NetworkDeviceType.SMART_IOT).length;
 
         return { total, onlineCount, cameraCount, routerCount, iotCount };
-    }, [tableProps]);
+    }, [table.tableProps]);
 
     return {
-        tableProps,
-        tableQuery,
-        debouncedSearch,
-        setFilters,
-        setCurrentPage,
+        table,
+        debouncedSearch: table.debouncedSearch,
+        setFilters: table.setFilters,
+        setCurrentPage: table.setCurrentPage,
         currentScanStatus,
         scanStatusQuery,
         isTriggeringScan,

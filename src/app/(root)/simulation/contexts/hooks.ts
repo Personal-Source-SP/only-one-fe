@@ -10,10 +10,9 @@ export const useSimulationContextsPage = () => {
     const [loading, setLoading] = useState(false);
     const { handleCustomMutationData } = useCustomMutationData();
 
-    const { tableProps, tableQuery, debouncedSearch, setFilters, setCurrentPage } =
-        useCustomTable<SimulationContextRecord>({
-            resource: API_ENDPOINT.SIMULATION.CONTEXTS,
-        });
+    const table = useCustomTable<SimulationContextRecord>({
+        resource: API_ENDPOINT.SIMULATION.CONTEXTS,
+    });
 
     const createModalForm = useCustomModalForm<
         SimulationContextRecord,
@@ -23,7 +22,7 @@ export const useSimulationContextsPage = () => {
         action: 'create',
         resource: API_ENDPOINT.SIMULATION.CONTEXTS,
         onMutationSuccess: async () => {
-            await tableQuery.refetch();
+            await table.tableQuery.refetch();
         },
         onFinish: (values) => {
             try {
@@ -47,7 +46,7 @@ export const useSimulationContextsPage = () => {
         action: 'edit',
         resource: API_ENDPOINT.SIMULATION.CONTEXTS,
         onMutationSuccess: async () => {
-            await tableQuery.refetch();
+            await table.tableQuery.refetch();
         },
         initialValuesMapper: (record) => ({
             name: record.name,
@@ -71,16 +70,26 @@ export const useSimulationContextsPage = () => {
         },
     });
 
-    const handleCreateSimulationItem = (id: string) => {
+    const handleCreateSimulationItem = (contextId: string, expiresAt?: Date) => {
         setLoading(true);
 
         handleCustomMutationData({
-            values: { simulationContextId: id },
+            values: { contextId, expiresAt },
             method: 'post',
             url: API_ENDPOINT.SIMULATION.ITEMS,
-            successNotification: () => {
+            successNotification: (data) => {
+                if (!data?.data?.isSuccess) {
+                    setLoading(false);
+
+                    return {
+                        type: MessageType.ERROR,
+                        message: 'Tạo đối tượng mô phỏng thất bại',
+                        description: data?.data?.message ?? 'Tạo đối tượng mô phỏng thất bại',
+                    };
+                }
+
                 setLoading(false);
-                tableQuery?.refetch();
+                table.tableQuery?.refetch();
 
                 return {
                     type: MessageType.SUCCESS,
@@ -101,11 +110,10 @@ export const useSimulationContextsPage = () => {
 
     return {
         loading,
-        tableProps,
-        tableQuery,
-        debouncedSearch,
-        setFilters,
-        setCurrentPage,
+        table,
+        debouncedSearch: table.debouncedSearch,
+        setFilters: table.setFilters,
+        setCurrentPage: table.setCurrentPage,
         createModalForm,
         editModalForm,
         handleCreateSimulationItem,

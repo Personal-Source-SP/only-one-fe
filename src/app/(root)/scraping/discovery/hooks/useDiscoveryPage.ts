@@ -14,10 +14,9 @@ export const useDiscoveryPage = () => {
         featureStatus: DataProviderFeatureStatus.READY,
     });
 
-    const { tableProps, tableQuery, debouncedSearch, setFilters } =
-        useCustomTable<IDiscoverySession>({
-            resource: API_ENDPOINT.DISCOVERY_SESSIONS.BASE,
-        });
+    const table = useCustomTable<IDiscoverySession>({
+        resource: API_ENDPOINT.DISCOVERY_SESSIONS.BASE,
+    });
 
     const createModalForm = useCustomModalForm<
         IDiscoverySession,
@@ -28,7 +27,7 @@ export const useDiscoveryPage = () => {
         resource: API_ENDPOINT.DISCOVERY_SESSIONS.BASE,
         successNotification: { type: 'success', message: 'Tạo phiên khám phá thành công' },
         onMutationSuccess: async () => {
-            await tableQuery.refetch();
+            await table.tableQuery.refetch();
         },
         onFinish: (values) => {
             const rawKeywords = values.targetKeywords;
@@ -47,10 +46,9 @@ export const useDiscoveryPage = () => {
     return {
         dataProviderOptions,
         dataProviderQuery,
-        tableProps,
-        tableQuery,
-        debouncedSearch,
-        setFilters,
+        table,
+        debouncedSearch: table.debouncedSearch,
+        setFilters: table.setFilters,
         createModalForm,
     };
 };

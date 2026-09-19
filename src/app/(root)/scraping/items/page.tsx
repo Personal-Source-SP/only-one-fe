@@ -22,8 +22,7 @@ import type { IItem, IItemFormValues } from './types';
 
 export default function ItemPage() {
     const {
-        tableProps,
-        tableQuery,
+        table,
         debouncedSearch,
         createModalForm,
         editModalForm,
@@ -200,8 +199,7 @@ export default function ItemPage() {
             <ListContainer filters={filters} actions={actions}>
                 <ListTable<IItem>
                     columns={columns}
-                    tableProps={tableProps}
-                    tableQuery={tableQuery}
+                    table={table}
                     deleteResource={RESOURCE.ITEMS}
                     onEdit={(record) => editModalForm.show(record.id)}
                 />
@@ -224,9 +222,9 @@ export default function ItemPage() {
                     key="import-item"
                     open={openImportItemModal}
                     dataType={DataImportType.ITEM}
-                    onSuccess={() => tableQuery.refetch()}
+                    onSuccess={() => table.tableQuery.refetch()}
                     onClose={() => setOpenImportItemModal(false)}
-                    columns={importDataColumns as unknown as ColumnType<Record<string, any>>[]}
+                    columns={importDataColumns as unknown as ColumnType<Record<string, unknown>>[]}
                 />
             )}
 

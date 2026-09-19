@@ -19,8 +19,7 @@ import { useUsersPage } from './hooks';
 import type { IUserFormValues, UserRecord } from './types';
 
 export default function UsersPage() {
-    const { tableProps, tableQuery, debouncedSearch, createModalForm, editModalForm } =
-        useUsersPage();
+    const { table, debouncedSearch, createModalForm, editModalForm } = useUsersPage();
 
     const columns: ColumnsType<UserRecord> = [
         {
@@ -143,8 +142,7 @@ export default function UsersPage() {
             <ListContainer filters={filters} actions={actions}>
                 <ListTable<UserRecord>
                     columns={columns}
-                    tableProps={tableProps}
-                    tableQuery={tableQuery}
+                    table={table}
                     deleteResource={RESOURCE.USERS}
                     onEdit={(record) => editModalForm.show(record.id)}
                 />

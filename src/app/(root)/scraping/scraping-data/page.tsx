@@ -32,7 +32,8 @@ export default function ScrapingDataPage() {
         isLightboxOpen,
         setIsLightboxOpen,
         currentPhotoIndex,
-        tableContainerData,
+        table,
+        debouncedSearch,
         handleDelete,
         modalPropsData,
         photoItems,
@@ -155,16 +156,7 @@ export default function ScrapingDataPage() {
             type: 'input',
             isPrimary: true,
             placeholder: 'Tìm kiếm dữ liệu cào...',
-            onChange: (value) => {
-                tableContainerData.setCurrentPage(1);
-                tableContainerData.setFilters([
-                    {
-                        field: 'dataId',
-                        operator: 'contains',
-                        value: value?.toString() ?? '',
-                    },
-                ]);
-            },
+            onChange: (value) => debouncedSearch(value?.toString() ?? ''),
         },
     ];
 
@@ -172,14 +164,13 @@ export default function ScrapingDataPage() {
         <>
             <ListContainer
                 actions={actions}
-                isLoading={tableContainerData?.tableQuery?.isLoading}
+                isLoading={table.tableQuery.isLoading}
                 filters={<FilterPanel fields={filters} />}
             >
                 {displayMode === DisplayMode.TABLE ? (
                     <ListTable<ScrapingDataRecord>
                         columns={columns}
-                        tableProps={tableContainerData.tableProps as any}
-                        tableQuery={tableContainerData.tableQuery as any}
+                        table={table}
                         deleteResource={RESOURCE.SCRAPING_DATA}
                         onEdit={(record) => modalPropsData?.show?.(record.id)}
                     />
@@ -207,7 +198,7 @@ export default function ScrapingDataPage() {
                     open={openProcessScrapeDataModal}
                     onClose={() => {
                         setOpenProcessScrapeDataModal(false);
-                        tableContainerData?.tableQuery?.refetch();
+                        table.tableQuery.refetch();
                     }}
                 />
             )}

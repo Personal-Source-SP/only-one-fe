@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { API_ENDPOINT } from '@/config';
 import { MessageType } from '@/enums';
-import { SimulationItemStatus } from './enums';
 import {
     useCustomModalForm,
     useCustomMutationData,
@@ -19,10 +18,9 @@ export const useSimulationItemsPage = () => {
         useSelectSimulationContext();
     const { handleCustomMutationData } = useCustomMutationData();
 
-    const { tableProps, tableQuery, debouncedSearch, setFilters, setCurrentPage } =
-        useCustomTable<SimulationItemRecord>({
-            resource: API_ENDPOINT.SIMULATION.ITEMS,
-        });
+    const table = useCustomTable<SimulationItemRecord>({
+        resource: API_ENDPOINT.SIMULATION.ITEMS,
+    });
 
     const createModalForm = useCustomModalForm<
         SimulationItemRecord,
@@ -32,7 +30,7 @@ export const useSimulationItemsPage = () => {
         action: 'create',
         resource: API_ENDPOINT.SIMULATION.ITEMS,
         onMutationSuccess: async () => {
-            await tableQuery.refetch();
+            await table.tableQuery.refetch();
         },
         onFinish: (values) => {
             try {
@@ -54,15 +52,13 @@ export const useSimulationItemsPage = () => {
         action: 'edit',
         resource: API_ENDPOINT.SIMULATION.ITEMS,
         onMutationSuccess: async () => {
-            await tableQuery.refetch();
+            await table.tableQuery.refetch();
         },
         initialValuesMapper: (record) => ({
-            name: record.name,
+            name: record.name ?? '',
             simulationContextId: record.simulationContextId,
-            payload:
-                typeof record.payload === 'object'
-                    ? JSON.stringify(record.payload, null, 2)
-                    : record.payload,
+            expiresAt: record.expiresAt,
+            payload: record.payload ? JSON.stringify(record.payload, null, 2) : undefined,
         }),
         onFinish: (values) => {
             try {
@@ -76,51 +72,41 @@ export const useSimulationItemsPage = () => {
         },
     });
 
-    const handleSimulationItemAction = (id: string, status: SimulationItemStatus) => {
+    const handleSimulationItemAction = async (
+        id: string,
+        action: 'start' | 'stop' | 'toggle-status',
+        _item?: SimulationItemRecord,
+    ) => {
         setLoading(true);
-
-        handleCustomMutationData({
-            values: { status },
-            method: 'put',
-            url: API_ENDPOINT.SIMULATION.ACTION(id),
-            successNotification: (data) => {
-                if (!data?.data?.isSuccess) {
-                    setLoading(false);
-
-                    return {
-                        type: MessageType.ERROR,
-                        message: 'Thao tác thất bại',
-                        description: data?.data?.message ?? 'Thao tác thất bại',
-                    };
-                }
-
-                setLoading(false);
-                tableQuery?.refetch();
-
-                return {
+        try {
+            await handleCustomMutationData({
+                url: API_ENDPOINT.SIMULATION.ACTION(id),
+                method: 'post',
+                values: { action },
+                onSuccess: async () => {
+                    await table.tableQuery.refetch();
+                },
+                successNotification: () => ({
                     type: MessageType.SUCCESS,
                     message: 'Thao tác thành công',
-                };
-            },
-            errorNotification: (error) => {
-                setLoading(false);
-
-                return {
+                }),
+                errorNotification: (error) => ({
                     type: MessageType.ERROR,
                     message: 'Thao tác thất bại',
                     description: error?.message ?? 'Thao tác thất bại',
-                };
-            },
-        });
+                }),
+            });
+        } finally {
+            setLoading(false);
+        }
     };
 
     return {
         loading,
-        tableProps,
-        tableQuery,
-        debouncedSearch,
-        setFilters,
-        setCurrentPage,
+        table,
+        debouncedSearch: table.debouncedSearch,
+        setFilters: table.setFilters,
+        setCurrentPage: table.setCurrentPage,
         createModalForm,
         editModalForm,
         simulationContextOptions,

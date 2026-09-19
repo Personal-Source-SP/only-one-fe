@@ -7,7 +7,7 @@ import type { CloudItemFormValues, CloudItemRecord } from '../types';
 export const useCloudItemPage = () => {
     const { options: cloudDataProviderOptions } = useSelectCloudDataProvider();
 
-    const { tableProps, tableQuery, debouncedSearch } = useCustomTable<CloudItemRecord>({
+    const table = useCustomTable<CloudItemRecord>({
         resource: API_ENDPOINT.CLOUD_DATA_ITEMS.BASE,
     });
 
@@ -19,14 +19,13 @@ export const useCloudItemPage = () => {
         action: 'create',
         resource: API_ENDPOINT.CLOUD_DATA_ITEMS.BASE,
         onMutationSuccess: async () => {
-            await tableQuery.refetch();
+            await table.tableQuery.refetch();
         },
     });
 
     return {
-        tableProps,
-        tableQuery,
-        debouncedSearch,
+        table,
+        debouncedSearch: table.debouncedSearch,
         createModalForm,
         cloudDataProviderOptions,
     };

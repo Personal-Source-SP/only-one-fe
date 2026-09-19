@@ -5,7 +5,7 @@ import { useCustomModalForm, useCustomTable } from '@/hooks';
 import type { IDataProvider, IDataProviderFormValues } from '../types';
 
 export const useDataProviderPage = () => {
-    const { tableProps, tableQuery, debouncedSearch } = useCustomTable<IDataProvider>({
+    const table = useCustomTable<IDataProvider>({
         resource: API_ENDPOINT.DATA_PROVIDERS.BASE,
     });
 
@@ -17,7 +17,7 @@ export const useDataProviderPage = () => {
         action: 'create',
         resource: API_ENDPOINT.DATA_PROVIDERS.BASE,
         onMutationSuccess: async () => {
-            await tableQuery.refetch();
+            await table.tableQuery.refetch();
         },
     });
 
@@ -26,7 +26,7 @@ export const useDataProviderPage = () => {
             action: 'edit',
             resource: API_ENDPOINT.DATA_PROVIDERS.BASE,
             onMutationSuccess: async () => {
-                await tableQuery.refetch();
+                await table.tableQuery.refetch();
             },
             initialValuesMapper: (record) => ({
                 name: record.name,
@@ -37,9 +37,8 @@ export const useDataProviderPage = () => {
     );
 
     return {
-        tableProps,
-        tableQuery,
-        debouncedSearch,
+        table,
+        debouncedSearch: table.debouncedSearch,
         createModalForm,
         editModalForm,
     };

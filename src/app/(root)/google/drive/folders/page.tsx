@@ -20,8 +20,7 @@ import type { GoogleFolderRecord } from './types';
 const FolderPage = () => {
     const {
         modalForm,
-        tableProps,
-        tableQuery,
+        table,
         folderOptions,
         isOpenSyncFile,
         queryFolderOptions,
@@ -106,13 +105,12 @@ const FolderPage = () => {
         <>
             <ListContainer
                 actions={actions}
-                isLoading={tableQuery.isLoading}
+                isLoading={table.tableQuery.isLoading}
                 filters={<FilterPanel fields={filters} />}
             >
                 <ListTable<GoogleFolderRecord>
                     columns={columns}
-                    tableProps={tableProps}
-                    tableQuery={tableQuery}
+                    table={table}
                     deleteResource={RESOURCE.GOOGLE_FOLDERS}
                     onEdit={(record) => modalForm.show(record?.id)}
                 />
@@ -126,7 +124,7 @@ const FolderPage = () => {
                 onClose={() => setIsOpenSyncFile(false)}
                 defaultFolderOptions={folderOptions || []}
                 queryLoading={queryFolderOptions?.isLoading}
-                onSuccess={() => tableQuery?.refetch()}
+                onSuccess={() => table.tableQuery?.refetch()}
             />
         </>
     );

@@ -19,7 +19,7 @@ import { useSimulationContextsPage } from './hooks';
 import type { SimulationContextFormValues, SimulationContextRecord } from './types';
 
 export default function SimulationContextsPage() {
-    const { loading, tableProps, tableQuery, debouncedSearch, createModalForm, editModalForm } =
+    const { loading, table, debouncedSearch, createModalForm, editModalForm } =
         useSimulationContextsPage();
 
     const columns: ColumnsType<SimulationContextRecord> = [
@@ -123,13 +123,12 @@ export default function SimulationContextsPage() {
         <>
             <ListContainer
                 actions={actions}
-                isLoading={loading || tableQuery.isLoading}
+                isLoading={loading || table.tableQuery.isLoading}
                 filters={filters}
             >
                 <ListTable<SimulationContextRecord>
                     columns={columns}
-                    tableProps={tableProps}
-                    tableQuery={tableQuery}
+                    table={table}
                     deleteResource={RESOURCE.SIMULATION_CONTEXTS}
                     onEdit={(record) => editModalForm.show(record.id)}
                 />

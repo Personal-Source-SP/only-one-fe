@@ -29,8 +29,7 @@ export default function DataProviderItemPage() {
         cloudDataProviderOptions,
         dataProviderOptions,
         dataProviderQuery,
-        tableProps,
-        tableQuery,
+        table,
         debouncedSearch,
         setFilters,
         handleUpdate,
@@ -259,8 +258,7 @@ export default function DataProviderItemPage() {
             <ListContainer filters={filters} actions={actions}>
                 <ListTable<ProviderItemRecord>
                     columns={columns}
-                    tableProps={tableProps}
-                    tableQuery={tableQuery}
+                    table={table}
                     deleteResource={RESOURCE.DATA_PROVIDER_ITEMS}
                     onEdit={(record) => editModalForm.show(record.id)}
                 />
