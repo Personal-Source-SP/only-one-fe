@@ -3,13 +3,20 @@ import { useDebounceSearch, useTableChange } from '@/hooks';
 import type { IBaseApiNotificationRequest, IBaseApiTransformRequest } from '@/interfaces';
 import { applyDataTransform, resolveQueryNotifications, resolveRowKey } from '@/utilities';
 import { useTable } from '@refinedev/antd';
-import type { BaseRecord, HttpError } from '@refinedev/core';
+import type { BaseRecord, CrudOperators, HttpError } from '@refinedev/core';
 import type { Key } from 'react';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 type RefineUseTableRequest<TData extends BaseRecord> = NonNullable<
     Parameters<typeof useTable<TData, HttpError>>[0]
 >;
+
+export interface ISetFieldFilterOptions {
+    /** Tự động chuyển về trang 1 khi lọc (mặc định: true) */
+    resetPage?: boolean;
+    /** Hành vi cập nhật filter ('merge' giữ các filter khác, 'replace' ghi đè toàn bộ). Mặc định: 'merge' */
+    behavior?: 'merge' | 'replace';
+}
 
 export type UseCustomTableRequest<
     TData extends BaseRecord = BaseRecord,
@@ -72,6 +79,44 @@ export const useCustomTable = <
 
     const [selectedRowKeys, setSelectedRowKeys] = useState<Key[]>([]);
 
+    const setFieldFilter = useCallback(
+        (field: string, value: unknown, options?: ISetFieldFilterOptions) => {
+            const { resetPage = true, behavior = 'merge' } = options ?? {};
+
+            if (resetPage) {
+                result.setCurrentPage(1);
+            }
+
+            if (
+                value === undefined ||
+                value === null ||
+                value === '' ||
+                (Array.isArray(value) && value.length === 0)
+            ) {
+                const currentFilters = result.filters ?? [];
+                result.setFilters(
+                    currentFilters.filter((f) => 'field' in f && f.field !== field),
+                    behavior,
+                );
+                return;
+            }
+
+            const operator: CrudOperators = Array.isArray(value) ? 'in' : 'eq';
+
+            result.setFilters(
+                [
+                    {
+                        field,
+                        operator,
+                        value,
+                    },
+                ],
+                behavior,
+            );
+        },
+        [result.setCurrentPage, result.setFilters, result.filters],
+    );
+
     const resolvedRowSelection = useMemo(() => {
         if (!enableRowSelection && !rowSelection) return undefined;
         if (rowSelection) return rowSelection;
@@ -123,6 +168,7 @@ export const useCustomTable = <
         selectionProps,
         tableProps: customTableProps,
         isLoading: Boolean(result.tableQuery.isLoading),
+        setFieldFilter,
         debouncedSearch,
     };
 };

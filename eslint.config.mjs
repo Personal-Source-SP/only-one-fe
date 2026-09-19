@@ -9,7 +9,7 @@ import globals from 'globals';
 
 export default [
     {
-        ignores: ['node_modules/**', '__generated__/**', '.next/**', 'dist/**', 'build/**'],
+        ignores: ['node_modules/**', '__generated__/**', '.next/**', 'dist/**', 'build/**', '.agents/**', 'only-one/**'],
     },
     js.configs.recommended,
     {

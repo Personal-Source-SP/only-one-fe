@@ -27,14 +27,7 @@ import {
 export default function DiscoveryPage() {
     const router = useRouter();
 
-    const {
-        dataProviderOptions,
-        dataProviderQuery,
-        table,
-        debouncedSearch,
-        setFilters,
-        createModalForm,
-    } = useDiscoveryPage();
+    const { table, createModalForm, dataProviderQuery, dataProviderOptions } = useDiscoveryPage();
 
     const columns: ColumnsType<IDiscoverySession> = [
         {
@@ -120,21 +113,14 @@ export default function DiscoveryPage() {
             type: 'input',
             isPrimary: true,
             placeholder: 'Tìm theo mã phiên, URL...',
-            onChange: (value) => debouncedSearch(value?.toString() ?? ''),
+            onChange: (value) => table.debouncedSearch(value?.toString() ?? ''),
         },
         {
             name: 'dataProviderId',
             type: 'select',
             placeholder: 'Chọn nhà cung cấp',
             options: dataProviderOptions,
-            onChange: (val) =>
-                setFilters([
-                    {
-                        field: 'dataProviderId',
-                        operator: 'eq',
-                        value: val,
-                    },
-                ]),
+            onChange: (val) => table.setFieldFilter('dataProviderId', val),
         },
     ];
 
