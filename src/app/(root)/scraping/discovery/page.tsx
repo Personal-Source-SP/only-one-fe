@@ -219,9 +219,9 @@ export default function DiscoveryPage() {
             </ListContainer>
 
             <FormModalContainer
-                modalForm={createModalForm}
                 width={720}
                 cancelText="Hủy"
+                modalForm={createModalForm}
                 okText="Bắt đầu khám phá"
                 title="Khởi tạo phiên khám phá mới (Discovery Session)"
                 sections={[{ type: 'plain', fields: formFields }]}

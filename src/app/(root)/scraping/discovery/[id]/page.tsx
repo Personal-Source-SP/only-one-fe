@@ -8,99 +8,40 @@ import {
 import {
     DiscoveryUrlStatus,
     ValidationMatchResult,
-    type IDiscoverySession,
     type IDiscoveryUrl,
 } from '@/app/(root)/scraping/discovery/types';
 import { ListContainer, ListTable, type ICardAction, type IFilterField } from '@/components/common';
 import {
     CustomButton,
     CustomFlex,
-    CustomSpace,
     CustomTag,
     CustomTypography,
     type ColumnsType,
 } from '@/components/custom-antd';
-import { API_ENDPOINT } from '@/config';
-import { useCustomMutationData, useCustomOne, useCustomTable } from '@/hooks';
 import { formatDate } from '@/libs';
 import { CheckCircleOutlined, SendOutlined } from '@ant-design/icons';
 import { Icon } from '@iconify/react';
 import { useParams } from 'next/navigation';
-import type React from 'react';
-import { useState } from 'react';
 import { SessionOverviewCard } from './components';
+import { useDiscoveryDetailPage } from './hooks';
 
 export default function DiscoveryDetailPage() {
     const params = useParams();
     const id = (params?.id as string) || '';
-    const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([]);
-
-    const { tableProps, tableQuery, debouncedSearch } = useCustomTable<IDiscoveryUrl>({
-        resource: API_ENDPOINT.DISCOVERY_URLS.BASE,
-        filters: {
-            permanent: [
-                {
-                    value: id,
-                    operator: 'eq',
-                    field: 'sessionId',
-                },
-            ],
-        },
-        queryOptions: {
-            enabled: Boolean(id),
-        },
-    });
 
     const {
-        data: session,
-        query: { isLoading: isSessionLoading, refetch: refetchSession },
-    } = useCustomOne<IDiscoverySession>({
-        id,
-        queryOptions: { enabled: Boolean(id) },
-        resource: API_ENDPOINT.DISCOVERY_SESSIONS.BASE,
-    });
-
-    const { handleCustomMutationData, mutation } = useCustomMutationData();
-
-    const handleBatchEnqueue = async () => {
-        if (selectedRowKeys.length === 0) return;
-
-        await handleCustomMutationData({
-            method: 'post',
-            values: { urlIds: selectedRowKeys },
-            url: API_ENDPOINT.DISCOVERY_SESSIONS.ENQUEUE_URLS(id),
-            successNotification: {
-                type: 'success',
-                message: `Đã đẩy ${selectedRowKeys.length} URLs vào hàng đợi cào`,
-            },
-            onSuccess: () => {
-                setSelectedRowKeys([]);
-                tableQuery.refetch();
-                refetchSession();
-            },
-        });
-    };
-
-    const handleTriggerValidation = async () => {
-        await handleCustomMutationData({
-            values: {},
-            method: 'post',
-            url: API_ENDPOINT.DISCOVERY_SESSIONS.VALIDATE(id),
-            successNotification: {
-                type: 'success',
-                message: 'Bắt đầu quá trình đánh giá chất lượng URLs',
-            },
-            onSuccess: () => {
-                tableQuery.refetch();
-                refetchSession();
-            },
-        });
-    };
-
-    const isEnqueuing = mutation.mutation.isPending;
-    const isLoading = isSessionLoading || tableQuery.isLoading;
-    const urls = (tableProps.dataSource ?? []) as unknown as IDiscoveryUrl[];
-    const queuedCount = urls.filter((u) => u.status === DiscoveryUrlStatus.QUEUED).length;
+        session,
+        urls,
+        tableProps,
+        tableQuery,
+        debouncedSearch,
+        isLoading,
+        isEnqueuing,
+        queuedCount,
+        selectedRowKeys,
+        handleBatchEnqueue,
+        handleTriggerValidation,
+    } = useDiscoveryDetailPage(id);
 
     const columns: ColumnsType<IDiscoveryUrl> = [
         {
@@ -221,28 +162,24 @@ export default function DiscoveryDetailPage() {
     ];
 
     return (
-        <CustomSpace direction="vertical" size={16} className="w-full">
-            <SessionOverviewCard
-                sessionId={id}
-                session={session}
-                urlsCount={urls.length}
-                queuedCount={queuedCount}
-            />
-
-            <ListContainer actions={actions} filters={filters} isLoading={isLoading}>
-                <ListTable<IDiscoveryUrl>
-                    columns={columns}
-                    tableQuery={tableQuery}
-                    tableProps={{
-                        ...tableProps,
-                        dataSource: urls,
-                        rowSelection: {
-                            selectedRowKeys,
-                            onChange: (keys: React.Key[]) => setSelectedRowKeys(keys as string[]),
-                        },
-                    }}
+        <ListContainer
+            actions={actions}
+            filters={filters}
+            isLoading={isLoading}
+            top={
+                <SessionOverviewCard
+                    sessionId={id}
+                    session={session}
+                    urlsCount={urls.length}
+                    queuedCount={queuedCount}
                 />
-            </ListContainer>
-        </CustomSpace>
+            }
+        >
+            <ListTable<IDiscoveryUrl>
+                columns={columns}
+                tableQuery={tableQuery}
+                tableProps={tableProps}
+            />
+        </ListContainer>
     );
 }

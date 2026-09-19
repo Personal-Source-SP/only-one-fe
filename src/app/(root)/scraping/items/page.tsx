@@ -229,6 +229,7 @@ export default function ItemPage() {
                     columns={importDataColumns as unknown as ColumnType<Record<string, any>>[]}
                 />
             )}
+
             {openProcessScrapeDataModal && (
                 <ProcessScrapeData
                     key="process-scrape-data"
