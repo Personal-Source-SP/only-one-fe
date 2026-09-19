@@ -9,54 +9,28 @@ import {
     type IFormField,
 } from '@/components/common';
 import { CustomButton, type ColumnsType } from '@/components/custom-antd';
-import { API_ENDPOINT, RESOURCE } from '@/config';
+import { RESOURCE } from '@/config';
 import type { FormMode } from '@/hooks';
-import { useCustomModalForm, useCustomTable } from '@/hooks';
 import { formatDate, slugify } from '@/libs';
+import { FormRuleType } from '@/utilities';
 import { PlusOutlined, ThunderboltOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
-import { DATA_PROVIDER_FIELDS } from './constants';
+import { useDataProviderPage } from './hooks';
 import type { IDataProvider, IDataProviderFormValues } from './types/data-provider.type';
 
 export default function DataProviderPage() {
     const router = useRouter();
-
-    const { tableProps, tableQuery, debouncedSearch } = useCustomTable<IDataProvider>({
-        resource: API_ENDPOINT.DATA_PROVIDERS.BASE,
-    });
-
-    const createModalForm = useCustomModalForm<
-        IDataProvider,
-        IDataProviderFormValues,
-        IDataProvider
-    >({
-        action: 'create',
-        resource: API_ENDPOINT.DATA_PROVIDERS.BASE,
-        onMutationSuccess: async () => {
-            await tableQuery.refetch();
-        },
-    });
-
-    const editModalForm = useCustomModalForm<IDataProvider, IDataProviderFormValues, IDataProvider>(
-        {
-            action: 'edit',
-            resource: API_ENDPOINT.DATA_PROVIDERS.BASE,
-            onMutationSuccess: async () => {
-                await tableQuery.refetch();
-            },
-            initialValuesMapper: (record) => ({
-                name: record.name,
-                baseUrl: record.baseUrl,
-                identifier: record.identifier,
-            }),
-        },
-    );
+    const { tableProps, tableQuery, debouncedSearch, createModalForm, editModalForm } =
+        useDataProviderPage();
 
     const columns: ColumnsType<IDataProvider> = [
         {
-            dataIndex: DATA_PROVIDER_FIELDS.NAME.key,
-            key: DATA_PROVIDER_FIELDS.NAME.key,
-            ...DATA_PROVIDER_FIELDS.NAME.table,
+            title: 'Tên',
+            dataIndex: 'name',
+            key: 'name',
+            width: '25%',
+            sorter: true,
+            ellipsis: true,
             render: (name: string, record) => (
                 <CustomButton
                     type="link"
@@ -68,19 +42,27 @@ export default function DataProviderPage() {
             ),
         },
         {
-            dataIndex: DATA_PROVIDER_FIELDS.IDENTIFIER.key,
-            key: DATA_PROVIDER_FIELDS.IDENTIFIER.key,
-            ...DATA_PROVIDER_FIELDS.IDENTIFIER.table,
+            title: 'Mã',
+            dataIndex: 'identifier',
+            key: 'identifier',
+            width: '15%',
+            sorter: true,
+            ellipsis: true,
         },
         {
-            dataIndex: DATA_PROVIDER_FIELDS.BASE_URL.key,
-            key: DATA_PROVIDER_FIELDS.BASE_URL.key,
-            ...DATA_PROVIDER_FIELDS.BASE_URL.table,
+            title: 'URL cơ sở',
+            dataIndex: 'baseUrl',
+            key: 'baseUrl',
+            width: '30%',
+            sorter: true,
+            ellipsis: true,
         },
         {
-            dataIndex: DATA_PROVIDER_FIELDS.CREATED_AT.key,
-            key: DATA_PROVIDER_FIELDS.CREATED_AT.key,
-            ...DATA_PROVIDER_FIELDS.CREATED_AT.table,
+            title: 'Ngày tạo',
+            dataIndex: 'createdAt',
+            key: 'createdAt',
+            width: '15%',
+            sorter: true,
             render: (createdAt: Date) => formatDate(createdAt),
         },
     ];
@@ -107,20 +89,34 @@ export default function DataProviderPage() {
             name: 'search',
             type: 'input',
             isPrimary: true,
-            placeholder: `Tìm kiếm theo ${DATA_PROVIDER_FIELDS.NAME.label.toLowerCase()}`,
+            placeholder: 'Tìm kiếm theo tên nhà cung cấp...',
             onChange: (value) => debouncedSearch(value?.toString() ?? ''),
         },
     ];
 
     const formFields: IFormField<IDataProviderFormValues>[] = [
         {
-            name: DATA_PROVIDER_FIELDS.NAME.key,
-            label: DATA_PROVIDER_FIELDS.NAME.label,
-            ...DATA_PROVIDER_FIELDS.NAME.form,
+            name: 'name',
+            label: 'Tên nhà cung cấp',
+            type: 'input',
+            placeholder: 'Nhập tên nhà cung cấp',
+            rulesConfig: [
+                {
+                    type: FormRuleType.Required,
+                    message: 'Vui lòng nhập tên nhà cung cấp',
+                },
+                {
+                    type: FormRuleType.Max,
+                    max: 255,
+                    message: 'Tên nhà cung cấp không được vượt quá 255 ký tự',
+                },
+            ],
         },
         {
-            name: DATA_PROVIDER_FIELDS.IDENTIFIER.key,
-            label: DATA_PROVIDER_FIELDS.IDENTIFIER.label,
+            name: 'identifier',
+            label: 'Mã nhà cung cấp',
+            type: 'input',
+            placeholder: 'Nhập mã nhà cung cấp',
             disabled: (mode: FormMode) => mode === 'edit',
             addonAfter: (form, mode: FormMode) =>
                 mode === 'create' ? (
@@ -129,13 +125,10 @@ export default function DataProviderPage() {
                         size="small"
                         onClick={() => {
                             if (!form) return;
-                            const currentName = form.getFieldValue(DATA_PROVIDER_FIELDS.NAME.key);
+                            const currentName = form.getFieldValue('name');
                             if (currentName) {
-                                form.setFieldValue(
-                                    DATA_PROVIDER_FIELDS.IDENTIFIER.key,
-                                    slugify(currentName, 20),
-                                );
-                                form.validateFields([DATA_PROVIDER_FIELDS.IDENTIFIER.key]);
+                                form.setFieldValue('identifier', slugify(currentName, 20));
+                                form.validateFields(['identifier']);
                             }
                         }}
                         className="flex items-center gap-1 font-medium text-hub-primary"
@@ -144,12 +137,36 @@ export default function DataProviderPage() {
                         Tự động sinh
                     </CustomButton>
                 ) : undefined,
-            ...DATA_PROVIDER_FIELDS.IDENTIFIER.form,
+            rulesConfig: [
+                {
+                    type: FormRuleType.Required,
+                    message: 'Vui lòng nhập mã nhà cung cấp',
+                },
+                {
+                    type: FormRuleType.Max,
+                    max: 20,
+                    message: 'Mã nhà cung cấp không được vượt quá 20 ký tự',
+                },
+                {
+                    type: FormRuleType.Code,
+                    message: 'Mã nhà cung cấp chỉ được chứa chữ cái thường, số và dấu gạch ngang',
+                },
+            ],
         },
         {
-            name: DATA_PROVIDER_FIELDS.BASE_URL.key,
-            label: DATA_PROVIDER_FIELDS.BASE_URL.label,
-            ...DATA_PROVIDER_FIELDS.BASE_URL.form,
+            name: 'baseUrl',
+            label: 'URL cơ sở',
+            type: 'input',
+            placeholder: 'https://example.com',
+            rulesConfig: [
+                {
+                    type: FormRuleType.Url,
+                },
+                {
+                    type: FormRuleType.Required,
+                    message: 'Vui lòng nhập URL cơ sở',
+                },
+            ],
         },
     ];
 
