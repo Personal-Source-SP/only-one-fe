@@ -9,13 +9,33 @@
   - Place the `type <ComponentName>Props` declaration immediately above the component function definition.
   - Property ordering: Declare all required props first, followed by optional props (`?`) separated by a single blank line, sorted from shortest to longest line length.
 
-- ✅ **Leverage Common Container & Form Primitives (`@/components/common`)**:
-  - **`ListContainer`**: Orchestrates table, filtering, action bar, mobile dropdown menus, and modal/drawer forms in a single unified container.
-  - **`FormModalContainer` / `CustomModalForm`**: Standardized dialog wrapper for create/edit forms with automated button binding, responsive width, and polymorphic sections (`plain`, `card`, `collapse`, `tabs`).
-  - **Atomic Inputs**: Use atomic inputs in `@/components/common/forms` (`CustomInputForm`, `CustomSelectInput`, `CustomDatePickerForm`, `CustomCodeEditorForm`, `CustomJsonToggleForm`).
+- ✅ **Leverage Common Container Primitives (`@/components/common/containers`)**:
+  - **`ListContainer`**: Khung ngoài quản lý `filters`, `actions`, responsive toolbar và bao bọc `<ListTable />`.
+  - **`ListTable`**: Ant Design Table tích hợp `table` instance từ `useCustomTable`, tự động quản lý pagination, sorters, actions (Edit, View, Delete) kèm permission checks.
+  - **`FormModalContainer`**: Dialog wrapper độc lập cho create/edit forms với auto-submit binding, dynamic width, và polymorphic sections (`plain`, `card`, `collapse`, `tabs`).
+  - **`FilterPanel`**: Thanh công cụ tìm kiếm và lọc dữ liệu phía trên danh sách.
+  - **`ListHeader`**: Header của trang chứa Title, Breadcrumb và nhóm nút Action.
+  - **`MobileCardList`**: Hiển thị bảng dạng Card view trên thiết bị di động.
+  - **`PaginationControls`**: Bộ điều khiển phân trang tùy biến đồng bộ với `useCustomTable`.
+  - **`BreadcrumbNav`**: Điều hướng breadcrumb phân cấp.
+
+- ✅ **Leverage Form System & Atomic Inputs (`@/components/common/forms`)**:
+  - **`CustomFormField`**: Bộ điều phối trung tâm tự động render component input tương ứng theo `type`.
+  - **`CustomFormSection`**: Chia bố cục form theo các chế độ: `plain`, `card`, `collapse`, `tabs`.
+  - **`CustomFormList`**: Quản lý dynamic array form items (Ant Design Form.List).
+  - **`CustomModalForm` / `CustomDrawerForm`**: Core form dialog/drawer primitives.
+  - **Atomic Form Inputs**:
+    - `CustomInputForm`: Text, Password, Textarea, Number.
+    - `CustomSelectInput`: Dropdown Select (Single, Multiple, Tags, Async loader).
+    - `CustomDatePickerForm` & `CustomRangePicker`: Date, DateTime, Range picker.
+    - `CustomSwitchForm`, `CustomCheckboxGroupForm`, `CustomRadioGroupForm`: Toggle, Checkbox, Radio.
+    - `CustomUploadForm`: Upload file & hình ảnh.
+    - `CustomCodeEditorForm`: Monaco / CodeMirror editor cho code/script/JSON.
+    - `CustomJsonToggleForm`: Toggle giữa nhập visual form items và raw JSON.
+    - `CustomHtmlEditorForm`: Rich-text WYSIWYG editor.
 
 - ✅ **Declarative Form Schema (`IFormField<TValues>`)**:
-  - Use typed form fields with `IFormField<TValues>` configured from `constants/*-field.constants.ts`.
+  - Sử dụng `IFormField<TValues>` với `rulesConfig` và `FormRuleType`.
   - Use `FormRuleType` from `@/utilities` for validation rules (`FormRuleType.Required`, `FormRuleType.Email`, `FormRuleType.Url`, `FormRuleType.Code`, `FormRuleType.Max`).
 
 - ✅ **Component Directory Layout (Simple vs Complex)**:

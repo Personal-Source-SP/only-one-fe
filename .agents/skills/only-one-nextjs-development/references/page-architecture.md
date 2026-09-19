@@ -7,157 +7,152 @@ Each Feature Page in Next.js App Router (e.g., `src/app/(root)/<domain>/<feature
 ```text
 src/app/(root)/<domain>/<feature>/
 ├── constants/
-│   ├── <feature>-field.constants.ts # Single Source of Truth for IFieldMetadata (keys, labels, table & form rules)
-│   └── index.ts                     # Barrel export for all page constants
+│   ├── <feature>-form.constants.ts   # Tùy chọn: metadata, options, default values
+│   ├── <feature>-status.constants.ts # Tùy chọn: status color map, badge maps
+│   └── index.ts                      # Barrel export cho constants
 ├── types/
-│   ├── <feature>.type.ts            # Canonical Entity interface extending IAbstract, FormValues
-│   └── index.ts                     # Barrel export for all page types
+│   ├── <feature>.type.ts             # Entity interfaces extending IAbstract, FormValues
+│   └── index.ts                      # Barrel export cho types
 ├── enums/
-│   └── index.ts                     # Barrel export for domain-specific enums
-├── components/                      # Optional custom modals, tabs, or domain-specific widgets
-│   └── index.ts                     # Barrel export for sub-components
-├── hooks/                           # Optional complex domain hooks (if page logic > 200 LOC)
-│   └── index.ts                     # Barrel export for page hooks
-└── page.tsx                         # Declarative Presentation Orchestrator (< 200 LOC) using ListContainer
+│   ├── <feature>.enum.ts             # Domain-specific enums
+│   └── index.ts                      # Barrel export cho enums
+├── hooks/                            # Bắt buộc: Custom hook đóng gói table & modal forms
+│   ├── use<Feature>Page.ts           # Hook quản lý useCustomTable, useCustomModalForm
+│   └── index.ts                      # Barrel export cho hooks
+├── components/                       # Tùy chọn: Sub-components, custom cards, specialized modals
+│   └── index.ts                      # Barrel export cho sub-components
+├── [id]/                             # Tùy chọn: Dynamic sub-route chi tiết / edit
+│   ├── components/
+│   ├── hooks/
+│   └── page.tsx
+└── page.tsx                          # Declarative Presentation Orchestrator (< 200 LOC)
 ```
 
 ---
 
-## Single Source of Truth: `IFieldMetadata` & `ListContainer` Architecture
+## Chuẩn Khai Báo Feature Page (`page.tsx` & `use<Feature>Page.ts`)
 
-To keep the Feature Page (`page.tsx`) declarative, robust, and well below the **200 LOC ceiling**, follow this standard:
+Để giữ Feature Page (`page.tsx`) mang tính khai báo thuần túy, sạch sẽ và luôn nằm dưới trần **200 LOC**, tuân thủ 2 thành phần cốt lõi:
 
-### 1. Field Metadata Definition (`constants/<feature>-field.constants.ts`)
-
-Define all column labels, table layout props, and form input configurations in a centralized object:
+### 1. Dedicated Page Hook (`hooks/use<Feature>Page.ts`)
+Đóng gói toàn bộ `useCustomTable`, `useCustomModalForm` (create & edit), debounced search, và các query/mutation phụ thuộc vào hook riêng của trang:
 
 ```typescript
-import type { IFieldMetadata } from '@/interfaces';
-import { FormRuleType } from '@/utilities';
+'use client';
 
-export const DATA_PROVIDER_FIELDS = {
-    NAME: {
-        key: 'name',
-        label: 'Tên nhà cung cấp',
-        table: {
-            title: 'Tên',
-            width: '25%',
-            sorter: true,
-            ellipsis: true,
+import { API_ENDPOINT } from '@/config';
+import { useCustomModalForm, useCustomTable } from '@/hooks';
+import type { IDataProvider, IDataProviderFormValues } from '../types';
+
+export const useDataProviderPage = () => {
+    const table = useCustomTable<IDataProvider>({
+        resource: API_ENDPOINT.DATA_PROVIDERS.BASE,
+    });
+
+    const createModalForm = useCustomModalForm<
+        IDataProvider,
+        IDataProviderFormValues,
+        IDataProvider
+    >({
+        action: 'create',
+        resource: API_ENDPOINT.DATA_PROVIDERS.BASE,
+        onMutationSuccess: async () => {
+            await table.tableQuery.refetch();
         },
-        form: {
-            type: 'input',
-            placeholder: 'Nhập tên nhà cung cấp',
-            rulesConfig: [
-                {
-                    type: FormRuleType.Required,
-                    message: 'Vui lòng nhập tên nhà cung cấp',
-                },
-                {
-                    type: FormRuleType.Max,
-                    max: 255,
-                    message: 'Tên không được vượt quá 255 ký tự',
-                },
-            ],
+    });
+
+    const editModalForm = useCustomModalForm<IDataProvider, IDataProviderFormValues, IDataProvider>(
+        {
+            action: 'edit',
+            resource: API_ENDPOINT.DATA_PROVIDERS.BASE,
+            onMutationSuccess: async () => {
+                await table.tableQuery.refetch();
+            },
+            initialValuesMapper: (record) => ({
+                name: record.name,
+                baseUrl: record.baseUrl,
+                identifier: record.identifier,
+            }),
         },
-    },
-    IDENTIFIER: {
-        key: 'identifier',
-        label: 'Mã nhà cung cấp',
-        table: {
-            title: 'Mã',
-            width: '15%',
-            sorter: true,
-            ellipsis: true,
-        },
-        form: {
-            type: 'input',
-            placeholder: 'Nhập mã nhà cung cấp',
-            rulesConfig: [
-                {
-                    type: FormRuleType.Required,
-                    message: 'Vui lòng nhập mã nhà cung cấp',
-                },
-                {
-                    type: FormRuleType.Code,
-                    message: 'Mã chỉ được chứa chữ cái thường, số và gạch ngang',
-                },
-            ],
-        },
-    },
-    CREATED_AT: {
-        key: 'createdAt',
-        label: 'Ngày tạo',
-        table: {
-            title: 'Ngày tạo',
-            width: '15%',
-            sorter: true,
-        },
-    },
-} as const satisfies Record<string, IFieldMetadata>;
+    );
+
+    return {
+        table,
+        debouncedSearch: table.debouncedSearch,
+        createModalForm,
+        editModalForm,
+    };
+};
 ```
 
 ### 2. Main Page Orchestrator (`page.tsx`)
-
-A standard CRUD page consumes `ListContainer` (`@/components/common`) along with `useCustomTable` and `useCustomModalForm` (or `useCustomDrawerForm`):
+`page.tsx` chỉ đóng vai trò khai báo cấu hình (`columns`, `actions`, `filters`, `formFields`) và trả về JSX dạng Compound Component:
 
 ```tsx
 'use client';
 
 import {
+    FormModalContainer,
     ListContainer,
+    ListTable,
     type ICardAction,
     type IFilterField,
     type IFormField,
 } from '@/components/common';
 import { CustomButton, type ColumnsType } from '@/components/custom-antd';
-import { API_ENDPOINT, RESOURCE } from '@/config';
-import { useCustomModalForm, useCustomTable, type FormMode } from '@/hooks';
-import { formatDate } from '@/libs';
-import { PlusOutlined } from '@ant-design/icons';
-import { DATA_PROVIDER_FIELDS } from './constants';
+import { RESOURCE } from '@/config';
+import type { FormMode } from '@/hooks';
+import { formatDate, slugify } from '@/libs';
+import { FormRuleType } from '@/utilities';
+import { PlusOutlined, ThunderboltOutlined } from '@ant-design/icons';
+import { useRouter } from 'next/navigation';
+import { useDataProviderPage } from './hooks';
 import type { IDataProvider, IDataProviderFormValues } from './types';
 
 export default function DataProviderPage() {
-    const { tableProps, tableQuery, debouncedSearch } = useCustomTable<IDataProvider>({
-        resource: API_ENDPOINT.DATA_PROVIDERS.BASE,
-    });
-
-    const createModalForm = useCustomModalForm<IDataProvider, IDataProviderFormValues, IDataProvider>({
-        action: 'create',
-        resource: API_ENDPOINT.DATA_PROVIDERS.BASE,
-        onMutationSuccess: async () => {
-            await tableQuery.refetch();
-        },
-    });
-
-    const editModalForm = useCustomModalForm<IDataProvider, IDataProviderFormValues, IDataProvider>({
-        action: 'edit',
-        resource: API_ENDPOINT.DATA_PROVIDERS.BASE,
-        onMutationSuccess: async () => {
-            await tableQuery.refetch();
-        },
-        initialValuesMapper: (record) => ({
-            name: record.name,
-            identifier: record.identifier,
-        }),
-    });
+    const router = useRouter();
+    const { table, debouncedSearch, createModalForm, editModalForm } = useDataProviderPage();
 
     const columns: ColumnsType<IDataProvider> = [
         {
-            dataIndex: DATA_PROVIDER_FIELDS.NAME.key,
-            key: DATA_PROVIDER_FIELDS.NAME.key,
-            ...DATA_PROVIDER_FIELDS.NAME.table,
+            title: 'Tên',
+            dataIndex: 'name',
+            key: 'name',
+            width: '25%',
+            sorter: true,
+            ellipsis: true,
+            render: (name: string, record) => (
+                <CustomButton
+                    type="link"
+                    className="p-0 font-medium text-hub-primary hover:underline"
+                    onClick={() => router.push(`/scraping/features/${record.id}`)}
+                >
+                    {name}
+                </CustomButton>
+            ),
         },
         {
-            dataIndex: DATA_PROVIDER_FIELDS.IDENTIFIER.key,
-            key: DATA_PROVIDER_FIELDS.IDENTIFIER.key,
-            ...DATA_PROVIDER_FIELDS.IDENTIFIER.table,
+            title: 'Mã',
+            dataIndex: 'identifier',
+            key: 'identifier',
+            width: '15%',
+            sorter: true,
+            ellipsis: true,
         },
         {
-            dataIndex: DATA_PROVIDER_FIELDS.CREATED_AT.key,
-            key: DATA_PROVIDER_FIELDS.CREATED_AT.key,
-            ...DATA_PROVIDER_FIELDS.CREATED_AT.table,
+            title: 'URL cơ sở',
+            dataIndex: 'baseUrl',
+            key: 'baseUrl',
+            width: '30%',
+            sorter: true,
+            ellipsis: true,
+        },
+        {
+            title: 'Ngày tạo',
+            dataIndex: 'createdAt',
+            key: 'createdAt',
+            width: '15%',
+            sorter: true,
             render: (createdAt: Date) => formatDate(createdAt),
         },
     ];
@@ -184,50 +179,111 @@ export default function DataProviderPage() {
             name: 'search',
             type: 'input',
             isPrimary: true,
-            placeholder: `Tìm kiếm theo ${DATA_PROVIDER_FIELDS.NAME.label.toLowerCase()}`,
+            placeholder: 'Tìm kiếm theo tên nhà cung cấp...',
             onChange: (value) => debouncedSearch(value?.toString() ?? ''),
         },
     ];
 
     const formFields: IFormField<IDataProviderFormValues>[] = [
         {
-            name: DATA_PROVIDER_FIELDS.NAME.key,
-            label: DATA_PROVIDER_FIELDS.NAME.label,
-            ...DATA_PROVIDER_FIELDS.NAME.form,
+            name: 'name',
+            label: 'Tên nhà cung cấp',
+            type: 'input',
+            placeholder: 'Nhập tên nhà cung cấp',
+            rulesConfig: [
+                {
+                    type: FormRuleType.Required,
+                    message: 'Vui lòng nhập tên nhà cung cấp',
+                },
+                {
+                    type: FormRuleType.Max,
+                    max: 255,
+                    message: 'Tên nhà cung cấp không được vượt quá 255 ký tự',
+                },
+            ],
         },
         {
-            name: DATA_PROVIDER_FIELDS.IDENTIFIER.key,
-            label: DATA_PROVIDER_FIELDS.IDENTIFIER.label,
+            name: 'identifier',
+            label: 'Mã nhà cung cấp',
+            type: 'input',
+            placeholder: 'Nhập mã nhà cung cấp',
             disabled: (mode: FormMode) => mode === 'edit',
-            ...DATA_PROVIDER_FIELDS.IDENTIFIER.form,
+            addonAfter: (form, mode: FormMode) =>
+                mode === 'create' ? (
+                    <CustomButton
+                        type="text"
+                        size="small"
+                        onClick={() => {
+                            if (!form) return;
+                            const currentName = form.getFieldValue('name');
+                            if (currentName) {
+                                form.setFieldValue('identifier', slugify(currentName, 20));
+                                form.validateFields(['identifier']);
+                            }
+                        }}
+                        className="flex items-center gap-1 font-medium text-hub-primary"
+                    >
+                        <ThunderboltOutlined />
+                        Tự động sinh
+                    </CustomButton>
+                ) : undefined,
+            rulesConfig: [
+                {
+                    type: FormRuleType.Required,
+                    message: 'Vui lòng nhập mã nhà cung cấp',
+                },
+                {
+                    type: FormRuleType.Max,
+                    max: 20,
+                    message: 'Mã nhà cung cấp không được vượt quá 20 ký tự',
+                },
+                {
+                    type: FormRuleType.Code,
+                    message: 'Mã nhà cung cấp chỉ được chứa chữ cái thường, số và dấu gạch ngang',
+                },
+            ],
+        },
+        {
+            name: 'baseUrl',
+            label: 'URL cơ sở',
+            type: 'input',
+            placeholder: 'https://example.com',
+            rulesConfig: [
+                {
+                    type: FormRuleType.Url,
+                },
+                {
+                    type: FormRuleType.Required,
+                    message: 'Vui lòng nhập URL cơ sở',
+                },
+            ],
         },
     ];
 
     return (
-        <ListContainer<IDataProvider, IDataProviderFormValues>
-            filters={filters}
-            actions={actions}
-            table={{
-                columns,
-                tableProps,
-                tableQuery,
-                deleteResource: RESOURCE.DATA_PROVIDERS,
-                onEdit: (record) => editModalForm.show(record.id),
-            }}
-            formModal={[
-                {
-                    modalForm: createModalForm,
-                    title: 'Thêm mới nhà cung cấp',
-                    sections: [{ type: 'plain', fields: formFields }],
-                    createInitialValues: { name: '', identifier: '' },
-                },
-                {
-                    modalForm: editModalForm,
-                    title: 'Chỉnh sửa nhà cung cấp',
-                    sections: [{ type: 'plain', fields: formFields }],
-                },
-            ]}
-        />
+        <>
+            <ListContainer filters={filters} actions={actions}>
+                <ListTable<IDataProvider>
+                    columns={columns}
+                    table={table}
+                    deleteResource={RESOURCE.DATA_PROVIDERS}
+                    onEdit={(record) => editModalForm.show(record.id)}
+                    onView={(record) => router.push(`/scraping/features/${record.id}`)}
+                />
+            </ListContainer>
+
+            <FormModalContainer
+                modalForm={createModalForm}
+                title="Thêm mới nhà cung cấp"
+                sections={[{ type: 'plain', fields: formFields }]}
+                createInitialValues={{ name: '', baseUrl: '', identifier: '' }}
+            />
+            <FormModalContainer
+                modalForm={editModalForm}
+                title="Chỉnh sửa nhà cung cấp"
+                sections={[{ type: 'plain', fields: formFields }]}
+            />
+        </>
     );
 }
 ```

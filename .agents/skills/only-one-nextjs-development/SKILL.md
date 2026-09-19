@@ -18,9 +18,10 @@ description: MUST use when creating, modifying, reviewing, or refactoring Fronte
 >      - `src/components/`, `src/hooks/`, `src/utils/`, `src/helpers/`, `src/interfaces/`, `src/config/`
 >      - Sibling feature folders under `src/app/(root)/`.
 > 2. **Strict Anti-Reinvention**:
->    - NEVER duplicate CRUD table/form orchestration when `ListContainer`, `useCustomTable`, and `useCustomModalForm` are available.
+>    - NEVER duplicate CRUD table/form orchestration when `ListContainer`, `ListTable`, `FormModalContainer`, `useCustomTable`, and `useCustomModalForm` are available.
+>    - ALWAYS encapsulate page-level state and hooks inside `hooks/use<Feature>Page.ts`.
 >    - NEVER write bespoke form validation rules when `FormRuleType` from `@/utilities` is available.
->    - ALWAYS define field metadata centrally in `constants/*-field.constants.ts` using `as const satisfies Record<string, IFieldMetadata>`.
+>    - ALWAYS use atomic form inputs from `@/components/common/forms/` instead of reinventing raw inputs.
 > 3. **Open/Closed Extension**:
 >    - If an existing component or hook lacks a property, extend its props with safe defaults instead of creating a copy-pasted duplicate.
 
@@ -36,9 +37,9 @@ description: MUST use when creating, modifying, reviewing, or refactoring Fronte
 
 | Task / Component in Progress | Dedicated Reference File to Read (`view_file`) |
 | :--- | :--- |
-| **Main Page (Feature Page `page.tsx` & `ListContainer`) / Layout / Feature Flow** | [references/page-architecture.md](references/page-architecture.md) |
-| **UI Components / `ListContainer` / `FormModalContainer` / Modals** | [references/component-architecture.md](references/component-architecture.md) |
-| **Data Fetching / Refine Hooks (`useCustomTable`, `useCustomModalForm`)** | [references/refine-hooks.md](references/refine-hooks.md) |
+| **Main Page (Feature Page `page.tsx` & `ListContainer`, `ListTable`) / Layout / Feature Flow** | [references/page-architecture.md](references/page-architecture.md) |
+| **UI Components / `ListContainer` / `ListTable` / `FormModalContainer` / Modals / Forms** | [references/component-architecture.md](references/component-architecture.md) |
+| **Data Fetching / Refine Hooks (`useCustomTable`, `useCustomModalForm`, `use<Feature>Page`)** | [references/refine-hooks.md](references/refine-hooks.md) |
 | **Types / Interfaces / `IFieldMetadata` / Barrel Exports (`index.ts`)** | [references/types-and-contracts.md](references/types-and-contracts.md) |
 | **Utils / Converters / Lodash & Dayjs Timezone** | [references/utils-and-helpers.md](references/utils-and-helpers.md) |
 | **i18n Translations & Constants** | [references/i18n-and-constants.md](references/i18n-and-constants.md) |

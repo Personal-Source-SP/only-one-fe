@@ -4,12 +4,12 @@
 
 - ✅ **Location & Barrel Exports**:
   - Encapsulate type definitions inside the `types/` folder of the feature (`types/<feature>.type.ts`) and re-export via `types/index.ts`.
-  - All supporting subdirectories (`types/`, `constants/`, `enums/`, `components/`, `utils/`) MUST provide an `index.ts` barrel.
+  - All supporting subdirectories (`types/`, `constants/`, `enums/`, `components/`, `hooks/`, `utils/`) MUST provide an `index.ts` barrel.
   - Consumers import directly from directory barrels: `import type { IDataProvider, IDataProviderFormValues } from "./types"`.
   - ❌ **NEVER** declare domain/entity/form `type` or `interface` definitions directly inside `page.tsx` or `components/` files.
 
 - ✅ **Field Metadata Standard (`IFieldMetadata`)**:
-  - Every CRUD route MUST define its field properties using `IFieldMetadata` from `@/interfaces` with `FormRuleType`:
+  - Optional field properties configuration using `IFieldMetadata` from `@/interfaces` with `FormRuleType`:
   ```typescript
   import type { IFieldMetadata } from '@/interfaces';
   import { FormRuleType } from '@/utilities';
@@ -49,7 +49,7 @@
   ```
 
 - ✅ **FormValues Interface Pattern**:
-  - Dedicated `I<Entity>FormValues` interfaces model the shape of form inputs for `<ListContainer>` / `useCustomModalForm`:
+  - Dedicated `I<Entity>FormValues` interfaces model the shape of form inputs for `<FormModalContainer>` / `useCustomModalForm`:
   ```typescript
   export interface IDataProviderFormValues {
       name: string;
