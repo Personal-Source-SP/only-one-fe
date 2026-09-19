@@ -2,7 +2,9 @@
 
 import type { IDataProvider } from '@/app/(root)/scraping/data-providers/types';
 import {
+    FormModalContainer,
     ListContainer,
+    ListTable,
     type ICardAction,
     type IFilterField,
     type IFormField,
@@ -277,37 +279,36 @@ export default function DataProviderItemPage() {
     ];
 
     return (
-        <ListContainer<ProviderItemRecord, IDataProviderItemFormValues>
-            filters={filters}
-            actions={actions}
-            table={{
-                columns,
-                tableProps,
-                tableQuery,
-                deleteResource: RESOURCE.DATA_PROVIDER_ITEMS,
-                onEdit: (record) => editModalForm.show(record.id),
-            }}
-            formModal={[
-                {
-                    modalForm: createModalForm,
-                    title: 'Thêm mới đối tượng nhà cung cấp',
-                    sections: [{ type: 'plain', fields: formFields }],
-                    createInitialValues: {
-                        itemId: '',
-                        itemUrl: '',
-                        dataProviderId: '',
-                        cloudDataProviderId: undefined,
-                        autoProcessScraping: true,
-                        checkDuplicateData: true,
-                        isSavedToCloudData: false,
-                    },
-                },
-                {
-                    modalForm: editModalForm,
-                    title: 'Chỉnh sửa đối tượng nhà cung cấp',
-                    sections: [{ type: 'plain', fields: formFields }],
-                },
-            ]}
-        />
+        <>
+            <ListContainer filters={filters} actions={actions}>
+                <ListTable<ProviderItemRecord>
+                    columns={columns}
+                    tableProps={tableProps}
+                    tableQuery={tableQuery}
+                    deleteResource={RESOURCE.DATA_PROVIDER_ITEMS}
+                    onEdit={(record) => editModalForm.show(record.id)}
+                />
+            </ListContainer>
+
+            <FormModalContainer
+                modalForm={createModalForm}
+                title="Thêm mới đối tượng nhà cung cấp"
+                sections={[{ type: 'plain', fields: formFields }]}
+                createInitialValues={{
+                    itemId: '',
+                    itemUrl: '',
+                    dataProviderId: '',
+                    cloudDataProviderId: undefined,
+                    autoProcessScraping: true,
+                    checkDuplicateData: true,
+                    isSavedToCloudData: false,
+                }}
+            />
+            <FormModalContainer
+                modalForm={editModalForm}
+                title="Chỉnh sửa đối tượng nhà cung cấp"
+                sections={[{ type: 'plain', fields: formFields }]}
+            />
+        </>
     );
 }

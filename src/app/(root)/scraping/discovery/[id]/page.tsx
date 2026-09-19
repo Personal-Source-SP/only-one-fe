@@ -12,7 +12,7 @@ import {
     type IDiscoverySession,
     type IDiscoveryUrl,
 } from '@/app/(root)/scraping/discovery/types';
-import { ListContainer, type ICardAction, type IFilterField } from '@/components/common';
+import { ListContainer, ListTable, type ICardAction, type IFilterField } from '@/components/common';
 import {
     CustomButton,
     CustomFlex,
@@ -224,23 +224,20 @@ export default function DiscoveryDetailPage() {
                 queuedCount={queuedCount}
             />
 
-            <ListContainer<IDiscoveryUrl>
-                actions={actions}
-                filters={filters}
-                isLoading={isLoading}
-                table={{
-                    columns,
-                    tableQuery,
-                    tableProps: {
+            <ListContainer actions={actions} filters={filters} isLoading={isLoading}>
+                <ListTable<IDiscoveryUrl>
+                    columns={columns}
+                    tableQuery={tableQuery}
+                    tableProps={{
                         ...tableProps,
                         dataSource: urls,
                         rowSelection: {
                             selectedRowKeys,
                             onChange: (keys: React.Key[]) => setSelectedRowKeys(keys as string[]),
                         },
-                    },
-                }}
-            />
+                    }}
+                />
+            </ListContainer>
         </CustomSpace>
     );
 }

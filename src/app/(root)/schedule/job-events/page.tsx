@@ -1,9 +1,8 @@
 'use client';
 
-import { ListContainer, StatusTag, type IFilterField } from '@/components/common';
+import { ListContainer, ListTable, StatusTag, type IFilterField } from '@/components/common';
 import { ColumnsType } from '@/components/custom-antd';
 import { formatDate } from '@/libs';
-import { useState } from 'react';
 import { ViewJobEvent } from './components';
 import { JOB_EVENT_FIELDS } from './constants';
 import { ScheduleJobEventType } from './enums';
@@ -67,16 +66,14 @@ export default function ScheduleJobEventsPage() {
 
     return (
         <>
-            <ListContainer
-                isLoading={tableQuery.isLoading}
-                filters={filters}
-                table={{
-                    columns,
-                    tableProps,
-                    tableQuery,
-                    onView: (record) => setSelectedJobEvent(record),
-                }}
-            />
+            <ListContainer isLoading={tableQuery.isLoading} filters={filters}>
+                <ListTable<JobEventRecord>
+                    columns={columns}
+                    tableProps={tableProps}
+                    tableQuery={tableQuery}
+                    onView={(record) => setSelectedJobEvent(record)}
+                />
+            </ListContainer>
 
             {!!selectedJobEvent && (
                 <ViewJobEvent

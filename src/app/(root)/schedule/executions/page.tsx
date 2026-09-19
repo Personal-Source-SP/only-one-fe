@@ -1,7 +1,9 @@
 'use client';
 
 import {
+    FormModalContainer,
     ListContainer,
+    ListTable,
     StatusTag,
     type ICardAction,
     type IFilterField,
@@ -170,35 +172,35 @@ export default function ScheduleExecutionPage() {
                 actions={actions}
                 isLoading={loading || tableQuery.isLoading}
                 filters={filters}
-                table={{
-                    columns,
-                    tableProps,
-                    tableQuery,
-                    deleteResource: RESOURCE.SCHEDULES,
-                    onEdit: (record) => editModalForm.show(record.id),
+            >
+                <ListTable<ScheduleExecutionRecord>
+                    columns={columns}
+                    tableProps={tableProps}
+                    tableQuery={tableQuery}
+                    deleteResource={RESOURCE.SCHEDULES}
+                    onEdit={(record) => editModalForm.show(record.id)}
+                />
+            </ListContainer>
+
+            <FormModalContainer
+                modalForm={createModalForm}
+                title="Thêm mới lịch biểu thực thi"
+                width={600}
+                createInitialValues={{
+                    name: '',
+                    type: '',
+                    cronExpression: '',
+                    dataProviderId: undefined,
+                    itemId: undefined,
+                    isActive: true,
                 }}
-                formModal={[
-                    {
-                        modalForm: createModalForm,
-                        title: 'Thêm mới lịch biểu thực thi',
-                        width: 600,
-                        createInitialValues: {
-                            name: '',
-                            type: '',
-                            cronExpression: '',
-                            dataProviderId: undefined,
-                            itemId: undefined,
-                            isActive: true,
-                        },
-                        sections: [{ type: 'plain', fields: formFields }],
-                    },
-                    {
-                        modalForm: editModalForm,
-                        title: 'Chỉnh sửa lịch biểu thực thi',
-                        width: 600,
-                        sections: [{ type: 'plain', fields: formFields }],
-                    },
-                ]}
+                sections={[{ type: 'plain', fields: formFields }]}
+            />
+            <FormModalContainer
+                modalForm={editModalForm}
+                title="Chỉnh sửa lịch biểu thực thi"
+                width={600}
+                sections={[{ type: 'plain', fields: formFields }]}
             />
 
             {!!selectedScheduleId && (

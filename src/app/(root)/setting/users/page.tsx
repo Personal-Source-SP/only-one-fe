@@ -2,7 +2,9 @@
 
 import type { IGoogleAuth } from '@/app/(root)/google/drive/photos/types';
 import {
+    FormModalContainer,
     ListContainer,
+    ListTable,
     type ICardAction,
     type IFilterField,
     type IFormField,
@@ -129,29 +131,28 @@ export default function UsersPage() {
     ];
 
     return (
-        <ListContainer<UserRecord, UserFormValues>
-            filters={filters}
-            actions={actions}
-            table={{
-                columns,
-                tableProps,
-                tableQuery,
-                deleteResource: RESOURCE.USERS,
-                onEdit: (record) => editModalForm.show(record.id),
-            }}
-            formModal={[
-                {
-                    modalForm: createModalForm,
-                    title: 'Thêm mới người dùng',
-                    sections: [{ type: 'plain', fields: formFields }],
-                    createInitialValues: { userName: '', email: '', isActive: true },
-                },
-                {
-                    modalForm: editModalForm,
-                    title: 'Chỉnh sửa người dùng',
-                    sections: [{ type: 'plain', fields: formFields }],
-                },
-            ]}
-        />
+        <>
+            <ListContainer filters={filters} actions={actions}>
+                <ListTable<UserRecord>
+                    columns={columns}
+                    tableProps={tableProps}
+                    tableQuery={tableQuery}
+                    deleteResource={RESOURCE.USERS}
+                    onEdit={(record) => editModalForm.show(record.id)}
+                />
+            </ListContainer>
+
+            <FormModalContainer
+                modalForm={createModalForm}
+                title="Thêm mới người dùng"
+                sections={[{ type: 'plain', fields: formFields }]}
+                createInitialValues={{ userName: '', email: '', isActive: true }}
+            />
+            <FormModalContainer
+                modalForm={editModalForm}
+                title="Chỉnh sửa người dùng"
+                sections={[{ type: 'plain', fields: formFields }]}
+            />
+        </>
     );
 }

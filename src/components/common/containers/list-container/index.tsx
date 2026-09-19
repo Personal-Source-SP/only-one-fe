@@ -1,13 +1,6 @@
 'use client';
 
-import {
-    BreadcrumbNav,
-    FormModalContainer,
-    ListHeader,
-    ListTable,
-    type FormModalContainerProps,
-    type ListTableProps,
-} from '@/components/common';
+import { BreadcrumbNav, ListHeader } from '@/components/common';
 import {
     CustomButton,
     CustomCard,
@@ -21,52 +14,39 @@ import {
 import { usePagePermissions } from '@/hooks';
 import type { IBreadcrumbItem, ICardAction, IFilterField } from '@/interfaces';
 import { DownOutlined } from '@ant-design/icons';
-import type { BaseRecord } from '@refinedev/core';
 import { useMemo, type ReactNode } from 'react';
 
 export type { IBreadcrumbItem as BreadcrumbItem, ICardAction, IFilterField };
 
-export type ListContainerProps<
-    RecordType extends BaseRecord = BaseRecord,
-    TValues extends object = Record<string, unknown>,
-> = {
-    resource?: string;
+export type ListContainerProps = {
     withCard?: boolean;
     className?: string;
     isLoading?: boolean;
+    top?: ReactNode;
     children?: ReactNode;
+    bottom?: ReactNode;
     actions?: ICardAction[];
     permissionGroup?: string;
-    customModals?: ReactNode[];
     breadcrumb?: IBreadcrumbItem[];
     mobileActionsTitle?: ReactNode;
     filters?: IFilterField[] | ReactNode;
-    table?: ListTableProps<RecordType>;
-    formModal?: FormModalContainerProps<RecordType, TValues>[];
 };
 
-export type ListWrapperProps<
-    RecordType extends BaseRecord = BaseRecord,
-    TValues extends object = Record<string, unknown>,
-> = ListContainerProps<RecordType, TValues>;
+export type ListWrapperProps = ListContainerProps;
 
-export const ListContainer = <
-    RecordType extends BaseRecord = BaseRecord,
-    TValues extends object = Record<string, unknown>,
->({
+export const ListContainer = ({
     withCard = true,
     className = '',
     isLoading = false,
+    top,
     children,
+    bottom,
     actions = [],
     permissionGroup,
-    customModals,
     breadcrumb,
     mobileActionsTitle,
     filters,
-    table,
-    formModal,
-}: ListContainerProps<RecordType, TValues>) => {
+}: ListContainerProps) => {
     const permissions = usePagePermissions(permissionGroup);
 
     const allowedActions = useMemo(
@@ -130,69 +110,58 @@ export const ListContainer = <
         );
     }, [allowedActions.length, mobileActionMenuItems, mobileActionsTitle]);
 
+    const contentElement = useMemo(
+        () => (
+            <>
+                {top}
+
+                {children}
+
+                {bottom}
+            </>
+        ),
+        [withCard, top, children, bottom],
+    );
+
     return (
-        <>
-            <CustomSpace
-                size="middle"
-                direction="vertical"
-                className={`w-full ${!withCard ? 'p-3 sm:p-5 ' : ''}${className}`.trim()}
-            >
-                <CustomSpin spinning={isLoading}>
-                    <BreadcrumbNav items={breadcrumb} />
+        <CustomSpace
+            size="middle"
+            direction="vertical"
+            className={`w-full ${!withCard ? 'p-3 sm:p-5 ' : ''}${className}`.trim()}
+        >
+            <CustomSpin spinning={isLoading}>
+                <BreadcrumbNav items={breadcrumb} />
 
-                    {withCard ? (
-                        <CustomCard styles={{ body: { padding: 0 } }} className="overflow-hidden">
-                            <CustomSpace
-                                size="middle"
-                                direction="vertical"
-                                className="w-full p-3 sm:p-5"
-                            >
-                                <ListHeader
-                                    filters={filters}
-                                    withCard={!withCard}
-                                    allowedActions={allowedActions}
-                                    mobileActionsButton={mobileActionsButton}
-                                />
-
-                                {table && (
-                                    <ListTable<RecordType>
-                                        permissionGroup={permissionGroup}
-                                        {...table}
-                                    />
-                                )}
-
-                                {children}
-                            </CustomSpace>
-                        </CustomCard>
-                    ) : (
-                        <>
+                {withCard ? (
+                    <CustomCard styles={{ body: { padding: 0 } }} className="overflow-hidden">
+                        <CustomSpace
+                            size="middle"
+                            direction="vertical"
+                            className="w-full p-3 sm:p-5"
+                        >
                             <ListHeader
                                 filters={filters}
-                                withCard={withCard}
+                                withCard={!withCard}
                                 allowedActions={allowedActions}
                                 mobileActionsButton={mobileActionsButton}
                             />
 
-                            {table && (
-                                <ListTable<RecordType>
-                                    permissionGroup={permissionGroup}
-                                    {...table}
-                                />
-                            )}
+                            {contentElement}
+                        </CustomSpace>
+                    </CustomCard>
+                ) : (
+                    <>
+                        <ListHeader
+                            filters={filters}
+                            withCard={withCard}
+                            allowedActions={allowedActions}
+                            mobileActionsButton={mobileActionsButton}
+                        />
 
-                            {children}
-                        </>
-                    )}
-                </CustomSpin>
-            </CustomSpace>
-
-            {/** Form Modals */}
-            {formModal?.map((modalProps, index) => (
-                <FormModalContainer key={index} {...modalProps} />
-            ))}
-
-            {/** Custom Modals */}
-            {customModals?.length ? customModals.map((modal) => modal) : null}
-        </>
+                        {contentElement}
+                    </>
+                )}
+            </CustomSpin>
+        </CustomSpace>
     );
 };

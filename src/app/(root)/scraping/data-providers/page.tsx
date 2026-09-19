@@ -1,7 +1,9 @@
 'use client';
 
 import {
+    FormModalContainer,
     ListContainer,
+    ListTable,
     type ICardAction,
     type IFilterField,
     type IFormField,
@@ -152,30 +154,29 @@ export default function DataProviderPage() {
     ];
 
     return (
-        <ListContainer<IDataProvider, IDataProviderFormValues>
-            filters={filters}
-            actions={actions}
-            table={{
-                columns,
-                tableProps,
-                tableQuery,
-                deleteResource: RESOURCE.DATA_PROVIDERS,
-                onEdit: (record) => editModalForm.show(record.id),
-                onView: (record) => router.push(`/scraping/features/${record.id}`),
-            }}
-            formModal={[
-                {
-                    modalForm: createModalForm,
-                    title: 'Thêm mới nhà cung cấp',
-                    sections: [{ type: 'plain', fields: formFields }],
-                    createInitialValues: { name: '', baseUrl: '', identifier: '' },
-                },
-                {
-                    modalForm: editModalForm,
-                    title: 'Chỉnh sửa nhà cung cấp',
-                    sections: [{ type: 'plain', fields: formFields }],
-                },
-            ]}
-        />
+        <>
+            <ListContainer filters={filters} actions={actions}>
+                <ListTable<IDataProvider>
+                    columns={columns}
+                    tableProps={tableProps}
+                    tableQuery={tableQuery}
+                    deleteResource={RESOURCE.DATA_PROVIDERS}
+                    onEdit={(record) => editModalForm.show(record.id)}
+                    onView={(record) => router.push(`/scraping/features/${record.id}`)}
+                />
+            </ListContainer>
+
+            <FormModalContainer
+                modalForm={createModalForm}
+                title="Thêm mới nhà cung cấp"
+                sections={[{ type: 'plain', fields: formFields }]}
+                createInitialValues={{ name: '', baseUrl: '', identifier: '' }}
+            />
+            <FormModalContainer
+                modalForm={editModalForm}
+                title="Chỉnh sửa nhà cung cấp"
+                sections={[{ type: 'plain', fields: formFields }]}
+            />
+        </>
     );
 }

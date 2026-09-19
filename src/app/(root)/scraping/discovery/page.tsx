@@ -6,7 +6,9 @@ import {
 } from '@/app/(root)/scraping/features/enums';
 import type { ISearchTargetConfig } from '@/app/(root)/scraping/features/types';
 import {
+    FormModalContainer,
     ListContainer,
+    ListTable,
     type ICardAction,
     type IFilterField,
     type IFormField,
@@ -208,33 +210,32 @@ export default function DiscoveryPage() {
     ];
 
     return (
-        <ListContainer<IDiscoverySession, CreateSessionFormValues>
-            filters={filters}
-            actions={actions}
-            table={{
-                columns,
-                tableProps,
-                tableQuery,
-                deleteResource: RESOURCE.DISCOVERY_SESSIONS,
-                onView: (record) => router.push(`/scraping/discovery/${record.id}`),
-            }}
-            formModal={[
-                {
-                    modalForm: createModalForm,
-                    width: 720,
-                    cancelText: 'Hủy',
-                    okText: 'Bắt đầu khám phá',
-                    title: 'Khởi tạo phiên khám phá mới (Discovery Session)',
-                    sections: [{ type: 'plain', fields: formFields }],
-                    createInitialValues: {
-                        depth: 1,
-                        dataProviderId: '',
-                        targetKeywords: [],
-                        maxUrls: undefined,
-                        autoValidate: true,
-                    },
-                },
-            ]}
-        />
+        <>
+            <ListContainer filters={filters} actions={actions}>
+                <ListTable<IDiscoverySession>
+                    columns={columns}
+                    tableProps={tableProps}
+                    tableQuery={tableQuery}
+                    deleteResource={RESOURCE.DISCOVERY_SESSIONS}
+                    onView={(record) => router.push(`/scraping/discovery/${record.id}`)}
+                />
+            </ListContainer>
+
+            <FormModalContainer
+                modalForm={createModalForm}
+                width={720}
+                cancelText="Hủy"
+                okText="Bắt đầu khám phá"
+                title="Khởi tạo phiên khám phá mới (Discovery Session)"
+                sections={[{ type: 'plain', fields: formFields }]}
+                createInitialValues={{
+                    depth: 1,
+                    dataProviderId: '',
+                    targetKeywords: [],
+                    maxUrls: undefined,
+                    autoValidate: true,
+                }}
+            />
+        </>
     );
 }

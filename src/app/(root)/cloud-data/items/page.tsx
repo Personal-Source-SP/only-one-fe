@@ -1,7 +1,9 @@
 'use client';
 
 import {
+    FormModalContainer,
     ListContainer,
+    ListTable,
     StatusTag,
     type ICardAction,
     type IFilterField,
@@ -162,26 +164,25 @@ export default function CloudDataItemPage() {
     ];
 
     return (
-        <ListContainer<CloudItemRecord, CloudItemFormValues>
-            filters={filters}
-            actions={actions}
-            table={{
-                columns,
-                tableProps,
-                tableQuery,
-                deleteResource: RESOURCE.CLOUD_DATA_ITEMS,
-            }}
-            formModal={[
-                {
-                    modalForm: createModalForm,
-                    title: 'Thêm mới dữ liệu đám mây',
-                    sections: [{ type: 'plain', fields: formFields }],
-                    createInitialValues: {
-                        cloudDataProviderId: '',
-                        file: undefined,
-                    },
-                },
-            ]}
-        />
+        <>
+            <ListContainer filters={filters} actions={actions}>
+                <ListTable<CloudItemRecord>
+                    columns={columns}
+                    tableProps={tableProps}
+                    tableQuery={tableQuery}
+                    deleteResource={RESOURCE.CLOUD_DATA_ITEMS}
+                />
+            </ListContainer>
+
+            <FormModalContainer
+                modalForm={createModalForm}
+                title="Thêm mới dữ liệu đám mây"
+                sections={[{ type: 'plain', fields: formFields }]}
+                createInitialValues={{
+                    cloudDataProviderId: '',
+                    file: undefined,
+                }}
+            />
+        </>
     );
 }

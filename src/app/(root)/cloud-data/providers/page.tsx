@@ -1,7 +1,9 @@
 'use client';
 
 import {
+    FormModalContainer,
     ListContainer,
+    ListTable,
     StatusTag,
     type ICardAction,
     type IFilterField,
@@ -153,34 +155,33 @@ export default function CloudDataProviderPage() {
     ];
 
     return (
-        <ListContainer<CloudProviderRecord, CloudProviderFormValues>
-            filters={filters}
-            actions={actions}
-            table={{
-                columns,
-                tableProps,
-                tableQuery,
-                deleteResource: RESOURCE.CLOUD_DATA_PROVIDERS,
-                onEdit: (record) => editModalForm.show(record.id),
-            }}
-            formModal={[
-                {
-                    modalForm: createModalForm,
-                    title: 'Thêm mới nhà cung cấp cloud',
-                    sections: [{ type: 'plain', fields: formFields }],
-                    createInitialValues: {
-                        name: '',
-                        type: CloudDataProviderType.TELEGRAM,
-                        config: JSON.stringify({ channelId: '' }, null, 2),
-                        isActive: true,
-                    },
-                },
-                {
-                    modalForm: editModalForm,
-                    title: 'Chỉnh sửa nhà cung cấp cloud',
-                    sections: [{ type: 'plain', fields: formFields }],
-                },
-            ]}
-        />
+        <>
+            <ListContainer filters={filters} actions={actions}>
+                <ListTable<CloudProviderRecord>
+                    columns={columns}
+                    tableProps={tableProps}
+                    tableQuery={tableQuery}
+                    deleteResource={RESOURCE.CLOUD_DATA_PROVIDERS}
+                    onEdit={(record) => editModalForm.show(record.id)}
+                />
+            </ListContainer>
+
+            <FormModalContainer
+                modalForm={createModalForm}
+                title="Thêm mới nhà cung cấp cloud"
+                sections={[{ type: 'plain', fields: formFields }]}
+                createInitialValues={{
+                    name: '',
+                    type: CloudDataProviderType.TELEGRAM,
+                    config: JSON.stringify({ channelId: '' }, null, 2),
+                    isActive: true,
+                }}
+            />
+            <FormModalContainer
+                modalForm={editModalForm}
+                title="Chỉnh sửa nhà cung cấp cloud"
+                sections={[{ type: 'plain', fields: formFields }]}
+            />
+        </>
     );
 }

@@ -1,7 +1,9 @@
 'use client';
 
 import {
+    FormModalContainer,
     ListContainer,
+    ListTable,
     StatusTag,
     type ICardAction,
     type IFilterField,
@@ -160,49 +162,47 @@ export default function ItemPage() {
     ];
 
     return (
-        <ListContainer<IItem, IItemFormValues>
-            filters={filters}
-            actions={actions}
-            table={{
-                columns,
-                tableProps,
-                tableQuery,
-                deleteResource: RESOURCE.ITEMS,
-                onEdit: (record) => editModalForm.show(record.id),
-            }}
-            formModal={[
-                {
-                    modalForm: createModalForm,
-                    title: 'Thêm mới đối tượng',
-                    sections: [{ type: 'plain', fields: formFields }],
-                    createInitialValues: { name: '', code: '', tags: '' },
-                },
-                {
-                    modalForm: editModalForm,
-                    title: 'Chỉnh sửa đối tượng',
-                    sections: [{ type: 'plain', fields: formFields }],
-                },
-            ]}
-            customModals={[
-                openImportItemModal ? (
-                    <ImportData
-                        key="import-item"
-                        open={openImportItemModal}
-                        dataType={DataImportType.ITEM}
-                        onSuccess={() => tableQuery.refetch()}
-                        onClose={() => setOpenImportItemModal(false)}
-                        columns={importDataColumns as unknown as ColumnType<Record<string, any>>[]}
-                    />
-                ) : null,
-                openProcessScrapeDataModal ? (
-                    <ProcessScrapeData
-                        key="process-scrape-data"
-                        open={openProcessScrapeDataModal}
-                        selectedItemIds={selectedItemIds}
-                        onClose={() => setOpenProcessScrapeDataModal(false)}
-                    />
-                ) : null,
-            ]}
-        />
+        <>
+            <ListContainer filters={filters} actions={actions}>
+                <ListTable<IItem>
+                    columns={columns}
+                    tableProps={tableProps}
+                    tableQuery={tableQuery}
+                    deleteResource={RESOURCE.ITEMS}
+                    onEdit={(record) => editModalForm.show(record.id)}
+                />
+            </ListContainer>
+
+            <FormModalContainer
+                modalForm={createModalForm}
+                title="Thêm mới đối tượng"
+                sections={[{ type: 'plain', fields: formFields }]}
+                createInitialValues={{ name: '', code: '', tags: '' }}
+            />
+            <FormModalContainer
+                modalForm={editModalForm}
+                title="Chỉnh sửa đối tượng"
+                sections={[{ type: 'plain', fields: formFields }]}
+            />
+
+            {openImportItemModal && (
+                <ImportData
+                    key="import-item"
+                    open={openImportItemModal}
+                    dataType={DataImportType.ITEM}
+                    onSuccess={() => tableQuery.refetch()}
+                    onClose={() => setOpenImportItemModal(false)}
+                    columns={importDataColumns as unknown as ColumnType<Record<string, any>>[]}
+                />
+            )}
+            {openProcessScrapeDataModal && (
+                <ProcessScrapeData
+                    key="process-scrape-data"
+                    open={openProcessScrapeDataModal}
+                    selectedItemIds={selectedItemIds}
+                    onClose={() => setOpenProcessScrapeDataModal(false)}
+                />
+            )}
+        </>
     );
 }

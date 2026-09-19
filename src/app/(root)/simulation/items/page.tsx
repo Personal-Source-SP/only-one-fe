@@ -1,7 +1,9 @@
 'use client';
 
 import {
+    FormModalContainer,
     ListContainer,
+    ListTable,
     StatusTag,
     type ICardAction,
     type IFilterField,
@@ -105,36 +107,38 @@ export default function SimulationItemsPage() {
     ];
 
     return (
-        <ListContainer
-            actions={actions}
-            isLoading={loading || tableQuery.isLoading}
-            filters={filters}
-            table={{
-                columns,
-                tableProps,
-                tableQuery,
-                deleteResource: RESOURCE.SIMULATION_ITEMS,
-                onEdit: (record) => editModalForm.show(record.id),
-            }}
-            formModal={[
-                {
-                    modalForm: createModalForm,
-                    title: 'Thêm mới mô phỏng',
-                    width: 600,
-                    createInitialValues: {
-                        name: '',
-                        simulationContextId: '',
-                        payload: JSON.stringify({}, null, 2),
-                    },
-                    sections: [{ type: 'plain', fields: formFields }],
-                },
-                {
-                    modalForm: editModalForm,
-                    title: 'Chỉnh sửa mô phỏng',
-                    width: 600,
-                    sections: [{ type: 'plain', fields: formFields }],
-                },
-            ]}
-        />
+        <>
+            <ListContainer
+                actions={actions}
+                isLoading={loading || tableQuery.isLoading}
+                filters={filters}
+            >
+                <ListTable<SimulationItemRecord>
+                    columns={columns}
+                    tableProps={tableProps}
+                    tableQuery={tableQuery}
+                    deleteResource={RESOURCE.SIMULATION_ITEMS}
+                    onEdit={(record) => editModalForm.show(record.id)}
+                />
+            </ListContainer>
+
+            <FormModalContainer
+                modalForm={createModalForm}
+                title="Thêm mới mô phỏng"
+                width={600}
+                createInitialValues={{
+                    name: '',
+                    simulationContextId: '',
+                    payload: JSON.stringify({}, null, 2),
+                }}
+                sections={[{ type: 'plain', fields: formFields }]}
+            />
+            <FormModalContainer
+                modalForm={editModalForm}
+                title="Chỉnh sửa mô phỏng"
+                width={600}
+                sections={[{ type: 'plain', fields: formFields }]}
+            />
+        </>
     );
 }
