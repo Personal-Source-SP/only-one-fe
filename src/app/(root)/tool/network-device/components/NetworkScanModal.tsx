@@ -1,22 +1,16 @@
 'use client';
 
 import { CustomForm, CustomInput, CustomInputNumber, CustomModal } from '@/components/custom-antd';
-import React from 'react';
-import { ITriggerScanRequest } from '../types';
+import type { ITriggerScanRequest } from '../types';
 
 type NetworkScanModalProps = {
     open: boolean;
+    loading: boolean;
     onClose: () => void;
     onSubmit: (values: ITriggerScanRequest) => Promise<void>;
-    loading: boolean;
 };
 
-export const NetworkScanModal: React.FC<NetworkScanModalProps> = ({
-    open,
-    onClose,
-    onSubmit,
-    loading,
-}) => {
+export const NetworkScanModal = ({ open, onClose, onSubmit, loading }: NetworkScanModalProps) => {
     const [form] = CustomForm.useForm<ITriggerScanRequest>();
 
     const handleOk = async () => {

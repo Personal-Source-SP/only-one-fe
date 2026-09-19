@@ -8,10 +8,9 @@ import {
     CustomSpace,
     CustomTypography,
 } from '@/components/custom-antd';
-import React from 'react';
 import { SCAN_STATUS_CONFIG } from '../constants';
 import { NetworkScanStatus } from '../enums';
-import { IScanStatusResponse } from '../types';
+import type { IScanStatusResponse } from '../types';
 
 const { Text, Title } = CustomTypography;
 
@@ -26,10 +25,7 @@ type NetworkDeviceStatsHeaderProps = {
     scanStatus: IScanStatusResponse;
 };
 
-export const NetworkDeviceStatsHeader: React.FC<NetworkDeviceStatsHeaderProps> = ({
-    stats,
-    scanStatus,
-}) => {
+export const NetworkDeviceStatsHeader = ({ stats, scanStatus }: NetworkDeviceStatsHeaderProps) => {
     const statusCfg =
         SCAN_STATUS_CONFIG[scanStatus.status] || SCAN_STATUS_CONFIG[NetworkScanStatus.IDLE];
 

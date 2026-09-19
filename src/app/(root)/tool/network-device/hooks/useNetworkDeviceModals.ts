@@ -1,46 +1,19 @@
 'use client';
 
-import { API_ENDPOINT, RESOURCE } from '@/config';
-import { useCustomData, useCustomMutationData, useCustomTable } from '@/hooks';
-import { useCallback, useMemo, useState } from 'react';
-import { NetworkDeviceType, NetworkScanStatus } from './enums';
-import {
+import { API_ENDPOINT } from '@/config';
+import { useCustomMutationData } from '@/hooks';
+import { useCallback, useState } from 'react';
+import type {
     IApproachResultResponse,
     IExecuteApproachRequest,
     INetworkDevice,
-    IScanStatusResponse,
     ITriggerScanRequest,
-} from './types';
+} from '../types';
 
-export const useNetworkDevicePage = () => {
-    // 1. Table Data & Query using Refine useCustomTable
-    const table = useCustomTable<INetworkDevice>({
-        resource: RESOURCE.NETWORK_DEVICES,
-    });
-
-    // 2. Scan Status Polling Query
-    const { data: scanStatusData, query: scanStatusQuery } = useCustomData<IScanStatusResponse>({
-        url: API_ENDPOINT.NETWORK_DEVICES.SCAN_STATUS,
-        method: 'get',
-        queryOptions: {
-            refetchInterval: (query) => {
-                const status =
-                    (query.state.data as any)?.data?.status || (query.state.data as any)?.status;
-                return status === NetworkScanStatus.SCANNING ? 2500 : false;
-            },
-        },
-    });
-
-    const currentScanStatus = scanStatusData || {
-        status: NetworkScanStatus.IDLE,
-        devicesDiscoveredCount: 0,
-    };
-
-    // 3. Mutations
+export const useNetworkDeviceModals = (onScanTriggered?: () => Promise<unknown>) => {
     const { handleCustomMutationData: mutateTriggerScan } = useCustomMutationData();
     const { handleCustomMutationData: mutateExecuteApproach } = useCustomMutationData();
 
-    // 4. Modals & Drawer State
     const [isTriggeringScan, setIsTriggeringScan] = useState(false);
     const [isExecutingApproach, setIsExecutingApproach] = useState(false);
     const [isScanModalOpen, setIsScanModalOpen] = useState(false);
@@ -51,7 +24,6 @@ export const useNetworkDevicePage = () => {
         useState<INetworkDevice | null>(null);
     const [approachResult, setApproachResult] = useState<IApproachResultResponse | null>(null);
 
-    // 5. Action Handlers
     const handleTriggerScan = useCallback(
         async (values: ITriggerScanRequest) => {
             setIsTriggeringScan(true);
@@ -66,12 +38,14 @@ export const useNetworkDevicePage = () => {
                     },
                 });
                 setIsScanModalOpen(false);
-                await scanStatusQuery.refetch();
+                if (onScanTriggered) {
+                    await onScanTriggered();
+                }
             } finally {
                 setIsTriggeringScan(false);
             }
         },
-        [mutateTriggerScan, scanStatusQuery],
+        [mutateTriggerScan, onScanTriggered],
     );
 
     const handleExecuteApproach = useCallback(
@@ -101,29 +75,7 @@ export const useNetworkDevicePage = () => {
         setSelectedDeviceForApproach(device);
     }, []);
 
-    // 6. Computed Stats
-    const stats = useMemo(() => {
-        const devices = (table.tableProps?.dataSource as INetworkDevice[]) || [];
-        const total = table.tableProps?.pagination
-            ? (table.tableProps.pagination as { total?: number }).total || devices.length
-            : devices.length;
-        const onlineCount = devices.filter((d) => d.isOnline).length;
-        const cameraCount = devices.filter((d) => d.deviceType === NetworkDeviceType.CAMERA).length;
-        const routerCount = devices.filter(
-            (d) => d.deviceType === NetworkDeviceType.ROUTER_AP,
-        ).length;
-        const iotCount = devices.filter((d) => d.deviceType === NetworkDeviceType.SMART_IOT).length;
-
-        return { total, onlineCount, cameraCount, routerCount, iotCount };
-    }, [table.tableProps]);
-
     return {
-        table,
-        debouncedSearch: table.debouncedSearch,
-        setFilters: table.setFilters,
-        setCurrentPage: table.setCurrentPage,
-        currentScanStatus,
-        scanStatusQuery,
         isTriggeringScan,
         isExecutingApproach,
         isScanModalOpen,
@@ -137,6 +89,5 @@ export const useNetworkDevicePage = () => {
         handleTriggerScan,
         handleExecuteApproach,
         handleOpenApproachFromDetail,
-        stats,
     };
 };
