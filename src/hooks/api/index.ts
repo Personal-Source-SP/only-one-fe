@@ -8,4 +8,3 @@ export * from './useCustomMutationData';
 export * from './useCustomOne';
 export * from './useCustomSelect';
 export * from './useCustomTable';
-export * from './useTableContainer';

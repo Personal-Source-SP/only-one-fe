@@ -3,12 +3,11 @@
 import { API_ENDPOINT } from '@/config';
 import { CustomAvatar, CustomButton, CustomCard, CustomSpace } from '@/components/custom-antd';
 import { NotificationTab, NotificationType } from '@/enums';
-import { useTableContainer } from '@/hooks';
+import { useCustomList } from '@/hooks';
 import { INotification } from '@/interfaces';
 import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
-import { CrudFilter } from '@refinedev/core';
-import { Fragment, ReactNode, useEffect, useMemo, useState } from 'react';
+import { Fragment, ReactNode, useState } from 'react';
 
 const notificationIcon: Record<NotificationType, ReactNode> = {
     [NotificationType.INFO]: <Icon icon="lucide:share-2" className="text-primary" />,
@@ -66,32 +65,19 @@ type NotificationsPanelProps = {
 export const NotificationsPanel = ({ onClose }: NotificationsPanelProps) => {
     const [activeTab, setActiveTab] = useState<NotificationTab>(NotificationTab.ALL);
 
-    const tableContainerData = useTableContainer<INotification>({
+    const { data: notifications = [] } = useCustomList<INotification>({
         resource: API_ENDPOINT.NOTIFICATIONS.BASE,
+        filters:
+            activeTab === NotificationTab.UNREAD
+                ? [
+                      {
+                          field: 'isRead',
+                          operator: 'eq',
+                          value: false,
+                      },
+                  ]
+                : [],
     });
-
-    useEffect(() => {
-        const filter: CrudFilter[] = [];
-
-        if (activeTab === NotificationTab.UNREAD) {
-            filter.push({
-                field: 'isRead',
-                operator: 'eq',
-                value: false,
-            });
-        }
-
-        tableContainerData.setCurrentPage(1);
-        tableContainerData.setFilters(filter);
-    }, [activeTab]);
-
-    const filterNotifications = useMemo(() => {
-        const notifications = (tableContainerData.tableQuery?.data?.data ??
-            []) as unknown as INotification[];
-        if (!notifications) return [];
-
-        return notifications;
-    }, [tableContainerData.tableQuery?.data?.data]);
 
     return (
         <CustomSpace direction="vertical" className="fixed top-16 right-4 z-50 w-full max-w-sm">
@@ -126,8 +112,8 @@ export const NotificationsPanel = ({ onClose }: NotificationsPanelProps) => {
                 </div>
 
                 <div className="max-h-96 overflow-y-auto">
-                    {filterNotifications.length > 0 ? (
-                        filterNotifications.map((notification) => (
+                    {notifications.length > 0 ? (
+                        notifications.map((notification) => (
                             <Fragment key={notification.id}>
                                 {renderNotification(notification)}
                             </Fragment>
