@@ -33,16 +33,21 @@ export const useNetworkDeviceModals = (onScanTriggered?: () => Promise<unknown>)
         },
     });
 
-    const approachModalForm = useCustomModalForm<BaseRecord, IExecuteApproachRequest>({
+    const approachModalForm = useCustomModalForm<
+        IApproachResultResponse,
+        IExecuteApproachRequest,
+        IApproachResultResponse
+    >({
         action: 'create',
         resource: API_ENDPOINT.NETWORK_DEVICES.APPROACH_EXECUTE,
         autoResetForm: false,
+        autoSubmitClose: false,
         successNotification: {
             type: 'success',
             message: 'Thực thi chẩn đoán hoàn tất',
         },
         onMutationSuccess: (data) => {
-            setApproachResult(data?.data as unknown as IApproachResultResponse);
+            setApproachResult(data?.data ?? null);
         },
     });
 

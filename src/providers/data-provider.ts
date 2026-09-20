@@ -312,8 +312,9 @@ export const RestServer = (
     },
 
     create: async ({ resource, variables }) => {
-        const { data } = await httpClient.post(`${apiUrl}/${resource}`, variables);
-        return { data };
+        const { data: apiResponseData } = await httpClient.post(`${apiUrl}/${resource}`, variables);
+        const unwrapped = unwrapResponseData(apiResponseData);
+        return { data: unwrapped.data };
     },
 
     createMany: async ({ resource, variables }) => {
@@ -328,8 +329,12 @@ export const RestServer = (
     },
 
     update: async ({ resource, id, variables }) => {
-        const { data } = await httpClient.put(`${apiUrl}/${resource}/${id}`, variables);
-        return { data };
+        const { data: apiResponseData } = await httpClient.put(
+            `${apiUrl}/${resource}/${id}`,
+            variables,
+        );
+        const unwrapped = unwrapResponseData(apiResponseData);
+        return { data: unwrapped.data };
     },
 
     updateMany: async ({ resource, ids, variables }) => {
