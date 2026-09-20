@@ -25,3 +25,10 @@ export const SCAN_STATUS_CONFIG: Record<
         color: 'error',
     },
 };
+
+export const SCAN_STATUS_ALERT_TYPE_MAP: Record<NetworkScanStatus, 'info' | 'success' | 'error'> = {
+    [NetworkScanStatus.SCANNING]: 'info',
+    [NetworkScanStatus.COMPLETED]: 'success',
+    [NetworkScanStatus.FAILED]: 'error',
+    [NetworkScanStatus.IDLE]: 'info',
+};

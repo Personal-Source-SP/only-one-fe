@@ -13,6 +13,7 @@ import {
     CustomTypography,
 } from '@/components';
 import { RESOURCE } from '@/config';
+import { useCustomTable } from '@/hooks';
 
 import {
     DeviceApproachModal,
@@ -22,25 +23,24 @@ import {
 } from './components';
 import { DEVICE_TYPE_CONFIG } from './constants';
 import { NetworkDeviceType } from './enums';
-import { useNetworkDevicePage } from './hooks';
+import { useNetworkDeviceModals } from './hooks';
 import type { INetworkDevice } from './types';
 
 const { Text } = CustomTypography;
 
 export default function NetworkDevicePage() {
+    const table = useCustomTable<INetworkDevice>({
+        resource: RESOURCE.NETWORK_DEVICES,
+    });
+
     const {
-        table,
-        debouncedSearch,
-        setFilters,
-        currentScanStatus,
-        scanModalForm,
-        approachModalForm,
         detailModal,
+        scanModalForm,
         approachResult,
+        approachModalForm,
         handleOpenApproach,
         handleOpenApproachFromDetail,
-        stats,
-    } = useNetworkDevicePage();
+    } = useNetworkDeviceModals();
 
     const columns: ColumnsType<INetworkDevice> = [
         {
@@ -154,7 +154,7 @@ export default function NetworkDevicePage() {
             type: 'input',
             isPrimary: true,
             placeholder: 'Tìm IP, MAC, Vendor...',
-            onChange: (val) => debouncedSearch(val?.toString() ?? ''),
+            onChange: (val) => table.debouncedSearch(val?.toString() ?? ''),
         },
         {
             name: 'deviceType',
@@ -164,7 +164,8 @@ export default function NetworkDevicePage() {
                 value: key,
                 label: cfg.label,
             })),
-            onChange: (val) => setFilters([{ value: val, operator: 'eq', field: 'deviceType' }]),
+            onChange: (val) =>
+                table.setFilters([{ value: val, operator: 'eq', field: 'deviceType' }]),
         },
         {
             type: 'select',
@@ -175,7 +176,7 @@ export default function NetworkDevicePage() {
                 { label: '⚪ Offline', value: 'false' },
             ],
             onChange: (val) =>
-                setFilters([
+                table.setFilters([
                     {
                         operator: 'eq',
                         field: 'isOnline',
@@ -224,11 +225,7 @@ export default function NetworkDevicePage() {
 
     return (
         <>
-            <ListContainer
-                actions={actions}
-                filters={filters}
-                top={<NetworkDeviceStatsHeader stats={stats} scanStatus={currentScanStatus} />}
-            >
+            <ListContainer actions={actions} filters={filters} top={<NetworkDeviceStatsHeader />}>
                 <ListTable<INetworkDevice>
                     table={table}
                     columns={columns}

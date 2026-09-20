@@ -95,27 +95,16 @@ export const ListContainer = ({
         );
     }, [allowedActions.length, mobileActionMenuItems, mobileActionsTitle]);
 
-    const contentElement = useMemo(
-        () => (
-            <>
-                {top}
-
-                {children}
-
-                {bottom}
-            </>
-        ),
-        [top, children, bottom],
-    );
-
     return (
-        <CustomSpace
-            size="middle"
-            direction="vertical"
-            className={`w-full ${!withCard ? 'p-3 sm:p-5 ' : ''}${className}`.trim()}
-        >
-            <CustomSpin spinning={isLoading}>
+        <CustomSpin spinning={isLoading}>
+            <CustomSpace
+                size="middle"
+                direction="vertical"
+                className={`w-full ${!withCard ? 'p-3 sm:p-5 ' : ''}${className}`.trim()}
+            >
                 <BreadcrumbNav items={breadcrumb} />
+
+                {top}
 
                 {withCard ? (
                     <CustomCard styles={{ body: { padding: 0 } }} className="overflow-hidden">
@@ -131,7 +120,7 @@ export const ListContainer = ({
                                 mobileActionsButton={mobileActionsButton}
                             />
 
-                            {contentElement}
+                            {children}
                         </CustomSpace>
                     </CustomCard>
                 ) : (
@@ -143,10 +132,12 @@ export const ListContainer = ({
                             mobileActionsButton={mobileActionsButton}
                         />
 
-                        {contentElement}
+                        {children}
                     </>
                 )}
-            </CustomSpin>
-        </CustomSpace>
+
+                {bottom}
+            </CustomSpace>
+        </CustomSpin>
     );
 };

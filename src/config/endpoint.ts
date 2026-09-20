@@ -142,6 +142,7 @@ export const API_ENDPOINT = {
         BASE: prefix('network-devices'),
         ALL: prefix('network-devices/all'),
         DETAIL: (id: string | number) => prefix(`network-devices/${id}`),
+        STATS: prefix('network-devices/stats'),
         SCAN: prefix('network-devices/scan'),
         SCAN_STATUS: prefix('network-devices/scan/status'),
         APPROACH_EXECUTE: prefix('network-devices/approach/execute'),

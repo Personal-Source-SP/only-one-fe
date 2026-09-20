@@ -45,3 +45,11 @@ export interface INetworkDevice extends IAbstract {
     firmwareVersion?: string;
     onvifMetadata?: IOnvifMetadata;
 }
+
+export interface INetworkDeviceStats {
+    total: number;
+    onlineCount: number;
+    cameraCount: number;
+    routerCount: number;
+    iotCount: number;
+}

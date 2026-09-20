@@ -1,5 +1,7 @@
 'use client';
 
+import { useMemo } from 'react';
+
 import {
     CustomAlert,
     CustomCard,
@@ -8,123 +10,126 @@ import {
     CustomSpace,
     CustomTypography,
 } from '@/components';
+import { API_ENDPOINT } from '@/config';
+import { useCustomData } from '@/hooks';
+import { unwrapApiResponse } from '@/utilities';
 
-import { SCAN_STATUS_CONFIG } from '../constants';
+import { SCAN_STATUS_ALERT_TYPE_MAP, SCAN_STATUS_CONFIG } from '../constants';
 import { NetworkScanStatus } from '../enums';
-import type { IScanStatusResponse } from '../types';
+import type { INetworkDeviceStats, IScanStatusResponse } from '../types';
 
 const { Text, Title } = CustomTypography;
 
-type NetworkDeviceStatsHeaderProps = {
-    stats: {
-        total: number;
-        onlineCount: number;
-        cameraCount: number;
-        routerCount: number;
-        iotCount: number;
-    };
-    scanStatus: IScanStatusResponse;
-};
+export const NetworkDeviceStatsHeader = () => {
+    const { data: scanStatusData } = useCustomData<IScanStatusResponse>({
+        method: 'get',
+        url: API_ENDPOINT.NETWORK_DEVICES.SCAN_STATUS,
+        queryOptions: {
+            refetchInterval: (query) => {
+                const responseData = query.state.data?.data;
+                const unwrapped = unwrapApiResponse<IScanStatusResponse>(responseData);
+                const status = unwrapped?.status ?? responseData?.status;
+                return status === NetworkScanStatus.SCANNING ? 2500 : false;
+            },
+        },
+    });
 
-export const NetworkDeviceStatsHeader = ({ stats, scanStatus }: NetworkDeviceStatsHeaderProps) => {
-    const statusCfg =
-        SCAN_STATUS_CONFIG[scanStatus.status] || SCAN_STATUS_CONFIG[NetworkScanStatus.IDLE];
+    const { data: statsData } = useCustomData<INetworkDeviceStats>({
+        url: API_ENDPOINT.NETWORK_DEVICES.STATS,
+    });
 
-    const alertTitle = `Tiến trình quét mạng: ${statusCfg.label}${
-        scanStatus.devicesDiscoveredCount > 0
-            ? ` (Đã phát hiện: ${scanStatus.devicesDiscoveredCount} thiết bị)`
-            : ''
-    }`;
+    const alertConfig = useMemo(() => {
+        if (!scanStatusData) return {};
 
-    const alertDesc = scanStatus.startedAt
-        ? `Bắt đầu lúc: ${new Date(scanStatus.startedAt).toLocaleTimeString()}`
-        : undefined;
+        const { status, devicesDiscoveredCount, startedAt } = scanStatusData;
+        const statusCfg = SCAN_STATUS_CONFIG[status] || SCAN_STATUS_CONFIG[NetworkScanStatus.IDLE];
+
+        const title = `Tiến trình quét mạng: ${statusCfg.label}${
+            devicesDiscoveredCount > 0 ? ` (Đã phát hiện: ${devicesDiscoveredCount} thiết bị)` : ''
+        }`;
+
+        const description = startedAt
+            ? `Bắt đầu lúc: ${new Date(startedAt).toLocaleTimeString()}`
+            : undefined;
+
+        return {
+            title,
+            description,
+            type: SCAN_STATUS_ALERT_TYPE_MAP[status] || 'info',
+            visible: status !== NetworkScanStatus.IDLE,
+        };
+    }, [scanStatusData]);
+
+    const statCards = useMemo(
+        () => [
+            {
+                key: 'total',
+                label: 'Tổng thiết bị',
+                value: statsData?.total,
+                col: { xs: 12, sm: 8, md: 4, lg: 4 },
+                cardClass: '!bg-slate-50 dark:!bg-slate-900 border-slate-200',
+                valueClass: '!text-blue-600',
+            },
+            {
+                key: 'online',
+                label: 'Đang trực tuyến (Online)',
+                value: statsData?.onlineCount,
+                col: { xs: 12, sm: 8, md: 5, lg: 5 },
+                cardClass: '!bg-emerald-50 dark:!bg-emerald-950/20 border-emerald-200',
+                valueClass: '!text-emerald-600',
+            },
+            {
+                key: 'camera',
+                label: '📹 Camera IP / ONVIF',
+                value: statsData?.cameraCount,
+                col: { xs: 12, sm: 8, md: 5, lg: 5 },
+                cardClass: '!bg-sky-50 dark:!bg-sky-950/20 border-sky-200',
+                valueClass: '!text-sky-600',
+            },
+            {
+                key: 'router',
+                label: '📡 Router / AP Wi-Fi',
+                value: statsData?.routerCount,
+                col: { xs: 12, sm: 8, md: 5, lg: 5 },
+                cardClass: '!bg-cyan-50 dark:!bg-cyan-950/20 border-cyan-200',
+                valueClass: '!text-cyan-600',
+            },
+            {
+                key: 'iot',
+                label: '💡 Smart IoT',
+                value: statsData?.iotCount,
+                col: { xs: 12, sm: 8, md: 5, lg: 5 },
+                cardClass: '!bg-amber-50 dark:!bg-amber-950/20 border-amber-200',
+                valueClass: '!text-amber-600',
+            },
+        ],
+        [statsData],
+    );
 
     return (
         <CustomSpace direction="vertical" size="middle" className="w-full">
-            {/* Live Scan Alert Banner */}
-            {scanStatus.status !== NetworkScanStatus.IDLE && (
+            {alertConfig.visible && (
                 <CustomAlert
-                    type={
-                        scanStatus.status === NetworkScanStatus.SCANNING
-                            ? 'info'
-                            : scanStatus.status === NetworkScanStatus.COMPLETED
-                              ? 'success'
-                              : 'error'
-                    }
                     showIcon
-                    title={alertTitle}
-                    description={alertDesc}
+                    type={alertConfig.type}
+                    title={alertConfig.title}
+                    description={alertConfig.description}
                 />
             )}
 
-            {/* Quick Summary Cards */}
             <CustomRow gutter={[16, 16]}>
-                <CustomCol xs={12} sm={8} md={4} lg={4}>
-                    <CustomCard
-                        size="small"
-                        className="!bg-slate-50 dark:!bg-slate-900 border-slate-200"
-                    >
-                        <Text type="secondary" className="text-xs block mb-1">
-                            Tổng thiết bị
-                        </Text>
-                        <Title level={4} className="!mb-0 !text-blue-600">
-                            {stats.total}
-                        </Title>
-                    </CustomCard>
-                </CustomCol>
-                <CustomCol xs={12} sm={8} md={5} lg={5}>
-                    <CustomCard
-                        size="small"
-                        className="!bg-emerald-50 dark:!bg-emerald-950/20 border-emerald-200"
-                    >
-                        <Text type="secondary" className="text-xs block mb-1">
-                            Đang trực tuyến (Online)
-                        </Text>
-                        <Title level={4} className="!mb-0 !text-emerald-600">
-                            {stats.onlineCount}
-                        </Title>
-                    </CustomCard>
-                </CustomCol>
-                <CustomCol xs={12} sm={8} md={5} lg={5}>
-                    <CustomCard
-                        size="small"
-                        className="!bg-sky-50 dark:!bg-sky-950/20 border-sky-200"
-                    >
-                        <Text type="secondary" className="text-xs block mb-1">
-                            📹 Camera IP / ONVIF
-                        </Text>
-                        <Title level={4} className="!mb-0 !text-sky-600">
-                            {stats.cameraCount}
-                        </Title>
-                    </CustomCard>
-                </CustomCol>
-                <CustomCol xs={12} sm={8} md={5} lg={5}>
-                    <CustomCard
-                        size="small"
-                        className="!bg-cyan-50 dark:!bg-cyan-950/20 border-cyan-200"
-                    >
-                        <Text type="secondary" className="text-xs block mb-1">
-                            📡 Router / AP Wi-Fi
-                        </Text>
-                        <Title level={4} className="!mb-0 !text-cyan-600">
-                            {stats.routerCount}
-                        </Title>
-                    </CustomCard>
-                </CustomCol>
-                <CustomCol xs={12} sm={8} md={5} lg={5}>
-                    <CustomCard
-                        size="small"
-                        className="!bg-amber-50 dark:!bg-amber-950/20 border-amber-200"
-                    >
-                        <Text type="secondary" className="text-xs block mb-1">
-                            💡 Smart IoT
-                        </Text>
-                        <Title level={4} className="!mb-0 !text-amber-600">
-                            {stats.iotCount}
-                        </Title>
-                    </CustomCard>
-                </CustomCol>
+                {statCards.map(({ key, label, value, col, cardClass, valueClass }) => (
+                    <CustomCol key={key} {...col}>
+                        <CustomCard size="small" className={cardClass}>
+                            <Text type="secondary" className="text-xs block mb-1">
+                                {label}
+                            </Text>
+                            <Title level={4} className={`!mb-0 ${valueClass}`}>
+                                {value}
+                            </Title>
+                        </CustomCard>
+                    </CustomCol>
+                ))}
             </CustomRow>
         </CustomSpace>
     );

@@ -2,22 +2,11 @@
 
 import type { ReactNode } from 'react';
 import { useMemo } from 'react';
-import type { BaseRecord } from '@refinedev/core';
 
-import type { IDetailSection } from '@/components';
 import { CustomButton, CustomFlex, CustomModal, CustomSkeleton } from '@/components';
 import { CustomDetailSection } from '@/components/';
-import type { UseCustomModalDetailReturnType } from '@/hooks';
 
-type DetailModalContainerProps<TRecord extends object = Record<string, unknown>> = {
-    detailModal: UseCustomModalDetailReturnType<BaseRecord, TRecord>;
-    title?: ReactNode;
-    closeText?: ReactNode;
-    width?: number | string;
-    sections?: IDetailSection<TRecord>[];
-    children?: ReactNode | ((data: TRecord) => ReactNode);
-    extraActions?: ReactNode | ((data: TRecord, onClose: () => void) => ReactNode);
-};
+import type { DetailModalContainerProps } from './types';
 
 export const DetailModalContainer = <TRecord extends object = Record<string, unknown>>({
     detailModal,
