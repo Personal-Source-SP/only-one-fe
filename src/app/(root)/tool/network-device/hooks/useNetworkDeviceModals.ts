@@ -1,9 +1,11 @@
 'use client';
 
+import { useCallback, useState } from 'react';
+import type { BaseRecord } from '@refinedev/core';
+
 import { API_ENDPOINT } from '@/config';
 import { useCustomModalForm } from '@/hooks';
-import type { BaseRecord } from '@refinedev/core';
-import { useCallback, useState } from 'react';
+
 import { NetworkDeviceApproachEnum } from '../enums';
 import type {
     IApproachResultResponse,

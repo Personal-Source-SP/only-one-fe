@@ -1,9 +1,10 @@
 'use client';
 
 import { useCallback } from 'react';
+
+import { CustomForm } from '@/components';
 import { useMainContext } from '@/contexts/MainContext';
 import { NotificationType } from '@/enums';
-import { CustomForm } from '@/components';
 import type { IAuthRegisterFormValues } from '@/interfaces';
 
 export const useRegisterPage = () => {

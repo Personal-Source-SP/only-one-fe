@@ -1,5 +1,9 @@
 'use client';
 
+import { PropsWithChildren, useCallback, useEffect, useMemo, useRef } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { ArrowLeftOutlined } from '@ant-design/icons';
+
 import { BreadcrumbNav } from '@/components';
 import {
     CustomButton,
@@ -11,9 +15,6 @@ import {
     CustomTypography,
 } from '@/components';
 import { getSectionBreadcrumbs, getSectionTabs } from '@/libs';
-import { ArrowLeftOutlined } from '@ant-design/icons';
-import { usePathname, useRouter } from 'next/navigation';
-import { PropsWithChildren, useCallback, useEffect, useMemo, useRef } from 'react';
 
 export const SectionTabLayout = ({ children }: PropsWithChildren) => {
     const router = useRouter();

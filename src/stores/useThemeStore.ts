@@ -1,6 +1,7 @@
-import { HUB_THEME_PALETTE, HubThemePalette, resolveHubThemePalette } from '@/constants';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+
+import { HUB_THEME_PALETTE, HubThemePalette, resolveHubThemePalette } from '@/constants';
 
 const applyHubThemePalette = (palette: HubThemePalette) => {
     if (typeof document !== 'undefined') {

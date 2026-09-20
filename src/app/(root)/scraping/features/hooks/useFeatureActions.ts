@@ -1,10 +1,11 @@
 'use client';
 
+import { useCallback, useState } from 'react';
+
 import type { IDataProvider } from '@/app/(root)/scraping/data-providers/types/data-provider.type';
 import { API_ENDPOINT } from '@/config';
 import { MessageType } from '@/enums';
 import { useCustomMutationData } from '@/hooks';
-import { useCallback, useState } from 'react';
 
 import { DataProviderFeatureStatus, DataProviderFeatureType } from '../enums';
 import type { FeatureModalState, IDataProviderFeature } from '../types';

@@ -1,10 +1,11 @@
 'use client';
 
+import { useCallback } from 'react';
+
 import { API_ENDPOINT } from '@/config';
 import { HubThemePalette } from '@/constants';
 import { useCustomMutationData } from '@/hooks';
 import { useThemeStore } from '@/stores';
-import { useCallback } from 'react';
 
 export const useSettingAppearancePage = () => {
     const palette = useThemeStore((state) => state.palette);

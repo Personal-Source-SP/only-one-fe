@@ -3,6 +3,7 @@
 import type { BaseRecord } from '@refinedev/core';
 
 import { CustomFlex } from '@/components';
+
 import { MobileCardItem } from './mobile-card-item';
 import type { MobileCardListProps } from './types';
 import { getRecordId } from './utils';

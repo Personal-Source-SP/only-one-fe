@@ -1,9 +1,11 @@
 'use client';
 
+import { useCallback, useMemo } from 'react';
+import { Icon } from '@iconify/react';
+
 import { CustomDropdown, CustomFlex, CustomTag, type MenuProps, useCustomApp } from '@/components';
 import { formatDate } from '@/libs';
-import { Icon } from '@iconify/react';
-import { useCallback, useMemo } from 'react';
+
 import { useFeatureModalContext } from '../../context';
 import { ConfigVersionType } from '../../enums';
 import type { IConfigVersion } from '../../types';

@@ -1,13 +1,15 @@
 'use client';
 
+import { PlusOutlined } from '@ant-design/icons';
+
 import type { IDataProvider } from '@/app/(root)/scraping/data-providers/types';
 import {
     FormModalContainer,
-    ListContainer,
-    ListTable,
     type ICardAction,
     type IFilterField,
     type IFormField,
+    ListContainer,
+    ListTable,
 } from '@/components';
 import {
     ColumnsType,
@@ -19,7 +21,7 @@ import {
 import { API_ENDPOINT, RESOURCE } from '@/config';
 import { formatDate } from '@/libs';
 import { FormRuleType } from '@/utilities';
-import { PlusOutlined } from '@ant-design/icons';
+
 import { useProviderItemPage } from './hooks';
 import type { IDataProviderItemFormValues, ProviderItemRecord } from './types';
 

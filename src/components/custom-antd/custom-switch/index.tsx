@@ -1,8 +1,9 @@
 'use client';
 
-import { CustomCol, CustomFlex, CustomForm } from '@/components/custom-antd';
-import { Switch, type SwitchProps } from 'antd';
 import { ReactNode } from 'react';
+import { Switch, type SwitchProps } from 'antd';
+
+import { CustomCol, CustomFlex, CustomForm } from '@/components/custom-antd';
 
 export type CustomSwitchProps = SwitchProps & {
     formFields?: string[];

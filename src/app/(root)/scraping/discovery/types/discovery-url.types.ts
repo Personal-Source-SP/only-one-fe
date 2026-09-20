@@ -1,4 +1,5 @@
 import type { IAbstract } from '@/interfaces';
+
 import type {
     DiscoveryUrlStatus,
     DiscoveryValidationStatus,

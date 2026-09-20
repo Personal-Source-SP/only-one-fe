@@ -1,7 +1,7 @@
 'use client';
 
-import { Divider, DividerProps } from 'antd';
 import { ReactNode } from 'react';
+import { Divider, DividerProps } from 'antd';
 
 type CustomDividerProps = DividerProps & {
     label?: ReactNode;

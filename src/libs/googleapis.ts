@@ -1,5 +1,6 @@
-import { env } from '@/config';
 import axios from 'axios';
+
+import { env } from '@/config';
 
 export const GOOGLE_SCOPES = [
     'email', // Lấy địa chỉ email của người dùng

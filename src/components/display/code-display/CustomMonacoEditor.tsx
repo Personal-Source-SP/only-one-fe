@@ -1,11 +1,12 @@
 'use client';
 
-import { CHEERIO_COMPLETION_ITEMS } from './utils/completion';
-import { cheerioTypes } from './utils/type';
+import { useEffect, useMemo } from 'react';
 import { Editor, useMonaco } from '@monaco-editor/react';
 import { debounce } from 'lodash';
 import * as monaco from 'monaco-editor';
-import { useEffect, useMemo } from 'react';
+
+import { CHEERIO_COMPLETION_ITEMS } from './utils/completion';
+import { cheerioTypes } from './utils/type';
 
 type CustomMonacoEditorProps = {
     editedCode: string;

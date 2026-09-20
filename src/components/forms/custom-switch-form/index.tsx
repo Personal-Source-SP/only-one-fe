@@ -1,8 +1,8 @@
 'use client';
 
-import { CustomForm, CustomSwitch, type FormItemProps, type SwitchProps } from '@/components';
-import { useMemo, type ReactNode } from 'react';
+import { type ReactNode, useMemo } from 'react';
 
+import { CustomForm, CustomSwitch, type FormItemProps, type SwitchProps } from '@/components';
 import { buildFormRules, type FormRuleConfig } from '@/utilities';
 
 export type CustomSwitchFormProps = {

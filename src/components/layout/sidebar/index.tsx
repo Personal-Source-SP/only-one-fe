@@ -1,8 +1,9 @@
 'use client';
 
-import { ISidebarItem } from '@/interfaces';
-import { usePathname, useRouter } from 'next/navigation';
 import { Fragment, useCallback, useEffect, useMemo } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+
+import { ISidebarItem } from '@/interfaces';
 
 import { SidebarDesktop } from './SidebarDesktop';
 import { SidebarMobile } from './SidebarMobile';

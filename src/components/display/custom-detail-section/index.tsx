@@ -1,6 +1,7 @@
 'use client';
 
 import { CustomFlex } from '@/components';
+
 import { CardDetailSection } from './CardDetailSection';
 import { DescriptionsDetailSection } from './DescriptionsDetailSection';
 import { TableDetailSection } from './TableDetailSection';

@@ -1,6 +1,7 @@
 'use client';
 
-import { createContext, useCallback, useContext, useMemo, type PropsWithChildren } from 'react';
+import { createContext, type PropsWithChildren, useCallback, useContext, useMemo } from 'react';
+
 import { FEATURE_REGISTRY, type FeatureDefinition } from '../constants';
 import { DataProviderFeatureStatus } from '../enums';
 import type { IDataProviderFeature } from '../types';

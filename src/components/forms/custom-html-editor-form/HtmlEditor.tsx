@@ -1,7 +1,8 @@
 'use client';
 
-import { CustomInput } from '@/components';
 import React, { useCallback } from 'react';
+
+import { CustomInput } from '@/components';
 
 const { TextArea } = CustomInput;
 

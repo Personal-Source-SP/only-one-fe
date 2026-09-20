@@ -1,5 +1,7 @@
 'use client';
 
+import { type ReactNode, useMemo } from 'react';
+
 import {
     CustomForm,
     CustomInput,
@@ -10,9 +12,8 @@ import {
     type PasswordProps,
     type TextAreaProps,
 } from '@/components';
-import { useMemo, type ReactNode } from 'react';
-import { buildFormRules, type FormRuleConfig } from '@/utilities';
 import { HtmlEditor, type HtmlEditorProps } from '@/components';
+import { buildFormRules, type FormRuleConfig } from '@/utilities';
 
 export enum CustomInputFormType {
     Html = 'html',

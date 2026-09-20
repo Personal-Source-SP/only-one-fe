@@ -1,6 +1,7 @@
-import type { ColumnType } from '@/components';
 import type { BaseRecord } from '@refinedev/core';
 import { get } from 'lodash';
+
+import type { ColumnType } from '@/components';
 
 export const getRecordId = <RecordType extends BaseRecord>(
     record: RecordType,

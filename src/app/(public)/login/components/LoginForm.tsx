@@ -1,7 +1,8 @@
 import React from 'react';
-import { CustomButton, CustomCheckbox, CustomForm, CustomInput, CustomLink } from '@/components';
+
 import { AuthSocialLogin } from '@/app/(public)/_components/auth/AuthSocialLogin';
 import { useLoginPage } from '@/app/(public)/login/hooks';
+import { CustomButton, CustomCheckbox, CustomForm, CustomInput, CustomLink } from '@/components';
 
 export const LoginForm = () => {
     const { isPending, rememberMe, setRememberMe, handleLogin } = useLoginPage();

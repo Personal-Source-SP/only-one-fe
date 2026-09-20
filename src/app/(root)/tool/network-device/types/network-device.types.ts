@@ -1,4 +1,5 @@
 import { IAbstract } from '@/interfaces';
+
 import { NetworkDeviceType } from '../enums';
 
 export interface IStreamResolution {

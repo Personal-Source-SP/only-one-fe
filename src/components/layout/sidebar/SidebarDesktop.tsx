@@ -1,9 +1,8 @@
+import { SidebarLogo } from '@/components/layout/sidebar/SidebarLogo';
+import { SidebarNavItem } from '@/components/layout/sidebar/SidebarNavItem';
+import { SidebarProfile } from '@/components/layout/sidebar/SidebarProfile';
 import { SIDEBAR_ITEMS } from '@/constants';
 import { ISidebarItem } from '@/interfaces';
-
-import { SidebarNavItem } from '@/components/layout/sidebar/SidebarNavItem';
-import { SidebarLogo } from '@/components/layout/sidebar/SidebarLogo';
-import { SidebarProfile } from '@/components/layout/sidebar/SidebarProfile';
 
 type SidebarDesktopProps = {
     collapsed: boolean;

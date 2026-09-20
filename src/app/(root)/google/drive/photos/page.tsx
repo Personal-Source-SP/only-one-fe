@@ -2,21 +2,22 @@
 
 import { useMemo } from 'react';
 import { Icon } from '@iconify/react';
+
 import {
     FileGroups,
     FilterPanel,
-    ListContainer,
-    MediaLightbox,
     type ICardAction,
     type IFilterField,
+    ListContainer,
+    MediaLightbox,
 } from '@/components';
 import { CustomButton } from '@/components';
+
 import { GoogleDriveType, QualityMode } from '../enums';
+import { SyncGoogleDrive, SyncLocal } from './components';
+import { usePhotosPage } from './hooks';
 import type { IGoogleDriveFile } from './types';
 import { getDriveImageUrl } from './utils';
-
-import { usePhotosPage } from './hooks';
-import { SyncGoogleDrive, SyncLocal } from './components';
 
 const PhotosPage = () => {
     const {

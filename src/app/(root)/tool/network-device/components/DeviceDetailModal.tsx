@@ -1,10 +1,12 @@
 'use client';
 
+import { useMemo } from 'react';
+import { Icon } from '@iconify/react';
+
 import { DetailModalContainer } from '@/components';
 import { CustomButton, CustomFlex, CustomTag } from '@/components';
-import { Icon } from '@iconify/react';
 import type { IDetailSection } from '@/interfaces';
-import { useMemo } from 'react';
+
 import { DEVICE_TYPE_CONFIG } from '../constants';
 import type { INetworkDevice } from '../types';
 import { OnvifProfilesList } from './OnvifProfilesList';

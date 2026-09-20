@@ -1,8 +1,9 @@
+import type { ReactNode } from 'react';
+import type { BaseRecord } from '@refinedev/core';
+
 import type { FormInstance } from '@/components';
 import type { IFormSection } from '@/components';
 import type { FormMode, UseCustomDrawerFormResponse } from '@/hooks';
-import type { BaseRecord } from '@refinedev/core';
-import type { ReactNode } from 'react';
 
 export type CustomDrawerFormProps<
     TQueryFnData extends BaseRecord = BaseRecord,

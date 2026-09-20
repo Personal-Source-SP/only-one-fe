@@ -1,7 +1,8 @@
 'use client';
 
-import { StatCardTrend } from '@/enums';
 import { ReactNode, useMemo } from 'react';
+
+import { StatCardTrend } from '@/enums';
 
 type StatCardProps = {
     title: string;

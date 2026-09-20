@@ -1,11 +1,12 @@
-import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
-import { hasSessionCookieNames, usesSecureSessionCookie } from '@/libs/auth-session-cookie';
 import type { GetServerSidePropsContext } from 'next';
 import { cookies, headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import type { Session } from 'next-auth';
 import { getServerSession } from 'next-auth';
 import { getToken } from 'next-auth/jwt';
+
+import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
+import { hasSessionCookieNames, usesSecureSessionCookie } from '@/libs/auth-session-cookie';
 
 const SESSION_CLEANUP_PATH = '/auth/cleanup-session';
 

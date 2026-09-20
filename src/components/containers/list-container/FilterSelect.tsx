@@ -1,7 +1,9 @@
 'use client';
 
-import { CustomSelect } from '@/components';
 import { useCallback } from 'react';
+
+import { CustomSelect } from '@/components';
+
 import type { IFilterField, IFilterValue } from './types';
 
 interface FilterSelectProps {

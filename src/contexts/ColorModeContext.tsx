@@ -1,8 +1,9 @@
 'use client';
 
+import { type PropsWithChildren } from 'react';
+
 import { HubThemedConfigProvider } from '@/components';
 import { useThemeStore } from '@/stores';
-import { type PropsWithChildren } from 'react';
 
 import { BreakpointStoreSync } from './BreakpointStoreSync';
 

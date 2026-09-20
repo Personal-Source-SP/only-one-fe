@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+
 import { API_ENDPOINT } from '@/config';
 import { useMainContext } from '@/contexts/MainContext';
 import { DisplayMode, MessageType, ViewFileMode } from '@/enums';
@@ -12,6 +13,7 @@ import {
     useSelectItem,
 } from '@/hooks';
 import type { IBaseApiResponse, IFileItem } from '@/interfaces';
+
 import type { IScrapingData } from './types';
 
 export const useScrapingDataPage = () => {

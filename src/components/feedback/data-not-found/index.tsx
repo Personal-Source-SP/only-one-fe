@@ -1,7 +1,8 @@
 'use client';
 
-import { CustomButton, CustomCard } from '@/components';
 import { Icon } from '@iconify/react';
+
+import { CustomButton, CustomCard } from '@/components';
 
 export type DataNotFoundProps = {
     icon?: string;

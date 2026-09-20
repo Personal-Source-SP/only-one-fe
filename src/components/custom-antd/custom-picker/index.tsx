@@ -1,8 +1,9 @@
 'use client';
 
-import { HUB_ANTD_PICKER_CLASS, mergeHubAntdClass } from '@/components/custom-antd';
 import { DatePicker, type DatePickerProps } from 'antd';
 import type { RangePickerProps } from 'antd/es/date-picker';
+
+import { HUB_ANTD_PICKER_CLASS, mergeHubAntdClass } from '@/components/custom-antd';
 
 export type CustomPickerProps = DatePickerProps;
 

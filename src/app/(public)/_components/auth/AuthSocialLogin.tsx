@@ -1,7 +1,8 @@
 'use client';
 
-import { CustomButton, CustomDivider, CustomFlex } from '@/components';
 import { Icon } from '@iconify/react';
+
+import { CustomButton, CustomDivider, CustomFlex } from '@/components';
 
 type AuthSocialLoginProps = {
     googleLabel: string;

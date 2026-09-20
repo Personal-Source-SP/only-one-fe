@@ -1,5 +1,10 @@
 'use client';
 
+import { Fragment, useCallback } from 'react';
+import { usePathname } from 'next/navigation';
+import { signOut, useSession } from 'next-auth/react';
+import { Icon } from '@iconify/react';
+
 import {
     CustomAvatar,
     CustomButton,
@@ -11,10 +16,6 @@ import {
 import { KEY_SESSION_STORAGE } from '@/constants';
 import { useMainContext } from '@/contexts/MainContext';
 import { Theme } from '@/enums';
-import { Icon } from '@iconify/react';
-import { signOut, useSession } from 'next-auth/react';
-import { usePathname } from 'next/navigation';
-import { Fragment, useCallback } from 'react';
 
 const COPYRIGHT_YEAR = new Date().getFullYear();
 

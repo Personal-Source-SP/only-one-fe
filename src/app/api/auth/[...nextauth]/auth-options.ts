@@ -1,10 +1,11 @@
-import type { IAuthPayload } from '@/interfaces';
-import { authService } from '@/services';
-import { AxiosError } from 'axios';
-import { jwtDecode } from 'jwt-decode';
 import type { Awaitable, Session, User } from 'next-auth';
 import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import { AxiosError } from 'axios';
+import { jwtDecode } from 'jwt-decode';
+
+import type { IAuthPayload } from '@/interfaces';
+import { authService } from '@/services';
 
 export const checkTokenExpired = (token: string): boolean => {
     if (!token) return true;

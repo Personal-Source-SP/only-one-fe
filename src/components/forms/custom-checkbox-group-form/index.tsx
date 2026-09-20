@@ -1,9 +1,9 @@
 'use client';
 
-import { CustomCheckbox, CustomForm, type FormItemProps } from '@/components';
 import type { ComponentProps, ReactNode } from 'react';
 import { useMemo } from 'react';
 
+import { CustomCheckbox, CustomForm, type FormItemProps } from '@/components';
 import { buildFormRules, type FormRuleConfig } from '@/utilities';
 
 export type CustomCheckboxGroupProps = ComponentProps<typeof CustomCheckbox.Group>;

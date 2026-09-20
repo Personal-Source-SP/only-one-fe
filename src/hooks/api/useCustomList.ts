@@ -1,9 +1,10 @@
+import { useMemo } from 'react';
+import type { BaseRecord, HttpError } from '@refinedev/core';
+import { useList } from '@refinedev/core';
+
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE, DEFAULT_SORTERS } from '@/config';
 import type { IBaseApiNotificationRequest, IBaseApiTransformRequest } from '@/interfaces';
 import { applyDataTransform, resolveQueryNotifications } from '@/utilities';
-import type { BaseRecord, HttpError } from '@refinedev/core';
-import { useList } from '@refinedev/core';
-import { useMemo } from 'react';
 
 type RefineUseListRequest<TData extends BaseRecord> = NonNullable<
     Parameters<typeof useList<TData, HttpError>>[0]

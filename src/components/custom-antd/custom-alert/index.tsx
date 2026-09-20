@@ -1,7 +1,8 @@
 'use client';
 
-import { CustomAlertType } from '@/interfaces';
 import { Alert, AlertProps } from 'antd';
+
+import { CustomAlertType } from '@/interfaces';
 
 type CustomAlertProps = {
     description?: string;

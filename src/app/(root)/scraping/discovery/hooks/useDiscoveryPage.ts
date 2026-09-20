@@ -6,6 +6,7 @@ import {
 } from '@/app/(root)/scraping/features/enums';
 import { API_ENDPOINT } from '@/config';
 import { useCustomModalForm, useCustomTable, useSelectDataProvider } from '@/hooks';
+
 import type { CreateSessionFormValues, IDiscoverySession } from '../types';
 
 export const useDiscoveryPage = () => {

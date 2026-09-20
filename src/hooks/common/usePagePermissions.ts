@@ -1,5 +1,5 @@
-import { useCan } from '@refinedev/core';
 import { useMemo } from 'react';
+import { useCan } from '@refinedev/core';
 
 export interface PagePermissions {
     canRead: boolean;

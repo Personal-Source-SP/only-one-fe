@@ -1,20 +1,21 @@
 'use client';
 
 import { Icon } from '@iconify/react';
+
 import { ColumnsType, CustomButton } from '@/components';
 import {
     FilterPanel,
-    ListTable,
-    ListContainer,
     type ICardAction,
     type IFilterField,
+    ListContainer,
+    ListTable,
 } from '@/components';
-import { formatDate } from '@/libs';
 import { RESOURCE } from '@/config';
+import { formatDate } from '@/libs';
 
 import { GoogleDriveType } from '../enums';
-import { useGoogleFolderPage } from './hooks';
 import { FolderModal, SyncGoogleDrive } from './components';
+import { useGoogleFolderPage } from './hooks';
 import type { GoogleFolderRecord } from './types';
 
 const FolderPage = () => {

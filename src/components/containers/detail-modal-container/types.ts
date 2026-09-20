@@ -1,5 +1,6 @@
-import type { IDetailSection } from '@/components';
 import type { ReactNode } from 'react';
+
+import type { IDetailSection } from '@/components';
 
 export type DetailModalContainerProps<TRecord extends object = Record<string, unknown>> = {
     open: boolean;

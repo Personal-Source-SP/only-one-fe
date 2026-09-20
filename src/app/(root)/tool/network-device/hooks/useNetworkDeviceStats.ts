@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
+
 import { NetworkDeviceType } from '../enums';
 import type { INetworkDevice } from '../types';
 

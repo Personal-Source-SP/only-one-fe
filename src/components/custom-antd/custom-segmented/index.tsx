@@ -1,7 +1,8 @@
 'use client';
 
-import { HUB_ANTD_SEGMENTED_CLASS, mergeHubAntdClass } from '@/components/custom-antd';
 import { Segmented, SegmentedProps } from 'antd';
+
+import { HUB_ANTD_SEGMENTED_CLASS, mergeHubAntdClass } from '@/components/custom-antd';
 
 export type CustomSegmentedProps = SegmentedProps;
 

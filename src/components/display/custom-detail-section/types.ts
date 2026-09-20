@@ -1,10 +1,11 @@
+import type { ReactNode } from 'react';
+
 import type {
     ColumnsType,
     CustomDescriptionsProps,
     CustomTabsProps,
     TableProps,
 } from '@/components';
-import type { ReactNode } from 'react';
 
 export type DetailFormatType =
     'date' | 'datetime' | 'time' | 'tag' | 'badge' | 'boolean' | 'json' | 'currency' | 'number';

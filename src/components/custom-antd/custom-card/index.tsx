@@ -1,8 +1,9 @@
 'use client';
 
-import { CustomCardPadding, CustomCardShadow } from '@/interfaces';
-import { Card, CardProps } from 'antd';
 import { ReactNode, useMemo } from 'react';
+import { Card, CardProps } from 'antd';
+
+import { CustomCardPadding, CustomCardShadow } from '@/interfaces';
 
 const CUSTOM_CARD_PADDING_CLASS_MAP: Record<CustomCardPadding, string> = {
     none: '[&_.ant-card-body]:p-0',

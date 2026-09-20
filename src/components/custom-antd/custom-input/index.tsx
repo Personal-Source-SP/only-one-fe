@@ -1,12 +1,13 @@
 'use client';
 
+import { Input, InputNumber, InputNumberProps, InputProps } from 'antd';
+
 import {
     CustomSpace,
     HUB_ANTD_INPUT_CLASS,
     HUB_ANTD_INPUT_NUMBER_CLASS,
     mergeHubAntdClass,
 } from '@/components/custom-antd';
-import { Input, InputNumber, InputNumberProps, InputProps } from 'antd';
 
 export type CustomInputProps = InputProps & {
     touchFriendly?: boolean;

@@ -1,4 +1,5 @@
 import type { HttpError, OpenNotificationParams } from '@refinedev/core';
+
 import { normalizeResourceKey } from './resource';
 
 /**

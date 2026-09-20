@@ -1,7 +1,8 @@
 'use client';
 
-import { CustomButtonHubVariant } from '@/interfaces';
 import { Button, ButtonProps } from 'antd';
+
+import { CustomButtonHubVariant } from '@/interfaces';
 
 type CustomButtonProps = ButtonProps & {
     hubVariant?: CustomButtonHubVariant;

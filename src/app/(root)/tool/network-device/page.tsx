@@ -1,17 +1,19 @@
 'use client';
 
-import { ListContainer, ListTable, type ICardAction, type IFilterField } from '@/components';
+import { Icon } from '@iconify/react';
+
+import { type ICardAction, type IFilterField, ListContainer, ListTable } from '@/components';
 import {
+    type ColumnsType,
     CustomBadge,
     CustomButton,
     CustomFlex,
     CustomSpace,
     CustomTag,
     CustomTypography,
-    type ColumnsType,
 } from '@/components';
 import { RESOURCE } from '@/config';
-import { Icon } from '@iconify/react';
+
 import {
     DeviceApproachModal,
     DeviceDetailModal,

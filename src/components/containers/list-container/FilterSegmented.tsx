@@ -1,7 +1,9 @@
 'use client';
 
-import { CustomSegmented } from '@/components';
 import { useCallback } from 'react';
+
+import { CustomSegmented } from '@/components';
+
 import type { IFilterField, IFilterValue } from './types';
 
 interface FilterSegmentedProps {

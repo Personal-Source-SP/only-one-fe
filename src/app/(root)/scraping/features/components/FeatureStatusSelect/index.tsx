@@ -1,8 +1,10 @@
 'use client';
 
-import { CustomDropdown, CustomFlex, CustomTag, type MenuProps } from '@/components';
-import { Icon } from '@iconify/react';
 import { useCallback, useMemo } from 'react';
+import { Icon } from '@iconify/react';
+
+import { CustomDropdown, CustomFlex, CustomTag, type MenuProps } from '@/components';
+
 import { DATA_PROVIDER_FEATURE_STATUS_CONFIG, getAvailableTargetStatuses } from '../../constants';
 import { DataProviderFeatureStatus } from '../../enums';
 import { FeatureStatusTrigger } from './FeatureStatusTrigger';

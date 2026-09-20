@@ -1,5 +1,8 @@
 'use client';
 
+import { useMemo } from 'react';
+import { Icon } from '@iconify/react';
+
 import {
     DiscoverySessionStatus,
     type IDiscoverySession,
@@ -14,8 +17,7 @@ import {
     CustomTypography,
 } from '@/components';
 import { formatDate } from '@/libs';
-import { Icon } from '@iconify/react';
-import { useMemo } from 'react';
+
 import { SessionMetricCard } from './SessionMetricCard';
 
 interface SessionOverviewCardProps {

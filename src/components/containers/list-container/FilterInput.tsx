@@ -1,7 +1,9 @@
 'use client';
 
-import { CustomInput } from '@/components';
 import React, { useCallback, useEffect, useState } from 'react';
+
+import { CustomInput } from '@/components';
+
 import type { IFilterField, IFilterValue } from './types';
 
 interface FilterInputProps {

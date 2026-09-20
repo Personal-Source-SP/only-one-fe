@@ -1,5 +1,7 @@
 'use client';
 
+import { useCallback, useMemo } from 'react';
+
 import { useFeatureModalContext } from '@/app/(root)/scraping/features/context';
 import type {
     CodeEditorFormFieldSchema,
@@ -7,7 +9,7 @@ import type {
 } from '@/app/(root)/scraping/features/types';
 import { CodeDisplay } from '@/components';
 import { CustomCol, CustomForm } from '@/components';
-import { useCallback, useMemo } from 'react';
+
 import { FormDiffLabel } from '../FormDiffLabel';
 
 export type CodeEditorWidgetProps = {

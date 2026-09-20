@@ -1,9 +1,11 @@
 'use client';
 
-import { CustomButton, CustomFlex, type CustomButtonProps } from '@/components';
-import { Icon } from '@iconify/react';
-import type { IConfigVersion } from '../../types';
 import { useMemo } from 'react';
+import { Icon } from '@iconify/react';
+
+import { CustomButton, type CustomButtonProps, CustomFlex } from '@/components';
+
+import type { IConfigVersion } from '../../types';
 
 export type FeatureVersionTriggerProps = Omit<CustomButtonProps, 'children'> & {
     hasMultipleVersions?: boolean;

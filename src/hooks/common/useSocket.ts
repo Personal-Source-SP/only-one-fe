@@ -1,6 +1,7 @@
-import { env } from '@/config';
 import { useEffect, useRef, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
+
+import { env } from '@/config';
 
 export const useSocket = (options?: { url?: string }) => {
     const socketRef = useRef<Socket | null>(null);

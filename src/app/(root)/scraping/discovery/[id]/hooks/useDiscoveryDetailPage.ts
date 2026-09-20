@@ -1,5 +1,7 @@
 'use client';
 
+import { useMemo } from 'react';
+
 import {
     DiscoveryUrlStatus,
     type IDiscoverySession,
@@ -7,7 +9,6 @@ import {
 } from '@/app/(root)/scraping/discovery/types';
 import { API_ENDPOINT } from '@/config';
 import { useCustomMutationData, useCustomOne, useCustomTable } from '@/hooks';
-import { useMemo } from 'react';
 
 export const useDiscoveryDetailPage = (id: string) => {
     const { handleCustomMutationData, isLoading: isEnqueuing } = useCustomMutationData();

@@ -1,9 +1,11 @@
 'use client';
 
-import { CustomFlex, CustomRow, CustomTabs, CustomTag, type FormInstance } from '@/components';
-import { Icon } from '@iconify/react';
-import type { FormMode } from '@/hooks';
 import { useMemo } from 'react';
+import { Icon } from '@iconify/react';
+
+import { CustomFlex, CustomRow, CustomTabs, CustomTag, type FormInstance } from '@/components';
+import type { FormMode } from '@/hooks';
+
 import { CustomFormField } from './CustomFormField';
 import type { ITabsFormSection } from './types';
 

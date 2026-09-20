@@ -2,10 +2,11 @@
 
 import Link from 'next/link';
 import { Icon } from '@iconify/react';
+
 import { CustomButton, CustomCard, CustomSpace } from '@/components';
 
-import { activityData, recentFiles, recentNotes, recentPhotos, storageData } from './constants';
 import { ActivityChart, StorageChart } from './components';
+import { activityData, recentFiles, recentNotes, recentPhotos, storageData } from './constants';
 
 const DashboardPage = () => {
     return (

@@ -2,6 +2,7 @@
 
 import { API_ENDPOINT } from '@/config';
 import { useCustomData } from '@/hooks';
+
 import { NetworkScanStatus } from '../enums';
 import type { IScanStatusResponse } from '../types';
 

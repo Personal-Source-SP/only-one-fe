@@ -1,8 +1,9 @@
-import { hasSessionCookieName, usesSecureSessionCookie } from '@/libs/auth-session-cookie';
-import { logger } from '@/utilities/logger';
-import { getToken } from 'next-auth/jwt';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
+import { getToken } from 'next-auth/jwt';
+
+import { hasSessionCookieName, usesSecureSessionCookie } from '@/libs/auth-session-cookie';
+import { logger } from '@/utilities/logger';
 
 const clearSessionCookies = (request: NextRequest, response: NextResponse): NextResponse => {
     request.cookies.getAll().forEach((cookie) => {

@@ -1,5 +1,6 @@
-import { Forbidden, Loading } from '@/components';
 import { Suspense } from 'react';
+
+import { Forbidden, Loading } from '@/components';
 
 export const metadata = {
     title: '403 - Forbidden',

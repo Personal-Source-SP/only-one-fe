@@ -1,7 +1,9 @@
 'use client';
 
 import { useMemo } from 'react';
+import { CrudSort } from '@refinedev/core';
 import { Table } from 'antd';
+
 import type {
     ColumnsType,
     FilterValue,
@@ -10,7 +12,6 @@ import type {
     TablePaginationConfig,
     TableProps,
 } from '@/components/custom-antd/custom-antd-types';
-import { CrudSort } from '@refinedev/core';
 import { SortOrder } from '@/enums';
 
 type CustomTableProps = {

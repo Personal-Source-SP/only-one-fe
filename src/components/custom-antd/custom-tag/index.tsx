@@ -1,7 +1,8 @@
 'use client';
 
-import { CustomTagStatus } from '@/interfaces';
 import { Tag, TagProps } from 'antd';
+
+import { CustomTagStatus } from '@/interfaces';
 
 const CUSTOM_TAG_STATUS_CLASS_MAP = {
     active: 'border-green-200 bg-green-100 text-green-800',

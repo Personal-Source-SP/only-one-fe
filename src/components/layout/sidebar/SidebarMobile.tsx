@@ -1,8 +1,9 @@
+import { Fragment } from 'react/jsx-runtime';
+import { Icon } from '@iconify/react';
+
 import { CustomButton, CustomDrawer } from '@/components';
 import { SIDEBAR_ITEMS } from '@/constants';
 import { ISidebarItem } from '@/interfaces';
-import { Icon } from '@iconify/react';
-import { Fragment } from 'react/jsx-runtime';
 
 import { SidebarLogo } from './SidebarLogo';
 import { SidebarNavItem } from './SidebarNavItem';

@@ -1,5 +1,18 @@
 'use client';
 
+import { CSSProperties, useEffect, useMemo, useState } from 'react';
+import ReactDiffViewer from 'react-diff-viewer-continued';
+import dynamic from 'next/dynamic';
+import {
+    CheckOutlined,
+    CompressOutlined,
+    CopyOutlined,
+    EditOutlined,
+    ExpandAltOutlined,
+    FormatPainterOutlined,
+} from '@ant-design/icons';
+import * as jsBeautify from 'js-beautify';
+
 import {
     CustomBadge,
     CustomButton,
@@ -12,18 +25,6 @@ import {
 } from '@/components';
 import { useMainContext } from '@/contexts/MainContext';
 import { NotificationType } from '@/enums';
-import {
-    CheckOutlined,
-    CompressOutlined,
-    CopyOutlined,
-    EditOutlined,
-    ExpandAltOutlined,
-    FormatPainterOutlined,
-} from '@ant-design/icons';
-import * as jsBeautify from 'js-beautify';
-import dynamic from 'next/dynamic';
-import { CSSProperties, useEffect, useMemo, useState } from 'react';
-import ReactDiffViewer from 'react-diff-viewer-continued';
 
 const CustomMonacoEditor = dynamic(
     () => import('./CustomMonacoEditor').then((module) => ({ default: module.CustomMonacoEditor })),

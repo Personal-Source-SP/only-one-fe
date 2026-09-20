@@ -1,7 +1,8 @@
 'use client';
 
-import { useBreakpointStore } from '@/stores';
 import { Drawer, DrawerProps } from 'antd';
+
+import { useBreakpointStore } from '@/stores';
 
 export type CustomDrawerProps = DrawerProps;
 

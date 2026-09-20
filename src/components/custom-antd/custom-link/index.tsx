@@ -1,6 +1,7 @@
-import { CustomLinkVariant } from '@/interfaces';
-import Link, { LinkProps } from 'next/link';
 import { ReactNode } from 'react';
+import Link, { LinkProps } from 'next/link';
+
+import { CustomLinkVariant } from '@/interfaces';
 
 const CUSTOM_LINK_VARIANT_CLASS_MAP: Record<CustomLinkVariant, string> = {
     default: 'cursor-pointer text-hub-muted transition-colors duration-200 hover:text-hub-text',

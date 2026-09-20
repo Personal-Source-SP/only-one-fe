@@ -1,9 +1,11 @@
 'use client';
 
+import { useCallback } from 'react';
+import { Icon } from '@iconify/react';
+
 import { CustomFlex, CustomTag, CustomTypography } from '@/components';
 import { formatDate } from '@/libs';
-import { Icon } from '@iconify/react';
-import { useCallback } from 'react';
+
 import { FEATURE_REGISTRY, SCRAPER_SERVICE_LABELS } from '../../constants';
 import { useFeatureModalContext } from '../../context';
 import { ConfigVersionType } from '../../enums';

@@ -1,3 +1,8 @@
+import { PropsWithChildren, Suspense } from 'react';
+import type { Metadata } from 'next';
+import { cookies } from 'next/headers';
+import { NavigationGuardProvider } from 'next-navigation-guard';
+
 import {
     HUB_THEME_PALETTE,
     HUB_THEME_PALETTE_IDS,
@@ -7,10 +12,6 @@ import {
 import { AntdRegistryProvider } from '@/contexts';
 import RefineContext from '@/contexts/RefineContext';
 import { getSafeServerSession } from '@/libs/auth-session-helper';
-import type { Metadata } from 'next';
-import { NavigationGuardProvider } from 'next-navigation-guard';
-import { cookies } from 'next/headers';
-import { PropsWithChildren, Suspense } from 'react';
 
 import '@/styles/globals.css';
 

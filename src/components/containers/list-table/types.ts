@@ -1,7 +1,8 @@
+import type { Key, MouseEvent, ReactNode } from 'react';
+import type { BaseKey, BaseRecord } from '@refinedev/core';
+
 import type { ColumnsType, MenuProps, TableProps } from '@/components';
 import type { UseCustomTableResponse } from '@/hooks';
-import type { BaseKey, BaseRecord } from '@refinedev/core';
-import type { Key, MouseEvent, ReactNode } from 'react';
 
 // ==========================================
 // LIST TABLE CUSTOM ACTION

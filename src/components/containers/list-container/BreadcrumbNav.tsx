@@ -1,8 +1,10 @@
 'use client';
 
-import { CustomButton, CustomFlex } from '@/components';
+import { type ReactNode, useCallback, useMemo } from 'react';
 import { Icon } from '@iconify/react';
-import { useCallback, useMemo, type ReactNode } from 'react';
+
+import { CustomButton, CustomFlex } from '@/components';
+
 import type { BreadcrumbNavProps, IBreadcrumbItem } from './types';
 
 export const BreadcrumbNav = ({ items = [], separator, className = '' }: BreadcrumbNavProps) => {

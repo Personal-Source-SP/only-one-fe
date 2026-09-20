@@ -1,6 +1,7 @@
-import { CustomCard, CustomCol, CustomRow, CustomTag, CustomTypography } from '@/components';
-import { CronExpressionParser } from 'cron-parser';
 import { Fragment } from 'react';
+import { CronExpressionParser } from 'cron-parser';
+
+import { CustomCard, CustomCol, CustomRow, CustomTag, CustomTypography } from '@/components';
 
 const getNextRunTimes = (cron: string, count = 6) => {
     try {

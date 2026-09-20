@@ -1,7 +1,7 @@
 'use client';
 
-import { CustomLink, CustomTypography } from '@/components';
 import { AuthCard } from '@/app/(public)/_components/auth';
+import { CustomLink, CustomTypography } from '@/components';
 
 import { ForgetPasswordForm } from './components';
 

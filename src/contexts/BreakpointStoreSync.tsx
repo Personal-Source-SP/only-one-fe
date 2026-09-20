@@ -1,8 +1,9 @@
 'use client';
 
+import { type PropsWithChildren, useEffect } from 'react';
+
 import { CustomGrid } from '@/components';
 import { useBreakpointStore } from '@/stores';
-import { type PropsWithChildren, useEffect } from 'react';
 
 export const BreakpointStoreSync = ({ children }: PropsWithChildren) => {
     const screens = CustomGrid.useBreakpoint();

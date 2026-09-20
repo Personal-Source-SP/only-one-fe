@@ -1,11 +1,12 @@
 'use client';
 
+import { type ReactNode, useCallback, useMemo } from 'react';
 import type { BaseRecord } from '@refinedev/core';
 import { isNil } from 'lodash';
-import { useCallback, useMemo, type ReactNode } from 'react';
 
-import type { ColumnType, ColumnsType } from '@/components';
+import type { ColumnsType, ColumnType } from '@/components';
 import { CustomFlex, CustomTypography } from '@/components';
+
 import { getColumnValue } from './utils';
 
 const { Text } = CustomTypography;

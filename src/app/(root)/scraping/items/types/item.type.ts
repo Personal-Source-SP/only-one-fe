@@ -1,5 +1,6 @@
-import type { ProductMappingStatus } from '../enums';
 import type { IAbstract } from '@/interfaces';
+
+import type { ProductMappingStatus } from '../enums';
 
 export interface IItem extends IAbstract {
     name: string;

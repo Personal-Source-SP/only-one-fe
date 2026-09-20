@@ -1,6 +1,7 @@
-import { hasSessionCookieName } from '@/libs/auth-session-cookie';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
+
+import { hasSessionCookieName } from '@/libs/auth-session-cookie';
 
 const DEFAULT_CALLBACK_URL = '/login';
 

@@ -1,4 +1,4 @@
-import { CustomButton, CustomEmpty } from '@/components';
+import { CSSProperties, ReactNode } from 'react';
 import {
     DatabaseOutlined,
     FileOutlined,
@@ -9,7 +9,8 @@ import {
     SettingOutlined,
     UserOutlined,
 } from '@ant-design/icons';
-import { CSSProperties, ReactNode } from 'react';
+
+import { CustomButton, CustomEmpty } from '@/components';
 
 type EmptyVariant =
     | 'default'

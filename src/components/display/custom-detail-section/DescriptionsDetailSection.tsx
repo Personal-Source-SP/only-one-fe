@@ -1,9 +1,11 @@
 'use client';
 
+import type { ReactNode } from 'react';
+import get from 'lodash/get';
+
 import { CustomBadge, CustomDescriptions, CustomTag, CustomTypography } from '@/components';
 import { formatDate } from '@/libs';
-import get from 'lodash/get';
-import type { ReactNode } from 'react';
+
 import type { IDescriptionsDetailSection, IDetailDescriptionItem } from './types';
 
 const { Text } = CustomTypography;

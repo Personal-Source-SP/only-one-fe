@@ -1,5 +1,6 @@
 // eslint-disable-next-line no-restricted-imports
 import type { PresetStatusColorType } from 'antd/es/_util/colors';
+
 import { DiscoverySessionStatus, DiscoveryUrlStatus, ValidationMatchResult } from '../enums';
 
 export const DISCOVERY_SESSION_STATUS_COLOR_MAP: Record<

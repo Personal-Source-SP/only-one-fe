@@ -8,6 +8,7 @@ import {
     MenuProps,
 } from '@/components';
 import { FileItemsPerPage } from '@/enums';
+
 import type { PaginationControlsProps } from './types';
 
 export const PaginationControls = ({

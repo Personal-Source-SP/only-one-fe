@@ -1,13 +1,14 @@
 'use client';
 
-import { API_ENDPOINT } from '@/config';
+import { Fragment, ReactNode, useState } from 'react';
+import { Icon } from '@iconify/react';
+
 import { CustomAvatar, CustomButton, CustomCard, CustomSpace } from '@/components';
+import { API_ENDPOINT } from '@/config';
 import { NotificationTab, NotificationType } from '@/enums';
 import { useCustomList } from '@/hooks';
 import { INotification } from '@/interfaces';
 import { formatDate } from '@/libs';
-import { Icon } from '@iconify/react';
-import { Fragment, ReactNode, useState } from 'react';
 
 const notificationIcon: Record<NotificationType, ReactNode> = {
     [NotificationType.INFO]: <Icon icon="lucide:share-2" className="text-primary" />,

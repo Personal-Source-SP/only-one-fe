@@ -1,7 +1,7 @@
 import { DataProviderFeatureType, ScraperServiceEnum } from '../enums';
 import type { FormEvaluationContext, FormSectionSchema, ISearchTargetConfig } from '../types';
-import { DEFAULT_FEATURE_TEMPLATES, SCRAPER_SERVICE_OPTIONS } from './common.constants';
 import { getDefaultFormValuesFromSections } from '../utils';
+import { DEFAULT_FEATURE_TEMPLATES, SCRAPER_SERVICE_OPTIONS } from './common.constants';
 
 export const SEARCH_FORM_SECTIONS: FormSectionSchema[] = [
     {

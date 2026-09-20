@@ -1,10 +1,12 @@
 'use client';
 
+import { useCallback, useMemo, useState } from 'react';
+import { Icon } from '@iconify/react';
+
 import { CustomFlex, CustomModal, CustomTabs } from '@/components';
 import { MessageType } from '@/enums';
 import { useMessage } from '@/hooks';
-import { Icon } from '@iconify/react';
-import { useCallback, useMemo, useState } from 'react';
+
 import { FEATURE_MODAL_WIDTH } from '../../constants';
 import { useFeatureModalContext } from '../../context';
 import { FeatureTestTab } from '../FeatureTestTab';

@@ -1,15 +1,16 @@
 'use client';
 
+import { PropsWithChildren, Suspense, useEffect, useRef, useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+
 import { Loading } from '@/components';
-import { env } from '@/config';
 import { CustomSpace } from '@/components';
+import { env } from '@/config';
 import { SIDEBAR_ITEMS } from '@/constants';
 import { useMainContext } from '@/contexts/MainContext';
 import { MessageType } from '@/enums';
 import { useCustomMutationData, useSearchParamsString } from '@/hooks';
 import { exchangeCodeForTokens, findInformationPage, getUserInfoFromGoogle } from '@/libs';
-import { usePathname, useRouter } from 'next/navigation';
-import { PropsWithChildren, Suspense, useEffect, useRef, useState } from 'react';
 
 import { Header } from './header';
 import { NotificationsPanel } from './notifications-panel';

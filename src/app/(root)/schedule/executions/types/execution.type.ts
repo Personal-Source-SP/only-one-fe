@@ -1,11 +1,12 @@
+import type { IScheduleJobEvent } from '@/app/(root)/schedule/job-events/types';
+import type { IAbstract } from '@/interfaces';
+
 import type {
     ExecutionServiceEnum,
     ScheduleJobTriggerType,
     ScheduleJobType,
     ScheduleType,
 } from '../enums';
-import type { IAbstract } from '@/interfaces';
-import type { IScheduleJobEvent } from '@/app/(root)/schedule/job-events/types';
 
 export interface IScheduleJob extends IAbstract {
     scheduleId: string;

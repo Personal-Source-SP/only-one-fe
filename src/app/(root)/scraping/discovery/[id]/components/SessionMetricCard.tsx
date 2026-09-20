@@ -1,7 +1,8 @@
 'use client';
 
-import { CustomFlex, CustomTypography } from '@/components';
 import type { ReactNode } from 'react';
+
+import { CustomFlex, CustomTypography } from '@/components';
 
 interface SessionMetricCardProps {
     title: ReactNode;

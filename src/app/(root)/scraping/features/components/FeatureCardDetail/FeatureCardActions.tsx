@@ -1,7 +1,9 @@
 'use client';
 
-import { CustomButton, CustomFlex } from '@/components';
 import { Icon } from '@iconify/react';
+
+import { CustomButton, CustomFlex } from '@/components';
+
 import { useFeatureCardContext } from '../../context';
 
 export const FeatureCardActions = () => {

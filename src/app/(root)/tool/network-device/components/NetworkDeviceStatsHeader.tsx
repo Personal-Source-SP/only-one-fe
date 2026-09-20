@@ -8,6 +8,7 @@ import {
     CustomSpace,
     CustomTypography,
 } from '@/components';
+
 import { SCAN_STATUS_CONFIG } from '../constants';
 import { NetworkScanStatus } from '../enums';
 import type { IScanStatusResponse } from '../types';

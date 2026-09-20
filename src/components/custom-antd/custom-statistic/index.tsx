@@ -1,7 +1,7 @@
 'use client';
 
+import { Children, isValidElement, ReactNode } from 'react';
 import { Statistic, StatisticProps } from 'antd';
-import { Children, ReactNode, isValidElement } from 'react';
 
 type CustomStatisticProps = StatisticProps;
 

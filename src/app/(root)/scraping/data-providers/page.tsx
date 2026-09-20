@@ -1,22 +1,24 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+import { PlusOutlined, ThunderboltOutlined } from '@ant-design/icons';
+
 import {
     FormModalContainer,
-    ListContainer,
-    ListTable,
     type ICardAction,
     type IFilterField,
     type IFormField,
+    ListContainer,
+    ListTable,
 } from '@/components';
-import { CustomButton, type ColumnsType } from '@/components';
+import { type ColumnsType, CustomButton } from '@/components';
 import { RESOURCE } from '@/config';
 import type { FormMode } from '@/hooks';
 import { formatDate, slugify } from '@/libs';
 import { FormRuleType } from '@/utilities';
-import { PlusOutlined, ThunderboltOutlined } from '@ant-design/icons';
-import { useRouter } from 'next/navigation';
-import { useDataProviderPage } from './hooks';
+
 import type { IDataProvider, IDataProviderFormValues } from './types/data-provider.type';
+import { useDataProviderPage } from './hooks';
 
 export default function DataProviderPage() {
     const router = useRouter();

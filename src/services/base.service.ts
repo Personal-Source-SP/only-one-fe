@@ -1,3 +1,7 @@
+import { signOut } from 'next-auth/react';
+import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
+import { isEmpty } from 'lodash';
+
 import { KEY_LOCAL_STORAGE, KEY_SESSION_STORAGE } from '@/constants';
 import type {
     IBaseApiDeleteRequest,
@@ -8,9 +12,6 @@ import type {
     IBaseApiRequest,
     IBaseApiResponse,
 } from '@/interfaces';
-import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
-import { signOut } from 'next-auth/react';
-import { isEmpty } from 'lodash';
 
 export class BaseApi {
     private httpClient: AxiosInstance;

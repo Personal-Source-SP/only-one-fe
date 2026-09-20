@@ -1,5 +1,13 @@
 'use client';
 
+import { useState } from 'react';
+import { FileExcelOutlined } from '@ant-design/icons';
+import { Icon } from '@iconify/react';
+
+import type {
+    IImportDataResponse,
+    IPreviewImportDataResponse,
+} from '@/app/(root)/scraping/scraping-data/types';
 import {
     ColumnType,
     CustomButton,
@@ -16,18 +24,12 @@ import {
     StepsProps,
     UploadFile,
 } from '@/components';
-import { MessageType } from '@/enums';
 import { useMainContext } from '@/contexts/MainContext';
-import { DataImportType } from '../enums';
+import { MessageType } from '@/enums';
 import { useCustomMutationData } from '@/hooks';
-import type {
-    IImportDataResponse,
-    IPreviewImportDataResponse,
-} from '@/app/(root)/scraping/scraping-data/types';
 import type { IBaseApiResponse } from '@/interfaces';
-import { FileExcelOutlined } from '@ant-design/icons';
-import { Icon } from '@iconify/react';
-import { useState } from 'react';
+
+import { DataImportType } from '../enums';
 
 type ImportDataProps = {
     open: boolean;

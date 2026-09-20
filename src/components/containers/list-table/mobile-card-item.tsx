@@ -1,11 +1,12 @@
 'use client';
 
+import type { ReactNode } from 'react';
 import type { useTableReturnType } from '@refinedev/antd';
 import type { BaseKey, BaseRecord } from '@refinedev/core';
-import type { ReactNode } from 'react';
 
 import type { ColumnsType, MenuProps } from '@/components';
 import { CustomCard, CustomFlex } from '@/components';
+
 import { MobileCardActions } from './mobile-card-actions';
 import { MobileCardContent } from './mobile-card-content';
 import { getRecordId } from './utils';

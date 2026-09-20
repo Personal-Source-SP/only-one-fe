@@ -1,8 +1,9 @@
 'use client';
 
+import { ReactNode } from 'react';
+
 import { Logo } from '@/components';
 import { CustomTypography } from '@/components';
-import { ReactNode } from 'react';
 
 type AuthCardProps = {
     children: ReactNode;

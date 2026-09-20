@@ -1,11 +1,13 @@
 'use client';
 
 import { useCallback } from 'react';
-import { CustomFlex, CustomTag, CustomTypography } from '@/components';
-import { ConfigVersionType } from '../../enums';
-import { useFeatureHistoryContext } from '../../context';
-import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
+
+import { CustomFlex, CustomTag, CustomTypography } from '@/components';
+import { formatDate } from '@/libs';
+
+import { useFeatureHistoryContext } from '../../context';
+import { ConfigVersionType } from '../../enums';
 
 export const VersionList = () => {
     const { sortedVersions, currentSelectedVersion, setSelectedVersionId } =

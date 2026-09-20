@@ -1,5 +1,6 @@
 import type { IUser } from '@/app/(root)/setting/users/types';
 import type { IAbstract } from '@/interfaces';
+
 import type { ConfigVersionType } from '../enums';
 import type { IDataProviderFeature } from './data-provider-feature.types';
 import type { TargetConfig } from './target-config.types';

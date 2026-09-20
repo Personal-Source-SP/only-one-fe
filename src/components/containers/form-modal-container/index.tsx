@@ -1,8 +1,10 @@
 'use client';
 
-import { CustomFormSection } from '@/components';
-import type { BaseRecord } from '@refinedev/core';
 import { useMemo } from 'react';
+import type { BaseRecord } from '@refinedev/core';
+
+import { CustomFormSection } from '@/components';
+
 import { CustomModalForm } from './CustomModalForm';
 import type { FormModalContainerProps } from './types';
 

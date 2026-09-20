@@ -1,6 +1,7 @@
-import { MessageType } from '@/enums';
-import { useCustomApp } from '@/components';
 import { useCallback } from 'react';
+
+import { useCustomApp } from '@/components';
+import { MessageType } from '@/enums';
 
 export const useMessage = () => {
     const { message, notification } = useCustomApp();

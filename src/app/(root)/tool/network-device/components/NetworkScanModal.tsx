@@ -1,9 +1,11 @@
+import { useMemo } from 'react';
+import type { BaseRecord } from '@refinedev/core';
+
 import { FormModalContainer } from '@/components';
 import type { UseCustomModalFormResponse } from '@/hooks';
 import type { IFormSection } from '@/interfaces';
 import { FormRuleType } from '@/utilities';
-import type { BaseRecord } from '@refinedev/core';
-import { useMemo } from 'react';
+
 import type { ITriggerScanRequest } from '../types';
 
 type NetworkScanModalProps = {

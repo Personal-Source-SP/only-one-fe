@@ -1,8 +1,10 @@
 'use client';
 
-import { CustomTabs } from '@/components';
 import type { ReactNode } from 'react';
 import { useMemo } from 'react';
+
+import { CustomTabs } from '@/components';
+
 import { CustomDetailSection } from './index';
 import type { ITabsDetailSection } from './types';
 

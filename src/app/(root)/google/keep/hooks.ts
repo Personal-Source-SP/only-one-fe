@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+
 import { initialNoteLabels, initialNotes } from './constants';
 import { Note } from './types';
 

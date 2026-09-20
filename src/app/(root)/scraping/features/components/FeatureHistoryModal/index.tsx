@@ -1,5 +1,8 @@
 'use client';
 
+import { ReactNode, useMemo } from 'react';
+import { Icon } from '@iconify/react';
+
 import {
     CustomButton,
     CustomEmpty,
@@ -9,8 +12,7 @@ import {
     CustomTag,
     CustomTypography,
 } from '@/components';
-import { Icon } from '@iconify/react';
-import { ReactNode, useMemo } from 'react';
+
 import { FEATURE_MODAL_WIDTH, SCRAPER_SERVICE_LABELS } from '../../constants';
 import { useFeatureHistoryContext } from '../../context';
 import { ScraperServiceEnum } from '../../enums';

@@ -1,8 +1,9 @@
 'use client';
 
-import { CustomButton, CustomFlex, CustomTag, CustomTypography } from '@/components';
-import { Icon } from '@iconify/react';
 import type { ReactNode } from 'react';
+import { Icon } from '@iconify/react';
+
+import { CustomButton, CustomFlex, CustomTag, CustomTypography } from '@/components';
 
 export type SectionHeaderProps = {
     title: ReactNode;

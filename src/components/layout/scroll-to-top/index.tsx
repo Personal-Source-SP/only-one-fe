@@ -1,8 +1,8 @@
 'use client';
 
-import { CustomBackTop } from '@/components';
 import { Icon } from '@iconify/react';
 
+import { CustomBackTop } from '@/components';
 import { useMainContext } from '@/contexts/MainContext';
 
 export const ScrollToTop = () => {

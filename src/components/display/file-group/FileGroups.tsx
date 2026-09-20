@@ -1,16 +1,17 @@
 'use client';
 
+import { useMemo, useState } from 'react';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import { DeleteOutlined, DownloadOutlined, EyeOutlined } from '@ant-design/icons';
+import dayjs from 'dayjs';
+
 import { CustomButton, CustomList, CustomSpin, CustomTag, CustomTooltip } from '@/components';
 import { Empty } from '@/components';
+import { DEFAULT_FILE_IMAGE_URL } from '@/constants';
 import { MimeType } from '@/enums';
 import { ViewFileMode } from '@/enums';
 import { IFileGroup, IFileItem } from '@/interfaces';
-import { DeleteOutlined, DownloadOutlined, EyeOutlined } from '@ant-design/icons';
-import { useMemo, useState } from 'react';
-import { DEFAULT_FILE_IMAGE_URL } from '@/constants';
 
-import dayjs from 'dayjs';
-import InfiniteScroll from 'react-infinite-scroll-component';
 import { ImageItemDetail } from './ImageItemDetail';
 import { VideoItemDetail } from './VideoItemDetail';
 

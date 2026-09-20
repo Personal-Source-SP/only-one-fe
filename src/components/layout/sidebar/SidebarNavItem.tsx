@@ -1,8 +1,9 @@
 'use client';
 
+import { Icon } from '@iconify/react';
+
 import { CustomButton } from '@/components';
 import { ISidebarItem } from '@/interfaces';
-import { Icon } from '@iconify/react';
 
 type SidebarNavItemProps = {
     item: ISidebarItem;

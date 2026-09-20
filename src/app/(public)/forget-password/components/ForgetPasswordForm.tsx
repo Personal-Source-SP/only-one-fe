@@ -1,6 +1,7 @@
 import React from 'react';
-import { CustomButton, CustomForm, CustomInput } from '@/components';
+
 import { useForgetPasswordPage } from '@/app/(public)/forget-password/hooks';
+import { CustomButton, CustomForm, CustomInput } from '@/components';
 
 export const ForgetPasswordForm = () => {
     const { handleSubmit } = useForgetPasswordPage();

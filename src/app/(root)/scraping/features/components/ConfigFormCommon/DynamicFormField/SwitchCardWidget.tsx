@@ -1,12 +1,14 @@
 'use client';
 
-import { CustomCol, CustomFlex, CustomForm, CustomSwitch, CustomTypography } from '@/components';
+import { useMemo } from 'react';
+
 import { useFeatureModalContext } from '@/app/(root)/scraping/features/context';
 import type {
     FormEvaluationContext,
     SwitchCardFormFieldSchema,
 } from '@/app/(root)/scraping/features/types';
-import { useMemo } from 'react';
+import { CustomCol, CustomFlex, CustomForm, CustomSwitch, CustomTypography } from '@/components';
+
 import { FormDiffLabel } from '../FormDiffLabel';
 
 export type SwitchCardWidgetProps = {

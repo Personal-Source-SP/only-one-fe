@@ -1,11 +1,13 @@
 'use client';
 
-import { CustomFlex, CustomTag, CustomTypography } from '@/components';
 import { Icon } from '@iconify/react';
-import { FeatureStatusSelect } from '../FeatureStatusSelect';
+
+import { CustomFlex, CustomTag, CustomTypography } from '@/components';
+
 import { SCRAPER_SERVICE_LABELS } from '../../constants';
 import { useFeatureCardContext } from '../../context';
 import { DataProviderFeatureStatus } from '../../enums';
+import { FeatureStatusSelect } from '../FeatureStatusSelect';
 
 export const FeatureCardHeader = () => {
     const { feature, meta, isSwitchingStatus, onSwitchStatus } = useFeatureCardContext();

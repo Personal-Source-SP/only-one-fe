@@ -1,8 +1,10 @@
 'use client';
 
 import { useMemo } from 'react';
-import { isFieldVisible } from '@/app/(root)/scraping/features/utils';
+
 import type { FormEvaluationContext, FormFieldSchema } from '@/app/(root)/scraping/features/types';
+import { isFieldVisible } from '@/app/(root)/scraping/features/utils';
+
 import { CodeEditorWidget } from './CodeEditorWidget';
 import { JsonToggleWidget } from './JsonToggleWidget';
 import { NumberFieldWidget } from './NumberFieldWidget';

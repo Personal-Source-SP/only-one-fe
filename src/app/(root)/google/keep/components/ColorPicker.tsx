@@ -1,5 +1,6 @@
 import React from 'react';
 import { CheckOutlined } from '@ant-design/icons';
+
 import { colorOptions } from '@/app/(root)/google/keep/constants';
 import { ColorPickerProps } from '@/app/(root)/google/keep/types';
 

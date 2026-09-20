@@ -1,8 +1,10 @@
 'use client';
 
-import { CustomCard, CustomTable } from '@/components';
-import get from 'lodash/get';
 import { useMemo } from 'react';
+import get from 'lodash/get';
+
+import { CustomCard, CustomTable } from '@/components';
+
 import type { ITableDetailSection } from './types';
 
 export type TableDetailSectionProps<TRecord extends object = Record<string, unknown>> = {

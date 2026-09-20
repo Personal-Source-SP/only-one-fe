@@ -1,8 +1,9 @@
+import type { ReactNode } from 'react';
+import type { BaseRecord } from '@refinedev/core';
+
 import type { FormInstance } from '@/components';
 import type { IFormSection } from '@/components';
 import type { FormMode, UseCustomModalFormResponse } from '@/hooks';
-import type { BaseRecord } from '@refinedev/core';
-import type { ReactNode } from 'react';
 
 export type CustomModalFormProps<
     TQueryFnData extends BaseRecord = BaseRecord,

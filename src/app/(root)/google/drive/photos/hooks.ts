@@ -2,16 +2,17 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { isNumber } from 'lodash';
+
 import { API_ENDPOINT } from '@/config';
 import { CustomFilterType, MimeType, ViewFileMode } from '@/enums';
 import { useCustomData, useCustomTable, useSelectGoogleFolder } from '@/hooks';
 import type { IFileItem, IFilterItem } from '@/interfaces';
 import { isExpiredToken } from '@/libs';
+
 import { QualityMode } from '../enums';
+import { columnOptions, qualityModeOptions, viewModeOptions } from './constants';
 import type { IGoogleAuth, IGoogleDriveFile } from './types';
 import { getDriveImageUrl } from './utils';
-
-import { columnOptions, qualityModeOptions, viewModeOptions } from './constants';
 
 export const usePhotosPage = () => {
     const [columns, setColumns] = useState(4);

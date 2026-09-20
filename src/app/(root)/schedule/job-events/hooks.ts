@@ -1,8 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+
 import { API_ENDPOINT } from '@/config';
 import { useCustomTable } from '@/hooks';
+
 import type { JobEventRecord } from './types';
 
 export const useScheduleJobEventsPage = () => {

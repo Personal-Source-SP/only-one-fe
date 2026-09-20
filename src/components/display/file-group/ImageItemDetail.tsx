@@ -1,7 +1,8 @@
 'use client';
 
-import Image from 'next/image';
 import { Dispatch, SetStateAction } from 'react';
+import Image from 'next/image';
+
 import { isLocalFilePath } from '@/libs';
 
 export const ImageItemDetail = ({

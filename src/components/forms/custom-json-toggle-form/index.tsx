@@ -1,5 +1,9 @@
 'use client';
 
+import type { ReactNode } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { Icon } from '@iconify/react';
+
 import { CodeDisplay } from '@/components';
 import {
     CustomFlex,
@@ -9,9 +13,6 @@ import {
     type FormInstance,
     type FormItemProps,
 } from '@/components';
-import { Icon } from '@iconify/react';
-import type { ReactNode } from 'react';
-import { useCallback, useEffect, useRef, useState } from 'react';
 
 export type CustomJsonToggleFormProps<TValues extends object = Record<string, unknown>> = {
     name: FormItemProps['name'];

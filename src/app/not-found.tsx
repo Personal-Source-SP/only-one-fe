@@ -1,5 +1,6 @@
-import { Loading, NotFound } from '@/components';
 import { Suspense } from 'react';
+
+import { Loading, NotFound } from '@/components';
 
 export const metadata = {
     title: '404 - Not Found',

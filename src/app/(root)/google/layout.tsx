@@ -1,5 +1,6 @@
-import { SectionTabLayout } from '@/components/layout/section-tabs';
 import { PropsWithChildren } from 'react';
+
+import { SectionTabLayout } from '@/components/layout/section-tabs';
 
 type GoogleLayoutProps = PropsWithChildren;
 

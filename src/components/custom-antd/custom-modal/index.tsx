@@ -1,10 +1,11 @@
 'use client';
 
+import { CSSProperties, ReactNode, useMemo } from 'react';
+import { Modal, ModalProps } from 'antd';
+
 import { HUB_ANTD_MODAL_WRAP_CLASS, mergeHubAntdClass } from '@/components/custom-antd';
 import { CustomSpin } from '@/components/custom-antd/custom-spin';
 import { useBreakpointStore } from '@/stores';
-import { Modal, ModalProps } from 'antd';
-import { CSSProperties, ReactNode, useMemo } from 'react';
 
 export type CustomModalProps = ModalProps & {
     fixed?: boolean;

@@ -1,8 +1,9 @@
 'use client';
 
+import { Icon } from '@iconify/react';
+
 import { CustomCard, CustomCol, CustomFlex, CustomRow, CustomTypography } from '@/components';
 import { HUB_THEME_PALETTE_OPTIONS } from '@/constants';
-import { Icon } from '@iconify/react';
 
 import { useSettingAppearancePage } from './hooks';
 

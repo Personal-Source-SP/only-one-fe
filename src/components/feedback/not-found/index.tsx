@@ -1,8 +1,9 @@
 'use client';
 
-import { CustomButton, CustomSpace } from '@/components';
-import { Icon } from '@iconify/react';
 import Link from 'next/link';
+import { Icon } from '@iconify/react';
+
+import { CustomButton, CustomSpace } from '@/components';
 
 export const NotFound = () => {
     const handleGoBack = () => {

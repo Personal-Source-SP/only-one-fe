@@ -1,11 +1,13 @@
 'use client';
 
-import { CustomCol, CustomForm, CustomSelect } from '@/components';
+import { useMemo } from 'react';
+
 import type {
     FormEvaluationContext,
     SelectFormFieldSchema,
 } from '@/app/(root)/scraping/features/types';
-import { useMemo } from 'react';
+import { CustomCol, CustomForm, CustomSelect } from '@/components';
+
 import { FormDiffLabel } from '../FormDiffLabel';
 
 export type SelectFieldWidgetProps = {

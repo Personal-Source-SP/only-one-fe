@@ -1,10 +1,11 @@
+import type { SuccessErrorNotification } from '@refinedev/core';
+
 import type {
     ApiNotificationParam,
     CustomHttpMethod,
     FormMode,
     IBaseApiNotificationRequest,
 } from '@/interfaces';
-import type { SuccessErrorNotification } from '@refinedev/core';
 import {
     getErrorNotification,
     getSuccessNotification,

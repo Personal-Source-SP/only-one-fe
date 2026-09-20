@@ -1,5 +1,6 @@
-import type { CloudDataProviderType } from '../enums';
 import type { IAbstract } from '@/interfaces';
+
+import type { CloudDataProviderType } from '../enums';
 
 export interface ICloudDataProvider extends IAbstract {
     name: string;

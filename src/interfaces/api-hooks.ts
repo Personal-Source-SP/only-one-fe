@@ -1,4 +1,3 @@
-import type { ButtonProps, FormProps } from '@/components';
 import type {
     BaseRecord,
     HttpError,
@@ -6,6 +5,8 @@ import type {
     useCustom,
     useCustomMutation,
 } from '@refinedev/core';
+
+import type { ButtonProps, FormProps } from '@/components';
 
 export type CustomHttpMethod = 'get' | 'post' | 'put' | 'delete' | 'patch';
 

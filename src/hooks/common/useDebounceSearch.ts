@@ -1,5 +1,5 @@
-import { CrudFilter } from '@refinedev/core';
 import { useCallback, useRef } from 'react';
+import { CrudFilter } from '@refinedev/core';
 
 export const useDebounceSearch = ({
     setFilters,

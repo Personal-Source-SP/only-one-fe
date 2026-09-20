@@ -1,5 +1,7 @@
 'use client';
 
+import { Icon } from '@iconify/react';
+
 import {
     CustomButton,
     CustomFlex,
@@ -7,7 +9,7 @@ import {
     CustomTag,
     CustomTypography,
 } from '@/components';
-import { Icon } from '@iconify/react';
+
 import { useFeatureHistoryContext } from '../../context';
 
 export const VersionDetail = () => {

@@ -1,10 +1,12 @@
 'use client';
 
-import { CustomButton, CustomFlex } from '@/components';
 import { Icon } from '@iconify/react';
+
+import { CustomButton, CustomFlex } from '@/components';
+
+import { useFeatureModalContext } from '../../context';
 import { FeatureStatusSelect } from '../FeatureStatusSelect';
 import { FeatureVersionSelect } from '../FeatureVersionSelect';
-import { useFeatureModalContext } from '../../context';
 
 export const FeatureModalFooter = () => {
     const { form, feature, isDraft, isLoading, isSwitchingStatus, onClose, onSwitchStatus } =

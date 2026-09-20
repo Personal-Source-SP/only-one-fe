@@ -1,7 +1,8 @@
 'use client';
 
-import { CustomButton, CustomInput } from '@/components';
 import { Icon } from '@iconify/react';
+
+import { CustomButton, CustomInput } from '@/components';
 
 type SearchProps = {
     showSearch: boolean;

@@ -1,6 +1,6 @@
+import type { CSSProperties } from 'react';
 import { Icon } from '@iconify/react/dist/iconify.js';
 import { FloatButton } from 'antd';
-import type { CSSProperties } from 'react';
 
 type FloatButtonItem = {
     icon: string;

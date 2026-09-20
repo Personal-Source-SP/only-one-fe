@@ -1,9 +1,11 @@
 'use client';
 
-import { useMemo, type ReactNode } from 'react';
+import { type ReactNode, useMemo } from 'react';
+import { Icon } from '@iconify/react';
+
 import { CustomFlex, CustomTooltip, CustomTypography } from '@/components';
 import { formatDate } from '@/libs';
-import { Icon } from '@iconify/react';
+
 import { useFeatureCardContext } from '../../context';
 import { DataProviderFeatureStatus } from '../../enums';
 

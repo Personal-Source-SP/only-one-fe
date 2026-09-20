@@ -1,7 +1,7 @@
 'use client';
 
-import { PlayCircleOutlined } from '@ant-design/icons';
 import { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from 'react';
+import { PlayCircleOutlined } from '@ant-design/icons';
 
 type VideoItemDetailProps = {
     fileId: string;

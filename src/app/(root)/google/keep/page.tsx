@@ -2,17 +2,6 @@
 
 import { ChangeEvent } from 'react';
 import {
-    CustomButton,
-    CustomCard,
-    CustomDropdown,
-    CustomInput,
-    CustomModal,
-    CustomSelect,
-    CustomSpace,
-    CustomTag,
-    CustomTooltip,
-} from '@/components';
-import {
     AppstoreOutlined,
     BgColorsOutlined,
     CheckSquareOutlined,
@@ -24,9 +13,21 @@ import {
     TagOutlined,
 } from '@ant-design/icons';
 
+import {
+    CustomButton,
+    CustomCard,
+    CustomDropdown,
+    CustomInput,
+    CustomModal,
+    CustomSelect,
+    CustomSpace,
+    CustomTag,
+    CustomTooltip,
+} from '@/components';
+
+import { ColorPicker } from './components';
 import { labelOptions, sortMenu } from './constants';
 import { useGoogleKeepPage } from './hooks';
-import { ColorPicker } from './components';
 
 const GoogleKeepPage = () => {
     const {

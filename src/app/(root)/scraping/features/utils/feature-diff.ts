@@ -1,7 +1,9 @@
-import { DATE_FORMAT_TIME } from '@/config/date';
-import { formatJsonString, safeParseJson } from '@/utilities';
 import dayjs from 'dayjs';
 import { isBoolean, isEqual, isNil } from 'lodash';
+
+import { DATE_FORMAT_TIME } from '@/config/date';
+import { formatJsonString, safeParseJson } from '@/utilities';
+
 import { ScraperServiceEnum } from '../enums';
 import type { ScrapingConfigFormValues } from '../types';
 

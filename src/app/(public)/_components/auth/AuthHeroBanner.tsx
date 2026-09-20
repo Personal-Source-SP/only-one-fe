@@ -2,9 +2,10 @@
 
 import React from 'react';
 import Image from 'next/image';
+import { Icon } from '@iconify/react';
+
 import { Logo } from '@/components';
 import { CustomFlex, CustomSpace, CustomTag, CustomTypography } from '@/components';
-import { Icon } from '@iconify/react';
 
 export const AuthHeroBanner = () => {
     const bannerContent = (

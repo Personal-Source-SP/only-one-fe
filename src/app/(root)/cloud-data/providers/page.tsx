@@ -1,20 +1,22 @@
 'use client';
 
+import { PlusOutlined } from '@ant-design/icons';
+
 import {
     FormModalContainer,
-    ListContainer,
-    ListTable,
-    StatusTag,
     type ICardAction,
     type IFilterField,
     type IFormField,
+    ListContainer,
+    ListTable,
+    StatusTag,
 } from '@/components';
 import { ColumnsType, CustomButton } from '@/components';
 import { RESOURCE } from '@/config';
 import type { FormMode } from '@/hooks';
 import { capitalizeFirstLetter, enumToOptions, formatDate, formatFileSize } from '@/libs';
 import { FormRuleType } from '@/utilities';
-import { PlusOutlined } from '@ant-design/icons';
+
 import { CloudDataProviderType } from './enums';
 import { useCloudProviderPage } from './hooks';
 import type { CloudProviderFormValues, CloudProviderRecord } from './types';

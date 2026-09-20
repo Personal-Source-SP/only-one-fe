@@ -1,13 +1,15 @@
 'use client';
 
+import { useMemo } from 'react';
+import { Icon } from '@iconify/react';
+import type { BaseRecord } from '@refinedev/core';
+
 import { FormModalContainer } from '@/components';
 import { CustomFlex, CustomForm } from '@/components';
 import type { UseCustomModalFormResponse } from '@/hooks';
 import type { IFormSection } from '@/interfaces';
 import { FormRuleType } from '@/utilities';
-import type { BaseRecord } from '@refinedev/core';
-import { Icon } from '@iconify/react';
-import { useMemo } from 'react';
+
 import { APPROACH_CONFIG } from '../constants';
 import { NetworkDeviceApproachEnum } from '../enums';
 import type { IApproachResultResponse, IExecuteApproachRequest } from '../types';

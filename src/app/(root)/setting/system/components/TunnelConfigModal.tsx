@@ -1,16 +1,19 @@
 'use client';
 
 import { FC, useCallback, useEffect, useMemo } from 'react';
+
 import {
     CustomButton,
     CustomFlex,
     CustomForm,
+    CustomInputForm,
+    CustomInputFormType,
     CustomModal,
     CustomRadio,
     CustomTypography,
 } from '@/components';
-import { CustomInputForm, CustomInputFormType } from '@/components';
 import { FormRuleType } from '@/utilities';
+
 import type { TunnelConfigDto } from '../types';
 
 export type TunnelConfigModalProps = {
@@ -61,6 +64,7 @@ export const TunnelConfigModal: FC<TunnelConfigModalProps> = ({
             footer={modalFooter}
             title="⚙️ Cấu hình Cloudflare Tunnel"
         >
+            {/* eslint-disable-next-line no-restricted-syntax -- Standalone system RPC setting dialog */}
             <CustomForm form={form} layout="vertical" initialValues={initialValues}>
                 <CustomForm.Item name="mode" label="Chế độ Tunnel" rules={[{ required: true }]}>
                     <CustomRadio.Group className="flex flex-col gap-2">

@@ -1,7 +1,8 @@
 'use client';
 
-import { CustomFlex, CustomSegmented, CustomTypography } from '@/components';
 import { Icon } from '@iconify/react';
+
+import { CustomFlex, CustomSegmented, CustomTypography } from '@/components';
 
 export type TestModeSelectorProps = {
     testMode: 'stateless' | 'contextual';

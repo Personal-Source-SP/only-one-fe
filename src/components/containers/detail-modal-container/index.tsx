@@ -1,10 +1,12 @@
 'use client';
 
-import { CustomDetailSection } from '@/components/';
-import { CustomButton, CustomFlex, CustomModal } from '@/components';
-import { Icon } from '@iconify/react';
 import type { ReactNode } from 'react';
 import { useMemo } from 'react';
+import { Icon } from '@iconify/react';
+
+import { CustomButton, CustomFlex, CustomModal } from '@/components';
+import { CustomDetailSection } from '@/components/';
+
 import type { DetailModalContainerProps } from './types';
 
 export const DetailModalContainer = <TRecord extends object = Record<string, unknown>>({

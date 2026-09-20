@@ -1,9 +1,9 @@
 'use client';
 
+import type { IScheduleJobEvent } from '@/app/(root)/schedule/job-events/types';
 import { CustomDescriptions, CustomModal, CustomTabs } from '@/components';
 import { StatusTag } from '@/components';
 import { calculateDuration, formatDate } from '@/libs';
-import type { IScheduleJobEvent } from '@/app/(root)/schedule/job-events/types';
 
 type ViewJobEventProps = {
     isOpen: boolean;

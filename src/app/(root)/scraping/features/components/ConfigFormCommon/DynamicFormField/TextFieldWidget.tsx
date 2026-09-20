@@ -1,11 +1,13 @@
 'use client';
 
-import { CustomCol, CustomForm, CustomInput } from '@/components';
+import { useMemo } from 'react';
+
 import type {
     FormEvaluationContext,
     TextFormFieldSchema,
 } from '@/app/(root)/scraping/features/types';
-import { useMemo } from 'react';
+import { CustomCol, CustomForm, CustomInput } from '@/components';
+
 import { FormDiffLabel } from '../FormDiffLabel';
 
 export type TextFieldWidgetProps = {

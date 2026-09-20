@@ -1,5 +1,6 @@
-import { DATE_FORMAT_SHORT, DATE_FORMAT_TIME } from '@/constants';
 import dayjs from 'dayjs';
+
+import { DATE_FORMAT_SHORT, DATE_FORMAT_TIME } from '@/constants';
 
 export const formatDate = (
     date: string | Date | undefined,

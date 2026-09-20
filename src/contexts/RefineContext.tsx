@@ -1,5 +1,14 @@
 'use client';
 
+import { PropsWithChildren, useEffect, useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { Session } from 'next-auth';
+import { SessionProvider, signIn, signOut, useSession } from 'next-auth/react';
+import { useNotificationProvider } from '@refinedev/antd';
+import { AuthProvider, Refine } from '@refinedev/core';
+import routerProvider from '@refinedev/nextjs-router';
+import dayjs from 'dayjs';
+
 import { Loading, UnsavedChangesNotifierAppRouter } from '@/components';
 import { env } from '@/config';
 import {
@@ -11,15 +20,7 @@ import {
 } from '@/constants';
 import { ColorModeContextProvider } from '@/contexts/ColorModeContext';
 import { accessControlProvider } from '@/providers/access-control-provider';
-import { RestServer, createSessionAxiosInstance } from '@/providers/data-provider';
-import { useNotificationProvider } from '@refinedev/antd';
-import { AuthProvider, Refine } from '@refinedev/core';
-import routerProvider from '@refinedev/nextjs-router';
-import dayjs from 'dayjs';
-import { Session } from 'next-auth';
-import { SessionProvider, signIn, signOut, useSession } from 'next-auth/react';
-import { usePathname, useRouter } from 'next/navigation';
-import { PropsWithChildren, useEffect, useState } from 'react';
+import { createSessionAxiosInstance, RestServer } from '@/providers/data-provider';
 
 type AppProps = {
     defaultMode?: string;

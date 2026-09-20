@@ -3,6 +3,6 @@ export * from './ConfigFormCommon/FormDiffLabel';
 export * from './FeatureCardDetail';
 export * from './FeatureHistoryModal';
 export * from './FeatureSettingModal';
-export * from './FeatureTestTab';
 export * from './FeatureStatusSelect';
+export * from './FeatureTestTab';
 export * from './FeatureVersionSelect';

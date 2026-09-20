@@ -1,3 +1,5 @@
+import type { ComponentProps, ReactNode } from 'react';
+
 import type {
     CustomCheckbox,
     CustomPicker,
@@ -16,7 +18,6 @@ import type {
 } from '@/components';
 import type { FormMode } from '@/hooks';
 import type { FormRuleConfig } from '@/utilities';
-import type { ComponentProps, ReactNode } from 'react';
 
 export interface IHtmlEditorFieldProps {
     value?: string;

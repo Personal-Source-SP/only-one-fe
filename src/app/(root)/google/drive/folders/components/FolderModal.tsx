@@ -1,8 +1,6 @@
 'use client';
 
 import React from 'react';
-import { CustomInputForm, CustomModalForm, CustomSelectInput } from '@/components';
-import { FormRuleType } from '@/utilities';
 
 import { FieldsEnum } from '@/app/(root)/google/drive/folders/constants';
 import type {
@@ -10,6 +8,8 @@ import type {
     FolderModalProps,
     GoogleFolderRecord,
 } from '@/app/(root)/google/drive/folders/types';
+import { CustomInputForm, CustomModalForm, CustomSelectInput } from '@/components';
+import { FormRuleType } from '@/utilities';
 
 export const FolderModal = ({ folderOptions, modalForm }: FolderModalProps) => {
     const { formProps } = modalForm;

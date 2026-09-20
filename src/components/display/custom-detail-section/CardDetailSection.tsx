@@ -1,8 +1,10 @@
 'use client';
 
-import { CustomCard, CustomFlex } from '@/components';
-import { Icon } from '@iconify/react';
 import { useMemo } from 'react';
+import { Icon } from '@iconify/react';
+
+import { CustomCard, CustomFlex } from '@/components';
+
 import { CustomDetailSection } from './index';
 import type { ICardDetailSection } from './types';
 

@@ -1,5 +1,10 @@
 'use client';
 
+import { useMemo } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { signOut } from 'next-auth/react';
+import { Icon } from '@iconify/react';
+
 import {
     CustomAvatar,
     CustomBadge,
@@ -9,12 +14,7 @@ import {
     MenuProps,
 } from '@/components';
 import { KEY_SESSION_STORAGE } from '@/constants';
-import { Icon } from '@iconify/react';
-import { signOut } from 'next-auth/react';
-import { usePathname, useRouter } from 'next/navigation';
-
 import { getSectionTabs } from '@/libs';
-import { useMemo } from 'react';
 
 type HeaderProps = {
     pageDescription?: string;

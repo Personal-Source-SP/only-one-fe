@@ -1,5 +1,6 @@
-import { CustomFlex } from '@/components';
 import { Icon } from '@iconify/react';
+
+import { CustomFlex } from '@/components';
 
 type LogoProps = {
     showText?: boolean;

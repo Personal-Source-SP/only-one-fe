@@ -1,8 +1,10 @@
 'use client';
 
+import { type ReactNode, useMemo } from 'react';
+
 import { CustomForm, type FormItemProps } from '@/components';
-import { useMemo, type ReactNode } from 'react';
 import { buildFormRules, type FormRuleConfig } from '@/utilities';
+
 import { HtmlEditor, type HtmlEditorProps } from './HtmlEditor';
 
 export type CustomHtmlEditorFormProps = {

@@ -1,8 +1,9 @@
+import { useCallback, useMemo } from 'react';
 import { useGetIdentity } from '@refinedev/core';
 import fromPairs from 'lodash/fromPairs';
 import map from 'lodash/map';
 import some from 'lodash/some';
-import { useCallback, useMemo } from 'react';
+
 import type { CurrentUserIdentity } from './useHasRole';
 
 export const usePermission = () => {

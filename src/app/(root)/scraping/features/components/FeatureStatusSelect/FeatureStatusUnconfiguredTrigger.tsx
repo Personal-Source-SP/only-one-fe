@@ -1,7 +1,9 @@
 'use client';
 
-import { CustomFlex, CustomTooltip } from '@/components';
 import { Icon } from '@iconify/react';
+
+import { CustomFlex, CustomTooltip } from '@/components';
+
 import type { FeatureStatusDefinition } from '../../constants';
 
 export type FeatureStatusUnconfiguredTriggerProps = {

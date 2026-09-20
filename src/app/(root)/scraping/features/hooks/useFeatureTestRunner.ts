@@ -1,9 +1,11 @@
 'use client';
 
+import { useCallback, useMemo, useState } from 'react';
+
 import { API_ENDPOINT } from '@/config';
 import { MessageType } from '@/enums';
 import { useCustomMutationData } from '@/hooks';
-import { useCallback, useMemo, useState } from 'react';
+
 import { useFeatureModalContext } from '../context';
 import { DataProviderFeatureType, ScraperServiceEnum } from '../enums';
 import type {

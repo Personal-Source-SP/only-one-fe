@@ -1,5 +1,6 @@
-import { getApiBaseUrl } from '@/libs';
 import type { IAuthLoginRequest, IAuthLoginResponse, IAuthRefreshResponse } from '@/interfaces';
+import { getApiBaseUrl } from '@/libs';
+
 import { BaseApi } from './base.service';
 
 class AuthService extends BaseApi {

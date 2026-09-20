@@ -1,6 +1,7 @@
-import type { CrudSort } from '@refinedev/core';
-import type { SorterResult, TablePaginationConfig } from '@/components';
 import { useCallback } from 'react';
+import type { CrudSort } from '@refinedev/core';
+
+import type { SorterResult, TablePaginationConfig } from '@/components';
 
 type UseTableChangeProps<TData> = {
     setSorters: (sorters: CrudSort[]) => void;

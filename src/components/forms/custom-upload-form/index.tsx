@@ -1,6 +1,8 @@
 'use client';
 
+import { type ReactNode, useMemo, useState } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
+
 import {
     CustomForm,
     CustomModal,
@@ -9,8 +11,6 @@ import {
     type UploadFile,
     type UploadProps,
 } from '@/components';
-import { useMemo, useState, type ReactNode } from 'react';
-
 import { buildFormRules, type FormRuleConfig } from '@/utilities';
 
 export type CustomUploadFormProps = {
@@ -40,9 +40,9 @@ export const CustomUploadForm = ({
         setPreviewTitle(file.name || file.url?.substring(file.url.lastIndexOf('/') + 1) || '');
     };
 
-    const normFile = (e: any) => {
+    const normFile = (e: unknown) => {
         if (Array.isArray(e)) return e;
-        return e?.fileList;
+        return (e as { fileList?: UploadFile[] })?.fileList;
     };
 
     return (

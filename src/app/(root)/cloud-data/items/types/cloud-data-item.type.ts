@@ -1,5 +1,5 @@
-import type { IAbstract } from '@/interfaces';
 import type { ICloudDataProvider } from '@/app/(root)/cloud-data/providers/types';
+import type { IAbstract } from '@/interfaces';
 
 export interface ICloudDataItem extends IAbstract {
     cloudDataProviderId: string;

@@ -1,9 +1,10 @@
 'use client';
 
-import { createContext, useContext, useMemo, type PropsWithChildren } from 'react';
+import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
+
+import type { FeatureDefinition } from '../constants';
 import { useFeatureHistory } from '../hooks';
 import type { IConfigVersion, IDataProviderFeature } from '../types';
-import type { FeatureDefinition } from '../constants';
 
 export interface FeatureHistoryContextValue {
     open: boolean;
