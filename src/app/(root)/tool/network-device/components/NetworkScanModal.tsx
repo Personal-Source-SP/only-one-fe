@@ -40,7 +40,7 @@ export const NetworkScanModal = ({ modalForm }: NetworkScanModalProps) => {
                         },
                         rulesConfig: [
                             {
-                                type: FormRuleType.Required,
+                                type: FormRuleType.RequiredNumber,
                                 message: 'Vui lòng nhập timeout',
                             },
                         ],

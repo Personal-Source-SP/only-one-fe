@@ -106,8 +106,21 @@ export const buildFormRules = ({ rules }: BuildFormRulesRequest): BuildFormRules
             case FormRuleType.Required: {
                 return {
                     required: true,
-                    message: rule.message,
-                    whitespace: rule.whitespace,
+                    validator: (_, value) => {
+                        if (value === undefined || value === null || value === '') {
+                            return Promise.reject(new Error(rule.message));
+                        }
+                        if (rule.whitespace && typeof value === 'string' && value.trim() === '') {
+                            return Promise.reject(new Error(rule.message));
+                        }
+                        if (typeof value === 'number' && isNaN(value)) {
+                            return Promise.reject(new Error(rule.message));
+                        }
+                        if (Array.isArray(value) && value.length === 0) {
+                            return Promise.reject(new Error(rule.message));
+                        }
+                        return Promise.resolve();
+                    },
                 };
             }
 
