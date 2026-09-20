@@ -35,8 +35,7 @@ export default function NetworkDevicePage() {
         currentScanStatus,
         scanModalForm,
         approachModalForm,
-        selectedDeviceForDetail,
-        setSelectedDeviceForDetail,
+        detailModal,
         approachResult,
         handleOpenApproach,
         handleOpenApproachFromDetail,
@@ -234,7 +233,7 @@ export default function NetworkDevicePage() {
                     table={table}
                     columns={columns}
                     deleteResource={RESOURCE.NETWORK_DEVICES}
-                    onView={(record) => setSelectedDeviceForDetail(record)}
+                    onView={(record) => detailModal.show(record)}
                     customRowActions={[
                         {
                             key: 'approach',
@@ -249,10 +248,8 @@ export default function NetworkDevicePage() {
             <NetworkScanModal modalForm={scanModalForm} />
 
             <DeviceDetailModal
-                device={selectedDeviceForDetail}
-                open={Boolean(selectedDeviceForDetail)}
+                detailModal={detailModal}
                 onOpenApproach={handleOpenApproachFromDetail}
-                onClose={() => setSelectedDeviceForDetail(null)}
             />
 
             <DeviceApproachModal result={approachResult} modalForm={approachModalForm} />

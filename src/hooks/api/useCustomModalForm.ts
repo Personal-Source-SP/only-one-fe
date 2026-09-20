@@ -1,13 +1,12 @@
 import { useModalForm } from '@refinedev/antd';
 import type { BaseRecord, GetOneResponse, HttpError } from '@refinedev/core';
 
-import type { ButtonProps, FormInstance, FormProps } from '@/components';
+import type { FormInstance, FormProps } from '@/components';
 import type {
     FormMode,
     IBaseApiFormRequest,
     IBaseApiFormResponse,
     IBaseApiNotificationRequest,
-    InitialValuesMapper,
 } from '@/interfaces';
 import {
     createFormFinishHandler,

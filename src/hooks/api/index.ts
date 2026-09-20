@@ -3,6 +3,7 @@ export * from './useCustomDelete';
 export * from './useCustomDrawerForm';
 export * from './useCustomList';
 export * from './useCustomModal';
+export * from './useCustomModalDetail';
 export * from './useCustomModalForm';
 export * from './useCustomMutationData';
 export * from './useCustomOne';

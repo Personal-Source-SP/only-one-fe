@@ -4,7 +4,7 @@ import { useCallback, useState } from 'react';
 import type { BaseRecord } from '@refinedev/core';
 
 import { API_ENDPOINT } from '@/config';
-import { useCustomModalForm } from '@/hooks';
+import { useCustomModalDetail, useCustomModalForm } from '@/hooks';
 
 import { NetworkDeviceApproachEnum } from '../enums';
 import type {
@@ -15,9 +15,8 @@ import type {
 } from '../types';
 
 export const useNetworkDeviceModals = (onScanTriggered?: () => Promise<unknown>) => {
-    const [selectedDeviceForDetail, setSelectedDeviceForDetail] = useState<INetworkDevice | null>(
-        null,
-    );
+    const detailModal = useCustomModalDetail<INetworkDevice>();
+
     const [approachResult, setApproachResult] = useState<IApproachResultResponse | null>(null);
 
     const scanModalForm = useCustomModalForm<BaseRecord, ITriggerScanRequest>({
@@ -53,9 +52,9 @@ export const useNetworkDeviceModals = (onScanTriggered?: () => Promise<unknown>)
             approachModalForm.show();
             approachModalForm.formProps.form?.setFieldsValue({
                 approach: NetworkDeviceApproachEnum.PROTOCOL_AUTH,
+                timeoutMs: 3000,
                 ip: device?.ipAddress || '',
                 mac: device?.macAddress || '',
-                timeoutMs: 3000,
                 ports: device?.openPorts?.length ? device.openPorts : [80, 554, 8000, 37777],
                 credentials: [
                     { username: 'admin', password: '' },
@@ -68,18 +67,17 @@ export const useNetworkDeviceModals = (onScanTriggered?: () => Promise<unknown>)
 
     const handleOpenApproachFromDetail = useCallback(
         (device: INetworkDevice) => {
-            setSelectedDeviceForDetail(null);
+            detailModal.close();
             handleOpenApproach(device);
         },
-        [handleOpenApproach],
+        [detailModal, handleOpenApproach],
     );
 
     return {
+        detailModal,
         scanModalForm,
-        approachModalForm,
-        selectedDeviceForDetail,
-        setSelectedDeviceForDetail,
         approachResult,
+        approachModalForm,
         setApproachResult,
         handleOpenApproach,
         handleOpenApproachFromDetail,

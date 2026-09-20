@@ -5,6 +5,7 @@ import { Icon } from '@iconify/react';
 
 import { DetailModalContainer } from '@/components';
 import { CustomButton, CustomFlex, CustomTag } from '@/components';
+import type { UseCustomModalDetailReturnType } from '@/hooks';
 import type { IDetailSection } from '@/interfaces';
 
 import { DEVICE_TYPE_CONFIG } from '../constants';
@@ -12,18 +13,12 @@ import type { INetworkDevice } from '../types';
 import { OnvifProfilesList } from './OnvifProfilesList';
 
 type DeviceDetailModalProps = {
-    device: INetworkDevice | null;
-    open: boolean;
-    onClose: () => void;
+    detailModal: UseCustomModalDetailReturnType<INetworkDevice, INetworkDevice>;
     onOpenApproach: (device: INetworkDevice) => void;
 };
 
-export const DeviceDetailModal = ({
-    device,
-    open,
-    onClose,
-    onOpenApproach,
-}: DeviceDetailModalProps) => {
+export const DeviceDetailModal = ({ detailModal, onOpenApproach }: DeviceDetailModalProps) => {
+    const device = detailModal.data;
     const typeCfg = device
         ? DEVICE_TYPE_CONFIG[device.deviceType] || DEVICE_TYPE_CONFIG.UNKNOWN
         : null;
@@ -123,15 +118,24 @@ export const DeviceDetailModal = ({
         [typeCfg],
     );
 
+    const modalTitle = useMemo(() => {
+        const titleText = device ? `Chi Tiết Thiết Bị: ${device.ipAddress}` : 'Chi Tiết Thiết Bị';
+        if (!typeCfg) return titleText;
+
+        return (
+            <CustomFlex align="center" gap="small">
+                <Icon icon={typeCfg.icon} width={22} height={22} />
+                <span>{titleText}</span>
+            </CustomFlex>
+        );
+    }, [device, typeCfg]);
+
     return (
         <DetailModalContainer<INetworkDevice>
-            open={open}
-            onClose={onClose}
-            data={device}
+            detailModal={detailModal}
             width={750}
-            title={device ? `Chi Tiết Thiết Bị: ${device.ipAddress}` : 'Chi Tiết Thiết Bị'}
-            icon={typeCfg ? <Icon icon={typeCfg.icon} width={22} height={22} /> : undefined}
             sections={sections}
+            title={modalTitle}
             extraActions={(d) => (
                 <CustomButton
                     key="approach"
