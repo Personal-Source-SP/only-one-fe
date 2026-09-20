@@ -32,16 +32,15 @@ export interface IOnvifMetadata {
 }
 
 export interface INetworkDevice extends IAbstract {
-    id: string;
     ipAddress: string;
     isOnline: boolean;
     lastSeenAt: string;
+    openPorts: number[];
     deviceType: NetworkDeviceType;
 
-    openPorts: number[];
-    model?: string | null;
-    vendor?: string | null;
-    macAddress?: string | null;
-    firmwareVersion?: string | null;
-    onvifMetadata?: IOnvifMetadata | null;
+    model?: string;
+    vendor?: string;
+    macAddress?: string;
+    firmwareVersion?: string;
+    onvifMetadata?: IOnvifMetadata;
 }

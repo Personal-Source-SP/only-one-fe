@@ -51,6 +51,7 @@ export interface IBaseFormField<TValues = unknown> {
     colSpan?: number;
     rulesConfig?: FormRuleConfig[];
     formItemProps?: Omit<FormItemProps, 'children' | 'label' | 'name' | 'rules'>;
+    visible?: boolean | ((mode: FormMode, form?: FormInstance<TValues>) => boolean);
     disabled?: boolean | ((mode: FormMode, form?: FormInstance<TValues>) => boolean);
 }
 

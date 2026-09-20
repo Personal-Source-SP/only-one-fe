@@ -70,13 +70,18 @@ export const CustomFormField = <TValues extends object = Record<string, unknown>
     withCol = true,
     form,
 }: CustomFormFieldProps<TValues>) => {
-    const { name, label, rulesConfig, disabled, formItemProps } = field;
+    const { name, label, rulesConfig, disabled, visible, formItemProps } = field;
 
     const colSpan = useMemo(() => field.colSpan ?? 24, [field.colSpan]);
 
     const isDisabled = useMemo(
         () => (typeof disabled === 'function' ? disabled(mode, form) : disabled),
         [disabled, mode, form],
+    );
+
+    const isVisible = useMemo(
+        () => (typeof visible === 'function' ? visible(mode, form) : visible !== false),
+        [visible, mode, form],
     );
 
     const renderFieldContent = useCallback((): ReactNode => {
@@ -319,6 +324,10 @@ export const CustomFormField = <TValues extends object = Record<string, unknown>
             }
         }
     }, [field, form, mode, formItemProps, isDisabled, label, name, rulesConfig]);
+
+    if (!isVisible) {
+        return null;
+    }
 
     if (!withCol) {
         return renderFieldContent();

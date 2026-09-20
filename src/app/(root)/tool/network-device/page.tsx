@@ -31,17 +31,12 @@ export default function NetworkDevicePage() {
         debouncedSearch,
         setFilters,
         currentScanStatus,
-        isTriggeringScan,
-        isExecutingApproach,
-        isScanModalOpen,
-        setIsScanModalOpen,
+        scanModalForm,
+        approachModalForm,
         selectedDeviceForDetail,
         setSelectedDeviceForDetail,
-        selectedDeviceForApproach,
-        setSelectedDeviceForApproach,
         approachResult,
-        handleTriggerScan,
-        handleExecuteApproach,
+        handleOpenApproach,
         handleOpenApproachFromDetail,
         stats,
     } = useNetworkDevicePage();
@@ -213,12 +208,12 @@ export default function NetworkDevicePage() {
             key: 'scan',
             label: 'Quét Mạng Mới',
             icon: <Icon icon="mdi:radar" />,
-            onClick: () => setIsScanModalOpen(true),
+            onClick: () => scanModalForm.show(),
             component: (
                 <CustomButton
                     type="primary"
                     icon={<Icon icon="mdi:radar" />}
-                    onClick={() => setIsScanModalOpen(true)}
+                    onClick={() => scanModalForm.show()}
                 >
                     Quét Mạng Mới
                 </CustomButton>
@@ -227,36 +222,29 @@ export default function NetworkDevicePage() {
     ];
 
     return (
-        <CustomSpace direction="vertical" size="large" className="w-full">
-            <NetworkDeviceStatsHeader stats={stats} scanStatus={currentScanStatus} />
-
+        <>
             <ListContainer
                 actions={actions}
                 filters={filters}
-                isLoading={table.tableQuery.isLoading}
+                top={<NetworkDeviceStatsHeader stats={stats} scanStatus={currentScanStatus} />}
             >
                 <ListTable<INetworkDevice>
-                    columns={columns}
                     table={table}
+                    columns={columns}
                     deleteResource={RESOURCE.NETWORK_DEVICES}
                     onView={(record) => setSelectedDeviceForDetail(record)}
                     customRowActions={[
                         {
                             key: 'approach',
                             tooltip: 'Chẩn đoán / Test approach ⚡',
-                            onClick: (record) => setSelectedDeviceForApproach(record),
+                            onClick: (record) => handleOpenApproach(record),
                             icon: <Icon icon="mdi:flash" className="text-amber-500 text-base" />,
                         },
                     ]}
                 />
             </ListContainer>
 
-            <NetworkScanModal
-                open={isScanModalOpen}
-                loading={isTriggeringScan}
-                onSubmit={handleTriggerScan}
-                onClose={() => setIsScanModalOpen(false)}
-            />
+            <NetworkScanModal modalForm={scanModalForm} />
 
             <DeviceDetailModal
                 device={selectedDeviceForDetail}
@@ -265,14 +253,7 @@ export default function NetworkDevicePage() {
                 onClose={() => setSelectedDeviceForDetail(null)}
             />
 
-            <DeviceApproachModal
-                result={approachResult}
-                loading={isExecutingApproach}
-                device={selectedDeviceForApproach}
-                open={Boolean(selectedDeviceForApproach)}
-                onExecute={handleExecuteApproach}
-                onClose={() => setSelectedDeviceForApproach(null)}
-            />
-        </CustomSpace>
+            <DeviceApproachModal result={approachResult} modalForm={approachModalForm} />
+        </>
     );
 }

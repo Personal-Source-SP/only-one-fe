@@ -1,8 +1,10 @@
 'use client';
 
 import { API_ENDPOINT } from '@/config';
-import { useCustomMutationData } from '@/hooks';
+import { useCustomModalForm } from '@/hooks';
+import type { BaseRecord } from '@refinedev/core';
 import { useCallback, useState } from 'react';
+import { NetworkDeviceApproachEnum } from '../enums';
 import type {
     IApproachResultResponse,
     IExecuteApproachRequest,
@@ -11,83 +13,73 @@ import type {
 } from '../types';
 
 export const useNetworkDeviceModals = (onScanTriggered?: () => Promise<unknown>) => {
-    const { handleCustomMutationData: mutateTriggerScan } = useCustomMutationData();
-    const { handleCustomMutationData: mutateExecuteApproach } = useCustomMutationData();
-
-    const [isTriggeringScan, setIsTriggeringScan] = useState(false);
-    const [isExecutingApproach, setIsExecutingApproach] = useState(false);
-    const [isScanModalOpen, setIsScanModalOpen] = useState(false);
     const [selectedDeviceForDetail, setSelectedDeviceForDetail] = useState<INetworkDevice | null>(
         null,
     );
-    const [selectedDeviceForApproach, setSelectedDeviceForApproach] =
-        useState<INetworkDevice | null>(null);
     const [approachResult, setApproachResult] = useState<IApproachResultResponse | null>(null);
 
-    const handleTriggerScan = useCallback(
-        async (values: ITriggerScanRequest) => {
-            setIsTriggeringScan(true);
-            try {
-                await mutateTriggerScan({
-                    url: API_ENDPOINT.NETWORK_DEVICES.SCAN,
-                    method: 'post',
-                    values,
-                    successNotification: {
-                        type: 'success',
-                        message: 'Đã kích hoạt quét mạng bất đồng bộ thành công',
-                    },
-                });
-                setIsScanModalOpen(false);
-                if (onScanTriggered) {
-                    await onScanTriggered();
-                }
-            } finally {
-                setIsTriggeringScan(false);
+    const scanModalForm = useCustomModalForm<BaseRecord, ITriggerScanRequest>({
+        action: 'create',
+        resource: API_ENDPOINT.NETWORK_DEVICES.SCAN,
+        successNotification: {
+            type: 'success',
+            message: 'Đã kích hoạt quét mạng bất đồng bộ thành công',
+        },
+        onMutationSuccess: async () => {
+            if (onScanTriggered) {
+                await onScanTriggered();
             }
         },
-        [mutateTriggerScan, onScanTriggered],
-    );
+    });
 
-    const handleExecuteApproach = useCallback(
-        async (payload: IExecuteApproachRequest) => {
-            setIsExecutingApproach(true);
+    const approachModalForm = useCustomModalForm<BaseRecord, IExecuteApproachRequest>({
+        action: 'create',
+        resource: API_ENDPOINT.NETWORK_DEVICES.APPROACH_EXECUTE,
+        autoResetForm: false,
+        successNotification: {
+            type: 'success',
+            message: 'Thực thi chẩn đoán hoàn tất',
+        },
+        onMutationSuccess: (data) => {
+            setApproachResult(data?.data as unknown as IApproachResultResponse);
+        },
+    });
+
+    const handleOpenApproach = useCallback(
+        (device: INetworkDevice) => {
             setApproachResult(null);
-            try {
-                const res = (await mutateExecuteApproach({
-                    url: API_ENDPOINT.NETWORK_DEVICES.APPROACH_EXECUTE,
-                    method: 'post',
-                    values: payload,
-                    successNotification: {
-                        type: 'success',
-                        message: 'Thực thi chẩn đoán hoàn tất',
-                    },
-                })) as unknown as IApproachResultResponse;
-                setApproachResult(res);
-            } finally {
-                setIsExecutingApproach(false);
-            }
+            approachModalForm.show();
+            approachModalForm.formProps.form?.setFieldsValue({
+                approach: NetworkDeviceApproachEnum.PROTOCOL_AUTH,
+                ip: device?.ipAddress || '',
+                mac: device?.macAddress || '',
+                timeoutMs: 3000,
+                ports: device?.openPorts?.length ? device.openPorts : [80, 554, 8000, 37777],
+                credentials: [
+                    { username: 'admin', password: '' },
+                    { username: 'admin', password: 'admin' },
+                ],
+            });
         },
-        [mutateExecuteApproach],
+        [approachModalForm],
     );
 
-    const handleOpenApproachFromDetail = useCallback((device: INetworkDevice) => {
-        setSelectedDeviceForDetail(null);
-        setSelectedDeviceForApproach(device);
-    }, []);
+    const handleOpenApproachFromDetail = useCallback(
+        (device: INetworkDevice) => {
+            setSelectedDeviceForDetail(null);
+            handleOpenApproach(device);
+        },
+        [handleOpenApproach],
+    );
 
     return {
-        isTriggeringScan,
-        isExecutingApproach,
-        isScanModalOpen,
-        setIsScanModalOpen,
+        scanModalForm,
+        approachModalForm,
         selectedDeviceForDetail,
         setSelectedDeviceForDetail,
-        selectedDeviceForApproach,
-        setSelectedDeviceForApproach,
         approachResult,
         setApproachResult,
-        handleTriggerScan,
-        handleExecuteApproach,
+        handleOpenApproach,
         handleOpenApproachFromDetail,
     };
 };
