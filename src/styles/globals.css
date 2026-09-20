@@ -363,12 +363,19 @@ body {
 .ant-input,
 .ant-input-affix-wrapper,
 .ant-input-number,
-.ant-input-number-input,
 .ant-select-selector,
 .ant-picker {
     background-color: var(--hub-surface) !important;
     border-color: var(--hub-border) !important;
     color: var(--hub-text) !important;
+}
+
+.ant-input-number-input {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    height: 100% !important;
+    background-color: transparent !important;
 }
 
 .ant-input::placeholder,

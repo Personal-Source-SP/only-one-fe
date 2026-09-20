@@ -91,6 +91,17 @@ export const buildHubAntdTheme = (): ThemeConfig => {
                 colorText,
                 colorTextPlaceholder: colorTextSecondary,
             },
+            InputNumber: {
+                activeShadow: `0 0 0 2px color-mix(in srgb, ${colorPrimary} 18%, transparent)`,
+                boxShadow: 'none',
+                colorBgContainer: colorBgElevated,
+                colorBorder,
+                colorText,
+                colorTextPlaceholder: colorTextSecondary,
+                controlHeight: 40,
+                controlHeightLG: 44,
+                controlHeightSM: 32,
+            },
             Layout: {
                 bodyBg: 'transparent',
                 headerBg: colorBgElevated,

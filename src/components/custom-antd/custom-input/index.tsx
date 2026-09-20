@@ -57,7 +57,7 @@ export function CustomInputNumber<T extends string | number = string | number>({
     const mergedClassName = mergeHubAntdClass(
         HUB_ANTD_INPUT_NUMBER_CLASS,
         touchFriendly
-            ? 'min-h-11 sm:min-h-10 [&_.ant-input]:min-h-11 sm:[&_.ant-input]:min-h-10'
+            ? 'min-h-11 sm:min-h-10 [&_.ant-input-number-input]:min-h-11 sm:[&_.ant-input-number-input]:min-h-10'
             : undefined,
         className,
     );

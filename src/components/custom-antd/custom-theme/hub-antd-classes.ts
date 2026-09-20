@@ -3,7 +3,7 @@ export const HUB_ANTD_INPUT_CLASS =
     '[&_.ant-input]:!rounded-hub [&_.ant-input]:!border-hub-border [&_.ant-input]:!bg-hub-surface [&_.ant-input]:!text-hub-text';
 
 export const HUB_ANTD_INPUT_NUMBER_CLASS =
-    '[&_.ant-input-number]:!rounded-hub [&_.ant-input-number]:!border-hub-border [&_.ant-input-number]:!bg-hub-surface [&_.ant-input-number]:!text-hub-text';
+    '!rounded-hub !border-hub-border !bg-hub-surface !text-hub-text [&_.ant-input-number-input]:!text-hub-text [&_.ant-input-number-input]:!bg-transparent';
 
 export const HUB_ANTD_SELECT_CLASS =
     '[&_.ant-select-selector]:!rounded-hub [&_.ant-select-selector]:!border-hub-border [&_.ant-select-selector]:!bg-hub-surface [&_.ant-select-selector]:!text-hub-text';
