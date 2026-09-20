@@ -1,14 +1,7 @@
 'use client';
 
-import { CustomFormList, FormModalContainer } from '@/components/common';
-import {
-    CustomButton,
-    CustomFlex,
-    CustomForm,
-    CustomInput,
-    CustomSpace,
-    CustomTypography,
-} from '@/components/custom-antd';
+import { FormModalContainer } from '@/components/common';
+import { CustomFlex, CustomForm } from '@/components/custom-antd';
 import type { UseCustomModalFormResponse } from '@/hooks';
 import type { IFormSection } from '@/interfaces';
 import { FormRuleType } from '@/utilities';
@@ -20,19 +13,15 @@ import { NetworkDeviceApproachEnum } from '../enums';
 import type { IApproachResultResponse, IExecuteApproachRequest } from '../types';
 import { ApproachResultCard } from './ApproachResultCard';
 
-const { Text } = CustomTypography;
-
 type DeviceApproachModalProps = {
-    modalForm: UseCustomModalFormResponse<BaseRecord, IExecuteApproachRequest>;
     result: IApproachResultResponse | null;
+    modalForm: UseCustomModalFormResponse<BaseRecord, IExecuteApproachRequest>;
 };
 
-export const DeviceApproachModal = ({ modalForm, result }: DeviceApproachModalProps) => {
-    const currentApproach =
-        CustomForm.useWatch('approach', modalForm.formProps.form) ||
-        NetworkDeviceApproachEnum.PROTOCOL_AUTH;
+export const DeviceApproachModal = ({ result, modalForm }: DeviceApproachModalProps) => {
+    const currentApproach = CustomForm.useWatch('approach', modalForm.formProps.form);
 
-    const sections: IFormSection<IExecuteApproachRequest>[] = useMemo(
+    const sectionForm: IFormSection<IExecuteApproachRequest>[] = useMemo(
         () => [
             {
                 type: 'plain',
@@ -88,51 +77,30 @@ export const DeviceApproachModal = ({ modalForm, result }: DeviceApproachModalPr
                     },
                     {
                         name: 'credentials',
-                        type: 'custom',
+                        type: 'list',
+                        label: 'Danh sách Tài khoản Xác thực (Credentials)',
                         visible: currentApproach === NetworkDeviceApproachEnum.PROTOCOL_AUTH,
-                        render: () => (
-                            <div>
-                                <Text strong className="block mb-2 text-xs">
-                                    Danh sách Tài khoản Xác thực (Credentials):
-                                </Text>
-                                <CustomFormList name="credentials" addText="Thêm Credential">
-                                    {(fields, { remove }) => (
-                                        <CustomSpace direction="vertical" className="w-full">
-                                            {fields.map(({ key, name, ...restField }) => (
-                                                <CustomFlex key={key} gap="small" align="center">
-                                                    <CustomForm.Item
-                                                        {...restField}
-                                                        name={[name, 'username']}
-                                                        className="!mb-0 flex-1"
-                                                        rules={[
-                                                            {
-                                                                required: true,
-                                                                message: 'Nhập username',
-                                                            },
-                                                        ]}
-                                                    >
-                                                        <CustomInput placeholder="Username" />
-                                                    </CustomForm.Item>
-                                                    <CustomForm.Item
-                                                        {...restField}
-                                                        name={[name, 'password']}
-                                                        className="!mb-0 flex-1"
-                                                    >
-                                                        <CustomInput.Password placeholder="Password (để trống nếu ko có)" />
-                                                    </CustomForm.Item>
-                                                    <CustomButton
-                                                        danger
-                                                        type="text"
-                                                        icon={<Icon icon="mdi:delete" />}
-                                                        onClick={() => remove(name)}
-                                                    />
-                                                </CustomFlex>
-                                            ))}
-                                        </CustomSpace>
-                                    )}
-                                </CustomFormList>
-                            </div>
-                        ),
+                        addText: 'Thêm Credential',
+                        subFields: [
+                            {
+                                name: 'username',
+                                placeholder: 'Username',
+                                type: 'input',
+                                colSpan: 11,
+                                rulesConfig: [
+                                    {
+                                        type: FormRuleType.Required,
+                                        message: 'Nhập username',
+                                    },
+                                ],
+                            },
+                            {
+                                name: 'password',
+                                placeholder: 'Password (để trống nếu ko có)',
+                                type: 'password',
+                                colSpan: 11,
+                            },
+                        ],
                     },
                     {
                         name: 'timeoutMs',
@@ -157,17 +125,22 @@ export const DeviceApproachModal = ({ modalForm, result }: DeviceApproachModalPr
         [currentApproach, result],
     );
 
+    const titleModal = useMemo(
+        () => (
+            <CustomFlex align="center" gap="small">
+                <Icon icon="mdi:flash" width={22} height={22} className="text-amber-500" />
+                <span>Chẩn Đoán & Tiếp Cận Thiết Bị</span>
+            </CustomFlex>
+        ),
+        [],
+    );
+
     return (
         <FormModalContainer
+            title={titleModal}
+            sections={sectionForm}
             modalForm={modalForm}
-            sections={sections}
             okText="Bắt Đầu Thực Thi"
-            title={
-                <CustomFlex align="center" gap="small">
-                    <Icon icon="mdi:flash" width={22} height={22} className="text-amber-500" />
-                    <span>Chẩn Đoán & Tiếp Cận Thiết Bị</span>
-                </CustomFlex>
-            }
         />
     );
 };

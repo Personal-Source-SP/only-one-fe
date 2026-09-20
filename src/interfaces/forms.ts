@@ -42,10 +42,11 @@ export type FormFieldType =
     | 'json_toggle'
     | 'radio_group'
     | 'checkbox_group'
+    | 'list'
     | 'custom';
 
 export interface IBaseFormField<TValues = unknown> {
-    name: keyof TValues | string;
+    name: keyof TValues | string | (string | number)[];
     label?: ReactNode;
     description?: ReactNode;
     colSpan?: number;
@@ -152,6 +153,19 @@ export interface ICheckboxGroupFormField<TValues = unknown> extends IBaseFormFie
     checkboxGroupProps?: ComponentProps<typeof CustomCheckbox.Group>;
 }
 
+export interface IListFormField<TValues = unknown> extends IBaseFormField<TValues> {
+    type: 'list';
+    subFields: IFormField<TValues>[];
+    min?: number;
+    max?: number;
+    addText?: string;
+    emptyText?: string;
+    gutter?: [number, number];
+    itemLayout?: 'row' | 'card';
+    allowAdd?: boolean | ((mode: FormMode, form?: FormInstance<TValues>) => boolean);
+    allowRemove?: boolean | ((mode: FormMode, form?: FormInstance<TValues>) => boolean);
+}
+
 export type IFormField<TValues = unknown> =
     | IInputFormField<TValues>
     | INumberFormField<TValues>
@@ -167,6 +181,7 @@ export type IFormField<TValues = unknown> =
     | IJsonToggleFormField<TValues>
     | IRadioGroupFormField<TValues>
     | ICheckboxGroupFormField<TValues>
+    | IListFormField<TValues>
     | ICustomFormField<TValues>;
 
 // ==========================================

@@ -13,6 +13,7 @@ import {
     CustomSelectInput,
     CustomSwitchForm,
     CustomUpload,
+    CustomFormListField,
 } from '@/components/common';
 import type { FormInstance } from '@/components/custom-antd';
 import { CustomCol } from '@/components/custom-antd';
@@ -26,6 +27,7 @@ import type {
     IHtmlEditorFormField,
     IInputFormField,
     IJsonToggleFormField,
+    IListFormField,
     INumberFormField,
     IPasswordFormField,
     IRadioGroupFormField,
@@ -47,6 +49,7 @@ export type {
     IHtmlEditorFormField,
     IInputFormField,
     IJsonToggleFormField,
+    IListFormField,
     INumberFormField,
     IPasswordFormField,
     IRadioGroupFormField,
@@ -293,6 +296,10 @@ export const CustomFormField = <TValues extends object = Record<string, unknown>
                         checkboxGroupProps={checkboxField.checkboxGroupProps}
                     />
                 );
+            }
+            case 'list': {
+                const listField = field as IListFormField<TValues>;
+                return <CustomFormListField field={listField} form={form} mode={mode} />;
             }
             case 'input':
             default: {

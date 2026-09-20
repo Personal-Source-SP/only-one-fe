@@ -31,6 +31,7 @@ export * from './forms/custom-date-picker-form';
 export * from './forms/custom-drawer-form';
 export * from './forms/custom-form-field';
 export * from './forms/custom-form-list';
+export * from './forms/custom-form-list-field';
 export * from './forms/custom-form-section';
 export * from './forms/custom-html-editor-form';
 export * from './forms/custom-input-form';
