@@ -6,6 +6,7 @@ export * from './containers/list-container';
 export * from './containers/mobile-card-list';
 export * from './containers/list-header';
 export * from './containers/form-modal-container';
+export * from './containers/detail-modal-container';
 export * from './containers/pagination-controls';
 
 // Display
@@ -15,6 +16,7 @@ export * from './display/logo';
 export * from './display/media-lightbox';
 export * from './display/stat-card';
 export * from './display/status-tag';
+export * from './display/custom-detail-section';
 
 // Feedback
 export * from './feedback/data-not-found';

@@ -8,3 +8,4 @@ export * from './navigation';
 export * from './filter';
 export * from './containers';
 export * from './forms';
+export * from './details';
