@@ -1,5 +1,6 @@
 'use client';
 
+import { useCallback, useMemo } from 'react';
 import { Icon } from '@iconify/react';
 
 import {
@@ -22,18 +23,19 @@ type OnvifProfilesListProps = {
 export const OnvifProfilesList = ({ onvif }: OnvifProfilesListProps) => {
     if (!onvif) return null;
 
-    const handleCopy = (text: string, label: string) => {
+    const handleCopy = useCallback((text: string, label: string) => {
         navigator.clipboard.writeText(text);
         customMessage.success(`Đã sao chép ${label}`);
-    };
+    }, []);
 
-    const streamProfiles = onvif.streamProfiles;
+    const streamProfiles = useMemo(() => onvif.streamProfiles, [onvif.streamProfiles]);
 
     return (
         <div>
             <Text strong className="block mb-2 text-sm">
                 📹 Siêu dữ liệu ONVIF (Profiles & RTSP Streams):
             </Text>
+
             {streamProfiles && streamProfiles.length > 0 ? (
                 <CustomSpace direction="vertical" size="small" className="w-full">
                     {streamProfiles.map((p, idx) => (
@@ -52,10 +54,10 @@ export const OnvifProfilesList = ({ onvif }: OnvifProfilesListProps) => {
                             </CustomFlex>
                             {p.streamUri && (
                                 <CustomFlex
-                                    justify="space-between"
-                                    align="center"
                                     gap="small"
+                                    align="center"
                                     className="mb-1"
+                                    justify="space-between"
                                 >
                                     <Text className="text-xs break-all" type="secondary">
                                         RTSP: {p.streamUri}

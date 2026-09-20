@@ -13,15 +13,17 @@ import type { INetworkDevice } from '../types';
 import { OnvifProfilesList } from './OnvifProfilesList';
 
 type DeviceDetailModalProps = {
-    detailModal: UseCustomModalDetailReturnType<INetworkDevice, INetworkDevice>;
     onOpenApproach: (device: INetworkDevice) => void;
+    detailModal: UseCustomModalDetailReturnType<INetworkDevice, INetworkDevice>;
 };
 
-export const DeviceDetailModal = ({ detailModal, onOpenApproach }: DeviceDetailModalProps) => {
-    const device = detailModal.data;
-    const typeCfg = device
-        ? DEVICE_TYPE_CONFIG[device.deviceType] || DEVICE_TYPE_CONFIG.UNKNOWN
-        : null;
+export const DeviceDetailModal = ({ onOpenApproach, detailModal }: DeviceDetailModalProps) => {
+    const device = useMemo(() => detailModal.data, [detailModal.data]);
+
+    const typeCfg = useMemo(
+        () => (device ? DEVICE_TYPE_CONFIG[device.deviceType] || DEVICE_TYPE_CONFIG.UNKNOWN : null),
+        [device],
+    );
 
     const sections: IDetailSection<INetworkDevice>[] = useMemo(
         () => [
@@ -29,7 +31,7 @@ export const DeviceDetailModal = ({ detailModal, onOpenApproach }: DeviceDetailM
                 type: 'descriptions',
                 bordered: true,
                 size: 'small',
-                column: { xs: 1, sm: 2 },
+                column: 1,
                 items: [
                     {
                         name: 'ipAddress',
@@ -92,7 +94,6 @@ export const DeviceDetailModal = ({ detailModal, onOpenApproach }: DeviceDetailM
                     {
                         name: 'openPorts',
                         label: 'Cổng mở (Open Ports)',
-                        span: 2,
                         render: (ports) => {
                             const portList = ports as number[] | undefined;
                             if (!portList?.length) return 'Không phát hiện cổng mở';
@@ -132,10 +133,9 @@ export const DeviceDetailModal = ({ detailModal, onOpenApproach }: DeviceDetailM
 
     return (
         <DetailModalContainer<INetworkDevice>
-            detailModal={detailModal}
-            width={750}
-            sections={sections}
             title={modalTitle}
+            sections={sections}
+            detailModal={detailModal}
             extraActions={(d) => (
                 <CustomButton
                     key="approach"
