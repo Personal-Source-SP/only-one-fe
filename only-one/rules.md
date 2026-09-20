@@ -83,6 +83,5 @@
 - **[NEVER]** Pass `onSearch` prop to `IFilterField` for text search inputs — Always use `onChange: (val) => debouncedSearch(val?.toString() ?? '')` with `isPrimary: true` to avoid TypeScript contract errors and maintain uniform filter semantics.
 - **[AVOID]** Monolithic modal components exceeding 180 LOC — Extract specialized preview cards (e.g. `ApproachResultCard`) and nested lists/sub-views (e.g. `OnvifProfilesList`) into dedicated sub-components in `components/` to adhere to single responsibility.
 - **[AVOID]** Writing single large coordinator hooks containing multiple unrelated concerns — Decompose into specialized sub-hooks (e.g. `useNetworkScanStatus`, `useNetworkDeviceModals`, `useNetworkDeviceStats`) and assemble them cleanly inside `use<Feature>Page.ts`.
-
-
-
+- **[PREFER]** Declarative `visible?: boolean | ((mode, form) => boolean)` property on `IBaseFormField` schemas over conditional array spread `...(condition ? [field] : [])` — Keeps form section schemas flat, clean, and declarative.
+- **[PREFER]** `useCustomModalForm` with `action: 'create'` and `FormModalContainer` for command/action modals (e.g. Scan, Execute Approach) over manual `useState` modal open flags and manual `useCustomMutation` triggers.
