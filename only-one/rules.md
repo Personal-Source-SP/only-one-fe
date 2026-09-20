@@ -101,4 +101,7 @@
 - **[NEVER]** Import UI components from sub-paths like `@/components/custom-antd`, `@/components/containers/*`, `@/components/forms/*`, `@/components/display/*`, `@/components/feedback/*` — Always use the root unified barrel import `from '@/components'`.
 - **[NEVER]** Re-export type contracts (`export * from './types'`) inside `.tsx` component files — Keep `.tsx` files strictly focused on pure React component implementations. Always define and export types in `types.ts` and aggregate them via module barrel `index.ts`.
 - **[AVOID]** Using the `any` type anywhere in application code — Always leverage strict TypeScript types, discriminated unions, generic type constraints (`TRow`, `TValues`, `TRecord`), or `unknown` with type narrowing.
+- **[NEVER]** Omit type-aware validation when building form rules — Ensure `FormRuleType.Required` uses multi-type safe validation so non-string fields (`number`, `boolean`, `array`) do not trigger false validation rejections in `async-validator`.
+- **[AVOID]** Forgetting to register component tokens in Ant Design theme configuration (`hub-antd-theme.ts`) for specialized input widgets (`InputNumber`) — Always synchronize component tokens (`controlHeight`, `controlHeightLG`, `activeShadow`) with `Input` to prevent vertical text clipping.
+
 
