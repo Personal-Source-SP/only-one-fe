@@ -8,7 +8,7 @@ import {
     CustomSpin,
     CustomTag,
     CustomTypography,
-} from '@/components/custom-antd';
+} from '@/components';
 import { Icon } from '@iconify/react';
 import { ReactNode, useMemo } from 'react';
 import { FEATURE_MODAL_WIDTH, SCRAPER_SERVICE_LABELS } from '../../constants';

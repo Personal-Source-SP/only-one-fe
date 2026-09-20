@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback } from 'react';
-import { CustomFlex, CustomTag, CustomTypography } from '@/components/custom-antd';
+import { CustomFlex, CustomTag, CustomTypography } from '@/components';
 import { ConfigVersionType } from '../../enums';
 import { useFeatureHistoryContext } from '../../context';
 import { formatDate } from '@/libs';

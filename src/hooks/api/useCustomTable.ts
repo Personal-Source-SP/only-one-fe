@@ -1,4 +1,4 @@
-import type { TableProps } from '@/components/custom-antd';
+import type { TableProps } from '@/components';
 import { useDebounceSearch, useTableChange } from '@/hooks';
 import type { IBaseApiNotificationRequest, IBaseApiTransformRequest } from '@/interfaces';
 import { applyDataTransform, resolveQueryNotifications, resolveRowKey } from '@/utilities';

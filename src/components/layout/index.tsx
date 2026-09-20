@@ -1,8 +1,8 @@
 'use client';
 
-import { Loading } from '@/components/common';
+import { Loading } from '@/components';
 import { env } from '@/config';
-import { CustomSpace } from '@/components/custom-antd';
+import { CustomSpace } from '@/components';
 import { SIDEBAR_ITEMS } from '@/constants';
 import { useMainContext } from '@/contexts/MainContext';
 import { MessageType } from '@/enums';

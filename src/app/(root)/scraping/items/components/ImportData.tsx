@@ -15,7 +15,7 @@ import {
     CustomUpload,
     StepsProps,
     UploadFile,
-} from '@/components/custom-antd';
+} from '@/components';
 import { MessageType } from '@/enums';
 import { useMainContext } from '@/contexts/MainContext';
 import { DataImportType } from '../enums';

@@ -1,6 +1,6 @@
 'use client';
 
-import { CustomFlex, CustomRow } from '@/components/custom-antd';
+import { CustomFlex, CustomRow } from '@/components';
 import { useMemo } from 'react';
 import { FEATURE_SECTION_CONTAINER_CLASS } from '../../constants';
 import type { FormEvaluationContext, FormSectionSchema } from '../../types';

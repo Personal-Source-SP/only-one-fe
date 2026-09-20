@@ -18,7 +18,7 @@ import {
     CustomToggle,
     CustomTooltip,
     StepsProps,
-} from '@/components/custom-antd';
+} from '@/components';
 import { MessageType, MimeType } from '@/enums';
 import { useCustomMutationData, useSelectDataProviderItem, useSelectItem } from '@/hooks';
 import type { IItem } from '@/app/(root)/scraping/items/types';

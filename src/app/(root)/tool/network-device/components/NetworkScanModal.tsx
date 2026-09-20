@@ -1,4 +1,4 @@
-import { FormModalContainer } from '@/components/common';
+import { FormModalContainer } from '@/components';
 import type { UseCustomModalFormResponse } from '@/hooks';
 import type { IFormSection } from '@/interfaces';
 import { FormRuleType } from '@/utilities';

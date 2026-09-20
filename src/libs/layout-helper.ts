@@ -1,4 +1,4 @@
-import type { BreadcrumbItem } from '@/components/common';
+import type { BreadcrumbItem } from '@/components';
 import { SIDEBAR_ITEMS } from '@/constants';
 import type { ISectionTab, ISidebarItem } from '@/interfaces';
 

@@ -1,4 +1,4 @@
-import type { Rule, RuleObject } from '@/components/custom-antd';
+import type { Rule, RuleObject } from '@/components';
 
 export enum FormRuleType {
     Max = 'max',

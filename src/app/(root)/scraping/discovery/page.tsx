@@ -9,8 +9,8 @@ import {
     type ICardAction,
     type IFilterField,
     type IFormField,
-} from '@/components/common';
-import { CustomButton, CustomTag, type ColumnsType } from '@/components/custom-antd';
+} from '@/components';
+import { CustomButton, CustomTag, type ColumnsType } from '@/components';
 import { RESOURCE } from '@/config';
 import { formatDate } from '@/libs';
 import { FormRuleType } from '@/utilities';

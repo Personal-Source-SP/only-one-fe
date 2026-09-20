@@ -1,7 +1,7 @@
 'use client';
 
-import { DetailModalContainer } from '@/components/common';
-import { CustomButton, CustomFlex, CustomTag } from '@/components/custom-antd';
+import { DetailModalContainer } from '@/components';
+import { CustomButton, CustomFlex, CustomTag } from '@/components';
 import { Icon } from '@iconify/react';
 import type { IDetailSection } from '@/interfaces';
 import { useMemo } from 'react';

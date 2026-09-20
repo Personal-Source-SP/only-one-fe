@@ -6,7 +6,7 @@ import {
     CustomPopconfirm,
     CustomTag,
     CustomTypography,
-} from '@/components/custom-antd';
+} from '@/components';
 import { Icon } from '@iconify/react';
 import { useFeatureHistoryContext } from '../../context';
 

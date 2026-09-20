@@ -1,5 +1,5 @@
 import { PropsWithChildren } from 'react';
-import { CustomCol, CustomRow } from '@/components/custom-antd';
+import { CustomCol, CustomRow } from '@/components';
 import { AuthHeroBanner } from './AuthHeroBanner';
 
 export const AuthLayout = ({ children }: PropsWithChildren) => {

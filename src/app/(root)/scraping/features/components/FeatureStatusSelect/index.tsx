@@ -1,6 +1,6 @@
 'use client';
 
-import { CustomDropdown, CustomFlex, CustomTag, type MenuProps } from '@/components/custom-antd';
+import { CustomDropdown, CustomFlex, CustomTag, type MenuProps } from '@/components';
 import { Icon } from '@iconify/react';
 import { useCallback, useMemo } from 'react';
 import { DATA_PROVIDER_FEATURE_STATUS_CONFIG, getAvailableTargetStatuses } from '../../constants';

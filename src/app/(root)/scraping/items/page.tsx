@@ -8,8 +8,8 @@ import {
     type ICardAction,
     type IFilterField,
     type IFormField,
-} from '@/components/common';
-import { ColumnType, ColumnsType, CustomButton, CustomTag } from '@/components/custom-antd';
+} from '@/components';
+import { ColumnType, ColumnsType, CustomButton, CustomTag } from '@/components';
 import { RESOURCE } from '@/config';
 import type { FormMode } from '@/hooks';
 import { formatDate } from '@/libs';

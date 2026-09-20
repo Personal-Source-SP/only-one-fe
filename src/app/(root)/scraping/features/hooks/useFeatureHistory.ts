@@ -1,6 +1,6 @@
 'use client';
 
-import { customNotification } from '@/components/custom-antd';
+import { customNotification } from '@/components';
 import { API_ENDPOINT } from '@/config';
 import { MessageType } from '@/enums';
 import { useCustomData, useCustomMutationData } from '@/hooks';

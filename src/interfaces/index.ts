@@ -3,9 +3,7 @@ export * from './base-api';
 export * from './component';
 export * from './api-hooks';
 export * from './notification';
-export * from './media';
 export * from './navigation';
-export * from './filter';
-export * from './containers';
-export * from './forms';
-export * from './details';
+
+// Re-export colocated component contracts
+export * from '@/components';

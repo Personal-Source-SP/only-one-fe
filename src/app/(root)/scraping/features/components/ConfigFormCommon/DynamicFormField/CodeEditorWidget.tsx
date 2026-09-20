@@ -5,8 +5,8 @@ import type {
     CodeEditorFormFieldSchema,
     FormEvaluationContext,
 } from '@/app/(root)/scraping/features/types';
-import { CodeDisplay } from '@/components/common';
-import { CustomCol, CustomForm } from '@/components/custom-antd';
+import { CodeDisplay } from '@/components';
+import { CustomCol, CustomForm } from '@/components';
 import { useCallback, useMemo } from 'react';
 import { FormDiffLabel } from '../FormDiffLabel';
 

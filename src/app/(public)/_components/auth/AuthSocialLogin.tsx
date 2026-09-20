@@ -1,6 +1,6 @@
 'use client';
 
-import { CustomButton, CustomDivider, CustomFlex } from '@/components/custom-antd';
+import { CustomButton, CustomDivider, CustomFlex } from '@/components';
 import { Icon } from '@iconify/react';
 
 type AuthSocialLoginProps = {

@@ -1,7 +1,7 @@
 'use client';
 
-import { ListContainer, ListTable, StatusTag, type IFilterField } from '@/components/common';
-import { ColumnsType } from '@/components/custom-antd';
+import { ListContainer, ListTable, StatusTag, type IFilterField } from '@/components';
+import { ColumnsType } from '@/components';
 import { formatDate } from '@/libs';
 import { ViewJobEvent } from './components';
 import { ScheduleJobEventType } from './enums';

@@ -7,7 +7,7 @@ import {
     CustomDropdown,
     CustomFlex,
     MenuProps,
-} from '@/components/custom-antd';
+} from '@/components';
 import { KEY_SESSION_STORAGE } from '@/constants';
 import { Icon } from '@iconify/react';
 import { signOut } from 'next-auth/react';

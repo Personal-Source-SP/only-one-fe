@@ -1,4 +1,4 @@
-import type { ButtonProps, FormProps } from '@/components/custom-antd';
+import type { ButtonProps, FormProps } from '@/components';
 import type {
     BaseRecord,
     HttpError,

@@ -1,6 +1,6 @@
 'use client';
 
-import { CustomButton, CustomFlex, type CustomButtonProps } from '@/components/custom-antd';
+import { CustomButton, CustomFlex, type CustomButtonProps } from '@/components';
 import { Icon } from '@iconify/react';
 import type { FeatureStatusDefinition } from '../../constants';
 

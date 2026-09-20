@@ -1,6 +1,6 @@
 'use client';
 
-import { CustomCard, CustomFlex } from '@/components/custom-antd';
+import { CustomCard, CustomFlex } from '@/components';
 import { FeatureCardActions } from './FeatureCardActions';
 import { FeatureCardHeader } from './FeatureCardHeader';
 import { FeatureHealthMetrics } from './FeatureHealthMetrics';

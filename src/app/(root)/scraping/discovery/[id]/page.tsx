@@ -1,13 +1,13 @@
 'use client';
 
-import { ListContainer, ListTable, type ICardAction, type IFilterField } from '@/components/common';
+import { ListContainer, ListTable, type ICardAction, type IFilterField } from '@/components';
 import {
     CustomButton,
     CustomFlex,
     CustomTag,
     CustomTypography,
     type ColumnsType,
-} from '@/components/custom-antd';
+} from '@/components';
 import { formatDate } from '@/libs';
 import { CheckCircleOutlined, SendOutlined } from '@ant-design/icons';
 import { Icon } from '@iconify/react';

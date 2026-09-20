@@ -1,6 +1,6 @@
 'use client';
 
-import { CustomButton, CustomFlex } from '@/components/custom-antd';
+import { CustomButton, CustomFlex } from '@/components';
 import { Icon } from '@iconify/react';
 import { FeatureStatusSelect } from '../FeatureStatusSelect';
 import { FeatureVersionSelect } from '../FeatureVersionSelect';

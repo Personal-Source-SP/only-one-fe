@@ -1,6 +1,6 @@
 'use client';
 
-import { Loading, UnsavedChangesNotifierAppRouter } from '@/components/common';
+import { Loading, UnsavedChangesNotifierAppRouter } from '@/components';
 import { env } from '@/config';
 import {
     AUTH_PUBLIC_PAGES,

@@ -1,6 +1,6 @@
 'use client';
 
-import { CustomCol, CustomForm, CustomInputNumber } from '@/components/custom-antd';
+import { CustomCol, CustomForm, CustomInputNumber } from '@/components';
 import type {
     FormEvaluationContext,
     NumberFormFieldSchema,

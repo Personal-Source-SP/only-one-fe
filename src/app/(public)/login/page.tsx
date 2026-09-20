@@ -1,6 +1,6 @@
 'use client';
 
-import { CustomLink, CustomTypography } from '@/components/custom-antd';
+import { CustomLink, CustomTypography } from '@/components';
 import { AuthCard } from '@/app/(public)/_components/auth';
 
 import { LoginForm } from './components';

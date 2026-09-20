@@ -9,8 +9,8 @@ import {
     MediaLightbox,
     type ICardAction,
     type IFilterField,
-} from '@/components/common';
-import { ColumnsType, CustomButton, CustomFlex, CustomSelect } from '@/components/custom-antd';
+} from '@/components';
+import { ColumnsType, CustomButton, CustomFlex, CustomSelect } from '@/components';
 import { RESOURCE } from '@/config';
 import { DisplayMode } from '@/enums';
 import { formatDate } from '@/libs';

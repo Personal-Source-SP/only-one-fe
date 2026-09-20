@@ -1,4 +1,4 @@
-import { Forbidden, Loading } from '@/components/common';
+import { Forbidden, Loading } from '@/components';
 import { Suspense } from 'react';
 
 export const metadata = {

@@ -7,8 +7,8 @@ import {
     type ICardAction,
     type IFilterField,
     type IFormField,
-} from '@/components/common';
-import { CustomButton, type ColumnsType } from '@/components/custom-antd';
+} from '@/components';
+import { CustomButton, type ColumnsType } from '@/components';
 import { RESOURCE } from '@/config';
 import type { FormMode } from '@/hooks';
 import { formatDate, slugify } from '@/libs';

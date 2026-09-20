@@ -1,7 +1,7 @@
 'use client';
 
 import { ReactNode } from 'react';
-import { CustomFlex, CustomTag, CustomTypography } from '@/components/custom-antd';
+import { CustomFlex, CustomTag, CustomTypography } from '@/components';
 import { Icon } from '@iconify/react';
 
 export type ConfigGroupContainerProps = {

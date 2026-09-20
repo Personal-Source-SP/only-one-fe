@@ -1,13 +1,7 @@
 'use client';
 
-import { CodeDisplay } from '@/components/common';
-import {
-    CustomAlert,
-    CustomEmpty,
-    CustomFlex,
-    CustomTag,
-    CustomTypography,
-} from '@/components/custom-antd';
+import { CodeDisplay } from '@/components';
+import { CustomAlert, CustomEmpty, CustomFlex, CustomTag, CustomTypography } from '@/components';
 import { FEATURE_SECTION_CONTAINER_CLASS } from '../../constants';
 import { useFeatureTestContext } from '../../context';
 import { SectionHeader } from '../ConfigFormCommon';

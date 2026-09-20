@@ -1,6 +1,6 @@
 'use client';
 
-import { ListContainer, ListTable, type ICardAction, type IFilterField } from '@/components/common';
+import { ListContainer, ListTable, type ICardAction, type IFilterField } from '@/components';
 import {
     CustomBadge,
     CustomButton,
@@ -9,7 +9,7 @@ import {
     CustomTag,
     CustomTypography,
     type ColumnsType,
-} from '@/components/custom-antd';
+} from '@/components';
 import { RESOURCE } from '@/config';
 import { Icon } from '@iconify/react';
 import {

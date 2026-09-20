@@ -1,13 +1,7 @@
 'use client';
 
-import { CodeDisplay } from '@/components/common';
-import {
-    CustomCol,
-    CustomFlex,
-    CustomForm,
-    CustomSwitch,
-    CustomTypography,
-} from '@/components/custom-antd';
+import { CodeDisplay } from '@/components';
+import { CustomCol, CustomFlex, CustomForm, CustomSwitch, CustomTypography } from '@/components';
 import { Icon } from '@iconify/react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useFeatureModalContext } from '@/app/(root)/scraping/features/context';

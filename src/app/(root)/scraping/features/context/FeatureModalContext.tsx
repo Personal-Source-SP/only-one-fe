@@ -1,6 +1,6 @@
 'use client';
 
-import { CustomForm, type FormInstance } from '@/components/custom-antd';
+import { CustomForm, type FormInstance } from '@/components';
 import { createContext, PropsWithChildren, useContext, useMemo } from 'react';
 import { DataProviderFeatureStatus, ScraperServiceEnum } from '../enums';
 import { useFeatureModalController } from '../hooks';

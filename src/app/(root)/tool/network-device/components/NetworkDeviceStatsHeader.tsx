@@ -7,7 +7,7 @@ import {
     CustomRow,
     CustomSpace,
     CustomTypography,
-} from '@/components/custom-antd';
+} from '@/components';
 import { SCAN_STATUS_CONFIG } from '../constants';
 import { NetworkScanStatus } from '../enums';
 import type { IScanStatusResponse } from '../types';

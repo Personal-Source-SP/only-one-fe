@@ -1,7 +1,7 @@
 'use client';
 
-import { Logo } from '@/components/common';
-import { CustomTypography } from '@/components/custom-antd';
+import { Logo } from '@/components';
+import { CustomTypography } from '@/components';
 import { ReactNode } from 'react';
 
 type AuthCardProps = {

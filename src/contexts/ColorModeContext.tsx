@@ -1,6 +1,6 @@
 'use client';
 
-import { HubThemedConfigProvider } from '@/components/custom-antd';
+import { HubThemedConfigProvider } from '@/components';
 import { useThemeStore } from '@/stores';
 import { type PropsWithChildren } from 'react';
 

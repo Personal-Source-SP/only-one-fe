@@ -1,14 +1,14 @@
 'use client';
 
 import { Icon } from '@iconify/react';
-import { ColumnsType, CustomButton } from '@/components/custom-antd';
+import { ColumnsType, CustomButton } from '@/components';
 import {
     FilterPanel,
     ListTable,
     ListContainer,
     type ICardAction,
     type IFilterField,
-} from '@/components/common';
+} from '@/components';
 import { formatDate } from '@/libs';
 import { RESOURCE } from '@/config';
 

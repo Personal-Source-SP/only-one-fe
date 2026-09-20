@@ -1,12 +1,6 @@
 'use client';
 
-import {
-    CustomCol,
-    CustomFlex,
-    CustomForm,
-    CustomSwitch,
-    CustomTypography,
-} from '@/components/custom-antd';
+import { CustomCol, CustomFlex, CustomForm, CustomSwitch, CustomTypography } from '@/components';
 import { useFeatureModalContext } from '@/app/(root)/scraping/features/context';
 import type {
     FormEvaluationContext,

@@ -1,6 +1,6 @@
 'use client';
 
-import { CustomFlex, CustomTooltip } from '@/components/custom-antd';
+import { CustomFlex, CustomTooltip } from '@/components';
 import { Icon } from '@iconify/react';
 import type { FeatureStatusDefinition } from '../../constants';
 

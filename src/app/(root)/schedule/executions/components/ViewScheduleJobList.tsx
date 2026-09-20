@@ -1,14 +1,8 @@
 'use client';
 
 import { useMemo } from 'react';
-import {
-    FilterPanel,
-    ListTable,
-    ListContainer,
-    StatusTag,
-    type IFilterField,
-} from '@/components/common';
-import { ColumnsType, CustomModal } from '@/components/custom-antd';
+import { FilterPanel, ListTable, ListContainer, StatusTag, type IFilterField } from '@/components';
+import { ColumnsType, CustomModal } from '@/components';
 import { API_ENDPOINT } from '@/config';
 import { useCustomTable } from '@/hooks';
 import { formatDate } from '@/libs';

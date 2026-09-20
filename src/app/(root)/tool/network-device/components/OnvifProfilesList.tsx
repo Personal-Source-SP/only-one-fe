@@ -7,7 +7,7 @@ import {
     CustomSpace,
     CustomTypography,
     customMessage,
-} from '@/components/custom-antd';
+} from '@/components';
 import { Icon } from '@iconify/react';
 import type { IOnvifMetadata } from '../types';
 

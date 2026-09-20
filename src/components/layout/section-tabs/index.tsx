@@ -1,6 +1,6 @@
 'use client';
 
-import { BreadcrumbNav } from '@/components/common';
+import { BreadcrumbNav } from '@/components';
 import {
     CustomButton,
     CustomDivider,
@@ -9,7 +9,7 @@ import {
     CustomTabs,
     CustomTag,
     CustomTypography,
-} from '@/components/custom-antd';
+} from '@/components';
 import { getSectionBreadcrumbs, getSectionTabs } from '@/libs';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { usePathname, useRouter } from 'next/navigation';

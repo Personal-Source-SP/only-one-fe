@@ -1,12 +1,6 @@
 'use client';
 
-import {
-    CustomCard,
-    CustomCol,
-    CustomFlex,
-    CustomRow,
-    CustomTypography,
-} from '@/components/custom-antd';
+import { CustomCard, CustomCol, CustomFlex, CustomRow, CustomTypography } from '@/components';
 import { HUB_THEME_PALETTE_OPTIONS } from '@/constants';
 import { Icon } from '@iconify/react';
 

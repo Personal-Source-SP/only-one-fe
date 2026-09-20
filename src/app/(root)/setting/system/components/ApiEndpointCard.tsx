@@ -9,7 +9,7 @@ import {
     CustomTag,
     CustomTooltip,
     CustomTypography,
-} from '@/components/custom-antd';
+} from '@/components';
 import { Icon } from '@iconify/react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTunnel } from '../hooks/useTunnel';

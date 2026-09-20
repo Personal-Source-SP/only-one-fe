@@ -1,4 +1,4 @@
-import type { CustomSelectProps, Rule, SelectProps } from '@/components/custom-antd';
+import type { CustomSelectProps, Rule, SelectProps } from '@/components';
 import type { ReactNode } from 'react';
 import type { DataProviderFeatureType, ScraperServiceEnum } from '../enums';
 import type { ISearchTargetConfigSpecific, ITargetConfig } from './target-config.types';

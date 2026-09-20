@@ -1,6 +1,6 @@
 'use client';
 
-import type { FormInstance } from '@/components/custom-antd';
+import type { FormInstance } from '@/components';
 import { API_ENDPOINT } from '@/config';
 import { MessageType } from '@/enums';
 import { useCustomData, useCustomMutationData } from '@/hooks';

@@ -1,6 +1,6 @@
 'use client';
 
-import { CustomFlex, CustomForm } from '@/components/custom-antd';
+import { CustomFlex, CustomForm } from '@/components';
 import { useMemo } from 'react';
 import { getFeatureFormSections } from '../../constants';
 import { useFeatureModalContext } from '../../context';

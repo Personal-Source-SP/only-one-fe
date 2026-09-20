@@ -21,7 +21,7 @@ import {
     CustomSteps,
     StepsProps,
     TableProps,
-} from '@/components/custom-antd';
+} from '@/components';
 import { useMainContext } from '@/contexts/MainContext';
 import { MessageType, MimeType } from '@/enums';
 import { useCustomMutationData } from '@/hooks';

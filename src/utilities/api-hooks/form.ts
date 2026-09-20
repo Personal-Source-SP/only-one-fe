@@ -1,4 +1,4 @@
-import type { ButtonProps, FormInstance } from '@/components/custom-antd';
+import type { ButtonProps, FormInstance } from '@/components';
 
 /**
  * Creates save button props with form submit binding.

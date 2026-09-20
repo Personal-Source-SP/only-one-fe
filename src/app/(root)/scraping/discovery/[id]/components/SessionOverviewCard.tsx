@@ -12,7 +12,7 @@ import {
     CustomRow,
     CustomTag,
     CustomTypography,
-} from '@/components/custom-antd';
+} from '@/components';
 import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
 import { useMemo } from 'react';

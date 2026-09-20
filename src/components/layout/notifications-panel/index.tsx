@@ -1,7 +1,7 @@
 'use client';
 
 import { API_ENDPOINT } from '@/config';
-import { CustomAvatar, CustomButton, CustomCard, CustomSpace } from '@/components/custom-antd';
+import { CustomAvatar, CustomButton, CustomCard, CustomSpace } from '@/components';
 import { NotificationTab, NotificationType } from '@/enums';
 import { useCustomList } from '@/hooks';
 import { INotification } from '@/interfaces';

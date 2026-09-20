@@ -1,6 +1,6 @@
 'use client';
 
-import { CustomFlex, CustomModal, CustomTabs } from '@/components/custom-antd';
+import { CustomFlex, CustomModal, CustomTabs } from '@/components';
 import { MessageType } from '@/enums';
 import { useMessage } from '@/hooks';
 import { Icon } from '@iconify/react';

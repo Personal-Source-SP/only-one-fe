@@ -6,7 +6,7 @@ import {
 
 import { useDrawerForm } from '@refinedev/antd';
 import type { BaseRecord, GetOneResponse, HttpError } from '@refinedev/core';
-import type { ButtonProps, FormInstance, FormProps } from '@/components/custom-antd';
+import type { ButtonProps, FormInstance, FormProps } from '@/components';
 import type {
     FormMode,
     IBaseApiFormRequest,

@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, type ReactNode } from 'react';
-import { CustomFlex, CustomTooltip, CustomTypography } from '@/components/custom-antd';
+import { CustomFlex, CustomTooltip, CustomTypography } from '@/components';
 import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
 import { useFeatureCardContext } from '../../context';

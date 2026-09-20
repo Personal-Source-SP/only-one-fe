@@ -2,8 +2,8 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { Logo } from '@/components/common';
-import { CustomFlex, CustomSpace, CustomTag, CustomTypography } from '@/components/custom-antd';
+import { Logo } from '@/components';
+import { CustomFlex, CustomSpace, CustomTag, CustomTypography } from '@/components';
 import { Icon } from '@iconify/react';
 
 export const AuthHeroBanner = () => {

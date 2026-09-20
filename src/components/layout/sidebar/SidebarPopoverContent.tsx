@@ -1,4 +1,4 @@
-import { CustomButton } from '@/components/custom-antd';
+import { CustomButton } from '@/components';
 import { ISidebarItem } from '@/interfaces';
 import { Icon } from '@iconify/react';
 

@@ -1,12 +1,6 @@
 'use client';
 
-import {
-    CustomAlert,
-    CustomCard,
-    CustomFlex,
-    CustomTag,
-    CustomTypography,
-} from '@/components/custom-antd';
+import { CustomAlert, CustomCard, CustomFlex, CustomTag, CustomTypography } from '@/components';
 import type { IApproachResultResponse } from '../types';
 
 const { Text } = CustomTypography;

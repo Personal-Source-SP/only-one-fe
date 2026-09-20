@@ -1,6 +1,6 @@
 'use client';
 
-import { CustomFlex, CustomTypography } from '@/components/custom-antd';
+import { CustomFlex, CustomTypography } from '@/components';
 import type { ReactNode } from 'react';
 
 interface SessionMetricCardProps {

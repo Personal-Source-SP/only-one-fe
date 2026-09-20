@@ -1,6 +1,6 @@
 'use client';
 
-import { CustomCol, CustomRow } from '@/components/custom-antd';
+import { CustomCol, CustomRow } from '@/components';
 import { FeatureTestProvider } from '../../context';
 import { TestInputSection } from './TestInputSection';
 import { TestResultSection } from './TestResultSection';

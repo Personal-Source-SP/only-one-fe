@@ -1,5 +1,5 @@
 import { MessageType } from '@/enums';
-import { useCustomApp } from '@/components/custom-antd';
+import { useCustomApp } from '@/components';
 import { useCallback } from 'react';
 
 export const useMessage = () => {

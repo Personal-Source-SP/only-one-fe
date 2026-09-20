@@ -1,12 +1,6 @@
 'use client';
 
-import {
-    CustomDropdown,
-    CustomFlex,
-    CustomTag,
-    type MenuProps,
-    useCustomApp,
-} from '@/components/custom-antd';
+import { CustomDropdown, CustomFlex, CustomTag, type MenuProps, useCustomApp } from '@/components';
 import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
 import { useCallback, useMemo } from 'react';

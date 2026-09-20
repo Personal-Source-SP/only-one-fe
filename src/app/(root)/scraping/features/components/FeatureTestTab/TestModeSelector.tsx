@@ -1,6 +1,6 @@
 'use client';
 
-import { CustomFlex, CustomSegmented, CustomTypography } from '@/components/custom-antd';
+import { CustomFlex, CustomSegmented, CustomTypography } from '@/components';
 import { Icon } from '@iconify/react';
 
 export type TestModeSelectorProps = {

@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { CustomInputForm, CustomModalForm, CustomSelectInput } from '@/components/common';
+import { CustomInputForm, CustomModalForm, CustomSelectInput } from '@/components';
 import { FormRuleType } from '@/utilities';
 
 import { FieldsEnum } from '@/app/(root)/google/drive/folders/constants';

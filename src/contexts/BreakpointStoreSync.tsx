@@ -1,6 +1,6 @@
 'use client';
 
-import { CustomGrid } from '@/components/custom-antd';
+import { CustomGrid } from '@/components';
 import { useBreakpointStore } from '@/stores';
 import { type PropsWithChildren, useEffect } from 'react';
 

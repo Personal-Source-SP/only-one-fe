@@ -8,8 +8,8 @@ import {
     CustomModal,
     CustomRadio,
     CustomTypography,
-} from '@/components/custom-antd';
-import { CustomInputForm, CustomInputFormType } from '@/components/common';
+} from '@/components';
+import { CustomInputForm, CustomInputFormType } from '@/components';
 import { FormRuleType } from '@/utilities';
 import type { TunnelConfigDto } from '../types';
 

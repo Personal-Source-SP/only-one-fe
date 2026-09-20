@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-    CustomButton,
-    CustomCheckbox,
-    CustomForm,
-    CustomInput,
-    CustomLink,
-} from '@/components/custom-antd';
+import { CustomButton, CustomCheckbox, CustomForm, CustomInput, CustomLink } from '@/components';
 import { AuthSocialLogin } from '@/app/(public)/_components/auth/AuthSocialLogin';
 import { useLoginPage } from '@/app/(public)/login/hooks';
 

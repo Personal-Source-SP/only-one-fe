@@ -1,6 +1,6 @@
 'use client';
 
-import { CustomFlex, CustomTag, CustomTypography } from '@/components/custom-antd';
+import { CustomFlex, CustomTag, CustomTypography } from '@/components';
 import { Icon } from '@iconify/react';
 import { FeatureStatusSelect } from '../FeatureStatusSelect';
 import { SCRAPER_SERVICE_LABELS } from '../../constants';

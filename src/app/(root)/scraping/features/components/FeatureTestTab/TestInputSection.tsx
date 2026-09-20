@@ -8,7 +8,7 @@ import {
     CustomSegmented,
     CustomSpace,
     CustomTooltip,
-} from '@/components/custom-antd';
+} from '@/components';
 import { Icon } from '@iconify/react';
 import { DEFAULT_HTML_CONTENT_STRING, FEATURE_SECTION_CONTAINER_CLASS } from '../../constants';
 import { useFeatureTestContext } from '../../context';

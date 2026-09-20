@@ -1,5 +1,5 @@
 import React from 'react';
-import { CustomButton, CustomForm, CustomInput } from '@/components/custom-antd';
+import { CustomButton, CustomForm, CustomInput } from '@/components';
 import { useForgetPasswordPage } from '@/app/(public)/forget-password/hooks';
 
 export const ForgetPasswordForm = () => {

@@ -1,7 +1,7 @@
 'use client';
 
-import { FormModalContainer } from '@/components/common';
-import { CustomFlex, CustomForm } from '@/components/custom-antd';
+import { FormModalContainer } from '@/components';
+import { CustomFlex, CustomForm } from '@/components';
 import type { UseCustomModalFormResponse } from '@/hooks';
 import type { IFormSection } from '@/interfaces';
 import { FormRuleType } from '@/utilities';

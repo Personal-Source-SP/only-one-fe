@@ -9,8 +9,8 @@ import {
     MediaLightbox,
     type ICardAction,
     type IFilterField,
-} from '@/components/common';
-import { CustomButton } from '@/components/custom-antd';
+} from '@/components';
+import { CustomButton } from '@/components';
 import { GoogleDriveType, QualityMode } from '../enums';
 import type { IGoogleDriveFile } from './types';
 import { getDriveImageUrl } from './utils';

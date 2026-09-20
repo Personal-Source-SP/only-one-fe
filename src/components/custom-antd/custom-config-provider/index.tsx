@@ -8,4 +8,4 @@ export const CustomConfigProvider = (props: CustomConfigProviderProps) => (
     <ConfigProvider {...props} />
 );
 
-export * from './HubThemedConfigProvider';
+export { HubThemedConfigProvider } from './HubThemedConfigProvider';

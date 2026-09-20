@@ -24,7 +24,7 @@ import {
     CustomTag,
     StepsProps,
     TableProps,
-} from '@/components/custom-antd';
+} from '@/components';
 import { MessageType, MimeType } from '@/enums';
 import { useMainContext } from '@/contexts/MainContext';
 import type { IGoogleAuth, IGoogleDrivePreviewItem } from '@/app/(root)/google/drive/photos/types';

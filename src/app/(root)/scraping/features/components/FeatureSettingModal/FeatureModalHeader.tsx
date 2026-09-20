@@ -1,6 +1,6 @@
 'use client';
 
-import { CustomFlex, CustomTag, CustomTypography } from '@/components/custom-antd';
+import { CustomFlex, CustomTag, CustomTypography } from '@/components';
 import { formatDate } from '@/libs';
 import { Icon } from '@iconify/react';
 import { useCallback } from 'react';

@@ -1,7 +1,7 @@
 'use client';
 
-import { CustomDescriptions, CustomModal, CustomTabs } from '@/components/custom-antd';
-import { StatusTag } from '@/components/common';
+import { CustomDescriptions, CustomModal, CustomTabs } from '@/components';
+import { StatusTag } from '@/components';
 import { calculateDuration, formatDate } from '@/libs';
 import type { IScheduleJobEvent } from '@/app/(root)/schedule/job-events/types';
 

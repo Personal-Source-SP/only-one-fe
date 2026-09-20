@@ -1,11 +1,6 @@
 'use client';
 
-import {
-    DataNotFound,
-    ListContainer,
-    type BreadcrumbItem,
-    type ICardAction,
-} from '@/components/common';
+import { DataNotFound, ListContainer, type BreadcrumbItem, type ICardAction } from '@/components';
 import {
     CustomButton,
     CustomCol,
@@ -14,7 +9,7 @@ import {
     CustomRow,
     CustomSpace,
     CustomTypography,
-} from '@/components/custom-antd';
+} from '@/components';
 import { Icon } from '@iconify/react';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
